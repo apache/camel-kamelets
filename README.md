@@ -54,7 +54,7 @@ spec:
     properties:
       period:
         title: Period
-        description: The interval between two events
+        description: The interval between two events in milliseconds
         type: integer
         default: 1000
       message:
@@ -85,7 +85,8 @@ The Kamelet **MAY** declare additional supporting routes that **MUST** be writte
 
 The code of a "source" Kamelet must send data to the `kamelet:sink` special endpoint. The code of a "sink" Kamelet must consume data from the special endpoint `kamelet:source`.
 
-The Kamelet **CAN** declare dependencies on Camel components using the syntax `camel:<component-name>` (e.g. `camel:telegram`).
+The Kamelet **MAY** declare dependencies on Camel components using the syntax `camel:<component-name>` (e.g. `camel:telegram`). Some Camel dependencies are implicitly
+added by the runtime when a certain Camel URI is used (e.g. there's no need to declare explicit dependency on `camel:timer` if the `flow` section uses the `timer` URI).
 
 The Kamelet **CAN** declare dependencies on artifacts of one of the Camel subprojects. In case it does, the Kamelet must contain label `camel.apache.org/requires.runtime=<name-of-the-project>` (e.g. `camel.apache.org/requires.runtime=camel-quarkus`).
 
@@ -93,6 +94,19 @@ The Kamelet **CAN** declare dependencies on other artifacts in Maven Central, pr
 
 All source code dependencies (e.g. `github:organization:project`) **MUST** link to Apache Camel repositories only. Contributors are welcome to use this same repository to share libraries in the form of source code.
 
+All these should be added to the `spec` -> `dependencies` section, like in the following example:
+
+```yaml
+# ...
+spec:
+  # ...
+  dependencies:
+  - camel:telegram
+  - mvn:org.apache.commons:commons-vfs2:2.7.0
+  - github:apache/camel-kamelets
+  flow:
+    # ...
+```
 
 ### Configuration properties
 
