@@ -279,7 +279,8 @@ func listKamelets(dir string) []camel.Kamelet {
 	handleGeneralError(fmt.Sprintf("cannot list dir %q", dir), err)
 	for _, fd := range files {
 		if !fd.IsDir() && strings.HasSuffix(fd.Name(), ".kamelet.yaml") {
-			filesSorted = append(filesSorted, fd.Name())
+			fullName := filepath.Join(dir, fd.Name())
+			filesSorted = append(filesSorted, fullName)
 		}
 	}
 	sort.Strings(filesSorted)
