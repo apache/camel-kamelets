@@ -1,0 +1,65 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: Kamelet
+metadata:
+  name: aws-sqs-source
+  annotations:
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDEwMCAxMDAiIGhlaWdodD0iMTAwcHgiIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHdpZHRoPSIxMDBweCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+PGcgaWQ9IkFtYXpvbl9DbG91ZFNlYXJjaCI+PGc+PHBvbHlnb24gZmlsbD0iI0Q5QTc0MSIgcG9pbnRzPSI1NC40Niw1OS41MDYgMjMuOTg1LDYzLjc5MyAyMy45ODcsMzYuMjAxIDU0LjQ2Miw0MC40OTQgICAiLz48cG9seWdvbiBmaWxsPSIjODc2OTI5IiBwb2ludHM9IjIwLjE3OSwzNy4zNDQgNTAuMDAzLDI4LjM5OSA1MC4wMDMsMTQgMjAuMTc5LDI4LjkwOCAgICIvPjxwb2x5Z29uIGZpbGw9IiM4NzY5MjkiIHBvaW50cz0iMjAuMTksNjIuNjU0IDQ5Ljk5OSw3MS42IDQ5Ljk5Nyw4NiAyMC4xOSw3MS4wOTQgICAiLz48cG9seWdvbiBmaWxsPSIjRDlBNzQxIiBwb2ludHM9Ijc5LjgyMywzNy4zNSA1MC4wMDMsMjguMzk5IDUwLjAwMywxNCA3OS44MjUsMjguOTE0ICAgIi8+PHBvbHlnb24gZmlsbD0iI0Q5QTc0MSIgcG9pbnRzPSI3OS44MDYsNjIuNjYgNDkuOTk5LDcxLjYgNDkuOTk3LDg2IDc5LjgwNiw3MS4wOTkgICAiLz48cG9seWdvbiBmaWxsPSIjODc2OTI5IiBwb2ludHM9IjIzLjk4NSw3Mi45OSAyMC4xNzUsNzEuMDg2IDIwLjE3OSwyOC45MDggMjMuOTg5LDI3LjAwNCAgICIvPjxwb2x5Z29uIGZpbGw9IiM4NzY5MjkiIHBvaW50cz0iMzkuMDE3LDU3Ljc2MiA0OS45OTksNTkuMTYgNTAuMDAxLDQwLjgzMiAzOS4wMTksNDIuMjI5ICAgIi8+PHBvbHlnb24gZmlsbD0iIzg3NjkyOSIgcG9pbnRzPSIyNy45NTQsNTYuMzU0IDM1LjA4MSw1Ny4yNiAzNS4wODMsNDIuNzI5IDI3Ljk1NCw0My42MzcgICAiLz48cG9seWdvbiBmaWxsPSIjNjI0QTFFIiBwb2ludHM9IjIzLjk4NywzNi4yMDEgNTAuMDAzLDI4LjM5OSA3OS44MjMsMzcuMzUgNTQuNDgxLDQwLjQ5NiAgICIvPjxwb2x5Z29uIGZpbGw9IiNGQUQ3OTEiIHBvaW50cz0iMjMuOTg1LDYzLjc5MyA0OS45OTksNzEuNiA3OS44MDYsNjIuNjYgNTQuNDYsNTkuNTA2ICAgIi8+PHBvbHlnb24gZmlsbD0iI0Q5QTc0MSIgcG9pbnRzPSI3OS44MDgsNTUuMzMgNDkuOTk5LDU5LjA5MiA1MC4wMDEsNDAuODMyIDc5LjgwOCw0NC42MjkgICAiLz48L2c+PC9nPjwvc3ZnPg=="
+    camel.apache.org/provider: "Apache Software Foundation"
+  labels:
+    camel.apache.org/kamelet.type: "source"
+spec:
+  definition:
+    title: "AWS SQS Source"
+    description: |-
+      Receive data from AWS SQS.
+    required:
+      - queueNameOrArn
+      - accessKey
+      - secretKey
+      - region
+    properties:
+      queueNameOrArn:
+        title: Queue Name
+        description: The SQS Queue name or ARN
+        type: string
+      deleteAfterRead:
+        title: Auto-delete messages
+        description: Delete messages after consuming them
+        type: boolean
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: true
+      accessKey:
+        title: Access Key
+        description: The access key obtained from AWS
+        type: string
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:password
+      secretKey:
+        title: Secret Key
+        description: The secret key obtained from AWS
+        type: string
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:password
+      region:
+        title: AWS Region
+        description: The AWS region to connect to
+        type: string
+        example: eu-west-1
+  types:
+    out:
+      mediaType: application/json
+  dependencies:
+  - "camel:jackson"
+  flow:
+    from:
+      uri: "aws2-sqs:{{queueNameOrArn}}"
+      parameters:
+        secretKey: "{{secretKey}}"
+        accessKey: "{{accessKey}}"
+        region: "{{region}}"
+        deleteAfterRead: "{{deleteAfterRead}}"
+      steps:
+      - marshal:
+          json: {}
+      - to: "kamelet:sink"
