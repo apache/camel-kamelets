@@ -34,6 +34,8 @@ All Kamelets **MUST** declare an icon in the `camel.apache.org/kamelet.icon` ann
 
 Kamelets that are logically related (e.g. all Kamelets that allow doing things with Twitter) **SHOULD** be linked together using the label `camel.apache.org/kamelet.group=<name of the group>` (e.g. `camel.apache.org/kamelet.group=Twitter`) to ease visualization in tooling.
 
+All Kamelets present in this repository **MUST** have the *annotation* `camel.apache.org/provider` set to `"Apache Software Foundation"`.
+
 We provide an example of Kamelet to give more context to the following sections:
 
 ```yaml
@@ -43,6 +45,7 @@ metadata:
   name: timer-source
   annotations:
     camel.apache.org/kamelet.icon: data:image/svg+xml;base64,PD94...
+    camel.apache.org/provider: "Apache Software Foundation"
   labels:
     camel.apache.org/kamelet.type: source
 spec:
