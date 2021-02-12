@@ -11,13 +11,6 @@ To generate the adoc and svg files for the website (you need `go`):
 go run ./generator/ ../ ./modules/ROOT/
 ```
 
-To generate the website bundle UI (you need `yarn`):
-
-```
-# From the /docs directory
-yarn build-ui
-```
-
 To preview the website:
 
 ```
