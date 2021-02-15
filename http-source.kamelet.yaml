@@ -36,6 +36,6 @@ spec:
       steps:
       - set-header:
           name: "Accept"
-          constant: {{contentType}}
+          constant: "{{contentType}}"
       - to: "netty-http:{{url}}"
       - to: "kamelet:sink"
