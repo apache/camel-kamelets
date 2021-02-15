@@ -226,7 +226,7 @@ spec:
 		content += "----\n"
 
 		content += "\n"
-		content += "Make sure you have https://camel.apache.org/camel-k/latest/installation/installation.html[Camel K installed] into the Kubernetes cluster you're connected to.\n"
+		content += "Make sure you have xref:latest@camel-k::installation/installation.html[Camel K installed] into the Kubernetes cluster you're connected to.\n"
 		content += "\n"
 		content += fmt.Sprintf("Save the `%s-binding.yaml` file into your hard drive, then configure it according to your needs.\n", k.Name)
 		content += "\n"
