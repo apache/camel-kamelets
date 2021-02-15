@@ -1,0 +1,86 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: test
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - '**.adoc'
+      - 'KEYS'
+      - 'LICENSE'
+      - 'NOTICE'
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.adoc'
+      - 'KEYS'
+      - 'LICENSE'
+      - 'NOTICE'
+
+env:
+  CAMEL_K_VERSION: 1.3.1
+  YAKS_VERSION: 0.2.0
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Get Camel K CLI
+      run: |
+        curl -L --silent https://github.com/apache/camel-k/releases/download/v${CAMEL_K_VERSION}/camel-k-client-${CAMEL_K_VERSION}-linux-64bit.tar.gz -o kamel.tar.gz
+        mkdir -p _kamel
+        tar -zxf kamel.tar.gz --directory ./_kamel
+        sudo mv ./_kamel/kamel /usr/local/bin/
+        rm kamel.tar.gz
+        rm -r _kamel
+    - name: Get YAKS CLI
+      run: |
+        curl -L https://github.com/citrusframework/yaks/releases/download/v${YAKS_VERSION}/yaks-${YAKS_VERSION}-linux-64bit.tar.gz -o yaks.tar.gz
+        mkdir -p _yaks
+        tar -zxf yaks.tar.gz --directory ./_yaks
+        sudo mv ./_yaks/yaks /usr/local/bin/
+        rm yaks.tar.gz
+        rm -r _yaks
+    - name: Kubernetes KinD Cluster
+      uses: container-tools/kind-action@v1
+    - name: Info
+      run: |
+        kubectl cluster-info
+        kubectl describe nodes
+    - name: Run Tests
+      run: |
+        echo "Configuring Camel K"
+        kamel install --cluster-setup
+
+        # Configure install options
+        export KAMEL_INSTALL_BUILD_PUBLISH_STRATEGY=Spectrum
+        export KAMEL_INSTALL_REGISTRY=$KIND_REGISTRY
+        export KAMEL_INSTALL_REGISTRY_INSECURE=true
+        
+        echo "Configuring Yaks"
+        yaks install
+
+        echo "Running tests"
+        yaks test ./test
