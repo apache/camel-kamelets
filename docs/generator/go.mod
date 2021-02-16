@@ -1,4 +1,4 @@
-module github.com/apache/camel-kamelets
+module github.com/apache/camel-kamelets/docs/generator
 
 go 1.14
 
