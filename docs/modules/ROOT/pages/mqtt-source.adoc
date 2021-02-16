@@ -11,8 +11,8 @@ The following table summarizes the configuration options available for the `mqtt
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
+| *brokerUrl {empty}* *| Broker URL| The URL of the broker where to establish the connection| string| | `"tcp://mosquitto:1883"`
 | *topic {empty}* *| Topic| The topic to subscribe to| string| | `"mytopic"`
-| brokerUrl| Broker URL| The URL of the broker where to establish the connection| string| | `"tcp://mosquitto:1883"`
 | clientId| Client ID| The client ID to use when connecting to the resource| string| `"mqtt-source"`| 
 |===
 
@@ -40,8 +40,9 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: mqtt-source
     properties:
+      brokerUrl: "tcp://mosquitto:1883"
       topic: "mytopic"
- sink:
+  sink:
     ref:
       kind: InMemoryChannel
       apiVersion: messaging.knative.dev/v1

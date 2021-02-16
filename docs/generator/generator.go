@@ -215,7 +215,7 @@ metadata:
   name: %s-binding
 spec:
   source:
-%s sink:
+%s  sink:
 %s
 `, k.Name, sourceRef, sinkRef)
 

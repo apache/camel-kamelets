@@ -13,7 +13,8 @@ spec:
     description: |-
       Allows receiving messages from any endpoint that supports the MQTT protocol, such as a message broker.
     required:
-      - topic
+    - topic
+    - brokerUrl
     properties:
       topic:
         title: Topic
