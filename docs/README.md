@@ -7,8 +7,8 @@ This section contains the Kamelet catalog website, auto-generated from the sourc
 To generate the adoc and svg files for the website (you need `go`):
 
 ```
-# From the /docs directory
-go run ./generator/ ../ ./modules/ROOT/
+# From the /docs/generator directory
+go run . ../../ ../modules/ROOT/
 ```
 
 To preview the website:
