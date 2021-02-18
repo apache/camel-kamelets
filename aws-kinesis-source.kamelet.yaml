@@ -38,16 +38,15 @@ spec:
         title: AWS Region
         description: The AWS region to connect to (capitalized name)
         type: string
-        example: EU_WEST_1
+        example: eu-west-1
   types:
     out:
       mediaType: application/json
   dependencies:
   - "camel:jackson"
-  - "camel:cbor"
   flow:
     from:
-      uri: aws-kinesis:{{stream}}
+      uri: aws2-kinesis:{{stream}}
       parameters:
         secretKey: "{{secretKey}}"
         accessKey: "{{accessKey}}"
