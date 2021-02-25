@@ -12,8 +12,8 @@ The following table summarizes the configuration options available for the `mini
 |===
 | Property| Name| Description| Type| Default| Example
 | *accessKey {empty}* *| Access Key| The access key obtained from Minio| string| | 
+| *bucketName {empty}* *| Bucket Name| The Minio Bucket name| string| | 
 | *secretKey {empty}* *| Secret Key| The secret key obtained from Minio| string| | 
-| bucketNameOrArn| Bucket Name| The Minio Bucket name| string| | 
 | deleteAfterRead| Auto-delete objects| Delete objects after consuming them| boolean| `true`| 
 |===
 
@@ -42,6 +42,7 @@ spec:
       name: minio-source
     properties:
       accessKey: "The Access Key"
+      bucketName: "The Bucket Name"
       secretKey: "The Secret Key"
   sink:
     ref:
