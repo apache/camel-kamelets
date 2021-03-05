@@ -42,8 +42,6 @@ spec:
   types:
     out:
       mediaType: application/json
-  dependencies:
-  - "camel:jackson"
   flow:
     from:
       uri: aws2-kinesis:{{stream}}
