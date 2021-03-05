@@ -60,6 +60,4 @@ spec:
         region: "{{region}}"
         deleteAfterRead: "{{deleteAfterRead}}"
       steps:
-      - marshal:
-          json: {}
       - to: "kamelet:sink"
