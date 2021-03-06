@@ -39,9 +39,19 @@ spec:
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       directoryName:
-        title: directoryName
+        title: Directory Name
         description: The starting directory
         type: string
+      passiveMode:
+        title: Passive Mode
+        description: Sets passive mode connection
+        type: boolean
+        default: false
+      recursive:
+        title: Recursive
+        description: If a directory, will look for files in all the sub-directories as well.
+        type: boolean
+        default: false
   types:
     out:
       mediaType: application/json
@@ -52,5 +62,9 @@ spec:
       uri: "ftp:{{username}}@{{host}}:{{port}}/{{directoryName}}"
       parameters:
         password: "{{password}}"
+        passiveMode: "{{passiveMode}}"
+        recursive: "{{recursive}}"
       steps:
+      - convert-body-to:
+          type: "java.lang.String"
       - to: "kamelet:sink"
