@@ -46,15 +46,5 @@ pipeline {
         }
 
     }
-
-    post {
-        always {
-            emailext(
-                subject: '${DEFAULT_SUBJECT}',
-                body: '${DEFAULT_CONTENT}',
-                recipientProviders: [[$class: 'CulpritsRecipientProvider']]
-            )
-        }
-    }
 }
 
