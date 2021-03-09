@@ -49,6 +49,4 @@ spec:
         username: "{{username}}"
         addresses: "{{addresses}}"
       steps:
-      - convert-body-to:
-          type: "java.lang.String"
       - to: "kamelet:sink"
