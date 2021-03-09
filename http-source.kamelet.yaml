@@ -7,6 +7,7 @@ metadata:
     camel.apache.org/provider: "Apache Software Foundation"
   labels:
     camel.apache.org/kamelet.type: "source"
+    camel.apache.org/requires.runtime: "camel-quarkus"
 spec:
   definition:
     title: "HTTP Source"
@@ -22,7 +23,7 @@ spec:
         default: 10000
       contentType:
         title: Content type
-        description: The content type of the resource
+        description: The content type accepted for the resource
         type: string
         default: "application/json"
       url:
@@ -30,6 +31,9 @@ spec:
         description: The URL to fetch for data
         type: string
         example: "https://gist.githubusercontent.com/nicolaferraro/e3c72ace3c751f9f88273896611ce5fe/raw/3b6f54060bacb56b6719b7386a4645cb59ad6cc1/quote.json"
+        pattern: "^(http|https)://.*"
+  dependencies:
+    - "camel-quarkus:http"
   flow:
     from:
       uri: "timer:fetch"
@@ -39,5 +43,5 @@ spec:
       - set-header:
           name: "Accept"
           constant: "{{contentType}}"
-      - to: "netty-http:{{url}}"
+      - to: "{{url}}"
       - to: "kamelet:sink"
