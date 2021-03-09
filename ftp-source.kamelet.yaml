@@ -53,11 +53,6 @@ spec:
         description: If a directory, will look for files in all the sub-directories as well.
         type: boolean
         default: false
-  types:
-    out:
-      mediaType: application/json
-  dependencies:
-  - "camel:jackson"
   flow:
     from:
       uri: "ftp:{{username}}@{{host}}:{{port}}/{{directoryName}}"
