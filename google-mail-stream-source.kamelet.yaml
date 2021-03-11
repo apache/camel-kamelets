@@ -48,6 +48,11 @@ spec:
         type: string
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+      delay:
+        title: Delay
+        description: Milliseconds before the next poll
+        type: integer
+        default: 500
       applicationName:
         title: Application name
         description: Google Mail application name
@@ -83,6 +88,7 @@ spec:
         accessToken: "{{accessToken}}"
         refreshToken: "{{refreshToken}}"
         clientSecret: "{{clientSecret}}"
+        delay: "{{delay}}"
         applicationName: "{{applicationName}}"
         markAsRead: "{{markAsRead}}"
         labels: "{{labels}}"
