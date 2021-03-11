@@ -18,6 +18,7 @@ The following table summarizes the configuration options available for the `goog
 | *index {empty}* *| Index| An index for the google sheets endpoint| string| | 
 | *refreshToken {empty}* *| Refresh Token| OAuth 2 refresh token for google sheets application. Using this, the Google Calendar component can obtain a new accessToken whenever the current one expires - a necessity if the application is long-lived.| string| | 
 | *spreadsheetId {empty}* *| Spreadsheet ID| The Spreadsheet ID to be used as events source| string| | 
+| delay| Delay| Milliseconds before the next poll| integer| `500`| 
 | range| Consume from now| the range of rows and columns in a sheet to get data from.| boolean| | `"A1:B3"`
 | splitResults| Split Results| True if value range result should be split into rows or columns to process each of them individually.| boolean| `true`| 
 |===
