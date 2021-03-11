@@ -19,6 +19,7 @@ The following table summarizes the configuration options available for the `goog
 | *index {empty}* *| Index| An index for the google calendar endpoint| string| | 
 | *refreshToken {empty}* *| Refresh Token| OAuth 2 refresh token for google calendar application. Using this, the Google Calendar component can obtain a new accessToken whenever the current one expires - a necessity if the application is long-lived.| string| | 
 | consumeFromNow| Consume from now| Consume events in the selected calendar from now on| boolean| `true`| 
+| delay| Delay| Milliseconds before the next poll| integer| `500`| 
 | syncFlow| Sync Flow| Sync events for incremental synchronization| boolean| `false`| 
 |===
 

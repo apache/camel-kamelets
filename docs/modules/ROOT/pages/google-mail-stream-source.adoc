@@ -17,6 +17,7 @@ The following table summarizes the configuration options available for the `goog
 | *clientSecret {empty}* *| Client Secret| Client Secret of the gmail application| string| | 
 | *index {empty}* *| Index| An index for the google mail endpoint| string| | 
 | *refreshToken {empty}* *| Refresh Token| OAuth 2 refresh token for google mail application. Using this, the Google Calendar component can obtain a new accessToken whenever the current one expires - a necessity if the application is long-lived.| string| | 
+| delay| Delay| Milliseconds before the next poll| integer| `500`| 
 | labels| Gmail labels| Comma separated list of labels to take into account| string| | `"inbox"`
 | markAsRead| Mark as read| Mark the message as read once it has been consumed| boolean| `true`| 
 | query| Gmail query| The query to execute on gmail box| string| `"is:unread"`| `"is:unread -category:(promotions OR social)"`
