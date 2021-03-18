@@ -7,7 +7,7 @@ users just need to reference the Kamelets by name in the URI (e.g. `kamelet:time
 
 **NOTE**: Camel K (and other sub-projects) will only use a specific version of this Kamelet catalog. Refer to the release notes of the sub-project for more information.
 
-Documents and guides about Kamelets can be found in the [Apache Camel K documentation](https://camel.apache.org/camel-k/latest/kamelets/kamelets.html).
+Documents and guides about Kamelets can be found in the [Kamelets User and Developer Guides](https://camel.apache.org/camel-k/latest/kamelets/kamelets.html).
 
 ## Guidelines for contributions
 
