@@ -24,17 +24,10 @@ spec:
         title: Brokers
         description: Comma separated list of Kafka Broker URLs
         type: string
-  types:
-    out:
-      mediaType: application/json
-  dependencies:
-  - "camel:jackson"
   flow:
     from:
       uri: "kafka:{{topic}}"
       parameters:
         brokers: "{{brokers}}"
       steps:
-      - marshal:
-          json: {}
       - to: "kamelet:sink"
