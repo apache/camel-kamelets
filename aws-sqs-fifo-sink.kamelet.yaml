@@ -16,8 +16,6 @@ spec:
       - accessKey
       - secretKey
       - region
-      - messageGroupIdStrategy
-      - messageDeduplicationIdStrategy
     properties:
       queueNameOrArn:
         title: Queue Name
@@ -40,25 +38,54 @@ spec:
         description: The AWS region to connect to
         type: string
         example: eu-west-1
-      messageGroupIdStrategy:
-        title: Message Group ID Strategy
-        description: Strategy for setting the messageGroupId on the message. Can be one of the following options useConstant, useExchangeId, usePropertyValue.
-        type: string
-        default: useExchangeId
-      messageDeduplicationIdStrategy:
-        title: Message Deduplication ID Strategy
-        description: Strategy for setting the messageDeduplicationId on the message. Can be one of the following options useExchangeId, useContentBasedDeduplication
-        type: string
-        default: useExchangeId
+      contentBasedDeduplication:
+        title: Content-Based Deduplication
+        description: Use content-based deduplication (should be enabled in the SQS FIFO queue first)
+        type: boolean
+        default: false
   flow:
     from:
       uri: kamelet:source
       steps:
-      - to:
-          uri: "aws2-sqs:{{queueNameOrArn}}"
-          parameters:
-            accessKey: "{{accessKey}}"
-            secretKey: "{{secretKey}}"
-            region: "{{region}}"
-            messageGroupIdStrategy: "{{messageGroupIdStrategy}}"
-            messageDeduplicationIdStrategy: "{{messageDeduplicationIdStrategy}}"
+      - set-property:
+          name: contentBasedDeduplication
+          constant: "{{contentBasedDeduplication}}"
+      - choice:
+          when:
+          - simple: "${header[group]}"
+            steps:
+            - set-property:
+                name: CamelAwsMessageGroupId
+                simple: "${header[group]}"
+          - simple: "${header[ce-group]}"
+            steps:
+            - set-property:
+                name: CamelAwsMessageGroupId
+                simple: "${header[ce-group]}"
+          otherwise:
+            steps:
+            - set-property:
+                name: CamelAwsMessageGroupId
+                simple: "${exchangeId}"
+      - choice:
+          when:
+          - simple: "${exchangeProperty.contentBasedDeduplication} == 'true'"
+            steps:
+            - to:
+                uri: "aws2-sqs:{{queueNameOrArn}}"
+                parameters:
+                  accessKey: "{{accessKey}}"
+                  secretKey: "{{secretKey}}"
+                  region: "{{region}}"
+                  messageGroupIdStrategy: "usePropertyValue"
+                  messageDeduplicationIdStrategy: "useContentBasedDeduplication"
+          otherwise:
+            steps:
+            - to:
+                uri: "aws2-sqs:{{queueNameOrArn}}"
+                parameters:
+                  accessKey: "{{accessKey}}"
+                  secretKey: "{{secretKey}}"
+                  region: "{{region}}"
+                  messageGroupIdStrategy: "usePropertyValue"
+                  messageDeduplicationIdStrategy: "useExchangeId"
