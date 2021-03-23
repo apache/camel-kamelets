@@ -7,6 +7,7 @@ metadata:
     camel.apache.org/provider: "Apache Software Foundation"
   labels:
     camel.apache.org/kamelet.type: sink
+    camel.apache.org/requires.runtime: "camel-quarkus"
 spec:
   definition:
     title: AWS SQS FIFO Sink
@@ -43,6 +44,8 @@ spec:
         description: Use content-based deduplication (should be enabled in the SQS FIFO queue first)
         type: boolean
         default: false
+  dependencies:
+  - camel-quarkus:aws2-sqs
   flow:
     from:
       uri: kamelet:source
