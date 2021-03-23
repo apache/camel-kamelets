@@ -12,11 +12,10 @@ The following table summarizes the configuration options available for the `aws-
 |===
 | Property| Name| Description| Type| Default| Example
 | *accessKey {empty}* *| Access Key| The access key obtained from AWS| string| | 
-| *messageDeduplicationIdStrategy {empty}* *| Message Deduplication ID Strategy| Strategy for setting the messageDeduplicationId on the message. Can be one of the following options useExchangeId, useContentBasedDeduplication| string| `"useExchangeId"`| 
-| *messageGroupIdStrategy {empty}* *| Message Group ID Strategy| Strategy for setting the messageGroupId on the message. Can be one of the following options useConstant, useExchangeId, usePropertyValue.| string| `"useExchangeId"`| 
 | *queueNameOrArn {empty}* *| Queue Name| The SQS Queue name or ARN| string| | 
 | *region {empty}* *| AWS Region| The AWS region to connect to| string| | `"eu-west-1"`
 | *secretKey {empty}* *| Secret Key| The secret key obtained from AWS| string| | 
+| contentBasedDeduplication| Content-Based Deduplication| Use content-based deduplication (should be enabled in the SQS FIFO queue first)| boolean| `false`| 
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
