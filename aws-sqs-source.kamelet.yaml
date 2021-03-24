@@ -46,6 +46,13 @@ spec:
         description: The AWS region to connect to
         type: string
         example: eu-west-1
+      autoCreateQueue:
+        title: Autocreate queue
+        description: Setting the autocreation of the SQS queue. 
+        type: boolean
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
   types:
     out:
       mediaType: application/json
@@ -53,6 +60,7 @@ spec:
     from:
       uri: "aws2-sqs:{{queueNameOrArn}}"
       parameters:
+        autoCreateQueue: "{{autoCreateQueue}}"
         secretKey: "{{secretKey}}"
         accessKey: "{{accessKey}}"
         region: "{{region}}"
