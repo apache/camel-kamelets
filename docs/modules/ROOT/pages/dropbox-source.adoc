@@ -14,8 +14,8 @@ The following table summarizes the configuration options available for the `drop
 | *accessToken {empty}* *| Dropbox Access Token| The access Token to use to access Dropbox| string| | 
 | *clientIdentifier {empty}* *| The client identifier| Dropbox App client Identifier| string| | 
 | *period {empty}* *| Period between polls| The interval between fetches to the earthquake API in milliseconds| integer| `10000`| 
+| *query {empty}* *| Querys| A space-separated list of sub-strings to search for. A file matches only if it contains all the sub-strings. If this option is not set, all files will be matched.| string| | 
 | *remotePath {empty}* *| Remote path| Original file or folder to work with| string| | 
-| query| Querys| A space-separated list of sub-strings to search for. A file matches only if it contains all the sub-strings. If this option is not set, all files will be matched.| string| | 
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
@@ -44,6 +44,7 @@ spec:
     properties:
       accessToken: "The Dropbox Access Token"
       clientIdentifier: "The The client identifier"
+      query: "The Querys"
       remotePath: "The Remote path"
   sink:
     ref:
