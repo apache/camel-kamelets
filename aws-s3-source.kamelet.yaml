@@ -46,6 +46,13 @@ spec:
         description: The AWS region to connect to
         type: string
         example: eu-west-1
+      autoCreateBucket:
+        title: Autocreate bucket
+        description: Setting the autocreation of the S3 bucket bucketName. 
+        type: boolean
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
   types:
     out:
       mediaType: application/json
@@ -53,6 +60,7 @@ spec:
     from:
       uri: "aws2-s3:{{bucketNameOrArn}}"
       parameters:
+        autoCreateBucket: "{{autoCreateBucket}}"
         secretKey: "{{secretKey}}"
         accessKey: "{{accessKey}}"
         region: "{{region}}"
