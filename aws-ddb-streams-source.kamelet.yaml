@@ -9,9 +9,9 @@ metadata:
     camel.apache.org/kamelet.type: "source"
 spec:
   definition:
-    title: "AWS DDB Streams Source"
+    title: "AWS DynamoDB Streams Source"
     description: |-
-      Receive events from AWS DDB Streams.
+      Receive events from AWS DynamoDB Streams.
     required:
       - table
       - accessKey
@@ -64,4 +64,7 @@ spec:
         iteratorType: "{{iteratorType}}"
         sequenceNumberProvider: "{{sequenceNumberProvider}}"
       steps:
+      - marshal:
+          json: 
+            library: Gson
       - to: "kamelet:sink"
