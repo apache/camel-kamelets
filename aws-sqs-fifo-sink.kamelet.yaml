@@ -44,6 +44,13 @@ spec:
         description: Use content-based deduplication (should be enabled in the SQS FIFO queue first)
         type: boolean
         default: false
+      autoCreateQueue:
+        title: Autocreate queue
+        description: Setting the autocreation of the SQS queue. 
+        type: boolean
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
   dependencies:
   - camel-quarkus:aws2-sqs
   flow:
@@ -77,6 +84,7 @@ spec:
             - to:
                 uri: "aws2-sqs:{{queueNameOrArn}}"
                 parameters:
+                  autoCreateQueue: "{{autoCreateQueue}}"
                   accessKey: "{{accessKey}}"
                   secretKey: "{{secretKey}}"
                   region: "{{region}}"
@@ -87,6 +95,7 @@ spec:
             - to:
                 uri: "aws2-sqs:{{queueNameOrArn}}"
                 parameters:
+                  autoCreateQueue: "{{autoCreateQueue}}"
                   accessKey: "{{accessKey}}"
                   secretKey: "{{secretKey}}"
                   region: "{{region}}"
