@@ -58,7 +58,7 @@ spec:
   - "camel:gson"
   flow:
     from:
-      uri: "aws2-ddbstream:{{tableName}}"
+      uri: "aws2-ddbstream:{{table}}"
       parameters:
         secretKey: "{{secretKey}}"
         accessKey: "{{accessKey}}"
