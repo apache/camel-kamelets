@@ -14,9 +14,9 @@ The following table summarizes the configuration options available for the `aws-
 | *accessKey {empty}* *| Access Key| The access key obtained from AWS| string| | 
 | *region {empty}* *| AWS Region| The AWS region to connect to| string| | `"eu-west-1"`
 | *secretKey {empty}* *| Secret Key| The secret key obtained from AWS| string| | 
-| bucketNameOrArn| Table| Name of the DynamoDB table to look at| string| | 
-| iteratorType| Iterator Type| Defines where in the DynaboDB stream to start getting records. Note that using TRIM_HORIZON can cause a significant delay before the stream has caught up to real-time. if {AT,AFTER}_SEQUENCE_NUMBER are used, then a sequenceNumberProvider MUST be supplied. There are 4 enums and the value can be one of TRIM_HORIZON, LATEST, AT_SEQUENCE_NUMBER, AFTER_SEQUENCE_NUMBER| String| `"LATEST"`| 
-| sequenceNumberProvider| Sequence Number Provider| Provider for the sequence number when using one of the two ShardIteratorType AT_SEQUENCE_NUMBER or AFTER_SEQUENCE_NUMBER iterator types. Can be a registry reference or a literal sequence number.| string| | `"900000000005745712447"`
+| *table {empty}* *| Table| Name of the DynamoDB table to look at| string| | 
+| iteratorType| Iterator Type| Defines where in the DynaboDB stream to start getting records. Note that using TRIM_HORIZON can cause a significant delay before the stream has caught up to real-time. if {AT,AFTER}_SEQUENCE_NUMBER are used, then a sequenceNumberProvider MUST be supplied. There are 4 enums and the value can be one of TRIM_HORIZON, LATEST, AT_SEQUENCE_NUMBER, AFTER_SEQUENCE_NUMBER| string| `"LATEST"`| 
+| sequenceNumberProvider| Sequence Number Provider| Provider for the sequence number when using one of the two ShardIteratorType AT_SEQUENCE_NUMBER or AFTER_SEQUENCE_NUMBER iterator types. Can be a registry reference or a literal sequence number.| string| `"000000000000000000000"`| `"900000000005745712447"`
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
@@ -46,6 +46,7 @@ spec:
       accessKey: "The Access Key"
       region: "eu-west-1"
       secretKey: "The Secret Key"
+      table: "The Table"
   sink:
     ref:
       kind: InMemoryChannel
