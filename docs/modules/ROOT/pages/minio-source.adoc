@@ -13,7 +13,7 @@ The following table summarizes the configuration options available for the `mini
 | Property| Name| Description| Type| Default| Example
 | *accessKey {empty}* *| Access Key| The access key obtained from Minio| string| | 
 | *bucketName {empty}* *| Bucket Name| The Minio Bucket name| string| | 
-| *endpoint {empty}* *| Endpoint| The Minio Endpoint, it can be an URL, domain name, IPv4 address or IPv6 address.| string| | 
+| *endpoint {empty}* *| Endpoint| The Minio Endpoint, it can be an URL, domain name, IPv4 address or IPv6 address.| string| | `"http://localhost:9000"`
 | *secretKey {empty}* *| Secret Key| The secret key obtained from Minio| string| | 
 | autoCreateBucket| Autocreate bucket| Setting the autocreation of the S3 bucket bucketName.| boolean| `false`| 
 | deleteAfterRead| Auto-delete objects| Delete objects after consuming them| boolean| `true`| 
@@ -45,7 +45,7 @@ spec:
     properties:
       accessKey: "The Access Key"
       bucketName: "The Bucket Name"
-      endpoint: "The Endpoint"
+      endpoint: "http://localhost:9000"
       secretKey: "The Secret Key"
   sink:
     ref:
