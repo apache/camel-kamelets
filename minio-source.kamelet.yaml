@@ -16,6 +16,7 @@ spec:
       - bucketName
       - accessKey
       - secretKey
+      - endpoint
     properties:
       bucketName:
         title: Bucket Name
@@ -40,6 +41,17 @@ spec:
         type: string
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+      endpoint:
+        title: Endpoint
+        description: The Minio Endpoint, it can be an URL, domain name, IPv4 address or IPv6 address.
+        type: string
+      autoCreateBucket:
+        title: Autocreate bucket
+        description: Setting the autocreation of the S3 bucket bucketName. 
+        type: boolean
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
   types:
     out:
       mediaType: application/json
@@ -49,8 +61,10 @@ spec:
     from:
       uri: "minio:{{bucketName}}"
       parameters:
+        autoCreateBucket: "{{autoCreateBucket}}"
         secretKey: "{{secretKey}}"
         accessKey: "{{accessKey}}"
+        endpoint: "{{endpoint}}"
         deleteAfterRead: "{{deleteAfterRead}}"
       steps:
       - marshal:
