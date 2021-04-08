@@ -67,4 +67,6 @@ spec:
         recursive: "{{recursive}}"
         idempotent: "{{idempotent}}"
       steps:
+      - convert-body-to:
+          type: "java.io.InputStream"
       - to: "kamelet:sink"
