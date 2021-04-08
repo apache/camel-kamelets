@@ -53,6 +53,11 @@ spec:
         description: If a directory, will look for files in all the sub-directories as well.
         type: boolean
         default: false
+      idempotent:
+        title: Idempotency
+        description: Skip already processed files.
+        type: boolean
+        default: true        
   flow:
     from:
       uri: "ftp:{{username}}@{{host}}:{{port}}/{{directoryName}}"
@@ -60,6 +65,6 @@ spec:
         password: "{{password}}"
         passiveMode: "{{passiveMode}}"
         recursive: "{{recursive}}"
-        idempotent: "true"
+        idempotent: "{{idempotent}}"
       steps:
       - to: "kamelet:sink"
