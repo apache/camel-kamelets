@@ -35,6 +35,12 @@ spec:
       parameters:
         authorizationToken: "{{authorizationToken}}"
       steps:
+      - set-header:
+          name: chat-id
+          simple: "${header[CamelTelegramChatId]}"
+      - set-header:
+          name: ce-chat-id
+          simple: "${header[CamelTelegramChatId]}"
       - marshal:
           json: {}
       - to: "kamelet:sink"
