@@ -60,7 +60,6 @@ spec:
         password: "{{password}}"
         passiveMode: "{{passiveMode}}"
         recursive: "{{recursive}}"
+        idempotent: "true"
       steps:
-      - convert-body-to:
-          type: "java.lang.String"
       - to: "kamelet:sink"
