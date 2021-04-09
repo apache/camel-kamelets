@@ -67,6 +67,12 @@ spec:
         recursive: "{{recursive}}"
         idempotent: "{{idempotent}}"
       steps:
+      - set-header:
+          name: file
+          simple: "${header[CamelFileName]}"
+      - set-header:
+          name: ce-file
+          simple: "${header[CamelFileName]}"
       - convert-body-to:
           type: "java.io.InputStream"
       - to: "kamelet:sink"
