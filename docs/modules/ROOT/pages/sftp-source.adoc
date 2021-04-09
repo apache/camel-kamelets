@@ -16,6 +16,7 @@ The following table summarizes the configuration options available for the `sftp
 | *password {empty}* *| Password| The password to access the SFTP server| string| | 
 | *port {empty}* *| Port| Port of the FTP server| string| `22`| 
 | *username {empty}* *| Username| The username to access the SFTP server| string| | 
+| idempotent| Idempotency| Skip already processed files.| boolean| `true`| 
 | passiveMode| Passive Mode| Sets passive mode connection| boolean| `false`| 
 | recursive| Recursive| If a directory, will look for files in all the sub-directories as well.| boolean| `false`| 
 |===
