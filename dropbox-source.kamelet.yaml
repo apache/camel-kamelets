@@ -61,7 +61,7 @@ spec:
           - set-property:
               name: dropboxFileName
               simple: ${body.metadata.pathDisplay}
-          - tod: "dropbox:get?accessToken={{accessToken}}&clientIdentifier={{clientIdentifier}}&remotePath=${exchangeProperty.dropboxFileName}"
+          - to-d: "dropbox:get?accessToken={{accessToken}}&clientIdentifier={{clientIdentifier}}&remotePath=${exchangeProperty.dropboxFileName}"
           - to: "kamelet:sink"
-          - tod: "dropbox:del?accessToken={{accessToken}}&clientIdentifier={{clientIdentifier}}&remotePath=${exchangeProperty.dropboxFileName}"
+          - to-d: "dropbox:del?accessToken={{accessToken}}&clientIdentifier={{clientIdentifier}}&remotePath=${exchangeProperty.dropboxFileName}"
 
