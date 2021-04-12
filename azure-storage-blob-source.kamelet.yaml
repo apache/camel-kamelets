@@ -54,7 +54,7 @@ spec:
           - set-property:
               name: azureBlobName
               simple: ${body.name}
-          - tod: "azure-storage-blob:{{accountName}}/{{containerName}}?accessKey=RAW({{accessKey}})&operation=getBlob&blobName=${exchangeProperty.azureBlobName}"
+          - to-d: "azure-storage-blob:{{accountName}}/{{containerName}}?accessKey=RAW({{accessKey}})&operation=getBlob&blobName=${exchangeProperty.azureBlobName}"
           - to: "kamelet:sink"
-          - tod: "azure-storage-blob:{{accountName}}/{{containerName}}?accessKey=RAW({{accessKey}})&operation=deleteBlob&blobName=${exchangeProperty.azureBlobName}"
+          - to-d: "azure-storage-blob:{{accountName}}/{{containerName}}?accessKey=RAW({{accessKey}})&operation=deleteBlob&blobName=${exchangeProperty.azureBlobName}"
 
