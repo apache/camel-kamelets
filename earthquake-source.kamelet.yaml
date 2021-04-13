@@ -40,7 +40,7 @@ spec:
       - set-header:
           name: CamelCaffeineAction
           constant: GET
-      - to-d: "caffeine-cache:cache-${routeId}?key=lastUpdate"
+      - tod: "caffeine-cache:cache-${routeId}?key=lastUpdate"
       - choice:
           when:
           - simple: "${header.CamelCaffeineActionHasResult}"
@@ -56,7 +56,9 @@ spec:
       - set-header:
           name: CamelHttpMethod
           constant: GET
-      - to-d: "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&updatedafter=${exchangeProperty.lastUpdate}&orderby=time-asc"
+      - tod: "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&updatedafter=${exchangeProperty.lastUpdate}&orderby=time-asc"
+      - remove-header:
+          header-name: CamelHttpMethod
       - unmarshal:
           json: {}
       - set-property:
@@ -72,7 +74,7 @@ spec:
       - set-header:
           name: CamelCaffeineAction
           constant: PUT
-      - to-d: "caffeine-cache:cache-${routeId}?key=lastUpdate"
+      - tod: "caffeine-cache:cache-${routeId}?key=lastUpdate"
       - claim-check:
           operation: Pop
       - split:
