@@ -36,8 +36,8 @@ on:
       - 'NOTICE'
 
 env:
-  CAMEL_K_VERSION: 1.3.1
-  YAKS_VERSION: 0.3.0
+  CAMEL_K_VERSION: 1.3.2
+  YAKS_VERSION: 0.4.0-202104120032
 
 jobs:
   test:
@@ -49,7 +49,7 @@ jobs:
       uses: actions/checkout@v2
     - name: Get Camel K CLI
       run: |
-        curl -L --silent https://github.com/apache/camel-k/releases/download/v${CAMEL_K_VERSION}/camel-k-client-${CAMEL_K_VERSION}-linux-64bit.tar.gz -o kamel.tar.gz
+        curl --fail -L --silent https://github.com/apache/camel-k/releases/download/v${CAMEL_K_VERSION}/camel-k-client-${CAMEL_K_VERSION}-linux-64bit.tar.gz -o kamel.tar.gz
         mkdir -p _kamel
         tar -zxf kamel.tar.gz --directory ./_kamel
         sudo mv ./_kamel/kamel /usr/local/bin/
@@ -57,7 +57,7 @@ jobs:
         rm -r _kamel
     - name: Get YAKS CLI
       run: |
-        curl -L https://github.com/citrusframework/yaks/releases/download/v${YAKS_VERSION}/yaks-${YAKS_VERSION}-linux-64bit.tar.gz -o yaks.tar.gz
+        curl --fail -L --silent https://github.com/citrusframework/yaks/releases/download/${YAKS_VERSION}/yaks-${YAKS_VERSION}-linux-64bit.tar.gz -o yaks.tar.gz
         mkdir -p _yaks
         tar -zxf yaks.tar.gz --directory ./_yaks
         sudo mv ./_yaks/yaks /usr/local/bin/
