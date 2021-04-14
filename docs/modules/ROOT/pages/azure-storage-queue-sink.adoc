@@ -11,6 +11,8 @@ The Kamelet is able to understand the following headers to be set:
 
 If the header won't be set the default of 7 days will be used.
 
+The format should be in this form: PnDTnHnMn.nS., e.g: PT20.345S — parses as 20.345 seconds, P2D — parses as 2 days.
+
 == Configuration Options
 
 The following table summarizes the configuration options available for the `azure-storage-queue-sink` Kamelet:
