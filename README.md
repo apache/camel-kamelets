@@ -21,12 +21,13 @@ Kamelets **MUST** be provided in the *Kubernetes YAML* format, i.e. they **MUST*
 
 The file name of each Kamelet **MUST** follow this specific pattern: `<kamelet-name>.kamelet.yaml`. The `<kamelet-name>` **MUST** match field `metadata` -> `name` inside the Kamelet YAML.
 
-For the time being, we'll accept only two kind of Kamelets:
+For the time being, we'll accept only these kinds of Kamelets:
 
 - **Sources**: Kamelets producing data that can be forwarded to any chosen destination. In the Camel jargon, a source can be used consumer-side.
 Kamelets belonging to this category **MUST** be marked with label: `camel.apache.org/kamelet.type=source`.
 - **Sinks**: Kamelets that accept data with a specific datashape and forward it to an external system. In the Camel jargon, a sink can be used producer-side.
 Kamelets belonging to this category **MUST** be marked with label: `camel.apache.org/kamelet.type=sink`.
+- **Actions**: Kamelets that can be used as intermediate steps as they both accept and produce data, applying transformations to it or changing the behavior of the whole integration flow (e.g. using enterprise integration patterns). Kamelets belonging to this category **MUST** be marked with label: `camel.apache.org/kamelet.type=action`.
 
 All Kamelets **MUST** provide a value for label `camel.apache.org/kamelet.type`.
 
