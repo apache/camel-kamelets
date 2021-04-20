@@ -12,6 +12,12 @@ spec:
     title: Exec Sink
     description: |-
       Execute system commands
+
+      The Kamelet expects the following headers to be set:
+
+      - `args/ `ce-args`: as the args to be set on the executable.
+
+      If the header won't be set the executable will be run without arguments.
     required:
       - executable
       - args
@@ -20,17 +26,23 @@ spec:
         title: Executable command
         description: The command to execute
         type: string
-      args:
-        title: The arguments
-        description: Arguments to pass to the executables
-        type: string
   flow:
     from:
       uri: kamelet:source
       steps:
+      - choice:
+          when:
+          - simple: "${header[args]}"
+            steps:
+            - set-header:
+                name: CamelExecCommandArgs
+                simple: "${header[args]}"
+          - simple: "${header[ce-args]}"
+            steps:
+            - set-header:
+                name: CamelExecCommandArgs
+                simple: "${header[ce-args]}"
       - to:
           uri: "exec:{{executable}}"
-          parameters:
-            args: "{{args}}"
       - set-body:
           simple: "${body.stdout}"
