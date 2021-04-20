@@ -12,11 +12,11 @@ The following table summarizes the configuration options available for the `aws-
 |===
 | Property| Name| Description| Type| Default| Example
 | *accessKey {empty}* *| Access Key| The access key obtained from AWS| string| | 
+| *batchSeparator {empty}* *| Batch Separator| The batch separator string| string| | `","`
 | *queueNameOrArn {empty}* *| Queue Name| The SQS Queue name or ARN| string| | 
 | *region {empty}* *| AWS Region| The AWS region to connect to| string| | `"eu-west-1"`
 | *secretKey {empty}* *| Secret Key| The secret key obtained from AWS| string| | 
 | autoCreateQueue| Autocreate queue| Setting the autocreation of the SQS queue.| boolean| `false`| 
-| batchSeparator| Batch Separator| The batch separator string| string| | `","`
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
@@ -49,6 +49,7 @@ spec:
       name: aws-sqs-batch-sink
     properties:
       accessKey: "The Access Key"
+      batchSeparator: ","
       queueNameOrArn: "The Queue Name"
       region: "eu-west-1"
       secretKey: "The Secret Key"
