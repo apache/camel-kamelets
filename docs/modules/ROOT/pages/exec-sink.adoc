@@ -5,13 +5,18 @@
 
 Execute system commands
 
+The Kamelet expects the following headers to be set:
+
+- `args/ `ce-args`: as the args to be set on the executable.
+
+If the header won't be set the executable will be run without arguments.
+
 == Configuration Options
 
 The following table summarizes the configuration options available for the `exec-sink` Kamelet:
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| *args {empty}* *| The arguments| Arguments to pass to the executables| string| | 
 | *executable {empty}* *| Executable command| The command to execute| string| | 
 |===
 
@@ -44,7 +49,6 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: exec-sink
     properties:
-      args: "The The arguments"
       executable: "The Executable command"
 
 ----
