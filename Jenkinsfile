@@ -36,12 +36,12 @@ pipeline {
 
         stage('Website update') {
             when {
-                branch 'master'
+                branch 'main'
                 changeset 'docs/**/*'
             }
 
             steps {
-                build job: 'Camel/Camel.website/master', wait: false
+                build job: 'Camel/Camel.website/main', wait: false
             }
         }
 
