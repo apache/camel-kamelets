@@ -15,7 +15,7 @@ The following table summarizes the configuration options available for the `cass
 | *keyspace {empty}* *| Keyspace| Keyspace to use| string| | `"customers"`
 | *password {empty}* *| Password| The password to use for accessing a secured Cassandra Cluster| string| | 
 | *port {empty}* *| Port| Port number of cassandra server(s)| string| | `9042`
-| *query {empty}* *| Query| The query to execute against the Cassandra cluster table| string| `"ANY"`| 
+| *query {empty}* *| Query| The query to execute against the Cassandra cluster table| string| | 
 | *username {empty}* *| Username| The username to use for accessing a secured Cassandra Cluster| string| | 
 | consistencyLevel| Consistency Level| Consistency level to use. The value can be one of ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_QUORUM, EACH_QUORUM, SERIAL, LOCAL_SERIAL, LOCAL_ONE| string| `"ANY"`| 
 | resultStrategy| Result Strategy| The strategy to convert the result set of the query. Possible values are ALL, ONE, LIMIT_10, LIMIT_100...| string| `"ALL"`| 
@@ -49,6 +49,7 @@ spec:
       keyspace: "customers"
       password: "The Password"
       port: 9042
+      query: "The Query"
       username: "The Username"
   sink:
     ref:
