@@ -76,3 +76,6 @@ spec:
             steps:
             - transform:
                 jsonpath: "$.choices[0].text"
+            - set-header:
+                name: "Content-Type"
+                constant: "text/plain"
