@@ -28,9 +28,9 @@ NOTE: Fields marked with ({empty}*) are mandatory.
 
 This section summarizes how the `cassandra-sink` can be used in various contexts.
 
-=== Knative Source
+=== Knative Sink
 
-The `cassandra-sink` Kamelet can be used as Knative source by binding it to a Knative object.
+The `cassandra-sink` Kamelet can be used as Knative sink by binding it to a Knative object.
 
 .cassandra-sink-binding.yaml
 [source,yaml]
@@ -42,6 +42,11 @@ metadata:
 spec:
   source:
     ref:
+      kind: InMemoryChannel
+      apiVersion: messaging.knative.dev/v1
+      name: mychannel
+  sink:
+    ref:
       kind: Kamelet
       apiVersion: camel.apache.org/v1alpha1
       name: cassandra-sink
@@ -51,11 +56,6 @@ spec:
       password: "The Password"
       port: 9042
       username: "The Username"
-  sink:
-    ref:
-      kind: InMemoryChannel
-      apiVersion: messaging.knative.dev/v1
-      name: mychannel
 
 ----
 
@@ -63,7 +63,7 @@ Make sure you have xref:latest@camel-k::installation/installation.adoc[Camel K i
 
 Save the `cassandra-sink-binding.yaml` file into your hard drive, then configure it according to your needs.
 
-You can run the source using the following command:
+You can run the sink using the following command:
 
 [source,shell]
 ----
