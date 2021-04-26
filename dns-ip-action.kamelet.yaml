@@ -16,6 +16,8 @@ spec:
       The Kamelet expects the following headers to be set:
 
       - `domain` / `ce-domain`: as the domain for which we are looking for the IP
+
+      If the header won't be set the body will be used as domain to look for.
   flow:
     from:
       uri: "kamelet:source"
@@ -32,6 +34,11 @@ spec:
             - set-header:
                 name: dns.domain
                 simple: "${header[ce-domain]}"
+          otherwise:
+            steps:
+            - set-header:
+                name: dns.domain
+                simple: "${body}"
       - to:
           uri: "dns:ip"
       - convert-body-to:
