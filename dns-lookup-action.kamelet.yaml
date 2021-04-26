@@ -44,7 +44,7 @@ spec:
             - set-header:
                 name: dns.domain
                 simple: "${body}"
-      - marshal:
-          json: {}
       - to:
           uri: "dns:lookup"
+      - marshal:
+          json: {}
