@@ -64,6 +64,10 @@ spec:
         type: string
   dependencies:
     - "camel:elasticsearch-rest"
+    - "camel:gson"
+  types:
+    out:
+      mediaType: application/json
   flow:
     from:
       uri: timer:tick
@@ -84,4 +88,7 @@ spec:
               enableSSL: "{{enableSSL}}"
               user: "{{user}}"
               password: "{{password}}"
+        - marshal:
+            json:
+              library: Gson
         - to: kamelet:sink
