@@ -16,6 +16,7 @@
  */
 package org.apache.camel.kamelets.catalog;
 
+import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -43,6 +44,6 @@ public class KameletsCatalogTest {
 
     @Test
     void testKameletsByType() throws Exception {
-        assertEquals(6, catalog.getKameletsByType("action").size());
+        assertEquals(6, catalog.getKameletsByType(KameletTypeEnum.ACTION.type()).size());
     }
 }
