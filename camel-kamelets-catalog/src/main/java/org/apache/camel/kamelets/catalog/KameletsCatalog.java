@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,9 +42,11 @@ public class KameletsCatalog {
     private static final String KAMELETS_FILE_SUFFIX = ".kamelet.yaml";
     private static ObjectMapper mapper = new ObjectMapper(new YAMLFactory()).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     private Map<String, Kamelet> kameletModels = new HashMap<>();
+    private List<String> kameletNames = new ArrayList<>();
 
     public KameletsCatalog() throws IOException {
         initCatalog();
+        kameletNames = kameletModels.keySet().stream().sorted(Comparator.naturalOrder()).map(x -> sanitizeFileName(x)).collect(Collectors.toList());
     }
 
     private void initCatalog() throws IOException {
@@ -62,8 +66,13 @@ public class KameletsCatalog {
         return fileName;
     }
 
+
     public Map<String, Kamelet> getKamelets() {
         return kameletModels;
+    }
+
+    public List<String> getKameletsName() {
+        return kameletNames;
     }
 
     public List<Kamelet> getKameletsByName(String name) {

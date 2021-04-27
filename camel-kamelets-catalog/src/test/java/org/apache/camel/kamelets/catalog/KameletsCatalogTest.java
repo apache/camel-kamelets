@@ -42,6 +42,11 @@ public class KameletsCatalogTest {
     }
 
     @Test
+    void testKameletName() throws Exception {
+        assertEquals(62, catalog.getKameletsName().size());
+    }
+
+    @Test
     void testKameletsByName() throws Exception {
         assertEquals(13, catalog.getKameletsByName("aws").size());
     }
