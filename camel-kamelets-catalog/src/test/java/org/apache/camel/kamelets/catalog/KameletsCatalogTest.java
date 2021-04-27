@@ -59,7 +59,7 @@ public class KameletsCatalogTest {
 
     @Test
     void testGetKameletsDefinitionNotExists() throws Exception {
-        JSONSchemaProps props = catalog.getKameletsDefinition("word");
+        JSONSchemaProps props = catalog.getKameletDefinition("word");
         assertNull(props);
     }
 }
