@@ -22,6 +22,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -55,6 +56,13 @@ public class KameletsCatalogTest {
         JSONSchemaProps props = catalog.getKameletDefinition("aws-sqs-source");
         assertEquals(6, props.getProperties().keySet().size());
         assertTrue(props.getProperties().keySet().contains("queueNameOrArn"));
+    }
+
+    @Test
+    void testGetKameletsRequiredProperties() throws Exception {
+        List<String> props = catalog.getKameletRequiredProperties("aws-sqs-source");
+        assertEquals(4, props.size());
+        assertTrue(props.contains("queueNameOrArn"));
     }
 
     @Test

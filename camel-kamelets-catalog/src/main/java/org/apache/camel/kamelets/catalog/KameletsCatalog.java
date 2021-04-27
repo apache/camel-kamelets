@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class KameletsCatalog {
 
@@ -87,6 +86,15 @@ public class KameletsCatalog {
         Kamelet kamelet = kameletModels.get(name);
         if (kamelet != null) {
                 return kamelet.getSpec().getDefinition();
+        } else {
+            return null;
+        }
+    }
+
+    public List<String> getKameletRequiredProperties(String name) {
+        Kamelet kamelet = kameletModels.get(name);
+        if (kamelet != null) {
+            return kamelet.getSpec().getDefinition().getRequired();
         } else {
             return null;
         }
