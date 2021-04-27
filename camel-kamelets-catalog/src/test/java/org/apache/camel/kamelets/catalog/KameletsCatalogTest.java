@@ -16,6 +16,7 @@
  */
 package org.apache.camel.kamelets.catalog;
 
+import io.fabric8.camelk.v1alpha1.Kamelet;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.JSONSchemaProps;
 import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
 import org.junit.jupiter.api.BeforeAll;
@@ -74,5 +75,13 @@ public class KameletsCatalogTest {
     void testGetKameletsDefinitionNotExists() throws Exception {
         JSONSchemaProps props = catalog.getKameletDefinition("word");
         assertNull(props);
+    }
+
+    @Test
+    void testGetKameletsByProvider() throws Exception {
+        List<Kamelet> c = catalog.getKameletByProvider("Apache Software Foundation");
+        assertEquals(62, c.size());
+        c = catalog.getKameletByProvider("Eclipse");
+        assertEquals(0, c.size());
     }
 }

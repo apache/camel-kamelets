@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -106,6 +107,18 @@ public class KameletsCatalog {
             return kamelet.getSpec().getDefinition().getRequired();
         } else {
             return null;
+        }
+    }
+
+    public List<Kamelet> getKameletByProvider(String provider) {
+        List<Kamelet> collect = kameletModels.entrySet().stream()
+                .filter(x -> x.getValue().getMetadata().getAnnotations().get("camel.apache.org/provider").equalsIgnoreCase(provider))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
+        if (!collect.isEmpty()) {
+            return collect;
+        } else {
+            return Collections.emptyList();
         }
     }
 }
