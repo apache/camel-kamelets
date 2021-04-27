@@ -27,22 +27,22 @@ public class KameletsCatalogTest {
     static KameletsCatalog catalog;
 
     @BeforeAll
-    public static void createCamelCatalog() throws IOException {
+    public static void createKameletsCatalog() throws IOException {
         catalog = new KameletsCatalog();
     }
 
     @Test
-    void testConnectors() throws Exception {
+    void testKameletsSize() throws Exception {
         assertEquals(62, catalog.getKamelets().size());
     }
 
     @Test
-    void testConnectorsByName() throws Exception {
+    void testKameletsByName() throws Exception {
         assertEquals(13, catalog.getKameletsByName("aws").size());
     }
 
     @Test
-    void testConnectorsByType() throws Exception {
+    void testKameletsByType() throws Exception {
         assertEquals(6, catalog.getKameletsByType("action").size());
     }
 }
