@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.fabric8.camelk.v1alpha1.Kamelet;
+import io.fabric8.kubernetes.api.model.apiextensions.v1.JSONSchemaProps;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class KameletsCatalog {
 
@@ -79,5 +81,14 @@ public class KameletsCatalog {
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
         return collect;
+    }
+
+    public JSONSchemaProps getKameletsDefinition(String name) {
+        Kamelet kamelet = kameletModels.get(name);
+        if (kamelet != null) {
+                return kamelet.getSpec().getDefinition();
+        } else {
+            return null;
+        }
     }
 }

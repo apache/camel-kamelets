@@ -16,6 +16,7 @@
  */
 package org.apache.camel.kamelets.catalog;
 
+import io.fabric8.kubernetes.api.model.apiextensions.v1.JSONSchemaProps;
 import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,8 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class KameletsCatalogTest {
     static KameletsCatalog catalog;
@@ -45,5 +48,18 @@ public class KameletsCatalogTest {
     @Test
     void testKameletsByType() throws Exception {
         assertEquals(6, catalog.getKameletsByType(KameletTypeEnum.ACTION.type()).size());
+    }
+
+    @Test
+    void testGetKameletsDefinition() throws Exception {
+        JSONSchemaProps props = catalog.getKameletsDefinition("aws-sqs-source");
+        assertEquals(6, props.getProperties().keySet().size());
+        assertTrue(props.getProperties().keySet().contains("queueNameOrArn"));
+    }
+
+    @Test
+    void testGetKameletsDefinitionNotExists() throws Exception {
+        JSONSchemaProps props = catalog.getKameletsDefinition("word");
+        assertNull(props);
     }
 }
