@@ -83,7 +83,7 @@ public class KameletsCatalog {
         return collect;
     }
 
-    public JSONSchemaProps getKameletsDefinition(String name) {
+    public JSONSchemaProps getKameletDefinition(String name) {
         Kamelet kamelet = kameletModels.get(name);
         if (kamelet != null) {
                 return kamelet.getSpec().getDefinition();
