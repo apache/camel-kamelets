@@ -21,6 +21,8 @@ on:
   push:
     branches:
       - main
+
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -43,7 +45,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build catalog
         working-directory: ./camel-kamelets-catalog
-        run: ./mvnw clean install 
+        run: ./mvnw clean install -DskipTests
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
