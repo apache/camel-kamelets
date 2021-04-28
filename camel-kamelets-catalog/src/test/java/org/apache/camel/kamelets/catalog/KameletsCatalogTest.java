@@ -16,6 +16,7 @@
  */
 package org.apache.camel.kamelets.catalog;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.fabric8.camelk.v1alpha1.Kamelet;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.JSONSchemaProps;
 import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -92,5 +94,11 @@ public class KameletsCatalogTest {
         deps = catalog.getKameletDependencies("cassandra-sink");
         assertEquals(1, deps.size());
         assertEquals("camel:jackson", deps.get(0));
+    }
+
+    @Test
+    void testGetKameletsFlow() throws Exception {
+        JsonNode flow = catalog.getKameletFlow("aws-sqs-source");
+        assertNotNull(flow);
     }
 }

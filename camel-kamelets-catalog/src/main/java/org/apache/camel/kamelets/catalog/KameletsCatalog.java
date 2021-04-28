@@ -17,6 +17,7 @@
 package org.apache.camel.kamelets.catalog;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.fabric8.camelk.v1alpha1.Kamelet;
@@ -126,6 +127,15 @@ public class KameletsCatalog {
         Kamelet kamelet = kameletModels.get(name);
         if (kamelet != null) {
             return kamelet.getSpec().getDependencies();
+        } else {
+            return null;
+        }
+    }
+
+    public JsonNode getKameletFlow(String name) {
+        Kamelet kamelet = kameletModels.get(name);
+        if (kamelet != null) {
+            return kamelet.getSpec().getFlow();
         } else {
             return null;
         }
