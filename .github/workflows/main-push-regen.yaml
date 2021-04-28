@@ -42,7 +42,8 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Build catalog
-        run: ./mvnw clean install -f camel-kamelets-catalog/pom.xml
+        working-directory: ./camel-kamelets-catalog
+        run: ./mvnw clean install 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
