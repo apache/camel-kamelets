@@ -18,8 +18,8 @@ The following table summarizes the configuration options available for the `drop
 |===
 | Property| Name| Description| Type| Default| Example
 | *accessToken {empty}* *| Dropbox Access Token| The access Token to use to access Dropbox| string| | 
-| *clientIdentifier {empty}* *| The client identifier| Dropbox App client Identifier| string| | 
-| *remotePath {empty}* *| Remote path| Original file or folder to work with| string| | 
+| *clientIdentifier {empty}* *| Client Identifier| Dropbox App client Identifier| string| | 
+| *remotePath {empty}* *| Remote Path| Original file or folder to work with| string| | 
 | *uploadMode {empty}* *| Upload Mode| Which mode to upload. in case of add the new file will be renamed if a file with the same name already exists on dropbox. in case of force if a file with the same name already exists on dropbox, this will be overwritten. The value can be one of add, force.| string| `"add"`| 
 |===
 
@@ -53,8 +53,8 @@ spec:
       name: dropbox-sink
     properties:
       accessToken: "The Dropbox Access Token"
-      clientIdentifier: "The The client identifier"
-      remotePath: "The Remote path"
+      clientIdentifier: "The Client Identifier"
+      remotePath: "The Remote Path"
 
 ----
 

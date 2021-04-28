@@ -11,11 +11,11 @@ The following table summarizes the configuration options available for the `ssh-
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| *host {empty}* *| SSH Host| The SSH Host| string| | 
-| *password {empty}* *| The SSH password| The SSH password to use| string| | 
-| *pollCommand {empty}* *| The Poll command| The command to run while polling the SSH session| string| | `"date"`
-| *port {empty}* *| SSH Port| The SSH Port| string| `22`| 
-| *username {empty}* *| The SSH username| The SSH username to use| string| | 
+| *host {empty}* *| Host| The SSH Host| string| | 
+| *password {empty}* *| Password| The SSH password to use| string| | 
+| *pollCommand {empty}* *| Poll Command| The command to run while polling the SSH session| string| | `"date"`
+| *port {empty}* *| Port| The SSH Port| string| `22`| 
+| *username {empty}* *| Username| The SSH username to use| string| | 
 | delay| Delay| Milliseconds before the next poll| integer| `500`| 
 |===
 
@@ -43,10 +43,10 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: ssh-source
     properties:
-      host: "The SSH Host"
-      password: "The The SSH password"
+      host: "The Host"
+      password: "The Password"
       pollCommand: "date"
-      username: "The The SSH username"
+      username: "The Username"
   sink:
     ref:
       kind: InMemoryChannel
