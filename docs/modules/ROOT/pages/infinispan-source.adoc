@@ -11,10 +11,10 @@ The following table summarizes the configuration options available for the `infi
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| *hosts {empty}* *| Hosts| Specifies the host of the cache on Infinispan instance| String| `1000`| 
+| *hosts {empty}* *| Hosts| Specifies the host of the cache on Infinispan instance| String| | 
 | *password {empty}* *| Password| Password to connect to Infinispan.| string| | 
 | *username {empty}* *| Username| Username to connect to Infinispan.| string| | 
-| eventTypes| ElasticSearch cluster name| Specifies the set of event types to register by the consumer.Multiple event can be separated by comma. The possible event types are CLIENT_CACHE_ENTRY_CREATED, CLIENT_CACHE_ENTRY_MODIFIED, CLIENT_CACHE_ENTRY_REMOVED, CLIENT_CACHE_ENTRY_EXPIRED, CLIENT_CACHE_FAILOVER| string| | 
+| eventTypes| Infinispan Cluster Name| Specifies the set of event types to register by the consumer.Multiple event can be separated by comma. The possible event types are CLIENT_CACHE_ENTRY_CREATED, CLIENT_CACHE_ENTRY_MODIFIED, CLIENT_CACHE_ENTRY_REMOVED, CLIENT_CACHE_ENTRY_EXPIRED, CLIENT_CACHE_FAILOVER| string| | 
 | saslMechanism| SASL Mechanism| The SASL Mechanism to use| String| `"DIGEST-MD5"`| 
 | secure| Secure| If the Infinispan instance is secured or not| boolean| `true`| 
 | securityRealm| Security Realm| Define the security realm to access the infinispan instance| string| `"default"`| 
@@ -45,6 +45,7 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: infinispan-source
     properties:
+      hosts: "The Hosts"
       password: "The Password"
       username: "The Username"
   sink:
