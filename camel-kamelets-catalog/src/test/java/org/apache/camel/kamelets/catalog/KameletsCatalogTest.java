@@ -38,27 +38,7 @@ public class KameletsCatalogTest {
     public static void createKameletsCatalog() throws IOException {
         catalog = new KameletsCatalog();
     }
-
-    @Test
-    void testKameletsSize() throws Exception {
-        assertEquals(62, catalog.getKamelets().size());
-    }
-
-    @Test
-    void testKameletName() throws Exception {
-        assertEquals(62, catalog.getKameletsName().size());
-    }
-
-    @Test
-    void testKameletsByName() throws Exception {
-        assertEquals(13, catalog.getKameletsByName("aws").size());
-    }
-
-    @Test
-    void testKameletsByType() throws Exception {
-        assertEquals(6, catalog.getKameletsByType(KameletTypeEnum.ACTION.type()).size());
-    }
-
+    
     @Test
     void testGetKameletsDefinition() throws Exception {
         JSONSchemaProps props = catalog.getKameletDefinition("aws-sqs-source");
