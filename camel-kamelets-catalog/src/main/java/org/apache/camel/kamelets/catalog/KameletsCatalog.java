@@ -101,15 +101,6 @@ public class KameletsCatalog {
         }
     }
 
-    public List<String> getKameletRequiredProperties(String name) {
-        Kamelet kamelet = kameletModels.get(name);
-        if (kamelet != null) {
-            return kamelet.getSpec().getDefinition().getRequired();
-        } else {
-            return null;
-        }
-    }
-
     public List<Kamelet> getKameletByProvider(String provider) {
         List<Kamelet> collect = kameletModels.entrySet().stream()
                 .filter(x -> x.getValue().getMetadata().getAnnotations().get("camel.apache.org/provider").equalsIgnoreCase(provider))
@@ -119,6 +110,24 @@ public class KameletsCatalog {
             return collect;
         } else {
             return Collections.emptyList();
+        }
+    }
+
+    public List<String> getKameletRequiredProperties(String name) {
+        Kamelet kamelet = kameletModels.get(name);
+        if (kamelet != null) {
+            return kamelet.getSpec().getDefinition().getRequired();
+        } else {
+            return null;
+        }
+    }
+
+    public List<String> getKameletDependencies(String name) {
+        Kamelet kamelet = kameletModels.get(name);
+        if (kamelet != null) {
+            return kamelet.getSpec().getDependencies();
+        } else {
+            return null;
         }
     }
 }
