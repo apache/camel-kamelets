@@ -11,13 +11,13 @@ The following table summarizes the configuration options available for the `azur
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| *blobAccessKey {empty}* *| Azure Storage Blob access key| The key for Azure Storage Blob service associated with the Blob account name| string| | 
-| *blobAccountName {empty}* *| Azure Storage Blob account name| The name of the storage blob account to be use| string| | 
-| *blobContainerName {empty}* *| Azure Storage Blob container name| The name of the storage blob container to be use| string| | 
-| *eventhubName {empty}* *| Eventhubs name| The eventhub name| string| | 
+| *blobAccessKey {empty}* *| Azure Storage Blob Access Key| The key for Azure Storage Blob service associated with the Blob account name| string| | 
+| *blobAccountName {empty}* *| Azure Storage Blob Account Name| The name of the storage blob account to be use| string| | 
+| *blobContainerName {empty}* *| Azure Storage Blob Container Name| The name of the storage blob container to be use| string| | 
+| *eventhubName {empty}* *| Eventhubs Name| The eventhub name| string| | 
 | *namespaceName {empty}* *| Eventhubs Namespace| The eventhubs namespace| string| | 
-| *sharedAccessKey {empty}* *| Share access key| The key for EventHubs SAS key name| string| | 
-| *sharedAccessName {empty}* *| Share access name| EventHubs SAS key name| string| | 
+| *sharedAccessKey {empty}* *| Share Access Key| The key for EventHubs SAS key name| string| | 
+| *sharedAccessName {empty}* *| Share Access Name| EventHubs SAS key name| string| | 
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
@@ -44,13 +44,13 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: azure-eventhubs-source
     properties:
-      blobAccessKey: "The Azure Storage Blob access key"
-      blobAccountName: "The Azure Storage Blob account name"
-      blobContainerName: "The Azure Storage Blob container name"
-      eventhubName: "The Eventhubs name"
+      blobAccessKey: "The Azure Storage Blob Access Key"
+      blobAccountName: "The Azure Storage Blob Account Name"
+      blobContainerName: "The Azure Storage Blob Container Name"
+      eventhubName: "The Eventhubs Name"
       namespaceName: "The Eventhubs Namespace"
-      sharedAccessKey: "The Share access key"
-      sharedAccessName: "The Share access name"
+      sharedAccessKey: "The Share Access Key"
+      sharedAccessName: "The Share Access Name"
   sink:
     ref:
       kind: InMemoryChannel

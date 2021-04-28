@@ -11,8 +11,8 @@ The following table summarizes the configuration options available for the `file
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| *events {empty}* *| The events| The type of events to consume| boolean| `"CREATE,MODIFY,DELETE"`| 
-| *path {empty}* *| The path| Path of file or folder to watch| string| | 
+| *events {empty}* *| Events| The type of events to consume| boolean| `"CREATE,MODIFY,DELETE"`| 
+| *path {empty}* *| Path to Watch| Path of file or folder to watch| string| | 
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
@@ -39,7 +39,7 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: file-watch-source
     properties:
-      path: "The The path"
+      path: "The Path to Watch"
   sink:
     ref:
       kind: InMemoryChannel

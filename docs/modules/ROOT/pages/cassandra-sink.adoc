@@ -17,9 +17,9 @@ The following table summarizes the configuration options available for the `cass
 | *keyspace {empty}* *| Keyspace| Keyspace to use| string| | `"customers"`
 | *password {empty}* *| Password| The password to use for accessing a secured Cassandra Cluster| string| | 
 | *port {empty}* *| Port| Port number of cassandra server(s)| string| | `9042`
+| *preparedStatement {empty}* *| Prepared Statement| The Prepared statement to execute against the Cassandra cluster table| string| | 
 | *username {empty}* *| Username| The username to use for accessing a secured Cassandra Cluster| string| | 
 | consistencyLevel| Consistency Level| Consistency level to use. The value can be one of ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_QUORUM, EACH_QUORUM, SERIAL, LOCAL_SERIAL, LOCAL_ONE| string| `"ANY"`| 
-| preparedStatement| The Prepared statement| The Prepared statement to execute against the Cassandra cluster table| string| | 
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
@@ -55,6 +55,7 @@ spec:
       keyspace: "customers"
       password: "The Password"
       port: 9042
+      preparedStatement: "The Prepared Statement"
       username: "The Username"
 
 ----

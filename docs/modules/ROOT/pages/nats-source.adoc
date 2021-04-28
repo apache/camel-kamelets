@@ -11,8 +11,8 @@ The following table summarizes the configuration options available for the `nats
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| *topic {empty}* *| topic| NATS Topic name| string| | 
-| brokers| servers| Comma separated list of NATS Servers| string| | 
+| *servers {empty}* *| Servers| Comma separated list of NATS Servers| string| | 
+| *topic {empty}* *| Topic| NATS Topic name| string| | 
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
@@ -39,7 +39,8 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: nats-source
     properties:
-      topic: "The topic"
+      servers: "The Servers"
+      topic: "The Topic"
   sink:
     ref:
       kind: InMemoryChannel

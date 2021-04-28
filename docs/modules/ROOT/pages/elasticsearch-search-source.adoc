@@ -11,8 +11,8 @@ The following table summarizes the configuration options available for the `elas
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| *clusterName {empty}* *| ElasticSearch cluster name| Name of the cluster.| string| | 
-| *hostAddresses {empty}* *| Host addresses| Comma separated list with ip:port formatted remote transport addresses to use.| string| | 
+| *clusterName {empty}* *| ElasticSearch Cluster Name| Name of the cluster.| string| | 
+| *hostAddresses {empty}* *| Host Addresses| Comma separated list with ip:port formatted remote transport addresses to use.| string| | 
 | *indexName {empty}* *| Index in ElasticSearch| The name of the index to act against.| string| | 
 | *query {empty}* *| Query| The query we want to use to search on ElasticSearch.| string| | 
 | enableSSL| Enable SSL| Do we want to connect using SSL?| boolean| `true`| 
@@ -45,8 +45,8 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: elasticsearch-search-source
     properties:
-      clusterName: "The ElasticSearch cluster name"
-      hostAddresses: "The Host addresses"
+      clusterName: "The ElasticSearch Cluster Name"
+      hostAddresses: "The Host Addresses"
       indexName: "The Index in ElasticSearch"
       query: "The Query"
   sink:
