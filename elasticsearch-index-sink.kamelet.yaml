@@ -23,7 +23,6 @@ spec:
     description: |-
       Insert data into ElasticSearch. Input data must have JSON format.
     required:
-      - query
       - clusterName
       - indexName
       - hostAddresses
@@ -42,7 +41,7 @@ spec:
         type: boolean
         default: true
       hostAddresses:
-        title: Host addresses
+        title: Host Addresses
         description: Comma separated list with ip:port formatted remote transport addresses to use.
         type: string
       indexName:
@@ -50,7 +49,7 @@ spec:
         description: The name of the index to act against.
         type: string
       clusterName:
-        title: ElasticSearch cluster name
+        title: ElasticSearch Cluster Name
         description: Name of the cluster.
         type: string
   dependencies:
