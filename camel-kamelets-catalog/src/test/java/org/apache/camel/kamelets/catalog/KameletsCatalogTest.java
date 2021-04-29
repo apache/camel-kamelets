@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -37,6 +38,18 @@ public class KameletsCatalogTest {
     @BeforeAll
     public static void createKameletsCatalog() throws IOException {
         catalog = new KameletsCatalog();
+    }
+
+    @Test
+    void testGetKameletsName() throws Exception {
+        List<String> names = catalog.getKameletsName();
+        assertTrue(!names.isEmpty());
+    }
+
+    @Test
+    void testGetKamelets() throws Exception {
+        Map<String, Kamelet> kamelets = catalog.getKamelets();
+        assertTrue(!kamelets.isEmpty());
     }
     
     @Test
@@ -62,9 +75,9 @@ public class KameletsCatalogTest {
     @Test
     void testGetKameletsByProvider() throws Exception {
         List<Kamelet> c = catalog.getKameletByProvider("Apache Software Foundation");
-        assertEquals(62, c.size());
+        assertTrue(!c.isEmpty());
         c = catalog.getKameletByProvider("Eclipse");
-        assertEquals(0, c.size());
+        assertTrue(c.isEmpty());
     }
 
     @Test
