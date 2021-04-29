@@ -12,6 +12,7 @@ import (
 	camel "github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
 	"github.com/bbalet/stopwords"
 	perrors "github.com/pkg/errors"
+	yamlv3 "gopkg.in/yaml.v3"
 	"k8s.io/apimachinery/pkg/api/equality"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -64,6 +65,12 @@ func verifyInvalidContent(kamelets []KameletInfo) (errors []error) {
 			errors = append(errors, perrors.Wrapf(err, "cannot load kamelet %q", kamelet.Name))
 			continue
 		}
+		var yamlFile map[string]interface{}
+		err = yamlv3.Unmarshal(file, &yamlFile)
+		if err != nil {
+			//errors = append(errors, perrors.Wrapf(err, "kamelet %q is not a valid YAML file", kamelet.Name))
+			continue
+		}
 		jsonFile, err := yaml.ToJSON(file)
 		if err != nil {
 			errors = append(errors, perrors.Wrapf(err, "cannot convert kamelet %q to JSON", kamelet.Name))
@@ -94,6 +101,9 @@ func verifyParameters(kamelets []KameletInfo) (errors []error) {
 		}
 		if kamelet.Spec.Definition.Description == "" {
 			errors = append(errors, fmt.Errorf("kamelet %q does not contain description", kamelet.Name))
+		}
+		if kamelet.Spec.Definition.Type != "object" {
+			errors = append(errors, fmt.Errorf("kamelet %q does not contain a definition of type \"object\"", kamelet.Name))
 		}
 		for k, p := range kamelet.Spec.Definition.Properties {
 			if p.Type == "" {
