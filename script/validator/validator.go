@@ -68,7 +68,7 @@ func verifyInvalidContent(kamelets []KameletInfo) (errors []error) {
 		var yamlFile map[string]interface{}
 		err = yamlv3.Unmarshal(file, &yamlFile)
 		if err != nil {
-			//errors = append(errors, perrors.Wrapf(err, "kamelet %q is not a valid YAML file", kamelet.Name))
+			errors = append(errors, perrors.Wrapf(err, "kamelet %q is not a valid YAML file", kamelet.Name))
 			continue
 		}
 		jsonFile, err := yaml.ToJSON(file)

@@ -38,7 +38,6 @@ spec:
       parameters:
         schedule: "{{schedule}}"
       steps:
-        - set-body:
-            constant: "{{message}}"
-      steps:
+      - set-body:
+          constant: "{{message}}"
       - to: "kamelet:sink"
