@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.fabric8.camelk.v1alpha1.Kamelet;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.JSONSchemaProps;
+import org.apache.camel.kamelets.catalog.model.KameletLabelNames;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -87,7 +88,7 @@ public class KameletsCatalog {
 
     public List<Kamelet> getKameletsByType(String type) {
         List<Kamelet> collect = kameletModels.entrySet().stream()
-                .filter(x -> x.getValue().getMetadata().getLabels().get("camel.apache.org/kamelet.type").contains(type))
+                .filter(x -> x.getValue().getMetadata().getLabels().get(KameletLabelNames.KAMELET_LABEL_TYPE).contains(type))
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
         return collect;
@@ -104,7 +105,7 @@ public class KameletsCatalog {
 
     public List<Kamelet> getKameletByProvider(String provider) {
         List<Kamelet> collect = kameletModels.entrySet().stream()
-                .filter(x -> x.getValue().getMetadata().getAnnotations().get("camel.apache.org/provider").equalsIgnoreCase(provider))
+                .filter(x -> x.getValue().getMetadata().getAnnotations().get(KameletLabelNames.KAMELET_LABEL_PROVIDER).equalsIgnoreCase(provider))
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
         if (!collect.isEmpty()) {
