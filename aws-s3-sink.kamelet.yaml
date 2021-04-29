@@ -33,12 +33,14 @@ spec:
         title: Access Key
         description: The access key obtained from AWS.
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       secretKey:
         title: Secret Key
         description: The secret key obtained from AWS.
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       region:
@@ -51,6 +53,8 @@ spec:
         description: Set the need for overidding the endpoint. This option needs to be used in combination with uriEndpointOverride.
         type: boolean
         default: false
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       uriEndpointOverride:
         title: Override Endpoint URI
         description: Set the overriding uri endpoint. This option needs to be used in combination with overrideEndpoint option.

@@ -37,6 +37,7 @@ func main() {
 	errors = append(errors, verifyAnnotations(kamelets)...)
 	errors = append(errors, verifyParameters(kamelets)...)
 	errors = append(errors, verifyInvalidContent(kamelets)...)
+	errors = append(errors, verifyDescriptors(kamelets)...)
 
 	for _, err := range errors {
 		fmt.Printf("ERROR: %v\n", err)
@@ -44,6 +45,41 @@ func main() {
 	if len(errors) > 0 {
 		os.Exit(1)
 	}
+}
+
+func verifyDescriptors(kamelets []KameletInfo) (errors []error) {
+	for _, kamelet := range kamelets {
+		if kamelet.Spec.Definition == nil {
+			errors = append(errors, fmt.Errorf("kamelet %q does not contain the JSON schema definition", kamelet.Name))
+			continue
+		}
+		for k, p := range kamelet.Spec.Definition.Properties {
+			pwdDescriptor := "urn:alm:descriptor:com.tectonic.ui:password"
+			if hasXDescriptor(p, pwdDescriptor) && p.Format != "password" {
+				errors = append(errors, fmt.Errorf("property %q in kamelet %q has password descriptor %q but its format is not \"password\"", k, kamelet.Name, pwdDescriptor))
+			} else if !hasXDescriptor(p, pwdDescriptor) && p.Format == "password" {
+				errors = append(errors, fmt.Errorf("property %q in kamelet %q has \"password\" format but misses descriptor %q (for better compatibility with tectonic UIs)", k, kamelet.Name, pwdDescriptor))
+			}
+		}
+		for k, p := range kamelet.Spec.Definition.Properties {
+			checkboxDescriptor := "urn:alm:descriptor:com.tectonic.ui:checkbox"
+			if hasXDescriptor(p, checkboxDescriptor) && p.Type != "boolean" {
+				errors = append(errors, fmt.Errorf("property %q in kamelet %q has checkbox descriptor %q but its type is not \"boolean\"", k, kamelet.Name, checkboxDescriptor))
+			} else if !hasXDescriptor(p, checkboxDescriptor) && p.Type == "boolean" {
+				errors = append(errors, fmt.Errorf("property %q in kamelet %q has \"boolean\" type but misses descriptor %q (for better compatibility with tectonic UIs)", k, kamelet.Name, checkboxDescriptor))
+			}
+		}
+	}
+	return errors
+}
+
+func hasXDescriptor(p camel.JSONSchemaProp, desc string) bool {
+	for _, d := range p.XDescriptors {
+		if d == desc {
+			return true
+		}
+	}
+	return false
 }
 
 func verifyInvalidContent(kamelets []KameletInfo) (errors []error) {
