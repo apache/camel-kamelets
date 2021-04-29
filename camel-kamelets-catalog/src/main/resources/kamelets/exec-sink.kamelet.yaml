@@ -15,15 +15,14 @@ spec:
 
       The Kamelet expects the following headers to be set:
 
-      - `args/ `ce-args`: as the args to be set on the executable.
+      - `args` / `ce-args`: as the args to be set on the executable.
 
       If the header won't be set the executable will be run without arguments.
     required:
-      - executable
-      - args
+    - executable
     properties:
       executable:
-        title: Executable command
+        title: Executable Command
         description: The command to execute
         type: string
   flow:
