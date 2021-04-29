@@ -26,6 +26,7 @@ spec:
       - clusterName
       - indexName
       - hostAddresses
+    type: object
     properties:
       user:
         title: Username
@@ -40,6 +41,8 @@ spec:
         description: Do we want to connect using SSL?
         type: boolean
         default: true
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       hostAddresses:
         title: Host Addresses
         description: Comma separated list with ip:port formatted remote transport addresses to use.

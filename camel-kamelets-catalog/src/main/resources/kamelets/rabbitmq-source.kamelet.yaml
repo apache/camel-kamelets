@@ -17,6 +17,7 @@ spec:
       - exchangeName
       - username
       - password
+    type: object
     properties:
       addresses:
         title: Addresses
@@ -35,6 +36,7 @@ spec:
         title: Password
         description: The password to access the RabbitMQ server
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       exchangeName:

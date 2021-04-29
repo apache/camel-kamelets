@@ -21,6 +21,7 @@ spec:
       - username
       - password
       - preparedStatement
+    type: object
     properties:
       host:
         title: Host
@@ -45,6 +46,7 @@ spec:
         title: Password
         description: The password to use for accessing a secured Cassandra Cluster
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       consistencyLevel:

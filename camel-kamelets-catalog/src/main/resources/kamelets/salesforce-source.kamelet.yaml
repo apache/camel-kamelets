@@ -19,6 +19,7 @@ spec:
       - clientSecret
       - userName
       - password
+    type: object
     properties:
       query:
         title: Query
@@ -43,6 +44,7 @@ spec:
         title: Consumer Secret
         description: The Salesforce application consumer secret
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       userName:
@@ -53,6 +55,7 @@ spec:
         title: Password
         description: The Salesforce user password
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
   types:

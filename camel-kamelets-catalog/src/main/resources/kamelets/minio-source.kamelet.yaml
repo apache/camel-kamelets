@@ -17,6 +17,7 @@ spec:
       - accessKey
       - secretKey
       - endpoint
+    type: object
     properties:
       bucketName:
         title: Bucket Name
@@ -33,12 +34,14 @@ spec:
         title: Access Key
         description: The access key obtained from Minio
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       secretKey:
         title: Secret Key
         description: The secret key obtained from Minio
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       endpoint:

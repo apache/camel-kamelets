@@ -17,11 +17,13 @@ spec:
       To create a bot, contact the @botfather account using the Telegram app.
     required:
       - authorizationToken
+    type: object
     properties:
       authorizationToken:
         title: Token
         description: The token to access your bot on Telegram. You you can obtain it from the Telegram @botfather.
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
   types:

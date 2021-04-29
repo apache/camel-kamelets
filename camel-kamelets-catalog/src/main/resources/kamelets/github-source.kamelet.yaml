@@ -17,6 +17,7 @@ spec:
       - repoOwner
       - oauthToken
       - type
+    type: object
     properties:
       repoName:
         title: Repository Name
@@ -30,6 +31,7 @@ spec:
         title: OAuth Token
         description: Oauth token
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       type:

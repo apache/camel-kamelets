@@ -22,6 +22,7 @@ spec:
       - accountName
       - containerName
       - accessKey
+    type: object
     properties:
       accountName:
         title: Account Name
@@ -35,6 +36,7 @@ spec:
         title: Access Key
         description: The Azure Storage Blob access Key.
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       operation:

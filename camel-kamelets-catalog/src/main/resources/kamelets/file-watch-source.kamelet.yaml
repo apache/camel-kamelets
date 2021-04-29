@@ -15,6 +15,7 @@ spec:
     required:
       - path
       - events
+    type: object
     properties:
       path:
         title: Path to Watch
@@ -23,7 +24,7 @@ spec:
       events:
         title: Events
         description: The type of events to consume
-        type: boolean
+        type: string
         default: "CREATE,MODIFY,DELETE"
   types:
     out:
