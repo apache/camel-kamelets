@@ -25,7 +25,7 @@ spec:
         description: An index for the google mail endpoint
         type: string
       clientId:
-        title: Client Id
+        title: Client ID
         description: Client ID of the gmail application
         type: string
         x-descriptors:
@@ -58,19 +58,19 @@ spec:
         description: Google Mail application name
         type: string
       markAsRead:
-        title: Mark as read
+        title: Mark as Read
         description: Mark the message as read once it has been consumed
         type: boolean
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: true
       labels:
-        title: Gmail labels
+        title: Gmail Labels
         description: Comma separated list of labels to take into account
         type: string
         example: "inbox"
       query:
-        title: Gmail query
+        title: Gmail Query
         description: The query to execute on gmail box
         type: string
         example: "is:unread -category:(promotions OR social)"

@@ -20,22 +20,22 @@ spec:
       - pollCommand
     properties:
       host:
-        title: SSH Host
+        title: Host
         description: The SSH Host
         type: string
       port:
-        title: SSH Port
+        title: Port
         description: The SSH Port
         type: string
         default: 22
       username:
-        title: The SSH username
+        title: Username
         description: The SSH username to use
         type: string
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       password:
-        title: The SSH password
+        title: Password
         description: The SSH password to use
         type: string
         x-descriptors:
@@ -46,7 +46,7 @@ spec:
         type: integer
         default: 500
       pollCommand:
-        title: The Poll command
+        title: Poll Command
         description: The command to run while polling the SSH session
         type: string
         example: date

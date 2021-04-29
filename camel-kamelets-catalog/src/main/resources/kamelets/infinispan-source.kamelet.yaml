@@ -25,13 +25,12 @@ spec:
       - hosts
       - username
       - password
-      - hostAddresses
+      - hosts
     properties:
       hosts:
         title: Hosts
         description: Specifies the host of the cache on Infinispan instance
         type: String
-        default: 1000
       secure:
         title: Secure
         description: If the Infinispan instance is secured or not
@@ -61,7 +60,7 @@ spec:
         type: string
         default: "infinispan"
       eventTypes:
-        title: ElasticSearch cluster name
+        title: Infinispan Cluster Name
         description: Specifies the set of event types to register by the consumer.Multiple event can be separated by comma. The possible event types are CLIENT_CACHE_ENTRY_CREATED, CLIENT_CACHE_ENTRY_MODIFIED, CLIENT_CACHE_ENTRY_REMOVED, CLIENT_CACHE_ENTRY_EXPIRED, CLIENT_CACHE_FAILOVER
         type: string
   flow:
