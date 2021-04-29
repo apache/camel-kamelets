@@ -23,11 +23,13 @@ spec:
       - clientIdentifier
       - remotePath
       - uploadMode
+    type: object
     properties:
       accessToken:
         title: Dropbox Access Token
         description: The access Token to use to access Dropbox
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       clientIdentifier:

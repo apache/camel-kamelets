@@ -18,6 +18,7 @@ spec:
       - username
       - password
       - pollCommand
+    type: object
     properties:
       host:
         title: Host
@@ -32,12 +33,14 @@ spec:
         title: Username
         description: The SSH username to use
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       password:
         title: Password
         description: The SSH password to use
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       delay:

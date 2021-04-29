@@ -26,6 +26,7 @@ spec:
       - username
       - password
       - hosts
+    type: object
     properties:
       hosts:
         title: Hosts
@@ -36,6 +37,8 @@ spec:
         description: If the Infinispan instance is secured or not
         type: boolean
         default: true
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       username:
         title: Username
         description: Username to connect to Infinispan.

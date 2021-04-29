@@ -15,6 +15,7 @@ spec:
     required:
       - schedule
       - message
+    type: object
     properties:
       schedule:
         title: Cron Schedule
@@ -37,7 +38,6 @@ spec:
       parameters:
         schedule: "{{schedule}}"
       steps:
-        - set-body:
-            constant: "{{message}}"
-      steps:
+      - set-body:
+          constant: "{{message}}"
       - to: "kamelet:sink"

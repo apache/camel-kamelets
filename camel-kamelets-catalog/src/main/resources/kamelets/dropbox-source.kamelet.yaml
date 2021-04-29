@@ -18,6 +18,7 @@ spec:
       - clientIdentifier
       - remotePath
       - query
+    type: object
     properties:
       period:
         title: Period between Polls
@@ -28,6 +29,7 @@ spec:
         title: Dropbox Access Token
         description: The access Token to use to access Dropbox
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       clientIdentifier:

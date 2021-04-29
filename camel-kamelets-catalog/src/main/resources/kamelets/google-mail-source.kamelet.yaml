@@ -19,6 +19,7 @@ spec:
       - refreshToken
       - clientSecret
       - applicationName
+    type: object
     properties:
       index:
         title: Index
@@ -28,24 +29,28 @@ spec:
         title: Client ID
         description: Client ID of the gmail application
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       clientSecret:
         title: Client Secret
         description: Client Secret of the gmail application
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       accessToken:
         title: Access Token
         description: OAuth 2 access token for google mail application. This typically expires after an hour so refreshToken is recommended for long term usage.
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       refreshToken:
         title: Refresh Token
         description: OAuth 2 refresh token for google mail application. Using this, the Google Calendar component can obtain a new accessToken whenever the current one expires - a necessity if the application is long-lived.
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       delay:

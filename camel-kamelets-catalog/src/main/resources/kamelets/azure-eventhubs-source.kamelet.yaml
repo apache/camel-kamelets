@@ -20,6 +20,7 @@ spec:
       - blobAccountName
       - blobAccessKey
       - blobContainerName
+    type: object
     properties:
       namespaceName:
         title: Eventhubs Namespace
@@ -28,7 +29,6 @@ spec:
       eventhubName:
         title: Eventhubs Name
         description: The eventhub name
-        type: boolean
         type: string
       sharedAccessName:
         title: Share Access Name
@@ -38,6 +38,7 @@ spec:
         title: Share Access Key
         description: The key for EventHubs SAS key name
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       blobAccountName:
@@ -52,6 +53,7 @@ spec:
         title: Azure Storage Blob Access Key
         description: The key for Azure Storage Blob service associated with the Blob account name
         type: string
+        format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
   types:
