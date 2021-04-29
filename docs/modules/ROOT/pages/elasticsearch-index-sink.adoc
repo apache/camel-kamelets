@@ -11,8 +11,8 @@ The following table summarizes the configuration options available for the `elas
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| *clusterName {empty}* *| ElasticSearch cluster name| Name of the cluster.| string| | 
-| *hostAddresses {empty}* *| Host addresses| Comma separated list with ip:port formatted remote transport addresses to use.| string| | 
+| *clusterName {empty}* *| ElasticSearch Cluster Name| Name of the cluster.| string| | 
+| *hostAddresses {empty}* *| Host Addresses| Comma separated list with ip:port formatted remote transport addresses to use.| string| | 
 | *indexName {empty}* *| Index in ElasticSearch| The name of the index to act against.| string| | 
 | enableSSL| Enable SSL| Do we want to connect using SSL?| boolean| `true`| 
 | password| Password| Password to connect to ElasticSearch.| string| | 
@@ -48,8 +48,8 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: elasticsearch-index-sink
     properties:
-      clusterName: "The ElasticSearch cluster name"
-      hostAddresses: "The Host addresses"
+      clusterName: "The ElasticSearch Cluster Name"
+      hostAddresses: "The Host Addresses"
       indexName: "The Index in ElasticSearch"
 
 ----
