@@ -4,12 +4,12 @@ Feature: Timer Source Kamelet
     Given Disable auto removal of Kamelet resources
     Given Disable auto removal of Kubernetes resources
     Given Camel-K resource polling configuration
-      | maxAttempts          | 20   |
-      | delayBetweenAttempts | 1000 |
+      | maxAttempts          | 60   |
+      | delayBetweenAttempts | 3000 |
 
   Scenario: Wait for binding to start
     Given create Kubernetes service probe-service with target port 8080
-    Then KameletBinding insert-field-action-binding should be available
+    Then Camel-K integration insert-field-action-binding should be running
 
   Scenario: Verify binding
     Given HTTP server "probe-service"
@@ -21,5 +21,6 @@ Feature: Timer Source Kamelet
       "thefield": "thevalue"
     }
     """
+    And expect HTTP request header: Content-Type="application/json"
     And receive POST /events
     And delete KameletBinding insert-field-action-binding
