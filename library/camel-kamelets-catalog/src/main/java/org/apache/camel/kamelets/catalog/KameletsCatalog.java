@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.sun.tools.doclets.standard.Standard;
 import io.fabric8.camelk.v1alpha1.Kamelet;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.JSONSchemaProps;
 import org.apache.camel.kamelets.catalog.model.KameletLabelNames;
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -53,7 +55,7 @@ public class KameletsCatalog {
     }
 
     private void initCatalog() throws IOException {
-        List<String> files = IOUtils.readLines(KameletsCatalog.class.getClassLoader().getResourceAsStream(KAMELETS_DIR), Charsets.UTF_8);
+        List<String> files = IOUtils.readLines(KameletsCatalog.class.getClassLoader().getResourceAsStream(KAMELETS_DIR), StandardCharsets.UTF_8);
         for (String fileName:
              files) {
             Kamelet kamelet = mapper.readValue(KameletsCatalog.class.getClassLoader().getResourceAsStream(KAMELETS_DIR + File.separator + fileName), Kamelet.class);
