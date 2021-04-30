@@ -22,17 +22,22 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-      <groupId>org.apache</groupId>
-      <artifactId>apache</artifactId>
-      <version>23</version>
+        <groupId>org.apache</groupId>
+        <artifactId>apache</artifactId>
+        <version>23</version>
     </parent>
 
     <groupId>org.apache.camel.kamelets</groupId>
-    <artifactId>camel-kamelets-catalog</artifactId>
-    <packaging>jar</packaging>
-    <version>0.3.0-SNAPSHOT</version>
-    <name>Camel Kamelets Catalog</name>
-    <description>Camel Kamelets Catalog</description>
+    <artifactId>camel-kamelets-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>main-SNAPSHOT</version>
+    <name>Camel Kamelets Parent</name>
+    <description>Camel Kamelets Library Parent</description>
+
+    <modules>
+        <module>library/camel-kamelets-catalog</module>
+        <module>library/camel-kamelets-utils</module>
+    </modules>
 
     <properties>
         <failIfNoTests>false</failIfNoTests>
@@ -44,6 +49,8 @@
         <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
         <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
         <maven-checksum-maven-plugin.version>1.7</maven-checksum-maven-plugin.version>
+
+        <camel.version>3.9.0</camel.version>
         <log4j.version>2.13.3</log4j.version>
         <jackson.version>2.11.4</jackson.version>
         <camel.k.extension.version>5.3.1</camel.k.extension.version>
@@ -123,60 +130,6 @@
             </releases>
         </pluginRepository>
     </pluginRepositories>
-
-    <dependencies>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-yaml</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>camel-k-model-v1alpha1</artifactId>
-            <version>${camel.k.extension.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons.io.version}</version>
-        </dependency>
-        <!-- logging -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <scope>test</scope>
-            <version>${junit.jupiter.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
-            <version>${junit.jupiter.version}</version>
-        </dependency>
-
-    </dependencies>
 
     <build>
         <defaultGoal>install</defaultGoal>
@@ -287,32 +240,6 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.1.0</version>
-                    <executions>
-                        <execution>
-                            <id>copy-resource-one</id>
-                            <phase>install</phase>
-                            <goals>
-                                <goal>copy-resources</goal>
-                            </goals>
-
-                            <configuration>
-                                <overwrite>true</overwrite>
-                                <outputDirectory>src/main/resources/kamelets</outputDirectory>
-                                <resources>
-                                    <resource>
-                                        <directory>./../</directory>
-                                        <includes>
-                                            <include>*.kamelet.yaml</include>
-                                        </includes>
-                                    </resource>
-                                </resources>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
@@ -416,7 +343,7 @@
                                         <include>${project.artifactId}-${project.version}-sources.jar</include>
                                         <include>${project.artifactId}-${project.version}-package.tar.gz</include>
                                         <!--XXX: keep this in sync with distribution/pom.xml <finalName> tag-->
-                                        <include>camel-kafka-connector-${project.version}-src.zip</include>
+                                        <!-- include>camel-kafka-connector-${project.version}-src.zip</include-->
                                     </includes>
                                 </fileSet>
                             </fileSets>

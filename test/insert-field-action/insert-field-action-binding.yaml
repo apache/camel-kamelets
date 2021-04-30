@@ -1,0 +1,22 @@
+kind: KameletBinding
+apiVersion: camel.apache.org/v1alpha1
+metadata:
+  name: insert-field-action-binding
+spec:
+  source:
+    ref:
+      apiVersion: camel.apache.org/v1alpha1
+      kind: Kamelet
+      name: timer-source
+    properties:
+      message: "thecontent"
+  steps:
+  - ref:
+      apiVersion: camel.apache.org/v1alpha1
+      kind: Kamelet
+      name: insert-field-action
+    properties:
+      field: "thefield"
+      value: "thevalue"
+  sink:
+    uri: http://probe-service.${YAKS_NAMESPACE}/events
