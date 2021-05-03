@@ -13,10 +13,10 @@ The following table summarizes the configuration options available for the `kafk
 | Property| Name| Description| Type| Default| Example
 | *brokers {empty}* *| Brokers| Comma separated list of Kafka Broker URLs| string| | 
 | *password {empty}* *| Password| Password to authenticate to kafka| string| | 
-| *saslMechanism {empty}* *| SASL Mechanism| The Simple Authentication and Security Layer (SASL) Mechanism used.| string| `"PLAIN"`| 
-| *securityProtocol {empty}* *| Security Protocol| Protocol used to communicate with brokers. SASL_PLAINTEXT, PLAINTEXT, SASL_SSL and SSL are supported| string| `"SASL_SSL"`| 
 | *topic {empty}* *| Topic Names| Comma separated list of Kafka topic names| string| | 
 | *username {empty}* *| Username| Username to authenticate to Kafka| string| | 
+| saslMechanism| SASL Mechanism| The Simple Authentication and Security Layer (SASL) Mechanism used.| string| `"PLAIN"`| 
+| securityProtocol| Security Protocol| Protocol used to communicate with brokers. SASL_PLAINTEXT, PLAINTEXT, SASL_SSL and SSL are supported| string| `"SASL_SSL"`| 
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
