@@ -11,9 +11,9 @@ The following table summarizes the configuration options available for the `repl
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| *disabled {empty}* *| Fields disabled| Comma separated list of fields to be disabled| string| | 
-| *enabled {empty}* *| Fields enabled| Comma separated list of fields to be enabled| string| | 
-| *renames {empty}* *| Renames mapping| Comma separated list of field with new value to be renamed| string| | `"foo:bar,c1:c2"`
+| *disabled {empty}* *| Disabled| Comma separated list of fields to be disabled| string| | 
+| *enabled {empty}* *| Enabled| Comma separated list of fields to be enabled| string| | 
+| *renames {empty}* *| Renames| Comma separated list of field with new value to be renamed| string| | `"foo:bar,c1:c2"`
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
@@ -47,8 +47,8 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: replace-field-action
     properties:
-      disabled: "The Fields disabled"
-      enabled: "The Fields enabled"
+      disabled: "The Disabled"
+      enabled: "The Enabled"
       renames: "foo:bar,c1:c2"
   sink:
     ref:
