@@ -7,7 +7,6 @@ metadata:
     camel.apache.org/provider: "Apache Software Foundation"
   labels:
     camel.apache.org/kamelet.type: "source"
-    camel.apache.org/requires.runtime: "camel-quarkus"
 spec:
   definition:
     title: "HTTP Source"
@@ -34,7 +33,7 @@ spec:
         example: "https://gist.githubusercontent.com/nicolaferraro/e3c72ace3c751f9f88273896611ce5fe/raw/3b6f54060bacb56b6719b7386a4645cb59ad6cc1/quote.json"
         pattern: "^(http|https)://.*"
   dependencies:
-    - "camel-quarkus:http"
+    - "camel:http"
   flow:
     from:
       uri: "timer:fetch"
