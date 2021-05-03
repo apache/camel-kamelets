@@ -7,7 +7,6 @@ metadata:
     camel.apache.org/provider: "Apache Software Foundation"
   labels:
     camel.apache.org/kamelet.type: sink
-    camel.apache.org/requires.runtime: "camel-quarkus"
 spec:
   definition:
     title: AWS SNS FIFO Sink
@@ -57,7 +56,7 @@ spec:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
   dependencies:
-  - camel-quarkus:aws2-sns
+  - camel:aws2-sns
   flow:
     from:
       uri: kamelet:source

@@ -7,7 +7,6 @@ metadata:
     camel.apache.org/provider: "Apache Software Foundation"
   labels:
     camel.apache.org/kamelet.type: sink
-    camel.apache.org/requires.runtime: "camel-quarkus"
 spec:
   definition:
     title: HTTP Sink
@@ -28,7 +27,7 @@ spec:
         type: string
         default: POST
   dependencies:
-  - camel-quarkus:http
+  - camel:http
   flow:
     from:
       uri: kamelet:source

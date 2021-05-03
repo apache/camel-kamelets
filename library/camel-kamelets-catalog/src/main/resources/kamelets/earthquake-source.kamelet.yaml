@@ -8,7 +8,6 @@ metadata:
   labels:
     camel.apache.org/kamelet.type: "source"
     camel.apache.org/kamelet.verified: "true"
-    camel.apache.org/requires.runtime: "camel-quarkus"
 spec:
   definition:
     title: Earthquake Source
@@ -30,8 +29,8 @@ spec:
     out:
       mediaType: application/json
   dependencies:
-    - camel-quarkus:caffeine
-    - camel-quarkus:http
+    - camel:caffeine
+    - camel:http
   flow:
     from:
       uri: "timer:earthquake"
