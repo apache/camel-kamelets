@@ -21,6 +21,6 @@ Feature: Timer Source Kamelet
       "thefield": "thevalue"
     }
     """
-    And expect HTTP request header: Content-Type="application/json"
+    And expect HTTP request header: Content-Type="application/json;charset=UTF-8"
     And receive POST /events
     And delete KameletBinding insert-field-action-binding
