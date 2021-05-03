@@ -15,6 +15,8 @@ spec:
     required:
       - topic
       - brokers
+      - username
+      - password
     type: object
     properties:
       topic:
@@ -25,10 +27,34 @@ spec:
         title: Brokers
         description: Comma separated list of Kafka Broker URLs
         type: string
+      securityProtocol:
+        title: Security Protocol
+        description: Protocol used to communicate with brokers. SASL_PLAINTEXT, PLAINTEXT, SASL_SSL and SSL are supported
+        type: string
+        default: SASL_SSL
+      saslMechanism:
+        title: SASL Mechanism
+        description: The Simple Authentication and Security Layer (SASL) Mechanism used. 
+        type: string
+        default: PLAIN
+      username:
+        title: Username
+        description: Username to authenticate to Kafka 
+        type: string
+      password:
+        title: Password
+        description: Password to authenticate to kafka
+        type: string
+        format: password
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:password
   flow:
     from:
       uri: "kafka:{{topic}}"
       parameters:
         brokers: "{{brokers}}"
+        securityProtocol: "{{securityProtocol}}"
+        saslMechanism: "{{saslMechanism}}"
+        saslJaasConfig: "org.apache.kafka.common.security.plain.PlainLoginModule required username='{{username}}' password='{{password}}';"
       steps:
       - to: "kamelet:sink"
