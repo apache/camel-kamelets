@@ -36,8 +36,8 @@ on:
       - 'NOTICE'
 
 env:
-  CAMEL_K_VERSION: 1.3.2
-  YAKS_VERSION: 0.4.0-202104120032
+  CAMEL_K_VERSION: 1.4.0
+  YAKS_VERSION: 0.4.0-202105030021
 
 jobs:
   test:
@@ -84,3 +84,8 @@ jobs:
 
         echo "Running tests"
         yaks test ./test
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: dumps
+        path: /tmp/dumps/*.log
