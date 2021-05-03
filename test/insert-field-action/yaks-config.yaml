@@ -27,3 +27,9 @@ pre:
     kubectl apply -f ../../timer-source.kamelet.yaml -n $YAKS_NAMESPACE
     kubectl apply -f ../../insert-field-action.kamelet.yaml -n $YAKS_NAMESPACE
     kubectl apply -f insert-field-action-binding.yaml -n $YAKS_NAMESPACE
+post:
+- name: dump
+  run: |
+    kamel dump $(basename `pwd`)-dump.log
+    mkdir -p /tmp/dumps
+    cp *-dump.log /tmp/dumps
