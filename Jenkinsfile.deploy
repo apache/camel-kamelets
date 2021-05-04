@@ -68,7 +68,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    kamelets_result = sh script: "./mvnw $MAVEN_PARAMS -Dmaven.test.failure.ignore=true -Parchetypes-skip-tests clean deploy install", returnStatus: true
+                    kamelets_result = sh script: "./mvnw $MAVEN_PARAMS -Dmaven.test.failure.ignore=true clean deploy install", returnStatus: true
                 }
             }
             post {
