@@ -85,6 +85,13 @@
             <scope>test</scope>
             <version>${junit.jupiter.version}</version>
         </dependency>
+<!-- https://mvnrepository.com/artifact/io.github.classgraph/classgraph -->
+<dependency>
+    <groupId>io.github.classgraph</groupId>
+    <artifactId>classgraph</artifactId>
+    <version>4.8.105</version>
+</dependency>
+
 
     </dependencies>
 
@@ -103,13 +110,37 @@
 
                         <configuration>
                             <overwrite>true</overwrite>
-                            <outputDirectory>src/main/resources/kamelets</outputDirectory>
+                            <outputDirectory>${project.basedir}/src/main/resources/kamelets</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>./../../</directory>
                                     <includes>
                                         <include>*.kamelet.yaml</include>
                                     </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+             
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src/kamelets</source>
+                            </sources>
+                            <resources>
+                                <resource>
+                                    <directory>src/kamelets</directory>
                                 </resource>
                             </resources>
                         </configuration>
