@@ -60,7 +60,7 @@ jobs:
     - name: Deploy to ASF Snapshots Repository
       run: |
         ./mvnw ${MAVEN_ARGS} \
-        -U -B -e -fae -Dnoassembly -Dmaven.compiler.fork=true -Pdeplo \
+        -U -B -e -fae -Dnoassembly -Dmaven.compiler.fork=true -Pdeploy \
         --settings .github/asf-deploy-settings.xml \
         clean deploy
 
