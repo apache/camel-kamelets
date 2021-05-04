@@ -19,23 +19,24 @@ package org.apache.camel.kamelets.catalog;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.fabric8.camelk.v1alpha1.Kamelet;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.JSONSchemaProps;
+import io.github.classgraph.ClassGraph;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+import java.util.Map;
+
 public class KameletsCatalogTest {
     static KameletsCatalog catalog;
 
     @BeforeAll
-    public static void createKameletsCatalog() throws IOException {
+    public static void createKameletsCatalog() {
         catalog = new KameletsCatalog();
     }
 
@@ -93,4 +94,11 @@ public class KameletsCatalogTest {
         JsonNode flow = catalog.getKameletFlow("aws-sqs-source");
         assertNotNull(flow);
     }
+    
+    @Test
+    void testAllKameletFilesLoaded() throws Exception {
+        int numberOfKameletFiles = new ClassGraph().acceptPaths("/" + KameletsCatalog.KAMELETS_DIR + "/").scan().getAllResources().size();
+        assertEquals(numberOfKameletFiles, catalog.getKameletsName().size(), "Some embedded kamelet definition files cannot be loaded.");
+    }
+
 }
