@@ -22,13 +22,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.fabric8.camelk.v1alpha1.Kamelet;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.JSONSchemaProps;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
 import org.apache.camel.kamelets.catalog.model.KameletLabelNames;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,14 +54,17 @@ public class KameletsCatalog {
 
     public KameletsCatalog() throws IOException {
         initCatalog();
-        kameletNames = kameletModels.keySet().stream().sorted(Comparator.naturalOrder()).map(x -> sanitizeFileName(x)).collect(Collectors.toList());
+        kameletNames = kameletModels.keySet().stream().sorted(Comparator.naturalOrder()).map(x -> x).collect(Collectors.toList());
     }
 
     private void initCatalog() throws IOException {
-        List<String> files = IOUtils.readLines(KameletsCatalog.class.getClassLoader().getResourceAsStream(KAMELETS_DIR), StandardCharsets.UTF_8);
+        List<String> resourceNames;
+        try (ScanResult scanResult = new ClassGraph().acceptPaths("/" + KAMELETS_DIR + "/").scan()) {
+            resourceNames = scanResult.getAllResources().getPaths();
+        }
         for (String fileName:
-             files) {
-            Kamelet kamelet = mapper.readValue(KameletsCatalog.class.getClassLoader().getResourceAsStream(KAMELETS_DIR + File.separator + fileName), Kamelet.class);
+                resourceNames) {
+            Kamelet kamelet = mapper.readValue(KameletsCatalog.class.getResourceAsStream("/" + fileName), Kamelet.class);
             kameletModels.put(sanitizeFileName(fileName), kamelet);
         }
     }
@@ -66,7 +74,8 @@ public class KameletsCatalog {
         if (index > 0) {
             fileName = fileName.substring(0, index);
         }
-        return fileName;
+        String finalName = fileName.substring(9);
+        return finalName;
     }
 
 
