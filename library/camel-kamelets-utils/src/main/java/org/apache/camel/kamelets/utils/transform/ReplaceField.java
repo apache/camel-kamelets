@@ -34,7 +34,13 @@ public class ReplaceField {
         List<String> enabledFields = new ArrayList<>();
         List<String> disabledFields = new ArrayList<>();
         List<String> renameFields = new ArrayList<>();
-        Map<Object, Object> body = ex.getMessage().getMandatoryBody(Map.class);
+        Map<Object, Object> body = ex.getMessage().getBody(Map.class);
+        if (body == null) {
+            String val = ex.getMessage().getMandatoryBody(String.class);
+            body = new HashMap<>();
+            // TODO: make this configurable
+            body.put("content", val);
+        }
         if (ObjectHelper.isNotEmpty(enabled)) {
             enabledFields = Arrays.stream(enabled.split(",")).collect(Collectors.toList());
         }
