@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class ExtractField {
 
-    public Object process(@ExchangeProperty("field") String field, Exchange ex) throws InvalidPayloadException {
+    public void process(@ExchangeProperty("field") String field, Exchange ex) throws InvalidPayloadException {
         Map<Object, Object> body = ex.getMessage().getBody(Map.class);
         if (body == null) {
             String val = ex.getMessage().getMandatoryBody(String.class);
@@ -33,7 +33,7 @@ public class ExtractField {
             // TODO: make this configurable
             body.put("content", val);
         }
-        return body.get(field);
+        ex.getMessage().setBody(body.get(field));
     }
 
 }
