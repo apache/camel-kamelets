@@ -61,7 +61,11 @@ public class ReplaceField {
                 updatedBody.put(renameOptional(fieldName, renamingMap), fieldValue);
             }
         }
-        return updatedBody;
+        if (!updatedBody.isEmpty()) {
+            return updatedBody;
+        } else {
+            return body;
+        }
     }
 
     boolean filterNames(String fieldName, List<String> enabledFields, List<String> disabledFields) {
