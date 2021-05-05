@@ -32,7 +32,13 @@ public class ValueToKey {
 
     public void process(@ExchangeProperty("fields") String fields, Exchange ex) throws InvalidPayloadException {
         List<String> splittedFields = new ArrayList<>();
-        Map<Object, Object> body = ex.getMessage().getMandatoryBody(Map.class);
+        Map<Object, Object> body = ex.getMessage().getBody(Map.class);
+        if (body == null) {
+            String val = ex.getMessage().getMandatoryBody(String.class);
+            body = new HashMap<>();
+            // TODO: make this configurable
+            body.put("content", val);
+        }
         if (ObjectHelper.isNotEmpty(fields)) {
             splittedFields = Arrays.stream(fields.split(",")).collect(Collectors.toList());
         }
