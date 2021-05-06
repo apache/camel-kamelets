@@ -20,16 +20,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangeProperty;
 import org.apache.camel.InvalidPayloadException;
+import org.apache.camel.kamelets.utils.transform.json.utils.JsonNodeUtils;
 
 public class InsertField {
 
     public JsonNode process(@ExchangeProperty("field") String field, @ExchangeProperty("value") String value, Exchange ex) throws InvalidPayloadException {
         JsonNode body = ex.getMessage().getBody(JsonNode.class);
-        ((ObjectNode) body).put(field, value);
+        switch (body.getNodeType()) {
+            case ARRAY:
+                ((ArrayNode) body).add(value);
+            case OBJECT:
+                ((ObjectNode) body).put(field, value);
+            default:
+                ((ObjectNode) body).put(field, value);
+        }
         return body;
     }
 
