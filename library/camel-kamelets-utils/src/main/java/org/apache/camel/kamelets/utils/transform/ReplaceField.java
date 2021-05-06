@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 public class ReplaceField {
 
-    public Map<?, ?> process(@ExchangeProperty("enabled") String enabled, @ExchangeProperty("disabled") String disabled, @ExchangeProperty("renames") String renames,Exchange ex) throws InvalidPayloadException {
+    public JsonNode process(@ExchangeProperty("enabled") String enabled, @ExchangeProperty("disabled") String disabled, @ExchangeProperty("renames") String renames,Exchange ex) throws InvalidPayloadException {
         ObjectMapper mapper = new ObjectMapper();
         List<String> enabledFields = new ArrayList<>();
         List<String> disabledFields = new ArrayList<>();
