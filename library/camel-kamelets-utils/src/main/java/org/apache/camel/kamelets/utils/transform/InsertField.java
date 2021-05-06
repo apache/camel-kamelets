@@ -16,17 +16,12 @@
  */
 package org.apache.camel.kamelets.utils.transform;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangeProperty;
 import org.apache.camel.InvalidPayloadException;
-import org.apache.camel.kamelets.utils.transform.json.utils.JsonNodeUtils;
 
 public class InsertField {
 
