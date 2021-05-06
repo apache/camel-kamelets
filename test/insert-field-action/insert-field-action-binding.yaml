@@ -9,7 +9,8 @@ spec:
       kind: Kamelet
       name: timer-source
     properties:
-      message: "thecontent"
+      message: '{ "foo":"John", "bar":30, "baz":"ciao" }'
+      contentType: 'application/json'
   steps:
   - ref:
       apiVersion: camel.apache.org/v1alpha1
