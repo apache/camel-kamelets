@@ -9,7 +9,11 @@ import (
 	"sort"
 	"strings"
 
-	camel "github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
+	camelapiv1 "github.com/apache/camel-k/pkg/apis/camel/v1"
+	camelapi "github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
+	"github.com/apache/camel-k/pkg/metadata"
+	"github.com/apache/camel-k/pkg/util/camel"
+	"github.com/apache/camel-k/pkg/util/flow"
 	"github.com/bbalet/stopwords"
 	perrors "github.com/pkg/errors"
 	yamlv3 "gopkg.in/yaml.v3"
@@ -39,6 +43,7 @@ func main() {
 	errors = append(errors, verifyInvalidContent(kamelets)...)
 	errors = append(errors, verifyDescriptors(kamelets)...)
 	errors = append(errors, verifyDuplicates(kamelets)...)
+	errors = append(errors, verifyMissingDependencies(kamelets)...)
 
 	for _, err := range errors {
 		fmt.Printf("ERROR: %v\n", err)
@@ -46,6 +51,44 @@ func main() {
 	if len(errors) > 0 {
 		os.Exit(1)
 	}
+}
+
+func verifyMissingDependencies(kamelets []KameletInfo) (errors []error) {
+	for _, kamelet := range kamelets {
+		yamlDslFlow, err := flow.ToYamlDSL([]camelapiv1.Flow{*kamelet.Kamelet.Spec.Flow})
+		if err != nil {
+			panic(err)
+		}
+
+		code := camelapiv1.SourceSpec{
+			DataSpec: camelapiv1.DataSpec{
+				Name: "source.yaml",
+				Content: string(yamlDslFlow),
+			},
+			Language: camelapiv1.LanguageYaml,
+		}
+
+		catalog, _ := camel.DefaultCatalog()
+		meta := metadata.Extract(catalog, code)
+
+		meta.Dependencies.Each(func(extractedDep string) bool {
+			if !containsDependency(kamelet, extractedDep) {
+				errors = append(errors, fmt.Errorf("kamelet %q need dependency %q", kamelet.Name, extractedDep))
+			}
+			return true
+		})
+	}
+
+	return errors
+}
+
+func containsDependency(kamelet KameletInfo, extractedDep string) bool {
+	for _, d := range kamelet.Spec.Dependencies {
+		if d == extractedDep {
+			return true
+		}
+	}
+	return false
 }
 
 func verifyDuplicates(kamelets []KameletInfo) (errors []error) {
@@ -96,7 +139,7 @@ func verifyDescriptors(kamelets []KameletInfo) (errors []error) {
 	return errors
 }
 
-func hasXDescriptor(p camel.JSONSchemaProp, desc string) bool {
+func hasXDescriptor(p camelapi.JSONSchemaProp, desc string) bool {
 	for _, d := range p.XDescriptors {
 		if d == desc {
 			return true
@@ -261,11 +304,11 @@ func verifyFileNames(kamelets []KameletInfo) (errors []error) {
 
 func listKamelets(dir string) []KameletInfo {
 	scheme := runtime.NewScheme()
-	err := camel.AddToScheme(scheme)
+	err := camelapi.AddToScheme(scheme)
 	handleGeneralError("cannot to add camel APIs to scheme", err)
 
 	codecs := serializer.NewCodecFactory(scheme)
-	gv := camel.SchemeGroupVersion
+	gv := camelapi.SchemeGroupVersion
 	gvk := schema.GroupVersionKind{
 		Group:   gv.Group,
 		Version: gv.Version,
@@ -291,7 +334,7 @@ func listKamelets(dir string) []KameletInfo {
 		json, err := yaml.ToJSON(content)
 		handleGeneralError(fmt.Sprintf("cannot convert file %q to JSON", fileName), err)
 
-		kamelet := camel.Kamelet{}
+		kamelet := camelapi.Kamelet{}
 		_, _, err = decoder.Decode(json, &gvk, &kamelet)
 		handleGeneralError(fmt.Sprintf("cannot unmarshal file %q into Kamelet", fileName), err)
 		kameletInfo := KameletInfo{
@@ -304,7 +347,7 @@ func listKamelets(dir string) []KameletInfo {
 }
 
 type KameletInfo struct {
-	camel.Kamelet
+	camelapi.Kamelet
 	FileName string
 }
 
