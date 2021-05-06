@@ -30,10 +30,13 @@ public class InsertField {
         switch (body.getNodeType()) {
             case ARRAY:
                 ((ArrayNode) body).add(value);
+                break;
             case OBJECT:
                 ((ObjectNode) body).put(field, value);
+                break;
             default:
                 ((ObjectNode) body).put(field, value);
+                break;
         }
         return body;
     }
