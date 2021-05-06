@@ -79,10 +79,8 @@ public class MaskField {
         for (Map.Entry entry:
              body.entrySet()) {
             final String fieldName = (String) entry.getKey();
-            if (filterNames(fieldName, splittedFields)) {
-                final Object fieldValue = entry.getValue();
-                updatedBody.put(entry.getKey(), masked(fieldValue, replacement));
-            }
+            final Object origFieldValue = entry.getValue();
+            updatedBody.put(fieldName, filterNames(fieldName, splittedFields) ? masked(origFieldValue, replacement) : origFieldValue);
         }
         if (!updatedBody.isEmpty()) {
             return updatedBody;
