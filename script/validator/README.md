@@ -3,6 +3,6 @@
 To validate the Kamelets:
 
 ```
-# From the /tools/validator directory
+# From the script/validator directory
 go run . ../../
 ```
