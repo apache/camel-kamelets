@@ -38,6 +38,7 @@ func main() {
 	errors = append(errors, verifyParameters(kamelets)...)
 	errors = append(errors, verifyInvalidContent(kamelets)...)
 	errors = append(errors, verifyDescriptors(kamelets)...)
+	errors = append(errors, verifyDuplicates(kamelets)...)
 
 	for _, err := range errors {
 		fmt.Printf("ERROR: %v\n", err)
@@ -45,6 +46,28 @@ func main() {
 	if len(errors) > 0 {
 		os.Exit(1)
 	}
+}
+
+func verifyDuplicates(kamelets []KameletInfo) (errors []error) {
+	usedTitles := make(map[string]bool)
+	usedDescriptions := make(map[string]bool)
+	for _, kamelet := range kamelets {
+		if kamelet.Spec.Definition == nil {
+			errors = append(errors, fmt.Errorf("kamelet %q does not contain the JSON schema definition", kamelet.Name))
+			continue
+		}
+		title := kamelet.Kamelet.Spec.Definition.Title
+		if _, found := usedTitles[title]; found {
+			errors = append(errors, fmt.Errorf("kamelet %q has duplicate title %q", kamelet.Name, title))
+		}
+		description := kamelet.Kamelet.Spec.Definition.Description
+		if _, found := usedDescriptions[description]; found {
+			errors = append(errors, fmt.Errorf("kamelet %q has duplicate description %q", kamelet.Name, description))
+		}
+		usedTitles[title] = true
+		usedDescriptions[description] = true
+	}
+	return errors
 }
 
 func verifyDescriptors(kamelets []KameletInfo) (errors []error) {
@@ -134,6 +157,14 @@ func verifyParameters(kamelets []KameletInfo) (errors []error) {
 		}
 		if kamelet.Spec.Definition.Title == "" {
 			errors = append(errors, fmt.Errorf("kamelet %q does not contain title", kamelet.Name))
+		} else {
+			tp := kamelet.Labels["camel.apache.org/kamelet.type"]
+			if len(tp) > 1 {
+				expectedSuffix := strings.ToUpper(tp[0:1]) + tp[1:]
+				if !strings.HasSuffix(kamelet.Spec.Definition.Title, expectedSuffix) {
+					errors = append(errors, fmt.Errorf("kamelet %q title %q does not ends with %q", kamelet.Name, kamelet.Spec.Definition.Title, expectedSuffix))
+				}
+			}
 		}
 		if kamelet.Spec.Definition.Description == "" {
 			errors = append(errors, fmt.Errorf("kamelet %q does not contain description", kamelet.Name))
