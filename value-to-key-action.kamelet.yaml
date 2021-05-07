@@ -31,13 +31,17 @@ spec:
           - simple: "${header[Content-Type]} == 'application/json'"
             steps:
             - unmarshal:
-                json: {}
+                json: 
+                  library: Jackson
+                  unmarshalTypeName: com.fasterxml.jackson.databind.JsonNode
       - set-property:
           name: "fields"
           constant: "{{fields}}"
       - bean: "org.apache.camel.kamelets.utils.transform.kafka.ValueToKey"
       - marshal:
-          json: {}
+          json: 
+            library: Jackson
+            unmarshalTypeName: com.fasterxml.jackson.databind.JsonNode
       - set-header:
           name: "Content-Type"
           constant: "application/json"
