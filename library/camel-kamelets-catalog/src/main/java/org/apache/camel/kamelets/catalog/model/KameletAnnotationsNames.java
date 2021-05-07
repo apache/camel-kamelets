@@ -16,8 +16,9 @@
  */
 package org.apache.camel.kamelets.catalog.model;
 
-public interface KameletLabelNames {
+public interface KameletAnnotationsNames {
 
-    String KAMELET_LABEL_TYPE = "camel.apache.org/kamelet.type";
-
+    String KAMELET_ANNOTATION_ICON = "camel.apache.org/kamelet.icon";
+    String KAMELET_ANNOTATION_PROVIDER = "camel.apache.org/provider";
+    String KAMELET_ANNOTATION_GROUP = "camel.apache.org/kamelet.group";
 }
