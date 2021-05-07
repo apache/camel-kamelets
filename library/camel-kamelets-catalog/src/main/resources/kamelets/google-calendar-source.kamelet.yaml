@@ -87,6 +87,8 @@ spec:
       mediaType: application/json
   dependencies:
   - "camel:jackson"
+  - "camel:google-calendar"
+  - "camel:kamelet"
   flow:
     from:
       uri: "google-calendar-stream://{{index}}"

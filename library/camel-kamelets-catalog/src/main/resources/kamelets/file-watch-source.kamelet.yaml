@@ -30,6 +30,9 @@ spec:
   types:
     out:
       mediaType: application/json
+  dependencies:
+    - "camel:file-watch"
+    - "camel:kamelet"
   flow:
     from:
       uri: "file-watch:{{path}}"

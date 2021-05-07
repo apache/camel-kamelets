@@ -46,6 +46,8 @@ spec:
       mediaType: application/json
   dependencies:
   - "camel:jackson"
+  - "camel:jira"
+  - "camel:kamelet"
   flow:
     from:
       uri: "jira:newIssues"

@@ -60,6 +60,9 @@ spec:
   types:
     out:
       mediaType: application/json
+  dependencies:
+    - "camel:aws2-s3"
+    - "camel:kamelet"
   flow:
     from:
       uri: "aws2-s3:{{bucketNameOrArn}}"

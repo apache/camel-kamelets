@@ -60,6 +60,10 @@ spec:
   types:
     out:
       mediaType: application/json
+  dependencies:
+    - "camel:jackson"
+    - "camel:twitter"
+    - "camel:kamelet"
   flow:
     from:
       uri: "twitter-search:{{keywords}}"

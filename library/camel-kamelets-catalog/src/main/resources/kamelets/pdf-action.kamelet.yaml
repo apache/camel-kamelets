@@ -34,6 +34,9 @@ spec:
         description: The Page size to use while generating the PDF. One of LETTER, LEGAL, A0, A1, A2, A3, A4, A5, A6
         type: string
         default: A4
+  dependencies:
+  - "camel:pdf"
+  - "camel:kamelet"
   flow:
     from:
       uri: "kamelet:source"

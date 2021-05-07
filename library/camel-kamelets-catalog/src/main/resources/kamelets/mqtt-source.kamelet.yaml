@@ -33,6 +33,9 @@ spec:
         description: The client ID to use when connecting to the resource
         type: string
         default: "mqtt-source"
+  dependencies:
+    - "camel:paho"
+    - "camel:kamelet"
   flow:
     from:
       uri: paho:{{topic}}

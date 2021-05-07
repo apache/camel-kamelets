@@ -47,6 +47,10 @@ spec:
   types:
     out:
       mediaType: text/plain
+  dependencies:
+    - "camel:core"
+    - "camel:timer"
+    - "camel:kamelet"
   flow:
     from:
       uri: timer:tick

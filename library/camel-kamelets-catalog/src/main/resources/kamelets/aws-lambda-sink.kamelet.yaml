@@ -43,6 +43,9 @@ spec:
         description: The AWS region to connect to
         type: string
         example: eu-west-1
+  dependencies:
+    - "camel:aws2-lambda"
+    - "camel:kamelet"
   flow:
     from:
       uri: kamelet:source

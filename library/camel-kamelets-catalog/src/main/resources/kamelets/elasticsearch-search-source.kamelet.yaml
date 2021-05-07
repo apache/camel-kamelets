@@ -65,12 +65,16 @@ spec:
         title: ElasticSearch Cluster Name
         description: Name of the cluster.
         type: string
-  dependencies:
-    - "camel:elasticsearch-rest"
-    - "camel:gson"
   types:
     out:
       mediaType: application/json
+  dependencies:
+      - "camel:core"
+      - "camel:kamelet"
+      - "camel:timer"
+      - "mvn:org.apache.camel.k:camel-k-kamelet-reify"
+      - "camel:elasticsearch-rest"
+      - "camel:gson"
   flow:
     from:
       uri: timer:tick

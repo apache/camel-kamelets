@@ -24,7 +24,9 @@ spec:
     out:
       mediaType: application/json
   dependencies:
-  - "camel:jackson"
+    - "camel:jackson"
+    - "camel:dns"
+    - "camel:kamelet"
   flow:
     from:
       uri: "kamelet:source"

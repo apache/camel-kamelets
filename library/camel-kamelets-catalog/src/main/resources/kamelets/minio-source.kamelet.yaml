@@ -62,6 +62,8 @@ spec:
       mediaType: application/json
   dependencies:
   - "camel:jackson"
+  - "camel:minio"
+  - "camel:kamelet"
   flow:
     from:
       uri: "minio:{{bucketName}}"
