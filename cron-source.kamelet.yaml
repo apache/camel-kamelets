@@ -32,7 +32,10 @@ spec:
     out:
       mediaType: text/plain
   dependencies:
-  - camel:quartz
+  - "camel:quartz"
+  - "camel:core"
+  - "camel:cron"
+  - "camel:kamelet"
   flow:
     from:
       uri: "cron:tick"

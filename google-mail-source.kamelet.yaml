@@ -86,6 +86,8 @@ spec:
       mediaType: application/json
   dependencies:
   - "camel:jackson"
+  - "camel:kamelet"
+  - "camel:google-mail"
   flow:
     from:
       uri: "google-mail-stream://{{index}}"

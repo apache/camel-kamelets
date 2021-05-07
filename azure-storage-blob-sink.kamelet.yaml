@@ -45,6 +45,9 @@ spec:
         description: The operation to perform.
         type: string
         default: uploadBlockBlob
+  dependencies:
+  - "camel:azure-storage-blob"
+  - "camel:kamelet"
   flow:
     from:
       uri: "kamelet:source"

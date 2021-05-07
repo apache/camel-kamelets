@@ -25,6 +25,9 @@ spec:
         description: The value of the header
         type: string
     type: object
+  dependencies:
+    - "camel:core"
+    - "camel:kamelet"
   flow:
     from:
       uri: kamelet:source

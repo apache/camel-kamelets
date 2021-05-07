@@ -20,6 +20,9 @@ spec:
 
       If the header won't be set the body will be used as domain to look for.
     type: object
+  dependencies:
+    - "camel:dns"
+    - "camel:kamelet"
   flow:
     from:
       uri: "kamelet:source"

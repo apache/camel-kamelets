@@ -28,7 +28,9 @@ spec:
         type: string
         default: POST
   dependencies:
-  - camel:http
+  - "camel:http"
+  - "camel:kamelet"
+  - "camel:core"
   flow:
     from:
       uri: kamelet:source

@@ -67,6 +67,8 @@ spec:
       mediaType: application/json
   dependencies:
   - "camel:jackson"
+  - "camel:kamelet"
+  - "camel:cassandraql"
   flow:
     from:
       uri: "cql://{{host}}:{{port}}/{{keyspace}}"

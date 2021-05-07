@@ -31,6 +31,8 @@ spec:
       mediaType: application/json
   dependencies:
   - "camel:jackson"
+  - "camel:nats"
+  - "camel:kamelet"
   flow:
     from:
       uri: "nats:{{topic}}"

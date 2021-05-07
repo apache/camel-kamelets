@@ -50,6 +50,11 @@ spec:
             type: number
           askSize:
             type: number
+  dependencies:
+    - "camel:xchange"
+    - "camel:kamelet"
+    - "camel:jackson"
+    - "camel:timer"
   flow:
     from:
       uri: "timer:update"

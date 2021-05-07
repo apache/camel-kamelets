@@ -35,6 +35,9 @@ spec:
         pattern: "^(http|https)://.*"
   dependencies:
     - "camel:http"
+    - "camel:kamelet"
+    - "camel:core"
+    - "camel:timer"
   flow:
     from:
       uri: "timer:fetch"
