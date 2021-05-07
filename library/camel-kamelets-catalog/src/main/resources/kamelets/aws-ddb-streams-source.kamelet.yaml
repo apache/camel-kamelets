@@ -59,6 +59,8 @@ spec:
       mediaType: application/json
   dependencies:
   - "camel:gson"
+  - "camel:aws2-ddb"
+  - "camel:kamelet"
   flow:
     from:
       uri: "aws2-ddbstream:{{table}}"

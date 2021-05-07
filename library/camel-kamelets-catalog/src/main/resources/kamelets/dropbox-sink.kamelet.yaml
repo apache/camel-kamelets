@@ -46,6 +46,9 @@ spec:
         description: Which mode to upload. in case of add the new file will be renamed if a file with the same name already exists on dropbox. in case of force if a file with the same name already exists on dropbox, this will be overwritten. The value can be one of add, force.
         type: string
         default: add
+  dependencies:
+    - "camel:dropbox"
+    - "camel:kamelet"
   flow:
     from:
       uri: "kamelet:source"

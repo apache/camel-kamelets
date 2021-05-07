@@ -45,6 +45,8 @@ spec:
       mediaType: application/json
   dependencies:
   - "camel:jackson"
+  - "camel:github"
+  - "camel:kamelet"
   flow:
     from:
       uri: "github://{{type}}"

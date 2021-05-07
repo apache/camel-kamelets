@@ -56,6 +56,9 @@ spec:
         description: The batch separator string
         type: string
         example: ","
+  dependencies:
+    - "camel:aws2-sqs"
+    - "camel:kamelet"
   flow:
     from:
       uri: kamelet:source

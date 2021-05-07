@@ -57,6 +57,9 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+  dependencies:
+    - "camel:kafka"
+    - "camel:kamelet"
   flow:
     from:
       uri: "kamelet:source"

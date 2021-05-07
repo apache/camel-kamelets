@@ -34,6 +34,9 @@ spec:
         title: Brokers
         description: Comma separated list of Kafka Broker URLs
         type: string
+  dependencies:
+    - "camel:kafka"
+    - "camel:kamelet"
   flow:
     from:
       uri: "kamelet:source"

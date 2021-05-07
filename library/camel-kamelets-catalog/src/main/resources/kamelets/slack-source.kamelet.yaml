@@ -35,6 +35,8 @@ spec:
       mediaType: application/json
   dependencies:
   - "camel:jackson"
+  - "camel:slack"
+  - "camel:kamelet"
   flow:
     from:
       uri: "slack:{{channel}}"
