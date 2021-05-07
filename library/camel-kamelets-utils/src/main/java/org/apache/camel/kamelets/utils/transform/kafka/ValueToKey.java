@@ -16,6 +16,9 @@
  */
 package org.apache.camel.kamelets.utils.transform.kafka;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangeProperty;
 import org.apache.camel.InvalidPayloadException;
@@ -32,17 +35,12 @@ public class ValueToKey {
 
     public void process(@ExchangeProperty("fields") String fields, Exchange ex) throws InvalidPayloadException {
         List<String> splittedFields = new ArrayList<>();
-        Map<Object, Object> body = ex.getMessage().getBody(Map.class);
-        if (body == null) {
-            String val = ex.getMessage().getMandatoryBody(String.class);
-            body = new HashMap<>();
-            // TODO: make this configurable
-            body.put("content", val);
-        }
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNodeBody = ex.getMessage().getBody(JsonNode.class);
+        Map<Object, Object> body = mapper.convertValue(jsonNodeBody, new TypeReference<Map<Object, Object>>(){});
         if (ObjectHelper.isNotEmpty(fields)) {
             splittedFields = Arrays.stream(fields.split(",")).collect(Collectors.toList());
         }
-
         Map<Object, Object> key = new HashMap<>();
         for (Map.Entry entry:
              body.entrySet()) {
