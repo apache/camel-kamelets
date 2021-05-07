@@ -21,6 +21,7 @@ import io.fabric8.camelk.v1alpha1.Kamelet;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.JSONSchemaProps;
 import io.github.classgraph.ClassGraph;
 
+import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -77,6 +78,26 @@ public class KameletsCatalogTest {
         List<Kamelet> c = catalog.getKameletByProvider("Apache Software Foundation");
         assertTrue(!c.isEmpty());
         c = catalog.getKameletByProvider("Eclipse");
+        assertTrue(c.isEmpty());
+    }
+
+    @Test
+    void testGetKameletsByType() throws Exception {
+        List<Kamelet> c = catalog.getKameletsByType(KameletTypeEnum.SOURCE.type());
+        assertTrue(!c.isEmpty());
+        c = catalog.getKameletsByType(KameletTypeEnum.SINK.type());
+        assertTrue(!c.isEmpty());
+        c = catalog.getKameletsByType(KameletTypeEnum.ACTION.type());
+        assertTrue(!c.isEmpty());
+    }
+
+    @Test
+    void testGetKameletsByGroup() throws Exception {
+        List<Kamelet> c = catalog.getKameletsByGroups("AWS S3");
+        assertTrue(!c.isEmpty());
+        c = catalog.getKameletsByGroups("AWS SQS");
+        assertTrue(!c.isEmpty());
+        c = catalog.getKameletsByGroups("Not-existing-group");
         assertTrue(c.isEmpty());
     }
 
