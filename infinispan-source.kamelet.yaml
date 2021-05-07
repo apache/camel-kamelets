@@ -67,6 +67,10 @@ spec:
         title: Infinispan Cluster Name
         description: Specifies the set of event types to register by the consumer.Multiple event can be separated by comma. The possible event types are CLIENT_CACHE_ENTRY_CREATED, CLIENT_CACHE_ENTRY_MODIFIED, CLIENT_CACHE_ENTRY_REMOVED, CLIENT_CACHE_ENTRY_EXPIRED, CLIENT_CACHE_FAILOVER
         type: string
+  dependencies:
+    - "mvn:org.apache.camel.k:camel-k-kamelet-reify"
+    - "camel:kamelet"
+    - "camel:infinispan"
   flow:
     from:
       uri: "kamelet-reify:infinispan:{{cacheName}}"

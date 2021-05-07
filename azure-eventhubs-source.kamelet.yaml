@@ -61,10 +61,14 @@ spec:
     out:
       mediaType: application/json
   dependencies:
+  #TODO: these mvn:* dependencies must be removed after upgrading to camel 3.10
   - "mvn:com.fasterxml.jackson.core:jackson-core:2.11.3"
   - "mvn:com.fasterxml.jackson.core:jackson-annotations:2.11.3"
   - "mvn:com.fasterxml.jackson.core:jackson-databind:2.11.3"
   - "mvn:com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.3"
+  - "camel:azure-eventhubs"
+  - "camel:kamelet"
+  - "camel:jackson"
   flow:
     from:
       uri: 'azure-eventhubs://{{namespaceName}}/{{eventhubName}}'

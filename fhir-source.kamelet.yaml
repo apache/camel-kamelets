@@ -62,6 +62,9 @@ spec:
   types:
     out:
       mediaType: application/json
+  dependencies:
+    - "camel:fhir"
+    - "camel:kamelet"
   flow:
     from:
       uri: "fhir://search/searchByUrl"

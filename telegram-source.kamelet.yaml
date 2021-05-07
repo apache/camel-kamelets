@@ -30,7 +30,10 @@ spec:
     out:
       mediaType: application/json
   dependencies:
-  - "camel:jackson"
+    - "camel:jackson"
+    - "camel:kamelet"
+    - "camel:telegram"
+    - "camel:core"
   flow:
     from:
       uri: telegram:bots

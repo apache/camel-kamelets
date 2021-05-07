@@ -65,6 +65,8 @@ spec:
   dependencies:
   - "camel:jackson"
   - "camel:salesforce"
+  - "mvn:org.apache.camel.k:camel-k-kamelet-reify"
+  - "camel:kamelet"
   flow:
     from:
       uri: "kamelet-reify:salesforce:{{topicName}}"

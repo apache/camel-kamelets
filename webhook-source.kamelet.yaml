@@ -26,6 +26,9 @@ spec:
           The subpath where the webhook is registered
         type: string
         default: "webhook"
+  dependencies:
+    - "camel:platform-http"
+    - "camel:kamelet"
   flow:
     from:
       uri: "platform-http:///{{subpath}}"

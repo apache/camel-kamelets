@@ -32,6 +32,9 @@ spec:
         description: The name of the cache we want to use
         type: string
         default: caffeine-cache
+  dependencies:
+    - "camel:caffeine"
+    - "camel:kamelet"
   flow:
     from:
       uri: "kamelet:source"

@@ -27,6 +27,10 @@ spec:
         title: Executable Command
         description: The command to execute
         type: string
+  dependencies:
+    - "camel:core"
+    - "camel:exec"
+    - "camel:kamelet"
   flow:
     from:
       uri: kamelet:source

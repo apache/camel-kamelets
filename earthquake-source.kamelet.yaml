@@ -30,8 +30,13 @@ spec:
     out:
       mediaType: application/json
   dependencies:
-    - camel:caffeine
-    - camel:http
+    - "camel:caffeine"
+    - "camel:http"
+    - "camel:kamelet"
+    - "camel:core"
+    - "camel:jackson"
+    - "camel:jsonpath"
+    - "camel:timer"
   flow:
     from:
       uri: "timer:earthquake"

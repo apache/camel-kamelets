@@ -45,6 +45,12 @@ spec:
         title: Queries
         description: A space-separated list of sub-strings to search for. A file matches only if it contains all the sub-strings. If this option is not set, all files will be matched.
         type: string
+  dependencies:
+    - "camel:dropbox"
+    - "camel:kamelet"
+    - "camel:core"
+    - "camel:jsonpath"
+    - "camel:timer"
   flow:
     from:
       uri: "timer:dropbox-stream"

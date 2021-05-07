@@ -54,6 +54,9 @@ spec:
         description: The command to run while polling the SSH session
         type: string
         example: date
+  dependencies:
+    - "camel:ssh"
+    - "camel:kamelet"
   flow:
     from:
       uri: "ssh://{{host}}:{{port}}"

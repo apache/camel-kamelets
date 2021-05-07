@@ -44,6 +44,10 @@ spec:
   types:
     out:
       mediaType: application/json
+  dependencies:
+    - "camel:jackson"
+    - "camel:kamelet"
+    - "camel:telegram"
   flow:
     from:
       uri: "kamelet:source"

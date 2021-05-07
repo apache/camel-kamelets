@@ -44,6 +44,9 @@ spec:
         title: Exchange name
         description: The exchange name determines the exchange the queue will be bound to
         type: string
+  dependencies:
+    - "camel:rabbitmq"
+    - "camel:kamelet"
   flow:
     from:
       uri: "rabbitmq://{{exchangeName}}"

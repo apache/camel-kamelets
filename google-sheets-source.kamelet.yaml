@@ -87,6 +87,8 @@ spec:
       mediaType: application/json
   dependencies:
   - "camel:jackson"
+  - "camel:kamelet"
+  - "camel:google-sheets"
   flow:
     from:
       uri: "google-sheets-stream://{{index}}"

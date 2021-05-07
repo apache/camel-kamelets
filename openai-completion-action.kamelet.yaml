@@ -44,8 +44,11 @@ spec:
     out:
       mediaType: text/plain
   dependencies:
-  - camel:jackson
-  - camel:jsonpath
+  - "camel:jackson"
+  - "camel:jsonpath"
+  - "camel:core"
+  - "camel:kamelet"
+  - "camel:http"
   flow:
     from:
       uri: kamelet:source
