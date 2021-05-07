@@ -70,12 +70,6 @@ public class MaskField {
         List<String> splittedFields = new ArrayList<>();
         JsonNode jsonNodeBody = ex.getMessage().getBody(JsonNode.class);
         Map<Object, Object> body = mapper.convertValue(jsonNodeBody, new TypeReference<Map<Object, Object>>(){});
-        if (body == null) {
-            String val = ex.getMessage().getMandatoryBody(String.class);
-            body = new HashMap<>();
-            // TODO: make this configurable
-            body.put("content", val);
-        }
         if (ObjectHelper.isNotEmpty(fields)) {
             splittedFields = Arrays.stream(fields.split(",")).collect(Collectors.toList());
         }
