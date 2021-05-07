@@ -16,23 +16,21 @@
  */
 package org.apache.camel.kamelets.utils.transform;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangeProperty;
 import org.apache.camel.InvalidPayloadException;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class ExtractField {
 
-    public void process(@ExchangeProperty("field") String field, Exchange ex) throws InvalidPayloadException {
-        Map<Object, Object> body = ex.getMessage().getBody(Map.class);
-        if (body == null) {
-            String val = ex.getMessage().getMandatoryBody(String.class);
-            body = new HashMap<>();
-            // TODO: make this configurable
-            body.put("content", val);
-        }
+    public void process(@ExchangeProperty("field") String field, Exchange ex) {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNodeBody = ex.getMessage().getBody(JsonNode.class);
+        Map<Object, Object> body = mapper.convertValue(jsonNodeBody, new TypeReference<Map<Object, Object>>(){});
         ex.getMessage().setBody(body.get(field));
     }
 
