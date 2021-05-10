@@ -16,6 +16,7 @@
  */
 package org.apache.camel.kamelets.utils.transform;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -23,14 +24,18 @@ import org.apache.camel.Exchange;
 import org.apache.camel.ExchangeProperty;
 import org.apache.camel.InvalidPayloadException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class HoistField {
 
     public JsonNode process(@ExchangeProperty("field") String field, Exchange ex) throws InvalidPayloadException {
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode body = ex.getMessage().getBody(JsonNode.class);
-        ObjectNode updatedNode = mapper.createObjectNode();
-        updatedNode.set(field, body);
-        return updatedNode;
+        JsonNode jsonNodeBody = ex.getMessage().getBody(JsonNode.class);
+        Map<Object, Object> body = mapper.convertValue(jsonNodeBody, new TypeReference<Map<Object, Object>>(){});
+        Map<Object, Object> updatedBody = new HashMap<>();
+        updatedBody.put(field, body);
+        return mapper.valueToTree(updatedBody);
     }
 
 }
