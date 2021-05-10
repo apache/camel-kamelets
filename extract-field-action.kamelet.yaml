@@ -33,6 +33,9 @@ spec:
           when:
           - simple: "${header[Content-Type]} == 'application/json'"
             steps:
+            - set-property:
+                name: deserialized
+                constant: "true"
             - unmarshal:
                 json: 
                   library: Jackson
@@ -41,10 +44,14 @@ spec:
           name: "field"
           constant: "{{field}}"
       - bean: "org.apache.camel.kamelets.utils.transform.ExtractField"
-      - marshal:
-          json: 
-            library: Jackson
-            unmarshalTypeName: com.fasterxml.jackson.databind.JsonNode
-      - set-header:
-          name: "Content-Type"
-          constant: "application/json"
+      - choice:
+          when:
+          - simple: "${exchangeProperty[deserialized]} == 'true'"
+            steps:
+            - marshal:
+                json: 
+                  library: Jackson
+                  unmarshalTypeName: com.fasterxml.jackson.databind.JsonNode
+            - set-header:
+                name: "Content-Type"
+                constant: "application/json"
