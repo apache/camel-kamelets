@@ -12,8 +12,8 @@ spec:
     title: "Regex Router Action"
     description: "Update the destination using the configured regular expression and replacement string"
     required:
-      - field
-      - value
+      - regex
+      - replacement
     properties:
       regex:
         title: Regex
@@ -26,6 +26,8 @@ spec:
     type: object
   dependencies:
   - github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT
+  - "camel:kamelet"
+  - "camel:core"
   flow:
     from:
       uri: kamelet:source
