@@ -11,8 +11,8 @@ The following table summarizes the configuration options available for the `rege
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| regex| Regex| Regular Expression for destination| string| | 
-| replacement| Replacement| Replacement when matching| string| | 
+| *regex {empty}* *| Regex| Regular Expression for destination| string| | 
+| *replacement {empty}* *| Replacement| Replacement when matching| string| | 
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
@@ -45,6 +45,9 @@ spec:
       kind: Kamelet
       apiVersion: camel.apache.org/v1alpha1
       name: regex-router-action
+    properties:
+      regex: "The Regex"
+      replacement: "The Replacement"
   sink:
     ref:
       kind: InMemoryChannel
