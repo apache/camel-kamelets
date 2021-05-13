@@ -30,6 +30,6 @@ pre:
 post:
 - name: dump
   run: |
-    kamel dump $(basename `pwd`)-dump.log
+    kamel dump -n $YAKS_NAMESPACE $(basename `pwd`)-dump.log
     mkdir -p /tmp/dumps
     cp *-dump.log /tmp/dumps

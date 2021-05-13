@@ -25,3 +25,9 @@ pre:
 
     kamel install -n $YAKS_NAMESPACE
     kubectl apply -f ../../earthquake-source.kamelet.yaml -n $YAKS_NAMESPACE
+post:
+- name: dump
+  run: |
+    kamel dump -n $YAKS_NAMESPACE $(basename `pwd`)-dump.log
+    mkdir -p /tmp/dumps
+    cp *-dump.log /tmp/dumps
