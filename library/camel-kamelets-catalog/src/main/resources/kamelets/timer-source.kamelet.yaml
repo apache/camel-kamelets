@@ -44,9 +44,11 @@ spec:
         description: The message to generate
         type: string
         example: hello world
-  types:
-    out:
-      mediaType: text/plain
+      contentType:
+        title: Content Type
+        description: The content type of the message being generated
+        type: string
+        default: text/plain
   dependencies:
     - "camel:core"
     - "camel:timer"
@@ -59,4 +61,7 @@ spec:
       steps:
         - set-body:
             constant: "{{message}}"
+        - set-header:
+            name: "Content-Type"
+            constant: "{{contentType}"
         - to: kamelet:sink
