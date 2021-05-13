@@ -20,9 +20,9 @@ The following table summarizes the configuration options available for the `elas
 | Property| Name| Description| Type| Default| Example
 | *clusterName {empty}* *| ElasticSearch Cluster Name| Name of the cluster.| string| | `"quickstart"`
 | *hostAddresses {empty}* *| Host Addresses| Comma separated list with ip:port formatted remote transport addresses to use.| string| | `"quickstart-es-http:9200"`
-| *indexName {empty}* *| Index in ElasticSearch| The name of the index to act against.| string| | `"data"`
 | enableSSL| Enable SSL| Do we want to connect using SSL?| boolean| `true`| 
 | indexId| Index ID| None| string| `"NONE"`| 
+| indexName| Index in ElasticSearch| The name of the index to act against.| string| `"NONE"`| `"data"`
 | password| Password| Password to connect to ElasticSearch.| string| | 
 | user| Username| Username to connect to ElasticSearch.| string| | 
 |===
@@ -58,7 +58,6 @@ spec:
     properties:
       clusterName: "quickstart"
       hostAddresses: "quickstart-es-http:9200"
-      indexName: "data"
 
 ----
 
