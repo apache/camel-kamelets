@@ -12,6 +12,8 @@ If the *indexId* parameter is set, that value will be used as the document ID on
 If the *indexId* parameter is not set and the source of the kamelet binding is a Kafka broker, it will take the kafka topic, partition and offset of the
 element to generate an automatic ID that warrantees that this element is processed only once.
 
+If the *indexName* parameter is not set and the source of the kamelet binding is a Kafka broker, it will take the kafka topic as the indexName.
+
 == Configuration Options
 
 The following table summarizes the configuration options available for the `elasticsearch-index-sink` Kamelet:

@@ -29,6 +29,8 @@ spec:
 
       If the *indexId* parameter is not set and the source of the kamelet binding is a Kafka broker, it will take the kafka topic, partition and offset of the
       element to generate an automatic ID that warrantees that this element is processed only once.
+
+      If the *indexName* parameter is not set and the source of the kamelet binding is a Kafka broker, it will take the kafka topic as the indexName.
     required:
       - clusterName
       - hostAddresses
