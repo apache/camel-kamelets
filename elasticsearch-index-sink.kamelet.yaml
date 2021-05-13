@@ -31,7 +31,6 @@ spec:
       element to generate an automatic ID that warrantees that this element is processed only once.
     required:
       - clusterName
-      - indexName
       - hostAddresses
     type: object
     properties:
@@ -60,6 +59,7 @@ spec:
         description: The name of the index to act against.
         type: string
         example: data
+        default: 'NONE'
       clusterName:
         title: ElasticSearch Cluster Name
         description: Name of the cluster.
@@ -69,7 +69,7 @@ spec:
         title: Index ID
         description: None
         type: string
-        default: "NONE"
+        default: 'NONE'
   types:
     out:
       mediaType: application/json
@@ -97,14 +97,18 @@ spec:
                   - set-header:
                       name: "indexId"
                       simple: "{{indexId}}"
-        - to:
-            uri: "kamelet-reify:elasticsearch-rest:{{clusterName}}"
-            parameters:
-              operation: "INDEX"
-              indexName: "{{indexName}}"
-              hostAddresses: "{{hostAddresses}}"
-              enableSSL: "{{enableSSL}}"
-              user: "{{user}}"
-              password: "{{password}}"
+        - choice:
+            when:
+              - simple: "'{{indexName}}' == 'NONE'"
+                steps:
+                  - set-property:
+                      name: esIndexName
+                      simple: "${header[kafka.TOPIC]}"
+            otherwise:
+              steps:
+                - set-property:
+                    name: esIndexName
+                    simple: "{{indexName}}"
+        - to-d: "kamelet-reify:elasticsearch-rest:{{clusterName}}?hostAddresses=RAW({{hostAddresses}})&operation=INDEX&indexName=${exchangeProperty.esIndexName}&enableSSL={{enableSSL}}&user={{user}}&password={{password}}"
         - marshal:
             json: { }
