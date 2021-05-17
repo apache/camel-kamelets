@@ -30,9 +30,9 @@ import java.util.regex.Pattern;
 public class TimestampRouter {
 
     public void process(@ExchangeProperty("topicFormat") String topicFormat, @ExchangeProperty("timestampFormat") String timestampFormat, Exchange ex) {
-        final Pattern TOPIC = Pattern.compile("[topic]", Pattern.LITERAL);
+        final Pattern TOPIC = Pattern.compile("$[topic]", Pattern.LITERAL);
 
-        final Pattern TIMESTAMP = Pattern.compile("[timestamp]", Pattern.LITERAL);
+        final Pattern TIMESTAMP = Pattern.compile("$[timestamp]", Pattern.LITERAL);
 
         final SimpleDateFormat fmt = new SimpleDateFormat(timestampFormat);
         fmt.setTimeZone(TimeZone.getTimeZone("UTC"));
