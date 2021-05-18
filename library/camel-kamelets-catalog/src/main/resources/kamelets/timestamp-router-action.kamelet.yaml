@@ -17,12 +17,17 @@ spec:
         title: Topic Format
         description: Format string which can contain '$[topic]' and '$[timestamp]' as placeholders for the topic and timestamp, respectively.
         type: string
-        default: "$[topic]-$[timestamp]"
+        default: "topic-$[timestamp]"
       timestampFormat:
         title: Timestamp Format
         description: Format string for the timestamp that is compatible with java.text.SimpleDateFormat.
         type: string
         default: "yyyyMMdd"
+      timestampHeaderName:
+        title: Timestamp Header Name
+        description: The name of the header containing a timestamp
+        type: string
+        default: "kafka.TIMESTAMP"
     type: object
   dependencies:
   - github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT
@@ -38,4 +43,7 @@ spec:
       - set-property:
           name: "timestampFormat"
           constant: "{{timestampFormat}}"
+      - set-property:
+          name: "timestampHeaderName"
+          constant: "{{timestampHeaderName}}"
       - bean: "org.apache.camel.kamelets.utils.transform.kafka.TimestampRouter"
