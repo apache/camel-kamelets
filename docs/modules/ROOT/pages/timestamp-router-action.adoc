@@ -12,7 +12,8 @@ The following table summarizes the configuration options available for the `time
 |===
 | Property| Name| Description| Type| Default| Example
 | timestampFormat| Timestamp Format| Format string for the timestamp that is compatible with java.text.SimpleDateFormat.| string| `"yyyyMMdd"`| 
-| topicFormat| Topic Format| Format string which can contain '$[topic]' and '$[timestamp]' as placeholders for the topic and timestamp, respectively.| string| `"$[topic]-$[timestamp]"`| 
+| timestampHeaderName| Timestamp Header Name| The name of the header containing a timestamp| string| `"kafka.TIMESTAMP"`| 
+| topicFormat| Topic Format| Format string which can contain '$[topic]' and '$[timestamp]' as placeholders for the topic and timestamp, respectively.| string| `"topic-$[timestamp]"`| 
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
