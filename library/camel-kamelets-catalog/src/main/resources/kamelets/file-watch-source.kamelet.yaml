@@ -27,9 +27,6 @@ spec:
         description: The type of events to consume
         type: string
         default: "CREATE,MODIFY,DELETE"
-  types:
-    out:
-      mediaType: application/json
   dependencies:
     - "camel:file-watch"
     - "camel:kamelet"
