@@ -70,7 +70,7 @@ public class MessageTimestampRouter {
             timestampKeyFmt.setTimeZone(TimeZone.getTimeZone("UTC"));
             timestamp = timestampKeyFmt.parse((String) rawTimestamp).getTime();
         } else {
-            timestamp = (long) rawTimestamp;
+            timestamp = Long.getLong(String.valueOf(rawTimestamp));
         }
         if (ObjectHelper.isNotEmpty(timestamp)) {
             final String formattedTimestamp = fmt.format(new Date(timestamp));
