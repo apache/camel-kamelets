@@ -24,6 +24,7 @@ import org.apache.camel.ExchangeProperty;
 import org.apache.camel.component.kafka.KafkaConstants;
 import org.apache.camel.util.ObjectHelper;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ import java.util.stream.Collectors;
 
 public class MessageTimestampRouter {
 
-    public void process(@ExchangeProperty("topicFormat") String topicFormat, @ExchangeProperty("timestampFormat") String timestampFormat, @ExchangeProperty("timestampKeys") String timestampKeys, @ExchangeProperty("timestampKeyFormat") String timestampKeyFormat, Exchange ex) {
+    public void process(@ExchangeProperty("topicFormat") String topicFormat, @ExchangeProperty("timestampFormat") String timestampFormat, @ExchangeProperty("timestampKeys") String timestampKeys, @ExchangeProperty("timestampKeyFormat") String timestampKeyFormat, Exchange ex) throws ParseException {
         final Pattern TOPIC = Pattern.compile("$[topic]", Pattern.LITERAL);
 
         final Pattern TIMESTAMP = Pattern.compile("$[timestamp]", Pattern.LITERAL);
@@ -54,22 +55,22 @@ public class MessageTimestampRouter {
             splittedKeys = Arrays.stream(timestampKeys.split(",")).collect(Collectors.toList());
         }
 
-        String rawTimestamp = null;
+        Object rawTimestamp = null;
         String topicName = ex.getMessage().getHeader(KafkaConstants.TOPIC, String.class);
         for (String key:
              splittedKeys) {
              if (ObjectHelper.isNotEmpty(key)) {
-                 rawTimestamp = (String) body.get(key);
+                 rawTimestamp = body.get(key);
                break;
              }
         }
-        String timestamp;
+        long timestamp;
         if (ObjectHelper.isNotEmpty(timestampKeyFormat) && ObjectHelper.isNotEmpty(rawTimestamp)) {
             final SimpleDateFormat timestampKeyFmt = new SimpleDateFormat(timestampKeyFormat);
-            fmt.setTimeZone(TimeZone.getTimeZone("UTC"));
-            timestamp = timestampKeyFmt.format(new Date(rawTimestamp));
+            timestampKeyFmt.setTimeZone(TimeZone.getTimeZone("UTC"));
+            timestamp = timestampKeyFmt.parse((String) rawTimestamp).getTime();
         } else {
-            timestamp = rawTimestamp;
+            timestamp = (long) rawTimestamp;
         }
         if (ObjectHelper.isNotEmpty(timestamp)) {
             final String formattedTimestamp = fmt.format(new Date(timestamp));
