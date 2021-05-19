@@ -65,7 +65,7 @@ public class MessageTimestampRouter {
              }
         }
         long timestamp;
-        if (ObjectHelper.isNotEmpty(timestampKeyFormat) && ObjectHelper.isNotEmpty(rawTimestamp)) {
+        if (ObjectHelper.isNotEmpty(timestampKeyFormat) && ObjectHelper.isNotEmpty(rawTimestamp) && !timestampKeyFormat.equalsIgnoreCase("timestamp")) {
             final SimpleDateFormat timestampKeyFmt = new SimpleDateFormat(timestampKeyFormat);
             timestampKeyFmt.setTimeZone(TimeZone.getTimeZone("UTC"));
             timestamp = timestampKeyFmt.parse((String) rawTimestamp).getTime();
