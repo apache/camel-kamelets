@@ -265,6 +265,9 @@ func verifyAnnotations(kamelets []KameletInfo) (errors []error) {
 		if icon := kamelet.Annotations["camel.apache.org/kamelet.icon"]; icon == "" {
 			errors = append(errors, fmt.Errorf("kamelet %q does not contain the camel.apache.org/kamelet.icon annotation", kamelet.Name))
 		}
+		if catalogVersion := kamelet.Annotations["camel.apache.org/catalog.version"]; catalogVersion == "" {
+			errors = append(errors, fmt.Errorf("kamelet %q does not contain the camel.apache.org/catalog.version annotation (should match project version in pom.xml)", kamelet.Name))
+		}
 		expectedProvider := "Apache Software Foundation"
 		if provider := kamelet.Annotations["camel.apache.org/provider"]; provider != expectedProvider {
 			errors = append(errors, fmt.Errorf("kamelet %q does not contain the right value for the camel.apache.org/provider annotation: expected %q, found %q", kamelet.Name, expectedProvider, provider))
