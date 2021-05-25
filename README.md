@@ -142,3 +142,32 @@ Test code must be submitted in the `test/<kamelet-name>/` directory in the root 
 Kamelets submitted with tests that verify their correctness **MUST** be labeled with `camel.apache.org/kamelet.verified=true`.
 
 **NOTE**: there's no way at the moment to inject credentials for external systems into the CI in order to write more advanced tests, but we can expect we'll find an usable strategy in the long run
+
+## Releasing
+
+This project is released as standard Apache Camel module. To release it:
+
+```
+export CAMEL_KAMELET_VERSION=x.y.z
+./mvnw release:prepare -Prelease \
+  -DdryRun \
+  -DreleaseVersion=$CAMEL_KAMELET_VERSION \
+  -DdevelopmentVersion=main-SNAPSHOT \
+  -Dtag=v$CAMEL_KAMELET_VERSION
+```
+
+Check the signatures of the files, then clean and prepare the actual release:
+
+```
+./mvnw release:clean -Prelease
+./mvnw release:prepare -Prelease \
+  -DreleaseVersion=$CAMEL_KAMELET_VERSION \
+  -DdevelopmentVersion=main-SNAPSHOT \
+  -Dtag=v$CAMEL_KAMELET_VERSION
+```
+
+Then perform the release:
+
+```
+./mvnw release:perform -Prelease
+```
