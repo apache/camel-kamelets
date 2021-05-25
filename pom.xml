@@ -264,6 +264,7 @@
                     <plugin>
                         <artifactId>maven-antrun-plugin</artifactId>
                         <version>3.0.0</version>
+                        <inherited>false</inherited>
                         <executions>
                             <execution>
                                 <phase>process-resources</phase>
@@ -272,16 +273,9 @@
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <replaceregexp match="camel.apache.org/catalog.version:.*$" replace="camel.apache.org/catalog.version: &quot;${project.version}&quot;" byline="true">
-                                            <fileset dir=".">
-                                                <include name="*.kamelet.yaml"/>
-                                            </fileset>
-                                        </replaceregexp>
-                                        <replaceregexp match="github:apache.camel-kamelets:camel-kamelets-utils:[A-Za-z0-9-.]+" replace="mvn:org.apache.camel.kamelets:camel-kamelets-utils:${project.version}" byline="true">
-                                            <fileset dir=".">
-                                                <include name="*.kamelet.yaml"/>
-                                            </fileset>
-                                        </replaceregexp>
+                                        <ant antfile="release.xml">
+                                            <target name="release"/>
+                                        </ant>
                                     </target>
                                 </configuration>
                             </execution>
