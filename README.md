@@ -165,6 +165,8 @@ Stage the commits in SVN:
 
 ```
 git commit -am "Prepare for release $CAMEL_KAMELET_VERSION"
+
+git push upstream main
 ```
 
 Check that everything is alright with a dryRun:
