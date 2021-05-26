@@ -152,7 +152,7 @@ To release it, first set the version of the project to the next tag and release 
 ```
 export CAMEL_KAMELET_VERSION=x.y.z
 
-./mvnw versions:set $CAMEL_KAMELET_VERSION -DgenerateBackupPoms=false
+./mvnw versions:set -DnewVersion=$CAMEL_KAMELET_VERSION -DgenerateBackupPoms=false
 ```
 
 Then, build the project to update Kamelet references:
