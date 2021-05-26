@@ -145,10 +145,31 @@ Kamelets submitted with tests that verify their correctness **MUST** be labeled 
 
 ## Releasing
 
-This project is released as standard Apache Camel module. To release it:
+This project is released as standard Apache Camel module.
+
+To release it, first set the version of the project to the next tag and release it:
 
 ```
 export CAMEL_KAMELET_VERSION=x.y.z
+
+./mvnw versions:set $CAMEL_KAMELET_VERSION -DgenerateBackupPoms=false
+```
+
+Then, build the project to update Kamelet references:
+
+```
+./mvnw clean install
+```
+
+Stage the commits in SVN:
+
+```
+git commit -am "Prepare for release $CAMEL_KAMELET_VERSION"
+```
+
+Check that everything is alright with a dryRun:
+
+```
 ./mvnw release:prepare -Prelease \
   -DdryRun \
   -DreleaseVersion=$CAMEL_KAMELET_VERSION \
