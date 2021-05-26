@@ -283,6 +283,13 @@
             </activation>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <configuration>
+                            <arguments>-Papache-release -Dmaven.antrun.skip ${arguments}</arguments>
+                        </configuration>
+                    </plugin>
                     <!-- We want to deploy the artifact to a staging location for perusal -->
                     <plugin>
                         <inherited>true</inherited>
