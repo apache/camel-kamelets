@@ -86,6 +86,10 @@ func produceDoc(k camel.Kamelet, out string, image string) {
 		content += fmt.Sprintf("*Provided by: %q*\n", prov)
 		content += "\n"
 	}
+	if supportLevel, ok := k.Annotations["camel.apache.org/kamelet.support.level"]; ok {
+		content += fmt.Sprintf("*Support Level for this Kamelet is: %q*\n", supportLevel)
+		content += "\n"
+	}
 	content += k.Spec.Definition.Description + "\n"
 	content += "\n"
 	content += "== Configuration Options\n"
