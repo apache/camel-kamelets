@@ -1,7 +1,7 @@
 apiVersion: camel.apache.org/v1alpha1
 kind: Kamelet
 metadata:
-  name: avro-deserialize-action
+  name: avro-serialize-action
   labels:
     camel.apache.org/kamelet.type: "action"
   annotations:
@@ -10,8 +10,8 @@ metadata:
     camel.apache.org/kamelet.group: "Actions"
 spec:
   definition:
-    title: "Avro Deserialize Action"
-    description: "Deserialize payload to Avro"
+    title: "Avro Serialize Action"
+    description: "Serialize payload to Avro"
     type: object
     properties:
       schema:
@@ -33,10 +33,17 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - unmarshal:
+      - set-property:
+          name: schema
+          constant: "{{schema}}"
+      - set-property:
+          name: validate
+          constant: "{{validate}}"
+      - marshal:
           avro: 
             library: Jackson
             unmarshalTypeName: com.fasterxml.jackson.databind.JsonNode
             schemaResolver: "#class:org.apache.camel.kamelets.utils.serialization.InflightAvroSchemaResolver"
-      - remove-header:
-          header-name: "Content-Type"
+      - set-header:
+          name: "Content-Type"
+          constant: "application/avro"
