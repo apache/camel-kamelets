@@ -1,7 +1,7 @@
 apiVersion: camel.apache.org/v1alpha1
 kind: Kamelet
 metadata:
-  name: avro-serialize-action
+  name: avro-deserialize-action
   labels:
     camel.apache.org/kamelet.type: "action"
   annotations:
@@ -10,41 +10,22 @@ metadata:
     camel.apache.org/kamelet.group: "Actions"
 spec:
   definition:
-    title: "Avro Serialize Action"
-    description: "Serialize payload to Avro"
+    title: "Json Deserialize Action"
+    description: "Deserialize payload to JSON"
     type: object
-    properties:
-      schema:
-        title: Schema
-        description: The Avro schema to use during serialization (as single-line, using JSON format)
-        type: string
-        example: '{"type": "record", "namespace": "com.example", "name": "FullName", "fields": [{"name": "first", "type": "string"},{"name": "last", "type": "string"}]}'
-      validate:
-        title: Validate
-        description: Indicates if the content must be validated against the schema
-        type: boolean
-        default: true
   dependencies:
 #  - "github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT"
   - "github:nicolaferraro.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT"
   - "camel:kamelet"
   - "camel:core"
-  - "camel:jackson-avro"
+  - "camel:jackson"
   flow:
     from:
       uri: kamelet:source
       steps:
-      - set-property:
-          name: schema
-          constant: "{{schema}}"
-      - set-property:
-          name: validate
-          constant: "{{validate}}"
-      - marshal:
-          avro: 
+      - unmarshal:
+          json: 
             library: Jackson
             unmarshalTypeName: com.fasterxml.jackson.databind.JsonNode
-            schemaResolver: "#class:org.apache.camel.kamelets.utils.serialization.InflightAvroSchemaResolver"
-      - set-header:
-          name: "Content-Type"
-          constant: "application/avro"
+      - remove-header:
+          header-name: "Content-Type"
