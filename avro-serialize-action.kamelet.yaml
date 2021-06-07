@@ -46,10 +46,14 @@ spec:
           name: validate
           constant: "{{validate}}"
       - marshal:
-          avro: 
+          avro:
             library: Jackson
             unmarshalTypeName: com.fasterxml.jackson.databind.JsonNode
             schemaResolver: "#class:org.apache.camel.kamelets.utils.serialization.InflightAvroSchemaResolver"
+      - remove-property:
+          property-name: schema
+      - remove-property:
+          property-name: validate
       - set-header:
           name: "Content-Type"
           constant: "application/avro"
