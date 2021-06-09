@@ -22,6 +22,7 @@ spec:
         description: The JsonPath Expression to evaluate, without the external parenthesis. Since this is a filter, the expression will be a negation, this means that if the foo field of the example is equals to John, the message will go ahead, otherwise it will be filtered out. 
         type: string
         example: '@.foo =~ /.*John/'
+    type: object
   dependencies:
   - "camel:core"
   - "camel:kamelet"
