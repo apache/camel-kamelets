@@ -13,7 +13,7 @@ The following table summarizes the configuration options available for the `has-
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| *name {empty}* *| Header Name| The header name to evaluate| string| | 
+| *name {empty}* *| Header Name| The header name to evaluate| string| | `"headerName"`
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
@@ -47,7 +47,7 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: has-header-filter-action
     properties:
-      name: "The Header Name"
+      name: "headerName"
   sink:
     ref:
       kind: InMemoryChannel
