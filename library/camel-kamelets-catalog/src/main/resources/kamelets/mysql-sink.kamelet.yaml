@@ -24,10 +24,8 @@ spec:
           - "mvn:mysql:mysql-connector-java:<version>"
     required:
       - serverName
-      - port
       - username
       - password
-      - databaseName
       - query
     type: object
     properties:
@@ -40,7 +38,7 @@ spec:
         title: Port
         description: Server Port for the data source
         type: string
-        example: 3306
+        default: 3306
       username:
         title: Username
         description: The username to use for accessing a secured MySQL Database
@@ -60,6 +58,7 @@ spec:
         title: Database Name
         description: The Database Name we are pointing
         type: string
+        default: mysql
   dependencies:
   - "camel:jackson"
   - "camel:kamelet"
