@@ -20,12 +20,12 @@ The following table summarizes the configuration options available for the `mysq
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| *databaseName {empty}* *| Database Name| The Database Name we are pointing| string| | 
 | *password {empty}* *| Password| The password to use for accessing a secured MySQL Database| string| | 
-| *port {empty}* *| Port| Server Port for the data source| string| | `3306`
 | *query {empty}* *| Query| The Query to execute against the MySQL Database| string| | 
 | *serverName {empty}* *| Server Name| Server Name for the data source| string| | `"localhost"`
 | *username {empty}* *| Username| The username to use for accessing a secured MySQL Database| string| | 
+| databaseName| Database Name| The Database Name we are pointing| string| `"mysql"`| 
+| port| Port| Server Port for the data source| string| `3306`| 
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
@@ -57,9 +57,7 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: mysql-sink
     properties:
-      databaseName: "The Database Name"
       password: "The Password"
-      port: 3306
       query: "The Query"
       serverName: "localhost"
       username: "The Username"
