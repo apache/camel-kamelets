@@ -7,12 +7,17 @@
 
 Send data to a Microsoft SQL Server Database.
 
-In you KameletBinding file you'll need to explicitly declare the SQL Server driver dependency, like in the following YAML snippet
+In you KameletBinding file you'll need to explicitly declare the SQL Server driver dependency in spec->integration->dependencies
 
-spec:
-  integration:
-    dependencies:
-    - "mvn:com.microsoft.sqlserver:mssql-jdbc:<version>"
+- "mvn:com.microsoft.sqlserver:mssql-jdbc:<version>"
+
+This Kamelet expects a JSON as body. The mapping between the JSON fields and parameters is done by key, so if you have the following query:
+
+'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
+
+The Kamelet need to receive as input something like:
+
+'{ "username":"oscerd", "city":"Rome"}'
 
 == Configuration Options
 
@@ -22,7 +27,7 @@ The following table summarizes the configuration options available for the `sqls
 | Property| Name| Description| Type| Default| Example
 | *databaseName {empty}* *| Database Name| The Database Name we are pointing| string| | 
 | *password {empty}* *| Password| The password to use for accessing a secured SQL Server Database| string| | 
-| *query {empty}* *| Query| The Query to execute against the SQL Server Database| string| | 
+| *query {empty}* *| Query| The Query to execute against the SQL Server Database| string| | `"INSERT INTO accounts (username,city) VALUES (:#username,:#city)"`
 | *serverName {empty}* *| Server Name| Server Name for the data source| string| | `"localhost"`
 | *username {empty}* *| Username| The username to use for accessing a secured SQL Server Database| string| | 
 | port| Port| Server Port for the data source| string| `1433`| 
@@ -59,7 +64,7 @@ spec:
     properties:
       databaseName: "The Database Name"
       password: "The Password"
-      query: "The Query"
+      query: "INSERT INTO accounts (username,city) VALUES (:#username,:#city)"
       serverName: "localhost"
       username: "The Username"
 
