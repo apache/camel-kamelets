@@ -16,7 +16,7 @@ spec:
     description: |-
       Send data to a Microsoft SQL Server Database.
 
-      In you KameletBinding file you'll need to explicitly declare the MariaDB driver dependency, like in the following YAML snippet
+      In you KameletBinding file you'll need to explicitly declare the SQL Server driver dependency, like in the following YAML snippet
       
       spec:
         integration:
@@ -42,18 +42,18 @@ spec:
         default: 1433
       username:
         title: Username
-        description: The username to use for accessing a secured MariaDB Database
+        description: The username to use for accessing a secured SQL Server Database
         type: string
       password:
         title: Password
-        description: The password to use for accessing a secured MariaDB Database
+        description: The password to use for accessing a secured SQL Server Database
         type: string
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
       query:
         title: Query
-        description: The Query to execute against the MariaDB Database
+        description: The Query to execute against the SQL Server Database
         type: string
       databaseName:
         title: Database Name
