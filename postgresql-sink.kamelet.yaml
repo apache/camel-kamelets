@@ -15,11 +15,20 @@ spec:
     title: "PostgreSQL Sink"
     description: |-
       Send data to a PostgreSQL Database.
+
+      This Kamelet expects a JSON as body. The mapping between the JSON fields and parameters is done by key, so if you have the following query:
+
+      'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
+
+      The Kamelet needs to receive as input something like:
+
+      '{ "username":"oscerd", "city":"Rome"}'
     required:
       - serverName
       - username
       - password
       - query
+      - databaseName
     type: object
     properties:
       serverName:
@@ -47,11 +56,14 @@ spec:
         title: Query
         description: The Query to execute against the PostgreSQL Database
         type: string
+        example: 'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
       databaseName:
         title: Database Name
         description: The Database Name we are pointing
         type: string
-        default: postgres
+  types:
+    out:
+      mediaType: application/json
   dependencies:
   - "camel:jackson"
   - "camel:kamelet"
