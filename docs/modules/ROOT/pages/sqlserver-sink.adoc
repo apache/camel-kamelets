@@ -7,7 +7,7 @@
 
 Send data to a Microsoft SQL Server Database.
 
-In you KameletBinding file you'll need to explicitly declare the MariaDB driver dependency, like in the following YAML snippet
+In you KameletBinding file you'll need to explicitly declare the SQL Server driver dependency, like in the following YAML snippet
 
 spec:
   integration:
@@ -21,10 +21,10 @@ The following table summarizes the configuration options available for the `sqls
 |===
 | Property| Name| Description| Type| Default| Example
 | *databaseName {empty}* *| Database Name| The Database Name we are pointing| string| | 
-| *password {empty}* *| Password| The password to use for accessing a secured MariaDB Database| string| | 
-| *query {empty}* *| Query| The Query to execute against the MariaDB Database| string| | 
+| *password {empty}* *| Password| The password to use for accessing a secured SQL Server Database| string| | 
+| *query {empty}* *| Query| The Query to execute against the SQL Server Database| string| | 
 | *serverName {empty}* *| Server Name| Server Name for the data source| string| | `"localhost"`
-| *username {empty}* *| Username| The username to use for accessing a secured MariaDB Database| string| | 
+| *username {empty}* *| Username| The username to use for accessing a secured SQL Server Database| string| | 
 | port| Port| Server Port for the data source| string| `1433`| 
 |===
 
