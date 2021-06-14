@@ -16,12 +16,17 @@ spec:
     description: |-
       Send data to a MariaDB Database.
 
-      In you KameletBinding file you'll need to explicitly declare the MariaDB driver dependency, like in the following YAML snippet
+      In you KameletBinding file you'll need to explicitly declare the SQL Server driver dependency in spec->integration->dependencies
       
-      spec:
-        integration:
-          dependencies:
-          - "mvn:org.mariadb.jdbc:mariadb-java-client:<version>"
+      - "mvn:org.mariadb.jdbc:mariadb-java-client:<version>"
+
+      This Kamelet expects a JSON as body. The mapping between the JSON fields and parameters is done by key, so if you have the following query:
+
+      'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
+
+      The Kamelet needs to receive as input something like:
+
+      '{ "username":"oscerd", "city":"Rome"}'
     required:
       - serverName
       - username
@@ -55,10 +60,14 @@ spec:
         title: Query
         description: The Query to execute against the MariaDB Database
         type: string
+        example: 'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
       databaseName:
         title: Database Name
         description: The Database Name we are pointing
         type: string
+  types:
+    in:
+      mediaType: application/json
   dependencies:
   - "camel:jackson"
   - "camel:kamelet"
