@@ -59,6 +59,13 @@ spec:
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+      includeBody:
+        title: Include Body
+        description: If it is true, the exchange will be consumed and put into the body and closed. If false the S3Object stream will be put raw into the body and the headers will be set with the S3 object metadata. 
+        type: boolean
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: true
   dependencies:
     - "camel:aws2-s3"
     - "camel:kamelet"
@@ -70,6 +77,7 @@ spec:
         secretKey: "{{secretKey}}"
         accessKey: "{{accessKey}}"
         region: "{{region}}"
+        includeBody: "{{includeBody}}"
         deleteAfterRead: "{{deleteAfterRead}}"
       steps:
       - to: "kamelet:sink"
