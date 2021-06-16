@@ -20,6 +20,7 @@ The following table summarizes the configuration options available for the `aws-
 | *secretKey {empty}* *| Secret Key| The secret key obtained from AWS.| string| | 
 | autoCreateBucket| Autocreate Bucket| Setting the autocreation of the S3 bucket bucketName.| boolean| `false`| 
 | batchMessageNumber| Batch Message Number| The number of messages composing a batch in streaming upload mode| int| `10`| 
+| batchSize| Batch Size| The batch size (in bytes) in streaming upload mode| int| `1000000`| 
 | namingStrategy| Naming Strategy| The naming strategy to use in streaming upload mode. There are 2 enums and the value can be one of progressive, random| string| `"progressive"`| 
 | restartingPolicy| Restarting Policy| The restarting policy to use in streaming upload mode. There are 2 enums and the value can be one of override, lastPart| string| `"lastPart"`| 
 | streamingUploadMode| Streaming Upload Mode| Setting the Streaming Upload Mode| boolean| `true`| 
