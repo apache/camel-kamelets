@@ -61,6 +61,9 @@ spec:
         title: Prepared Statement
         description: The Prepared statement to execute against the Cassandra cluster table
         type: string
+  types:
+    in:
+      mediaType: application/json
   dependencies:
   - "camel:jackson"
   - "camel:kamelet"
