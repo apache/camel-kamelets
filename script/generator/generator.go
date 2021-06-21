@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -71,7 +72,20 @@ func NewTemplateContext(kamelet camel.Kamelet, image string) TemplateContext {
 
 type Prop struct {
 	Name     string
+	Title    string
 	Required bool
+	Default  *string
+	Example  *string
+}
+
+func (p Prop) GetSampleValue() string {
+	if p.Default != nil {
+		return *p.Default
+	}
+	if p.Example != nil {
+		return *p.Example
+	}
+	return fmt.Sprintf(`"The %s"`, p.Title)
 }
 
 func getSortedProps(k camel.Kamelet) []Prop {
@@ -81,7 +95,22 @@ func getSortedProps(k camel.Kamelet) []Prop {
 		required[r] = true
 	}
 	for key := range k.Spec.Definition.Properties {
-		props = append(props, Prop{Name: key, Required: required[key]})
+		prop := k.Spec.Definition.Properties[key]
+		var def *string
+		if prop.Default != nil {
+			b, err := prop.Default.MarshalJSON()
+			handleGeneralError(fmt.Sprintf("cannot marshal property %q default value in Kamelet %s", key, k.Name), err)
+			defVal := string(b)
+			def = &defVal
+		}
+		var ex *string
+		if prop.Example != nil {
+			b, err := prop.Example.MarshalJSON()
+			handleGeneralError(fmt.Sprintf("cannot marshal property %q example value in Kamelet %s", key, k.Name), err)
+			exVal := string(b)
+			ex = &exVal
+		}
+		props = append(props, Prop{Name: key, Title: prop.Title, Required: required[key], Default: def, Example: ex})
 	}
 	sort.Slice(props, func(i, j int) bool {
 		ri := props[i].Required
@@ -115,17 +144,13 @@ func (ctx *TemplateContext) Properties() string {
 			if propDef.Required {
 				name = "*" + name + " {empty}* *"
 			}
-			def := ""
-			if prop.Default != nil {
-				b, err := prop.Default.MarshalJSON()
-				handleGeneralError(fmt.Sprintf("cannot marshal property %q default value in Kamelet %s", key, ctx.Kamelet.Name), err)
-				def = "`" + strings.ReplaceAll(string(b), "`", "'") + "`"
+			var def string
+			if propDef.Default != nil {
+				def = "`" + strings.ReplaceAll(*propDef.Default, "`", "'") + "`"
 			}
-			ex := ""
-			if prop.Example != nil {
-				b, err := prop.Example.MarshalJSON()
-				handleGeneralError(fmt.Sprintf("cannot marshal property %q example value in Kamelet %s", key, ctx.Kamelet.Name), err)
-				ex = "`" + strings.ReplaceAll(string(b), "`", "'") + "`"
+			var ex string
+			if propDef.Example != nil {
+				ex = "`" + strings.ReplaceAll(*propDef.Example, "`", "'") + "`"
 			}
 			content += tableLine(name, prop.Title, prop.Description, prop.Type, def, ex)
 		}
@@ -136,7 +161,7 @@ func (ctx *TemplateContext) Properties() string {
 	return content
 }
 
-func (ctx *TemplateContext) ExampleBinding() string {
+func (ctx *TemplateContext) ExampleBinding(apiVersion, kind, name string) string {
 	content := ""
 	propDefs := getSortedProps(ctx.Kamelet)
 	tp := ctx.Kamelet.ObjectMeta.Labels["camel.apache.org/kamelet.type"]
@@ -147,17 +172,8 @@ func (ctx *TemplateContext) ExampleBinding() string {
 				continue
 			}
 			key := propDef.Name
-			prop := ctx.Kamelet.Spec.Definition.Properties[key]
-			if prop.Default == nil {
-				ex := ""
-				if prop.Example != nil {
-					b, err := prop.Example.MarshalJSON()
-					handleGeneralError(fmt.Sprintf("cannot marshal property %q example value in Kamelet %s", key, ctx.Kamelet.Name), err)
-					ex = string(b)
-				}
-				if ex == "" {
-					ex = `"The ` + prop.Title + `"`
-				}
+			if propDef.Default == nil {
+				ex := propDef.GetSampleValue()
 				sampleConfig = append(sampleConfig, fmt.Sprintf("%s: %s", key, ex))
 			}
 		}
@@ -175,11 +191,11 @@ func (ctx *TemplateContext) ExampleBinding() string {
       name: %s
 %s`, ctx.Kamelet.Name, props)
 
-		knativeRef := `    ref:
-      kind: InMemoryChannel
-      apiVersion: messaging.knative.dev/v1
-      name: mychannel
-`
+		boundToRef := fmt.Sprintf(`    ref:
+      kind: %s
+      apiVersion: %s
+      name: %s
+`, kind, apiVersion, name)
 		var sourceRef string
 		var sinkRef string
 		var steps string
@@ -187,9 +203,9 @@ func (ctx *TemplateContext) ExampleBinding() string {
 		switch tp {
 		case "source":
 			sourceRef = kameletRef
-			sinkRef = knativeRef
+			sinkRef = boundToRef
 		case "sink":
-			sourceRef = knativeRef
+			sourceRef = boundToRef
 			sinkRef = kameletRef
 		case "action":
 			sourceRef = `    ref:
@@ -198,7 +214,7 @@ func (ctx *TemplateContext) ExampleBinding() string {
       name: timer-source
     properties:
       message: "Hello"`
-			sinkRef = knativeRef
+			sinkRef = boundToRef
 			steps = fmt.Sprintf(`
   steps:
   -%s`, kameletRef[3:])
@@ -222,6 +238,48 @@ spec:
 
 	}
 	return content
+}
+
+func (ctx *TemplateContext) ExampleKamelBindCommand(ref string) string {
+	tp := ctx.Kamelet.ObjectMeta.Labels["camel.apache.org/kamelet.type"]
+	var prefix string
+	switch tp {
+	case "source":
+		prefix = "source."
+	case "sink":
+		prefix = "sink."
+	case "action":
+		prefix = "step-0."
+	default:
+		handleGeneralError("unknown kamelet type", errors.New(tp))
+	}
+
+	cmd := "kamel bind "
+	timer := "timer-source?message=Hello"
+	kamelet := ctx.Kamelet.Name
+	propDefs := getSortedProps(ctx.Kamelet)
+	for _, p := range propDefs {
+		if p.Required && p.Default == nil {
+			val := p.GetSampleValue()
+			if strings.HasPrefix(val, `"`) {
+				kamelet += fmt.Sprintf(` -p "%s%s=%s`, prefix, p.Name, val[1:])
+			} else {
+				kamelet += fmt.Sprintf(" -p %s%s=%s", prefix, p.Name, val)
+			}
+		}
+	}
+
+	switch tp {
+	case "source":
+		return cmd + kamelet + " " + ref
+	case "sink":
+		return cmd + ref + " " + kamelet
+	case "action":
+		return cmd + timer + " --step " + kamelet + " " + ref
+	default:
+		handleGeneralError("unknown kamelet type", errors.New(tp))
+	}
+	return ""
 }
 
 func saveNav(links []string, out string) {
