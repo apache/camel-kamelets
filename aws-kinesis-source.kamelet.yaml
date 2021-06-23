@@ -47,7 +47,6 @@ spec:
         example: eu-west-1
   dependencies:
     - "camel:aws2-kinesis"
-    - "camel:core"
     - "camel:kamelet"
   flow:
     from:
@@ -57,6 +56,7 @@ spec:
         accessKey: "{{accessKey}}"
         region: "{{region}}"
       steps:
-      - set-body:
-          simple: ${body.data.asUtf8String}
+      - marshal:
+          json: 
+            library: Gson
       - to: "kamelet:sink"
