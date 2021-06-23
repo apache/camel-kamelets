@@ -45,6 +45,9 @@ spec:
         description: The AWS region to connect to
         type: string
         example: eu-west-1
+  types:
+    out:
+      mediaType: application/json
   dependencies:
     - "camel:aws2-kinesis"
     - "camel:kamelet"
