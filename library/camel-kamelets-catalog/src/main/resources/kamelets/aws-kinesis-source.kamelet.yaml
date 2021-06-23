@@ -56,4 +56,6 @@ spec:
         accessKey: "{{accessKey}}"
         region: "{{region}}"
       steps:
+      - set-body:
+          simple: ${body.data.asUtf8String}
       - to: "kamelet:sink"
