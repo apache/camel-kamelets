@@ -51,6 +51,7 @@ spec:
   dependencies:
     - "camel:aws2-kinesis"
     - "camel:kamelet"
+    - "camel:gson"
   flow:
     from:
       uri: aws2-kinesis:{{stream}}
