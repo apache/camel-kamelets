@@ -37,7 +37,6 @@ spec:
   dependencies:
   - "camel:jms"
   - "camel:kamelet"
-  - "mvn:org.apache.camel.k:camel-k-kamelet-reify"
   - "mvn:org.apache.qpid:qpid-jms-client:jar:1.0.0"
   flow:
     beans:
@@ -50,6 +49,6 @@ spec:
       uri: "kamelet:source"
       steps:
       - to:
-          uri: "kamelet-reify:jms:{{destinationType}}:{{destinationName}}"
+          uri: "jms:{{destinationType}}:{{destinationName}}"
           parameters:
             connectionFactory: "#bean:{{connectionFactoryBean}}"
