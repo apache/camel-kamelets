@@ -13,8 +13,8 @@ The following table summarizes the configuration options available for the `jms-
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| *brokerURL {empty}* *| Broker URL| The JMS URL| string| | `"amqp://k3s-node-master.usersys.redhat.com:31616"`
 | *destinationName {empty}* *| Destination Name| The JMS destination name| string| | 
+| *remoteURI {empty}* *| Broker URL| The JMS URL| string| | `"amqp://my-host:31616"`
 | destinationType| Destination Type| The JMS destination type (i.e.: queue or topic)| string| `"queue"`| 
 |===
 
@@ -47,8 +47,8 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: jms-amqp-10-sink
     properties:
-      brokerURL: "amqp://k3s-node-master.usersys.redhat.com:31616"
       destinationName: "The Destination Name"
+      remoteURI: "amqp://my-host:31616"
 
 ----
 
@@ -69,7 +69,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind channel/mychannel jms-amqp-10-sink -p "sink.brokerURL=amqp://k3s-node-master.usersys.redhat.com:31616" -p "sink.destinationName=The Destination Name"
+kamel bind channel/mychannel jms-amqp-10-sink -p "sink.destinationName=The Destination Name" -p "sink.remoteURI=amqp://my-host:31616"
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.
@@ -97,8 +97,8 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: jms-amqp-10-sink
     properties:
-      brokerURL: "amqp://k3s-node-master.usersys.redhat.com:31616"
       destinationName: "The Destination Name"
+      remoteURI: "amqp://my-host:31616"
 
 ----
 
@@ -120,7 +120,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind kafka.strimzi.io/v1beta1:KafkaTopic:my-topic jms-amqp-10-sink -p "sink.brokerURL=amqp://k3s-node-master.usersys.redhat.com:31616" -p "sink.destinationName=The Destination Name"
+kamel bind kafka.strimzi.io/v1beta1:KafkaTopic:my-topic jms-amqp-10-sink -p "sink.destinationName=The Destination Name" -p "sink.remoteURI=amqp://my-host:31616"
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

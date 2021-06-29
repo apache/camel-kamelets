@@ -17,7 +17,7 @@ spec:
     description: "A Kamelet that can consume events from any AMQP 1.0 compliant message broker using the Apache Qpid JMS client"
     required:
       - destinationName
-      - brokerURL
+      - remoteURI
     type: object
     properties:
       destinationType:
@@ -29,11 +29,11 @@ spec:
         title: "Destination Name"
         description: "The JMS destination name"
         type: string
-      brokerURL:
+      remoteURI:
         title: "Broker URL"
         description: "The JMS URL"
         type: string
-        example: "amqp://k3s-node-master.usersys.redhat.com:31616"
+        example: "amqp://my-host:31616"
   dependencies:
   - "camel:jms"
   - "camel:kamelet"
