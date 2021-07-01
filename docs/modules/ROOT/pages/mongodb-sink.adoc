@@ -9,6 +9,10 @@ Send documents to MongoDB.
 
 This Kamelet expects a JSON as body.
 
+Properties you can as headers:
+
+`db-upsert` / `ce-db-upsert` If the database should create the element if it does not exist. Boolean value.
+
 == Configuration Options
 
 The following table summarizes the configuration options available for the `mongodb-sink` Kamelet:
@@ -20,6 +24,8 @@ The following table summarizes the configuration options available for the `mong
 | *hosts {empty}* *| MongoDB Hosts| Comma separated list of MongoDB Host Addresses in host:port format.| string| | 
 | *password {empty}* *| MongoDB Password| User password for accessing MongoDB.| string| | 
 | *username {empty}* *| MongoDB Username| Username for accessing MongoDB.| string| | 
+| createCollection| Collection| Create collection during initialisation if it doesn't exist.| boolean| `false`| 
+| writeConcern| Write Concern| Configure the level of acknowledgment requested from MongoDB for write operations, possible values are ACKNOWLEDGED, W1, W2, W3, UNACKNOWLEDGED, JOURNALED, MAJORITY.| string| | 
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
