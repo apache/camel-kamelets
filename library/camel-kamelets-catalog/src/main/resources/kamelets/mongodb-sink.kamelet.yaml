@@ -17,6 +17,10 @@ spec:
       Send documents to MongoDB.
 
       This Kamelet expects a JSON as body.
+
+      Properties you can as headers:
+
+      `db-upsert` / `ce-db-upsert` If the database should create the element if it does not exist. Boolean value.
     required:
       - hosts
       - collection
@@ -48,6 +52,17 @@ spec:
         title: MongoDB Database
         description: Sets the name of the MongoDB database to target.
         type: string
+      writeConcern:
+        title: Write Concern
+        description: Configure the level of acknowledgment requested from MongoDB for write operations, possible values are ACKNOWLEDGED, W1, W2, W3, UNACKNOWLEDGED, JOURNALED, MAJORITY.
+        type: string
+      createCollection:
+        title: Collection
+        description: Create collection during initialisation if it doesn't exist.
+        type: boolean
+        default: false
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
   types:
     in:
       mediaType: application/json
@@ -62,9 +77,23 @@ spec:
     from:
       uri: kamelet:source
       steps:
+      - choice:
+          when:
+          - simple: "${header[db-upsert]}"
+            steps:
+            - set-header:
+                name: CamelMongoDbUpsert
+                simple: "${header[db-upsert]}"
+          - simple: "${header[ce-db-upsert]}"
+            steps:
+            - set-header:
+                name: CamelMongoDbUpsert
+                simple: "${header[ce-db-upsert]}"
       - to: 
           uri: "{{local-mongodb}}:test"
           parameters:
+            createCollection: "{{?createCollection}}"
+            writeConcern: "{{?writeConcern}}"
             hosts: "{{hosts}}"
             collection: "{{collection}}"
             password: "{{password}}"
