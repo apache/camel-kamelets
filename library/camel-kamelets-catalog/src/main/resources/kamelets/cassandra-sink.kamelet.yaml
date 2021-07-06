@@ -18,21 +18,21 @@ spec:
 
       This Kamelet expects the body as JSON Array. The content of the JSON Array will be used as input for the CQL Prepared Statement set in the query parameter.
     required:
-      - host
-      - port
+      - connectionHost
+      - connectionPort
       - keyspace
       - username
       - password
       - preparedStatement
     type: object
     properties:
-      host:
-        title: Host
+      connectionHost:
+        title: Connection Host
         description: Hostname(s) cassandra server(s). Multiple hosts can be separated by comma.
         type: string
         example: localhost
-      port:
-        title: Port
+      connectionPort:
+        title: Connection Port
         description: Port number of cassandra server(s)
         type: string
         example: 9042
@@ -77,7 +77,7 @@ spec:
             library: Jackson
             useList: true
       - to: 
-          uri: "cql://{{host}}:{{port}}/{{keyspace}}"
+          uri: "cql://{{connectionHost}}:{{connectionPort}}/{{keyspace}}"
           parameters:
             username: "{{username}}"
             password: "{{password}}"

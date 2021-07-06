@@ -16,19 +16,19 @@ spec:
     description: |-
       Receive data from SSH session.
     required:
-      - host
-      - port
+      - connectionHost
+      - connectionPort
       - username
       - password
       - pollCommand
     type: object
     properties:
-      host:
-        title: Host
+      connectionHost:
+        title: Connection Host
         description: The SSH Host
         type: string
-      port:
-        title: Port
+      connectionPort:
+        title: Connection Port
         description: The SSH Port
         type: string
         default: 22
@@ -61,7 +61,7 @@ spec:
     - "camel:kamelet"
   flow:
     from:
-      uri: "ssh://{{host}}:{{port}}"
+      uri: "ssh://{{connectionHost}}:{{connectionPort}}"
       parameters:
         username: "{{username}}"
         password: "{{password}}"
