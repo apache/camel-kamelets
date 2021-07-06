@@ -25,12 +25,16 @@ spec:
     description: |-
       Get Events from an Infinispan cache
     required:
+      - cacheName
       - hosts
       - username
       - password
-      - hosts
     type: object
     properties:
+      cacheName:
+        title: Cache Name
+        description: The name of the Infinispan cache to use
+        type: String
       hosts:
         title: Hosts
         description: Specifies the host of the cache on Infinispan instance
