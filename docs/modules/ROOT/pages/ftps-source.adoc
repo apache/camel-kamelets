@@ -13,10 +13,10 @@ The following table summarizes the configuration options available for the `ftps
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
+| *connectionHost {empty}* *| Connection Host| Hostname of the FTPS server| string| | 
+| *connectionPort {empty}* *| Connection Port| Port of the FTPS server| string| `21`| 
 | *directoryName {empty}* *| Directory Name| The starting directory| string| | 
-| *host {empty}* *| Host| Hostname of the FTPS server| string| | 
 | *password {empty}* *| Password| The password to access the FTPS server| string| | 
-| *port {empty}* *| Port| Port of the FTPS server| string| `21`| 
 | *username {empty}* *| Username| The username to access the FTPS server| string| | 
 | idempotent| Idempotency| Skip already processed files.| boolean| `true`| 
 | passiveMode| Passive Mode| Sets passive mode connection| boolean| `false`| 
@@ -47,8 +47,8 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: ftps-source
     properties:
+      connectionHost: "The Connection Host"
       directoryName: "The Directory Name"
-      host: "The Host"
       password: "The Password"
       username: "The Username"
   sink:
@@ -76,7 +76,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind ftps-source -p "source.directoryName=The Directory Name" -p "source.host=The Host" -p "source.password=The Password" -p "source.username=The Username" channel/mychannel
+kamel bind ftps-source -p "source.connectionHost=The Connection Host" -p "source.directoryName=The Directory Name" -p "source.password=The Password" -p "source.username=The Username" channel/mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.
@@ -99,8 +99,8 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: ftps-source
     properties:
+      connectionHost: "The Connection Host"
       directoryName: "The Directory Name"
-      host: "The Host"
       password: "The Password"
       username: "The Username"
   sink:
@@ -129,7 +129,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind ftps-source -p "source.directoryName=The Directory Name" -p "source.host=The Host" -p "source.password=The Password" -p "source.username=The Username" kafka.strimzi.io/v1beta1:KafkaTopic:my-topic
+kamel bind ftps-source -p "source.connectionHost=The Connection Host" -p "source.directoryName=The Directory Name" -p "source.password=The Password" -p "source.username=The Username" kafka.strimzi.io/v1beta1:KafkaTopic:my-topic
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

@@ -19,10 +19,10 @@ The following table summarizes the configuration options available for the `sftp
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
+| *connectionHost {empty}* *| Connection Host| Hostname of the FTP server| string| | 
+| *connectionPort {empty}* *| Connection Port| Port of the FTP server| string| `22`| 
 | *directoryName {empty}* *| Directory Name| The starting directory| string| | 
-| *host {empty}* *| Host| Hostname of the FTP server| string| | 
 | *password {empty}* *| Password| The password to access the FTP server| string| | 
-| *port {empty}* *| Port| Port of the FTP server| string| `22`| 
 | *username {empty}* *| Username| The username to access the FTP server| string| | 
 | fileExist| File Existence| How to behave in case of file already existent. There are 4 enums and the value can be one of Override, Append, Fail or Ignore| string| `"Override"`| 
 | passiveMode| Passive Mode| Sets passive mode connection| boolean| `false`| 
@@ -57,8 +57,8 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: sftp-sink
     properties:
+      connectionHost: "The Connection Host"
       directoryName: "The Directory Name"
-      host: "The Host"
       password: "The Password"
       username: "The Username"
 
@@ -81,7 +81,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind channel/mychannel sftp-sink -p "sink.directoryName=The Directory Name" -p "sink.host=The Host" -p "sink.password=The Password" -p "sink.username=The Username"
+kamel bind channel/mychannel sftp-sink -p "sink.connectionHost=The Connection Host" -p "sink.directoryName=The Directory Name" -p "sink.password=The Password" -p "sink.username=The Username"
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.
@@ -109,8 +109,8 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: sftp-sink
     properties:
+      connectionHost: "The Connection Host"
       directoryName: "The Directory Name"
-      host: "The Host"
       password: "The Password"
       username: "The Username"
 
@@ -134,7 +134,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind kafka.strimzi.io/v1beta1:KafkaTopic:my-topic sftp-sink -p "sink.directoryName=The Directory Name" -p "sink.host=The Host" -p "sink.password=The Password" -p "sink.username=The Username"
+kamel bind kafka.strimzi.io/v1beta1:KafkaTopic:my-topic sftp-sink -p "sink.connectionHost=The Connection Host" -p "sink.directoryName=The Directory Name" -p "sink.password=The Password" -p "sink.username=The Username"
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

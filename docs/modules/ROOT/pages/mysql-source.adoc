@@ -23,7 +23,7 @@ The following table summarizes the configuration options available for the `mysq
 | *serverName {empty}* *| Server Name| Server Name for the data source| string| | `"localhost"`
 | *username {empty}* *| Username| The username to use for accessing a secured MySQL Database| string| | 
 | consumedQuery| Consumed Query| A query to run on a tuple consumed| string| | `"DELETE FROM accounts where user_id = :#user_id"`
-| port| Port| Server Port for the data source| string| `3306`| 
+| serverPort| Server Port| Server Port for the data source| string| `3306`| 
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
