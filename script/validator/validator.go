@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -29,6 +30,8 @@ import (
 var (
 	// Needed until this is fixed: https://issues.apache.org/jira/browse/CAMEL-16788
 	forbiddenParameterNames = []string{"home", "hostname", "language", "lang", "namespace", "path", "podname", "pod-name", "port", "pwd", "shell", "term"}
+
+	paramRegexp = regexp.MustCompile(`{{[?]?([A-Za-z0-9-._]+)(?:[:][^}]*)?}}`)
 )
 
 func main() {
@@ -49,6 +52,7 @@ func main() {
 	errors = append(errors, verifyDescriptors(kamelets)...)
 	errors = append(errors, verifyDuplicates(kamelets)...)
 	errors = append(errors, verifyMissingDependencies(kamelets)...)
+	errors = append(errors, verifyUsedParams(kamelets)...)
 
 	for _, err := range errors {
 		fmt.Printf("ERROR: %v\n", err)
@@ -202,6 +206,13 @@ func verifyParameters(kamelets []KameletInfo) (errors []error) {
 		if kamelet.Spec.Definition == nil {
 			errors = append(errors, fmt.Errorf("kamelet %q does not contain the JSON schema definition", kamelet.Name))
 			continue
+		}
+		requiredCheck := make(map[string]bool)
+		for _, p := range kamelet.Spec.Definition.Required {
+			if requiredCheck[p] {
+				errors = append(errors, fmt.Errorf("required kamelet property %q is listed twice in kamelet %q", p, kamelet.Name))
+			}
+			requiredCheck[p] = true
 		}
 		if kamelet.Spec.Definition.Title == "" {
 			errors = append(errors, fmt.Errorf("kamelet %q does not contain title", kamelet.Name))
@@ -357,6 +368,89 @@ func listKamelets(dir string) []KameletInfo {
 		kamelets = append(kamelets, kameletInfo)
 	}
 	return kamelets
+}
+
+func verifyUsedParams(kamelets []KameletInfo) (errors []error) {
+	for _, k := range kamelets {
+		used := getUsedParams(k.Kamelet)
+		declared := getDeclaredParams(k.Kamelet)
+		for p := range used {
+			if _, ok := declared[p]; !ok {
+				errors = append(errors, fmt.Errorf("parameter %q is not declared in the definition of kamelet %q", p, k.Kamelet.Name))
+			}
+		}
+		for p := range declared {
+			if _, ok := used[p]; !ok {
+				errors = append(errors, fmt.Errorf("parameter %q is declared in kamelet %q but never used", p, k.Kamelet.Name))
+			}
+		}
+	}
+	return errors
+}
+
+func getDeclaredParams(k camelapi.Kamelet) map[string]bool {
+	res := make(map[string]bool)
+	if k.Spec.Definition != nil {
+		for p := range k.Spec.Definition.Properties {
+			res[p] = true
+		}
+	}
+	// include beans
+	var flowData interface{}
+	if err := json.Unmarshal(k.Spec.Flow.RawMessage, &flowData); err != nil {
+		handleGeneralError("cannot unmarshal flow", err)
+	}
+	if fd, ok := flowData.(map[string]interface{}); ok {
+		beans := fd["beans"]
+		if bl, ok := beans.([]interface{}); ok {
+			for _, bdef := range bl {
+				if bmap, ok := bdef.(map[string]interface{}); ok {
+					beanName := bmap["name"]
+					if beanNameStr, ok := beanName.(string); ok {
+						res[beanNameStr] = true
+					}
+				}
+			}
+		}
+	}
+	return res
+}
+
+func getUsedParams(k camelapi.Kamelet) map[string]bool {
+	if k.Spec.Flow != nil {
+		var flowData interface{}
+		if err := json.Unmarshal(k.Spec.Flow.RawMessage, &flowData); err != nil {
+			handleGeneralError("cannot unmarshal flow", err)
+		}
+		params := make(map[string]bool)
+		inspectFlowParams(flowData, params)
+		return params
+	}
+	return nil
+}
+
+func inspectFlowParams(v interface{}, params map[string]bool) {
+	switch val := v.(type) {
+	case string:
+		res := paramRegexp.FindAllStringSubmatch(val, -1)
+		for _, m := range res {
+			if len(m) > 1 {
+				params[m[1]] = true
+			}
+		}
+	case []interface{}:
+		for _, c := range val {
+			inspectFlowParams(c, params)
+		}
+	case map[string]interface{}:
+		for _, c := range val {
+			inspectFlowParams(c, params)
+		}
+	case map[interface{}]interface{}:
+		for _, c := range val {
+			inspectFlowParams(c, params)
+		}
+	}
 }
 
 type KameletInfo struct {
