@@ -16,19 +16,19 @@ spec:
     description: |-
       Receive unread emails from an IMAP mail server, marking them as read once they are received.
     required:
-    - host
-    - port
+    - connectionHost
+    - connectionPort
     - username
     - password
     type: object
     properties:
-      host:
-        title: Host
+      connectionHost:
+        title: Connection Host
         description: The IMAP server host
         type: string
         example: imap.gmail.com
-      port:
-        title: Port
+      connectionPort:
+        title: Connection Port
         description: The IMAP server port
         type: string
         default: 993
@@ -59,7 +59,7 @@ spec:
     - "camel:kamelet"
   flow:
     from:
-      uri: "imaps:{{host}}:{{port}}"
+      uri: "imaps:{{connectionHost}}:{{connectionPort}}"
       parameters:
         username: "{{username}}"
         password: "{{password}}"

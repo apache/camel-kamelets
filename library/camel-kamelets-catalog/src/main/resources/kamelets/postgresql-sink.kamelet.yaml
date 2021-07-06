@@ -36,8 +36,8 @@ spec:
         description: Server Name for the data source
         type: string
         example: localhost
-      port:
-        title: Port
+      serverPort:
+        title: Server Port
         description: Server Port for the data source
         type: string
         default: 5432
@@ -80,7 +80,7 @@ spec:
           - key: password
             value: '{{password}}'
           - key: url
-            value: 'jdbc:postgresql://{{serverName}}:{{port}}/{{databaseName}}'
+            value: 'jdbc:postgresql://{{serverName}}:{{serverPort}}/{{databaseName}}'
           - key: driverClassName
             value: 'org.postgresql.Driver'
     from:

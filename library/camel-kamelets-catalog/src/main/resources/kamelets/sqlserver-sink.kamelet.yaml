@@ -40,8 +40,8 @@ spec:
         description: Server Name for the data source
         type: string
         example: localhost
-      port:
-        title: Port
+      serverPort:
+        title: Server Port
         description: Server Port for the data source
         type: string
         default: 1433
@@ -83,7 +83,7 @@ spec:
           - key: password
             value: '{{password}}'
           - key: url
-            value: 'jdbc:sqlserver://{{serverName}}:{{port}};databaseName={{databaseName}}'
+            value: 'jdbc:sqlserver://{{serverName}}:{{serverPort}};databaseName={{databaseName}}'
           - key: driverClassName
             value: 'com.microsoft.sqlserver.jdbc.SQLServerDriver'
     from:
