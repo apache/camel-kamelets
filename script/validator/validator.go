@@ -26,6 +26,11 @@ import (
 	"k8s.io/apimachinery/pkg/util/yaml"
 )
 
+var (
+	// Needed until this is fixed: https://issues.apache.org/jira/browse/CAMEL-16788
+	forbiddenParameterNames = []string{"home", "hostname", "language", "lang", "namespace", "path", "podname", "pod-name", "port", "pwd", "shell", "term"}
+)
+
 func main() {
 	if len(os.Args) != 2 {
 		println("usage: validator kamelets-path")
@@ -62,7 +67,7 @@ func verifyMissingDependencies(kamelets []KameletInfo) (errors []error) {
 
 		code := camelapiv1.SourceSpec{
 			DataSpec: camelapiv1.DataSpec{
-				Name: "source.yaml",
+				Name:    "source.yaml",
 				Content: string(yamlDslFlow),
 			},
 			Language: camelapiv1.LanguageYaml,
@@ -216,6 +221,11 @@ func verifyParameters(kamelets []KameletInfo) (errors []error) {
 			errors = append(errors, fmt.Errorf("kamelet %q does not contain a definition of type \"object\"", kamelet.Name))
 		}
 		for k, p := range kamelet.Spec.Definition.Properties {
+			for _, f := range forbiddenParameterNames {
+				if strings.EqualFold(k, f) {
+					errors = append(errors, fmt.Errorf("property name %q is using a reserved keyword in kamelet %q", k, kamelet.Name))
+				}
+			}
 			if p.Type == "" {
 				errors = append(errors, fmt.Errorf("property %q in kamelet %q does not contain type", k, kamelet.Name))
 			}

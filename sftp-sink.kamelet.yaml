@@ -22,19 +22,19 @@ spec:
 
       If the header won't be set the exchange ID will be used as file name.
     required:
-      - host
-      - port
+      - connectionHost
+      - connectionPort
       - username
       - password
       - directoryName
     type: object
     properties:
-      host:
-        title: Host
+      connectionHost:
+        title: Connection Host
         description: Hostname of the FTP server
         type: string
-      port:
-        title: Port
+      connectionPort:
+        title: Connection Port
         description: Port of the FTP server
         type: string
         default: 22
@@ -86,7 +86,7 @@ spec:
                 name: CamelFileName
                 simple: "${header[ce-file]}"
       - to:
-          uri: "sftp:{{username}}@{{host}}:{{port}}/{{directoryName}}"
+          uri: "sftp:{{username}}@{{connectionHost}}:{{connectionPort}}/{{directoryName}}"
           parameters:
             password: "{{password}}"
             passiveMode: "{{passiveMode}}"

@@ -40,8 +40,8 @@ spec:
         description: Server Name for the data source
         type: string
         example: localhost
-      port:
-        title: Port
+      serverPort:
+        title: Server Port
         description: Server Port for the data source
         type: string
         default: 3306
@@ -83,7 +83,7 @@ spec:
           - key: password
             value: '{{password}}'
           - key: url
-            value: 'jdbc:mysql://{{serverName}}:{{port}}/{{databaseName}}'
+            value: 'jdbc:mysql://{{serverName}}:{{serverPort}}/{{databaseName}}'
           - key: driverClassName
             value: 'com.mysql.cj.jdbc.Driver'
     from:

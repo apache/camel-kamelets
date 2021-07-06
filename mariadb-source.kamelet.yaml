@@ -32,8 +32,8 @@ spec:
         description: Server Name for the data source
         type: string
         example: localhost
-      port:
-        title: Port
+      serverPort:
+        title: Server Port
         description: Server Port for the data source
         type: string
         default: 3306
@@ -80,7 +80,7 @@ spec:
           - key: password
             value: '{{password}}'
           - key: url
-            value: 'jdbc:mariadb://{{serverName}}:{{port}}/{{databaseName}}'
+            value: 'jdbc:mariadb://{{serverName}}:{{serverPort}}/{{databaseName}}'
           - key: driverClassName
             value: 'org.mariadb.jdbc.Driver'
     from:
