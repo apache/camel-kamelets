@@ -16,21 +16,21 @@ spec:
     description: |-
       Query a Cassandra cluster table.
     required:
-      - host
-      - port
+      - connectionHost
+      - connectionPort
       - keyspace
       - username
       - password
       - query
     type: object
     properties:
-      host:
-        title: Host
+      connectionHost:
+        title: Connection Host
         description: Hostname(s) cassandra server(s). Multiple hosts can be separated by comma.
         type: string
         example: localhost
-      port:
-        title: Port
+      connectionPort:
+        title: Connection Port
         description: Port number of cassandra server(s)
         type: string
         example: 9042
@@ -73,7 +73,7 @@ spec:
   - "camel:cassandraql"
   flow:
     from:
-      uri: "cql://{{host}}:{{port}}/{{keyspace}}"
+      uri: "cql://{{connectionHost}}:{{connectionPort}}/{{keyspace}}"
       parameters:
         username: "{{username}}"
         password: "{{password}}"

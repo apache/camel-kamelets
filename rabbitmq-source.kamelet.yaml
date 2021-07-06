@@ -26,8 +26,8 @@ spec:
         title: Addresses
         description: Comma separated list of RabbitMQ broker addresses
         type: string
-      port:
-        title: Port
+      portNumber:
+        title: Port Number
         description: Port of the RabbitMQ server
         type: string
         default: 5672
@@ -56,5 +56,6 @@ spec:
         password: "{{password}}"
         username: "{{username}}"
         addresses: "{{addresses}}"
+        portNumber: "{{portNumber}}"
       steps:
       - to: "kamelet:sink"

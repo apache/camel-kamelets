@@ -16,11 +16,11 @@ spec:
     description: |-
       Receive events related to a file or folder. It may require a volume mounting on Kubernetes.
     required:
-      - path
+      - filePath
       - events
     type: object
     properties:
-      path:
+      filePath:
         title: Path to Watch
         description: Path of file or folder to watch
         type: string
@@ -34,7 +34,7 @@ spec:
     - "camel:kamelet"
   flow:
     from:
-      uri: "file-watch:{{path}}"
+      uri: "file-watch:{{filePath}}"
       parameters:
         events: "{{events}}"
       steps:
