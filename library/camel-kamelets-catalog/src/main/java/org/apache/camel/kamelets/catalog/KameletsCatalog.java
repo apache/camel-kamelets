@@ -16,21 +16,8 @@
  */
 package org.apache.camel.kamelets.catalog;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import io.fabric8.camelk.v1alpha1.Kamelet;
-import io.fabric8.kubernetes.api.model.apiextensions.v1.JSONSchemaProps;
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ScanResult;
-import org.apache.camel.kamelets.catalog.model.KameletAnnotationsNames;
-import org.apache.camel.kamelets.catalog.model.KameletLabelNames;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -38,43 +25,66 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import io.fabric8.camelk.v1alpha1.Kamelet;
+import io.fabric8.kubernetes.api.model.apiextensions.v1.JSONSchemaProps;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.Resource;
+import io.github.classgraph.ScanResult;
+import org.apache.camel.kamelets.catalog.model.KameletAnnotationsNames;
+import org.apache.camel.kamelets.catalog.model.KameletLabelNames;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class KameletsCatalog {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KameletsCatalog.class);
     static final String KAMELETS_DIR = "kamelets";
+    private static final Logger LOG = LoggerFactory.getLogger(KameletsCatalog.class);
     private static final String KAMELETS_FILE_SUFFIX = ".kamelet.yaml";
-    private static ObjectMapper mapper = new ObjectMapper(new YAMLFactory()).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    private Map<String, Kamelet> kameletModels = new HashMap<>();
-    private List<String> kameletNames = new ArrayList<>();
+    private static final ObjectMapper MAPPER = new ObjectMapper(new YAMLFactory()).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+    private final Map<String, Kamelet> kameletModels;
+    private final List<String> kameletNames;
 
     public KameletsCatalog() {
-        initCatalog();
-        kameletNames = kameletModels.keySet().stream().sorted(Comparator.naturalOrder()).map(x -> x).collect(Collectors.toList());
+        kameletModels = initCatalog();
+        kameletNames = kameletModels.keySet().stream().sorted(Comparator.naturalOrder()).collect(Collectors.toList());
     }
 
-    private void initCatalog() {
-        List<String> resourceNames;
+    private static Map<String, Kamelet> initCatalog() {
+        Map<String, Kamelet> kameletModels = new HashMap<>();
+
         try (ScanResult scanResult = new ClassGraph().acceptPaths("/" + KAMELETS_DIR + "/").scan()) {
-            resourceNames = scanResult.getAllResources().getPaths();
-        }
-        for (String fileName: resourceNames) {
-            String pathInJar = "/" + fileName;
-            try {
-                Kamelet kamelet = mapper.readValue(KameletsCatalog.class.getResourceAsStream(pathInJar), Kamelet.class);
-                kameletModels.put(sanitizeFileName(fileName), kamelet);
-            } catch (IOException e) {
-                LOG.warn("Cannot init Kamelet Catalog with content of " + pathInJar, e);
+            for (Resource resource : scanResult.getAllResources()) {
+
+                try (InputStream is = resource.open()) {
+                    String name = sanitizeFileName(resource.getPath());
+                    Kamelet kamelet = MAPPER.readValue(is, Kamelet.class);
+
+                    LOG.debug("Loading kamelet from: {}, path: {}, name: {}",
+                        resource.getClasspathElementFile(),
+                        resource.getPath(),
+                        name);
+
+                    kameletModels.put(name, kamelet);
+                } catch (IOException e) {
+                    LOG.warn("Cannot init Kamelet Catalog with content of " + resource.getPath(), e);
+                }
             }
         }
+
+        return Collections.unmodifiableMap(kameletModels);
     }
 
-    private String sanitizeFileName(String fileName) {
+    private static String sanitizeFileName(String fileName) {
         int index = fileName.lastIndexOf(KAMELETS_FILE_SUFFIX);
         if (index > 0) {
             fileName = fileName.substring(0, index);
         }
-        String finalName = fileName.substring(9);
-        return finalName;
+        return fileName.substring(9);
     }
 
 
