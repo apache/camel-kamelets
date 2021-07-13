@@ -78,7 +78,7 @@ spec:
                 simple: "${header[ce-partition]}"
           otherwise:
             steps:
-            - set-property:
+            - set-header:
                 name: CamelAwsKinesisPartitionKey
                 simple: "${exchangeId}"
       - choice:
