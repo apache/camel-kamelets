@@ -34,6 +34,11 @@ on:
       - 'KEYS'
       - 'LICENSE'
       - 'NOTICE'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
 
 jobs:
   validate:

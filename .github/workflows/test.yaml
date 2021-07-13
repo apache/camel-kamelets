@@ -34,6 +34,11 @@ on:
       - 'KEYS'
       - 'LICENSE'
       - 'NOTICE'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
 
 env:
   CAMEL_K_VERSION: 1.4.0
@@ -78,7 +83,7 @@ jobs:
         export KAMEL_INSTALL_BUILD_PUBLISH_STRATEGY=Spectrum
         export KAMEL_INSTALL_REGISTRY=$KIND_REGISTRY
         export KAMEL_INSTALL_REGISTRY_INSECURE=true
-        
+
         echo "Configuring Yaks"
         yaks install
 
