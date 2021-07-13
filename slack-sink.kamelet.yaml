@@ -17,17 +17,17 @@ spec:
       Send messages to a Slack channel.
     required:
       - channel
-      - token
+      - webhookUrl
     type: object
     properties:
       channel:
         title: Channel
-        description: The Slack channel to send messages to
+        description: The Slack channel to send messages to.
         type: string
         example: "#myroom"
       token:
-        title: Token
-        description: The token to access Slack. The Bot User OAuth Access Token is the kind of token needed.
+        title: Webhook URL
+        description: The webhook URL used by the Slack channel to handle incoming messages.
         type: string
         format: password
         x-descriptors:
@@ -43,4 +43,4 @@ spec:
     from:
       uri: "kamelet:source"
       steps:
-      - to: "slack:{{channel}}?token={{token}}"
+      - to: "slack:{{channel}}?webhookUrl={{webhookUrl}}"
