@@ -27,12 +27,13 @@ spec:
 
       Input data must have JSON format according to the index used.
 
-      If the *indexId* parameter is set, that value will be used as the document ID on ElasticSearch.
+      - `indexId` / `ce-indexId`: as the index ID for Elasticsearch
 
-      If the *indexId* parameter is not set and the source of the kamelet binding is a Kafka broker, it will take the kafka topic, partition and offset of the
-      element to generate an automatic ID that warrantees that this element is processed only once.
+      If the header won't be set the exchange ID will be used as index.
 
-      If the *indexName* parameter is not set and the source of the kamelet binding is a Kafka broker, it will take the kafka topic as the indexName.
+      - `indexName` / `ce-indexName`: as the index Name for Elasticsearch
+
+      If the header won't be set the exchange ID will be used as index name.
     required:
       - clusterName
       - hostAddresses
@@ -46,6 +47,9 @@ spec:
         title: Password
         description: Password to connect to ElasticSearch.
         type: string
+        format: password
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:password
       enableSSL:
         title: Enable SSL
         description: Do we want to connect using SSL?
@@ -89,30 +93,48 @@ spec:
     from:
       uri: kamelet:source
       steps:
-        - choice:
-            when:
-              - simple: "'{{indexId}}' == 'NONE' && ${header[kafka.TOPIC]} != null"
-                steps:
-                  - set-header:
-                      name: "indexId"
-                      simple: "${header[kafka.TOPIC]}${header[kafka.PARTITION]}${header[kafka.OFFSET]}"
-              - simple: "'{{indexId}}' != 'NONE'"
-                steps:
-                  - set-header:
-                      name: "indexId"
-                      simple: "{{indexId}}"
-        - choice:
-            when:
-              - simple: "'{{indexName}}' == 'NONE'"
-                steps:
-                  - set-property:
-                      name: esIndexName
-                      simple: "${header[kafka.TOPIC]}"
-            otherwise:
-              steps:
-                - set-property:
-                    name: esIndexName
-                    simple: "{{indexName}}"
-        - to-d: "kamelet-reify:elasticsearch-rest:{{clusterName}}?hostAddresses=RAW({{hostAddresses}})&operation=INDEX&indexName=${exchangeProperty.esIndexName}&enableSSL={{enableSSL}}&user={{user}}&password={{password}}"
-        - marshal:
-            json: { }
+      - choice:
+          when:
+          - simple: "${header[indexId]}"
+            steps:
+            - set-header:
+                name: "indexId"
+                simple: "${header[indexId]}"
+          - simple: "${header[ce-indexId]}"
+            steps:
+            - set-header:
+                name: "indexId"
+                simple: "${header[ce-indexId]}"
+          otherwise:
+            steps:
+            - set-header:
+                name: "indexId"
+                simple: "${exchangeId}"
+      - choice:
+          when:
+          - simple: "${header[indexName]}"
+            steps:
+            - set-header:
+                name: "indexName"
+                simple: "${header[indexName]}"
+          - simple: "${header[ce-indexName]}"
+            steps:
+            - set-header:
+                name: "indexName"
+                simple: "${header[ce-indexName]}"
+          otherwise:
+            steps:
+            - set-header:
+                name: "indexName"
+                simple: "${exchangeId}"
+      - to:
+          uri: "kamelet-reify:elasticsearch-rest:{{clusterName}}"
+          parameters:
+            operation: "INDEX"
+            indexName: "{{indexName}}"
+            hostAddresses: "{{hostAddresses}}"
+            enableSSL: "{{enableSSL}}"
+            user: "{{?user}}"
+            password: "{{?password}}"
+      - marshal:
+          json: { }
