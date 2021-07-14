@@ -62,12 +62,6 @@ spec:
         description: Comma separated list with ip:port formatted remote transport addresses to use.
         type: string
         example: quickstart-es-http:9200
-      indexName:
-        title: Index in ElasticSearch
-        description: The name of the index to act against.
-        type: string
-        example: data
-        default: 'NONE'
       clusterName:
         title: ElasticSearch Cluster Name
         description: Name of the cluster.
@@ -126,7 +120,6 @@ spec:
           uri: "kamelet-reify:elasticsearch-rest:{{clusterName}}"
           parameters:
             operation: "INDEX"
-            indexName: "{{indexName}}"
             hostAddresses: "{{hostAddresses}}"
             enableSSL: "{{enableSSL}}"
             user: "{{?user}}"
