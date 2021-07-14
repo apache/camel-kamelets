@@ -48,6 +48,9 @@ spec:
         title: Password
         description: Password to connect to ElasticSearch.
         type: string
+        format: password
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:password
       enableSSL:
         title: Enable SSL
         description: Do we want to connect using SSL?
@@ -95,8 +98,8 @@ spec:
               indexName: "{{indexName}}"
               hostAddresses: "{{hostAddresses}}"
               enableSSL: "{{enableSSL}}"
-              user: "{{user}}"
-              password: "{{password}}"
+              user: "{{?user}}"
+              password: "{{?password}}"
         - marshal:
             json:
               library: Gson
