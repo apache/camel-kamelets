@@ -9,12 +9,13 @@ This sink stores documents into ElasticSearch.
 
 Input data must have JSON format according to the index used.
 
-If the *indexId* parameter is set, that value will be used as the document ID on ElasticSearch.
+- `indexId` / `ce-indexId`: as the index ID for Elasticsearch
 
-If the *indexId* parameter is not set and the source of the kamelet binding is a Kafka broker, it will take the kafka topic, partition and offset of the
-element to generate an automatic ID that warrantees that this element is processed only once.
+If the header won't be set the exchange ID will be used as index.
 
-If the *indexName* parameter is not set and the source of the kamelet binding is a Kafka broker, it will take the kafka topic as the indexName.
+- `indexName` / `ce-indexName`: as the index Name for Elasticsearch
+
+If the header won't be set the exchange ID will be used as index name.
 
 == Configuration Options
 
@@ -25,8 +26,6 @@ The following table summarizes the configuration options available for the `elas
 | *clusterName {empty}* *| ElasticSearch Cluster Name| Name of the cluster.| string| | `"quickstart"`
 | *hostAddresses {empty}* *| Host Addresses| Comma separated list with ip:port formatted remote transport addresses to use.| string| | `"quickstart-es-http:9200"`
 | enableSSL| Enable SSL| Do we want to connect using SSL?| boolean| `true`| 
-| indexId| Index ID| None| string| `"NONE"`| 
-| indexName| Index in ElasticSearch| The name of the index to act against.| string| `"NONE"`| `"data"`
 | password| Password| Password to connect to ElasticSearch.| string| | 
 | user| Username| Username to connect to ElasticSearch.| string| | 
 |===
