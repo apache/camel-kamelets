@@ -120,7 +120,7 @@ jobs:
         export KAMEL_INSTALL_REGISTRY_INSECURE=true
 
         echo "Running tests"
-        yaks run --logs --wait ./test
+        yaks test ./test
 
     - uses: actions/upload-artifact@v2
       if: failure()
