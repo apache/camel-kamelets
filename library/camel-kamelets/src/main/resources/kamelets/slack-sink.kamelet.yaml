@@ -25,13 +25,30 @@ spec:
         description: The Slack channel to send messages to.
         type: string
         example: "#myroom"
-      token:
+      webhookUrl:
         title: Webhook URL
         description: The webhook URL used by the Slack channel to handle incoming messages.
         type: string
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+      lazyStartProducer:
+        title: Lazy start producer
+        description: Whether the producer should be started lazy (on the first message).
+        type: boolean
+        default: false
+      iconEmoji:
+        title: Icon Emoji
+        description: Use a Slack emoji as an avatar
+        type: string
+      iconUrl:
+        title: Icon URL
+        description: The avatar that the component will use when sending message to a channel or user.
+        type: string
+      username:
+        title: Username
+        description: This is the username that the bot will have when sending messages to a channel or user.
+        type: string
   types:
     out:
       mediaType: application/json
@@ -43,4 +60,11 @@ spec:
     from:
       uri: "kamelet:source"
       steps:
-      - to: "slack:{{channel}}?webhookUrl={{webhookUrl}}"
+      - to:
+        uri: "slack:{{channel}}"
+        parameters:
+          webhookUrl: "{{webhookUrl}}"
+          lazyStartProducer: "{{?lazyStartProducer}}"
+          iconEmoji: "{{?iconEmoji}}"
+          iconUrl: "{{?iconUrl}}"
+          username: "{{?username}}"
