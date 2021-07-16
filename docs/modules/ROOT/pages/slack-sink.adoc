@@ -14,7 +14,11 @@ The following table summarizes the configuration options available for the `slac
 |===
 | Property| Name| Description| Type| Default| Example
 | *channel {empty}* *| Channel| The Slack channel to send messages to.| string| | `"#myroom"`
-| token| Webhook URL| The webhook URL used by the Slack channel to handle incoming messages.| string| | 
+| *webhookUrl {empty}* *| Webhook URL| The webhook URL used by the Slack channel to handle incoming messages.| string| | 
+| iconEmoji| Icon Emoji| Use a Slack emoji as an avatar| string| | 
+| iconUrl| Icon URL| The avatar that the component will use when sending message to a channel or user.| string| | 
+| lazyStartProducer| Lazy start producer| Whether the producer should be started lazy (on the first message).| boolean| `false`| 
+| username| Username| This is the username that the bot will have when sending messages to a channel or user.| string| | 
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
@@ -47,6 +51,7 @@ spec:
       name: slack-sink
     properties:
       channel: "#myroom"
+      webhookUrl: "The Webhook URL"
 
 ----
 
@@ -67,7 +72,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind channel/mychannel slack-sink -p "sink.channel=#myroom"
+kamel bind channel/mychannel slack-sink -p "sink.channel=#myroom" -p "sink.webhookUrl=The Webhook URL"
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.
@@ -96,6 +101,7 @@ spec:
       name: slack-sink
     properties:
       channel: "#myroom"
+      webhookUrl: "The Webhook URL"
 
 ----
 
@@ -117,7 +123,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind kafka.strimzi.io/v1beta1:KafkaTopic:my-topic slack-sink -p "sink.channel=#myroom"
+kamel bind kafka.strimzi.io/v1beta1:KafkaTopic:my-topic slack-sink -p "sink.channel=#myroom" -p "sink.webhookUrl=The Webhook URL"
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.
