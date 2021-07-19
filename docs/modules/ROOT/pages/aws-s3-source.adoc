@@ -20,6 +20,7 @@ The following table summarizes the configuration options available for the `aws-
 | autoCreateBucket| Autocreate Bucket| Setting the autocreation of the S3 bucket bucketName.| boolean| `false`| 
 | deleteAfterRead| Auto-delete Objects| Delete objects after consuming them| boolean| `true`| 
 | includeBody| Include Body| If it is true, the exchange will be consumed and put into the body and closed. If false the S3Object stream will be put raw into the body and the headers will be set with the S3 object metadata.| boolean| `true`| 
+| prefix| Prefix| The AWS S3 bucket prefix to consider while searching| string| | `"folder/"`
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
