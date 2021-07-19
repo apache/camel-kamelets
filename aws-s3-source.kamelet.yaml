@@ -66,6 +66,11 @@ spec:
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: true
+      prefix:
+        title: Prefix
+        description: The AWS S3 bucket prefix to consider while searching
+        type: string
+        example: 'folder/'
   dependencies:
     - "camel:aws2-s3"
     - "camel:kamelet"
@@ -79,5 +84,6 @@ spec:
         region: "{{region}}"
         includeBody: "{{includeBody}}"
         deleteAfterRead: "{{deleteAfterRead}}"
+        prefix: "{{?prefix}}"
       steps:
       - to: "kamelet:sink"
