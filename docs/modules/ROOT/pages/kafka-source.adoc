@@ -13,10 +13,10 @@ The following table summarizes the configuration options available for the `kafk
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| *brokers {empty}* *| Brokers| Comma separated list of Kafka Broker URLs| string| | 
+| *bootstrapServers {empty}* *| Brokers| Comma separated list of Kafka Broker URLs| string| | 
 | *password {empty}* *| Password| Password to authenticate to kafka| string| | 
 | *topic {empty}* *| Topic Names| Comma separated list of Kafka topic names| string| | 
-| *username {empty}* *| Username| Username to authenticate to Kafka| string| | 
+| *user {empty}* *| Username| Username to authenticate to Kafka| string| | 
 | allowManualCommit| Allow Manual Commit| Whether to allow doing manual commits| boolean| `false`| 
 | autoCommitEnable| Auto Commit Enable| If true, periodically commit to ZooKeeper the offset of messages already fetched by the consumer| boolean| `true`| 
 | autoOffsetReset| Auto Offset Reset| What to do when there is no initial offset. There are 3 enums and the value can be one of latest, earliest, none| string| `"latest"`| 
@@ -49,10 +49,10 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: kafka-source
     properties:
-      brokers: "The Brokers"
+      bootstrapServers: "The Brokers"
       password: "The Password"
       topic: "The Topic Names"
-      username: "The Username"
+      user: "The Username"
   sink:
     ref:
       kind: InMemoryChannel
@@ -78,7 +78,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind kafka-source -p "source.brokers=The Brokers" -p "source.password=The Password" -p "source.topic=The Topic Names" -p "source.username=The Username" channel/mychannel
+kamel bind kafka-source -p "source.bootstrapServers=The Brokers" -p "source.password=The Password" -p "source.topic=The Topic Names" -p "source.user=The Username" channel/mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.
@@ -101,10 +101,10 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: kafka-source
     properties:
-      brokers: "The Brokers"
+      bootstrapServers: "The Brokers"
       password: "The Password"
       topic: "The Topic Names"
-      username: "The Username"
+      user: "The Username"
   sink:
     ref:
       kind: KafkaTopic
@@ -131,7 +131,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind kafka-source -p "source.brokers=The Brokers" -p "source.password=The Password" -p "source.topic=The Topic Names" -p "source.username=The Username" kafka.strimzi.io/v1beta1:KafkaTopic:my-topic
+kamel bind kafka-source -p "source.bootstrapServers=The Brokers" -p "source.password=The Password" -p "source.topic=The Topic Names" -p "source.user=The Username" kafka.strimzi.io/v1beta1:KafkaTopic:my-topic
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.
