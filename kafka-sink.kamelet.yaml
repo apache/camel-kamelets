@@ -25,8 +25,8 @@ spec:
       Both the headers are optional.
     required:
       - topic
-      - brokers
-      - username
+      - bootstrapServers
+      - user
       - password
     type: object
     properties:
@@ -34,7 +34,7 @@ spec:
         title: Topic Names
         description: Comma separated list of Kafka topic names
         type: string
-      brokers:
+      bootstrapServers:
         title: Brokers
         description: Comma separated list of Kafka Broker URLs
         type: string
@@ -48,7 +48,7 @@ spec:
         description: The Simple Authentication and Security Layer (SASL) Mechanism used. 
         type: string
         default: PLAIN
-      username:
+      user:
         title: Username
         description: Username to authenticate to Kafka 
         type: string
@@ -93,7 +93,7 @@ spec:
       - to:
           uri: "kafka:{{topic}}"
           parameters:
-            brokers: "{{brokers}}"
+            brokers: "{{bootstrapServers}}"
             securityProtocol: "{{securityProtocol}}"
             saslMechanism: "{{saslMechanism}}"
-            saslJaasConfig: "org.apache.kafka.common.security.plain.PlainLoginModule required username='{{username}}' password='{{password}}';"
+            saslJaasConfig: "org.apache.kafka.common.security.plain.PlainLoginModule required username='{{user}}' password='{{password}}';"
