@@ -71,6 +71,13 @@ spec:
         description: The AWS S3 bucket prefix to consider while searching
         type: string
         example: 'folder/'
+      ignoreBody:
+        title: Ignore Body
+        description: If it is true, the S3 Object Body will be ignored completely, if it is set to false the S3 Object will be put in the body. Setting this to true, will override any behavior defined by includeBody option.
+        type: boolean
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
   dependencies:
     - "camel:aws2-s3"
     - "camel:kamelet"
@@ -83,6 +90,7 @@ spec:
         accessKey: "{{accessKey}}"
         region: "{{region}}"
         includeBody: "{{includeBody}}"
+        includeBody: "{{ignoreBody}}"
         deleteAfterRead: "{{deleteAfterRead}}"
         prefix: "{{?prefix}}"
       steps:
