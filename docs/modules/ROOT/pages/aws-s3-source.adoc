@@ -19,6 +19,7 @@ The following table summarizes the configuration options available for the `aws-
 | *secretKey {empty}* *| Secret Key| The secret key obtained from AWS| string| | 
 | autoCreateBucket| Autocreate Bucket| Setting the autocreation of the S3 bucket bucketName.| boolean| `false`| 
 | deleteAfterRead| Auto-delete Objects| Delete objects after consuming them| boolean| `true`| 
+| ignoreBody| Ignore Body| If it is true, the S3 Object Body will be ignored completely, if it is set to false the S3 Object will be put in the body. Setting this to true, will override any behavior defined by includeBody option.| boolean| `false`| 
 | includeBody| Include Body| If it is true, the exchange will be consumed and put into the body and closed. If false the S3Object stream will be put raw into the body and the headers will be set with the S3 object metadata.| boolean| `true`| 
 | prefix| Prefix| The AWS S3 bucket prefix to consider while searching| string| | `"folder/"`
 |===
