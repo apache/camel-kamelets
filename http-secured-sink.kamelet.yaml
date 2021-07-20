@@ -57,6 +57,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+      - remove-header:
+          header-name: CamelHttpUri
       - set-header:
           name: CamelHttpMethod
           constant: "{{method}}"
