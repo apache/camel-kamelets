@@ -1,0 +1,65 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: Kamelet
+metadata:
+  name: $kameletMetadataName
+  annotations:
+    camel.apache.org/kamelet.icon: $kameletMetadataIcon
+    camel.apache.org/kamelet.support.level: $kameletMetadataSupportLevel
+    camel.apache.org/provider: "$kameletMetadataProvider"
+    camel.apache.org/catalog.version: "$kameletMetadataCataLogVersion"
+    camel.apache.org/kamelet.group: "$kameletMetadataKameletGroup"
+  labels:
+    camel.apache.org/kamelet.type: "$kameletMetadataKameletType"
+#if ($kameletMetadataRequiresRuntime != '')
+    camel.apache.org/requires.runtime: $kameletMetadataRequiresRuntime
+#end
+spec:
+  definition:
+    title: "$kameletSpecTitle"
+    description: "$kameletSpecDescription"
+#if ($requiredKameletProperties.size() > 0)
+    required:
+#foreach( $requiredKameletProperty in $requiredKameletProperties )
+      - $requiredKameletProperty
+#end
+#end
+    type: object
+#foreach( $kameletProperty in $kameletProperties )
+    properties:
+      $kameletProperty:
+        title: "$kameletProperty"
+        description: "The description for $kameletProperty"
+        type: string
+        default: "default value"
+#end
+  dependencies:
+  - "${kamelet.dependency}"
+  flow:
+#if ($kameletBeans.size() > 0)
+    beans:
+#end
+#foreach( $kameletBean in $kameletBeans )
+      - name: myBean
+        type: "#class:org.group.MyBean"
+# Fill or remove the bean properties below if required
+#        property:
+#          - key: property
+#            value: '{{beanPropertyValue1}}'
+#end
+    from:
+      uri: "$kameletFromUri"
+#if ($fromParameters.size() > 0)
+      parameters:
+#end
+#foreach( $fromParameter in $fromParameters )
+        $fromParameter: "Value for $fromParameter"
+#end
+      steps:
+      - to:
+          uri: "$kameletToUri"
+#if ($toParameters.size() > 0)
+          parameters:
+#end
+#foreach( $toParameter in $toParameters )
+            $toParameter: "Value for $toParameter"
+#end
