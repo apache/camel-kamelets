@@ -65,7 +65,21 @@ spec:
           - set-property:
               name: azureBlobName
               simple: ${body.name}
-          - to-d: "azure-storage-blob:{{accountName}}/{{containerName}}?accessKey=RAW({{accessKey}})&operation=getBlob&blobName=${exchangeProperty.azureBlobName}"
+          - set-header:
+              name: CamelAzureStorageBlobBlobName
+              simple: ${exchangeProperty.azureBlobName}
+          - to:
+              uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
+              parameters:
+                operation: "getBlob"
+                accessKey: "{{accessKey}}"
           - to: "kamelet:sink"
-          - to-d: "azure-storage-blob:{{accountName}}/{{containerName}}?accessKey=RAW({{accessKey}})&operation=deleteBlob&blobName=${exchangeProperty.azureBlobName}"
+          - set-header:
+              name: CamelAzureStorageBlobBlobName
+              simple: ${exchangeProperty.azureBlobName}
+          - to:
+              uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
+              parameters:
+                operation: "deleteBlob"
+                accessKey: "{{accessKey}}"
 
