@@ -65,6 +65,8 @@ spec:
         type: string
   dependencies:
     - "camel:azure-cosmosdb"
+    - "camel:kamelet"
+    - "camel:jackson"
   flow:
     from:
       uri: "azure-cosmosdb:{{databaseName}}/{{containerName}}"
