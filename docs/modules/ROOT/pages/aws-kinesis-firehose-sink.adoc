@@ -52,9 +52,8 @@ spec:
       region: "eu-west-1"
       secretKey: "The Secret Key"
       streamName: "The Stream Name"
-
+  
 ----
-
 Make sure you have xref:latest@camel-k::installation/installation.adoc[Camel K installed] into the Kubernetes cluster you're connected to.
 
 Save the `aws-kinesis-firehose-sink-binding.yaml` file into your hard drive, then configure it according to your needs.
@@ -104,7 +103,7 @@ spec:
       region: "eu-west-1"
       secretKey: "The Secret Key"
       streamName: "The Stream Name"
-
+  
 ----
 
 Ensure that you've installed https://strimzi.io/[Strimzi] and created a topic named `my-topic` in the current namespace.
