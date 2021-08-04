@@ -1,0 +1,43 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: {{ .Kamelet.ObjectMeta.Name }}-binding
+spec:
+  {{ if eq (index .Kamelet.ObjectMeta.Labels "camel.apache.org/kamelet.type") "sink" }}source:
+    ref:
+      kind: {{ .GetVal "RefKind" }}
+      apiVersion: {{ .GetVal "RefApiVersion" }}
+      name: {{ .GetVal "RefName" }}
+  sink:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: {{ .Kamelet.ObjectMeta.Name }}{{ template "properties-list.tmpl" . }}
+  {{ else if eq (index .Kamelet.ObjectMeta.Labels "camel.apache.org/kamelet.type") "source" }}source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: {{ .Kamelet.ObjectMeta.Name }}{{ template "properties-list.tmpl" . }}
+  sink:
+    ref:
+      kind: {{ .GetVal "RefKind" }}
+      apiVersion: {{ .GetVal "RefApiVersion" }}
+      name: {{ .GetVal "RefName" }}
+  {{ else if eq (index .Kamelet.ObjectMeta.Labels "camel.apache.org/kamelet.type") "action" }}source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: timer-source
+    properties:
+      message: "Hello"
+  steps:
+  - ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: {{ .Kamelet.ObjectMeta.Name }}{{ template "properties-list.tmpl" . }}
+  sink:
+    ref:
+      kind: {{ .GetVal "RefKind" }}
+      apiVersion: {{ .GetVal "RefApiVersion" }}
+      name: {{ .GetVal "RefName" }}
+{{ end }}

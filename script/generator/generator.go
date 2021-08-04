@@ -35,7 +35,10 @@ func main() {
 	}
 
 	templateFile := path.Join(out, "kamelet.adoc.tmpl")
-	t, err := template.New("kamelet.adoc.tmpl").Funcs(funcMap).ParseFiles(templateFile)
+	kameletBindingFile := path.Join(out, "kamelet-binding-sink-source.tmpl")
+	propertiesListFile := path.Join(out, "properties-list.tmpl")
+
+	t, err := template.New("kamelet.adoc.tmpl").Funcs(funcMap).ParseFiles(templateFile, kameletBindingFile, propertiesListFile)
 	handleGeneralError(fmt.Sprintf("cannot load template file from %s", templateFile), err)
 
 	kamelets := listKamelets(dir)
@@ -61,12 +64,14 @@ func main() {
 type TemplateContext struct {
 	Kamelet camel.Kamelet
 	Image   string
+	TemplateProperties map[string]string
 }
 
 func NewTemplateContext(kamelet camel.Kamelet, image string) TemplateContext {
 	return TemplateContext{
 		Kamelet: kamelet,
 		Image:   image,
+		TemplateProperties: map[string]string{},
 	}
 }
 
@@ -129,6 +134,53 @@ func (ctx *TemplateContext) HasProperties() bool {
 	return len(ctx.Kamelet.Spec.Definition.Properties) > 0
 }
 
+func (ctx *TemplateContext) HasRequiredProperties() bool {
+	propDefs := getSortedProps(ctx.Kamelet)
+
+	for _, propDef := range propDefs {
+		if propDef.Required {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (ctx *TemplateContext) PropertyList() string {
+	propDefs := getSortedProps(ctx.Kamelet)
+
+	sampleConfig := make([]string, 0)
+	for _, propDef := range propDefs {
+		if !propDef.Required {
+			continue
+		}
+		key := propDef.Name
+		if propDef.Default == nil {
+			ex := propDef.GetSampleValue()
+			sampleConfig = append(sampleConfig, fmt.Sprintf("%s: %s", key, ex))
+		}
+	}
+	
+	/*
+	Creates the properties list in the YAML format.
+	 */
+	props := ""
+	if len(sampleConfig) > 0 {
+		props = fmt.Sprintf("\n    %s:\n      %s", "properties", strings.Join(sampleConfig, "\n      "))
+	}
+
+	return props
+}
+
+func (ctx *TemplateContext) SetVal(key, val string) string {
+	ctx.TemplateProperties[key] = val
+	return ""
+}
+
+func (ctx *TemplateContext) GetVal(key string) string {
+	return ctx.TemplateProperties[key]
+}
+
 func (ctx *TemplateContext) Properties() string {
 	content := ""
 	if len(ctx.Kamelet.Spec.Definition.Properties) > 0 {
@@ -156,85 +208,6 @@ func (ctx *TemplateContext) Properties() string {
 		}
 
 		content += "|===\n"
-
-	}
-	return content
-}
-
-func (ctx *TemplateContext) ExampleBinding(apiVersion, kind, name string) string {
-	content := ""
-	propDefs := getSortedProps(ctx.Kamelet)
-	tp := ctx.Kamelet.ObjectMeta.Labels["camel.apache.org/kamelet.type"]
-	if tp != "" {
-		sampleConfig := make([]string, 0)
-		for _, propDef := range propDefs {
-			if !propDef.Required {
-				continue
-			}
-			key := propDef.Name
-			if propDef.Default == nil {
-				ex := propDef.GetSampleValue()
-				sampleConfig = append(sampleConfig, fmt.Sprintf("%s: %s", key, ex))
-			}
-		}
-		props := ""
-		if len(sampleConfig) > 0 {
-			props += "    properties:\n"
-			for _, p := range sampleConfig {
-				props += fmt.Sprintf("      %s\n", p)
-			}
-		}
-
-		kameletRef := fmt.Sprintf(`    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
-      name: %s
-%s`, ctx.Kamelet.Name, props)
-
-		boundToRef := fmt.Sprintf(`    ref:
-      kind: %s
-      apiVersion: %s
-      name: %s
-`, kind, apiVersion, name)
-		var sourceRef string
-		var sinkRef string
-		var steps string
-
-		switch tp {
-		case "source":
-			sourceRef = kameletRef
-			sinkRef = boundToRef
-		case "sink":
-			sourceRef = boundToRef
-			sinkRef = kameletRef
-		case "action":
-			sourceRef = `    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
-      name: timer-source
-    properties:
-      message: "Hello"`
-			sinkRef = boundToRef
-			steps = fmt.Sprintf(`
-  steps:
-  -%s`, kameletRef[3:])
-		}
-
-		binding := fmt.Sprintf(`apiVersion: camel.apache.org/v1alpha1
-kind: KameletBinding
-metadata:
-  name: %s-binding
-spec:
-  source:
-%s%s  sink:
-%s
-`, ctx.Kamelet.Name, sourceRef, steps, sinkRef)
-
-		content += fmt.Sprintf(".%s-binding.yaml\n", ctx.Kamelet.Name)
-		content += "[source,yaml]\n"
-		content += "----\n"
-		content += binding
-		content += "----\n"
 
 	}
 	return content

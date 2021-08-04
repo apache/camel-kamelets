@@ -47,9 +47,8 @@ spec:
       name: http-sink
     properties:
       url: "https://my-service/path"
-
+  
 ----
-
 Make sure you have xref:latest@camel-k::installation/installation.adoc[Camel K installed] into the Kubernetes cluster you're connected to.
 
 Save the `http-sink-binding.yaml` file into your hard drive, then configure it according to your needs.
@@ -96,7 +95,7 @@ spec:
       name: http-sink
     properties:
       url: "https://my-service/path"
-
+  
 ----
 
 Ensure that you've installed https://strimzi.io/[Strimzi] and created a topic named `my-topic` in the current namespace.

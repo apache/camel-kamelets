@@ -26,7 +26,12 @@ The `{{ .Kamelet.ObjectMeta.Name }}` Kamelet can be used as intermediate step in
 {{ else -}}
 The `{{ .Kamelet.ObjectMeta.Name }}` Kamelet can be used as Knative {{ index .Kamelet.ObjectMeta.Labels "camel.apache.org/kamelet.type" }} by binding it to a Knative object.
 {{ end }}
-{{ .ExampleBinding "messaging.knative.dev/v1" "InMemoryChannel" "mychannel" }}
+{{- .SetVal "RefApiVersion" "messaging.knative.dev/v1" -}}{{- .SetVal "RefKind" "InMemoryChannel" -}}{{- .SetVal "RefName" "mychannel" }}
+.{{ .Kamelet.ObjectMeta.Name }}-binding.yaml
+[source,yaml]
+----
+{{ template "kamelet-binding-sink-source.tmpl" . }}
+----
 Make sure you have xref:latest@camel-k::installation/installation.adoc[Camel K installed] into the Kubernetes cluster you're connected to.
 
 Save the `{{ .Kamelet.ObjectMeta.Name }}-binding.yaml` file into your hard drive, then configure it according to your needs.
@@ -55,8 +60,13 @@ This will create the KameletBinding under the hood and apply it to the current n
 The `{{ .Kamelet.ObjectMeta.Name }}` Kamelet can be used as intermediate step in a Kafka binding.
 {{ else -}}
 The `{{ .Kamelet.ObjectMeta.Name }}` Kamelet can be used as Kafka {{ index .Kamelet.ObjectMeta.Labels "camel.apache.org/kamelet.type" }} by binding it to a Kafka topic.
-{{ end }}
-{{ .ExampleBinding "kafka.strimzi.io/v1beta1" "KafkaTopic" "my-topic" }}
+{{ end }} {{- .SetVal "RefApiVersion" "kafka.strimzi.io/v1beta1" -}}{{- .SetVal "RefKind" "KafkaTopic" -}}{{- .SetVal "RefName" "my-topic" }}
+.{{ .Kamelet.ObjectMeta.Name }}-binding.yaml
+[source,yaml]
+----
+{{ template "kamelet-binding-sink-source.tmpl" . }}
+----
+
 Ensure that you've installed https://strimzi.io/[Strimzi] and created a topic named `my-topic` in the current namespace.
 Make also sure you have xref:latest@camel-k::installation/installation.adoc[Camel K installed] into the Kubernetes cluster you're connected to.
 

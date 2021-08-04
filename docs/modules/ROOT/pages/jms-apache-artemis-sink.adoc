@@ -49,9 +49,8 @@ spec:
     properties:
       brokerURL: "tcp://my-host:61616"
       destinationName: "person"
-
+  
 ----
-
 Make sure you have xref:latest@camel-k::installation/installation.adoc[Camel K installed] into the Kubernetes cluster you're connected to.
 
 Save the `jms-apache-artemis-sink-binding.yaml` file into your hard drive, then configure it according to your needs.
@@ -99,7 +98,7 @@ spec:
     properties:
       brokerURL: "tcp://my-host:61616"
       destinationName: "person"
-
+  
 ----
 
 Ensure that you've installed https://strimzi.io/[Strimzi] and created a topic named `my-topic` in the current namespace.
