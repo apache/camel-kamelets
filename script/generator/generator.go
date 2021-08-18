@@ -27,38 +27,60 @@ func main() {
 		os.Exit(1)
 	}
 
-	dir := os.Args[1]
-	out := os.Args[2]
+	projectBaseDir := os.Args[1]
+	docBaseDir := os.Args[2]
 
 	funcMap := template.FuncMap{
 		"ToCamel": strcase.ToCamel,
 	}
 
-	templateFile := path.Join(out, "kamelet.adoc.tmpl")
-	kameletBindingFile := path.Join(out, "kamelet-binding-sink-source.tmpl")
-	propertiesListFile := path.Join(out, "properties-list.tmpl")
+	templateFile := path.Join(docBaseDir, "kamelet.adoc.tmpl")
+	kameletBindingFile := path.Join(docBaseDir, "kamelet-binding-sink-source.tmpl")
+	propertiesListFile := path.Join(docBaseDir, "properties-list.tmpl")
 
-	t, err := template.New("kamelet.adoc.tmpl").Funcs(funcMap).ParseFiles(templateFile, kameletBindingFile, propertiesListFile)
+	yamlBindingsBaseDir := filepath.Join(projectBaseDir, "templates", "bindings")
+	yamlTemplateFile := path.Join(yamlBindingsBaseDir, "kamelet.yaml.tmpl")
+
+	docTemplate, err := template.New("kamelet.adoc.tmpl").Funcs(funcMap).ParseFiles(templateFile, kameletBindingFile, propertiesListFile)
 	handleGeneralError(fmt.Sprintf("cannot load template file from %s", templateFile), err)
 
-	kamelets := listKamelets(dir)
+	yamlTemplate, err := template.New("kamelet.yaml.tmpl").Funcs(funcMap).ParseFiles(yamlTemplateFile, kameletBindingFile, propertiesListFile)
+	handleGeneralError(fmt.Sprintf("cannot load template file from %s", templateFile), err)
+
+	kamelets := listKamelets(projectBaseDir)
 
 	links := make([]string, 0)
 	for _, k := range kamelets {
-		img := saveImage(k, out)
+		img := saveImage(k, docBaseDir)
 
 		ctx := NewTemplateContext(k, img)
 
-		buffer := new(bytes.Buffer)
-		err = t.Execute(buffer, &ctx)
-		handleGeneralError("cannot process template", err)
-
-		produceDocFile(k, out, buffer.String())
-
-		links = append(links, fmt.Sprintf("* xref:ROOT:%s.adoc[%s %s]", k.Name, img, k.Spec.Definition.Title))
+		processDocTemplate(k, docBaseDir, err, docTemplate, &ctx)
+		links = updateImageLink(k, img, links)
+		processYamlTemplate(k, projectBaseDir, err, yamlTemplate, &ctx)
 	}
 
-	saveNav(links, out)
+	saveNav(links, docBaseDir)
+}
+
+func processDocTemplate(k camel.Kamelet, baseDir string, err error, docTemplate *template.Template, ctx *TemplateContext) {
+	buffer := new(bytes.Buffer)
+	err = docTemplate.Execute(buffer, &ctx)
+	handleGeneralError("cannot process documentation template", err)
+
+	produceDocFile(k, baseDir, buffer.String())
+}
+
+func processYamlTemplate(k camel.Kamelet, baseDir string, err error, yamlTemplate *template.Template, ctx *TemplateContext) {
+	buffer := new(bytes.Buffer)
+	err = yamlTemplate.Execute(buffer, ctx)
+	handleGeneralError("cannot process yaml binding template", err)
+
+	produceBindingFile(k, baseDir, buffer.String())
+}
+
+func updateImageLink(k camel.Kamelet, img string, links []string) []string {
+	return append(links, fmt.Sprintf("* xref:ROOT:%s.adoc[%s %s]", k.Name, img, k.Spec.Definition.Title))
 }
 
 type TemplateContext struct {
@@ -293,15 +315,27 @@ func saveImage(k camel.Kamelet, out string) string {
 	return ""
 }
 
-func produceDocFile(k camel.Kamelet, out string, content string) {
-	docFile := filepath.Join(out, "pages", k.Name+".adoc")
-	if _, err := os.Stat(docFile); err == nil {
-		err = os.Remove(docFile)
-		handleGeneralError(fmt.Sprintf("cannot remove file %q", docFile), err)
+func produceDocFile(k camel.Kamelet, baseDir string, content string) {
+	outputDir := filepath.Join(baseDir, "pages")
+
+	produceOutputFile(k, outputDir, content,".adoc")
+}
+
+func produceBindingFile(k camel.Kamelet, baseDir string, content string) {
+	outputDir := filepath.Join(baseDir, "templates", "bindings")
+
+	produceOutputFile(k, outputDir, content,"-binding.yaml")
+}
+
+func produceOutputFile(k camel.Kamelet, outputDir string, content string, extension string) {
+	outputFile := filepath.Join(outputDir, k.Name + extension)
+	if _, err := os.Stat(outputFile); err == nil {
+		err = os.Remove(outputFile)
+		handleGeneralError(fmt.Sprintf("cannot remove file %q", outputFile), err)
 	}
-	err := ioutil.WriteFile(docFile, []byte(content), 0666)
-	handleGeneralError(fmt.Sprintf("cannot write to file %q", docFile), err)
-	fmt.Printf("%q written\n", docFile)
+	err := ioutil.WriteFile(outputFile, []byte(content), 0666)
+	handleGeneralError(fmt.Sprintf("cannot write to file %q", outputFile), err)
+	fmt.Printf("%q written\n", outputFile)
 }
 
 func tableLine(val ...string) string {

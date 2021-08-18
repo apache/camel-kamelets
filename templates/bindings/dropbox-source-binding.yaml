@@ -1,0 +1,21 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: dropbox-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: dropbox-source
+    properties:
+      accessToken: "The Dropbox Access Token"
+      clientIdentifier: "The Client Identifier"
+      query: "The Queries"
+      remotePath: "The Remote Path"
+  sink:
+    ref:
+      kind: KafkaTopic
+      apiVersion: kafka.strimzi.io/v1beta1
+      name: my-topic
+  

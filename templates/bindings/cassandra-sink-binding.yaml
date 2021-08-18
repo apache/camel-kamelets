@@ -1,0 +1,23 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: cassandra-sink-binding
+spec:
+  source:
+    ref:
+      kind: KafkaTopic
+      apiVersion: kafka.strimzi.io/v1beta1
+      name: my-topic
+  sink:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: cassandra-sink
+    properties:
+      connectionHost: "localhost"
+      connectionPort: 9042
+      keyspace: "customers"
+      password: "The Password"
+      preparedStatement: "The Prepared Statement"
+      username: "The Username"
+  
