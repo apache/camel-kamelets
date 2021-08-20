@@ -1,0 +1,13 @@
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 1000
+        message: "{ \"foo\": \"John\"}"
+    steps:
+      - to:
+          uri: "kamelet:message-timestamp-router-action"
+          parameters:
+            timestampKeys: "The Timestamp Keys"
+      - to:
+          uri: "log:info"

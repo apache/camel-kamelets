@@ -1,0 +1,13 @@
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 1000
+        message: "{ \"foo\": \"John\"}"
+    steps:
+      - to:
+          uri: "kamelet:hoist-field-action"
+          parameters:
+            field: "The Field"
+      - to:
+          uri: "log:info"

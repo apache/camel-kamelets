@@ -1,0 +1,12 @@
+- route:
+    from:
+      uri: "kamelet:aws-sqs-source"
+      parameters:
+        accessKey: "The Access Key"
+        queueNameOrArn: "The Queue Name"
+        region: "eu-west-1"
+        secretKey: "The Secret Key"
+    steps:
+      - to:
+          uri: "log:info"
+    

@@ -1,0 +1,14 @@
+- route:
+    from:
+      uri: "kamelet:cassandra-source"
+      parameters:
+        connectionHost: "localhost"
+        connectionPort: 9042
+        keyspace: "customers"
+        password: "The Password"
+        query: "The Query"
+        username: "The Username"
+    steps:
+      - to:
+          uri: "log:info"
+    

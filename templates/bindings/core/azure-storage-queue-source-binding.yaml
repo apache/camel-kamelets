@@ -1,0 +1,11 @@
+- route:
+    from:
+      uri: "kamelet:azure-storage-queue-source"
+      parameters:
+        accessKey: "The Access Key"
+        accountName: "The Account Name"
+        queueName: "The Queue Name"
+    steps:
+      - to:
+          uri: "log:info"
+    

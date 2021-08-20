@@ -1,0 +1,13 @@
+- route:
+    from:
+      uri: "kamelet:mongodb-source"
+      parameters:
+        collection: "The MongoDB Collection"
+        database: "The MongoDB Database"
+        hosts: "The MongoDB Hosts"
+        password: "The MongoDB Password"
+        username: "The MongoDB Username"
+    steps:
+      - to:
+          uri: "log:info"
+    

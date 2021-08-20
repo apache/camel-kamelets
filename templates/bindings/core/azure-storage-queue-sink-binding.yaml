@@ -1,0 +1,14 @@
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 1000
+        message: "Hello Camel JBang"
+    steps:
+      - to:
+          uri: "kamelet:azure-storage-queue-sink"
+          parameters:
+            accessKey: "The Access Key"
+            accountName: "The Account Name"
+            queueName: "The Queue Name"
+    

@@ -1,0 +1,12 @@
+- route:
+    from:
+      uri: "kamelet:aws-kinesis-source"
+      parameters:
+        accessKey: "The Access Key"
+        region: "eu-west-1"
+        secretKey: "The Secret Key"
+        stream: "The Stream Name"
+    steps:
+      - to:
+          uri: "log:info"
+    

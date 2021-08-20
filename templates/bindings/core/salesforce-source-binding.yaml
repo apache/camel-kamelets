@@ -1,0 +1,14 @@
+- route:
+    from:
+      uri: "kamelet:salesforce-source"
+      parameters:
+        clientId: "The Consumer Key"
+        clientSecret: "The Consumer Secret"
+        password: "The Password"
+        query: "SELECT Id, Name, Email, Phone FROM Contact"
+        topicName: "ContactTopic"
+        userName: "The Username"
+    steps:
+      - to:
+          uri: "log:info"
+    

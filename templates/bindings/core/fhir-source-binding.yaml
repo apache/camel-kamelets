@@ -1,0 +1,11 @@
+- route:
+    from:
+      uri: "kamelet:fhir-source"
+      parameters:
+        password: "The Password"
+        serverUrl: "The Server URL"
+        username: "The Username"
+    steps:
+      - to:
+          uri: "log:info"
+    

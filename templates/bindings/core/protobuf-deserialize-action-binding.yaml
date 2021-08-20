@@ -1,0 +1,13 @@
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 1000
+        message: "{ \"foo\": \"John\"}"
+    steps:
+      - to:
+          uri: "kamelet:protobuf-deserialize-action"
+          parameters:
+            schema: "message Person { required string first = 1; required string last = 2; }"
+      - to:
+          uri: "log:info"

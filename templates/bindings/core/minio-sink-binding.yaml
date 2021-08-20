@@ -1,0 +1,15 @@
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 1000
+        message: "Hello Camel JBang"
+    steps:
+      - to:
+          uri: "kamelet:minio-sink"
+          parameters:
+            accessKey: "The Access Key"
+            bucketName: "The Bucket Name"
+            endpoint: "http://localhost:9000"
+            secretKey: "The Secret Key"
+    

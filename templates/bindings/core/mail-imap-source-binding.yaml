@@ -1,0 +1,11 @@
+- route:
+    from:
+      uri: "kamelet:mail-imap-source"
+      parameters:
+        connectionHost: "imap.gmail.com"
+        password: "The Password"
+        username: "The Username"
+    steps:
+      - to:
+          uri: "log:info"
+    

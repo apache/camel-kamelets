@@ -1,0 +1,15 @@
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 1000
+        message: "Hello Camel JBang"
+    steps:
+      - to:
+          uri: "kamelet:ftp-sink"
+          parameters:
+            connectionHost: "The Connection Host"
+            directoryName: "The Directory Name"
+            password: "The Password"
+            username: "The Username"
+    
