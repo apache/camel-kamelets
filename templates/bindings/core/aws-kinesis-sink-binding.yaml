@@ -1,0 +1,15 @@
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 1000
+        message: "Hello Camel JBang"
+    steps:
+      - to:
+          uri: "kamelet:aws-kinesis-sink"
+          parameters:
+            accessKey: "The Access Key"
+            region: "eu-west-1"
+            secretKey: "The Secret Key"
+            stream: "The Stream Name"
+    

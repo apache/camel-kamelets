@@ -1,0 +1,19 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: jms-apache-artemis-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: jms-apache-artemis-source
+    properties:
+      brokerURL: "tcp://k3s-node-master.usersys.redhat.com:31616"
+      destinationName: "The Destination Name"
+  sink:
+    ref:
+      kind: KafkaTopic
+      apiVersion: kafka.strimzi.io/v1beta1
+      name: my-topic
+  

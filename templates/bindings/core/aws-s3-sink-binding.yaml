@@ -1,0 +1,15 @@
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 1000
+        message: "Hello Camel JBang"
+    steps:
+      - to:
+          uri: "kamelet:aws-s3-sink"
+          parameters:
+            accessKey: "The Access Key"
+            bucketNameOrArn: "The Bucket Name"
+            region: "eu-west-1"
+            secretKey: "The Secret Key"
+    

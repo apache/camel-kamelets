@@ -1,0 +1,10 @@
+- route:
+    from:
+      uri: "kamelet:slack-source"
+      parameters:
+        channel: "#myroom"
+        token: "The Token"
+    steps:
+      - to:
+          uri: "log:info"
+    

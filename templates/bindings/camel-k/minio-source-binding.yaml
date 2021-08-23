@@ -1,0 +1,21 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: minio-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: minio-source
+    properties:
+      accessKey: "The Access Key"
+      bucketName: "The Bucket Name"
+      endpoint: "http://localhost:9000"
+      secretKey: "The Secret Key"
+  sink:
+    ref:
+      kind: KafkaTopic
+      apiVersion: kafka.strimzi.io/v1beta1
+      name: my-topic
+  

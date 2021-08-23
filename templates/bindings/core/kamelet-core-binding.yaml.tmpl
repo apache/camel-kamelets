@@ -1,0 +1,25 @@
+- route:
+    {{ if eq (index .Kamelet.ObjectMeta.Labels "camel.apache.org/kamelet.type") "sink" }}from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 1000
+        message: "Hello Camel JBang"
+    steps:
+      - to:
+          uri: "kamelet:{{ .Kamelet.ObjectMeta.Name }}"{{ template "parameter-list.tmpl" . }}
+    {{ else if eq (index .Kamelet.ObjectMeta.Labels "camel.apache.org/kamelet.type") "source" }}from:
+      uri: "kamelet:{{ .Kamelet.ObjectMeta.Name }}"{{ template "parameter-list.tmpl" . }}
+    steps:
+      - to:
+          uri: "log:info"
+    {{ else if eq (index .Kamelet.ObjectMeta.Labels "camel.apache.org/kamelet.type") "action" }}from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 1000
+        message: "{ \"foo\": \"John\"}"
+    steps:
+      - to:
+          uri: "kamelet:{{ .Kamelet.ObjectMeta.Name }}"{{ template "parameter-list.tmpl" . }}
+      - to:
+          uri: "log:info"
+{{ end }}

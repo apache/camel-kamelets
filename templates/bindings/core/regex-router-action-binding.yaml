@@ -1,0 +1,14 @@
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 1000
+        message: "{ \"foo\": \"John\"}"
+    steps:
+      - to:
+          uri: "kamelet:regex-router-action"
+          parameters:
+            regex: "The Regex"
+        replacement: "The Replacement"
+      - to:
+          uri: "log:info"

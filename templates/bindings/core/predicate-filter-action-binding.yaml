@@ -1,0 +1,13 @@
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 1000
+        message: "{ \"foo\": \"John\"}"
+    steps:
+      - to:
+          uri: "kamelet:predicate-filter-action"
+          parameters:
+            expression: "@.foo =~ /.*John/"
+      - to:
+          uri: "log:info"

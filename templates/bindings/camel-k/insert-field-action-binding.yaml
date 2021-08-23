@@ -1,0 +1,25 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: insert-field-action-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: timer-source
+    properties:
+      message: "Hello"
+  steps:
+  - ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: insert-field-action
+    properties:
+      field: "The Field"
+      value: "The Value"
+  sink:
+    ref:
+      kind: KafkaTopic
+      apiVersion: kafka.strimzi.io/v1beta1
+      name: my-topic

@@ -1,0 +1,21 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: aws-ddb-streams-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: aws-ddb-streams-source
+    properties:
+      accessKey: "The Access Key"
+      region: "eu-west-1"
+      secretKey: "The Secret Key"
+      table: "The Table"
+  sink:
+    ref:
+      kind: KafkaTopic
+      apiVersion: kafka.strimzi.io/v1beta1
+      name: my-topic
+  

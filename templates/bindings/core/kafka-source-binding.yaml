@@ -1,0 +1,12 @@
+- route:
+    from:
+      uri: "kamelet:kafka-source"
+      parameters:
+        bootstrapServers: "The Brokers"
+        password: "The Password"
+        topic: "The Topic Names"
+        user: "The Username"
+    steps:
+      - to:
+          uri: "log:info"
+    

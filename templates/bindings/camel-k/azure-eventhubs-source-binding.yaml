@@ -1,0 +1,24 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: azure-eventhubs-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: azure-eventhubs-source
+    properties:
+      blobAccessKey: "The Azure Storage Blob Access Key"
+      blobAccountName: "The Azure Storage Blob Account Name"
+      blobContainerName: "The Azure Storage Blob Container Name"
+      eventhubName: "The Eventhubs Name"
+      namespaceName: "The Eventhubs Namespace"
+      sharedAccessKey: "The Share Access Key"
+      sharedAccessName: "The Share Access Name"
+  sink:
+    ref:
+      kind: KafkaTopic
+      apiVersion: kafka.strimzi.io/v1beta1
+      name: my-topic
+  

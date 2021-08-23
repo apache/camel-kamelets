@@ -1,0 +1,23 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: google-mail-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: google-mail-source
+    properties:
+      accessToken: "The Access Token"
+      applicationName: "The Application name"
+      clientId: "The Client ID"
+      clientSecret: "The Client Secret"
+      index: "The Index"
+      refreshToken: "The Refresh Token"
+  sink:
+    ref:
+      kind: KafkaTopic
+      apiVersion: kafka.strimzi.io/v1beta1
+      name: my-topic
+  

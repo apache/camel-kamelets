@@ -1,0 +1,10 @@
+- route:
+    from:
+      uri: "kamelet:jms-amqp-10-source"
+      parameters:
+        destinationName: "The Destination Name"
+        remoteURI: "amqp://my-host:31616"
+    steps:
+      - to:
+          uri: "log:info"
+    

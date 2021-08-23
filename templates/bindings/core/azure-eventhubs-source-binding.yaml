@@ -1,0 +1,15 @@
+- route:
+    from:
+      uri: "kamelet:azure-eventhubs-source"
+      parameters:
+        blobAccessKey: "The Azure Storage Blob Access Key"
+        blobAccountName: "The Azure Storage Blob Account Name"
+        blobContainerName: "The Azure Storage Blob Container Name"
+        eventhubName: "The Eventhubs Name"
+        namespaceName: "The Eventhubs Namespace"
+        sharedAccessKey: "The Share Access Key"
+        sharedAccessName: "The Share Access Name"
+    steps:
+      - to:
+          uri: "log:info"
+    

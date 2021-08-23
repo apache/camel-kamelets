@@ -1,0 +1,11 @@
+- route:
+    from:
+      uri: "kamelet:github-source"
+      parameters:
+        oauthToken: "The OAuth Token"
+        repoName: "The Repository Name"
+        repoOwner: "The Repository Owner"
+    steps:
+      - to:
+          uri: "log:info"
+    

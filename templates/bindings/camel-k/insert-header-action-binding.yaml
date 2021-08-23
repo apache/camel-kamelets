@@ -1,0 +1,25 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: insert-header-action-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: timer-source
+    properties:
+      message: "Hello"
+  steps:
+  - ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: insert-header-action
+    properties:
+      name: "headername"
+      value: "The Value"
+  sink:
+    ref:
+      kind: KafkaTopic
+      apiVersion: kafka.strimzi.io/v1beta1
+      name: my-topic

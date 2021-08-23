@@ -1,0 +1,12 @@
+- route:
+    from:
+      uri: "kamelet:rabbitmq-source"
+      parameters:
+        addresses: "The Addresses"
+        exchangeName: "The Exchange name"
+        password: "The Password"
+        username: "The Username"
+    steps:
+      - to:
+          uri: "log:info"
+    

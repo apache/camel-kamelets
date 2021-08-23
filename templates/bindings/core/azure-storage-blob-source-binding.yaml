@@ -1,0 +1,11 @@
+- route:
+    from:
+      uri: "kamelet:azure-storage-blob-source"
+      parameters:
+        accessKey: "The Access Key"
+        accountName: "The Account Name"
+        containerName: "The Container Name"
+    steps:
+      - to:
+          uri: "log:info"
+    

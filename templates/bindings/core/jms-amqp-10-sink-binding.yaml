@@ -1,0 +1,13 @@
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 1000
+        message: "Hello Camel JBang"
+    steps:
+      - to:
+          uri: "kamelet:jms-amqp-10-sink"
+          parameters:
+            destinationName: "The Destination Name"
+            remoteURI: "amqp://my-host:31616"
+    

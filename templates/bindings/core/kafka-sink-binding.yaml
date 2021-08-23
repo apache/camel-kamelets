@@ -1,0 +1,15 @@
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 1000
+        message: "Hello Camel JBang"
+    steps:
+      - to:
+          uri: "kamelet:kafka-sink"
+          parameters:
+            bootstrapServers: "The Brokers"
+            password: "The Password"
+            topic: "The Topic Names"
+            user: "The Username"
+    

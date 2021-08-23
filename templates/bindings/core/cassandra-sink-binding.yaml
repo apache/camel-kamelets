@@ -1,0 +1,17 @@
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 1000
+        message: "Hello Camel JBang"
+    steps:
+      - to:
+          uri: "kamelet:cassandra-sink"
+          parameters:
+            connectionHost: "localhost"
+            connectionPort: 9042
+            keyspace: "customers"
+            password: "The Password"
+            preparedStatement: "The Prepared Statement"
+            username: "The Username"
+    
