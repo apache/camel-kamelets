@@ -13,7 +13,15 @@ metadata:
 spec:
   definition:
     title: "Insert Field Action"
-    description: "Adds a custom field with a constant value to the message in transit"
+    description: |-
+
+    Adds a custom field with a constant value to the message in transit.
+
+    This action works with Json Object. So it will expect a Json Array or a Json Object.
+
+    If for example you have an array like '{ "foo":"John", "bar":30 }' and your action has been configured with field as 'element' and value as 'hello', you'll get '{ "foo":"John", "bar":30, "element":"hello" }'
+
+    No headers mapping supported, only constant values.
     required:
       - field
       - value
