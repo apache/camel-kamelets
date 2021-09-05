@@ -22,8 +22,6 @@ spec:
     required:
       - hosts
       - collection
-      - password
-      - username
       - database
     type: object
     properties:
@@ -74,8 +72,8 @@ spec:
       parameters:
         hosts: "{{hosts}}"
         collection: "{{collection}}"
-        password: "{{password}}"
-        username: "{{username}}"
+        password: "{{?password}}"
+        username: "{{?username}}"
         database: "{{database}}"
         persistentTailTracking: "{{persistentTailTracking}}"
         tailTrackIncreasingField: "{{?tailTrackIncreasingField}}"
