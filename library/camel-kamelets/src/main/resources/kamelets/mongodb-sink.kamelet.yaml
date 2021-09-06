@@ -24,8 +24,6 @@ spec:
     required:
       - hosts
       - collection
-      - password
-      - username
       - database
     type: object
     properties:
@@ -96,7 +94,7 @@ spec:
             writeConcern: "{{?writeConcern}}"
             hosts: "{{hosts}}"
             collection: "{{collection}}"
-            password: "{{password}}"
-            username: "{{username}}"
+            password: "{{?password}}"
+            username: "{{?username}}"
             database: "{{database}}"
             operation: "insert"
