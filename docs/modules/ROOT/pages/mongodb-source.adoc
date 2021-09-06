@@ -20,10 +20,10 @@ The following table summarizes the configuration options available for the `mong
 | *collection {empty}* *| MongoDB Collection| Sets the name of the MongoDB collection to bind to this endpoint.| string| | 
 | *database {empty}* *| MongoDB Database| Sets the name of the MongoDB database to target.| string| | 
 | *hosts {empty}* *| MongoDB Hosts| Comma separated list of MongoDB Host Addresses in host:port format.| string| | 
-| *password {empty}* *| MongoDB Password| User password for accessing MongoDB.| string| | 
-| *username {empty}* *| MongoDB Username| Username for accessing MongoDB.| string| | 
+| password| MongoDB Password| User password for accessing MongoDB.| string| | 
 | persistentTailTracking| MongoDB Persistent Tail Tracking| Enable persistent tail tracking, which is a mechanism to keep track of the last consumed message across system restarts. The next time the system is up, the endpoint will recover the cursor from the point where it last stopped slurping records.| boolean| `false`| 
 | tailTrackIncreasingField| MongoDB Tail Track Increasing Field| Correlation field in the incoming record which is of increasing nature and will be used to position the tailing cursor every time it is generated.| string| | 
+| username| MongoDB Username| Username for accessing MongoDB.| string| | 
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
@@ -53,8 +53,6 @@ spec:
       collection: "The MongoDB Collection"
       database: "The MongoDB Database"
       hosts: "The MongoDB Hosts"
-      password: "The MongoDB Password"
-      username: "The MongoDB Username"
   sink:
     ref:
       kind: InMemoryChannel
@@ -79,7 +77,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind mongodb-source -p "source.collection=The MongoDB Collection" -p "source.database=The MongoDB Database" -p "source.hosts=The MongoDB Hosts" -p "source.password=The MongoDB Password" -p "source.username=The MongoDB Username" channel/mychannel
+kamel bind mongodb-source -p "source.collection=The MongoDB Collection" -p "source.database=The MongoDB Database" -p "source.hosts=The MongoDB Hosts" channel/mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.
@@ -105,8 +103,6 @@ spec:
       collection: "The MongoDB Collection"
       database: "The MongoDB Database"
       hosts: "The MongoDB Hosts"
-      password: "The MongoDB Password"
-      username: "The MongoDB Username"
   sink:
     ref:
       kind: KafkaTopic
@@ -133,7 +129,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind mongodb-source -p "source.collection=The MongoDB Collection" -p "source.database=The MongoDB Database" -p "source.hosts=The MongoDB Hosts" -p "source.password=The MongoDB Password" -p "source.username=The MongoDB Username" kafka.strimzi.io/v1beta1:KafkaTopic:my-topic
+kamel bind mongodb-source -p "source.collection=The MongoDB Collection" -p "source.database=The MongoDB Database" -p "source.hosts=The MongoDB Hosts" kafka.strimzi.io/v1beta1:KafkaTopic:my-topic
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.
