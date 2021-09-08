@@ -17,8 +17,8 @@ The following table summarizes the configuration options available for the `goog
 | Property| Name| Description| Type| Default| Example
 | *projectId {empty}* *| Project Id| The Google Cloud PubSub Project Id| string| | 
 | *serviceAccountKey {empty}* *| Service Account Key| The Service account key that can be used as credentials for the PubSub publisher/subscriber| binary| | 
+| *subscriptionName {empty}* *| Subscription Name| The Subscription Name| string| | 
 | maxMessagesPerPoll| Max Messages Per Poll| The max number of messages to receive from the server in a single API call| integer| `1`| 
-| subscriptionName| Subscription Name| The Subscription Name| string| | 
 | synchronousPull| Synchronous Pull| If Synchronously pull batches of messages is enabled or not| boolean| `false`| 
 |===
 
@@ -48,6 +48,7 @@ spec:
     properties:
       projectId: "The Project Id"
       serviceAccountKey: "The Service Account Key"
+      subscriptionName: "The Subscription Name"
   sink:
     ref:
       kind: InMemoryChannel
@@ -72,7 +73,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind google-pubsub-source -p "source.projectId=The Project Id" -p "source.serviceAccountKey=The Service Account Key" channel/mychannel
+kamel bind google-pubsub-source -p "source.projectId=The Project Id" -p "source.serviceAccountKey=The Service Account Key" -p "source.subscriptionName=The Subscription Name" channel/mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.
@@ -97,6 +98,7 @@ spec:
     properties:
       projectId: "The Project Id"
       serviceAccountKey: "The Service Account Key"
+      subscriptionName: "The Subscription Name"
   sink:
     ref:
       kind: KafkaTopic
@@ -123,7 +125,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind google-pubsub-source -p "source.projectId=The Project Id" -p "source.serviceAccountKey=The Service Account Key" kafka.strimzi.io/v1beta1:KafkaTopic:my-topic
+kamel bind google-pubsub-source -p "source.projectId=The Project Id" -p "source.serviceAccountKey=The Service Account Key" -p "source.subscriptionName=The Subscription Name" kafka.strimzi.io/v1beta1:KafkaTopic:my-topic
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.
