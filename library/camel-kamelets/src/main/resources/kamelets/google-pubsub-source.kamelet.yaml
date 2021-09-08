@@ -48,8 +48,8 @@ spec:
         type: integer
         default: 1
       concurrentConsumers:
-        title: Max Messages Per Poll
-        description: The max number of messages to receive from the server in a single API call
+        title: Concurrent Consumers
+        description: The number of parallel streams consuming from the subscription
         type: integer
         default: 1        
   dependencies:
