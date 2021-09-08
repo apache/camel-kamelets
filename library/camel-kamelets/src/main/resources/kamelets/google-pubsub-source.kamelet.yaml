@@ -47,6 +47,11 @@ spec:
         description: The max number of messages to receive from the server in a single API call
         type: integer
         default: 1
+      concurrentConsumers:
+        title: Max Messages Per Poll
+        description: The max number of messages to receive from the server in a single API call
+        type: integer
+        default: 1        
   dependencies:
     - "camel:kamelet"
     - "camel:google-pubsub"
@@ -58,5 +63,6 @@ spec:
         serviceAccountKey: "base64:{{serviceAccountKey}}"
         synchronousPull: "{{synchronousPull}}"
         maxMessagesPerPoll: "{{maxMessagesPerPoll}}"
+        concurrentConsumers: "{{concurrentConsumers}}"
       steps:
       - to: kamelet:sink
