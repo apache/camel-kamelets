@@ -1,0 +1,10 @@
+- route:
+    from:
+      uri: "kamelet:google-pubsub-source"
+      parameters:
+        projectId: "The Project Id"
+        serviceAccountKey: "The Service Account Key"
+    steps:
+      - to:
+          uri: "log:info"
+    
