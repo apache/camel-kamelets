@@ -18,6 +18,7 @@ The following table summarizes the configuration options available for the `goog
 | *projectId {empty}* *| Project Id| The Google Cloud PubSub Project Id| string| | 
 | *serviceAccountKey {empty}* *| Service Account Key| The Service account key that can be used as credentials for the PubSub publisher/subscriber| binary| | 
 | *subscriptionName {empty}* *| Subscription Name| The Subscription Name| string| | 
+| concurrentConsumers| Concurrent Consumers| The number of parallel streams consuming from the subscription| integer| `1`| 
 | maxMessagesPerPoll| Max Messages Per Poll| The max number of messages to receive from the server in a single API call| integer| `1`| 
 | synchronousPull| Synchronous Pull| If Synchronously pull batches of messages is enabled or not| boolean| `false`| 
 |===
