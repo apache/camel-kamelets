@@ -79,7 +79,7 @@ spec:
                 simple: "${header[ce-file]}"
           otherwise:
             steps:
-            - set-property:
+            - set-header:
                 name: CamelMinioObjectName
                 simple: "${exchangeId}"
       - to:
