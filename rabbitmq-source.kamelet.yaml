@@ -18,19 +18,17 @@ spec:
     required:
       - addresses
       - exchangeName
-      - username
-      - password
     type: object
     properties:
       addresses:
         title: Addresses
         description: Comma separated list of RabbitMQ broker addresses
         type: string
-      portNumber:
-        title: Port Number
-        description: Port of the RabbitMQ server
+        example: "localhost:5672"
+      routingKey:
+        title: Routing Key
+        description: The routing key to use when binding a consumer queue to the exchange
         type: string
-        default: 5672
       username:
         title: Username
         description: The username to access the RabbitMQ server
@@ -46,6 +44,10 @@ spec:
         title: Exchange name
         description: The exchange name determines the exchange the queue will be bound to
         type: string
+      queue:
+        title: Queue name
+        description: The queue to receive messages from
+        type: string
   dependencies:
     - "camel:rabbitmq"
     - "camel:kamelet"
@@ -53,9 +55,10 @@ spec:
     from:
       uri: "rabbitmq://{{exchangeName}}"
       parameters:
-        password: "{{password}}"
-        username: "{{username}}"
+        password: "{{?password}}"
+        username: "{{?username}}"
         addresses: "{{addresses}}"
-        portNumber: "{{portNumber}}"
+        routingKey: "{{?routingKey}}"
+        queue: "{{?queue}}"
       steps:
       - to: "kamelet:sink"
