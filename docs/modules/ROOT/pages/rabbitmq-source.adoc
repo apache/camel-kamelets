@@ -13,11 +13,12 @@ The following table summarizes the configuration options available for the `rabb
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| *addresses {empty}* *| Addresses| Comma separated list of RabbitMQ broker addresses| string| | 
+| *addresses {empty}* *| Addresses| Comma separated list of RabbitMQ broker addresses| string| | `"localhost:5672"`
 | *exchangeName {empty}* *| Exchange name| The exchange name determines the exchange the queue will be bound to| string| | 
-| *password {empty}* *| Password| The password to access the RabbitMQ server| string| | 
-| *username {empty}* *| Username| The username to access the RabbitMQ server| string| | 
-| portNumber| Port Number| Port of the RabbitMQ server| string| `5672`| 
+| password| Password| The password to access the RabbitMQ server| string| | 
+| queue| Queue name| The queue to receive messages from| string| | 
+| routingKey| Routing Key| The routing key to use when binding a consumer queue to the exchange| string| | 
+| username| Username| The username to access the RabbitMQ server| string| | 
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
@@ -44,10 +45,8 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: rabbitmq-source
     properties:
-      addresses: "The Addresses"
+      addresses: "localhost:5672"
       exchangeName: "The Exchange name"
-      password: "The Password"
-      username: "The Username"
   sink:
     ref:
       kind: InMemoryChannel
@@ -72,7 +71,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind rabbitmq-source -p "source.addresses=The Addresses" -p "source.exchangeName=The Exchange name" -p "source.password=The Password" -p "source.username=The Username" channel/mychannel
+kamel bind rabbitmq-source -p "source.addresses=localhost:5672" -p "source.exchangeName=The Exchange name" channel/mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.
@@ -95,10 +94,8 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: rabbitmq-source
     properties:
-      addresses: "The Addresses"
+      addresses: "localhost:5672"
       exchangeName: "The Exchange name"
-      password: "The Password"
-      username: "The Username"
   sink:
     ref:
       kind: KafkaTopic
@@ -125,7 +122,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind rabbitmq-source -p "source.addresses=The Addresses" -p "source.exchangeName=The Exchange name" -p "source.password=The Password" -p "source.username=The Username" kafka.strimzi.io/v1beta1:KafkaTopic:my-topic
+kamel bind rabbitmq-source -p "source.addresses=localhost:5672" -p "source.exchangeName=The Exchange name" kafka.strimzi.io/v1beta1:KafkaTopic:my-topic
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

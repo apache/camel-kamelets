@@ -2,10 +2,8 @@
     from:
       uri: "kamelet:rabbitmq-source"
       parameters:
-        addresses: "The Addresses"
+        addresses: "localhost:5672"
         exchangeName: "The Exchange name"
-        password: "The Password"
-        username: "The Username"
     steps:
       - to:
           uri: "log:info"
