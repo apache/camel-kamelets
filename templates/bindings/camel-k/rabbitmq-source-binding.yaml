@@ -9,10 +9,8 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: rabbitmq-source
     properties:
-      addresses: "The Addresses"
+      addresses: "localhost:5672"
       exchangeName: "The Exchange name"
-      password: "The Password"
-      username: "The Username"
   sink:
     ref:
       kind: KafkaTopic
