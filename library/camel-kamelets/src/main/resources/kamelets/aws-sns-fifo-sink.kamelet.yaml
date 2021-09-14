@@ -13,7 +13,12 @@ metadata:
 spec:
   definition:
     title: AWS SNS FIFO Sink
-    description: Send message to an AWS SNS FIFO Topic
+    description: |- 
+      Send message to an AWS SNS FIFO Topic
+
+      The Kamelet expects the following headers to be set:
+
+      - `subject` / `ce-subject`: the subject of the message
     required:
       - topicNameOrArn
       - accessKey
@@ -66,6 +71,18 @@ spec:
     from:
       uri: kamelet:source
       steps:
+      - choice:
+          when:
+          - simple: "${header[subject]}"
+            steps:
+            - set-header:
+                name: CamelAwsSnsSubject
+                simple: "${header[subject]}"
+          - simple: "${header[ce-subject]}"
+            steps:
+            - set-header:
+                name: CamelAwsSnsSubject
+                simple: "${header[ce-subject]}"
       - set-property:
           name: contentBasedDeduplication
           constant: "{{contentBasedDeduplication}}"
