@@ -7,6 +7,10 @@
 
 Send message to an AWS SNS FIFO Topic
 
+The Kamelet expects the following headers to be set:
+
+- `subject` / `ce-subject`: the subject of the message
+
 == Configuration Options
 
 The following table summarizes the configuration options available for the `aws-sns-fifo-sink` Kamelet:
