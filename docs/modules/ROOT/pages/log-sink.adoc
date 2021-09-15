@@ -62,7 +62,11 @@ kubectl apply -f log-sink-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:kameletcamel:log 
+
+- camel:kamelet
+
+- camel:log
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

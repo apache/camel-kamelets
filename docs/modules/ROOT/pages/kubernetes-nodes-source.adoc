@@ -66,7 +66,13 @@ kubectl apply -f kubernetes-nodes-source-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:kubernetescamel:kameletcamel:jackson 
+
+- camel:kubernetes
+
+- camel:kamelet
+
+- camel:jackson
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

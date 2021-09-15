@@ -67,7 +67,13 @@ kubectl apply -f dns-lookup-action-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:jacksoncamel:dnscamel:kamelet 
+
+- camel:jackson
+
+- camel:dns
+
+- camel:kamelet
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

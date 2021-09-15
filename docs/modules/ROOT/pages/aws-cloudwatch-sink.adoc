@@ -78,7 +78,11 @@ kubectl apply -f aws-cloudwatch-sink-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:aws2-cwcamel:kamelet 
+
+- camel:aws2-cw
+
+- camel:kamelet
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

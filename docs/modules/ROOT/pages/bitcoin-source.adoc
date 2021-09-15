@@ -61,7 +61,15 @@ kubectl apply -f bitcoin-source-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:xchangecamel:kameletcamel:jacksoncamel:timer 
+
+- camel:xchange
+
+- camel:kamelet
+
+- camel:jackson
+
+- camel:timer
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

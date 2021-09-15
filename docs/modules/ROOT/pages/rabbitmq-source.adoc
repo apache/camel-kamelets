@@ -69,7 +69,11 @@ kubectl apply -f rabbitmq-source-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:rabbitmqcamel:kamelet 
+
+- camel:rabbitmq
+
+- camel:kamelet
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

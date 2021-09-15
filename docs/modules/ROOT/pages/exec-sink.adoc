@@ -69,7 +69,13 @@ kubectl apply -f exec-sink-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:corecamel:execcamel:kamelet 
+
+- camel:core
+
+- camel:exec
+
+- camel:kamelet
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

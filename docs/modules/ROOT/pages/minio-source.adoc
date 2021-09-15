@@ -71,7 +71,13 @@ kubectl apply -f minio-source-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:jacksoncamel:miniocamel:kamelet 
+
+- camel:jackson
+
+- camel:minio
+
+- camel:kamelet
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

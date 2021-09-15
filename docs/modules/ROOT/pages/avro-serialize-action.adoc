@@ -71,7 +71,15 @@ kubectl apply -f avro-serialize-action-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOTcamel:kameletcamel:corecamel:jackson-avro 
+
+- github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT
+
+- camel:kamelet
+
+- camel:core
+
+- camel:jackson-avro
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

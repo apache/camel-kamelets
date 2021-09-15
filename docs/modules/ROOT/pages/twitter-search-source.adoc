@@ -74,7 +74,13 @@ kubectl apply -f twitter-search-source-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:jacksoncamel:twittercamel:kamelet 
+
+- camel:jackson
+
+- camel:twitter
+
+- camel:kamelet
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

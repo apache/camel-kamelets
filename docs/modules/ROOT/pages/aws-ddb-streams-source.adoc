@@ -71,7 +71,13 @@ kubectl apply -f aws-ddb-streams-source-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:gsoncamel:aws2-ddbcamel:kamelet 
+
+- camel:gson
+
+- camel:aws2-ddb
+
+- camel:kamelet
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

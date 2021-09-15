@@ -75,7 +75,13 @@ kubectl apply -f cassandra-source-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:jacksoncamel:kameletcamel:cassandraql 
+
+- camel:jackson
+
+- camel:kamelet
+
+- camel:cassandraql
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 
