@@ -46,7 +46,6 @@ kubectl apply -f {{ .Kamelet.ObjectMeta.Name }}-binding.yaml
 ==== *Dependencies*
 
 The Kamelet needs the following dependencies:
-
 {{range .Kamelet.Spec.Dependencies}}
 - {{ . }}{{end}} 
 
