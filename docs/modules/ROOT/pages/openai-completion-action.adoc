@@ -76,6 +76,12 @@ You can run the action using the following command:
 kubectl apply -f openai-completion-action-binding.yaml
 ----
 
+==== *Dependencies*
+
+The Kamelet needs the following dependencies:
+
+[camel:jackson camel:jsonpath camel:core camel:kamelet camel:http]
+
 ==== *Binding to Knative using the Kamel CLI:*
 
 The procedure described above can be simplified into a single execution of the `kamel bind` command:

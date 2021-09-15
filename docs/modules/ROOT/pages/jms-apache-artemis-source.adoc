@@ -62,6 +62,12 @@ You can run the source using the following command:
 kubectl apply -f jms-apache-artemis-source-binding.yaml
 ----
 
+==== *Dependencies*
+
+The Kamelet needs the following dependencies:
+
+[camel:jms camel:kamelet mvn:org.apache.activemq:artemis-jms-client-all:2.17.0]
+
 ==== *Binding to Knative using the Kamel CLI:*
 
 The procedure described above can be simplified into a single execution of the `kamel bind` command:

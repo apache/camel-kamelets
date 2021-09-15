@@ -73,6 +73,12 @@ You can run the source using the following command:
 kubectl apply -f mariadb-source-binding.yaml
 ----
 
+==== *Dependencies*
+
+The Kamelet needs the following dependencies:
+
+[camel:jackson camel:kamelet camel:sql mvn:org.apache.commons:commons-dbcp2:2.8.0]
+
 ==== *Binding to Knative using the Kamel CLI:*
 
 The procedure described above can be simplified into a single execution of the `kamel bind` command:

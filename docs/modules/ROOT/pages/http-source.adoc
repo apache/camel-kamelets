@@ -61,6 +61,12 @@ You can run the source using the following command:
 kubectl apply -f http-source-binding.yaml
 ----
 
+==== *Dependencies*
+
+The Kamelet needs the following dependencies:
+
+[camel:http camel:kamelet camel:core camel:timer]
+
 ==== *Binding to Knative using the Kamel CLI:*
 
 The procedure described above can be simplified into a single execution of the `kamel bind` command:
