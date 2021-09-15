@@ -62,7 +62,21 @@ kubectl apply -f earthquake-source-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:caffeinecamel:httpcamel:kameletcamel:corecamel:jacksoncamel:jsonpathcamel:timer 
+
+- camel:caffeine
+
+- camel:http
+
+- camel:kamelet
+
+- camel:core
+
+- camel:jackson
+
+- camel:jsonpath
+
+- camel:timer
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

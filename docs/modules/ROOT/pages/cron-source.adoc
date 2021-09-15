@@ -65,7 +65,15 @@ kubectl apply -f cron-source-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:quartzcamel:corecamel:croncamel:kamelet 
+
+- camel:quartz
+
+- camel:core
+
+- camel:cron
+
+- camel:kamelet
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

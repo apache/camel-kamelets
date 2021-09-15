@@ -64,7 +64,11 @@ kubectl apply -f file-watch-source-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:file-watchcamel:kamelet 
+
+- camel:file-watch
+
+- camel:kamelet
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

@@ -77,7 +77,13 @@ kubectl apply -f mongodb-sink-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:kameletcamel:mongodbcamel:jackson 
+
+- camel:kamelet
+
+- camel:mongodb
+
+- camel:jackson
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

@@ -65,7 +65,11 @@ kubectl apply -f nats-sink-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:natscamel:kamelet 
+
+- camel:nats
+
+- camel:kamelet
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

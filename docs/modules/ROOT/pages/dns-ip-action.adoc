@@ -67,7 +67,11 @@ kubectl apply -f dns-ip-action-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:dnscamel:kamelet 
+
+- camel:dns
+
+- camel:kamelet
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

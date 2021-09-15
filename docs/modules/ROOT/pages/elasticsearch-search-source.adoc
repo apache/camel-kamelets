@@ -73,7 +73,19 @@ kubectl apply -f elasticsearch-search-source-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:corecamel:kameletcamel:timermvn:org.apache.camel.k:camel-k-kamelet-reifycamel:elasticsearch-restcamel:gson 
+
+- camel:core
+
+- camel:kamelet
+
+- camel:timer
+
+- mvn:org.apache.camel.k:camel-k-kamelet-reify
+
+- camel:elasticsearch-rest
+
+- camel:gson
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

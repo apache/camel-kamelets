@@ -65,7 +65,13 @@ kubectl apply -f timer-source-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:corecamel:timercamel:kamelet 
+
+- camel:core
+
+- camel:timer
+
+- camel:kamelet
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

@@ -81,7 +81,11 @@ kubectl apply -f aws-kinesis-sink-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:aws2-kinesiscamel:kamelet 
+
+- camel:aws2-kinesis
+
+- camel:kamelet
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 

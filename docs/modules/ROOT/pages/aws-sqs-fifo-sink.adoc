@@ -71,7 +71,13 @@ kubectl apply -f aws-sqs-fifo-sink-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-camel:aws2-sqscamel:corecamel:kamelet 
+
+- camel:aws2-sqs
+
+- camel:core
+
+- camel:kamelet
+ 
 
 ==== *Binding to Knative using the Kamel CLI:*
 
