@@ -75,6 +75,12 @@ You can run the sink using the following command:
 kubectl apply -f elasticsearch-index-sink-binding.yaml
 ----
 
+==== *Dependencies*
+
+The Kamelet needs the following dependencies:
+
+[camel:jackson camel:kamelet mvn:org.apache.camel.k:camel-k-kamelet-reify camel:elasticsearch-rest camel:gson camel:bean]
+
 ==== *Binding to Knative using the Kamel CLI:*
 
 The procedure described above can be simplified into a single execution of the `kamel bind` command:

@@ -74,6 +74,12 @@ You can run the sink using the following command:
 kubectl apply -f sftp-sink-binding.yaml
 ----
 
+==== *Dependencies*
+
+The Kamelet needs the following dependencies:
+
+[camel:ftp camel:core camel:kamelet]
+
 ==== *Binding to Knative using the Kamel CLI:*
 
 The procedure described above can be simplified into a single execution of the `kamel bind` command:

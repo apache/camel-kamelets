@@ -69,6 +69,12 @@ You can run the source using the following command:
 kubectl apply -f elasticsearch-search-source-binding.yaml
 ----
 
+==== *Dependencies*
+
+The Kamelet needs the following dependencies:
+
+[camel:core camel:kamelet camel:timer mvn:org.apache.camel.k:camel-k-kamelet-reify camel:elasticsearch-rest camel:gson]
+
 ==== *Binding to Knative using the Kamel CLI:*
 
 The procedure described above can be simplified into a single execution of the `kamel bind` command:
