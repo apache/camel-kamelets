@@ -47,7 +47,7 @@ kubectl apply -f {{ .Kamelet.ObjectMeta.Name }}-binding.yaml
 
 The Kamelet needs the following dependencies:
 
-{{ .Kamelet.Spec.Dependencies }}
+{{range .Kamelet.Spec.Dependencies}}{{ . }}{{end}} 
 
 ==== *Binding to Knative using the Kamel CLI:*
 
