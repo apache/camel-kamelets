@@ -59,6 +59,16 @@ spec:
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+      amazonAWSHost:
+        title: AWS Host
+        description: The hostname of the Amazon AWS cloud. 
+        type: string
+      protocol:
+        title: Protocol
+        description: The underlying protocol used to communicate with SQS
+        type: string
+        example: http or https
+        default: https
   dependencies:
     - "camel:aws2-sqs"
     - "camel:kamelet"
@@ -71,5 +81,7 @@ spec:
         accessKey: "{{accessKey}}"
         region: "{{region}}"
         deleteAfterRead: "{{deleteAfterRead}}"
+        amazonAWSHost: "{{?amazonAWSHost}}"
+        protocol: "{{?protocol}}"
       steps:
       - to: "kamelet:sink"

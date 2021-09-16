@@ -58,6 +58,16 @@ spec:
         description: The batch separator string
         type: string
         example: ","
+      amazonAWSHost:
+        title: AWS Host
+        description: The hostname of the Amazon AWS cloud. 
+        type: string
+      protocol:
+        title: Protocol
+        description: The underlying protocol used to communicate with SQS
+        type: string
+        example: http or https
+        default: https        
   dependencies:
     - "camel:aws2-sqs"
     - "camel:kamelet"
@@ -73,4 +83,6 @@ spec:
             secretKey: "{{secretKey}}"
             region: "{{region}}"
             batchSeparator: "{{batchSeparator}}"
-            operation: "sendBatchMessage" 
+            operation: "sendBatchMessage"
+            amazonAWSHost: "{{?amazonAWSHost}}"
+            protocol: "{{?protocol}}"            
