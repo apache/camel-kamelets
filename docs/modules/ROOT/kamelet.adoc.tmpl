@@ -26,7 +26,7 @@ The `{{ .Kamelet.ObjectMeta.Name }}` Kamelet can be used as intermediate step in
 {{ else -}}
 The `{{ .Kamelet.ObjectMeta.Name }}` Kamelet can be used as Knative {{ index .Kamelet.ObjectMeta.Labels "camel.apache.org/kamelet.type" }} by binding it to a Knative object.
 {{ end }}
-{{- .SetVal "RefApiVersion" "messaging.knative.dev/v1" -}}{{- .SetVal "RefKind" "InMemoryChannel" -}}{{- .SetVal "RefName" "mychannel" }}
+{{- .SetVal "RefApiVersion" "messaging.knative.dev/v1" -}}{{- .SetVal "RefKind" "Channel" -}}{{- .SetVal "RefName" "mychannel" }}
 .{{ .Kamelet.ObjectMeta.Name }}-binding.yaml
 [source,yaml]
 ----
