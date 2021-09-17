@@ -88,7 +88,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind google-sheets-source -p "source.accessToken=The Access Token" -p "source.applicationName=The Application name" -p "source.clientId=The Client Id" -p "source.clientSecret=The Client Secret" -p "source.index=The Index" -p "source.refreshToken=The Refresh Token" -p "source.spreadsheetId=The Spreadsheet ID" channel/mychannel
+kamel bind google-sheets-source -p "source.accessToken=The Access Token" -p "source.applicationName=The Application name" -p "source.clientId=The Client Id" -p "source.clientSecret=The Client Secret" -p "source.index=The Index" -p "source.refreshToken=The Refresh Token" -p "source.spreadsheetId=The Spreadsheet ID" channel:mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

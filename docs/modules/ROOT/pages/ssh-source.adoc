@@ -80,7 +80,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind ssh-source -p "source.connectionHost=The Connection Host" -p "source.password=The Password" -p "source.pollCommand=date" -p "source.username=The Username" channel/mychannel
+kamel bind ssh-source -p "source.connectionHost=The Connection Host" -p "source.password=The Password" -p "source.pollCommand=date" -p "source.username=The Username" channel:mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

@@ -83,7 +83,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind channel/mychannel dropbox-sink -p "sink.accessToken=The Dropbox Access Token" -p "sink.clientIdentifier=The Client Identifier" -p "sink.remotePath=The Remote Path"
+kamel bind channel:mychannel dropbox-sink -p "sink.accessToken=The Dropbox Access Token" -p "sink.clientIdentifier=The Client Identifier" -p "sink.remotePath=The Remote Path"
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

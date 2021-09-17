@@ -76,7 +76,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind jms-apache-artemis-source -p "source.brokerURL=tcp://k3s-node-master.usersys.redhat.com:31616" -p "source.destinationName=The Destination Name" channel/mychannel
+kamel bind jms-apache-artemis-source -p "source.brokerURL=tcp://k3s-node-master.usersys.redhat.com:31616" -p "source.destinationName=The Destination Name" channel:mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

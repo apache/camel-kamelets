@@ -84,7 +84,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind channel/mychannel azure-storage-queue-sink -p "sink.accessKey=The Access Key" -p "sink.accountName=The Account Name" -p "sink.queueName=The Queue Name"
+kamel bind channel:mychannel azure-storage-queue-sink -p "sink.accessKey=The Access Key" -p "sink.accountName=The Account Name" -p "sink.queueName=The Queue Name"
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

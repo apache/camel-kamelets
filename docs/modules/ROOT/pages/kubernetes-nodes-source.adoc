@@ -76,7 +76,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind kubernetes-nodes-source -p "source.masterUrl=The Kubernetes Master URL" -p "source.token=The Oauth Token" channel/mychannel
+kamel bind kubernetes-nodes-source -p "source.masterUrl=The Kubernetes Master URL" -p "source.token=The Oauth Token" channel:mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

@@ -78,7 +78,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind github-source -p "source.oauthToken=The OAuth Token" -p "source.repoName=The Repository Name" -p "source.repoOwner=The Repository Owner" channel/mychannel
+kamel bind github-source -p "source.oauthToken=The OAuth Token" -p "source.repoName=The Repository Name" -p "source.repoOwner=The Repository Owner" channel:mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.
