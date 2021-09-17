@@ -80,7 +80,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind azure-storage-blob-source -p "source.accessKey=The Access Key" -p "source.accountName=The Account Name" -p "source.containerName=The Container Name" channel/mychannel
+kamel bind azure-storage-blob-source -p "source.accessKey=The Access Key" -p "source.accountName=The Account Name" -p "source.containerName=The Container Name" channel:mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

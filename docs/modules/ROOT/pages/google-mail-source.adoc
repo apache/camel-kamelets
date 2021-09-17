@@ -87,7 +87,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind google-mail-source -p "source.accessToken=The Access Token" -p "source.applicationName=The Application name" -p "source.clientId=The Client ID" -p "source.clientSecret=The Client Secret" -p "source.index=The Index" -p "source.refreshToken=The Refresh Token" channel/mychannel
+kamel bind google-mail-source -p "source.accessToken=The Access Token" -p "source.applicationName=The Application name" -p "source.clientId=The Client ID" -p "source.clientSecret=The Client Secret" -p "source.index=The Index" -p "source.refreshToken=The Refresh Token" channel:mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

@@ -82,7 +82,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind channel/mychannel kafka-not-secured-sink -p "sink.brokers=The Brokers" -p "sink.topic=The Topic Names"
+kamel bind channel:mychannel kafka-not-secured-sink -p "sink.brokers=The Brokers" -p "sink.topic=The Topic Names"
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

@@ -88,7 +88,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind timer-source?message=Hello --step aws-translate-action -p "step-0.accessKey=The Access Key" -p "step-0.region=eu-west-1" -p "step-0.secretKey=The Secret Key" -p "step-0.sourceLanguage=it" -p "step-0.targetLanguage=en" channel/mychannel
+kamel bind timer-source?message=Hello --step aws-translate-action -p "step-0.accessKey=The Access Key" -p "step-0.region=eu-west-1" -p "step-0.secretKey=The Secret Key" -p "step-0.sourceLanguage=it" -p "step-0.targetLanguage=en" channel:mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

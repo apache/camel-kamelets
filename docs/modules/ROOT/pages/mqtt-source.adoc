@@ -75,7 +75,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind mqtt-source -p "source.brokerUrl=tcp://mosquitto:1883" -p "source.topic=mytopic" channel/mychannel
+kamel bind mqtt-source -p "source.brokerUrl=tcp://mosquitto:1883" -p "source.topic=mytopic" channel:mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

@@ -81,7 +81,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind timer-source?message=Hello --step insert-header-action -p "step-0.name=headername" -p "step-0.value=The Value" channel/mychannel
+kamel bind timer-source?message=Hello --step insert-header-action -p "step-0.name=headername" -p "step-0.value=The Value" channel:mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

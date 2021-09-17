@@ -76,7 +76,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind channel/mychannel jms-apache-artemis-sink -p "sink.brokerURL=tcp://my-host:61616" -p "sink.destinationName=person"
+kamel bind channel:mychannel jms-apache-artemis-sink -p "sink.brokerURL=tcp://my-host:61616" -p "sink.destinationName=person"
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

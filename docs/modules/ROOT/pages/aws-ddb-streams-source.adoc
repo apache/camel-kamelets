@@ -81,7 +81,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind aws-ddb-streams-source -p "source.accessKey=The Access Key" -p "source.region=eu-west-1" -p "source.secretKey=The Secret Key" -p "source.table=The Table" channel/mychannel
+kamel bind aws-ddb-streams-source -p "source.accessKey=The Access Key" -p "source.region=eu-west-1" -p "source.secretKey=The Secret Key" -p "source.table=The Table" channel:mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

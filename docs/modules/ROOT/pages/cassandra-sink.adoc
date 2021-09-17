@@ -86,7 +86,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind channel/mychannel cassandra-sink -p "sink.connectionHost=localhost" -p sink.connectionPort=9042 -p "sink.keyspace=customers" -p "sink.password=The Password" -p "sink.preparedStatement=The Prepared Statement" -p "sink.username=The Username"
+kamel bind channel:mychannel cassandra-sink -p "sink.connectionHost=localhost" -p sink.connectionPort=9042 -p "sink.keyspace=customers" -p "sink.password=The Password" -p "sink.preparedStatement=The Prepared Statement" -p "sink.username=The Username"
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

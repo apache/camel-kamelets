@@ -78,7 +78,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind channel/mychannel slack-sink -p "sink.channel=#myroom" -p "sink.webhookUrl=The Webhook URL"
+kamel bind channel:mychannel slack-sink -p "sink.channel=#myroom" -p "sink.webhookUrl=The Webhook URL"
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

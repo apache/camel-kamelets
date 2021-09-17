@@ -81,7 +81,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind timer-source?message=Hello --step protobuf-deserialize-action -p "step-0.schema=message Person { required string first = 1; required string last = 2; }" channel/mychannel
+kamel bind timer-source?message=Hello --step protobuf-deserialize-action -p "step-0.schema=message Person { required string first = 1; required string last = 2; }" channel:mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

@@ -82,7 +82,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind aws-sqs-source -p "source.accessKey=The Access Key" -p "source.queueNameOrArn=The Queue Name" -p "source.region=eu-west-1" -p "source.secretKey=The Secret Key" channel/mychannel
+kamel bind aws-sqs-source -p "source.accessKey=The Access Key" -p "source.queueNameOrArn=The Queue Name" -p "source.region=eu-west-1" -p "source.secretKey=The Secret Key" channel:mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.

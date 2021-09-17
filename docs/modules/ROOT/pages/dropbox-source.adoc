@@ -82,7 +82,7 @@ The procedure described above can be simplified into a single execution of the `
 
 [source,shell]
 ----
-kamel bind dropbox-source -p "source.accessToken=The Dropbox Access Token" -p "source.clientIdentifier=The Client Identifier" -p "source.query=The Queries" -p "source.remotePath=The Remote Path" channel/mychannel
+kamel bind dropbox-source -p "source.accessToken=The Dropbox Access Token" -p "source.clientIdentifier=The Client Identifier" -p "source.query=The Queries" -p "source.remotePath=The Remote Path" channel:mychannel
 ----
 
 This will create the KameletBinding under the hood and apply it to the current namespace in the cluster.
