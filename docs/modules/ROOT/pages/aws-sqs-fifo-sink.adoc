@@ -17,8 +17,10 @@ The following table summarizes the configuration options available for the `aws-
 | *queueNameOrArn {empty}* *| Queue Name| The SQS Queue name or ARN| string| | 
 | *region {empty}* *| AWS Region| The AWS region to connect to| string| | `"eu-west-1"`
 | *secretKey {empty}* *| Secret Key| The secret key obtained from AWS| string| | 
+| amazonAWSHost| AWS Host| The hostname of the Amazon AWS cloud.| string| | 
 | autoCreateQueue| Autocreate Queue| Setting the autocreation of the SQS queue.| boolean| `false`| 
 | contentBasedDeduplication| Content-Based Deduplication| Use content-based deduplication (should be enabled in the SQS FIFO queue first)| boolean| `false`| 
+| protocol| Protocol| The underlying protocol used to communicate with SQS| string| `"https"`| `"http or https"`
 |===
 
 NOTE: Fields marked with ({empty}*) are mandatory.
