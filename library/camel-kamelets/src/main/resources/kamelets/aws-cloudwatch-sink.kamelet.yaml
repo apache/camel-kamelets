@@ -67,42 +67,50 @@ spec:
             steps:
             - set-header:
                 name: CamelAwsCwMetricName
-                simple: "${header[metric-name]}"
+                simple: "${header[metric-name]}"             
           - simple: "${header[ce-metric-name]}"
             steps:
             - set-header:
                 name: CamelAwsCwMetricName
                 simple: "${header[ce-metric-name]}"
+      - choice:
+          when:                
           - simple: "${header[metric-value]}"
             steps:
             - set-header:
                 name: CamelAwsCwMetricValue
-                simple: "${header[metric-value]}"
+                simple: "${header[metric-value]}"              
           - simple: "${header[ce-metric-value]}"
             steps:
             - set-header:
                 name: CamelAwsCwMetricValue
                 simple: "${header[ce-metric-value]}"
+      - choice:
+          when:                
           - simple: "${header[metric-unit]}"
             steps:
             - set-header:
                 name: CamelAwsCwMetricUnit
-                simple: "${header[metric-unit]}"
+                simple: "${header[metric-unit]}"              
           - simple: "${header[ce-metric-unit]}"
             steps:
             - set-header:
                 name: CamelAwsCwMetricUnit
                 simple: "${header[ce-metric-unit]}"
+      - choice:
+          when:                
           - simple: "${header[metric-timestamp]}"
             steps:
             - set-header:
                 name: CamelAwsCwMetricTimestamp
-                simple: "${header[metric-timestamp]}"
+                simple: "${header[metric-timestamp]}"               
           - simple: "${header[ce-metric-timestamp]}"
             steps:
             - set-header:
                 name: CamelAwsCwMetricTimestamp
                 simple: "${header[ce-metric-timestamp]}"
+      - choice:
+          when:                
           - simple: "${header[metric-dimension-name]}"
             steps:
             - set-header:
@@ -113,6 +121,8 @@ spec:
             - set-header:
                 name: CamelAwsCwMetricDimensionName
                 simple: "${header[ce-metric-dimension-name]}"
+      - choice:
+          when:                
           - simple: "${header[metric-dimension-value]}"
             steps:
             - set-header:
