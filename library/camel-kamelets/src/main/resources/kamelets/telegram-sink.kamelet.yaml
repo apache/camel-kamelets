@@ -27,7 +27,7 @@ spec:
       This following message headers are also supported:
 
       - `text` / `ce-text`: when sending an image, the image caption
-      - `chat-id` / `ce-chat-id`: to override the default chat where messages are sent to
+      - `chat-id` / `ce-chatid`: to override the default chat where messages are sent to
     required:
       - authorizationToken
     type: object
@@ -93,11 +93,11 @@ spec:
             - set-header:
                 name: CamelTelegramChatId
                 simple: "${header[chat-id]}"
-          - simple: "${header[ce-chat-id]}"
+          - simple: "${header[ce-chatid]}"
             steps:
             - set-header:
                 name: CamelTelegramChatId
-                simple: "${header[ce-chat-id]}"
+                simple: "${header[ce-chatid]}"
       - to:
           uri: "telegram:bots"
           parameters:

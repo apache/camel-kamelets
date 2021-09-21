@@ -27,11 +27,11 @@ spec:
 
       Input data must have JSON format according to the index used.
 
-      - `indexId` / `ce-indexId`: as the index ID for Elasticsearch
+      - `indexId` / `ce-indexid`: as the index ID for Elasticsearch
 
       If the header won't be set the exchange ID will be used as index.
 
-      - `indexName` / `ce-indexName`: as the index Name for Elasticsearch
+      - `indexName` / `ce-indexname`: as the index Name for Elasticsearch
 
       If the header won't be set the exchange ID will be used as index name.
     required:
@@ -95,11 +95,11 @@ spec:
             - set-header:
                 name: "indexId"
                 simple: "${header[indexId]}"
-          - simple: "${header[ce-indexId]}"
+          - simple: "${header[ce-indexid]}"
             steps:
             - set-header:
                 name: "indexId"
-                simple: "${header[ce-indexId]}"
+                simple: "${header[ce-indexid]}"
           otherwise:
             steps:
             - set-header:
@@ -112,11 +112,11 @@ spec:
             - set-header:
                 name: "indexName"
                 simple: "${header[indexName]}"
-          - simple: "${header[ce-indexName]}"
+          - simple: "${header[ce-indexname]}"
             steps:
             - set-header:
                 name: "indexName"
-                simple: "${header[ce-indexName]}"
+                simple: "${header[ce-indexname]}"
       - to:
           uri: "kamelet-reify:elasticsearch-rest:{{clusterName}}"
           parameters:

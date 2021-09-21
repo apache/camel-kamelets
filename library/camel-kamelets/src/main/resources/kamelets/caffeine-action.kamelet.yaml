@@ -18,9 +18,9 @@ spec:
 
       The Kamelet expects the following headers to be set:
 
-      - `caffeine-key` / `ce-caffeine-key`: as the cache key used in the operation
+      - `caffeine-key` / `ce-caffeinekey`: as the cache key used in the operation
 
-      - `caffeine-operation` / `ce-caffeine-operation`: as the operation to perform. It can be PUT, GET, INVALIDATE and CLEANUP.
+      - `caffeine-operation` / `ce-caffeineoperation`: as the operation to perform. It can be PUT, GET, INVALIDATE and CLEANUP.
 
       If the caffeine-key header won't be set the exchange ID will be used as key.
 
@@ -48,11 +48,11 @@ spec:
             - set-header:
                 name: CamelCaffeineKey
                 simple: "${header[caffeine-key]}"
-          - simple: "${header[ce-caffeine-key]}"
+          - simple: "${header[ce-caffeinekey]}"
             steps:
             - set-header:
                 name: CamelCaffeineKey
-                simple: "${header[ce-caffeine-key]}"
+                simple: "${header[ce-caffeinekey]}"
           otherwise:
             steps:
             - set-header:
@@ -65,11 +65,11 @@ spec:
             - set-header:
                 name: CamelCaffeineAction
                 simple: "${header[caffeine-operation]}"
-          - simple: "${header[ce-caffeine-operation]}"
+          - simple: "${header[ce-caffeineoperation]}"
             steps:
             - set-header:
                 name: CamelCaffeineAction
-                simple: "${header[ce-caffeine-operation]}"
+                simple: "${header[ce-caffeineoperation]}"
           otherwise:
             steps:
             - set-header:

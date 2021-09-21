@@ -24,7 +24,7 @@ spec:
 
       The Kamelet is also able to recognize the following header:
 
-      - `sequence-number` / `ce-sequence-number`: to set the Sequence number
+      - `sequence-number` / `ce-sequencenumber`: to set the Sequence number
 
       This header is optional.
     required:
@@ -88,11 +88,11 @@ spec:
             - set-header:
                 name: CamelAwsKinesisSequenceNumber
                 simple: "${header[sequence-number]}"
-          - simple: "${header[ce-sequence-number]}"
+          - simple: "${header[ce-sequencenumber]}"
             steps:
             - set-header:
                 name: CamelAwsKinesisSequenceNumber
-                simple: "${header[ce-sequence-number]}"
+                simple: "${header[ce-sequencenumber]}"
       - to:
           uri: "aws2-kinesis:{{stream}}"
           parameters:

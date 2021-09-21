@@ -20,7 +20,7 @@ spec:
 
       - `key` / `ce-key`: as message key
     
-      - `partition-key` / `ce-partition-key`: as message partition key
+      - `partition-key` / `ce-partitionkey`: as message partition key
 
       Both the headers are optional.
     required:
@@ -85,11 +85,11 @@ spec:
             - set-header:
                 name: kafka.PARTITION_KEY
                 simple: "${header[partition-key]}"
-          - simple: "${header[ce-partition-key]}"
+          - simple: "${header[ce-partitionkey]}"
             steps:
             - set-header:
                 name: kafka.PARTITION_KEY
-                simple: "${header[ce-partition-key]}"
+                simple: "${header[ce-partitionkey]}"
       - to:
           uri: "kafka:{{topic}}"
           parameters:

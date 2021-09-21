@@ -20,7 +20,7 @@ spec:
 
       The source attaches the following headers to the messages:
 
-      - `chat-id` / `ce-chat-id`: the ID of the chat where the message comes from
+      - `chat-id` / `ce-chatid`: the ID of the chat where the message comes from
 
     required:
       - authorizationToken
@@ -51,7 +51,7 @@ spec:
           name: chat-id
           simple: "${header[CamelTelegramChatId]}"
       - set-header:
-          name: ce-chat-id
+          name: ce-chatid
           simple: "${header[CamelTelegramChatId]}"
       - marshal:
           json: {}

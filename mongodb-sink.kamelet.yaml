@@ -20,7 +20,7 @@ spec:
 
       Properties you can as headers:
 
-      `db-upsert` / `ce-db-upsert` If the database should create the element if it does not exist. Boolean value.
+      `db-upsert` / `ce-dbupsert` If the database should create the element if it does not exist. Boolean value.
     required:
       - hosts
       - collection
@@ -82,11 +82,11 @@ spec:
             - set-header:
                 name: CamelMongoDbUpsert
                 simple: "${header[db-upsert]}"
-          - simple: "${header[ce-db-upsert]}"
+          - simple: "${header[ce-dbupsert]}"
             steps:
             - set-header:
                 name: CamelMongoDbUpsert
-                simple: "${header[ce-db-upsert]}"
+                simple: "${header[ce-dbupsert]}"
       - to: 
           uri: "{{local-mongodb}}:test"
           parameters:
