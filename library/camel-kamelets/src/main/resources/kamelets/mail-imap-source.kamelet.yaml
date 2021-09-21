@@ -15,6 +15,17 @@ spec:
     title: "Mail IMAP Source"
     description: |-
       Receive unread emails from an IMAP mail server, marking them as read once they are received.
+
+      The Kamelet generates the following headers:
+
+      - `subject` / `ce-subject`: the subject of the incoming mail
+
+      - `from` / `ce-from`: the `from` field of the incoming mail
+
+      - `to` / `ce-to`: the `to` field of the incoming mail
+
+      - `cc` / `ce-cc`: the `cc` field of the incoming mail
+
     required:
     - connectionHost
     - connectionPort

@@ -18,7 +18,7 @@ spec:
 
       The Kamelet expects the following headers to be set:
 
-      - `instanceIds` / `ce-instanceIds`: as a comma separated list of EC2 instance ids.
+      - `instanceIds` / `ce-instanceids`: as a comma separated list of EC2 instance ids.
     required:
       - accessKey
       - secretKey
@@ -58,11 +58,11 @@ spec:
             - set-header:
                 name: CamelAwsEC2InstancesIds
                 simple: "${header[instanceIds]}"
-          - simple: "${header[ce-instanceIds]}"
+          - simple: "${header[ce-instanceids]}"
             steps:
             - set-header:
                 name: CamelAwsEC2InstancesIds
-                simple: "${header[ce-instanceIds]}"
+                simple: "${header[ce-instanceids]}"
       - to:
           uri: "aws2-ec2:ec2-route"
           parameters:

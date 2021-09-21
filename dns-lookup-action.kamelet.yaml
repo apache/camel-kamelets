@@ -18,7 +18,7 @@ spec:
 
       The Kamelet expects the following headers to be set:
 
-      - `domain-name` / `ce-domain-name`: as the domain for which we are looking up
+      - `domain-name` / `ce-domainname`: as the domain for which we are looking up
 
       If the domain-name header won't be set the body will be used as domain name.
     type: object
@@ -40,11 +40,11 @@ spec:
             - set-header:
                 name: dns.domain
                 simple: "${header[domain-name]}"
-          - simple: "${header[ce-domain-name]}"
+          - simple: "${header[ce-domainname]}"
             steps:
             - set-header:
                 name: dns.domain
-                simple: "${header[ce-domain-name]}"
+                simple: "${header[ce-domainname]}"
           otherwise:
             steps:
             - set-header:
