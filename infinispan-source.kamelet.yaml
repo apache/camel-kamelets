@@ -90,4 +90,28 @@ spec:
         securityServerName: "{{securityServerName}}"
         eventTypes: "{{eventTypes}}"
       steps:
+      - set-header:
+          name: infinispan-cache-name
+          simple: "${header[CamelInfinispanCacheName]}"
+      - set-header:
+          name: ce-infinispancachename
+          simple: "${header[CamelInfinispanCacheName]}"
+      - set-header:
+          name: infinispan-entry-version
+          simple: "${header[CamelInfinispanEntryVersion]}"
+      - set-header:
+          name: ce-infinispanentryversion
+          simple: "${header[CamelInfinispanEntryVersion]}"
+      - set-header:
+          name: infinispan-event-type
+          simple: "${header[CamelInfinispanEventType]}"
+      - set-header:
+          name: ce-infinispaneventtype
+          simple: "${header[CamelInfinispanEventType]}"
+      - set-header:
+          name: infinispan-key
+          simple: "${header[CamelInfinispanKey]}"
+      - set-header:
+          name: ce-infinispankey
+          simple: "${header[CamelInfinispanKey]}"
         - to: kamelet:sink
