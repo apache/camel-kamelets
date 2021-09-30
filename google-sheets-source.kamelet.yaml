@@ -66,6 +66,10 @@ spec:
         description: Milliseconds before the next poll
         type: integer
         default: 500
+      repeatCount:
+        title: Repeat Count
+        description: Specifies a maximum limit of number of fires
+        type: integer
       applicationName:
         title: Application name
         description: Google Sheets application name
@@ -104,6 +108,7 @@ spec:
         applicationName: "{{applicationName}}"
         splitResults: "{{splitResults}}"
         range: "{{range}}"
+        repeatCount: "{{?repeatCount}}"
       steps:
       - marshal:
           json: {}
