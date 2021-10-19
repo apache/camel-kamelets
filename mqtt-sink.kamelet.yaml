@@ -30,6 +30,17 @@ spec:
         description: The URL of the broker where to establish the connection
         type: string
         example: "tcp://mosquitto:1883"
+      username:
+        title: Username
+        description: Username to use when connecting to the MQTT broker
+        type: string
+      password:
+        title: Password
+        description: Password to use when connecting to the MQTT broker
+        type: string
+        format: password
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:password
   dependencies:
     - "camel:paho"
     - "camel:kamelet"
@@ -41,3 +52,5 @@ spec:
           uri: paho:{{topic}}
           parameters:
             brokerUrl: "{{brokerUrl}}"
+            userName: "{{?username}}"
+            password: "{{?password}}"

@@ -35,6 +35,17 @@ spec:
         description: The client ID to use when connecting to the resource
         type: string
         default: "mqtt-source"
+      username:
+        title: Username
+        description: Username to use when connecting to the MQTT broker
+        type: string
+      password:
+        title: Password
+        description: Password to use when connecting to the MQTT broker
+        type: string
+        format: password
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:password
   dependencies:
     - "camel:paho"
     - "camel:kamelet"
@@ -44,5 +55,7 @@ spec:
       parameters:
         brokerUrl: "{{brokerUrl}}"
         clientId: "{{clientId}}"
+        userName: "{{?username}}"
+        password: "{{?password}}"
       steps:
       - to: kamelet:sink
