@@ -49,6 +49,8 @@ spec:
         title: Username
         description: The username to use for accessing a secured MariaDB Database
         type: string
+        x-descriptors:
+        - urn:camel:group:credentials
       password:
         title: Password
         description: The password to use for accessing a secured MariaDB Database
@@ -56,6 +58,7 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
       query:
         title: Query
         description: The Query to execute against the MariaDB Database

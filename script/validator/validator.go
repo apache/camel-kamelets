@@ -137,6 +137,12 @@ func verifyDescriptors(kamelets []KameletInfo) (errors []error) {
 			}
 		}
 		for k, p := range kamelet.Spec.Definition.Properties {
+			credDescriptor := "urn:camel:group:credentials"
+			if p.Format == "password" && !hasXDescriptor(p, credDescriptor) {
+				errors = append(errors, fmt.Errorf("property %q in kamelet %q has \"password\" format but misses descriptor %q", k, kamelet.Name, credDescriptor))
+			}
+		}
+		for k, p := range kamelet.Spec.Definition.Properties {
 			checkboxDescriptor := "urn:alm:descriptor:com.tectonic.ui:checkbox"
 			if hasXDescriptor(p, checkboxDescriptor) && p.Type != "boolean" {
 				errors = append(errors, fmt.Errorf("property %q in kamelet %q has checkbox descriptor %q but its type is not \"boolean\"", k, kamelet.Name, checkboxDescriptor))

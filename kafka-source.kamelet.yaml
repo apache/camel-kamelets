@@ -44,6 +44,8 @@ spec:
         title: Username
         description: Username to authenticate to Kafka 
         type: string
+        x-descriptors:
+        - urn:camel:group:credentials
       password:
         title: Password
         description: Password to authenticate to kafka
@@ -51,6 +53,7 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
       autoCommitEnable:
         title: Auto Commit Enable
         description: If true, periodically commit to ZooKeeper the offset of messages already fetched by the consumer

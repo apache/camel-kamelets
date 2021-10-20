@@ -43,6 +43,8 @@ spec:
         title: Consumer Key
         description: The Salesforce application consumer key
         type: string
+        x-descriptors:
+        - urn:camel:group:credentials
       clientSecret:
         title: Consumer Secret
         description: The Salesforce application consumer secret
@@ -50,10 +52,13 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
       userName:
         title: Username
         description: The Salesforce username
         type: string
+        x-descriptors:
+        - urn:camel:group:credentials
       password:
         title: Password
         description: The Salesforce user password
@@ -61,6 +66,7 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
   types:
     out:
       mediaType: application/json

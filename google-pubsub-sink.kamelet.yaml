@@ -34,7 +34,9 @@ spec:
       serviceAccountKey:
         title: Service Account Key
         description: The Service account key that can be used as credentials for the PubSub publisher/subscriber
-        type: binary        
+        type: binary
+        x-descriptors:
+        - urn:camel:group:credentials
   dependencies:
     - "camel:kamelet"
     - "camel:google-pubsub"
