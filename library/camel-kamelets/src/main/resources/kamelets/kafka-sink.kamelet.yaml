@@ -52,6 +52,8 @@ spec:
         title: Username
         description: Username to authenticate to Kafka 
         type: string
+        x-descriptors:
+        - urn:camel:group:credentials
       password:
         title: Password
         description: Password to authenticate to kafka
@@ -59,6 +61,7 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
   dependencies:
     - "camel:kafka"
     - "camel:kamelet"

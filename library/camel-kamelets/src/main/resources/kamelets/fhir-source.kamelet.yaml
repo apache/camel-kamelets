@@ -44,9 +44,8 @@ spec:
         title: Username
         description: The username to access the Fhir server
         type: string
-        format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
       password:
         title: Password
         description: The password to access the Fhir server
@@ -54,6 +53,7 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
       prettyPrint:
         title: Json Pretty Print
         description: Define if the Json must be pretty print or not

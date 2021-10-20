@@ -33,6 +33,8 @@ spec:
         title: Account Name
         description: The Azure Storage Queue account name.
         type: string
+        x-descriptors:
+        - urn:camel:group:credentials
       queueName:
         title: Queue Name
         description: The Azure Storage Queue container name.
@@ -44,6 +46,7 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
   dependencies:
     - "camel:azure-storage-queue"
     - "camel:kamelet"

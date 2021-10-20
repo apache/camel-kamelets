@@ -43,6 +43,8 @@ spec:
         title: Username
         description: The username to use for accessing a secured Cassandra Cluster
         type: string
+        x-descriptors:
+        - urn:camel:group:credentials
       password:
         title: Password
         description: The password to use for accessing a secured Cassandra Cluster
@@ -50,6 +52,7 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
       resultStrategy:
         title: Result Strategy
         description: The strategy to convert the result set of the query. Possible values are ALL, ONE, LIMIT_10, LIMIT_100...
