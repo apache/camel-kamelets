@@ -24,13 +24,14 @@ spec:
         title: Oauth Token
         description: The Auth Token to connect to Kubernetes Cluster
         type: string
+        format: password
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
       masterUrl:
         title: Kubernetes Master URL
         description: The Kubernetes Cluster Master URL
         type: string
-        format: password
-        x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
       resourceName:
         title: Resource Name
         description: The Resource Name we want to watch

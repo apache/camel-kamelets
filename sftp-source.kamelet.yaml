@@ -36,6 +36,8 @@ spec:
         title: Username
         description: The username to access the SFTP server
         type: string
+        x-descriptors:
+        - urn:camel:group:credentials
       password:
         title: Password
         description: The password to access the SFTP server
@@ -43,6 +45,7 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
       directoryName:
         title: Directory Name
         description: The starting directory

@@ -31,6 +31,8 @@ spec:
         title: Account Name
         description: The Azure Storage Blob account name.
         type: string
+        x-descriptors:
+        - urn:camel:group:credentials
       containerName:
         title: Container Name
         description: The Azure Storage Blob container name.
@@ -42,6 +44,7 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
   dependencies:
     - "camel:azure-storage-blob"
     - "camel:kamelet"

@@ -37,6 +37,8 @@ spec:
         title: Share Access Name
         description: EventHubs SAS key name
         type: string
+        x-descriptors:
+        - urn:camel:group:credentials
       sharedAccessKey:
         title: Share Access Key
         description: The key for EventHubs SAS key name
@@ -44,6 +46,7 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
       blobAccountName:
         title: Azure Storage Blob Account Name
         description: The name of the storage blob account to be use
@@ -59,6 +62,7 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
   types:
     out:
       mediaType: application/json

@@ -45,6 +45,8 @@ spec:
         title: Username
         description: The username to use for accessing a secured Cassandra Cluster
         type: string
+        x-descriptors:
+        - urn:camel:group:credentials
       password:
         title: Password
         description: The password to use for accessing a secured Cassandra Cluster
@@ -52,6 +54,7 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
       consistencyLevel:
         title: Consistency Level
         description: Consistency level to use. The value can be one of ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_QUORUM, EACH_QUORUM, SERIAL, LOCAL_SERIAL, LOCAL_ONE

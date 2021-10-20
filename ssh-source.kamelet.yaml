@@ -36,9 +36,8 @@ spec:
         title: Username
         description: The SSH username to use
         type: string
-        format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
       password:
         title: Password
         description: The SSH password to use
@@ -46,6 +45,7 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
       delay:
         title: Delay
         description: Milliseconds before the next poll
