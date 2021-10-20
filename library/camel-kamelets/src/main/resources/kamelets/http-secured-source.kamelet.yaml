@@ -51,10 +51,16 @@ spec:
         title: Authentication Username
         description: Authentication username
         type: string
+        x-descriptors:
+        - urn:camel:group:credentials
       authPassword:
         title: Authentication Password
         description: Authentication password
         type: string
+        format: password
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
   dependencies:
     - "camel:http"
     - "camel:kamelet"

@@ -35,10 +35,13 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
       clientIdentifier:
         title: Client Identifier
         description: Dropbox App client Identifier
         type: string
+        x-descriptors:
+        - urn:camel:group:credentials
       remotePath:
         title: Remote Path
         description: Original file or folder to work with

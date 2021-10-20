@@ -33,6 +33,10 @@ spec:
         title: Authorization Token
         description: The authorization token to use to contact the openAI API
         type: string
+        format: password
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
       format:
         title: Format
         description: The response format ('text/plain' or 'application/json' are supported)

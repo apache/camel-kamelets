@@ -33,6 +33,8 @@ spec:
         title: Username
         description: The username to access the RabbitMQ server
         type: string
+        x-descriptors:
+        - urn:camel:group:credentials
       password:
         title: Password
         description: The password to access the RabbitMQ server
@@ -40,6 +42,7 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
       exchangeName:
         title: Exchange name
         description: The exchange name determines the exchange the queue will be bound to

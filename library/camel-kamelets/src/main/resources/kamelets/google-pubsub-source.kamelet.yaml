@@ -35,6 +35,8 @@ spec:
         title: Service Account Key
         description: The Service account key that can be used as credentials for the PubSub publisher/subscriber
         type: binary
+        x-descriptors:
+        - urn:camel:group:credentials
       synchronousPull:
         title: Synchronous Pull
         description: If Synchronously pull batches of messages is enabled or not

@@ -25,6 +25,8 @@ spec:
         title: Account Name
         description: The Azure Storage Queue account name.
         type: string
+        x-descriptors:
+        - urn:camel:group:credentials
       queueName:
         title: Queue Name
         description: The Azure Storage Queue container name.
@@ -35,7 +37,8 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:alm:descriptor:com.tectonic.ui:password        
+        - urn:camel:group:credentials
       maxMessages:
         title: Maximum Messages
         description: Maximum number of messages to get, if there are less messages exist in the queue than requested all the messages will be returned. By default it will consider 1 message to be retrieved, the allowed range is 1 to 32 messages.

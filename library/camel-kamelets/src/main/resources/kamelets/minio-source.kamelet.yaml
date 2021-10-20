@@ -40,6 +40,7 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
       secretKey:
         title: Secret Key
         description: The secret key obtained from Minio
@@ -47,6 +48,7 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
       endpoint:
         title: Endpoint
         description: The Minio Endpoint, it can be an URL, domain name, IPv4 address or IPv6 address.

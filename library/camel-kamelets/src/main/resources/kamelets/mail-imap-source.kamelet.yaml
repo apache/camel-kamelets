@@ -47,6 +47,8 @@ spec:
         title: Username
         description: The username to access the mail box
         type: string
+        x-descriptors:
+        - urn:camel:group:credentials
       password:
         title: Password
         description: The password to access the mail box
@@ -54,6 +56,7 @@ spec:
         format: password
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
       fetchSize:
         title: Fetch Size
         description: The number of messages fetched for each poll (-1 for no limits)
