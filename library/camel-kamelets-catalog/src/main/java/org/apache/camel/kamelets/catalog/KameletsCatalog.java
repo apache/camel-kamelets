@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -156,6 +157,20 @@ public class KameletsCatalog {
             return kamelet.getSpec().getDependencies();
         } else {
             return null;
+        }
+    }
+
+    public void getAllKameletDependencies() {
+        Map<String, Kamelet> treeMap = new TreeMap<>(kameletModels);
+        for (Map.Entry<String, Kamelet> entry: treeMap.entrySet()) {
+            StringBuilder builder = new StringBuilder();
+            for (String dep: entry.getValue().getSpec().getDependencies()) {
+                builder.append(dep + System.lineSeparator());
+            }
+            System.out.println(entry.getKey());
+            System.out.println("---------------------------------------------------------------------------------------------------");
+            System.out.println(builder.toString());
+            builder.append(System.lineSeparator());
         }
     }
 

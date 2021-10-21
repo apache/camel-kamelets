@@ -122,4 +122,8 @@ public class KameletsCatalogTest {
         assertEquals(numberOfKameletFiles, catalog.getKameletsName().size(), "Some embedded kamelet definition files cannot be loaded.");
     }
 
+    @Test
+    void testAllKameletDependencies() throws Exception {
+        catalog.getAllKameletDependencies();
+    }
 }
