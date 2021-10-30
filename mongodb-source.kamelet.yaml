@@ -43,7 +43,7 @@ spec:
         - urn:camel:group:credentials
       username:
         title: MongoDB Username
-        description: Username for accessing MongoDB.
+        description: Username for accessing MongoDB. The username must be present in the MongoDB's authentication database (authenticationDatabase). By default, the MongoDB authenticationDatabase is 'admin'.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
