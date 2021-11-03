@@ -24,7 +24,7 @@ The following table summarizes the configuration options available for the `mong
 | password| MongoDB Password| User password for accessing MongoDB.| string| | 
 | persistentTailTracking| MongoDB Persistent Tail Tracking| Enable persistent tail tracking, which is a mechanism to keep track of the last consumed message across system restarts. The next time the system is up, the endpoint will recover the cursor from the point where it last stopped slurping records.| boolean| `false`| 
 | tailTrackIncreasingField| MongoDB Tail Track Increasing Field| Correlation field in the incoming record which is of increasing nature and will be used to position the tailing cursor every time it is generated.| string| | 
-| username| MongoDB Username| Username for accessing MongoDB.| string| | 
+| username| MongoDB Username| Username for accessing MongoDB. The username must be present in the MongoDB's authentication database (authenticationDatabase). By default, the MongoDB authenticationDatabase is 'admin'.| string| | 
 |===
 
 NOTE: Fields marked with an asterisk ({empty}*) are mandatory.
@@ -73,7 +73,7 @@ spec:
 
 ==== *Prerequisite*
 
-You have xref:next@camel-k::installation/installation.adoc[Camel K installed] on the cluster.
+You have xref:latest@camel-k::installation/installation.adoc[Camel K installed] on the cluster.
 
 ==== *Procedure for using the cluster CLI*
 
@@ -130,7 +130,7 @@ spec:
 
 * You've installed https://strimzi.io/[Strimzi].
 * You've created a topic named `my-topic` in the current namespace.
-* You have xref:next@camel-k::installation/installation.adoc[Camel K installed] on the cluster.
+* You have xref:latest@camel-k::installation/installation.adoc[Camel K installed] on the cluster.
 
 ==== *Procedure for using the cluster CLI*
 
