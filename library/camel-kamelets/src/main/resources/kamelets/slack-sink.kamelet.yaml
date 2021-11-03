@@ -57,9 +57,9 @@ spec:
       uri: "kamelet:source"
       steps:
       - to:
-        uri: "slack:{{channel}}"
-        parameters:
-          webhookUrl: "{{webhookUrl}}"
-          iconEmoji: "{{?iconEmoji}}"
-          iconUrl: "{{?iconUrl}}"
-          username: "{{?username}}"
+          uri: "slack:{{channel}}"
+          parameters:
+            webhookUrl: "{{webhookUrl}}"
+            iconEmoji: "{{?iconEmoji}}"
+            iconUrl: "{{?iconUrl}}"
+            username: "{{?username}}"
