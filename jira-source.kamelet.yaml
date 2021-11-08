@@ -64,5 +64,7 @@ spec:
         jql: "{{jql}}"
       steps:
       - marshal:
-          json: {}
+          json: 
+            library: Jackson
+            module-class-names: com.fasterxml.jackson.datatype.joda.JodaModule
       - to: "kamelet:sink"
