@@ -1,0 +1,20 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: couchbase-sink-binding
+spec:
+  source:
+    ref:
+      kind: KafkaTopic
+      apiVersion: kafka.strimzi.io/v1beta1
+      name: my-topic
+  sink:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: couchbase-sink
+    properties:
+      bucket: "The Bucket"
+      hostname: "The Hostname"
+      protocol: "The Protocol"
+  
