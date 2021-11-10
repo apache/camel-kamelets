@@ -15,11 +15,11 @@ The following table summarizes the configuration options available for the `couc
 |===
 | Property| Name| Description| Type| Default| Example
 | *bucket {empty}* *| Bucket| The bucket to use| string| | 
-| *hostname {empty}* *| Hostname| The hostname to use| string| | 
 | *protocol {empty}* *| Protocol| The protocol to use| string| | 
 | autoStartId| Auto Start Id| Auto Start Id or not| boolean| `true`| 
+| couchbaseHostname| Hostname| The hostname to use| string| | 
+| couchbasePort| Port| The port to use| int| `8091`| 
 | password| Password| Password to connect to Couchbase.| string| | 
-| port| Port| The port to use| int| `8091`| 
 | startingId| Starting Id| The starting id| long| `1`| 
 | username| Username| Username to connect to Couchbase.| string| | 
 |===
@@ -62,7 +62,6 @@ spec:
       name: couchbase-sink
     properties:
       bucket: "The Bucket"
-      hostname: "The Hostname"
       protocol: "The Protocol"
   
 ----
@@ -88,7 +87,7 @@ Configure and run the sink by using the following command:
 
 [source,shell]
 ----
-kamel bind channel:mychannel couchbase-sink -p "sink.bucket=The Bucket" -p "sink.hostname=The Hostname" -p "sink.protocol=The Protocol"
+kamel bind channel:mychannel couchbase-sink -p "sink.bucket=The Bucket" -p "sink.protocol=The Protocol"
 ----
 
 This command creates the KameletBinding in the current namespace on the cluster.
@@ -117,7 +116,6 @@ spec:
       name: couchbase-sink
     properties:
       bucket: "The Bucket"
-      hostname: "The Hostname"
       protocol: "The Protocol"
   
 ----
@@ -145,7 +143,7 @@ Configure and run the sink by using the following command:
 
 [source,shell]
 ----
-kamel bind kafka.strimzi.io/v1beta1:KafkaTopic:my-topic couchbase-sink -p "sink.bucket=The Bucket" -p "sink.hostname=The Hostname" -p "sink.protocol=The Protocol"
+kamel bind kafka.strimzi.io/v1beta1:KafkaTopic:my-topic couchbase-sink -p "sink.bucket=The Bucket" -p "sink.protocol=The Protocol"
 ----
 
 This command creates the KameletBinding in the current namespace on the cluster.
