@@ -22,7 +22,8 @@ version: 0.5.x
 nav:
 - modules/ROOT/nav.adoc
 
-# Update to appropriate released camel-k version on release
 asciidoc:
   attributes:
+    requires: "'util=camel-website-util,kamelets=xref:js/kamelets.js'"
+    # Update to appropriate released camel-k version on release
     camel-k-version: 1.7.x

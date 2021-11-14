@@ -1,0 +1,33 @@
+indexPages:
+  - query:
+      module: ROOT
+      family: example
+      relative: yaml/*
+    requires: 'kamelets=xref:js/kamelets.js'
+    content-as: json
+    template-id:
+      family: example
+      relative: template/kamelet-options.adoc
+    extract:
+      - path: 'src.relative'
+        match: 'yaml/(?<basename>*).kamelet.yaml'
+    target:
+      match: 'yaml/(?<basename>*).kamelet.yaml'
+      format: '`${basename}.adoc`'
+
+  - query:
+      module: ROOT
+      family: example
+      relative: yaml/*
+    requires: 'kamelets=xref:js/kamelets.js'
+    content-as: json
+    template-id:
+      family: example
+      relative: template/kamelet-icon.svg
+    extract:
+      - path: 'src.relative'
+        match: 'yaml/(?<basename>*).kamelet.yaml'
+    target:
+      family: image
+      match: 'yaml/(?<basename>*).kamelet.yaml'
+      format: '`kamelets/${basename}.svg`'
