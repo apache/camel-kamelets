@@ -1,0 +1,131 @@
+${kamelets.templateHeader(basename, $)}
+
+*Provided by: "{provider}"*
+
+*Support Level for this Kamelet is: "{support-level}"*
+
+jsonpathExpression::example$yaml/${basename}.kamelet.yaml[query='$.spec.definition', format='description']
+
+== Configuration Options
+
+ifeval::[{propertycount} == 0]
+The \`{name}\` Kamelet does not specify any configuration options.
+endif::[]
+
+ifeval::[{propertycount} != 0]
+The following table summarizes the configuration options available for the \`{name}\` Kamelet:
+
+[width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
+|===
+| Property| Name| Description| Type| Default| Example
+|===
+
+jsonpathTable::example$yaml/${basename}.kamelet.yaml[query='nodes$.spec.definition.properties.*',cellformats='util.boldLink(name)|value.title|util.description(value)|util.valueAsString(value.type)|util.valueAsString(value.default)|util.valueAsString(value.example)',{requires},transform=kamelets.sort]
+
+endif::[]
+
+== Dependencies
+
+At runtime, the \`{name}\` Kamelet relies upon the presence of the following dependencies:
+
+jsonpathList::example$yaml/${basename}.kamelet.yaml[query='nodes$.spec.dependencies.*',format='value']
+
+== Usage
+
+This section describes how you can use the \`{name}\`.
+
+=== Knative {type}
+
+ifeval::['{type}' == 'action']
+You can use the \`{name}\` Kamelet as an intermediate step in a Knative binding.
+endif::[]
+ifeval::['{type}' != 'action']
+You can use the \`{name}\` Kamelet as a Knative {type} by binding it to a Knative object.
+endif::[]
+
+:ref-api-version: messaging.knative.dev/v1
+:ref-kind: Channel
+:ref-name: mychannel
+
+.{name}-binding.yaml
+[source,yaml,subs='+attributes,macros']
+----
+jsonpathExpression::example$yaml/${basename}.kamelet.yaml[query='$', format='kamelets.binding("{type}", apiVersion, kind, metadata, spec, "{ref-kind}", "{ref-api-version}", "{ref-name}")', outputFormat=yml, requires={requires}]
+----
+
+==== *Prerequisite*
+
+You have xref:{camel-k-version}@camel-k::installation/installation.adoc[Camel K installed] on the cluster.
+
+==== *Procedure for using the cluster CLI*
+
+. Save the \`{name}-binding.yaml\` file to your local drive, and then edit it as needed for your configuration.
+
+. Run the {type} by using the following command:
++
+[source,shell,subs=+attributes]
+----
+kubectl apply -f {name}-binding.yaml
+----
+
+==== *Procedure for using the Kamel CLI*
+
+Configure and run the {type} by using the following command:
+
+[source,shell,subs='+attributes,macros']
+----
+jsonpathExpression:example$yaml/${basename}.kamelet.yaml[query='$.spec', format='kamelets.bindingCommand("{type}", "{name}", definition, "channel:mychannel")', requires={requires}]
+----
+
+This command creates the KameletBinding in the current namespace on the cluster.
+
+=== Kafka {type}
+
+ifeval::['{type}' == 'action']
+You can use the \`{name}\` Kamelet as an intermediate step in a Kafka binding.
+endif::[]
+ifeval::['{type}' != 'action']
+You can use the \`{name}\` Kamelet as a Kafka {type} by binding it to a Kafka topic.
+endif::[]
+
+:ref-api-version: kafka.strimzi.io/v1beta1
+:ref-kind: KafkaTopic
+:ref-name: my-topic
+
+.{name}-binding.yaml
+[source,yaml,subs='+attributes,macros']
+----
+jsonpathExpression::example$yaml/${basename}.kamelet.yaml[query='$', format='kamelets.binding("{type}", apiVersion, kind, metadata, spec, "{ref-kind}", "{ref-api-version}", "{ref-name}")', outputFormat=yml, requires={requires}]
+----
+
+==== *Prerequisites*
+
+* You've installed https://strimzi.io/[Strimzi].
+* You've created a topic named \`my-topic\` in the current namespace.
+* You have xref:{camel-k-version}@camel-k::installation/installation.adoc[Camel K installed] on the cluster.
+
+==== *Procedure for using the cluster CLI*
+
+. Save the \`{name}-binding.yaml\` file to your local drive, and then edit it as needed for your configuration.
+
+. Run the {type} by using the following command:
++
+[source,shell,subs=+attributes]
+----
+kubectl apply -f {name}-binding.yaml
+----
+
+==== *Procedure for using the Kamel CLI*
+
+Configure and run the {type} by using the following command:
+
+[source,shell,subs='+attributes,macros']
+----
+jsonpathExpression::example$yaml/${basename}.kamelet.yaml[query='$.spec', format='kamelets.bindingCommand("{type}", "{name}", definition, "kafka.strimzi.io/v1beta1:KafkaTopic:my-topic")', requires={requires}]
+----
+
+This command creates the KameletBinding in the current namespace on the cluster.
+
+== Kamelet source file
+
+https://github.com/apache/camel-kamelets/blob/main/{name}.kamelet.yaml
