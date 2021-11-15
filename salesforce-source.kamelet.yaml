@@ -39,6 +39,11 @@ spec:
         description: The Salesforce instance login URL
         type: string
         default: https://login.salesforce.com
+      notifyForFields:
+        title: Notify For Fields
+        description: Notify for fields, options are ALL, REFERENCED, SELECT, WHERE.
+        type: string
+        default: ALL
       clientId:
         title: Consumer Key
         description: The Salesforce application consumer key
@@ -83,7 +88,7 @@ spec:
         clientSecret: "{{clientSecret}}"
         userName: "{{userName}}"
         password: "{{password}}"
-        notifyForFields: "ALL"
+        notifyForFields: "{{notifyForFields}}"
         updateTopic: "true"
         notifyForOperationCreate: "true"
         notifyForOperationUpdate: "false"
