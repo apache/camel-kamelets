@@ -21,6 +21,7 @@ The following table summarizes the configuration options available for the `sale
 | *topicName {empty}* *| Topic Name| The name of the topic/channel to use| string| | `"ContactTopic"`
 | *userName {empty}* *| Username| The Salesforce username| string| | 
 | loginUrl| Login URL| The Salesforce instance login URL| string| `"https://login.salesforce.com"`| 
+| notifyForFields| Notify For Fields| Notify for fields, options are ALL, REFERENCED, SELECT, WHERE.| string| `"ALL"`| 
 |===
 
 NOTE: Fields marked with an asterisk ({empty}*) are mandatory.
@@ -28,7 +29,7 @@ NOTE: Fields marked with an asterisk ({empty}*) are mandatory.
 
 == Dependencies
 
-At runtime, the `salesforce-source Kamelet relies upon the presence of the following dependencies:
+At runtime, the `salesforce-source` Kamelet relies upon the presence of the following dependencies:
 
 - camel:jackson
 - camel:salesforce
