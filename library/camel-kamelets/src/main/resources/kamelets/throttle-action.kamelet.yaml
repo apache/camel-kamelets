@@ -13,14 +13,14 @@ metadata:
 spec:
   definition:
     title: "Throttle Action"
-    description: "The Throttl action allows to ensure that a specific sink does not get overloaded."
+    description: "The Throttle action allows to ensure that a specific sink does not get overloaded."
     required:
       - messages
     properties:
       messages:
         title: Messages Number
         description: The number of messages to send in the time period set
-        type: int
+        type: integer
         example: 10
       timePeriod:
         title: Time Period
