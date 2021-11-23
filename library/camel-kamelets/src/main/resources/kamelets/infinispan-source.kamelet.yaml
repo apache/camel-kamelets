@@ -86,7 +86,7 @@ spec:
   flow:
     beans:
       - name: local-infinispan
-        type: "#class:org.apache.camel.component.infinispan.InfinispanComponent"
+        type: "#class:org.apache.camel.component.infinispan.remote.InfinispanRemoteComponent"
     from:
       uri: "{{local-infinispan}}:{{cacheName}}"
       parameters:
