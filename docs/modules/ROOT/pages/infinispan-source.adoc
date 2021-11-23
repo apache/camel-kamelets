@@ -18,7 +18,7 @@ The following table summarizes the configuration options available for the `infi
 | *hosts {empty}* *| Hosts| Specifies the host of the cache on Infinispan instance| String| | 
 | *password {empty}* *| Password| Password to connect to Infinispan.| string| | 
 | *username {empty}* *| Username| Username to connect to Infinispan.| string| | 
-| eventTypes| Infinispan Cluster Name| Specifies the set of event types to register by the consumer.Multiple event can be separated by comma. The possible event types are CLIENT_CACHE_ENTRY_CREATED, CLIENT_CACHE_ENTRY_MODIFIED, CLIENT_CACHE_ENTRY_REMOVED, CLIENT_CACHE_ENTRY_EXPIRED, CLIENT_CACHE_FAILOVER| string| | 
+| eventTypes| Infinispan Cluster Name| Specifies the set of event types to register by the consumer. Multiple event can be separated by comma without spaces. The possible event types are CLIENT_CACHE_ENTRY_CREATED, CLIENT_CACHE_ENTRY_MODIFIED, CLIENT_CACHE_ENTRY_REMOVED, CLIENT_CACHE_ENTRY_EXPIRED, CLIENT_CACHE_FAILOVER| string| `"CLIENT_CACHE_ENTRY_CREATED,CLIENT_CACHE_ENTRY_MODIFIED,CLIENT_CACHE_ENTRY_REMOVED,CLIENT_CACHE_ENTRY_EXPIRED,CLIENT_CACHE_FAILOVER"`| `"CLIENT_CACHE_ENTRY_CREATED,CLIENT_CACHE_ENTRY_MODIFIED"`
 | saslMechanism| SASL Mechanism| The SASL Mechanism to use| String| `"DIGEST-MD5"`| 
 | secure| Secure| If the Infinispan instance is secured or not| boolean| `true`| 
 | securityRealm| Security Realm| Define the security realm to access the infinispan instance| string| `"default"`| 
