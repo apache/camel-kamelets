@@ -80,13 +80,15 @@ spec:
         description: Specifies the set of event types to register by the consumer.Multiple event can be separated by comma. The possible event types are CLIENT_CACHE_ENTRY_CREATED, CLIENT_CACHE_ENTRY_MODIFIED, CLIENT_CACHE_ENTRY_REMOVED, CLIENT_CACHE_ENTRY_EXPIRED, CLIENT_CACHE_FAILOVER
         type: string
   dependencies:
-    - "mvn:org.apache.camel.k:camel-k-kamelet-reify"
     - "camel:kamelet"
     - "camel:core"
     - "camel:infinispan"
   flow:
+    beans:
+      - name: local-infinispan
+        type: "#class:org.apache.camel.component.infinispan.InfinispanComponent"
     from:
-      uri: "kamelet-reify:infinispan:{{cacheName}}"
+      uri: "{{local-infinispan}}:{{cacheName}}"
       parameters:
         hosts: "{{hosts}}"
         secure: "{{secure}}"
