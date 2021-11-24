@@ -78,11 +78,13 @@ spec:
   dependencies:
   - "camel:jackson"
   - "camel:salesforce"
-  - "mvn:org.apache.camel.k:camel-k-kamelet-reify"
   - "camel:kamelet"
   flow:
+    beans:
+      - name: local-salesforce
+        type: "#class:org.apache.camel.component.salesforce.SalesforceComponent"
     from:
-      uri: "kamelet-reify:salesforce:{{topicName}}"
+      uri: "{{local-salesforce}}:{{topicName}}"
       parameters:
         clientId: "{{clientId}}"
         clientSecret: "{{clientSecret}}"
