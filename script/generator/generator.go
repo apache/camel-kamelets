@@ -43,13 +43,13 @@ func main() {
 	docTemplate, err := template.New("kamelet.adoc.tmpl").Funcs(funcMap).ParseFiles(templateFile, kameletBindingFile, propertiesListFile)
 	handleGeneralError(fmt.Sprintf("cannot load template file from %s", templateFile), err)
 
-	camelKYamlBindingsBaseDir := filepath.Join(projectBaseDir, "templates", "bindings", "camel-k")
+	camelKYamlBindingsBaseDir := filepath.Join(projectBaseDir, "../templates", "bindings", "camel-k")
 	yamlTemplateFile := path.Join(camelKYamlBindingsBaseDir, "kamelet.yaml.tmpl")
 
 	yamlTemplate, err := template.New("kamelet.yaml.tmpl").Funcs(funcMap).ParseFiles(yamlTemplateFile, kameletBindingFile, propertiesListFile)
 	handleGeneralError(fmt.Sprintf("cannot load template file from %s", templateFile), err)
 
-	coreYamlBindingsBaseDir := filepath.Join(projectBaseDir, "templates", "bindings", "core")
+	coreYamlBindingsBaseDir := filepath.Join(projectBaseDir, "../templates", "bindings", "core")
 	coreYamlTemplateFile := path.Join(coreYamlBindingsBaseDir, "kamelet-core-binding.yaml.tmpl")
 	parameterListFile := path.Join(coreYamlBindingsBaseDir, "parameter-list.tmpl")
 
@@ -378,7 +378,7 @@ func produceDocFile(k camel.Kamelet, baseDir string, content string) {
 }
 
 func produceBindingFile(k camel.Kamelet, baseDir string, projectName string, content string) {
-	camelKOutputDir := filepath.Join(baseDir, "templates", "bindings", projectName)
+	camelKOutputDir := filepath.Join(baseDir, "../templates", "bindings", projectName)
 
 	produceOutputFile(k, camelKOutputDir, content,"-binding.yaml")
 }
