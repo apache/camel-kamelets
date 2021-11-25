@@ -1,0 +1,21 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: infinispan-sink-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: infinispan-sink
+    properties:
+      cacheName: "The Cache Name"
+      hosts: "The Hosts"
+      password: "The Password"
+      username: "The Username"
+  sink:
+    ref:
+      kind: KafkaTopic
+      apiVersion: kafka.strimzi.io/v1beta1
+      name: my-topic
+  
