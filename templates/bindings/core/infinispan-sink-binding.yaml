@@ -1,12 +1,15 @@
 - route:
     from:
-      uri: "kamelet:infinispan-sink"
+      uri: "kamelet:timer-source"
       parameters:
-        cacheName: "The Cache Name"
-        hosts: "The Hosts"
-        password: "The Password"
-        username: "The Username"
+        period: 1000
+        message: "Hello Camel JBang"
     steps:
       - to:
-          uri: "log:info"
+          uri: "kamelet:infinispan-sink"
+          parameters:
+            cacheName: "The Cache Name"
+            hosts: "The Hosts"
+            password: "The Password"
+            username: "The Username"
     

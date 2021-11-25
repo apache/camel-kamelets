@@ -45,9 +45,9 @@ At runtime, the `infinispan-sink` Kamelet relies upon the presence of the follow
 
 This section describes how you can use the `infinispan-sink`.
 
-=== Knative Source
+=== Knative Sink
 
-You can use the `infinispan-sink` Kamelet as a Knative source by binding it to a Knative object.
+You can use the `infinispan-sink` Kamelet as a Knative sink by binding it to a Knative object.
 
 .infinispan-sink-binding.yaml
 [source,yaml]
@@ -59,6 +59,11 @@ metadata:
 spec:
   source:
     ref:
+      kind: Channel
+      apiVersion: messaging.knative.dev/v1
+      name: mychannel
+  sink:
+    ref:
       kind: Kamelet
       apiVersion: camel.apache.org/v1alpha1
       name: infinispan-sink
@@ -67,11 +72,6 @@ spec:
       hosts: "The Hosts"
       password: "The Password"
       username: "The Username"
-  sink:
-    ref:
-      kind: Channel
-      apiVersion: messaging.knative.dev/v1
-      name: mychannel
   
 ----
 
@@ -83,7 +83,7 @@ You have xref:{camel-k-version}@camel-k::installation/installation.adoc[Camel K 
 
 . Save the `infinispan-sink-binding.yaml` file to your local drive, and then edit it as needed for your configuration.
 
-. Run the source by using the following command:
+. Run the sink by using the following command:
 +
 [source,shell]
 ----
@@ -92,18 +92,18 @@ kubectl apply -f infinispan-sink-binding.yaml
 
 ==== *Procedure for using the Kamel CLI*
 
-Configure and run the source by using the following command:
+Configure and run the sink by using the following command:
 
 [source,shell]
 ----
-kamel bind infinispan-sink -p "source.cacheName=The Cache Name" -p "source.hosts=The Hosts" -p "source.password=The Password" -p "source.username=The Username" channel:mychannel
+kamel bind channel:mychannel infinispan-sink -p "sink.cacheName=The Cache Name" -p "sink.hosts=The Hosts" -p "sink.password=The Password" -p "sink.username=The Username"
 ----
 
 This command creates the KameletBinding in the current namespace on the cluster.
 
-=== Kafka Source
+=== Kafka Sink
 
-You can use the `infinispan-sink` Kamelet as a Kafka source by binding it to a Kafka topic.
+You can use the `infinispan-sink` Kamelet as a Kafka sink by binding it to a Kafka topic.
 
 .infinispan-sink-binding.yaml
 [source,yaml]
@@ -115,6 +115,11 @@ metadata:
 spec:
   source:
     ref:
+      kind: KafkaTopic
+      apiVersion: kafka.strimzi.io/v1beta1
+      name: my-topic
+  sink:
+    ref:
       kind: Kamelet
       apiVersion: camel.apache.org/v1alpha1
       name: infinispan-sink
@@ -123,11 +128,6 @@ spec:
       hosts: "The Hosts"
       password: "The Password"
       username: "The Username"
-  sink:
-    ref:
-      kind: KafkaTopic
-      apiVersion: kafka.strimzi.io/v1beta1
-      name: my-topic
   
 ----
 
@@ -141,7 +141,7 @@ spec:
 
 . Save the `infinispan-sink-binding.yaml` file to your local drive, and then edit it as needed for your configuration.
 
-. Run the source by using the following command:
+. Run the sink by using the following command:
 +
 [source,shell]
 ----
@@ -150,11 +150,11 @@ kubectl apply -f infinispan-sink-binding.yaml
 
 ==== *Procedure for using the Kamel CLI*
 
-Configure and run the source by using the following command:
+Configure and run the sink by using the following command:
 
 [source,shell]
 ----
-kamel bind infinispan-sink -p "source.cacheName=The Cache Name" -p "source.hosts=The Hosts" -p "source.password=The Password" -p "source.username=The Username" kafka.strimzi.io/v1beta1:KafkaTopic:my-topic
+kamel bind kafka.strimzi.io/v1beta1:KafkaTopic:my-topic infinispan-sink -p "sink.cacheName=The Cache Name" -p "sink.hosts=The Hosts" -p "sink.password=The Password" -p "sink.username=The Username"
 ----
 
 This command creates the KameletBinding in the current namespace on the cluster.
