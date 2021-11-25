@@ -25,7 +25,7 @@ pre:
 
     kamel install -n $YAKS_NAMESPACE -w
     kubectl delete kamelet -n $YAKS_NAMESPACE --all
-    kubectl apply -f ../../timer-source.kamelet.yaml -n $YAKS_NAMESPACE
+    kubectl apply -f ../../kamelets/timer-source.kamelet.yaml -n $YAKS_NAMESPACE
 post:
 - name: dump
   run: |
