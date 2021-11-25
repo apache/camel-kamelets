@@ -25,7 +25,7 @@
     </target>
     <target name="replace.snapshot" depends="replace.release" if="is.snapshot">
         <replaceregexp match="mvn:org.apache.camel.kamelets:camel-kamelets-utils:[A-Za-z0-9-.]+" replace="github:apache.camel-kamelets:camel-kamelets-utils:${releaseVersion}" byline="true">
-            <fileset dir=".">
+            <fileset dir="kamelets/">
                 <include name="*.kamelet.yaml"/>
             </fileset>
         </replaceregexp>
