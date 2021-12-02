@@ -65,6 +65,8 @@ spec:
       - unmarshal:
           json:
             library: Jackson
+      - remove-header:
+          name: "content-type"
       - to:
           uri: "solr:{{servers}}/solr/{{collection}}"
           parameters:
