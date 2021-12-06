@@ -82,7 +82,7 @@ spec:
           constant: GET
       - tod: "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&updatedafter=${exchangeProperty.lastUpdate}&orderby=time-asc"
       - remove-header:
-          header-name: CamelHttpMethod
+          name: CamelHttpMethod
       - unmarshal:
           json: {}
       - set-property:
