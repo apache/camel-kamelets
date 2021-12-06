@@ -51,6 +51,20 @@ spec:
         default: false
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+      username:
+        title: Username
+        description: Username to connect to Solr.
+        type: string
+        x-descriptors:
+        - urn:camel:group:credentials
+      password:
+        title: Password
+        description: Password to connect to Solr.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
   types:
     in:
       mediaType: application/json
@@ -75,3 +89,5 @@ spec:
           uri: "solr:{{servers}}/solr/{{collection}}"
           parameters:
             autocommit: "{{autocommit}}"
+            username: "{{?username}}"
+            password: "{{?password}}"
