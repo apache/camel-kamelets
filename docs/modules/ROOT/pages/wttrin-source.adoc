@@ -14,9 +14,9 @@ The following table summarizes the configuration options available for the `wttr
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| language| Language| The language to use for displaying weather forecasts| string| | `"am ar af be bn ca da de el et fr fa hi hu ia id it lt mg nb nl oc pl pt-br ro ru ta tr th uk vi zh-cn zh-tw"`
 | output| Output Type| The type of output| string| `"current"`| `"current, weather, full"`
 | period| Period| The interval between fetches to the wttr.in service in milliseconds| integer| `60000`| 
+| wttrLanguage| Language| The language to use for displaying weather forecasts| string| | `"am ar af be bn ca da de el et fr fa hi hu ia id it lt mg nb nl oc pl pt-br ro ru ta tr th uk vi zh-cn zh-tw"`
 | wttrLocation| Location| The location to get weather forecasts| string| | `"\"paris\", \"~Eiffel+tower\", \"Москва\", \"muc\", \"@stackoverflow.com\", \"94107\", \"-78.46,106.79\""`
 |===
 
@@ -28,8 +28,10 @@ NOTE: Fields marked with an asterisk ({empty}*) are mandatory.
 At runtime, the `wttrin-source` Kamelet relies upon the presence of the following dependencies:
 
 - camel:http
+- camel:jackson
 - camel:jsonpath
-- camel:jackson 
+- camel:kamelet
+- camel:timer 
 
 == Usage
 
