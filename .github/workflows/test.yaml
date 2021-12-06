@@ -42,7 +42,8 @@ concurrency:
 
 env:
   CAMEL_K_VERSION: 1.5.0
-  YAKS_VERSION: 0.4.0
+  YAKS_VERSION: 0.6.0
+  YAKS_IMAGE_NAME: "docker.io/citrusframework/yaks"
 
 jobs:
   test:
@@ -62,7 +63,7 @@ jobs:
         rm -r _kamel
     - name: Get YAKS CLI
       run: |
-        curl --fail -L --silent https://github.com/citrusframework/yaks/releases/download/v${YAKS_VERSION}/yaks-${YAKS_VERSION}-linux-64bit.tar.gz -o yaks.tar.gz
+        curl --fail -L --silent https://github.com/citrusframework/yaks/releases/download/${YAKS_VERSION}/yaks-${YAKS_VERSION}-linux-64bit.tar.gz -o yaks.tar.gz
         mkdir -p _yaks
         tar -zxf yaks.tar.gz --directory ./_yaks
         sudo mv ./_yaks/yaks /usr/local/bin/
@@ -85,10 +86,10 @@ jobs:
         export KAMEL_INSTALL_REGISTRY_INSECURE=true
 
         echo "Configuring Yaks"
-        yaks install
+        yaks install --operator-image $YAKS_IMAGE_NAME:$YAKS_VERSION
 
         echo "Running tests"
-        yaks test ./test
+        yaks run ./test
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
