@@ -133,7 +133,7 @@ spec:
           constant: "application/json"
       - to: "https://api.openai.com/v1/classifications"
       - remove-header:
-          header-name: "Authorization"
+          name: "Authorization"
       - set-property:
           name: format
           constant: "{{format}}"
