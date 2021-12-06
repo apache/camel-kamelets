@@ -1,0 +1,11 @@
+- route:
+    from:
+      uri: "kamelet:solr-source"
+      parameters:
+        collection: "The Collection"
+        query: "The Query"
+        servers: "The Servers"
+    steps:
+      - to:
+          uri: "log:info"
+    
