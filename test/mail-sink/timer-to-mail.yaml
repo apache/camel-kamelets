@@ -1,0 +1,24 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: timer-to-mail
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: timer-source
+    properties:
+      message: "${message}"
+  sink:
+    ref:
+      apiVersion: camel.apache.org/v1alpha1
+      kind: Kamelet
+      name: mail-sink
+    properties:
+      connectionHost: "${host}"
+      username: "${username}"
+      password: "${password}"
+      from: "${from}"
+      to: "${to}"
+      subject: "${subject}"
