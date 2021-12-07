@@ -61,6 +61,11 @@ spec:
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
+  types:
+    in:
+      mediaType: text/plain
+    out:
+      mediaType: text/plain
   dependencies:
     - "camel:ssh"
     - "camel:gson"
