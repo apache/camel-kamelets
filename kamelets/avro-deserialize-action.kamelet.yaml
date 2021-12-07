@@ -68,8 +68,8 @@ spec:
             unmarshalTypeName: com.fasterxml.jackson.databind.JsonNode
             schemaResolver: "#class:org.apache.camel.kamelets.utils.serialization.InflightAvroSchemaResolver"
       - remove-property:
-          property-name: schema
+          name: schema
       - remove-property:
-          property-name: validate
+          name: validate
       - remove-header:
           name: "Content-Type"
