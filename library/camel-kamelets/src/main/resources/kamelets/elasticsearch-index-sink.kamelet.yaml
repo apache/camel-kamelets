@@ -116,7 +116,8 @@ spec:
             steps:
             - set-header:
                 name: "indexId"
-                simple: "camel-k-index-es"
+                expression:
+                  simple: ${bean:org.apache.camel.support.ShortUuidGenerator?method=generateUuid}
       - choice:
           when:
           - simple: "${header[indexName]}"
