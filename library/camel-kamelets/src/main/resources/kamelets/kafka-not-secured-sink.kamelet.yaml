@@ -41,15 +41,15 @@ spec:
       Both the headers are optional.
     required:
       - topic
-      - brokers
+      - bootstrapServers
     type: object
     properties:
       topic:
         title: Topic Names
         description: Comma separated list of Kafka topic names
         type: string
-      brokers:
-        title: Brokers
+      bootstrapServers:
+        title: Bootstrap Servers
         description: Comma separated list of Kafka Broker URLs
         type: string
   dependencies:
@@ -86,4 +86,4 @@ spec:
       - to:
           uri: "kafka:{{topic}}"
           parameters:
-            brokers: "{{brokers}}"
+            brokers: "{{bootstrapServers}}"

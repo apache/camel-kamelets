@@ -22,7 +22,7 @@ The following table summarizes the configuration options available for the `kafk
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| *brokers {empty}* *| Brokers| Comma separated list of Kafka Broker URLs| string| | 
+| *bootstrapServers {empty}* *| Bootstrap Servers| Comma separated list of Kafka Broker URLs| string| | 
 | *topic {empty}* *| Topic Names| Comma separated list of Kafka topic names| string| | 
 |===
 
@@ -63,7 +63,7 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: kafka-not-secured-sink
     properties:
-      brokers: "The Brokers"
+      bootstrapServers: "The Bootstrap Servers"
       topic: "The Topic Names"
   
 ----
@@ -89,7 +89,7 @@ Configure and run the sink by using the following command:
 
 [source,shell]
 ----
-kamel bind channel:mychannel kafka-not-secured-sink -p "sink.brokers=The Brokers" -p "sink.topic=The Topic Names"
+kamel bind channel:mychannel kafka-not-secured-sink -p "sink.bootstrapServers=The Bootstrap Servers" -p "sink.topic=The Topic Names"
 ----
 
 This command creates the KameletBinding in the current namespace on the cluster.
@@ -117,7 +117,7 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: kafka-not-secured-sink
     properties:
-      brokers: "The Brokers"
+      bootstrapServers: "The Bootstrap Servers"
       topic: "The Topic Names"
   
 ----
@@ -145,7 +145,7 @@ Configure and run the sink by using the following command:
 
 [source,shell]
 ----
-kamel bind kafka.strimzi.io/v1beta1:KafkaTopic:my-topic kafka-not-secured-sink -p "sink.brokers=The Brokers" -p "sink.topic=The Topic Names"
+kamel bind kafka.strimzi.io/v1beta1:KafkaTopic:my-topic kafka-not-secured-sink -p "sink.bootstrapServers=The Bootstrap Servers" -p "sink.topic=The Topic Names"
 ----
 
 This command creates the KameletBinding in the current namespace on the cluster.
