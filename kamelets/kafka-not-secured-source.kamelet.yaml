@@ -33,15 +33,15 @@ spec:
       Receive data from Kafka topics on an insecure broker.
     required:
       - topic
-      - brokers
+      - bootstrapServers
     type: object
     properties:
       topic:
         title: Topic Names
         description: Comma separated list of Kafka topic names
         type: string
-      brokers:
-        title: Brokers
+      bootstrapServers:
+        title: Bootstrap Servers
         description: Comma separated list of Kafka Broker URLs
         type: string
       autoCommitEnable:
@@ -80,7 +80,7 @@ spec:
     from:
       uri: "kafka:{{topic}}"
       parameters:
-        brokers: "{{brokers}}"
+        brokers: "{{bootstrapServers}}"
         autoCommitEnable: "{{autoCommitEnable}}"
         allowManualCommit: "{{allowManualCommit}}"
         pollOnError: "{{pollOnError}}"
