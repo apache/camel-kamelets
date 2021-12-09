@@ -14,7 +14,7 @@ The following table summarizes the configuration options available for the `kafk
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| *brokers {empty}* *| Brokers| Comma separated list of Kafka Broker URLs| string| | 
+| *bootstrapServers {empty}* *| Bootstrap Servers| Comma separated list of Kafka Broker URLs| string| | 
 | *topic {empty}* *| Topic Names| Comma separated list of Kafka topic names| string| | 
 | allowManualCommit| Allow Manual Commit| Whether to allow doing manual commits| boolean| `false`| 
 | autoCommitEnable| Auto Commit Enable| If true, periodically commit to ZooKeeper the offset of messages already fetched by the consumer| boolean| `true`| 
@@ -55,7 +55,7 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: kafka-not-secured-source
     properties:
-      brokers: "The Brokers"
+      bootstrapServers: "The Bootstrap Servers"
       topic: "The Topic Names"
   sink:
     ref:
@@ -86,7 +86,7 @@ Configure and run the source by using the following command:
 
 [source,shell]
 ----
-kamel bind kafka-not-secured-source -p "source.brokers=The Brokers" -p "source.topic=The Topic Names" channel:mychannel
+kamel bind kafka-not-secured-source -p "source.bootstrapServers=The Bootstrap Servers" -p "source.topic=The Topic Names" channel:mychannel
 ----
 
 This command creates the KameletBinding in the current namespace on the cluster.
@@ -109,7 +109,7 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: kafka-not-secured-source
     properties:
-      brokers: "The Brokers"
+      bootstrapServers: "The Bootstrap Servers"
       topic: "The Topic Names"
   sink:
     ref:
@@ -142,7 +142,7 @@ Configure and run the source by using the following command:
 
 [source,shell]
 ----
-kamel bind kafka-not-secured-source -p "source.brokers=The Brokers" -p "source.topic=The Topic Names" kafka.strimzi.io/v1beta1:KafkaTopic:my-topic
+kamel bind kafka-not-secured-source -p "source.bootstrapServers=The Bootstrap Servers" -p "source.topic=The Topic Names" kafka.strimzi.io/v1beta1:KafkaTopic:my-topic
 ----
 
 This command creates the KameletBinding in the current namespace on the cluster.

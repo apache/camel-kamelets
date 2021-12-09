@@ -22,7 +22,7 @@ The following table summarizes the configuration options available for the `kafk
 [width="100%",cols="2,^2,3,^2,^2,^3",options="header"]
 |===
 | Property| Name| Description| Type| Default| Example
-| *bootstrapServers {empty}* *| Brokers| Comma separated list of Kafka Broker URLs| string| | 
+| *bootstrapServers {empty}* *| Bootstrap Servers| Comma separated list of Kafka Broker URLs| string| | 
 | *password {empty}* *| Password| Password to authenticate to kafka| string| | 
 | *topic {empty}* *| Topic Names| Comma separated list of Kafka topic names| string| | 
 | *user {empty}* *| Username| Username to authenticate to Kafka| string| | 
@@ -67,7 +67,7 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: kafka-sink
     properties:
-      bootstrapServers: "The Brokers"
+      bootstrapServers: "The Bootstrap Servers"
       password: "The Password"
       topic: "The Topic Names"
       user: "The Username"
@@ -95,7 +95,7 @@ Configure and run the sink by using the following command:
 
 [source,shell]
 ----
-kamel bind channel:mychannel kafka-sink -p "sink.bootstrapServers=The Brokers" -p "sink.password=The Password" -p "sink.topic=The Topic Names" -p "sink.user=The Username"
+kamel bind channel:mychannel kafka-sink -p "sink.bootstrapServers=The Bootstrap Servers" -p "sink.password=The Password" -p "sink.topic=The Topic Names" -p "sink.user=The Username"
 ----
 
 This command creates the KameletBinding in the current namespace on the cluster.
@@ -123,7 +123,7 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: kafka-sink
     properties:
-      bootstrapServers: "The Brokers"
+      bootstrapServers: "The Bootstrap Servers"
       password: "The Password"
       topic: "The Topic Names"
       user: "The Username"
@@ -153,7 +153,7 @@ Configure and run the sink by using the following command:
 
 [source,shell]
 ----
-kamel bind kafka.strimzi.io/v1beta1:KafkaTopic:my-topic kafka-sink -p "sink.bootstrapServers=The Brokers" -p "sink.password=The Password" -p "sink.topic=The Topic Names" -p "sink.user=The Username"
+kamel bind kafka.strimzi.io/v1beta1:KafkaTopic:my-topic kafka-sink -p "sink.bootstrapServers=The Bootstrap Servers" -p "sink.password=The Password" -p "sink.topic=The Topic Names" -p "sink.user=The Username"
 ----
 
 This command creates the KameletBinding in the current namespace on the cluster.
