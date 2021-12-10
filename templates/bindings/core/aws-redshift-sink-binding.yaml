@@ -1,0 +1,16 @@
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 1000
+        message: "Hello Camel JBang"
+    steps:
+      - to:
+          uri: "kamelet:aws-redshift-sink"
+          parameters:
+            databaseName: "The Database Name"
+            password: "The Password"
+            query: "INSERT INTO accounts (username,city) VALUES (:#username,:#city)"
+            serverName: "localhost"
+            username: "The Username"
+    
