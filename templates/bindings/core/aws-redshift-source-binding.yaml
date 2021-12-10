@@ -1,0 +1,13 @@
+- route:
+    from:
+      uri: "kamelet:aws-redshift-source"
+      parameters:
+        databaseName: "The Database Name"
+        password: "The Password"
+        query: "INSERT INTO accounts (username,city) VALUES (:#username,:#city)"
+        serverName: "localhost"
+        username: "The Username"
+    steps:
+      - to:
+          uri: "log:info"
+    
