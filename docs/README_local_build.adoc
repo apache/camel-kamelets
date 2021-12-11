@@ -1,0 +1,31 @@
+= Local/partial build of docs
+
+This should be explained soon at https://camel.apache.org/manual/improving-the-documentation.html.
+
+* (once, or occasionally)
+. In `../..` (next to this project's clone) run
+[source,sh]
+----
+git clone https://github.com/apache/camel-website.git
+----
+. In `../../camel-website/antora-ui-camel` run
+[source,sh]
+----
+yarn build
+----
+. In this directory run
+[source,sh]
+----
+./local-build.sh full
+----
+This will build the full Antora site on your machine in the camel-website project under /documentation, with any local changes you have made in this project.
+It will also do a full xref check for the entire site.
+* Thereafter
+. In this directory run
+[source,sh]
+----
+./local-build.sh
+----
+
+This will build just this project, with local changes, into the full build from the previous step.
+It will start a local webserver for the build site, rebuild when changes are detected, and sync your browser to the changes.
