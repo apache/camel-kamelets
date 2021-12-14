@@ -24,7 +24,7 @@ The following table summarizes the configuration options available for the `aws-
 |===
 | Property| Name| Description| Type| Default| Example
 | *accessKey {empty}* *| Access Key| The access key obtained from AWS.| string| | 
-| *cw_namespace {empty}* *| Cloud Watch Namespace| The cloud watch metric namespace.| string| | 
+| *cwNamespace {empty}* *| Cloud Watch Namespace| The cloud watch metric namespace.| string| | 
 | *region {empty}* *| AWS Region| The AWS region to connect to.| string| | `"eu-west-1"`
 | *secretKey {empty}* *| Secret Key| The secret key obtained from AWS.| string| | 
 |===
@@ -67,7 +67,7 @@ spec:
       name: aws-cloudwatch-sink
     properties:
       accessKey: "The Access Key"
-      cw_namespace: "The Cloud Watch Namespace"
+      cwNamespace: "The Cloud Watch Namespace"
       region: "eu-west-1"
       secretKey: "The Secret Key"
   
@@ -94,7 +94,7 @@ Configure and run the sink by using the following command:
 
 [source,shell]
 ----
-kamel bind channel:mychannel aws-cloudwatch-sink -p "sink.accessKey=The Access Key" -p "sink.cw_namespace=The Cloud Watch Namespace" -p "sink.region=eu-west-1" -p "sink.secretKey=The Secret Key"
+kamel bind channel:mychannel aws-cloudwatch-sink -p "sink.accessKey=The Access Key" -p "sink.cwNamespace=The Cloud Watch Namespace" -p "sink.region=eu-west-1" -p "sink.secretKey=The Secret Key"
 ----
 
 This command creates the KameletBinding in the current namespace on the cluster.
@@ -123,7 +123,7 @@ spec:
       name: aws-cloudwatch-sink
     properties:
       accessKey: "The Access Key"
-      cw_namespace: "The Cloud Watch Namespace"
+      cwNamespace: "The Cloud Watch Namespace"
       region: "eu-west-1"
       secretKey: "The Secret Key"
   
@@ -152,7 +152,7 @@ Configure and run the sink by using the following command:
 
 [source,shell]
 ----
-kamel bind kafka.strimzi.io/v1beta1:KafkaTopic:my-topic aws-cloudwatch-sink -p "sink.accessKey=The Access Key" -p "sink.cw_namespace=The Cloud Watch Namespace" -p "sink.region=eu-west-1" -p "sink.secretKey=The Secret Key"
+kamel bind kafka.strimzi.io/v1beta1:KafkaTopic:my-topic aws-cloudwatch-sink -p "sink.accessKey=The Access Key" -p "sink.cwNamespace=The Cloud Watch Namespace" -p "sink.region=eu-west-1" -p "sink.secretKey=The Secret Key"
 ----
 
 This command creates the KameletBinding in the current namespace on the cluster.
