@@ -20,6 +20,7 @@ config:
     temporary: true
 pre:
 - name: installation
+  if: env:CI=true
   run: |
     # Install required Kamelets (these steps may be done globally in future versions)
 
@@ -30,6 +31,7 @@ pre:
     kubectl apply -f insert-field-action-binding.yaml -n $YAKS_NAMESPACE
 post:
 - name: dump
+  if: env:CI=true
   run: |
     kamel dump -n $YAKS_NAMESPACE $(basename `pwd`)-dump.log
     mkdir -p /tmp/dumps

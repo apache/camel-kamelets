@@ -42,7 +42,7 @@ concurrency:
 
 env:
   CAMEL_K_VERSION: 1.5.0
-  YAKS_VERSION: 0.6.0
+  YAKS_VERSION: 0.7.0
   YAKS_IMAGE_NAME: "docker.io/citrusframework/yaks"
 
 jobs:
@@ -63,7 +63,7 @@ jobs:
         rm -r _kamel
     - name: Get YAKS CLI
       run: |
-        curl --fail -L --silent https://github.com/citrusframework/yaks/releases/download/${YAKS_VERSION}/yaks-${YAKS_VERSION}-linux-64bit.tar.gz -o yaks.tar.gz
+        curl --fail -L --silent https://github.com/citrusframework/yaks/releases/download/v${YAKS_VERSION}/yaks-${YAKS_VERSION}-linux-64bit.tar.gz -o yaks.tar.gz
         mkdir -p _yaks
         tar -zxf yaks.tar.gz --directory ./_yaks
         sudo mv ./_yaks/yaks /usr/local/bin/
