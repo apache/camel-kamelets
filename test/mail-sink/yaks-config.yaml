@@ -32,6 +32,7 @@ config:
       - timer-to-mail.yaml
 pre:
 - name: installation
+  if: env:CI=true
   run: |
     # Install required Kamelets (these steps may be done globally in future versions)
 
@@ -41,6 +42,7 @@ pre:
     kubectl apply -f ../../kamelets/timer-source.kamelet.yaml -n $YAKS_NAMESPACE
 post:
 - name: dump
+  if: env:CI=true
   run: |
     kamel dump -n $YAKS_NAMESPACE $(basename `pwd`)-dump.log
     mkdir -p /tmp/dumps
