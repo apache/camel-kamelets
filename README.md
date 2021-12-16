@@ -15,6 +15,25 @@ Kamelets in this repository are intended to be generic connectors that any exter
 
 All Kamelets posted here will be subject to the scrutiny of the Apache Camel PMC to assess their compliance with the ecosystem and, in any case, they **MUST** be in line with the general [Apache Code of Conduct](https://www.apache.org/foundation/policies/conduct.html).
 
+### Building and validating
+
+Building the project:
+```bash
+$ ./mvnw clean install
+```
+
+**IMPORTANT:** After adding or modifying a kamelet remember to generate:
+```bash
+$ cd script/generator
+$ go run . ../../kamelets/ ../../docs/modules/ROOT/
+```
+and validate:
+```bash
+$ cd script/validator
+$ go run go run . ../../kamelets/
+```
+be sure that there aren't reported ERRORS.
+
 ### General Format
 
 Kamelets **MUST** be provided in the *Kubernetes YAML* format, i.e. they **MUST** be resources that can be applied on a cluster using the Kubernetes `kubectl` CLI.
