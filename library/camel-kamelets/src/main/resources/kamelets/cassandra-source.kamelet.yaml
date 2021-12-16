@@ -35,8 +35,6 @@ spec:
       - connectionHost
       - connectionPort
       - keyspace
-      - username
-      - password
       - query
     type: object
     properties:
@@ -94,8 +92,8 @@ spec:
     from:
       uri: "cql://{{connectionHost}}:{{connectionPort}}/{{keyspace}}"
       parameters:
-        username: "{{username}}"
-        password: "{{password}}"
+        username: "{{?username}}"
+        password: "{{?password}}"
         cql: "{{query}}"
         consistencyLevel: "{{consistencyLevel}}"
         resultSetConversionStrategy: "{{resultStrategy}}"

@@ -37,9 +37,7 @@ spec:
       - connectionHost
       - connectionPort
       - keyspace
-      - username
-      - password
-      - preparedStatement
+      - query
     type: object
     properties:
       connectionHost:
@@ -78,7 +76,14 @@ spec:
         default: ANY
       preparedStatement:
         title: Prepared Statement
-        description: The Prepared statement to execute against the Cassandra cluster table
+        description: Whether to use PreparedStatements or regular Statements as the query.
+        type: boolean
+        default: true
+        x-descriptors:
+          - urn:alm:descriptor:com.tectonic.ui:checkbox
+      query:
+        title: Query
+        description: The query to execute against the Cassandra cluster table
         type: string
   types:
     in:
@@ -98,7 +103,8 @@ spec:
       - to: 
           uri: "cql://{{connectionHost}}:{{connectionPort}}/{{keyspace}}"
           parameters:
-            username: "{{username}}"
-            password: "{{password}}"
+            username: "{{?username}}"
+            password: "{{?password}}"
             preparedStatement: "{{preparedStatement}}"
             consistencyLevel: "{{consistencyLevel}}"
+            cql: "{{query}}"
