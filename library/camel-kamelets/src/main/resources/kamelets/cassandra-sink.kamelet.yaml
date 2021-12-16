@@ -79,6 +79,8 @@ spec:
         description: Whether to use PreparedStatements or regular Statements as the query.
         type: boolean
         default: true
+        x-descriptors:
+          - urn:alm:descriptor:com.tectonic.ui:checkbox
       query:
         title: Query
         description: The query to execute against the Cassandra cluster table
