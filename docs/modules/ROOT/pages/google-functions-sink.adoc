@@ -18,8 +18,8 @@ The following table summarizes the configuration options available for the `goog
 | Property| Name| Description| Type| Default| Example
 | *functionName {empty}* *| Function Name| The Function Name| string| | 
 | *projectId {empty}* *| Project Id| The Google Cloud Functions Project Id| string| | 
+| *region {empty}* *| Region| The Region where the Google Cloud Functions has been deployed| string| | 
 | *serviceAccountKey {empty}* *| Service Account Key| The Service account key that can be used as credentials for the Google Cloud Functions platform| string| | 
-| region| Region| The Region where the Google Cloud Functions has been deployed| string| | 
 |===
 
 NOTE: Fields marked with an asterisk ({empty}*) are mandatory.
@@ -62,6 +62,7 @@ spec:
     properties:
       functionName: "The Function Name"
       projectId: "The Project Id"
+      region: "The Region"
       serviceAccountKey: "The Service Account Key"
   
 ----
@@ -87,7 +88,7 @@ Configure and run the sink by using the following command:
 
 [source,shell]
 ----
-kamel bind channel:mychannel google-functions-sink -p "sink.functionName=The Function Name" -p "sink.projectId=The Project Id" -p "sink.serviceAccountKey=The Service Account Key"
+kamel bind channel:mychannel google-functions-sink -p "sink.functionName=The Function Name" -p "sink.projectId=The Project Id" -p "sink.region=The Region" -p "sink.serviceAccountKey=The Service Account Key"
 ----
 
 This command creates the KameletBinding in the current namespace on the cluster.
@@ -117,6 +118,7 @@ spec:
     properties:
       functionName: "The Function Name"
       projectId: "The Project Id"
+      region: "The Region"
       serviceAccountKey: "The Service Account Key"
   
 ----
@@ -144,7 +146,7 @@ Configure and run the sink by using the following command:
 
 [source,shell]
 ----
-kamel bind kafka.strimzi.io/v1beta1:KafkaTopic:my-topic google-functions-sink -p "sink.functionName=The Function Name" -p "sink.projectId=The Project Id" -p "sink.serviceAccountKey=The Service Account Key"
+kamel bind kafka.strimzi.io/v1beta1:KafkaTopic:my-topic google-functions-sink -p "sink.functionName=The Function Name" -p "sink.projectId=The Project Id" -p "sink.region=The Region" -p "sink.serviceAccountKey=The Service Account Key"
 ----
 
 This command creates the KameletBinding in the current namespace on the cluster.
