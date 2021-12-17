@@ -18,6 +18,7 @@ All Kamelets posted here will be subject to the scrutiny of the Apache Camel PMC
 ### Building and validating
 
 Building the project:
+
 ```bash
 $ ./mvnw clean install
 ```
