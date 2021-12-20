@@ -13,12 +13,12 @@
     </target>
     <target name="replace.release" depends="check.snapshot">
         <replaceregexp match="camel.apache.org/catalog.version:.*$" replace="camel.apache.org/catalog.version: &quot;${releaseVersion}&quot;" byline="true">
-            <fileset dir=".">
+            <fileset dir="kamelets/">
                 <include name="*.kamelet.yaml"/>
             </fileset>
         </replaceregexp>
         <replaceregexp match="github:apache.camel-kamelets:camel-kamelets-utils:[A-Za-z0-9-.]+" replace="mvn:org.apache.camel.kamelets:camel-kamelets-utils:${releaseVersion}" byline="true">
-            <fileset dir=".">
+            <fileset dir="kamelets/">
                 <include name="*.kamelet.yaml"/>
             </fileset>
         </replaceregexp>
