@@ -1,6 +1,6 @@
-# Website Generator
+# Website nav file Generator
 
-To generate the adoc and svg files for the website (you need `go`):
+To generate the nav file for the website (you need `go`):
 
 ```
 # From the script/generator directory
