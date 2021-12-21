@@ -31,7 +31,7 @@ $ go run . ../../kamelets/ ../../docs/modules/ROOT/
 and validate:
 ```bash
 $ cd script/validator
-$ go run go run . ../../kamelets/
+$ go run . ../../kamelets/
 ```
 be sure that there aren't reported ERRORS.
 
