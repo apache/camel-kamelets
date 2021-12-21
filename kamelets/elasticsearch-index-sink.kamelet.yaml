@@ -112,12 +112,6 @@ spec:
             - set-header:
                 name: "indexId"
                 simple: "${header[ce-indexid]}"
-          otherwise:
-            steps:
-            - set-header:
-                name: "indexId"
-                expression:
-                  simple: ${bean:org.apache.camel.support.ShortUuidGenerator?method=generateUuid}
       - choice:
           when:
           - simple: "${header[indexName]}"
