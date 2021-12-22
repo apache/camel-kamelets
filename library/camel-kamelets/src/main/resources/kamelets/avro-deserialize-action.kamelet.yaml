@@ -65,7 +65,7 @@ spec:
       - unmarshal:
           avro:
             library: Jackson
-            unmarshalTypeName: com.fasterxml.jackson.databind.JsonNode
+            unmarshalType: com.fasterxml.jackson.databind.JsonNode
             schemaResolver: "#class:org.apache.camel.kamelets.utils.serialization.InflightAvroSchemaResolver"
       - remove-property:
           name: schema
