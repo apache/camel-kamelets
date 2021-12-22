@@ -54,7 +54,7 @@ spec:
       - unmarshal:
           protobuf:
             library: Jackson
-            unmarshalTypeName: com.fasterxml.jackson.databind.JsonNode
+            unmarshalType: com.fasterxml.jackson.databind.JsonNode
             schemaResolver: "#class:org.apache.camel.kamelets.utils.serialization.InflightProtobufSchemaResolver"
       - remove-property:
           name: schema
