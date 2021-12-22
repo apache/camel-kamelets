@@ -97,7 +97,7 @@ spec:
       - unmarshal:
           json: 
             library: Jackson
-            unmarshalTypeName: com.fasterxml.jackson.databind.JsonNode
+            unmarshalType: com.fasterxml.jackson.databind.JsonNode
       - choice:
           when:
           - simple: "${body.has('model')} == false"
