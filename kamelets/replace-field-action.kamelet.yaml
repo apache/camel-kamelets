@@ -68,7 +68,7 @@ spec:
             - unmarshal:
                 json: 
                   library: Jackson
-                  unmarshalTypeName: com.fasterxml.jackson.databind.JsonNode
+                  unmarshalType: com.fasterxml.jackson.databind.JsonNode
       - set-property:
           name: "enabled"
           constant: "{{enabled}}"
@@ -86,7 +86,7 @@ spec:
             - marshal:
                 json: 
                   library: Jackson
-                  unmarshalTypeName: com.fasterxml.jackson.databind.JsonNode
+                  unmarshalType: com.fasterxml.jackson.databind.JsonNode
             - set-header:
                 name: "Content-Type"
                 constant: "application/json"
