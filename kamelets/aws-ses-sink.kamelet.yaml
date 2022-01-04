@@ -31,13 +31,18 @@ spec:
   definition:
     title: "AWS SES Sink"
     description: |-
-      Create a secret in AWS Secrets Manager
+      Send Email through AWS SES Service.
 
       The Kamelet expects the following headers to be set:
 
-      - `secret-name` / `ce-secret-name`: as the secret name to create.
+      - `subject` / `ce-subject`: The email subject
 
-      If the header won't be set the exchange ID will be used as secret name.
+      If the header won't be set the exchange ID will be used as email subject.
+
+      - `to` / `ce-to`: a comma separated list of email addresses
+
+      - `reply-to-addresses` / `ce-reply-to-addresses`: a comma separated list of reply-to email addresses
+
     required:
       - from
       - accessKey
@@ -112,11 +117,18 @@ spec:
             - set-header:
                 name: CamelAwsSesTo
                 simple: "${header[ce-to]}"
-          otherwise:
+      - choice:
+          when:
+          - simple: "${header[reply-to-addresses]}"
             steps:
             - set-header:
-                name: CamelAwsSesTo
-                simple: "${exchangeId}"
+                name: CamelAwsSesReplyToAddresses
+                simple: "${header[reply-to-addresses]}"
+          - simple: "${header[ce-reply-to-addresses]}"
+            steps:
+            - set-header:
+                name: CamelAwsSesReplyToAddresses
+                simple: "${header[ce-reply-to-addresses]}"
       - to:
           uri: "aws2-ses://{{from}}"
           parameters:
