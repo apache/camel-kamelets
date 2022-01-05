@@ -37,6 +37,7 @@
         <module>library/camel-kamelets</module>
         <module>library/camel-kamelets-catalog</module>
         <module>library/camel-kamelets-utils</module>
+        <module>library/camel-kamelets-bom</module>
     </modules>
 
     <properties>
@@ -53,6 +54,7 @@
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-checksum-maven-plugin.version>1.11</maven-checksum-maven-plugin.version>
         <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
+        <maven-groovy-plugin.version>2.1.1</maven-groovy-plugin.version>
         <apache-rat-plugin.version>0.13</apache-rat-plugin.version>
 
         <camel.version>3.14.0</camel.version>
@@ -63,6 +65,8 @@
         <commons.io.version>2.11.0</commons.io.version>
         <junit.jupiter.version>5.8.1</junit.jupiter.version>
         <classgraph.version>4.8.138</classgraph.version>
+
+        <version.org.apache.commons.commons-dbcp2>2.8.0</version.org.apache.commons.commons-dbcp2>
     </properties>
 
     <developers>
@@ -277,6 +281,32 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>groovy-maven-plugin</artifactId>
+                <version>${maven-groovy-plugin.version}</version>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>UpdateKamelets</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                <scriptpath>
+                    <path>${project.basedir}/script/version</path>
+                </scriptpath>
+                    <source>
+                    import UpdateDepsVersionKamelets
+                    new UpdateDepsVersionKamelets().updateKameletDirectory("./kamelets/",  [
+                        "version.org.apache.commons.commons-dbcp2": "${version.org.apache.commons.commons-dbcp2}"
+                    ])
+                    </source>
+                </configuration>
             </plugin>
         </plugins>
     </build>
