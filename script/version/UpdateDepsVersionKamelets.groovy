@@ -51,8 +51,8 @@ def updateKameletDirectory(String directoryName, Map properties) {
             String kameletFile = f.getName() 
             new File( kameletFile + ".bak" ).withWriter { w ->
                 new File( directoryName + kameletFile ).eachLine { line ->
-                    libVersions.each { line = line.replaceAll(it.key, it.value)
-                                     w << line +  System.getProperty("line.separator") }
+                    libVersions.each { line = line.replaceAll(it.key, it.value) }
+                                     w << line +  System.getProperty("line.separator") 
                 }
             }
             Files.copy(Paths.get(kameletFile + ".bak"), Paths.get(directoryName + kameletFile), StandardCopyOption.REPLACE_EXISTING)
