@@ -29,7 +29,7 @@ metadata:
 spec:
   definition:
     title: "Insert Header Action"
-    description: "Adds an header with a constant value to the message in transit"
+    description: "Adds an header with a simple language parsed expression to the message in transit"
     required:
       - name
       - value
@@ -41,7 +41,7 @@ spec:
         example: headername
       value:
         title: Value
-        description: The value of the header
+        description: The value of the header to be added
         type: string
     type: object
   dependencies:
@@ -53,4 +53,4 @@ spec:
       steps:
       - set-header:
           name: "{{name}}"
-          constant: "{{value}}"
+          simple: "{{value}}"
