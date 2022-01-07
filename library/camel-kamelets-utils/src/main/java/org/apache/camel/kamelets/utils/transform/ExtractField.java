@@ -27,11 +27,16 @@ import java.util.Map;
 
 public class ExtractField {
 
-    public void process(@ExchangeProperty("field") String field, Exchange ex) {
+    public void process(@ExchangeProperty("field") String field, @ExchangeProperty("headerOutput") boolean headerOutput, Exchange ex) {
+        final String EXTRACTED_FIELD_HEADER = "CamelKameletsExtractFieldName";
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNodeBody = ex.getMessage().getBody(JsonNode.class);
         Map<Object, Object> body = mapper.convertValue(jsonNodeBody, new TypeReference<Map<Object, Object>>(){});
-        ex.getMessage().setBody(body.get(field));
+        if (!headerOutput) {
+            ex.getMessage().setBody(body.get(field));
+        } else {
+            ex.getMessage().setHeader(EXTRACTED_FIELD_HEADER, body.get(field));
+        }
     }
 
 }
