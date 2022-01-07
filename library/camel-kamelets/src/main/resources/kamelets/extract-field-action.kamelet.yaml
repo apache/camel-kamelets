@@ -29,13 +29,22 @@ metadata:
 spec:
   definition:
     title: "Extract Field Action"
-    description: "Extract a field from the body"
+    description: |-
+      Extract a field from the message body.
+
+      The extract field action expected an application/json content type. 
+
+      The field parameter allows to specify which field of the json the user wants to extract. By default the message body will be overriden with the extracted field.
+
+      The optional parameter headerOutput allows the user to specify wheter the extracted field should be stored in a message header named 'CamelKameletsExtractFieldName', leaving the message body untouched.
+
+      The headerOutput is particulary useful in case you would like to reuse an extracted field as parameters for another header, for example.
     required:
       - field
     properties:
       field:
         title: Field
-        description: The name of the field to be added
+        description: The name of the field to extract
         type: string
       headerOutput:
         title: Header Output
