@@ -75,7 +75,7 @@ spec:
           constant: "{{field}}"
       - set-property:
           name: "value"
-          constant: "{{value}}"
+          simple: "{{value}}"
       - bean: "org.apache.camel.kamelets.utils.transform.InsertField"
       - choice:
           when:
