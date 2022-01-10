@@ -38,7 +38,10 @@ spec:
 
       The optional parameter headerOutput allows the user to specify wheter the extracted field should be stored in a message header named 'CamelKameletsExtractFieldName', leaving the message body untouched.
 
-      The headerOutput is particulary useful in case you would like to reuse an extracted field as parameters for another header, for example.
+      The optional parameter headerOutputName allows the user to specify a custom header name instead of the default 'CamelKameletsExtractFieldName'. This parameter must be used in conjunction with headerOutput. 
+      If no headerOutputName parameter will be provided, the default 'CamelKameletsExtractFieldName' will be used.
+
+      The headerOutput/headerOutputName parameters are particulary useful in case you would like to reuse an extracted field as parameter for another header, for example.
     required:
       - field
     properties:
