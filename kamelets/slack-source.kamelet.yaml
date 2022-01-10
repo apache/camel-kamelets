@@ -49,6 +49,12 @@ spec:
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
+      delay:
+        title: Delay
+        description: The delay between polls
+        type: string
+        example: "1s"
+        delay: "{{?delay}}"
   types:
     out:
       mediaType: application/json
@@ -61,6 +67,7 @@ spec:
       uri: "slack:{{channel}}"
       parameters:
         token: "{{token}}"
+        delay: "{{?delay}}"
       steps:
       - marshal:
           json: {}
