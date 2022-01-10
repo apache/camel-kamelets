@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class ExtractField {
 
-    public void process(@ExchangeProperty("field") String field, @ExchangeProperty("headerOutput") boolean headerOutput, @ExchangeProperty("headerOutputName") String headerOutputName, Exchange ex) {
+    public void process(@ExchangeProperty("field") String field, @ExchangeProperty("headerOutput") boolean headerOutput, @ExchangeProperty("headerOutputName") String headerOutputName, @ExchangeProperty("strictHeaderCheck") boolean strictHeaderCheck, Exchange ex) {
         final String EXTRACTED_FIELD_HEADER = "CamelKameletsExtractFieldName";
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNodeBody = ex.getMessage().getBody(JsonNode.class);
@@ -35,11 +35,31 @@ public class ExtractField {
         if (!headerOutput) {
             ex.getMessage().setBody(body.get(field));
         } else {
-            if ("none".equalsIgnoreCase(headerOutputName)) {
-                ex.getMessage().setHeader(EXTRACTED_FIELD_HEADER, body.get(field));
+            if (!strictHeaderCheck) {
+                if ("none".equalsIgnoreCase(headerOutputName)) {
+                    ex.getMessage().setHeader(EXTRACTED_FIELD_HEADER, body.get(field));
+                } else {
+                    ex.getMessage().setHeader(headerOutputName, body.get(field));
+                }
             } else {
-                ex.getMessage().setHeader(headerOutputName, body.get(field));
+                if (checkHeaderExistence(EXTRACTED_FIELD_HEADER, ex) || checkHeaderExistence(headerOutputName, ex)) {
+                    ex.getMessage().setBody(body.get(field));
+                } else {
+                    if ("none".equalsIgnoreCase(headerOutputName)) {
+                        ex.getMessage().setHeader(EXTRACTED_FIELD_HEADER, body.get(field));
+                    } else {
+                        ex.getMessage().setHeader(headerOutputName, body.get(field));
+                    }
+                }
             }
+        }
+    }
+
+    private final boolean checkHeaderExistence(String headerName, Exchange exchange) {
+        if (exchange.getMessage().getHeaders().containsKey(headerName)) {
+            return true;
+        } else {
+            return false;
         }
     }
 

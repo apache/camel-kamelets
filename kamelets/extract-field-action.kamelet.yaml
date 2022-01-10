@@ -61,6 +61,13 @@ spec:
         description: A custom name for the header containing the extracted field
         default: "none"
         type: string
+      strictHeaderCheck:
+        title: Strict Header Check
+        description: If enable the action will check if the header output name (custom or default) has been used already in the exchange. If so, the extracted field will be stored in the message body, if not, the extracted field will be stored in the selected header (custom or default).
+        type: boolean
+        default: false
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
     type: object
   dependencies:
   - "github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT"
@@ -91,6 +98,9 @@ spec:
       - set-property:
           name: "headerOutputName"
           constant: "{{headerOutputName}}"
+      - set-property:
+          name: "strictHeaderCheck"
+          constant: "{{strictHeaderCheck}}"
       - bean: "org.apache.camel.kamelets.utils.transform.ExtractField"
       - choice:
           when:
