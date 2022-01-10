@@ -59,7 +59,7 @@ spec:
     out:
       mediaType: application/json
   dependencies:
-  - "camel:jackson"
+  - "camel:gson"
   - "camel:slack"
   - "camel:kamelet"
   flow:
@@ -70,5 +70,6 @@ spec:
         delay: "{{?delay}}"
       steps:
       - marshal:
-          json: {}
+          json:
+            library: "Gson"
       - to: "kamelet:sink"
