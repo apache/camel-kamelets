@@ -41,7 +41,9 @@ spec:
       The optional parameter headerOutputName allows the user to specify a custom header name instead of the default 'CamelKameletsExtractFieldName'. This parameter must be used in conjunction with headerOutput. 
       If no headerOutputName parameter will be provided, the default 'CamelKameletsExtractFieldName' will be used.
 
-      The headerOutput/headerOutputName parameters are particulary useful in case you would like to reuse an extracted field as parameter for another header, for example.
+      The optional parameter strictHeaderCheck allows to user to enable a strict header name check. If enabled the action will check if the header output name (custom or default) has been used already in the     exchange. If so, the extracted field will be stored in the message body, if not, the extracted field will be stored in the selected header (custom or default).
+
+      The headerOutput/headerOutputName/strictHeaderCheck parameters are particulary useful in case you would like to reuse an extracted field as parameter for another header, for example.
     required:
       - field
     properties:
@@ -63,7 +65,7 @@ spec:
         type: string
       strictHeaderCheck:
         title: Strict Header Check
-        description: If enable the action will check if the header output name (custom or default) has been used already in the exchange. If so, the extracted field will be stored in the message body, if not, the extracted field will be stored in the selected header (custom or default).
+        description: If enabled the action will check if the header output name (custom or default) has been used already in the exchange. If so, the extracted field will be stored in the message body, if not, the extracted field will be stored in the selected header (custom or default).
         type: boolean
         default: false
         x-descriptors:
