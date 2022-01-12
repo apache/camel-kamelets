@@ -163,6 +163,15 @@ func hasXDescriptor(p camelapi.JSONSchemaProp, desc string) bool {
 	return false
 }
 
+func hasXDescriptorPrefix(p camelapi.JSONSchemaProp, prefix string) bool {
+	for _, d := range p.XDescriptors {
+		if strings.HasPrefix(d, prefix) {
+			return true
+		}
+	}
+	return false
+}
+
 func verifyInvalidContent(kamelets []KameletInfo) (errors []error) {
 	for _, kamelet := range kamelets {
 		ser, err := json.Marshal(&kamelet.Kamelet)
@@ -430,6 +439,12 @@ func getUsedParams(k camelapi.Kamelet) map[string]bool {
 		}
 		params := make(map[string]bool)
 		inspectFlowParams(flowData, params)
+		for propName, propVal := range k.Spec.Definition.Properties {
+			if hasXDescriptorPrefix(propVal, "urn:keda:") {
+				// Assume KEDA parameters may be used by KEDA
+				params[propName] = true
+			}
+		}
 		return params
 	}
 	return nil
