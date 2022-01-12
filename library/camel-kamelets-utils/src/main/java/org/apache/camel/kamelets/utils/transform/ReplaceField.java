@@ -40,24 +40,27 @@ public class ReplaceField {
         List<String> renameFields = new ArrayList<>();
         JsonNode jsonNodeBody = ex.getMessage().getBody(JsonNode.class);
         Map<Object, Object> body = mapper.convertValue(jsonNodeBody, new TypeReference<Map<Object, Object>>(){});
-        if (ObjectHelper.isNotEmpty(enabled)) {
+        if (ObjectHelper.isNotEmpty(enabled) && !enabled.equalsIgnoreCase("all")) {
             enabledFields = Arrays.stream(enabled.split(",")).collect(Collectors.toList());
         }
-        if (ObjectHelper.isNotEmpty(disabled)) {
+        if (ObjectHelper.isNotEmpty(disabled) && !disabled.equalsIgnoreCase("none")) {
             disabledFields = Arrays.stream(disabled.split(",")).collect(Collectors.toList());
         }
         if (ObjectHelper.isNotEmpty(disabled)) {
             renameFields = Arrays.stream(renames.split(",")).collect(Collectors.toList());
         }
-
-        Map<String, String> renamingMap = parseNames(renameFields);
         Map<Object, Object> updatedBody = new HashMap<>();
-        for (Map.Entry entry:
-             body.entrySet()) {
-            final String fieldName = (String) entry.getKey();
-            if (filterNames(fieldName, enabledFields, disabledFields)) {
-                final Object fieldValue = entry.getValue();
-                updatedBody.put(renameOptional(fieldName, renamingMap), fieldValue);
+
+        if (ObjectHelper.isNotEmpty(renameFields)) {
+            Map<String, String> renamingMap = parseNames(renameFields);
+
+            for (Map.Entry entry :
+                    body.entrySet()) {
+                final String fieldName = (String) entry.getKey();
+                if (filterNames(fieldName, enabledFields, disabledFields)) {
+                    final Object fieldValue = entry.getValue();
+                    updatedBody.put(renameOptional(fieldName, renamingMap), fieldValue);
+                }
             }
         }
         if (!updatedBody.isEmpty()) {
