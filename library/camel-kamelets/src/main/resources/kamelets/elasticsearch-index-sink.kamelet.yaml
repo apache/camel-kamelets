@@ -97,6 +97,9 @@ spec:
     beans:
       - name: local-es
         type: "#class:org.apache.camel.component.elasticsearch.ElasticsearchComponent"
+        properties:
+            user: "{{user:dummy}}"
+            password: "{{password:dummy}}"
     from:
       uri: kamelet:source
       steps:
@@ -130,8 +133,6 @@ spec:
             operation: "INDEX"
             hostAddresses: "{{hostAddresses}}"
             enableSSL: "{{enableSSL}}"
-            user: "{{?user}}"
-            password: "{{?password}}"
             indexName: "{{?indexName}}"
       - marshal:
           json: { }
