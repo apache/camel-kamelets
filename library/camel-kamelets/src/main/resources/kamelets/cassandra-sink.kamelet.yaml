@@ -74,8 +74,8 @@ spec:
         description: Consistency level to use. The value can be one of ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_QUORUM, EACH_QUORUM, SERIAL, LOCAL_SERIAL, LOCAL_ONE
         type: string
         default: ANY
-      preparedStatement:
-        title: Prepared Statement
+      prepareStatements:
+        title: Prepare Statements
         description: Whether to use PreparedStatements or regular Statements as the query.
         type: boolean
         default: true
@@ -105,6 +105,6 @@ spec:
           parameters:
             username: "{{?username}}"
             password: "{{?password}}"
-            preparedStatement: "{{preparedStatement}}"
+            prepareStatements: "{{prepareStatements}}"
             consistencyLevel: "{{consistencyLevel}}"
             cql: "{{query}}"
