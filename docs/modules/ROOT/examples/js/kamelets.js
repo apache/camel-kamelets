@@ -111,7 +111,12 @@ module.exports = {
 :type: ${type}
 :propertycount: ${propertyCount}
 `
-  }
+  },
+
+//  Compatibility table support
+  branch: (version) =>  version === 'next' ?
+    'https://github.com/apache/camel-kamelets[main]' :
+    `https://github.com/apache/camel-kamelets/tree/${version}[${version}]`,
 }
 
 function kameletPropertyList (definition) {
