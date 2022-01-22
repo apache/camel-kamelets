@@ -26,6 +26,23 @@ ifndef::prerelease[This release will not be updated, but rather replaced by a ne
 endif::[]
 --
 
+== Compatibility Matrix
+
+[caption=]
+.Compatibility between Camel-K and related subprojects
+[width="100%",cols="4,2,2,2,1,3",options="header"]
+|===
+|Camel-Kamelets Version
+|Using Camel Version
+|Used by Camel-K Version
+|Used by Camel-Kafka-Connector Version
+|LTS Until
+|Branch
+|===
+
+//cannot use top level index.adoc as the page with the query is always omitted.
+indexTable::[version="*",relative="avro-deserialize-action.adoc",cellformats="util.kameletsRef(pageComponentDisplayVersion, pageComponentVersion)|util.camelRef(camelVersion, camelDocsVersion)|util.ckRef(camelKVersion, camelKDocsVersion)|util.ckcRef(camelKafkaConnectorVersion, camelKafkaConnectorDocsVersion)|lts|kamelets.branch(pageComponentVersion)", requires={requires},transform=util.sortCompatibilityItems]
+
 This page contains the default Apache Camel Kamelets catalog.
 
 Consult the xref:{camel-k-docs-version}@camel-k::kamelets/kamelets-user.adoc[Kamelets User Guide] for information about how to use these.
