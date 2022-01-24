@@ -19,7 +19,7 @@ spec:
     properties:
       name:
         title: Header Name
-        description: The header name to evaluate
+        description: The header name to evaluate. The header name must be passed by the source Kamelet. For Knative only, the name of the header requires a CloudEvent (ce-) prefix.
         type: string
         example: headerName
       value:
