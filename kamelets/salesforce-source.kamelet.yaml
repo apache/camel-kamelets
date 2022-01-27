@@ -95,7 +95,7 @@ spec:
   - "camel:jackson"
   - "camel:salesforce"
   - "camel:kamelet"
-  flow:
+  template:
     beans:
       - name: local-salesforce
         type: "#class:org.apache.camel.component.salesforce.SalesforceComponent"

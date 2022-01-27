@@ -78,7 +78,7 @@ spec:
   - "camel:timer"
   - "camel:jackson"
   - "camel:kamelet"
-  flow:
+  template:
     from:
       uri: "timer:solr-stream"
       parameters:
