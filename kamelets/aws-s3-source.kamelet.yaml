@@ -92,7 +92,7 @@ spec:
   dependencies:
     - "camel:aws2-s3"
     - "camel:kamelet"
-  flow:
+  template:
     from:
       uri: "aws2-s3:{{bucketNameOrArn}}"
       parameters:

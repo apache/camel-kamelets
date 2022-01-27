@@ -75,7 +75,7 @@ spec:
   - "mvn:com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.3"
   - "camel:azure-eventhubs"
   - "camel:kamelet"
-  flow:
+  template:
     from:
       uri: "kamelet:source"
       steps:
