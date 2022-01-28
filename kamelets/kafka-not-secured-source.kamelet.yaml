@@ -88,7 +88,7 @@ spec:
   dependencies:
     - "camel:kafka"
     - "camel:kamelet"
-  flow:
+  template:
     from:
       uri: "kafka:{{topic}}"
       parameters:

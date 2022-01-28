@@ -88,7 +88,7 @@ spec:
   - "camel:jackson"
   - "camel:kamelet"
   - "camel:cassandraql"
-  flow:
+  template:
     from:
       uri: "cql://{{connectionHost}}:{{connectionPort}}/{{keyspace}}"
       parameters:

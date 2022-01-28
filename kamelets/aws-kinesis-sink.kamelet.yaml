@@ -80,7 +80,7 @@ spec:
     - "camel:core"
     - "camel:aws2-kinesis"
     - "camel:kamelet"
-  flow:
+  template:
     from:
       uri: kamelet:source
       steps:
