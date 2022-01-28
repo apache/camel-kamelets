@@ -111,7 +111,7 @@ spec:
   - "camel:jackson"
   - "camel:google-calendar"
   - "camel:kamelet"
-  flow:
+  template:
     from:
       uri: "google-calendar-stream://{{index}}"
       parameters:

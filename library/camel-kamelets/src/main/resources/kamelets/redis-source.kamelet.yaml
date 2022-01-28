@@ -63,7 +63,7 @@ spec:
     - "camel:kamelet"
     - "camel:core"
     - "camel:spring-redis"
-  flow:
+  template:
     from:
       uri: "spring-redis:{{redisHost}}:{{redisPort}}"
       parameters:

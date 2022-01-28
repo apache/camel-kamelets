@@ -84,7 +84,7 @@ spec:
   - "camel:jackson"
   - "camel:minio"
   - "camel:kamelet"
-  flow:
+  template:
     from:
       uri: "minio:{{bucketName}}"
       parameters:

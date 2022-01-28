@@ -82,7 +82,7 @@ spec:
     - "camel:kamelet"
     - "camel:mongodb"
     - "camel:jackson"
-  flow:
+  template:
     beans:
       - name: local-mongodb
         type: "#class:org.apache.camel.component.mongodb.MongoDbComponent"

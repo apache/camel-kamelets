@@ -75,7 +75,7 @@ spec:
   dependencies:
     - "camel:ssh"
     - "camel:kamelet"
-  flow:
+  template:
     from:
       uri: "ssh://{{connectionHost}}:{{connectionPort}}"
       parameters:

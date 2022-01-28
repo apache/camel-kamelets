@@ -96,7 +96,7 @@ spec:
     - "camel:kamelet"
     - "camel:core"
     - "camel:websocket"
-  flow:
+  template:
     from:
       uri: "websocket://{{websocketHost}}:{{websocketPort}}/{{resourceUri}}"
       parameters:
