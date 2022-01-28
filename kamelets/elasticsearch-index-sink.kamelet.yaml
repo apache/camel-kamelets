@@ -94,7 +94,7 @@ spec:
     - "camel:elasticsearch-rest"
     - "camel:gson"
     - "camel:bean"
-  flow:
+  template:
     beans:
       - name: local-es
         type: "#class:org.apache.camel.component.elasticsearch.ElasticsearchComponent"

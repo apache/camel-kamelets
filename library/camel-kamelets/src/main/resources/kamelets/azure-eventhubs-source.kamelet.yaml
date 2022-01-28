@@ -92,7 +92,7 @@ spec:
   - "camel:azure-eventhubs"
   - "camel:kamelet"
   - "camel:jackson"
-  flow:
+  template:
     from:
       uri: 'azure-eventhubs://{{namespaceName}}/{{eventhubName}}'
       parameters:

@@ -71,7 +71,7 @@ spec:
     - "camel:aws2-kinesis"
     - "camel:kamelet"
     - "camel:gson"
-  flow:
+  template:
     from:
       uri: aws2-kinesis:{{stream}}
       parameters:

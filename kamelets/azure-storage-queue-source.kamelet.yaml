@@ -64,7 +64,7 @@ spec:
   dependencies:
     - "camel:azure-storage-queue"
     - "camel:kamelet"
-  flow:
+  template:
     from:
       uri: "azure-storage-queue://{{accountName}}/{{queueName}}"
       parameters:

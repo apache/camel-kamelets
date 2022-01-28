@@ -79,7 +79,7 @@ func main() {
 
 func verifyMissingDependencies(kamelets []KameletInfo) (errors []error) {
 	for _, kamelet := range kamelets {
-		yamlDslFlow, err := dsl.ToYamlDSL([]camelapiv1.Flow{*kamelet.Kamelet.Spec.Flow})
+		yamlDslTemplate, err := dsl.TemplateToYamlDSL(*kamelet.Kamelet.Spec.Template, kamelet.Kamelet.Name)
 		if err != nil {
 			panic(err)
 		}
@@ -87,7 +87,7 @@ func verifyMissingDependencies(kamelets []KameletInfo) (errors []error) {
 		code := camelapiv1.SourceSpec{
 			DataSpec: camelapiv1.DataSpec{
 				Name:    "source.yaml",
-				Content: string(yamlDslFlow),
+				Content: string(yamlDslTemplate),
 			},
 			Language: camelapiv1.LanguageYaml,
 		}
@@ -237,16 +237,13 @@ func verifyParameters(kamelets []KameletInfo) (errors []error) {
 			errors = append(errors, fmt.Errorf("kamelet %q does not contain the JSON schema definition", kamelet.Name))
 			continue
 		}
-		if kamelet.Spec.Flow == nil && kamelet.Spec.Template == nil {
-			errors = append(errors, fmt.Errorf("kamelet %q does not contain the Flow or Template specification", kamelet.Name))
-			continue
-		}
-		if kamelet.Spec.Flow != nil && kamelet.Spec.Template != nil {
-			errors = append(errors, fmt.Errorf("kamelet %q cannot contain both the Flow and Template specification", kamelet.Name))
-			continue
-		}
 		if kamelet.Spec.Flow != nil {
-			fmt.Printf("WARNING: .kamelet.spec.flow parameter in kamelet %q is deprecated and will removed in future releases! Use .kamelet.spec.template instead\n", kamelet.Name)
+			errors = append(errors, fmt.Errorf("kamelet %q contain the deprecated Flow specification. Must use Template instead.", kamelet.Name))
+			continue
+		}
+		if kamelet.Spec.Template == nil {
+			errors = append(errors, fmt.Errorf("kamelet %q does not contain the Template specification", kamelet.Name))
+			continue
 		}
 		requiredCheck := make(map[string]bool)
 		for _, p := range kamelet.Spec.Definition.Required {
@@ -437,11 +434,11 @@ func getDeclaredParams(k camelapi.Kamelet) map[string]bool {
 		}
 	}
 	// include beans
-	var flowData interface{}
-	if err := json.Unmarshal(k.Spec.Flow.RawMessage, &flowData); err != nil {
-		handleGeneralError("cannot unmarshal flow", err)
+	var templateData interface{}
+	if err := json.Unmarshal(k.Spec.Template.RawMessage, &templateData); err != nil {
+		handleGeneralError("cannot unmarshal template", err)
 	}
-	if fd, ok := flowData.(map[string]interface{}); ok {
+	if fd, ok := templateData.(map[string]interface{}); ok {
 		beans := fd["beans"]
 		if bl, ok := beans.([]interface{}); ok {
 			for _, bdef := range bl {
@@ -458,13 +455,13 @@ func getDeclaredParams(k camelapi.Kamelet) map[string]bool {
 }
 
 func getUsedParams(k camelapi.Kamelet) map[string]bool {
-	if k.Spec.Flow != nil {
-		var flowData interface{}
-		if err := json.Unmarshal(k.Spec.Flow.RawMessage, &flowData); err != nil {
-			handleGeneralError("cannot unmarshal flow", err)
+	if k.Spec.Template != nil {
+		var templateData interface{}
+		if err := json.Unmarshal(k.Spec.Template.RawMessage, &templateData); err != nil {
+			handleGeneralError("cannot unmarshal template", err)
 		}
 		params := make(map[string]bool)
-		inspectFlowParams(flowData, params)
+		inspectTemplateParams(templateData, params)
 		for propName, propVal := range k.Spec.Definition.Properties {
 			if hasXDescriptorPrefix(propVal, "urn:keda:") {
 				// Assume KEDA parameters may be used by KEDA
@@ -476,7 +473,7 @@ func getUsedParams(k camelapi.Kamelet) map[string]bool {
 	return nil
 }
 
-func inspectFlowParams(v interface{}, params map[string]bool) {
+func inspectTemplateParams(v interface{}, params map[string]bool) {
 	switch val := v.(type) {
 	case string:
 		res := paramRegexp.FindAllStringSubmatch(val, -1)
@@ -487,15 +484,15 @@ func inspectFlowParams(v interface{}, params map[string]bool) {
 		}
 	case []interface{}:
 		for _, c := range val {
-			inspectFlowParams(c, params)
+			inspectTemplateParams(c, params)
 		}
 	case map[string]interface{}:
 		for _, c := range val {
-			inspectFlowParams(c, params)
+			inspectTemplateParams(c, params)
 		}
 	case map[interface{}]interface{}:
 		for _, c := range val {
-			inspectFlowParams(c, params)
+			inspectTemplateParams(c, params)
 		}
 	}
 }

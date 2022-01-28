@@ -89,7 +89,7 @@ spec:
       - "camel:timer"
       - "camel:elasticsearch-rest"
       - "camel:gson"
-  flow:
+  template:
     beans:
       - name: local-es
         type: "#class:org.apache.camel.component.elasticsearch.ElasticsearchComponent"

@@ -89,7 +89,7 @@ spec:
   - "camel:sql"
   - "mvn:org.postgresql:postgresql:42.2.14"
   - "mvn:org.apache.commons:commons-dbcp2:2.9.0"
-  flow:
+  template:
     beans:
       - name: dsBean
         type: "#class:org.apache.commons.dbcp2.BasicDataSource"

@@ -68,7 +68,7 @@ spec:
     - "camel:core"
     - "camel:jsonpath"
     - "camel:timer"
-  flow:
+  template:
     from:
       uri: "timer:azure-storage-blob-stream"
       parameters:

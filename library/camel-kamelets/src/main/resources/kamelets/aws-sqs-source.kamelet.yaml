@@ -106,7 +106,7 @@ spec:
   dependencies:
     - "camel:aws2-sqs"
     - "camel:kamelet"
-  flow:
+  template:
     from:
       uri: "aws2-sqs:{{queueNameOrArn}}"
       parameters:

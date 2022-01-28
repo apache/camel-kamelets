@@ -47,7 +47,7 @@ spec:
   dependencies:
     - "camel:platform-http"
     - "camel:kamelet"
-  flow:
+  template:
     from:
       uri: "platform-http:///{{subpath}}"
       steps:
