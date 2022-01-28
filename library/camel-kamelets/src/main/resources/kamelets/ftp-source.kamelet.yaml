@@ -91,7 +91,7 @@ spec:
     - "camel:ftp"
     - "camel:core"
     - "camel:kamelet"
-  flow:
+  template:
     from:
       uri: "ftp:{{username}}@{{connectionHost}}:{{connectionPort}}/{{directoryName}}"
       parameters:

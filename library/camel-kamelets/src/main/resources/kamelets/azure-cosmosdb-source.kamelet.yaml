@@ -88,7 +88,7 @@ spec:
     - "camel:azure-cosmosdb"
     - "camel:kamelet"
     - "camel:jackson"
-  flow:
+  template:
     from:
       uri: "azure-cosmosdb:{{databaseName}}/{{containerName}}"
       parameters:

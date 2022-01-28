@@ -82,7 +82,7 @@ spec:
   - "camel:gson"
   - "camel:aws2-ddb"
   - "camel:kamelet"
-  flow:
+  template:
     from:
       uri: "aws2-ddbstream:{{table}}"
       parameters:

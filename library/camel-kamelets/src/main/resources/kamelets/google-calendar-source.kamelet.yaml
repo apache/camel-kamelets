@@ -90,7 +90,7 @@ spec:
         title: Application name
         description: Google Calendar application name
         type: string
-      syncFlow:
+      synctemplate:
         title: Sync Flow
         description: Sync events for incremental synchronization
         type: boolean
@@ -111,7 +111,7 @@ spec:
   - "camel:jackson"
   - "camel:google-calendar"
   - "camel:kamelet"
-  flow:
+  template:
     from:
       uri: "google-calendar-stream://{{index}}"
       parameters:
@@ -122,7 +122,7 @@ spec:
         clientSecret: "{{clientSecret}}"
         delay: "{{delay}}"
         applicationName: "{{applicationName}}"
-        syncFlow: "{{syncFlow}}"
+        synctemplate: "{{syncFlow}}"
         consumeFromNow: "{{consumeFromNow}}"
       steps:
       - marshal:
