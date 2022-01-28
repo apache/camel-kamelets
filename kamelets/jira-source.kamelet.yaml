@@ -70,7 +70,7 @@ spec:
   - "camel:jira"
   - "camel:kamelet"
   - "mvn:com.fasterxml.jackson.datatype:jackson-datatype-joda:2.12.5"
-  template:
+  flow:
     from:
       uri: "jira:newIssues"
       parameters:

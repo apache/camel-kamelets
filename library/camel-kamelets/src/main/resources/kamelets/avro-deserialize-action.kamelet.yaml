@@ -52,7 +52,7 @@ spec:
   - "camel:kamelet"
   - "camel:core"
   - "camel:jackson-avro"
-  template:
+  flow:
     from:
       uri: kamelet:source
       steps:

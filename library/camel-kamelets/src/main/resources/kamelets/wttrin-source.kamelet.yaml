@@ -63,7 +63,7 @@ spec:
     - "camel:jsonpath"
     - "camel:kamelet"
     - "camel:timer"
-  template:
+  flow:
     from:
       uri: timer:wttr.in
       parameters:

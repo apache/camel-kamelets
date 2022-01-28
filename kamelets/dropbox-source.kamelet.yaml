@@ -72,7 +72,7 @@ spec:
     - "camel:core"
     - "camel:jsonpath"
     - "camel:timer"
-  template:
+  flow:
     from:
       uri: "timer:dropbox-stream"
       parameters:

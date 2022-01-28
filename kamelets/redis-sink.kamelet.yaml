@@ -63,7 +63,7 @@ spec:
     - "camel:kamelet"
     - "camel:core"
     - "camel:spring-redis"
-  template:
+  flow:
     from:
       uri: "kamelet:source"
       steps:

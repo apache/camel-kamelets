@@ -115,7 +115,7 @@ spec:
   - "camel:jackson"
   - "camel:kamelet"
   - "camel:google-sheets"
-  template:
+  flow:
     from:
       uri: "google-sheets-stream://{{index}}"
       parameters:

@@ -75,7 +75,7 @@ spec:
     - "camel:dns"
     - "camel:kamelet"
     - "camel:aws2-translate"
-  template:
+  flow:
     from:
       uri: "kamelet:source"
       steps:

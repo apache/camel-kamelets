@@ -70,7 +70,7 @@ spec:
   dependencies:
     - "camel:rabbitmq"
     - "camel:kamelet"
-  template:
+  flow:
     from:
       uri: "rabbitmq://{{exchangeName}}"
       parameters:

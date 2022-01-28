@@ -68,7 +68,7 @@ spec:
   dependencies:
     - "camel:paho"
     - "camel:kamelet"
-  template:
+  flow:
     from:
       uri: paho:{{topic}}
       parameters:

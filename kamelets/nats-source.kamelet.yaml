@@ -51,7 +51,7 @@ spec:
   - "camel:jackson"
   - "camel:nats"
   - "camel:kamelet"
-  template:
+  flow:
     from:
       uri: "nats:{{topic}}"
       parameters:

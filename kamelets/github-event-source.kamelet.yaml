@@ -60,7 +60,7 @@ spec:
   - "camel:jackson"
   - "camel:github"
   - "camel:kamelet"
-  template:
+  flow:
     from:
       uri: "github://event"
       parameters:

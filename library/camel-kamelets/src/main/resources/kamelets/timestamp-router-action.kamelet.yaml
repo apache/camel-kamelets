@@ -51,7 +51,7 @@ spec:
   - github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT
   - "camel:kamelet"
   - "camel:core"
-  template:
+  flow:
     from:
       uri: kamelet:source
       steps:

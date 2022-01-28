@@ -67,7 +67,7 @@ spec:
   dependencies:
     - "camel:aws2-kinesis"
     - "camel:kamelet"
-  template:
+  flow:
     from:
       uri: kamelet:source
       steps:

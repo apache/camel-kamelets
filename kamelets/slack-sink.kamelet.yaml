@@ -68,7 +68,7 @@ spec:
   - "camel:jackson"
   - "camel:slack"
   - "camel:kamelet"
-  template:
+  flow:
     from:
       uri: "kamelet:source"
       steps:

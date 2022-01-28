@@ -55,7 +55,7 @@ spec:
     - "camel:kubernetes"
     - "camel:kamelet"
     - "camel:jackson"
-  template:
+  flow:
     from:
       uri: "kubernetes-namespaces://{{masterUrl}}"
       parameters:

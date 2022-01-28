@@ -89,7 +89,7 @@ spec:
   - "camel:kamelet"
   - "camel:sql"
   - "mvn:org.apache.commons:commons-dbcp2:2.9.0"
-  template:
+  flow:
     beans:
       - name: dsBean
         type: "#class:org.apache.commons.dbcp2.BasicDataSource"

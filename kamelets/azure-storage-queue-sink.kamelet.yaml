@@ -67,7 +67,7 @@ spec:
   dependencies:
     - "camel:azure-storage-queue"
     - "camel:kamelet"
-  template:
+  flow:
     from:
       uri: "kamelet:source"
       steps:

@@ -54,7 +54,7 @@ spec:
   - "camel:jms"
   - "camel:kamelet"
   - "mvn:org.apache.qpid:qpid-jms-client:1.0.0"
-  template:
+  flow:
     beans:
       - name: connectionFactoryBean
         type: "#class:org.apache.qpid.jms.JmsConnectionFactory"

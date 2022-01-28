@@ -84,7 +84,7 @@ spec:
   dependencies:
     - "camel:aws2-sqs"
     - "camel:kamelet"
-  template:
+  flow:
     from:
       uri: kamelet:source
       steps:

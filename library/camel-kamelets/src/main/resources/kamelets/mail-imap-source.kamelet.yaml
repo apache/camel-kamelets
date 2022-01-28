@@ -87,7 +87,7 @@ spec:
     - "camel:core"
     - "camel:mail"
     - "camel:kamelet"
-  template:
+  flow:
     from:
       uri: "imaps:{{connectionHost}}:{{connectionPort}}"
       parameters:

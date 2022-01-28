@@ -48,7 +48,7 @@ spec:
   dependencies:
     - "camel:file-watch"
     - "camel:kamelet"
-  template:
+  flow:
     from:
       uri: "file-watch:{{filePath}}"
       parameters:

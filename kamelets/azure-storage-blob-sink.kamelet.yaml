@@ -70,7 +70,7 @@ spec:
   dependencies:
   - "camel:azure-storage-blob"
   - "camel:kamelet"
-  template:
+  flow:
     from:
       uri: "kamelet:source"
       steps:

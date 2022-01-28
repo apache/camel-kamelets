@@ -110,7 +110,7 @@ spec:
   dependencies:
     - "camel:aws2-s3"
     - "camel:kamelet"
-  template:
+  flow:
     from:
       uri: "kamelet:source"
       steps:

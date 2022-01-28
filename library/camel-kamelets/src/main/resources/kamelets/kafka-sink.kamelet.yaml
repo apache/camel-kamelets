@@ -81,7 +81,7 @@ spec:
   dependencies:
     - "camel:kafka"
     - "camel:kamelet"
-  template:
+  flow:
     from:
       uri: "kamelet:source"
       steps:

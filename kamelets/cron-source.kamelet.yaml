@@ -54,7 +54,7 @@ spec:
   - "camel:core"
   - "camel:cron"
   - "camel:kamelet"
-  template:
+  flow:
     from:
       uri: "cron:tick"
       parameters:

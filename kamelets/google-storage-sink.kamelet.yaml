@@ -63,7 +63,7 @@ spec:
     - "camel:kamelet"
     - "camel:google-storage"
     - "camel:jackson"
-  template:
+  flow:
     from:
       uri: "kamelet:source"
       steps:

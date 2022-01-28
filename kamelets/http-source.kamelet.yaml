@@ -56,7 +56,7 @@ spec:
     - "camel:kamelet"
     - "camel:core"
     - "camel:timer"
-  template:
+  flow:
     from:
       uri: "timer:fetch"
       parameters:

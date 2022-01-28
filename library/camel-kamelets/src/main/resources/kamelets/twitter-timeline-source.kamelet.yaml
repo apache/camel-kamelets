@@ -86,7 +86,7 @@ spec:
     - "camel:jackson"
     - "camel:twitter"
     - "camel:kamelet"
-  template:
+  flow:
     from:
       uri: "twitter-timeline:user"
       parameters:

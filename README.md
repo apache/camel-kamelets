@@ -89,7 +89,7 @@ spec:
   types:
     out:
       mediaType: text/plain
-  template:
+  flow:
     from:
       uri: timer:tick
       parameters:
@@ -128,7 +128,7 @@ spec:
   - camel:telegram
   - mvn:org.apache.commons:commons-vfs2:2.7.0
   - github:apache/camel-kamelets
-  template:
+  flow:
     # ...
 ```
 

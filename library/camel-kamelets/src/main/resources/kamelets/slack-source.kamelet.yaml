@@ -61,7 +61,7 @@ spec:
   - "camel:gson"
   - "camel:slack"
   - "camel:kamelet"
-  template:
+  flow:
     from:
       uri: "slack:{{channel}}"
       parameters:

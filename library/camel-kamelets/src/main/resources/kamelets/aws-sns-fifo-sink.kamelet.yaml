@@ -86,7 +86,7 @@ spec:
   - "camel:aws2-sns"
   - "camel:core"
   - "camel:kamelet"
-  template:
+  flow:
     from:
       uri: kamelet:source
       steps:

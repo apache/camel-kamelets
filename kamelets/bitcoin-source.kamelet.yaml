@@ -73,7 +73,7 @@ spec:
     - "camel:kamelet"
     - "camel:jackson"
     - "camel:timer"
-  template:
+  flow:
     from:
       uri: "timer:update"
       parameters:
