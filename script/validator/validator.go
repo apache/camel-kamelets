@@ -14,7 +14,7 @@ import (
 	camelapi "github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
 	"github.com/apache/camel-k/pkg/metadata"
 	"github.com/apache/camel-k/pkg/util/camel"
-	"github.com/apache/camel-k/pkg/util/flow"
+	"github.com/apache/camel-k/pkg/util/dsl"
 	"github.com/bbalet/stopwords"
 	perrors "github.com/pkg/errors"
 	yamlv3 "gopkg.in/yaml.v3"
@@ -44,11 +44,26 @@ func main() {
 
 	kamelets := listKamelets(dir)
 
+	if len(kamelets) <= 0 {
+		fmt.Printf("ERROR: directory %s has no Kamelets\n", dir)
+		os.Exit(1)
+	}
+
 	errors := verifyFileNames(kamelets)
 	errors = append(errors, verifyKameletType(kamelets)...)
-	errors = append(errors, verifyAnnotations(kamelets)...)
 	errors = append(errors, verifyParameters(kamelets)...)
 	errors = append(errors, verifyInvalidContent(kamelets)...)
+
+	// Any failing validation above may result in error in the below methods,
+	// let's show the errors if any
+	for _, err := range errors {
+		fmt.Printf("ERROR: %v\n", err)
+	}
+	if len(errors) > 0 {
+		os.Exit(1)
+	}
+
+	errors = append(errors, verifyAnnotations(kamelets)...)
 	errors = append(errors, verifyDescriptors(kamelets)...)
 	errors = append(errors, verifyDuplicates(kamelets)...)
 	errors = append(errors, verifyMissingDependencies(kamelets)...)
@@ -64,7 +79,7 @@ func main() {
 
 func verifyMissingDependencies(kamelets []KameletInfo) (errors []error) {
 	for _, kamelet := range kamelets {
-		yamlDslFlow, err := flow.ToYamlDSL([]camelapiv1.Flow{*kamelet.Kamelet.Spec.Flow})
+		yamlDslFlow, err := dsl.ToYamlDSL([]camelapiv1.Flow{*kamelet.Kamelet.Spec.Flow})
 		if err != nil {
 			panic(err)
 		}
@@ -221,6 +236,17 @@ func verifyParameters(kamelets []KameletInfo) (errors []error) {
 		if kamelet.Spec.Definition == nil {
 			errors = append(errors, fmt.Errorf("kamelet %q does not contain the JSON schema definition", kamelet.Name))
 			continue
+		}
+		if kamelet.Spec.Flow == nil && kamelet.Spec.Template == nil {
+			errors = append(errors, fmt.Errorf("kamelet %q does not contain the Flow or Template specification", kamelet.Name))
+			continue
+		}
+		if kamelet.Spec.Flow != nil && kamelet.Spec.Template != nil {
+			errors = append(errors, fmt.Errorf("kamelet %q cannot contain both the Flow and Template specification", kamelet.Name))
+			continue
+		}
+		if kamelet.Spec.Flow != nil {
+			fmt.Printf("WARNING: .kamelet.spec.flow parameter in kamelet %q is deprecated and will removed in future releases! Use .kamelet.spec.template instead\n", kamelet.Name)
 		}
 		requiredCheck := make(map[string]bool)
 		for _, p := range kamelet.Spec.Definition.Required {
