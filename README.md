@@ -102,15 +102,15 @@ spec:
 ```
 
 
-### Flow Code
+### Template Code
 
-The Camel route that defines the behavior of the Kamelet **MUST** be provided in YAML flow syntax.
+The Camel route that defines the behavior of the Kamelet **MUST** be provided in YAML flow syntax (in `.spec.template` parameter).
 The Kamelet **MAY** declare additional supporting routes that **MUST** be written in YAML syntax (to provide better support in all Camel subprojects).
 
 The code of a "source" Kamelet must send data to the `kamelet:sink` special endpoint. The code of a "sink" Kamelet must consume data from the special endpoint `kamelet:source`.
 
 The Kamelet **MAY** declare dependencies on Camel components using the syntax `camel:<component-name>` (e.g. `camel:telegram`). Some Camel dependencies are implicitly
-added by the runtime when a certain Camel URI is used (e.g. there's no need to declare explicit dependency on `camel:timer` if the `flow` section uses the `timer` URI).
+added by the runtime when a certain Camel URI is used (e.g. there's no need to declare explicit dependency on `camel:timer` if the `template` section uses the `timer` URI).
 
 The Kamelet **CAN** declare dependencies on artifacts of one of the Camel subprojects. In case it does, the Kamelet must contain label `camel.apache.org/requires.runtime=<name-of-the-project>` (e.g. `camel.apache.org/requires.runtime=camel-quarkus`).
 
