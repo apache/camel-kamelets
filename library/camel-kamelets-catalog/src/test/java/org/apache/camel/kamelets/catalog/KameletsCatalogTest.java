@@ -113,7 +113,7 @@ public class KameletsCatalogTest {
     @Test
     void testGetKameletsFlow() throws Exception {
         JsonNode flow = catalog.getKameletFlow("aws-sqs-source");
-        assertNotNull(flow);
+        assertNull(flow);
     }
     
     @Test
