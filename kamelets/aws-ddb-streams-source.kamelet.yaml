@@ -32,10 +32,12 @@ spec:
     title: "AWS DynamoDB Streams Source"
     description: |-
       Receive events from AWS DynamoDB Streams.
+
+      Access Key/Secret Key are the basic method for authenticating to the AWS DynamoDB Streams Service. These parameters are optional, because the Kamelet provide also the 'useDefaultCredentialsProvider'.
+      
+      When using a default Credentials Provider the AWS DynamoDB Streams client will load the credentials through this provider and won't use the static credential. This is reason for not having the access key and secret key as mandatory parameter for this Kamelet.
     required:
       - table
-      - accessKey
-      - secretKey
       - region
     type: object
     properties:
@@ -75,6 +77,13 @@ spec:
         type: string
         example: "900000000005745712447"
         default: "000000000000000000000"
+      useDefaultCredentialsProvider:
+        title: Default Credentials Provider
+        description: Set whether the S3 client should expect to load credentials through a default credentials provider or to expect static credentials to be passed in.
+        type: boolean
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
   types:
     out:
       mediaType: application/json
@@ -86,11 +95,12 @@ spec:
     from:
       uri: "aws2-ddbstream:{{table}}"
       parameters:
-        secretKey: "{{secretKey}}"
-        accessKey: "{{accessKey}}"
+        secretKey: "{{?secretKey}}"
+        accessKey: "{{?accessKey}}"
         region: "{{region}}"
         iteratorType: "{{iteratorType}}"
         sequenceNumberProvider: "{{sequenceNumberProvider}}"
+        useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
       steps:
       - marshal:
           json: 
