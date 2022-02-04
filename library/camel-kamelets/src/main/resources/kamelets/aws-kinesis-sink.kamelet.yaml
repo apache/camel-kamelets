@@ -33,6 +33,10 @@ spec:
     description: |-
       Send data to AWS Kinesis.
 
+      Access Key/Secret Key are the basic method for authenticating to the AWS Kinesis Service. These parameters are optional, because the Kamelet provide also the 'useDefaultCredentialsProvider'.
+      
+      When using a default Credentials Provider the Kinesis client will load the credentials through this provider and won't use the static credential. This is reason for not having the access key and secret key as mandatory parameter for this Kamelet.
+
       The Kamelet expects the following header:
 
       - `partition` / `ce-partition`: to set the Kinesis partition key
@@ -46,8 +50,6 @@ spec:
       This header is optional.
     required:
       - stream
-      - accessKey
-      - secretKey
       - region
     type: object
     properties:
@@ -76,6 +78,13 @@ spec:
         description: The AWS region to connect to
         type: string
         example: eu-west-1
+      useDefaultCredentialsProvider:
+        title: Default Credentials Provider
+        description: Set whether the Kinesis Firehose client should expect to load credentials through a default credentials provider or to expect static credentials to be passed in.
+        type: boolean
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
   dependencies:
     - "camel:aws2-kinesis"
     - "camel:kamelet"
@@ -115,6 +124,7 @@ spec:
       - to:
           uri: "aws2-kinesis:{{stream}}"
           parameters:
-            secretKey: "{{secretKey}}"
-            accessKey: "{{accessKey}}"
+            secretKey: "{{?secretKey}}"
+            accessKey: "{{?accessKey}}"
             region: "{{region}}"
+            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
