@@ -31,15 +31,17 @@ spec:
   definition:
     title: AWS SNS Sink
     description: |-
-      Send message to an AWS SNS Topic
+      Send message to an AWS SNS Topic.
+
+      Access Key/Secret Key are the basic method for authenticating to the AWS SNS Service. These parameters are optional, because the Kamelet provide also the 'useDefaultCredentialsProvider'.
+      
+      When using a default Credentials Provider the SNS client will load the credentials through this provider and won't use the static credential. This is reason for not having the access key and secret key as mandatory parameter for this Kamelet.
 
       The Kamelet expects the following headers to be set:
 
       - `subject` / `ce-subject`: the subject of the message
     required:
       - topicNameOrArn
-      - accessKey
-      - secretKey
       - region
     type: object
     properties:
@@ -75,6 +77,13 @@ spec:
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+      useDefaultCredentialsProvider:
+        title: Default Credentials Provider
+        description: Set whether the SNS client should expect to load credentials through a default credentials provider or to expect static credentials to be passed in.
+        type: boolean
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
   dependencies:
     - "camel:core"
     - "camel:aws2-sns"
@@ -99,6 +108,7 @@ spec:
           uri: "aws2-sns:{{topicNameOrArn}}"
           parameters:
             autoCreateTopic: "{{autoCreateTopic}}"
-            accessKey: "{{accessKey}}"
-            secretKey: "{{secretKey}}"
+            accessKey: "{{?accessKey}}"
+            secretKey: "{{?secretKey}}"
             region: "{{region}}"
+            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
