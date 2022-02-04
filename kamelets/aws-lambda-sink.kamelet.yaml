@@ -31,11 +31,13 @@ spec:
   definition:
     title: AWS Lambda Sink
     description: |-
-      Send a payload to an AWS Lambda function
+      Send a payload to an AWS Lambda function.
+
+      Access Key/Secret Key are the basic method for authenticating to the AWS Lambda Service. These parameters are optional, because the Kamelet provide also the 'useDefaultCredentialsProvider'.
+      
+      When using a default Credentials Provider the Lambda client will load the credentials through this provider and won't use the static credential. This is reason for not having the access key and secret key as mandatory parameter for this Kamelet.
     required:
       - function
-      - accessKey
-      - secretKey
       - region
     type: object
     properties:
@@ -64,6 +66,13 @@ spec:
         description: The AWS region to connect to
         type: string
         example: eu-west-1
+      useDefaultCredentialsProvider:
+        title: Default Credentials Provider
+        description: Set whether the Kinesis Firehose client should expect to load credentials through a default credentials provider or to expect static credentials to be passed in.
+        type: boolean
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
   dependencies:
     - "camel:aws2-lambda"
     - "camel:kamelet"
@@ -74,6 +83,7 @@ spec:
       - to:
           uri: "aws2-lambda:{{function}}"
           parameters:
-            accessKey: "{{accessKey}}"
-            secretKey: "{{secretKey}}"
+            accessKey: "{{?accessKey}}"
+            secretKey: "{{?secretKey}}"
             region: "{{region}}"
+            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
