@@ -32,10 +32,12 @@ spec:
     title: "AWS S3 Streaming upload Sink"
     description: |-
       Upload data to AWS S3 in streaming upload mode.
+
+      Access Key/Secret Key are the basic method for authenticating to the AWS S3 Service. These parameters are optional, because the Kamelet provide also the 'useDefaultCredentialsProvider'.
+      
+      When using a default Credentials Provider the S3 client will load the credentials through this provider and won't use the static credential. This is reason for not having the access key and secret key as mandatory parameter for this Kamelet.
     required:
       - bucketNameOrArn
-      - accessKey
-      - secretKey
       - region
       - keyName
     type: object
@@ -107,6 +109,13 @@ spec:
         title: Key Name
         description: Setting the key name for an element in the bucket through endpoint parameter. In Streaming Upload, with the default configuration, this will be the base for the progressive creation of files.
         type: string
+      useDefaultCredentialsProvider:
+        title: Default Credentials Provider
+        description: Set whether the Kinesis Firehose client should expect to load credentials through a default credentials provider or to expect static credentials to be passed in.
+        type: boolean
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
   dependencies:
     - "camel:aws2-s3"
     - "camel:kamelet"
@@ -117,8 +126,8 @@ spec:
       - to:
           uri: "aws2-s3:{{bucketNameOrArn}}"
           parameters:
-            secretKey: "{{secretKey}}"
-            accessKey: "{{accessKey}}"
+            secretKey: "{{?secretKey}}"
+            accessKey: "{{?accessKey}}"
             region: "{{region}}"
             autoCreateBucket: "{{autoCreateBucket}}"
             streamingUploadMode: "{{streamingUploadMode}}"
@@ -128,4 +137,5 @@ spec:
             namingStrategy: "{{namingStrategy}}"
             keyName: "{{keyName}}"
             streamingUploadTimeout: "{{?streamingUploadTimeout}}"
+            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
 
