@@ -27,7 +27,6 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.fabric8.camelk.v1alpha1.Kamelet;
@@ -174,10 +173,10 @@ public class KameletsCatalog {
         }
     }
 
-    public JsonNode getKameletFlow(String name) {
+    public Map<String, Object> getKameletTemplate(String name) {
         Kamelet kamelet = kameletModels.get(name);
         if (kamelet != null) {
-            return kamelet.getSpec().getFlow();
+            return kamelet.getSpec().getTemplate();
         } else {
             return null;
         }
