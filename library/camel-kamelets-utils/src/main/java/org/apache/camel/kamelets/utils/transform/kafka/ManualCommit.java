@@ -19,7 +19,7 @@ package org.apache.camel.kamelets.utils.transform.kafka;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.component.kafka.KafkaConstants;
-import org.apache.camel.component.kafka.KafkaManualCommit;
+import org.apache.camel.component.kafka.consumer.KafkaManualCommit;
 
 public class ManualCommit implements Processor {
 
@@ -27,7 +27,7 @@ public class ManualCommit implements Processor {
     public void process(Exchange exchange) throws Exception {
         KafkaManualCommit manual = exchange.getMessage().getHeader(KafkaConstants.MANUAL_COMMIT, KafkaManualCommit.class);
         if (manual != null) {
-            manual.commitSync();
+            manual.commit();
         }
     }
 }
