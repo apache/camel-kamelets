@@ -16,7 +16,6 @@
  */
 package org.apache.camel.kamelets.catalog;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import io.fabric8.camelk.v1alpha1.Kamelet;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.JSONSchemaProps;
 import io.github.classgraph.ClassGraph;
@@ -111,9 +110,9 @@ public class KameletsCatalogTest {
     }
 
     @Test
-    void testGetKameletsFlow() throws Exception {
-        JsonNode flow = catalog.getKameletFlow("aws-sqs-source");
-        assertNull(flow);
+    void testGetKameletsTemplate() throws Exception {
+        Map<String, Object> template = catalog.getKameletTemplate("aws-sqs-source");
+        assertNotNull(template);
     }
     
     @Test
