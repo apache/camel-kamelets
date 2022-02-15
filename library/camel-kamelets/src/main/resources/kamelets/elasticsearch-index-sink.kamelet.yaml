@@ -99,8 +99,8 @@ spec:
       - name: local-es
         type: "#class:org.apache.camel.component.elasticsearch.ElasticsearchComponent"
         properties:
-            user: "{{user:dummy}}"
-            password: "{{password:dummy}}"
+            user: "{{?user}}"
+            password: "{{?password}}"
     from:
       uri: kamelet:source
       steps:
