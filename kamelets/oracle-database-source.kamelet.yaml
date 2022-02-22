@@ -31,6 +31,10 @@ spec:
     title: "Oracle Database Source"
     description: |-
       Query data from a Oracle Database.
+
+      In your KameletBinding file you'll need to explicitly declare the Oracle Database driver dependency in spec->integration->dependencies
+
+      - "mvn:com.oracle.database.jdbc:ojdbc11:<version>"
     required:
       - serverName
       - username
@@ -84,7 +88,6 @@ spec:
   - "camel:jackson"
   - "camel:kamelet"
   - "camel:sql"
-  - "mvn:com.oracle.database.jdbc:ojdbc11:21.4.0.0.1"
   - "mvn:org.apache.commons:commons-dbcp2:2.9.0"
   template:
     beans:
