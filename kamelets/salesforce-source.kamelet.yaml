@@ -99,13 +99,14 @@ spec:
     beans:
       - name: local-salesforce
         type: "#class:org.apache.camel.component.salesforce.SalesforceComponent"
+        parameters:
+          clientId: "{{clientId}}"
+          clientSecret: "{{clientSecret}}"
+          userName: "{{userName}}"
+          password: "{{password}}"
     from:
       uri: "{{local-salesforce}}:{{topicName}}"
       parameters:
-        clientId: "{{clientId}}"
-        clientSecret: "{{clientSecret}}"
-        userName: "{{userName}}"
-        password: "{{password}}"
         notifyForFields: "{{notifyForFields}}"
         updateTopic: "true"
         notifyForOperationCreate: "true"
