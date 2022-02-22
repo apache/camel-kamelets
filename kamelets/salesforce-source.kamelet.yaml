@@ -99,11 +99,12 @@ spec:
     beans:
       - name: local-salesforce
         type: "#class:org.apache.camel.component.salesforce.SalesforceComponent"
-        parameters:
+        properties:
           clientId: "{{clientId}}"
           clientSecret: "{{clientSecret}}"
           userName: "{{userName}}"
           password: "{{password}}"
+          loginUrl: "{{loginUrl}}"
     from:
       uri: "{{local-salesforce}}:{{topicName}}"
       parameters:
@@ -114,7 +115,6 @@ spec:
         notifyForOperationDelete: "false"
         notifyForOperationUndelete: "false"
         sObjectQuery: "{{query}}"
-        loginUrl: "{{loginUrl}}"
       steps:
       - marshal:
           json: {}
