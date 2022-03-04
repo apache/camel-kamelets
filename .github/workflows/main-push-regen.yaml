@@ -20,7 +20,7 @@ name: Build Regen
 on:
   push:
     branches:
-      - main
+      - 0.7.x
   workflow_dispatch:
 
 concurrency:
@@ -70,11 +70,11 @@ jobs:
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: true
-          branch: regen_bot
+          branch: regen_bot-0.7.x
           title: "Generated sources regen"
           body: |
-            Regen bot :robot: found some uncommited changes after running build on :camel: kamelets main.
-            Please do not delete `regen_bot` branch after merge/rebase.
+            Regen bot :robot: found some uncommited changes after running build on :camel: kamelets 0.7.x.
+            Please do not delete `regen_bot-0.7.x` branch after merge/rebase.
           labels: |
             regen
             automated pr
