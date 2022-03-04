@@ -29,7 +29,7 @@ metadata:
 spec:
   definition:
     title: "Predicate Filter Action"
-    description: "Filter based on a JsonPath Expression"
+    description: "Filter based on a JsonPath Expression. Since this is a filter, the expression will be a negation, this means that if the foo field of the example is equals to John, the message will go ahead, otherwise it will be filtered out."
     required:
       - expression
     properties:
