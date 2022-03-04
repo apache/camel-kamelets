@@ -41,6 +41,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
+      - name: Install Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.16.x
       - name: Cache Maven Repository
         uses: actions/cache@v1
         with:
@@ -51,6 +55,12 @@ jobs:
         run: ./mvnw clean install -DskipTests
       - name: Build catalog 2nd Run
         run: ./mvnw clean install
+      - name: Run Validator
+        run: |
+          echo "Running Kamelet Generator..."
+
+          cd script/generator
+          go run . ../../kamelets/ ../../docs/modules/ROOT/
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
