@@ -55,7 +55,7 @@ jobs:
         run: ./mvnw clean install -DskipTests
       - name: Build catalog 2nd Run
         run: ./mvnw clean install
-      - name: Run Validator
+      - name: Run Generator
         run: |
           echo "Running Kamelet Generator..."
 
