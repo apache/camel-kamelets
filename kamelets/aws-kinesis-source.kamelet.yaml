@@ -75,11 +75,10 @@ spec:
         default: false
   types:
     out:
-      mediaType: application/json
+      mediaType: application/octet-stream
   dependencies:
     - "camel:aws2-kinesis"
     - "camel:kamelet"
-    - "camel:gson"
   template:
     from:
       uri: aws2-kinesis:{{stream}}
@@ -89,7 +88,4 @@ spec:
         region: "{{region}}"
         useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
       steps:
-      - marshal:
-          json: 
-            library: Gson
       - to: "kamelet:sink"
