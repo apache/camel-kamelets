@@ -49,6 +49,9 @@ spec:
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
+  types:
+    in:
+      mediaType: application/octet-stream
   dependencies:
     - "camel:azure-servicebus"
     - "camel:kamelet"
