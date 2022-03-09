@@ -79,6 +79,7 @@ spec:
   dependencies:
     - "camel:aws2-kinesis"
     - "camel:kamelet"
+    - "camel:core"
   template:
     from:
       uri: aws2-kinesis:{{stream}}
