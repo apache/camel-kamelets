@@ -1,7 +1,7 @@
 Feature: Mail Sink
 
   Background:
-    Given Camel-K resource polling configuration
+    Given Camel K resource polling configuration
       | maxAttempts          | 200   |
       | delayBetweenAttempts | 2000  |
     Given variables
@@ -17,11 +17,11 @@ Feature: Mail Sink
     Given load endpoint mail-server.groovy
     Given create Kubernetes service mail-server with port mapping 25:22222
 
-  Scenario: Create Camel-K resources
+  Scenario: Create Camel K resources
     Given Kamelet mail-sink is available
     Given Kamelet timer-source is available
     Given load KameletBinding timer-to-mail.yaml
-    And Camel-K integration timer-to-mail should be running
+    And Camel K integration timer-to-mail should be running
 
   Scenario: Verify mail message sent
     Then endpoint mail-server should receive body
@@ -41,6 +41,6 @@ Feature: Mail Sink
     }
     """
 
-  Scenario: Remove Camel-K resources
+  Scenario: Remove Camel K resources
     Given delete KameletBinding timer-to-mail
     And delete Kubernetes service mail-server

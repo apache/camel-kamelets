@@ -18,7 +18,7 @@
 apiVersion: camel.apache.org/v1alpha1
 kind: Kamelet
 metadata:
-  name: aws-ddb-streams-source
+  name: aws-ddb-sink
   annotations:
     camel.apache.org/kamelet.support.level: "Preview"
     camel.apache.org/catalog.version: "main-SNAPSHOT"
@@ -26,16 +26,22 @@ metadata:
     camel.apache.org/provider: "Apache Software Foundation"
     camel.apache.org/kamelet.group: "AWS DynamoDB Streams"
   labels:
-    camel.apache.org/kamelet.type: "source"
+    camel.apache.org/kamelet.type: "sink"
 spec:
   definition:
-    title: "AWS DynamoDB Streams Source"
+    title: "AWS DynamoDB Sink"
     description: |-
-      Receive events from AWS DynamoDB Streams.
+      Send data to AWS DynamoDB service. The sent data will insert/update/delete an item on the given AWS DynamoDB table.
 
-      Access Key/Secret Key are the basic method for authenticating to the AWS DynamoDB Streams Service. These parameters are optional, because the Kamelet provide also the 'useDefaultCredentialsProvider'.
+      Access Key/Secret Key are the basic method for authenticating to the AWS DynamoDB service. These parameters are optional, because the Kamelet provide also the 'useDefaultCredentialsProvider'.
 
-      When using a default Credentials Provider the AWS DynamoDB Streams client will load the credentials through this provider and won't use the static credential. This is reason for not having the access key and secret key as mandatory parameter for this Kamelet.
+      When using a default Credentials Provider the AWS DynamoDB client will load the credentials through this provider and won't use the static credential. This is reason for not having the access key and secret key as mandatory parameter for this Kamelet.
+
+      This Kamelet expects a JSON as body. The mapping between the JSON fields and table attribute values is done by key, so if you have the input:
+
+      '{"username":"oscerd", "city":"Rome"}'
+
+      The Kamelet will insert/update an item in the given AWS DynamoDB table and set the attributes 'username' and 'city' respectively. Please note that the JSON object must include the primary key values that define the item.
     required:
       - table
       - region
@@ -66,43 +72,64 @@ spec:
         description: The AWS region to connect to
         type: string
         example: eu-west-1
-      iteratorType:
-        title: Iterator Type
-        description: Defines where in the DynaboDB stream to start getting records. Note that using TRIM_HORIZON can cause a significant delay before the stream has caught up to real-time. if {AT,AFTER}_SEQUENCE_NUMBER are used, then a sequenceNumberProvider MUST be supplied. There are 4 enums and the value can be one of TRIM_HORIZON, LATEST, AT_SEQUENCE_NUMBER, AFTER_SEQUENCE_NUMBER
+      operation:
+        title: Operation
+        description: The operation to perform (one of PutItem, UpdateItem, DeleteItem)
         type: string
-        default: LATEST
-      sequenceNumberProvider:
-        title: Sequence Number Provider
-        description: Provider for the sequence number when using one of the two ShardIteratorType AT_SEQUENCE_NUMBER or AFTER_SEQUENCE_NUMBER iterator types. Can be a registry reference or a literal sequence number.
-        type: string
-        example: "900000000005745712447"
-        default: "000000000000000000000"
+        default: PutItem
+        example: PutItem
+      writeCapacity:
+        title: Write Capacity
+        description: The provisioned throughput to reserved for writing resources to your table
+        type: integer
+        default: 1
       useDefaultCredentialsProvider:
         title: Default Credentials Provider
         description: Set whether the S3 client should expect to load credentials through a default credentials provider or to expect static credentials to be passed in.
         type: boolean
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
+      uriEndpointOverride:
+        title: Overwritte Endpoint URI
+        description: Set the overriding endpoint URI. This option needs to be used in combination with overrideEndpoint option.
+        type: string
+      overrideEndpoint:
+        title: Endpoint Overwrite
+        description: Set the need for overiding the endpoint URI. This option needs to be used in combination with uriEndpointOverride setting.
+        type: boolean
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
   types:
-    out:
+    in:
       mediaType: application/json
   dependencies:
-  - "camel:gson"
+  - github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT
+  - "camel:core"
+  - "camel:jackson"
   - "camel:aws2-ddb"
   - "camel:kamelet"
   template:
     from:
-      uri: "aws2-ddbstream:{{table}}"
-      parameters:
-        secretKey: "{{?secretKey}}"
-        accessKey: "{{?accessKey}}"
-        region: "{{region}}"
-        iteratorType: "{{iteratorType}}"
-        sequenceNumberProvider: "{{sequenceNumberProvider}}"
-        useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+      uri: "kamelet:source"
       steps:
-      - marshal:
+      - set-property:
+          name: operation
+          constant: "{{operation}}"
+      - unmarshal:
           json:
-            library: Gson
-      - to: "kamelet:sink"
+            library: Jackson
+            unmarshalType: com.fasterxml.jackson.databind.JsonNode
+      - bean: "org.apache.camel.kamelets.utils.transform.aws.ddb.JsonToDdbModelConverter"
+      - to:
+          uri: "aws2-ddb:{{table}}"
+          parameters:
+            secretKey: "{{?secretKey}}"
+            accessKey: "{{?accessKey}}"
+            region: "{{region}}"
+            operation: "{{operation}}"
+            writeCapacity: "{{?writeCapacity}}"
+            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+            uriEndpointOverride: "{{?uriEndpointOverride}}"
+            overrideEndpoint: "{{overrideEndpoint}}"

@@ -3,7 +3,7 @@ Feature: Kamelet earthquake-source works
   Background:
     Given Disable auto removal of Kamelet resources
     Given Disable auto removal of Kubernetes resources
-    Given Camel-K resource polling configuration
+    Given Camel K resource polling configuration
       | maxAttempts          | 60   |
       | delayBetweenAttempts | 3000 |
 
