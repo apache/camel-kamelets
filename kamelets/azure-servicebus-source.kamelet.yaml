@@ -49,6 +49,11 @@ spec:
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
+      serviceBusReceiveMode:
+        title: Servicebus Receive mode
+        description: Sets the receive mode for the receiver, possible values are PEEK_LOCK and RECEIVE_AND_DELETE
+        type: String
+        default: PEEK_LOCK
   types:
     out:
       mediaType: application/octet-stream
@@ -61,6 +66,7 @@ spec:
       uri: "azure-servicebus:{{topicOrQueueName}}"
       parameters:
         connectionString: "{{connectionString}}"
+        serviceBusReceiveMode: "{{serviceBusReceiveMode}}"
       steps:
       - to: "kamelet:sink"
 
