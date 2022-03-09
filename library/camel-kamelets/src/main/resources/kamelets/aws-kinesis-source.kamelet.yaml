@@ -88,4 +88,6 @@ spec:
         region: "{{region}}"
         useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
       steps:
+      - set-body:
+          simple: "${body.data().asInputStream()}"
       - to: "kamelet:sink"
