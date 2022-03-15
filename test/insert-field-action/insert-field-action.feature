@@ -1,26 +1,36 @@
-Feature: Timer Source Kamelet
+Feature: Insert field Kamelet action
 
   Background:
-    Given Disable auto removal of Kamelet resources
-    Given Disable auto removal of Kubernetes resources
+    Given HTTP server timeout is 15000 ms
+    Given HTTP server "test-insert-service"
+    Given variables
+      | field | subject |
+      | value | Camel K rocks! |
+
+  Scenario: Create Http server
+    Given create Kubernetes service test-insert-service with target port 8080
+
+  Scenario: Create Kamelet binding
     Given Camel K resource polling configuration
-      | maxAttempts          | 60   |
-      | delayBetweenAttempts | 3000 |
-
-  Scenario: Wait for binding to start
-    Given create Kubernetes service probe-service with target port 8080
+      | maxAttempts          | 200   |
+      | delayBetweenAttempts | 2000  |
+    Given variable input is
+    """
+    { "id": "citrus:randomUUID()" }
+    """
+    When load KameletBinding insert-field-action-binding.yaml
     Then Camel K integration insert-field-action-binding should be running
+    And Camel K integration insert-field-action-binding should print Routes startup
 
-  Scenario: Verify binding
-    Given HTTP server "probe-service"
-    And HTTP server timeout is 300000 ms
-    Then expect HTTP request body
+  Scenario: Verify output message sent
+    Given expect HTTP request body
     """
-    {
-      "content": "thecontent",
-      "thefield": "thevalue"
-    }
+    { "id": "@ignore@", "${field}": "${value}" }
     """
-    And expect HTTP request header: Content-Type="application/json;charset=UTF-8"
-    And receive POST /events
-    And delete KameletBinding insert-field-action-binding
+    And HTTP request header Content-Type="application/json"
+    When receive POST /result
+    Then send HTTP 200 OK
+
+  Scenario: Remove resources
+    Given delete KameletBinding insert-field-action-binding
+    And delete Kubernetes service test-insert-service

@@ -41,9 +41,10 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  CAMEL_K_VERSION: 1.7.0
+  CAMEL_K_VERSION: 1.8.2
   YAKS_VERSION: 0.9.0-202203140033
   YAKS_IMAGE_NAME: "docker.io/yaks/yaks"
+  YAKS_RUN_OPTIONS: "--timeout=15m"
 
 jobs:
   test:
@@ -73,25 +74,40 @@ jobs:
       uses: container-tools/kind-action@v1
     - name: Info
       run: |
+        kubectl version
         kubectl cluster-info
         kubectl describe nodes
-    - name: Run Tests
+    - name: Install Camel K
       run: |
-        echo "Configuring Camel K"
-        kamel install --cluster-setup
-
         # Configure install options
         export KAMEL_INSTALL_BUILD_PUBLISH_STRATEGY=Spectrum
         export KAMEL_INSTALL_REGISTRY=$KIND_REGISTRY
         export KAMEL_INSTALL_REGISTRY_INSECURE=true
 
-        echo "Configuring Yaks"
-        yaks install --operator-image $YAKS_IMAGE_NAME:$YAKS_VERSION
+        kamel install -w
 
+        # TODO replaces the below statement with --operator-env-vars KAMEL_INSTALL_DEFAULT_KAMELETS=false
+        # when we use camel k 1.8.0
+        kubectl delete kamelets --all
+        # Install the local kamelets
+        find kamelets -maxdepth 1 -name '*.kamelet.yaml' -exec kubectl apply -f {} \;
+    - name: Install YAKS
+      run: |
+        yaks install --operator-image $YAKS_IMAGE_NAME:$YAKS_VERSION
+    - name: YAKS Tests
+      run: |
         echo "Running tests"
-        yaks run ./test
+        yaks run test/aws-ddb-sink $YAKS_RUN_OPTIONS
+        yaks run test/insert-field-action $YAKS_RUN_OPTIONS
+        yaks run test/mail-sink $YAKS_RUN_OPTIONS
+        yaks run test/timer-source $YAKS_RUN_OPTIONS
+        yaks run test/earthquake-source $YAKS_RUN_OPTIONS
+    - name: YAKS Report
+      if: failure()
+      run: |
+        yaks report
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
         name: dumps
-        path: /tmp/dumps/*.log
+        path: _output/*-dump.log
