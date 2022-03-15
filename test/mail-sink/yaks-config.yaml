@@ -17,7 +17,7 @@
 
 config:
   namespace:
-    temporary: true
+    temporary: false
   runtime:
     env:
       - name: YAKS_CAMELK_AUTO_REMOVE_RESOURCES
@@ -32,20 +32,8 @@ config:
     resources:
       - mail-server.groovy
       - timer-to-mail.yaml
-pre:
-- name: installation
-  if: env:CI=true
-  run: |
-    # Install required Kamelets (these steps may be done globally in future versions)
-
-    kamel install -n $YAKS_NAMESPACE -w
-    kubectl delete kamelet -n $YAKS_NAMESPACE --all
-    kubectl apply -f ../../kamelets/mail-sink.kamelet.yaml -n $YAKS_NAMESPACE
-    kubectl apply -f ../../kamelets/timer-source.kamelet.yaml -n $YAKS_NAMESPACE
-post:
-- name: dump
-  if: env:CI=true
-  run: |
-    kamel dump -n $YAKS_NAMESPACE $(basename `pwd`)-dump.log
-    mkdir -p /tmp/dumps
-    cp *-dump.log /tmp/dumps
+  dump:
+    enabled: true
+    failedOnly: true
+    includes:
+      - app=camel-k

@@ -1,21 +1,27 @@
-Feature: Kamelet earthquake-source works
+Feature: Kamelet earthquake-source
 
   Background:
-    Given Disable auto removal of Kamelet resources
-    Given Disable auto removal of Kubernetes resources
-    Given Camel K resource polling configuration
-      | maxAttempts          | 60   |
-      | delayBetweenAttempts | 3000 |
+    Given HTTP server timeout is 15000 ms
+    Given HTTP server "test-service"
 
-  Scenario: Bind Kamelet to service
+  Scenario: Create Http server
     Given create Kubernetes service test-service with target port 8080
-    And bind Kamelet earthquake-source to uri http://test-service.${YAKS_NAMESPACE}.svc.cluster.local/test
-    When create KameletBinding earthquake-source-uri
+
+  Scenario: Create Kamelet binding
+    Given Camel K resource polling configuration
+      | maxAttempts          | 200   |
+      | delayBetweenAttempts | 2000 |
+    When bind Kamelet earthquake-source to uri http://test-service.${YAKS_NAMESPACE}/test
+    And create KameletBinding earthquake-source-uri
     Then KameletBinding earthquake-source-uri should be available
+    Then Camel K integration earthquake-source-uri should be running
+    And Camel K integration earthquake-source-uri should print Routes startup
 
   Scenario: Verify binding
-    Given HTTP server "test-service"
-    And HTTP server timeout is 120000 ms
-    Then expect HTTP request header: Content-Type="application/json;charset=UTF-8"
-    And receive POST /test
-    And delete KameletBinding earthquake-source-uri
+    Given expect HTTP request header: Content-Type="application/json;charset=UTF-8"
+    When receive POST /test
+    Then send HTTP 200 OK
+
+  Scenario: Remove Camel K resources
+    Given delete KameletBinding earthquake-source-uri
+    And delete Kubernetes service test-service
