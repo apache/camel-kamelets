@@ -102,6 +102,7 @@ jobs:
         yaks run test/mail-sink $YAKS_RUN_OPTIONS
         yaks run test/timer-source $YAKS_RUN_OPTIONS
         yaks run test/earthquake-source $YAKS_RUN_OPTIONS
+        yaks run test/rest-openapi-sink $YAKS_RUN_OPTIONS
     - name: YAKS Report
       if: failure()
       run: |
