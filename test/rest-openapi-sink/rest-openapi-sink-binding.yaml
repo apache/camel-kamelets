@@ -1,0 +1,29 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: rest-openapi-sink-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: timer-source
+    properties:
+      period: 60000
+      message: '${pet}'
+  steps:
+    - ref:
+        kind: Kamelet
+        apiVersion: camel.apache.org/v1alpha1
+        name: insert-header-action
+      properties:
+        name: petId
+        value: ${petId}
+  sink:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: rest-openapi-sink
+    properties:
+      specification: http://test-service.${YAKS_NAMESPACE}/petstore/openapi.json
+      operation: ${operation}
