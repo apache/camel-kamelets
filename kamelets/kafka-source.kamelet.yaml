@@ -62,12 +62,12 @@ spec:
         default: SASL_SSL
       saslMechanism:
         title: SASL Mechanism
-        description: The Simple Authentication and Security Layer (SASL) Mechanism used. 
+        description: The Simple Authentication and Security Layer (SASL) Mechanism used.
         type: string
         default: PLAIN
       user:
         title: Username
-        description: Username to authenticate to Kafka 
+        description: Username to authenticate to Kafka
         type: string
         x-descriptors:
         - urn:camel:group:credentials
@@ -117,7 +117,16 @@ spec:
         x-descriptors:
         - urn:keda:metadata:consumerGroup
         - urn:keda:required
+      deserializeHeaders:
+        title: Automatically Deserialize Headers
+        description: When enabled the Kamelet source will deserialize all message headers to String representation.
+        type: boolean
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
   dependencies:
+    - github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT
+    - "camel:core"
     - "camel:kafka"
     - "camel:kamelet"
   template:
@@ -134,4 +143,10 @@ spec:
         autoOffsetReset: "{{autoOffsetReset}}"
         groupId: "{{?consumerGroup}}"
       steps:
-      - to: "kamelet:sink"
+        - set-property:
+            name: deserializeHeaders
+            constant: "{{deserializeHeaders}}"
+        - bean: "org.apache.camel.kamelets.utils.serialization.kafka.KafkaHeaderDeserializer"
+        - remove-property:
+            name: deserializeHeaders
+        - to: "kamelet:sink"
