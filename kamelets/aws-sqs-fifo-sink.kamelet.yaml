@@ -85,6 +85,7 @@ spec:
         title: AWS Host
         description: The hostname of the Amazon AWS cloud. 
         type: string
+        default: amazonaws.com
       protocol:
         title: Protocol
         description: The underlying protocol used to communicate with SQS
@@ -97,7 +98,18 @@ spec:
         type: boolean
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
-        default: false  
+        default: false
+      uriEndpointOverride:
+        title: Overwritte Endpoint URI
+        description: Set the overriding endpoint URI. This option needs to be used in combination with overrideEndpoint option.
+        type: string
+      overrideEndpoint:
+        title: Endpoint Overwrite
+        description: Set the need for overiding the endpoint URI. This option needs to be used in combination with uriEndpointOverride setting.
+        type: boolean
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false   
   dependencies:
   - "camel:aws2-sqs"
   - "camel:core"
@@ -140,6 +152,8 @@ spec:
                   useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}" 
                   messageGroupIdStrategy: "usePropertyValue"
                   messageDeduplicationIdStrategy: "useContentBasedDeduplication"
+                  uriEndpointOverride: "{{?uriEndpointOverride}}"
+                  overrideEndpoint: "{{overrideEndpoint}}"
           otherwise:
             steps:
             - to:
@@ -154,3 +168,5 @@ spec:
                   messageDeduplicationIdStrategy: "useExchangeId"
                   amazonAWSHost: "{{?amazonAWSHost}}"
                   protocol: "{{?protocol}}"
+                  uriEndpointOverride: "{{?uriEndpointOverride}}"
+                  overrideEndpoint: "{{overrideEndpoint}}"
