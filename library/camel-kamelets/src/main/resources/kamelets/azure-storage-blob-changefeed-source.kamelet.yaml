@@ -31,7 +31,7 @@ spec:
   definition:
     title: "Azure Storage Blob Changefeed Source"
     description: |-
-      Consume Events from Azure Storage Blob Changefeed.
+      Consume Events from Azure Storage Blob Change feed.
     required:
       - period
       - accountName
@@ -40,7 +40,7 @@ spec:
     properties:
       period:
         title: Period between Polls
-        description: The interval between fetches to the Azure Storage Container in milliseconds
+        description: The interval between fetches to the Azure Storage Changefeed in milliseconds
         type: integer
         default: 10000
       accountName:
