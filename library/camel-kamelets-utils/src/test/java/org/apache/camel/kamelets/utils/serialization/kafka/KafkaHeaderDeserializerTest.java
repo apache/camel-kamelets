@@ -48,7 +48,8 @@ class KafkaHeaderDeserializerTest {
         exchange.getMessage().setHeader("fooNull", null);
         exchange.getMessage().setHeader("number", 1L);
 
-        processor.process(true, exchange);
+        processor.enabled = true;
+        processor.process(exchange);
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
         Assertions.assertEquals("bar", exchange.getMessage().getHeader("foo"));
@@ -68,7 +69,8 @@ class KafkaHeaderDeserializerTest {
         exchange.getMessage().setHeader("fooBytes", "barBytes".getBytes(StandardCharsets.UTF_8));
         exchange.getMessage().setHeader("fooNull", null);
 
-        processor.process(true, exchange);
+        processor.enabled = true;
+        processor.process(exchange);
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
         Assertions.assertEquals("converted", exchange.getMessage().getHeader("foo"));
@@ -84,7 +86,8 @@ class KafkaHeaderDeserializerTest {
         exchange.getMessage().setHeader("foo", "bar");
         exchange.getMessage().setHeader("fooBytes", "barBytes".getBytes(StandardCharsets.UTF_8));
 
-        processor.process(true, exchange);
+        processor.enabled = true;
+        processor.process(exchange);
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
         Assertions.assertEquals("bar", exchange.getMessage().getHeader("foo"));
@@ -98,7 +101,8 @@ class KafkaHeaderDeserializerTest {
         exchange.getMessage().setHeader("foo", "bar");
         exchange.getMessage().setHeader("fooBytes", "barBytes".getBytes(StandardCharsets.UTF_8));
 
-        processor.process(false, exchange);
+        processor.enabled = false;
+        processor.process(exchange);
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
         Assertions.assertEquals("bar", exchange.getMessage().getHeader("foo"));

@@ -130,6 +130,12 @@ spec:
     - "camel:kafka"
     - "camel:kamelet"
   template:
+    beans:
+      - name: kafkaHeaderDeserializer
+        type: "#class:org.apache.camel.kamelets.utils.serialization.kafka.KafkaHeaderDeserializer"
+        property:
+          - key: enabled
+            value: '{{deserializeHeaders}}'
     from:
       uri: "kafka:{{topic}}"
       parameters:
@@ -143,10 +149,6 @@ spec:
         autoOffsetReset: "{{autoOffsetReset}}"
         groupId: "{{?consumerGroup}}"
       steps:
-        - set-property:
-            name: deserializeHeaders
-            constant: "{{deserializeHeaders}}"
-        - bean: "org.apache.camel.kamelets.utils.serialization.kafka.KafkaHeaderDeserializer"
-        - remove-property:
-            name: deserializeHeaders
+        - process:
+            ref: "{{kafkaHeaderDeserializer}}"
         - to: "kamelet:sink"

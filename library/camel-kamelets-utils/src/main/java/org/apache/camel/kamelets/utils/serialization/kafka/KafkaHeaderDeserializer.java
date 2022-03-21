@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import org.apache.camel.Exchange;
-import org.apache.camel.ExchangeProperty;
+import org.apache.camel.Processor;
 import org.apache.camel.TypeConverter;
 import org.apache.camel.component.kafka.KafkaConstants;
 import org.apache.camel.support.SimpleTypeConverter;
@@ -31,12 +31,15 @@ import org.apache.camel.support.SimpleTypeConverter;
  * Uses given type converter implementation set on the Camel context to convert values. If no type converter is set
  * the deserializer uses its own fallback conversion implementation.
  */
-public class KafkaHeaderDeserializer {
+public class KafkaHeaderDeserializer implements Processor {
+
+    boolean enabled = false;
 
     private final SimpleTypeConverter defaultTypeConverter = new SimpleTypeConverter(true, KafkaHeaderDeserializer::convert);
 
-    public void process(@ExchangeProperty("deserializeHeaders") boolean deserializeHeaders, Exchange exchange) throws Exception {
-        if (!deserializeHeaders) {
+    @Override
+    public void process(Exchange exchange) throws Exception {
+        if (!enabled) {
             return;
         }
 
@@ -85,5 +88,9 @@ public class KafkaHeaderDeserializer {
      */
     private boolean shouldDeserialize(Map.Entry<String, Object> entry) {
         return !entry.getKey().equals(KafkaConstants.HEADERS) && !entry.getKey().equals(KafkaConstants.MANUAL_COMMIT);
+    }
+
+    public void setEnabled(String enabled) {
+        this.enabled = Boolean.parseBoolean(enabled);
     }
 }
