@@ -40,7 +40,9 @@ spec:
       template:
         title: Template
         description: The inline template for JSLT Transformation
-        type: binary
+        type: string
+        example: "file:////template.json"
+        pattern: "^(http|https|file|classpath)://.*"
   dependencies:
   - "camel:jslt"
   - "camel:kamelet"
@@ -51,4 +53,4 @@ spec:
       - to:
           uri: "jslt:"
           parameters:
-            resourceUri: "base64:{{template}}"
+            resourceUri: "{{template}}"
