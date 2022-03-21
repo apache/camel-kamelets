@@ -124,7 +124,7 @@ function kameletPropertyList (definition) {
     Object.entries(definition.properties)
       .filter(([name, value]) => definition.required.includes(name))
       .sort(([name1, value1], [name2, value2]) => name1.localeCompare(name2))
-      .map(([name, value]) => [name, value.example ? value.example : `The ${value.title}`])
+      .map(([name, value]) => [name, value.example ? util.escapeAutoLinks(value.example) : `The ${value.title}`])
   )
 }
 
@@ -162,4 +162,3 @@ const kameletBindings = {
       },
     }),
 }
-
