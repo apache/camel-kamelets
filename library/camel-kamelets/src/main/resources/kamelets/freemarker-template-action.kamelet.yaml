@@ -40,7 +40,9 @@ spec:
       template:
         title: Template
         description: The inline template
-        type: binary
+        type: string
+        example: "file:////template.ftl"
+        pattern: "^(http|https|file|classpath)://.*"
   dependencies:
   - "camel:freemarker"
   - "camel:kamelet"
@@ -51,4 +53,4 @@ spec:
       - to:
           uri: "freemarker:"
           parameters:
-            resourceUri: "base64:{{template}}"
+            resourceUri: "{{template}}"
