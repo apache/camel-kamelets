@@ -31,8 +31,6 @@ spec:
     title: "XJ Template Action"
     description: |-
       Apply the XJ Identity Transformation to transform JSON to XML and XML to JSON. 
-
-      The template property needs to be encoded in base64, so when you pass it as parameter, don't forget to encode it.
     required:
       - direction
       - template
@@ -45,7 +43,9 @@ spec:
       template:
         title: Template
         description: The inline template to apply a transformation through template.
-        type: binary
+        type: string
+        example: "file:////template.vm"
+        pattern: "^(http|https|file|classpath)://.*"
   dependencies:
   - "camel:xj"
   - "camel:kamelet"
@@ -56,5 +56,5 @@ spec:
       - to:
           uri: "xj:"
           parameters:
-            resourceUri: "base64:{{template}}"
+            resourceUri: "{{template}}"
             transformDirection: "{{direction}}"
