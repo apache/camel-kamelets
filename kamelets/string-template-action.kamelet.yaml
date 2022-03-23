@@ -31,8 +31,6 @@ spec:
     title: "String Template Action"
     description: |-
       Apply a String Template.
-
-      The template property needs to be encoded in base64, so when you pass it as parameter, don't forget to encode it.
     required:
       - template
     type: object
@@ -40,7 +38,9 @@ spec:
       template:
         title: Template
         description: The inline template
-        type: binary
+        type: string
+        example: "file:////template.tm"
+        pattern: "^(http|https|file|classpath)://.*"
   dependencies:
   - "camel:stringtemplate"
   - "camel:kamelet"
@@ -51,4 +51,4 @@ spec:
       - to:
           uri: "string-template:"
           parameters:
-            resourceUri: "base64:{{template}}"
+            resourceUri: "{{template}}"
