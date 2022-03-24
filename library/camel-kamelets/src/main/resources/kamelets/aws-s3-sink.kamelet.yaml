@@ -97,6 +97,10 @@ spec:
         x-descriptors:
           - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+      keyName:
+        title: Key Name
+        description: The key name for saving an element in the bucket.
+        type: string
   dependencies:
     - "camel:core"
     - "camel:aws2-s3"
@@ -117,11 +121,6 @@ spec:
             - set-header:
                 name: CamelAwsS3Key
                 simple: "${header[ce-file]}"
-          otherwise:
-            steps:
-            - set-header:
-                name: CamelAwsS3Key
-                simple: "${exchangeId}"
       - to:
           uri: "aws2-s3:{{bucketNameOrArn}}"
           parameters:
@@ -132,3 +131,4 @@ spec:
             useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
             uriEndpointOverride: "{{?uriEndpointOverride}}"
             overrideEndpoint: "{{overrideEndpoint}}"
+            keyName: "{{?keyName}}"

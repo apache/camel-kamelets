@@ -37,11 +37,11 @@ spec:
       
       When using a default Credentials Provider the S3 client will load the credentials through this provider and won't use the static credential. This is reason for not having the access key and secret key as mandatory parameter for this Kamelet.
 
-      The Kamelet expects the following headers to be set:
+      The Kamelet can use the following header to be set:
 
       - `file` / `ce-file`: as the file name to upload
 
-      If the header won't be set the exchange ID will be used as file name.
+      If the header won't be set, the Kamelet parameter `keyName` should be populated. The `keyName` parameter could be a simple value language from the Apache Camel.
     required:
       - bucketNameOrArn
       - region
@@ -97,6 +97,10 @@ spec:
         x-descriptors:
           - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+      keyName:
+        title: Key Name
+        description: The key name for saving an element in the bucket.
+        type: string
   dependencies:
     - "camel:core"
     - "camel:aws2-s3"
@@ -117,11 +121,6 @@ spec:
             - set-header:
                 name: CamelAwsS3Key
                 simple: "${header[ce-file]}"
-          otherwise:
-            steps:
-            - set-header:
-                name: CamelAwsS3Key
-                simple: "${exchangeId}"
       - to:
           uri: "aws2-s3:{{bucketNameOrArn}}"
           parameters:
@@ -132,3 +131,4 @@ spec:
             useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
             uriEndpointOverride: "{{?uriEndpointOverride}}"
             overrideEndpoint: "{{overrideEndpoint}}"
+            keyName: "{{?keyName}}"
