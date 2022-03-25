@@ -73,6 +73,17 @@ spec:
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+      uriEndpointOverride:
+        title: Overwrite Endpoint URI
+        description: Set the overriding endpoint URI. This option needs to be used in combination with overrideEndpoint option.
+        type: string
+      overrideEndpoint:
+        title: Endpoint Overwrite
+        description: Set the need for overiding the endpoint URI. This option needs to be used in combination with uriEndpointOverride setting.
+        type: boolean
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
   types:
     out:
       mediaType: application/octet-stream
@@ -88,6 +99,8 @@ spec:
         accessKey: "{{?accessKey}}"
         region: "{{region}}"
         useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+        uriEndpointOverride: "{{?uriEndpointOverride}}"
+        overrideEndpoint: "{{overrideEndpoint}}"
       steps:
       - set-body:
           simple: "${body.data().asInputStream()}"
