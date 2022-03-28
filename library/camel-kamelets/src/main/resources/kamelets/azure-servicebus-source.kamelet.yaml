@@ -32,6 +32,8 @@ spec:
     title: "Azure Servicebus Source"
     description: |-
       Consume Messages from Azure Servicebus.
+
+      The subscribtion name parameter needs to be populated in case of consuming from a Topic.
     required:
       - topicOrQueueName
       - connectionString
@@ -54,6 +56,10 @@ spec:
         description: Sets the receive mode for the receiver, possible values are PEEK_LOCK and RECEIVE_AND_DELETE
         type: String
         default: PEEK_LOCK
+      subscriptionName:
+        title: Subscription Name
+        description: Sets the name of the subscription in the topic to listen to. This parameter is mandatory in case of topic.
+        type: String
   types:
     out:
       mediaType: application/octet-stream
@@ -67,6 +73,7 @@ spec:
       parameters:
         connectionString: "{{connectionString}}"
         serviceBusReceiveMode: "{{serviceBusReceiveMode}}"
+        subscriptionName: "{{?subscriptionName}}"
       steps:
       - to: "kamelet:sink"
 
