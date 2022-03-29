@@ -30,7 +30,7 @@ spec:
   definition:
     title: "Salesforce Update Sink"
     description: |-
-      Updates an object in  Salesforce. The body received must contain a
+      Updates an object in  Salesforce. The body received must contain either a
       JSON key-value pair for each property to update or a valid Salesforce
       object. If using key-value pair, sObjectName and sObjectId must be
       provided as parameters.
@@ -45,12 +45,12 @@ spec:
     properties:
       sObjectName:
         title: Object Name
-        description: Type of the object
+        description: Type of the object. Only required if using key-value pair.
         type: string
         example: Contact
       sObjectId:
         title: Object Id
-        description: Id of the object
+        description: Id of the object. Only required if using key-value pair.
         type: string
       loginUrl:
         title: Login URL
@@ -107,5 +107,5 @@ spec:
         - to:
             uri: "{{local-salesforce}}:updateSObject"
             parameters:
-              sObjectId: "{{sObjectId}}"
-              sObjectName: "{{sObjectName}}"
+              sObjectId: "{{?sObjectId}}"
+              sObjectName: "{{?sObjectName}}"
