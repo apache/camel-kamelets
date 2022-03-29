@@ -29,25 +29,16 @@ metadata:
 spec:
   definition:
     title: "Salesforce Delete Sink"
-    description: "Removes an object from Salesforce."
+    description: |-
+        Removes an object from Salesforce. The body received must be a json
+      containing two keys: sObjectId and sObjectName.
     required:
-      - sObjectId
-      - sObjectName
       - clientId
       - clientSecret
       - userName
       - password
     type: object
     properties:
-      sObjectName:
-        title: Object Name
-        description: Type of the object
-        type: string
-        example: Contact
-      sObjectId:
-        title: Object Id
-        description: Id of the object
-        type: string
       loginUrl:
         title: Login URL
         description: The Salesforce instance login URL
@@ -100,8 +91,13 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - set-header:
+            name: sObjectId
+            jsonpath: "$['sObjectId']"
+        - set-header:
+            name: sObjectName
+            jsonpath: "$['sObjectName']"
+        - setBody:
+            simple: "${null}"
         - to:
             uri: "{{local-delete-salesforce}}:deleteSObject"
-            parameters:
-              sObjectId: "{{sObjectId}}"
-              sObjectName: "{{sObjectName}}"

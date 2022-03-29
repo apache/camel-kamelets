@@ -29,7 +29,11 @@ metadata:
 spec:
   definition:
     title: "Salesforce Update Sink"
-    description: "Updates an object in  Salesforce."
+    description: |-
+        Updates an object in  Salesforce. The body received must contain a
+      JSON key-value pair for each property to update or a valid Salesforce
+      object. If using key-value pair, sObjectName and sObjectId must be
+      provided as parameters.
     required:
       - clientId
       - clientSecret

@@ -29,7 +29,9 @@ metadata:
 spec:
   definition:
     title: "Salesforce Create Sink"
-    description: "Creates an object in  Salesforce."
+    description: |-
+        Creates an object in Salesforce. The body of the message must contain
+      the JSON of the salesforce object.
     required:
       - sObjectName
       - clientId

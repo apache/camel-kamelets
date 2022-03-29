@@ -27,7 +27,7 @@ spec:
       name: timer-source
     properties:
       period: 60000
-      message: "Hello Salesforce!"
+      message: " { \"sObjectId\": \"${id}\", \"sObjectName\" : \"Contact\" }"
   sink:
     ref:
       apiVersion: camel.apache.org/v1alpha1
@@ -38,5 +38,3 @@ spec:
       clientSecret: "${client_secret}"
       userName: "${userName}"
       password: "${password}"
-      sObjectName: "Contact"
-      sObjectId: "${id}"
