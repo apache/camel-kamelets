@@ -30,7 +30,7 @@ spec:
   definition:
     title: "Salesforce Delete Sink"
     description: |-
-        Removes an object from Salesforce. The body received must be a json
+      Removes an object from Salesforce. The body received must be a json
       containing two keys: sObjectId and sObjectName.
 
       Example body: { "sObjectId": "XXXXX0", "sObjectName": "Contact" }
@@ -103,3 +103,7 @@ spec:
             simple: "${null}"
         - to:
             uri: "{{local-delete-salesforce}}:deleteSObject"
+        - remove-header:
+            name: sObjectId
+        - remove-header:
+            name: sObjectName
