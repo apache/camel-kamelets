@@ -77,9 +77,19 @@ spec:
   types:
     in:
       mediaType: application/json
+      schema:
+        type: object
+        required: ["sObjectId", "sObjectName"]
+        properties:
+          sObjectId:
+            type: string
+          sObjectName:
+            type: string
   dependencies:
   - "camel:salesforce"
   - "camel:kamelet"
+  - "camel:core"
+  - "camel:jsonpath"
   template:
     beans:
       - name: local-delete-salesforce
