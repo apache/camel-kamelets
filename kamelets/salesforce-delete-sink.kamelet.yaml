@@ -32,6 +32,8 @@ spec:
     description: |-
         Removes an object from Salesforce. The body received must be a json
       containing two keys: sObjectId and sObjectName.
+
+      Example body: { "sObjectId": "XXXXX0", "sObjectName": "Contact" }
     required:
       - clientId
       - clientSecret
