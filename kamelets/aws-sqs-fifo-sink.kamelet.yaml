@@ -152,6 +152,8 @@ spec:
                   useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}" 
                   messageGroupIdStrategy: "usePropertyValue"
                   messageDeduplicationIdStrategy: "useContentBasedDeduplication"
+                  amazonAWSHost: "{{?amazonAWSHost}}"
+                  protocol: "{{?protocol}}"
                   uriEndpointOverride: "{{?uriEndpointOverride}}"
                   overrideEndpoint: "{{overrideEndpoint}}"
           otherwise:
