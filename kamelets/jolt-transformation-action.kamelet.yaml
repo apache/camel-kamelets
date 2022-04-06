@@ -41,6 +41,11 @@ spec:
         type: string
         example: "file:////template.json"
         pattern: "^(http|https|file|classpath)://.*"
+      transform:
+        title: Transform DSL
+        description: Specifies the Transform DSL of the endpoint resource. If none is specified Chainr will be used. Possible values are Chainr, Shiftr, Defaultr, Removr and Sortr.
+        type: string
+        default: "Chainr"
   dependencies:
   - "camel:jolt"
   - "camel:kamelet"
@@ -52,3 +57,4 @@ spec:
           uri: "jolt:"
           parameters:
             resourceUri: "{{template}}"
+            transformDsl: "{{transform}}"
