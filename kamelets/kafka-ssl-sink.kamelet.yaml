@@ -169,6 +169,6 @@ spec:
                       name: kafka.PARTITION_KEY
                       simple: ${header[ce-partitionkey]}
         - to:
+            uri: '{{kafka-ssl-sink-local}}:{{topic}}'
             parameters:
               configuration: '#bean:{{kafka-ssl-sink-configuration-local}}'
-            uri: '{{kafka-ssl-sink-local}}:{{topic}}'
