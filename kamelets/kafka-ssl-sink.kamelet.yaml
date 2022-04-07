@@ -38,6 +38,13 @@ spec:
       - `partition-key` / `ce-partitionkey`: as message partition key
 
       Both the headers are optional.
+    required:
+      - topic
+      - bootstrapServers
+      - sslKeystoreLocation
+      - sslKeystorePassword
+      - sslTruststoreLocation
+      - sslKeyPassword
     properties:
       bootstrapServers:
         description: Comma separated list of Kafka Broker URLs
@@ -103,13 +110,6 @@ spec:
           SASL_SSL and SSL are supported
         title: Security Protocol
         type: string
-    required:
-      - topic
-      - bootstrapServers
-      - sslKeystoreLocation
-      - sslKeystorePassword
-      - sslTruststoreLocation
-      - sslKeyPassword
     title: Kafka SSL Sink
     type: object
   dependencies:
