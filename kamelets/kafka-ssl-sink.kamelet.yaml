@@ -77,6 +77,10 @@ spec:
           and only needed if ssl.keystore.location is configured.
         title: SSL Keystore Password
         type: string
+        format: password
+        x-descriptors:
+          - urn:alm:descriptor:com.tectonic.ui:password
+          - urn:camel:group:credentials
       sslTruststoreLocation:
         description: The location of the trust store file.
         title: SSL Truststore Location
@@ -85,6 +89,9 @@ spec:
         description: The password of the private key in the key store file.
         title: SSL Key Password
         type: string
+        x-descriptors:
+          - urn:alm:descriptor:com.tectonic.ui:password
+          - urn:camel:group:credentials
       topic:
         description: Comma separated list of Kafka topic names
         title: Topic Names
