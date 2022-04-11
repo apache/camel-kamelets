@@ -96,6 +96,14 @@ spec:
         type: string
         example: "my-group-id"
         x-descriptors:
+        - urn:keda:metadata:consumerGroup
+        - urn:keda:required
+      consumerGroup:
+        title: Consumer Group
+        description: A string that uniquely identifies the group of consumers to which this source belongs
+        type: string
+        example: "my-group-id"
+        x-descriptors:
           - urn:keda:metadata:consumerGroup
           - urn:keda:required
       deserializeHeaders:
@@ -173,7 +181,7 @@ spec:
           - key: saslMechanism
             value: '{{saslMechanism}}'
           - key: groupId
-            value: '{{groupId}}'
+            value: '{{?consumerGroup}}'
           - key: autoOffsetReset
             value: '{{autoOffsetReset}}'
           - key: pollOnError
