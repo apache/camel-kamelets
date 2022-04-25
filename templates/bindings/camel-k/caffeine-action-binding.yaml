@@ -1,3 +1,4 @@
+# example_for_kamelet_doc
 apiVersion: camel.apache.org/v1alpha1
 kind: KameletBinding
 metadata:
@@ -9,12 +10,69 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: timer-source
     properties:
-      message: "Hello"
+      message: '{"foo":"bar"}'
+      period: 10000
   steps:
   - ref:
       kind: Kamelet
       apiVersion: camel.apache.org/v1alpha1
+      name: json-deserialize-action
+  - ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: log-sink
+  - ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: insert-header-action
+    properties:
+      name: "caffeine-key"
+      value: "my-key"
+  - ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: insert-header-action
+    properties:
+      name: "caffeine-operation"
+      value: "PUT"
+  - ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
       name: caffeine-action
+    properties:
+      cacheName: "my-cache"
+  # extract the foo field from the body, cleaning the body
+  - ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: extract-field-action
+    properties:
+      field: '{"foo"}'
+  - ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: log-sink
+  - ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: insert-header-action
+    properties:
+      name: "caffeine-key"
+      value: "my-key"
+  - ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: insert-header-action
+    properties:
+      name: "caffeine-operation"
+      value: "GET"
+  # retrieve the json payload from the cache and put into the body
+  - ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: caffeine-action
+    properties:
+      cacheName: "my-cache"
   sink:
     ref:
       kind: KafkaTopic

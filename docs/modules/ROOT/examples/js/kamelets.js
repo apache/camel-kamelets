@@ -16,6 +16,8 @@
  */
 
 const util = require('camel-website-util')
+const fs = require('fs')
+const yaml = require('js-yaml');
 
 const QUOTED_CHARS = /[$`"\\]/g
 
@@ -26,34 +28,48 @@ const QUOTE_REPLACEMENTS = {
   '\\': '\\\\',
 }
 
+// marker added to the first line of kamelet binding files in templates/bindings/camel-k
+// generator will not generate a kamelet binding example and will source this kamelet binding file into the generated doc
+const EXAMPLE_KAMELET_DOC_MARKER = "example_for_kamelet_doc"
+
+// regex to replace the sink type
+const regex = new RegExp(`(  sink:\\n\\s*ref:\\n)(\\s*kind:)(.*)(\\n\\s*apiVersion:)(.*)(\\n\\s*name:)(.*)`, 'g')
+
 const svgb64Prefix = 'data:image/svg+xml;base64,'
 
 module.exports = {
   binding: (binding, apiVersion, kind, metadata_, spec_, refKind, refApiVersion, refName) => {
       const name = metadata_.name
       const metadata = {name: `${name}-binding`}
-      const kamelet = {
-        ref: {
-          kind,
+
+      genExample = shouldGenerateKameletBindingExample(metadata.name)
+      if (genExample) {
+        const kamelet = {
+          ref: {
+            kind,
+            apiVersion,
+            name,
+          },
+          properties: kameletPropertyList(spec_.definition)
+        }
+        const platform = {
+          ref: {
+            kind: refKind,
+            apiVersion: refApiVersion,
+            name: refName,
+          },
+        }
+        const base = {
           apiVersion,
-          name,
-        },
-        properties: kameletPropertyList(spec_.definition)
+          kind: 'KameletBinding',
+          metadata,
+        }
+        const fn = kameletBindings[binding] || (() => `unrecognized binding ${binding}`)
+        return fn(base, kamelet, platform)
+      } else {
+        content = readKameletBindingExample(metadata.name, refApiVersion, refKind, refName)
+        return content
       }
-      const platform = {
-        ref: {
-          kind: refKind,
-          apiVersion: refApiVersion,
-          name: refName,
-        },
-      }
-      const base = {
-        apiVersion,
-        kind: 'KameletBinding',
-        metadata,
-      }
-      const fn = kameletBindings[binding] || (() => `unrecognized binding ${binding}`)
-      return fn(base, kamelet, platform)
   },
 
   bindingCommand: (binding, name, definition, topic) => {
@@ -127,6 +143,45 @@ function kameletPropertyList (definition) {
       .map(([name, value]) => [name, value.example ? util.escapeAutoLinks(value.example) : `The ${value.title}`])
   )
 }
+
+// verify if the existing kamelet binding example should be automatically generated
+// by checking if there is a comment marker in the first line
+function shouldGenerateKameletBindingExample(file) {
+  f = "../camel-kamelets/templates/bindings/camel-k/" + file + ".yaml"
+  try {
+    bufContent = fs.readFileSync(f)
+    content = bufContent.toString()
+    line = content.split(/\r?\n/)[0]
+    return line.indexOf(EXAMPLE_KAMELET_DOC_MARKER) < 0
+  } catch (err) {
+    // in case there is no kamelet binding example file, assume the example should be generated
+    return true
+  }
+}
+
+// source the kamelet binding example from the example file
+// skip the first line and replace the sink kind when the kind is a knative channel
+function readKameletBindingExample(file, apiVersion, kind, name) {
+  f = "../camel-kamelets/templates/bindings/camel-k/" + file + ".yaml"
+  try {
+    bufContent = fs.readFileSync(f)
+    content = bufContent.toString()
+    lines = content.split(/\r?\n/)
+    klbContent = ""
+    // skip the first line, as it contains the comment marker
+    for (i = 1; i < lines.length; i++) {
+      klbContent += lines[i] + "\n"
+    }
+    // uses a knative channel sink
+    klbContent = klbContent.replace(regex, "$1$2 " + kind + "$4 " + apiVersion + "$6 " + name);
+    yamlDoc = yaml.load(klbContent);
+    return yamlDoc
+  } catch (err) {
+    console.log("Error reading kamelet binding example file " + file + ": " +  err)
+    return err
+  }
+}
+
 
 const kameletBindings = {
   action: (base, kamelet, platform) => Object.assign(base, {
