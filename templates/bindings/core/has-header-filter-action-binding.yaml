@@ -6,8 +6,13 @@
         message: "{ \"foo\": \"John\"}"
     steps:
       - to:
+          uri: "kamelet:insert-header-action"
+          parameters:
+            name: "my-header"
+            value: "my-value"
+      - to:
           uri: "kamelet:has-header-filter-action"
           parameters:
-            name: "headerName"
+            name: "my-header"
       - to:
           uri: "log:info"

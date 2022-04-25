@@ -3,8 +3,14 @@
       uri: "kamelet:timer-source"
       parameters:
         period: 1000
-        message: "{ \"foo\": \"John\"}"
+        message: '{"first": "John", "last":"Doe"}'
     steps:
+      - to:
+          uri: "kamelet:json-deserialize-action"
+      - to:
+          uri: "kamelet:protobuf-serialize-action"
+          parameters:
+            schema: "message Person { required string first = 1; required string last = 2; }"
       - to:
           uri: "kamelet:protobuf-deserialize-action"
           parameters:

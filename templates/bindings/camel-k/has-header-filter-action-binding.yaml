@@ -1,3 +1,4 @@
+# example_for_kamelet_doc
 apiVersion: camel.apache.org/v1alpha1
 kind: KameletBinding
 metadata:
@@ -14,9 +15,16 @@ spec:
   - ref:
       kind: Kamelet
       apiVersion: camel.apache.org/v1alpha1
+      name: insert-header-action
+    properties:
+      name: "my-header"
+      value: "my-value"
+  - ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
       name: has-header-filter-action
     properties:
-      name: "headerName"
+      name: "my-header"
   sink:
     ref:
       kind: KafkaTopic

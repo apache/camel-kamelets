@@ -3,12 +3,14 @@
       uri: "kamelet:timer-source"
       parameters:
         period: 1000
-        message: "{ \"foo\": \"John\"}"
+        message: '{"foo": "John"}'
     steps:
+      - to:
+          uri: "kamelet:json-deserialize-action"
       - to:
           uri: "kamelet:insert-field-action"
           parameters:
             field: "The Field"
-        value: "The Value"
+            value: "The Value"
       - to:
           uri: "log:info"

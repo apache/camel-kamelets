@@ -3,11 +3,19 @@
       uri: "kamelet:timer-source"
       parameters:
         period: 1000
-        message: "{ \"foo\": \"John\"}"
+        message: '{"first":"Ada","last":"Lovelace"}'
     steps:
+      - to:
+          uri: "kamelet:json-deserialize-action"
+      - to:
+          uri: "kamelet:avro-serialize-action"
+          parameters:
+            schema: "{\"type\": \"record\", \"namespace\": \"com.example\", \"name\": \"FullName\", \"fields\": [{\"name\": \"first\", \"type\": \"string\"},{\"name\": \"last\", \"type\": \"string\"}]}"
       - to:
           uri: "kamelet:avro-deserialize-action"
           parameters:
             schema: "{\"type\": \"record\", \"namespace\": \"com.example\", \"name\": \"FullName\", \"fields\": [{\"name\": \"first\", \"type\": \"string\"},{\"name\": \"last\", \"type\": \"string\"}]}"
+      - to:
+          uri: "kamelet:json-serialize-action"
       - to:
           uri: "log:info"

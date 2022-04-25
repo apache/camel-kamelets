@@ -163,6 +163,12 @@ Kamelets submitted with tests that verify their correctness **MUST** be labeled 
 
 **NOTE**: there's no way at the moment to inject credentials for external systems into the CI in order to write more advanced tests, but we can expect we'll find an usable strategy in the long run
 
+### Kamelet Binding Examples
+
+Binding examples are highly encouraged to be added under `templates/bindings/camel-k` directory for Kamelet Binding and `templates/bindings/core` for the YAML routes.
+
+When the Kamelet Catalog documentation is generated, the examples in each Kamelet documentation page are automatically generated, but the generator code is not wise enough and it may generate a Kamelet Binding that doesn't work, requiring additional steps. In this case, the binding example should be added to the above mentioned directories, and add the comment marker at the first line `"# example_for_kamelet_doc"` only in the Camel K Kamelet Binding example (in `templates/bindings/camel-k`). When the documentation mechanism runs, it will source this binding example into the kamelet documentation page as example.
+
 ## Releasing
 
 This project is released as standard Apache Camel module.
