@@ -63,6 +63,11 @@ spec:
         title: MongoDB Database
         description: Sets the name of the MongoDB database to target.
         type: string
+      streamFilter:
+        title: Stream Filter
+        description: Filter condition for change streams consumer.
+        type: string
+        example: "{ '$match':{'$or':[{'fullDocument.stringValue': 'specificValue'}]} }"
   dependencies:
     - "camel:kamelet"
     - "camel:mongodb"
@@ -80,6 +85,7 @@ spec:
         username: "{{?username}}"
         database: "{{database}}"
         consumerType: "changeStreams"
+        streamFilter: "{{?streamFilter}}"
       steps:
       - marshal:
           json: {}
