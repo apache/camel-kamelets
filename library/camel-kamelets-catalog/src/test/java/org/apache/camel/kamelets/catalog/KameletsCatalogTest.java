@@ -20,7 +20,9 @@ import io.fabric8.camelk.v1alpha1.Kamelet;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.JSONSchemaProps;
 import io.github.classgraph.ClassGraph;
 
+import org.apache.camel.catalog.DefaultCamelCatalog;
 import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
+import org.apache.camel.tooling.model.ComponentModel;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -31,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class KameletsCatalogTest {
     static KameletsCatalog catalog;
@@ -124,5 +127,49 @@ public class KameletsCatalogTest {
     @Test
     void testAllKameletDependencies() throws Exception {
         catalog.getAllKameletDependencies();
+    }
+
+    @Test
+    void testOptionsParams() throws Exception {
+        DefaultCamelCatalog cc = new DefaultCamelCatalog();
+        List<String> names = catalog.getKameletsName();
+        for (String name:
+             names) {
+            Map<String, Object> kd = catalog.getKameletTemplate(name);
+            Map<String,Object> f = (Map) kd.get("from");
+            Map<String,Object> p = (Map) f.get("parameters");
+            List<String> deps = catalog.getKameletDependencies(name).stream()
+                    .filter(d -> !d.contains("mvn:") && !d.contains("camel:gson") && !d.contains("camel:core") && !d.contains("camel:kamelet") && !d.contains("github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT"))
+                    .collect(Collectors.toList());
+            String cleanName;
+            if (!deps.isEmpty()) {
+                if (deps.get(0).equals("camel:jackson") && deps.size() > 1) {
+                    cleanName = deps.get(1).replace("camel:", "");
+                } else {
+                    cleanName = deps.get(0).replace("camel:", "");
+                }
+                if (cleanName.equalsIgnoreCase("cassandraql")) {
+                    cleanName = "cql";
+                }
+                if (cleanName.equalsIgnoreCase("aws2-ddb") && name.equals("aws-ddb-streams-source")) {
+                    cleanName = "aws2-ddb-streams";
+                }
+                if (p != null && !p.isEmpty()) {
+                    ComponentModel componentModel = cc.componentModel(cleanName);
+                    if (componentModel != null) {
+                        List<ComponentModel.EndpointOptionModel> ce = componentModel.getEndpointOptions();
+                        List<String> ceInternal =
+                                ce.stream()
+                                        .map(ComponentModel.EndpointOptionModel::getName)
+                                        .collect(Collectors.toList());
+                    for (Map.Entry<String, Object> entry : p.entrySet()) {
+                            if (!entry.getKey().equals("period") && (!name.equals("kafka-ssl-source") && !name.equals("google-sheets-source") && !name.equals("google-mail-source") && !name.equals("google-calendar-source") && !name.equals("timer-source") && !name.equals("cron-source") && !name.equals("fhir-source"))) {
+                                assertTrue(ceInternal.contains(entry.getKey()));
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
