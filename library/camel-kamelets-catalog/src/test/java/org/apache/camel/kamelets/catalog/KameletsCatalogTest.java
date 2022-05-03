@@ -31,8 +31,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class KameletsCatalogTest {
@@ -131,6 +133,8 @@ public class KameletsCatalogTest {
 
     @Test
     void testOptionsParams() throws Exception {
+        String[] bannedDeps = {"mvn:", "camel:gson", "camel:core", "camel:kamelet", "github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT"};
+        List<String> bannedDepsList = Arrays.asList(bannedDeps);
         DefaultCamelCatalog cc = new DefaultCamelCatalog();
         List<String> names = catalog.getKameletsName();
         for (String name:
@@ -139,8 +143,7 @@ public class KameletsCatalogTest {
             Map<String,Object> f = (Map) kd.get("from");
             Map<String,Object> p = (Map) f.get("parameters");
             List<String> deps = catalog.getKameletDependencies(name).stream()
-                    .filter(d -> !d.contains("mvn:") && !d.contains("camel:gson") && !d.contains("camel:core") && !d.contains("camel:kamelet") && !d.contains("github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT"))
-                    .collect(Collectors.toList());
+                    .filter(Predicate.not(bannedDepsList::contains)).collect(Collectors.toList());
             String cleanName;
             if (!deps.isEmpty()) {
                 if (deps.get(0).equals("camel:jackson") && deps.size() > 1) {
