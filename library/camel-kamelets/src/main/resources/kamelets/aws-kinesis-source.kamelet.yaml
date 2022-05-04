@@ -102,6 +102,4 @@ spec:
         uriEndpointOverride: "{{?uriEndpointOverride}}"
         overrideEndpoint: "{{overrideEndpoint}}"
       steps:
-      - set-body:
-          simple: "${body.data().asInputStream()}"
       - to: "kamelet:sink"
