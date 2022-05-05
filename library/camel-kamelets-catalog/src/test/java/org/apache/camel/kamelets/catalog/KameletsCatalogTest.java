@@ -179,9 +179,8 @@ public class KameletsCatalogTest {
                                         .collect(Collectors.toList());
 
                         for (Map.Entry<String, Object> entry : p.entrySet()) {
-                            if (!entry.getKey().equals("period") && (!name.equals("kafka-ssl-source") && !name.equals("timer-source") && !name.equals("cron-source"))) {
-                                    assertTrue(ceInternal.contains(entry.getKey()));
-
+                            if (!entry.getKey().equals("period") && (!name.equals("kafka-ssl-source") && !name.equals("timer-source") && !name.equals("cron-source") && !name.equals("fhir-source"))) {
+                                assertTrue(ceInternal.contains(entry.getKey()));
                             }
                         }
                     }
