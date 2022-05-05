@@ -22,6 +22,8 @@ import io.github.classgraph.ClassGraph;
 
 import org.apache.camel.catalog.DefaultCamelCatalog;
 import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
+import org.apache.camel.tooling.model.ApiMethodModel;
+import org.apache.camel.tooling.model.ApiModel;
 import org.apache.camel.tooling.model.ComponentModel;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -32,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -157,6 +160,15 @@ public class KameletsCatalogTest {
                 if (cleanName.equalsIgnoreCase("aws2-ddb") && name.equals("aws-ddb-streams-source")) {
                     cleanName = "aws2-ddb-streams";
                 }
+                if (cleanName.equalsIgnoreCase("google-sheets") && name.equals("google-sheets-source")) {
+                    cleanName = "google-sheets-stream";
+                }
+                if (cleanName.equalsIgnoreCase("google-mail") && name.equals("google-mail-source")) {
+                    cleanName = "google-mail-stream";
+                }
+                if (cleanName.equalsIgnoreCase("google-calendar") && name.equals("google-calendar-source")) {
+                    cleanName = "google-calendar-stream";
+                }
                 if (p != null && !p.isEmpty()) {
                     ComponentModel componentModel = cc.componentModel(cleanName);
                     if (componentModel != null) {
@@ -165,9 +177,11 @@ public class KameletsCatalogTest {
                                 ce.stream()
                                         .map(ComponentModel.EndpointOptionModel::getName)
                                         .collect(Collectors.toList());
-                    for (Map.Entry<String, Object> entry : p.entrySet()) {
-                            if (!entry.getKey().equals("period") && (!name.equals("kafka-ssl-source") && !name.equals("google-sheets-source") && !name.equals("google-mail-source") && !name.equals("google-calendar-source") && !name.equals("timer-source") && !name.equals("cron-source") && !name.equals("fhir-source"))) {
-                                assertTrue(ceInternal.contains(entry.getKey()));
+
+                        for (Map.Entry<String, Object> entry : p.entrySet()) {
+                            if (!entry.getKey().equals("period") && (!name.equals("kafka-ssl-source") && !name.equals("timer-source") && !name.equals("cron-source"))) {
+                                    assertTrue(ceInternal.contains(entry.getKey()));
+
                             }
                         }
                     }
