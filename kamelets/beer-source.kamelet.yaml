@@ -28,5 +28,5 @@ spec:
       parameters:
         period: "{{period}}"
       steps:
-        - to: https://random-data-api.com/api/beer/random_beer
-        - to: "kamelet:sink"
+      - to: https://random-data-api.com/api/beer/random_beer
+      - to: "kamelet:sink"
