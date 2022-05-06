@@ -123,7 +123,12 @@ spec:
         type: boolean
         x-descriptors:
           - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
-        default: false    
+        default: false
+      delay:
+        title: Delay
+        description: Milliseconds before the next poll of the selected stream
+        type: long
+        default: 500
   dependencies:
     - "camel:aws2-sqs"
     - "camel:kamelet"
@@ -140,6 +145,7 @@ spec:
         protocol: "{{?protocol}}"
         useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
         uriEndpointOverride: "{{?uriEndpointOverride}}"
-        overrideEndpoint: "{{overrideEndpoint}}"  
+        overrideEndpoint: "{{overrideEndpoint}}"
+        delay: "{{delay}}"  
       steps:
       - to: "kamelet:sink"
