@@ -84,6 +84,11 @@ spec:
         x-descriptors:
           - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+      delay:
+        title: Delay
+        description: Milliseconds before the next poll of the selected bucket
+        type: long
+        default: 500
   types:
     out:
       mediaType: application/octet-stream
@@ -101,5 +106,6 @@ spec:
         useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
         uriEndpointOverride: "{{?uriEndpointOverride}}"
         overrideEndpoint: "{{overrideEndpoint}}"
+        delay: "{{delay}}"
       steps:
       - to: "kamelet:sink"
