@@ -24,6 +24,10 @@ spec:
   types:
     out:
       mediaType: application/json
+  dependencies:
+    - "camel:timer"
+    - "camel:http"
+    - "camel:kamelet"
   template:
     from:
       uri: "timer:beer"
