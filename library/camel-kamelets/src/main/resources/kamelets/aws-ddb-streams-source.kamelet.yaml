@@ -89,6 +89,11 @@ spec:
         x-descriptors:
           - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+      delay:
+        title: Delay
+        description: Milliseconds before the next poll from database
+        type: long
+        default: 500
   types:
     out:
       mediaType: application/json
@@ -107,6 +112,7 @@ spec:
         useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
         uriEndpointOverride: "{{?uriEndpointOverride}}"
         overrideEndpoint: "{{overrideEndpoint}}"
+        delay: "{{delay}}"
       steps:
       - marshal:
           json:
