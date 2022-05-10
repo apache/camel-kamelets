@@ -55,7 +55,7 @@ spec:
         title: "IBM MQ Server Port"
         description: "IBM MQ Server port"
         type: integer
-        example: 1414
+        default: 1414
       destinationType:
         title: "Destination Type"
         description: "The JMS destination type (queue or topic)"
@@ -95,7 +95,7 @@ spec:
   template:
     beans:
       - name: wmqConnectionFactory
-        type: "#class:com.ibm.mq.jms.MQQueueConnectionFactory"
+        type: "#class:com.ibm.mq.jms.MQConnectionFactory"
         property:
           - key: XMSC_WMQ_HOST_NAME
             value: '{{serverName}}'
