@@ -95,11 +95,11 @@ spec:
         title: Batch Size
         description: The batch size (in bytes) in streaming upload mode
         type: integer
-        default: '1000000'
+        default: 1000000
       streamingUploadTimeout:
         title: Streaming Upload Timeout
         description: While streaming upload mode is true, this option set the timeout to complete upload
-        type: long
+        type: integer
       namingStrategy:
         title: Naming Strategy
         description: The naming strategy to use in streaming upload mode. There are 2 enums and the value can be one of progressive, random

@@ -40,12 +40,16 @@ spec:
       bridgeErrorHandler: 
         title: Bridge Rrror Handler
         description: Allows for bridging the consumer to the Camel routing Error Handler
-        type: bool
+        type: boolean
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:checkbox
         default: false
       sessionSupport: 
         title: Session Support
         description: Whether to enable session support which enables HttpSession for each http request.
-        type: bool
+        type: boolean
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:checkbox
         default: false
       subprotocol:
         title: Subprotocol
@@ -55,7 +59,9 @@ spec:
       lazyStartProducer:
         title: Lazy Start Producer
         description: Whether the producer should be started lazy (on the first message).
-        type: bool
+        type: boolean
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:checkbox
         default: false
       sendTimeout:
         title: Send Timeout
@@ -80,7 +86,9 @@ spec:
       crossOriginFilterOn:
         title: Cross Origin Filter
         description: Whether to enable CORS.
-        type: bool
+        type: boolean
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:checkbox
         default: false
       filterPath:
         title: Filter Path
@@ -90,7 +98,9 @@ spec:
       enableJmx:
         title: Filter Path
         description: Enable JMX support.
-        type: bool
+        type: boolean
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:checkbox
         default: false
   dependencies:
     - "camel:kamelet"

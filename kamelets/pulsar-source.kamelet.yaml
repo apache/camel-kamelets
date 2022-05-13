@@ -77,20 +77,20 @@ spec:
       consumerQueueSize:
         title: Consumer Queue Size
         description: Size of the consumer queue
-        type: int
+        type: integer
         default: 10
       deadLetterTopic:
         title: Dead Letter Topic
         description: "Name of the topic where the messages which fail maxRedeliverCount times will be sent. Note: if not set, default topic name will be topicName-subscriptionName-DLQ."
-        type: int
+        type: integer
       maxRedeliverCount:
         title: Maximum Redelivery Count
         description: "Maximum number of times that a message will be redelivered before being sent to the dead letter queue. If this value is not set, no Dead Letter Policy will be created."
-        type: int
+        type: integer
       negativeAckRedeliveryDelayMicros:
         title: Negative Ack Redelivery Delay in Microseconds
         description: "Set the negative acknowledgement delay."
-        type: long
+        type: integer
         default: 60000000
       messageListener:
         title: Message Listener
@@ -102,12 +102,12 @@ spec:
       numberOfConsumers:
         title: Number Of Consumers
         description: "Number of consumers."
-        type: int
+        type: integer
         default: 1        
       numberOfConsumerThreads:
         title: Number Of Consumer Threads
         description: "Number of threads to receive and handle messages when using a separate thread pool."
-        type: int
+        type: integer
         default: 1
       readCompacted:
         title: Read Compacted

@@ -42,7 +42,7 @@ spec:
       topicOrQueueName:
         title: Topic Or Queue Name
         description: Topic Or Queue Name for the Azure Servicebus instance
-        type: String
+        type: string
       connectionString:
         title: Connection String
         description: Connection String for Azure Servicebus instance
@@ -54,12 +54,12 @@ spec:
       serviceBusReceiveMode:
         title: Servicebus Receive Mode
         description: Sets the receive mode for the receiver, possible values are PEEK_LOCK and RECEIVE_AND_DELETE
-        type: String
+        type: string
         default: PEEK_LOCK
       subscriptionName:
         title: Subscription Name
         description: Sets the name of the subscription in the topic to listen to. This parameter is mandatory in case of topic.
-        type: String
+        type: string
   types:
     out:
       mediaType: application/octet-stream
