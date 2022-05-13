@@ -81,12 +81,12 @@ spec:
       batchingMaxMessages:
         title: Batching Maximum Messages
         description: "The maximum size to batch messages."
-        type: int
+        type: integer
         default: 1000
       batchingMaxPublishDelayMicros:
         title: Batching Maximum Publish Delay in Microsecond
         description: "The maximum time period within which the messages sent will be batched if batchingEnabled is true."
-        type: long
+        type: integer
         default: 1000
       blockIfQueueFull:
         title: Block If Queue Full
@@ -109,7 +109,7 @@ spec:
       initialSequenceId:
         title: Initial SequenceId
         description: "The first message published will have a sequence Id of initialSequenceId 1."
-        type: long
+        type: integer
         default: -1
       lazyStartProducer:
         title: Number Of Consumer Threads
@@ -121,12 +121,12 @@ spec:
       maxPendingMessages:
         title: Maximum Pending Messages
         description: "Size of the pending massages queue. When the queue is full, by default, any further sends will fail unless blockIfQueueFull=true."
-        type: int
+        type: integer
         default: 1000
       maxPendingMessagesAcrossPartitions:
         title: Maximum Pending Messages Across Partitions
         description: "The maximum number of pending messages for partitioned topics. The maxPendingMessages value will be reduced if (number of partitions maxPendingMessages) exceeds this value. Partitioned topics have a pending message queue for each partition."
-        type: int
+        type: integer
         default: 50000
       messageRoutingMode:
         title: Message Routing Mode
@@ -144,7 +144,7 @@ spec:
       sendTimeoutMs:
         title: Send Timeout in Milliseconds
         description: "Send timeout in milliseconds."
-        type: int
+        type: integer
         default: 30000
     type: object
   template:
