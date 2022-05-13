@@ -31,6 +31,8 @@ var (
 	// Needed until this is fixed: https://issues.apache.org/jira/browse/CAMEL-16788
 	forbiddenParameterNames = []string{"home", "hostname", "language", "lang", "namespace", "path", "podname", "pod-name", "port", "pwd", "shell", "term"}
 
+	allowedParameterTypes = []string{"array", "boolean", "integer", "null", "number", "object", "string"}
+
 	paramRegexp = regexp.MustCompile(`{{[?]?([A-Za-z0-9-._]+)(?:[:][^}]*)?}}`)
 )
 
@@ -277,6 +279,10 @@ func verifyParameters(kamelets []KameletInfo) (errors []error) {
 			}
 			if p.Type == "" {
 				errors = append(errors, fmt.Errorf("property %q in kamelet %q does not contain type", k, kamelet.Name))
+			} else {
+				if !contains(allowedParameterTypes, p.Type) {
+					errors = append(errors, fmt.Errorf("property %q in kamelet %q has an invalid type parameter %q. Parameter Type must be one of %q.", k, kamelet.Name, p.Type, allowedParameterTypes))
+				}
 			}
 			if p.Title == "" {
 				errors = append(errors, fmt.Errorf("property %q in kamelet %q does not contain title", k, kamelet.Name))
@@ -507,4 +513,14 @@ func handleGeneralError(desc string, err error) {
 		fmt.Printf("%s: %+v\n", desc, err)
 		os.Exit(2)
 	}
+}
+
+func contains(s []string, str string) bool {
+	for _, v := range s {
+		if v == str {
+			return true
+		}
+	}
+
+	return false
 }

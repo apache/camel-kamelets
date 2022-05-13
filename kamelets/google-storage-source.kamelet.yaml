@@ -45,7 +45,8 @@ spec:
       serviceAccountKey:
         title: Service Account Key
         description: The Service account key that can be used as credentials for the Google Cloud Storage access.
-        type: binary
+        type: string
+        format: base64
         x-descriptors:
         - urn:camel:group:credentials
       deleteAfterRead:
