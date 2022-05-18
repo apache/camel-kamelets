@@ -33,15 +33,15 @@ spec:
     description: |-
       Send file to an FTP Server through Secure Copy Protocol
     required:
-      - host
-      - port
+      - serverName
+      - serverPort
     type: object
     properties:
-      host:
+      serverName:
         title: Hostname
         description: Hostname of the FTP server
         type: string
-      port:
+      serverPort:
         title: Port
         description: Port of the FTP server
         type: string
@@ -66,7 +66,7 @@ spec:
       uri: kamelet:source
       steps:
       - to:
-          uri: "scp:{{host}}:{{port}}"
+          uri: "scp:{{serverName}}:{{serverPort}}"
           parameters:
             username: "{{?username}}"
             password: "{{?password}}"
