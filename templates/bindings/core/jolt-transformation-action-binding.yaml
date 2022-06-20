@@ -4,10 +4,10 @@
       parameters:
         period: 1000
         message: "{ \"foo\": \"John\"}"
-    steps:
-      - to:
-          uri: "kamelet:jolt-transformation-action"
-          parameters:
-            template: "The Template"
-      - to:
-          uri: "log:info"
+      steps:
+        - to:
+            uri: "kamelet:jolt-transformation-action"
+            parameters:
+              template: "The Template"
+        - to:
+            uri: "log:info"

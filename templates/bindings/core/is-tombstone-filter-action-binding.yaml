@@ -4,8 +4,8 @@
       parameters:
         period: 1000
         message: "{ \"foo\": \"John\"}"
-    steps:
-      - to:
-          uri: "kamelet:is-tombstone-filter-action"
-      - to:
-          uri: "log:info"
+      steps:
+        - to:
+            uri: "kamelet:is-tombstone-filter-action"
+        - to:
+            uri: "log:info"

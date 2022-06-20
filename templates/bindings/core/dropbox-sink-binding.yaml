@@ -4,11 +4,10 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:dropbox-sink"
-          parameters:
-            accessToken: "The Dropbox Access Token"
-            clientIdentifier: "The Client Identifier"
-            remotePath: "The Remote Path"
-    
+      steps:
+        - to:
+            uri: "kamelet:dropbox-sink"
+            parameters:
+              accessToken: "The Dropbox Access Token"
+              clientIdentifier: "The Client Identifier"
+              remotePath: "The Remote Path"

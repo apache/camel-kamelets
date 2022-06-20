@@ -4,10 +4,10 @@
       parameters:
         period: 1000
         message: "{ \"foo\": \"John\"}"
-    steps:
-      - to:
-          uri: "kamelet:predicate-filter-action"
-          parameters:
-            expression: "@.foo =~ /.*John/"
-      - to:
-          uri: "log:info"
+      steps:
+        - to:
+            uri: "kamelet:predicate-filter-action"
+            parameters:
+              expression: "@.foo =~ /.*John/"
+        - to:
+            uri: "log:info"

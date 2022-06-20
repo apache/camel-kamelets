@@ -4,11 +4,11 @@
       parameters:
         period: 1000
         message: "{ \"foo\": \"John\"}"
-    steps:
-      - to:
-          uri: "kamelet:xj-template-action"
-          parameters:
-            direction: "The Direction"
-        template: "The Template"
-      - to:
-          uri: "log:info"
+      steps:
+        - to:
+            uri: "kamelet:xj-template-action"
+            parameters:
+              direction: "The Direction"
+          template: "The Template"
+        - to:
+            uri: "log:info"

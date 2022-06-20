@@ -4,12 +4,12 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:aws-kinesis-firehose-sink"
-          parameters:
-            accessKey: "The Access Key"
-            region: "eu-west-1"
-            secretKey: "The Secret Key"
-            streamName: "The Stream Name"
-    
+      steps:
+        - to:
+            uri: "kamelet:aws-kinesis-firehose-sink"
+            parameters:
+              accessKey: "The Access Key"
+              region: "eu-west-1"
+              secretKey: "The Secret Key"
+              streamName: "The Stream Name"
+

@@ -4,12 +4,11 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:aws-sqs-sink"
-          parameters:
-            accessKey: "The Access Key"
-            queueNameOrArn: "The Queue Name"
-            region: "eu-west-1"
-            secretKey: "The Secret Key"
-    
+      steps:
+        - to:
+            uri: "kamelet:aws-sqs-sink"
+            parameters:
+              accessKey: "The Access Key"
+              queueNameOrArn: "The Queue Name"
+              region: "eu-west-1"
+              secretKey: "The Secret Key"

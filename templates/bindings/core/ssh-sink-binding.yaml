@@ -4,11 +4,10 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:ssh-sink"
-          parameters:
-            connectionHost: "The Connection Host"
-            password: "The Password"
-            username: "The Username"
-    
+      steps:
+        - to:
+            uri: "kamelet:ssh-sink"
+            parameters:
+              connectionHost: "The Connection Host"
+              password: "The Password"
+              username: "The Username"

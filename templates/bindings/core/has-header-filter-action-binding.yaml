@@ -4,15 +4,15 @@
       parameters:
         period: 1000
         message: "{ \"foo\": \"John\"}"
-    steps:
-      - to:
-          uri: "kamelet:insert-header-action"
-          parameters:
-            name: "my-header"
-            value: "my-value"
-      - to:
-          uri: "kamelet:has-header-filter-action"
-          parameters:
-            name: "my-header"
-      - to:
-          uri: "log:info"
+      steps:
+        - to:
+            uri: "kamelet:insert-header-action"
+            parameters:
+              name: "my-header"
+              value: "my-value"
+        - to:
+            uri: "kamelet:has-header-filter-action"
+            parameters:
+              name: "my-header"
+        - to:
+            uri: "log:info"

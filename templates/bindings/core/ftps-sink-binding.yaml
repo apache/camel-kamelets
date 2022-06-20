@@ -4,12 +4,11 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:ftps-sink"
-          parameters:
-            connectionHost: "The Connection Host"
-            directoryName: "The Directory Name"
-            password: "The Password"
-            username: "The Username"
-    
+      steps:
+        - to:
+            uri: "kamelet:ftps-sink"
+            parameters:
+              connectionHost: "The Connection Host"
+              directoryName: "The Directory Name"
+              password: "The Password"
+              username: "The Username"

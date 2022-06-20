@@ -4,10 +4,10 @@
       parameters:
         period: 1000
         message: "{ \"foo\": \"John\"}"
-    steps:
-      - to:
-          uri: "kamelet:delay-action"
-          parameters:
-            milliseconds: 1000
-      - to:
-          uri: "log:info"
+      steps:
+        - to:
+            uri: "kamelet:delay-action"
+            parameters:
+              milliseconds: 1000
+        - to:
+            uri: "log:info"

@@ -4,10 +4,9 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:elasticsearch-index-sink"
-          parameters:
-            clusterName: "quickstart"
-            hostAddresses: "quickstart-es-http:9200"
-    
+      steps:
+        - to:
+            uri: "kamelet:elasticsearch-index-sink"
+            parameters:
+              clusterName: "quickstart"
+              hostAddresses: "quickstart-es-http:9200"

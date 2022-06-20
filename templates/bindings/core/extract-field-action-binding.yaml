@@ -4,10 +4,10 @@
       parameters:
         period: 1000
         message: "{ \"foo\": \"John\"}"
-    steps:
-      - to:
-          uri: "kamelet:extract-field-action"
-          parameters:
-            field: "The Field"
-      - to:
-          uri: "log:info"
+      steps:
+        - to:
+            uri: "kamelet:extract-field-action"
+            parameters:
+              field: "The Field"
+        - to:
+            uri: "log:info"

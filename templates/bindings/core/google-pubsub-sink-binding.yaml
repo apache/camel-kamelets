@@ -4,11 +4,10 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:google-pubsub-sink"
-          parameters:
-            destinationName: "The Destination Name"
-            projectId: "The Project Id"
-            serviceAccountKey: "The Service Account Key"
-    
+      steps:
+        - to:
+            uri: "kamelet:google-pubsub-sink"
+            parameters:
+              destinationName: "The Destination Name"
+              projectId: "The Project Id"
+              serviceAccountKey: "The Service Account Key"

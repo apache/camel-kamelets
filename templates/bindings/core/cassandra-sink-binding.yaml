@@ -4,12 +4,11 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:cassandra-sink"
-          parameters:
-            connectionHost: "localhost"
-            connectionPort: 9042
-            keyspace: "customers"
-            query: "The Query"
-    
+      steps:
+        - to:
+            uri: "kamelet:cassandra-sink"
+            parameters:
+              connectionHost: "localhost"
+              connectionPort: 9042
+              keyspace: "customers"
+              query: "The Query"

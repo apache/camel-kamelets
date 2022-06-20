@@ -4,13 +4,12 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:pulsar-sink"
-          parameters:
-            namespaceName: "The Pulsar Namespace Name"
-            serviceUrl: "The Service URL"
-            tenant: "The Tenant Name"
-            topic: "The Topic Name"
-            topicType: "The Topic Type"
-    
+      steps:
+        - to:
+            uri: "kamelet:pulsar-sink"
+            parameters:
+              namespaceName: "The Pulsar Namespace Name"
+              serviceUrl: "The Service URL"
+              tenant: "The Tenant Name"
+              topic: "The Topic Name"
+              topicType: "The Topic Type"

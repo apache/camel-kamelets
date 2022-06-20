@@ -4,12 +4,11 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:azure-eventhubs-sink"
-          parameters:
-            eventhubName: "The Eventhubs Name"
-            namespaceName: "The Eventhubs Namespace"
-            sharedAccessKey: "The Share Access Key"
-            sharedAccessName: "The Share Access Name"
-    
+      steps:
+        - to:
+            uri: "kamelet:azure-eventhubs-sink"
+            parameters:
+              eventhubName: "The Eventhubs Name"
+              namespaceName: "The Eventhubs Namespace"
+              sharedAccessKey: "The Share Access Key"
+              sharedAccessName: "The Share Access Name"
