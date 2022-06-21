@@ -4,10 +4,9 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:jms-apache-artemis-sink"
-          parameters:
-            brokerURL: "tcp://my-host:61616"
-            destinationName: "person"
-    
+      steps:
+        - to:
+            uri: "kamelet:jms-apache-artemis-sink"
+            parameters:
+              brokerURL: "tcp://my-host:61616"
+              destinationName: "person"

@@ -4,10 +4,9 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:solr-sink"
-          parameters:
-            collection: "The Collection"
-            servers: "The Servers"
-    
+      steps:
+        - to:
+            uri: "kamelet:solr-sink"
+            parameters:
+              collection: "The Collection"
+              servers: "The Servers"

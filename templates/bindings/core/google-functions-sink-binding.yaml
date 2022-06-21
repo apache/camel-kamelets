@@ -4,12 +4,11 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:google-functions-sink"
-          parameters:
-            functionName: "The Function Name"
-            projectId: "The Project Id"
-            region: "The Region"
-            serviceAccountKey: "The Service Account Key"
-    
+      steps:
+        - to:
+            uri: "kamelet:google-functions-sink"
+            parameters:
+              functionName: "The Function Name"
+              projectId: "The Project Id"
+              region: "The Region"
+              serviceAccountKey: "The Service Account Key"

@@ -4,10 +4,9 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:redis-sink"
-          parameters:
-            redisHost: "The Redis Host"
-            redisPort: "The Redis Port"
-    
+      steps:
+        - to:
+            uri: "kamelet:redis-sink"
+            parameters:
+              redisHost: "The Redis Host"
+              redisPort: "The Redis Port"

@@ -4,11 +4,10 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:mongodb-sink"
-          parameters:
-            collection: "The MongoDB Collection"
-            database: "The MongoDB Database"
-            hosts: "The MongoDB Hosts"
-    
+      steps:
+        - to:
+            uri: "kamelet:mongodb-sink"
+            parameters:
+              collection: "The MongoDB Collection"
+              database: "The MongoDB Database"
+              hosts: "The MongoDB Hosts"

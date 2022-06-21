@@ -7,7 +7,6 @@
         query: "INSERT INTO accounts (username,city) VALUES (:#username,:#city)"
         serverName: "localhost"
         username: "The Username"
-    steps:
-      - to:
-          uri: "log:info"
-    
+      steps:
+        - to:
+            uri: "log:info"

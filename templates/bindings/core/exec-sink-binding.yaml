@@ -4,9 +4,8 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:exec-sink"
-          parameters:
-            executable: "The Executable Command"
-    
+      steps:
+        - to:
+            uri: "kamelet:exec-sink"
+            parameters:
+              executable: "The Executable Command"

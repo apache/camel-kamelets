@@ -4,12 +4,11 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:kafka-sink"
-          parameters:
-            bootstrapServers: "The Bootstrap Servers"
-            password: "The Password"
-            topic: "The Topic Names"
-            user: "The Username"
-    
+      steps:
+        - to:
+            uri: "kamelet:kafka-sink"
+            parameters:
+              bootstrapServers: "The Bootstrap Servers"
+              password: "The Password"
+              topic: "The Topic Names"
+              user: "The Username"

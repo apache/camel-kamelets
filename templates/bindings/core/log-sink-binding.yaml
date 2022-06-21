@@ -4,7 +4,6 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:log-sink"
-    
+      steps:
+        - to:
+            uri: "kamelet:log-sink"

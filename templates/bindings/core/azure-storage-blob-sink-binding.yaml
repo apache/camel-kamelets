@@ -4,11 +4,10 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:azure-storage-blob-sink"
-          parameters:
-            accessKey: "The Access Key"
-            accountName: "The Account Name"
-            containerName: "The Container Name"
-    
+      steps:
+        - to:
+            uri: "kamelet:azure-storage-blob-sink"
+            parameters:
+              accessKey: "The Access Key"
+              accountName: "The Account Name"
+              containerName: "The Container Name"

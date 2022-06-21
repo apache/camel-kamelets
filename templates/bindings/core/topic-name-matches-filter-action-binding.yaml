@@ -4,10 +4,10 @@
       parameters:
         period: 1000
         message: "{ \"foo\": \"John\"}"
-    steps:
-      - to:
-          uri: "kamelet:topic-name-matches-filter-action"
-          parameters:
-            regex: "The Regex"
-      - to:
-          uri: "log:info"
+      steps:
+        - to:
+            uri: "kamelet:topic-name-matches-filter-action"
+            parameters:
+              regex: "The Regex"
+        - to:
+            uri: "log:info"

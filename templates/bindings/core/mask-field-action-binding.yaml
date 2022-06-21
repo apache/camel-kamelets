@@ -4,11 +4,11 @@
       parameters:
         period: 1000
         message: "{ \"foo\": \"John\"}"
-    steps:
-      - to:
-          uri: "kamelet:mask-field-action"
-          parameters:
-            fields: "The Fields"
-        replacement: "The Replacement"
-      - to:
-          uri: "log:info"
+      steps:
+        - to:
+            uri: "kamelet:mask-field-action"
+            parameters:
+              fields: "The Fields"
+          replacement: "The Replacement"
+        - to:
+            uri: "log:info"

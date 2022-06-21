@@ -4,10 +4,9 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:google-storage-sink"
-          parameters:
-            bucketNameOrArn: "The Bucket Name Or ARN"
-            serviceAccountKey: "The Service Account Key"
-    
+      steps:
+        - to:
+            uri: "kamelet:google-storage-sink"
+            parameters:
+              bucketNameOrArn: "The Bucket Name Or ARN"
+              serviceAccountKey: "The Service Account Key"

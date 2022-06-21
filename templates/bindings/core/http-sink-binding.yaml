@@ -4,9 +4,8 @@
       parameters:
         period: 1000
         message: "Hello Camel JBang"
-    steps:
-      - to:
-          uri: "kamelet:http-sink"
-          parameters:
-            url: "https://my-service/path"
-    
+      steps:
+        - to:
+            uri: "kamelet:http-sink"
+            parameters:
+              url: "https://my-service/path"
