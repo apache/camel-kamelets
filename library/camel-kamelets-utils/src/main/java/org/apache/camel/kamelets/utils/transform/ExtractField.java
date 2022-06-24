@@ -16,51 +16,85 @@
  */
 package org.apache.camel.kamelets.utils.transform;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.Exchange;
-import org.apache.camel.ExchangeProperty;
 import org.apache.camel.InvalidPayloadException;
+import org.apache.camel.Processor;
 
-import java.util.Map;
+public class ExtractField implements Processor {
 
-public class ExtractField {
+    String field;
+    String headerOutputName;
+    boolean headerOutput;
+    boolean strictHeaderCheck;
 
-    public void process(@ExchangeProperty("field") String field, @ExchangeProperty("headerOutput") boolean headerOutput, @ExchangeProperty("headerOutputName") String headerOutputName, @ExchangeProperty("strictHeaderCheck") boolean strictHeaderCheck, Exchange ex) {
-        final String EXTRACTED_FIELD_HEADER = "CamelKameletsExtractFieldName";
+    static final String EXTRACTED_FIELD_HEADER = "CamelKameletsExtractFieldName";
+
+    /**
+     * Default constructor
+     */
+    public ExtractField() {
+    }
+
+    /**
+     * Constructor using field member.
+     * @param field the field name to extract.
+     */
+    public ExtractField(String field) {
+        this.field = field;
+    }
+
+    @Override
+    public void process(Exchange ex) throws InvalidPayloadException {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNodeBody = ex.getMessage().getBody(JsonNode.class);
+
+        if (jsonNodeBody == null) {
+            throw new InvalidPayloadException(ex, JsonNode.class);
+
+        }
+
         Map<Object, Object> body = mapper.convertValue(jsonNodeBody, new TypeReference<Map<Object, Object>>(){});
-        if (!headerOutput) {
+        if (!headerOutput || (strictHeaderCheck && checkHeaderExistence(ex))) {
             ex.getMessage().setBody(body.get(field));
         } else {
-            if (!strictHeaderCheck) {
-                if ("none".equalsIgnoreCase(headerOutputName)) {
-                    ex.getMessage().setHeader(EXTRACTED_FIELD_HEADER, body.get(field));
-                } else {
-                    ex.getMessage().setHeader(headerOutputName, body.get(field));
-                }
-            } else {
-                if (checkHeaderExistence(EXTRACTED_FIELD_HEADER, ex) || checkHeaderExistence(headerOutputName, ex)) {
-                    ex.getMessage().setBody(body.get(field));
-                } else {
-                    if ("none".equalsIgnoreCase(headerOutputName)) {
-                        ex.getMessage().setHeader(EXTRACTED_FIELD_HEADER, body.get(field));
-                    } else {
-                        ex.getMessage().setHeader(headerOutputName, body.get(field));
-                    }
-                }
-            }
+            extractToHeader(ex, body);
         }
     }
 
-    private final boolean checkHeaderExistence(String headerName, Exchange exchange) {
-        if (exchange.getMessage().getHeaders().containsKey(headerName)) {
-            return true;
+    private void extractToHeader(Exchange ex, Map<Object, Object> body) {
+        if (headerOutputName == null || headerOutputName.isEmpty() || "none".equalsIgnoreCase(headerOutputName)) {
+            ex.getMessage().setHeader(EXTRACTED_FIELD_HEADER, body.get(field));
         } else {
-            return false;
+            ex.getMessage().setHeader(headerOutputName, body.get(field));
         }
     }
 
+    private boolean checkHeaderExistence(Exchange exchange) {
+        if (headerOutputName == null || headerOutputName.isEmpty() || "none".equalsIgnoreCase(headerOutputName)) {
+            return exchange.getMessage().getHeaders().containsKey(EXTRACTED_FIELD_HEADER);
+        } else {
+            return exchange.getMessage().getHeaders().containsKey(headerOutputName);
+        }
+    }
+
+    public void setField(String field) {
+        this.field = field;
+    }
+
+    public void setHeaderOutput(boolean headerOutput) {
+        this.headerOutput = headerOutput;
+    }
+
+    public void setHeaderOutputName(String headerOutputName) {
+        this.headerOutputName = headerOutputName;
+    }
+
+    public void setStrictHeaderCheck(boolean strictHeaderCheck) {
+        this.strictHeaderCheck = strictHeaderCheck;
+    }
 }

@@ -32,7 +32,7 @@ spec:
     description: |-
       Adds a custom field with a simple language parsed value to the message in transit.
 
-      The extract field action expected an application/json content type. 
+      The extract field action expected an application/json content type.
 
       If for example you have an array like '{ "foo":"John", "bar":30 }' and your action has been configured with field as 'element' and value as 'hello', you'll get '{ "foo":"John", "bar":30, "element":"hello" }'
     required:
@@ -54,6 +54,14 @@ spec:
   - "camel:jackson"
   - "camel:kamelet"
   template:
+    beans:
+      - name: insertField
+        type: "#class:org.apache.camel.kamelets.utils.transform.InsertField"
+        property:
+          - key: field
+            value: '{{field}}'
+          - key: value
+            value: '{{value}}'
     from:
       uri: kamelet:source
       steps:
@@ -65,22 +73,17 @@ spec:
                 name: deserialized
                 constant: "true"
             - unmarshal:
-                json: 
+                json:
                   library: Jackson
                   unmarshalType: com.fasterxml.jackson.databind.JsonNode
-      - set-property:
-          name: "field"
-          constant: "{{field}}"
-      - set-property:
-          name: "value"
-          simple: "{{value}}"
-      - bean: "org.apache.camel.kamelets.utils.transform.InsertField"
+      - process:
+          ref: "{{insertField}}"
       - choice:
           when:
           - simple: "${exchangeProperty[deserialized]} == 'true'"
             steps:
             - marshal:
-                json: 
+                json:
                   library: Jackson
                   unmarshalType: com.fasterxml.jackson.databind.JsonNode
             - set-header:

@@ -32,13 +32,13 @@ spec:
     description: |-
       Extract a field from the message body.
 
-      The extract field action expects an application/json content type. 
+      The extract field action expects an application/json content type.
 
       The field parameter allows you to specify which field of the json the user wants to extract. By default the message body will be overriden with the extracted field.
 
       The optional parameter headerOutput allows the user to specify wheter the extracted field should be stored in a message header named 'CamelKameletsExtractFieldName', leaving the message body untouched.
 
-      The optional parameter headerOutputName allows the user to specify a custom header name instead of the default 'CamelKameletsExtractFieldName'. This parameter must be used in conjunction with headerOutput. 
+      The optional parameter headerOutputName allows the user to specify a custom header name instead of the default 'CamelKameletsExtractFieldName'. This parameter must be used in conjunction with headerOutput.
       If no headerOutputName parameter will be provided, the default 'CamelKameletsExtractFieldName' will be used.
 
       The optional parameter strictHeaderCheck allows to user to enable a strict header name check. If enabled the action will check if the header output name (custom or default) has been used already in the     exchange. If so, the extracted field will be stored in the message body, if not, the extracted field will be stored in the selected header (custom or default).
@@ -77,6 +77,20 @@ spec:
   - "camel:core"
   - "camel:jackson"
   template:
+    beans:
+      - name: extractField
+        type: "#class:org.apache.camel.kamelets.utils.transform.ExtractField"
+        property:
+          - key: field
+            value: '{{field}}'
+          - key: headerOutput
+            value: '{{headerOutput}}'
+          - key: headerOutput
+            value: '{{headerOutput}}'
+          - key: headerOutputName
+            value: '{{headerOutputName}}'
+          - key: strictHeaderCheck
+            value: '{{strictHeaderCheck}}'
     from:
       uri: kamelet:source
       steps:
@@ -88,28 +102,17 @@ spec:
                 name: deserialized
                 constant: "true"
             - unmarshal:
-                json: 
+                json:
                   library: Jackson
                   unmarshalType: com.fasterxml.jackson.databind.JsonNode
-      - set-property:
-          name: "field"
-          constant: "{{field}}"
-      - set-property:
-          name: "headerOutput"
-          constant: "{{headerOutput}}"
-      - set-property:
-          name: "headerOutputName"
-          constant: "{{headerOutputName}}"
-      - set-property:
-          name: "strictHeaderCheck"
-          constant: "{{strictHeaderCheck}}"
-      - bean: "org.apache.camel.kamelets.utils.transform.ExtractField"
+      - process:
+          ref: "{{extractField}}"
       - choice:
           when:
           - simple: "${exchangeProperty[deserialized]} == 'true'"
             steps:
             - marshal:
-                json: 
+                json:
                   library: Jackson
                   unmarshalType: com.fasterxml.jackson.databind.JsonNode
             - set-header:
