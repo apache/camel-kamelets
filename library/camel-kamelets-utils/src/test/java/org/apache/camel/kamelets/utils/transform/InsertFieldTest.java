@@ -19,19 +19,11 @@ package org.apache.camel.kamelets.utils.transform;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.Exchange;
 import org.apache.camel.InvalidPayloadException;
-import org.apache.camel.component.aws2.ddb.Ddb2Constants;
-import org.apache.camel.component.aws2.ddb.Ddb2Operations;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.DefaultExchange;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import software.amazon.awssdk.services.dynamodb.model.AttributeAction;
-import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
-import software.amazon.awssdk.services.dynamodb.model.AttributeValueUpdate;
-import software.amazon.awssdk.services.dynamodb.model.ReturnValue;
-
-import java.util.Map;
 
 class InsertFieldTest {
 
@@ -39,30 +31,29 @@ class InsertFieldTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private final InsertField processor = new InsertField();
+    private InsertField processor;
 
     private final String baseJson = "{" +
                 "\"name\":\"Rajesh Koothrappali\"" +
             "}";
 
-    private final String arrayJson = "[\"batman\",\"spiderman\",\"wonderwoman\"]";
-
     @BeforeEach
     void setup() {
-        this.camelContext = new DefaultCamelContext();
+        camelContext = new DefaultCamelContext();
+        processor = new InsertField();
     }
-
     @Test
     void shouldAddFieldToPlainJson() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
         exchange.getMessage().setBody(mapper.readTree(baseJson));
 
-        processor.process("age", "29", exchange);
+        processor = new InsertField("age", "29");
+        processor.process(exchange);
 
         Assertions.assertEquals(exchange.getMessage().getBody(String.class), "{" +
-                        "\"name\":\"Rajesh Koothrappali\"," +
-                        "\"age\":\"29\"" +
+                            "\"name\":\"Rajesh Koothrappali\"," +
+                            "\"age\":\"29\"" +
                         "}");
     }
 
@@ -70,11 +61,20 @@ class InsertFieldTest {
     void shouldAddFieldToArrayJson() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
+        String arrayJson = "[\"batman\",\"spiderman\",\"wonderwoman\"]";
         exchange.getMessage().setBody(mapper.readTree(arrayJson));
 
-        processor.process(null, "green lantern", exchange);
+        processor.setValue("green lantern");
+        processor.process(exchange);
 
         Assertions.assertEquals(exchange.getMessage().getBody(String.class),
                 "[\"batman\",\"spiderman\",\"wonderwoman\",\"green lantern\"]");
+    }
+
+    @Test
+    void shouldFailOnInvalidPayloadType() {
+        Exchange exchange = new DefaultExchange(camelContext);
+        exchange.getMessage().setBody(baseJson);
+        Assertions.assertThrows(InvalidPayloadException.class, () -> processor.process(exchange));
     }
 }

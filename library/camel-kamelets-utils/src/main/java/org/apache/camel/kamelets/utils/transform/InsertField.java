@@ -20,13 +20,37 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.camel.Exchange;
-import org.apache.camel.ExchangeProperty;
 import org.apache.camel.InvalidPayloadException;
+import org.apache.camel.Processor;
 
-public class InsertField {
+public class InsertField implements Processor {
 
-    public JsonNode process(@ExchangeProperty("field") String field, @ExchangeProperty("value") String value, Exchange ex) throws InvalidPayloadException {
+    String field;
+    String value;
+
+    /**
+     * Default constructor.
+     */
+    public InsertField() {
+    }
+
+    /**
+     * Constructor using fields.
+     * @param field the field name to insert.
+     * @param value the value of the new field.
+     */
+    public InsertField(String field, String value) {
+        this.field = field;
+        this.value = value;
+    }
+
+    public void process(Exchange ex) throws InvalidPayloadException {
         JsonNode body = ex.getMessage().getBody(JsonNode.class);
+
+        if (body == null) {
+            throw new InvalidPayloadException(ex, JsonNode.class);
+        }
+
         switch (body.getNodeType()) {
             case ARRAY:
                 ((ArrayNode) body).add(value);
@@ -38,7 +62,15 @@ public class InsertField {
                 ((ObjectNode) body).put(field, value);
                 break;
         }
-        return body;
+
+        ex.getMessage().setBody(body);
     }
 
+    public void setField(String field) {
+        this.field = field;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }
