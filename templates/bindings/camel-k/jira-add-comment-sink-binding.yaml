@@ -1,0 +1,29 @@
+# example_for_kamelet_doc
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: jira-add-comment-sink-binding
+spec:
+  source:
+    ref:
+      kind: KafkaTopic
+      apiVersion: kafka.strimzi.io/v1beta1
+      name: my-topic
+  steps:
+  - ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: insert-header-action
+    properties:
+      name: "issueKey"
+      value: "MYP-167"
+  sink:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: jira-add-comment-sink
+    properties:
+      jiraUrl: "jira server url"
+      username: "username"
+      password: "password"
+

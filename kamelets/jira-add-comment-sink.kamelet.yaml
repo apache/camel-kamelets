@@ -17,7 +17,7 @@
 apiVersion: camel.apache.org/v1alpha1
 kind: Kamelet
 metadata:
-  name: jira-source
+  name: jira-add-comment-sink
   annotations:
     camel.apache.org/kamelet.support.level: "Preview"
     camel.apache.org/catalog.version: "main-SNAPSHOT"
@@ -25,12 +25,19 @@ metadata:
     camel.apache.org/provider: "Apache Software Foundation"
     camel.apache.org/kamelet.group: "JIRA"
   labels:
-    camel.apache.org/kamelet.type: "source"
+    camel.apache.org/kamelet.type: "sink"
 spec:
   definition:
-    title: "Jira Source"
+    title: "Jira Add Comment Sink"
     description: |-
-      Receive notifications about new issues from Jira.
+      Add a new comment to an existing issue in Jira.
+
+      The Kamelet expects the following headers to be set:
+
+      - `issueKey` / `ce-issueKey`: as the issue code.
+
+      The comment is set in the body of the message.
+
     required:
       - jiraUrl
       - username
@@ -56,31 +63,29 @@ spec:
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
-      jql:
-        title: JQL
-        description: A query to filter issues
-        type: string
-        example: project=MyProject
-
   types:
-    out:
+    in:
       mediaType: application/json
   dependencies:
+  - "camel:core"
   - "camel:jackson"
   - "camel:jira"
   - "camel:kamelet"
   - "mvn:com.fasterxml.jackson.datatype:jackson-datatype-joda:2.12.5"
   template:
     from:
-      uri: "jira:newIssues"
-      parameters:
-        jiraUrl: "{{jiraUrl}}"
-        username: "{{username}}"
-        password: "{{password}}"
-        jql: "{{jql}}"
+      uri: "kamelet:source"
       steps:
-      - marshal:
-          json:
-            library: Jackson
-            module-class-names: com.fasterxml.jackson.datatype.joda.JodaModule
-      - to: "kamelet:sink"
+      - choice:
+          when:
+          - simple: "${header[ce-issueKey]}"
+            steps:
+            - set-header:
+                name: issueKey
+                simple: "${header[ce-issueKey]}"
+      - to:
+          uri: "jira:AddComment"
+          parameters:
+            jiraUrl: "{{jiraUrl}}"
+            username: "{{username}}"
+            password: "{{password}}"

@@ -50,7 +50,7 @@ spec:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access Jira
+        description: The password or the API Token to access Jira
         type: string
         format: password
         x-descriptors:
@@ -61,7 +61,7 @@ spec:
         description: A query to filter issues
         type: string
         example: project=MyProject
-      
+
   types:
     out:
       mediaType: application/json
@@ -80,7 +80,7 @@ spec:
         jql: "{{jql}}"
       steps:
       - marshal:
-          json: 
+          json:
             library: Jackson
             module-class-names: com.fasterxml.jackson.datatype.joda.JodaModule
       - to: "kamelet:sink"

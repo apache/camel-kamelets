@@ -17,7 +17,7 @@
 apiVersion: camel.apache.org/v1alpha1
 kind: Kamelet
 metadata:
-  name: jira-source
+  name: jira-add-issue-sink
   annotations:
     camel.apache.org/kamelet.support.level: "Preview"
     camel.apache.org/catalog.version: "main-SNAPSHOT"
@@ -25,12 +25,31 @@ metadata:
     camel.apache.org/provider: "Apache Software Foundation"
     camel.apache.org/kamelet.group: "JIRA"
   labels:
-    camel.apache.org/kamelet.type: "source"
+    camel.apache.org/kamelet.type: "sink"
 spec:
   definition:
-    title: "Jira Source"
+    title: "Jira Add Issue Sink"
     description: |-
-      Receive notifications about new issues from Jira.
+      Add a new issue to Jira.
+
+      The Kamelet expects the following headers to be set:
+
+      - `projectKey` / `ce-projectKey`: as the Jira project key.
+
+      - `issueTypeName` / `ce-issueTypeName`: as the name of the issue type (example: Bug, Enhancement).
+
+      - `issueSummary` / `ce-issueSummary`: as the title or summary of the issue.
+
+      - `issueAssignee` / `ce-issueAssignee`: as the user assigned to the issue (Optional).
+
+      - `issuePriorityName` / `ce-issuePriorityName`: as the priority name of the issue (example: Critical, Blocker, Trivial) (Optional).
+
+      - `issueComponents` / `ce-issueComponents`: as list of string with the valid component names (Optional).
+
+      - `issueDescription` / `ce-issueDescription`: as the issue description (Optional).
+
+      The issue description can be set from the body of the message or the `issueDescription`/`ce-issueDescription` in the header, however the body takes precedence.
+
     required:
       - jiraUrl
       - username
@@ -56,31 +75,71 @@ spec:
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
-      jql:
-        title: JQL
-        description: A query to filter issues
-        type: string
-        example: project=MyProject
-
   types:
-    out:
+    in:
       mediaType: application/json
   dependencies:
+  - "camel:core"
   - "camel:jackson"
   - "camel:jira"
   - "camel:kamelet"
   - "mvn:com.fasterxml.jackson.datatype:jackson-datatype-joda:2.12.5"
   template:
     from:
-      uri: "jira:newIssues"
-      parameters:
-        jiraUrl: "{{jiraUrl}}"
-        username: "{{username}}"
-        password: "{{password}}"
-        jql: "{{jql}}"
+      uri: "kamelet:source"
       steps:
-      - marshal:
-          json:
-            library: Jackson
-            module-class-names: com.fasterxml.jackson.datatype.joda.JodaModule
-      - to: "kamelet:sink"
+      - choice:
+          when:
+          - simple: "${header[ce-projectKey]}"
+            steps:
+            - set-header:
+                name: projectKey
+                simple: "${header[ce-projectKey]}"
+      - choice:
+          when:
+          - simple: "${header[ce-issueTypeName]}"
+            steps:
+            - set-header:
+                name: issueTypeName
+                simple: "${header[ce-issueTypeName]}"
+      - choice:
+          when:
+          - simple: "${header[ce-issueSummary]}"
+            steps:
+            - set-header:
+                name: issueSummary
+                simple: "${header[ce-issueSummary]}"
+      - choice:
+          when:
+          - simple: "${header[ce-issueAssignee]}"
+            steps:
+            - set-header:
+                name: issueAssignee
+                simple: "${header[ce-issueAssignee]}"
+      - choice:
+          when:
+          - simple: "${header[ce-issuePriorityName]}"
+            steps:
+            - set-header:
+                name: issuePriorityName
+                simple: "${header[ce-issuePriorityName]}"
+      - choice:
+          when:
+          - simple: "${header[ce-issueComponents]}"
+            steps:
+            - set-header:
+                name: issueComponents
+                simple: "${header[ce-issueComponents]}"
+      - choice:
+          when:
+          - simple: "${header[ce-issueDescription]}"
+            steps:
+            - set-header:
+                name: issueDescription
+                simple: "${header[ce-issueDescription]}"
+      - to:
+          uri: "jira:AddIssue"
+          parameters:
+            jiraUrl: "{{jiraUrl}}"
+            username: "{{username}}"
+            password: "{{password}}"
