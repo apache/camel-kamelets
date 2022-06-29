@@ -1,0 +1,19 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: splunk-hec-sink-binding
+spec:
+  source:
+    ref:
+      kind: KafkaTopic
+      apiVersion: kafka.strimzi.io/v1beta1
+      name: my-topic
+  sink:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: splunk-hec-sink
+    properties:
+      splunkUrl: "<splunk url>"
+      token: "HEC token"
+      skipTlsVerify: true
