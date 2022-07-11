@@ -30,17 +30,17 @@ spec:
   definition:
     title: "ElasticSearch Index Sink"
     description: |-
-      This sink stores documents into ElasticSearch.
+      Stores JSON-formatted data into ElasticSearch.
 
-      Input data must have JSON format according to the index used.
-
-      - `indexId` / `ce-indexid`: as the index ID for Elasticsearch
-
-      If the header won't be set the exchange ID will be used as index.
-
-      - `indexName` / `ce-indexname`: as the index Name for Elasticsearch
-
-      If the header won't be set the exchange ID will be used as index name.
+      The input data must be formatted in JSON according to the requirements of the index. 
+      
+      The Kamelet checks for the following headers:
+         
+      - `indexId` / `ce-indexid`: The index ID for ElasticSearch.
+      
+      - `indexName` / `ce-indexname`: The index name for ElasticSearch.
+      
+       A header is optional. If a header is not set, the Kamelet uses the exchange ID as the index setting.
     required:
       - clusterName
       - hostAddresses
@@ -48,13 +48,13 @@ spec:
     properties:
       user:
         title: Username
-        description: Username to connect to ElasticSearch.
+        description: The username to connect to ElasticSearch.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: Password to connect to ElasticSearch.
+        description: The password to connect to ElasticSearch.
         type: string
         format: password
         x-descriptors:
@@ -62,24 +62,24 @@ spec:
         - urn:camel:group:credentials
       enableSSL:
         title: Enable SSL
-        description: Do we want to connect using SSL?
+        description: Specifies to connect by using SSL.
         type: boolean
         default: true
         x-descriptors:
           - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       hostAddresses:
         title: Host Addresses
-        description: Comma separated list with ip:port formatted remote transport addresses to use.
+        description: A comma-separated list of remote transport addresses in `ip:port format`.
         type: string
         example: quickstart-es-http:9200
       clusterName:
         title: ElasticSearch Cluster Name
-        description: Name of the cluster.
+        description: The name of the ElasticSearch cluster.
         type: string
         example: quickstart
       indexName:
         title: Index in ElasticSearch
-        description: The name of the index to act against.
+        description: The name of the ElasticSearch index.
         type: string
         example: data
   types:

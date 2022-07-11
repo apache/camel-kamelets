@@ -30,13 +30,13 @@ spec:
   definition:
     title: "MongoDB Sink"
     description: |-
-      Send documents to MongoDB.
+      Send data to MongoDB.
 
-      This Kamelet expects a JSON as body.
+      This Kamelet expects a JSON-formatted body.
 
-      Properties you can as headers:
+      You can set the following header:
 
-      `db-upsert` / `ce-dbupsert` If the database should create the element if it does not exist. Boolean value.
+      `db-upsert` / `ce-dbupsert`: A boolean value that specifies whether the database should create an element if it does not exist.
     required:
       - hosts
       - collection
@@ -45,15 +45,15 @@ spec:
     properties:
       hosts:
         title: MongoDB Hosts
-        description: Comma separated list of MongoDB Host Addresses in host:port format.
+        description: A comma-separated list of MongoDB host addresses in `host:port` format.
         type: string
       collection:
         title: MongoDB Collection
-        description: Sets the name of the MongoDB collection to bind to this endpoint.
+        description: The name of the MongoDB collection to bind to this endpoint.
         type: string
       password:
         title: MongoDB Password
-        description: User password for accessing MongoDB.
+        description: A user password for accessing MongoDB.
         type: string
         format: password
         x-descriptors:
@@ -61,21 +61,21 @@ spec:
         - urn:camel:group:credentials  
       username:
         title: MongoDB Username
-        description: Username for accessing MongoDB.
+        description: A username for accessing MongoDB.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       database:
         title: MongoDB Database
-        description: Sets the name of the MongoDB database to target.
+        description: The name of the MongoDB database.
         type: string
       writeConcern:
         title: Write Concern
-        description: Configure the level of acknowledgment requested from MongoDB for write operations, possible values are ACKNOWLEDGED, W1, W2, W3, UNACKNOWLEDGED, JOURNALED, MAJORITY.
+        description: The level of acknowledgment requested from MongoDB for write operations. Possible values are: ACKNOWLEDGED, W1, W2, W3, UNACKNOWLEDGED, JOURNALED, or MAJORITY.
         type: string
       createCollection:
         title: Collection
-        description: Create collection during initialisation if it doesn't exist.
+        description: Create a collection during initialization if it doesn't exist.
         type: boolean
         default: false
         x-descriptors:
