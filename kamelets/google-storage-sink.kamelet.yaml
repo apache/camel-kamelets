@@ -33,10 +33,8 @@ spec:
       Upload objects to Google Cloud Storage.
       
       You must encode the `serviceAccountKey` property before you pass it as a parameter.
-      
-      The Kamelet checks for the `file` / `ce-file` header got the name of the file to upload.
-          
-       A header is optional. If the header is not set, the exchange ID value is used as the file name.
+       
+      In the header, you can set the `file` / `ce-file` property to specify the filename to upload. If you do set property in the header, the Kamelet uses the exchange ID as filename.
     required:
       - bucketNameOrArn
       - serviceAccountKey

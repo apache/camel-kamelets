@@ -33,7 +33,7 @@ spec:
     description: |-
       Upload data to Azure Storage Blob.
 
-      The Kamelet expects the `file` / `ce-file` header to specify the file name to upload. If the header is not set, then the Kamelet uses the exchange ID as file name.
+      In the header, you can set the `file` / `ce-file` property to specify the filename to upload. If you do set property in the header, the Kamelet uses the exchange ID as filename.
     required:
       - accountName
       - containerName
