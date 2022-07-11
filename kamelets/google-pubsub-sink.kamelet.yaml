@@ -30,9 +30,9 @@ spec:
   definition:
     title: "Google Pubsub Sink"
     description: |-
-      Send messages to Google Pubsub.
+      Send messages to Google Cloud Pub/Sub.
 
-      The serviceAccountKey property needs to be encoded in base64, so when you pass it as parameter, don't forget to encode it.
+      You must encode the `serviceAccountKey` property before you pass it as a parameter.
     required:
       - projectId
       - destinationName
@@ -41,15 +41,15 @@ spec:
     properties:
       projectId:
         title: Project Id
-        description: The Google Cloud PubSub Project Id
+        description: The Google Cloud Pub/Sub Project ID.
         type: string
       destinationName:
         title: Destination Name
-        description: The Destination Name
+        description: The destination name.
         type: string
       serviceAccountKey:
         title: Service Account Key
-        description: The Service account key that can be used as credentials for the PubSub publisher/subscriber
+        description: The service account key to use as credentials for the Pub/Sub publisher/subscriber. You must encode this value in base64.
         type: binary
         x-descriptors:
         - urn:camel:group:credentials

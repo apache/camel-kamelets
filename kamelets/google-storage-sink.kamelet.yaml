@@ -30,13 +30,13 @@ spec:
   definition:
     title: "Google Storage Sink"
     description: |-
-      Upload Objects to Google Storage.
-
-      The serviceAccountKey property needs to be encoded in base64, so when you pass it as parameter, don't forget to encode it.
-
-      - `file` / `ce-file`: as the file name to upload
-
-      If the header won't be set the exchange ID will be used as file name.
+      Upload objects to Google Cloud Storage.
+      
+      You must encode the `serviceAccountKey` property before you pass it as a parameter.
+      
+      The Kamelet checks for the `file` / `ce-file` header got the name of the file to upload.
+          
+       A header is optional. If the header is not set, the exchange ID value is used as the file name.
     required:
       - bucketNameOrArn
       - serviceAccountKey
@@ -44,17 +44,17 @@ spec:
     properties:
       bucketNameOrArn:
         title: Bucket Name Or ARN
-        description: The Bucket Name or Bucket ARN
+        description: The Google Cloud Storage bucket name or Bucket Amazon Resource Name (ARN).
         type: string
       serviceAccountKey:
         title: Service Account Key
-        description: The Service account key that can be used as credentials for the Google Cloud Storage access.
+        description: The service account key to use as credentials for Google Cloud Storage access. You must encode this value in base64.
         type: binary
         x-descriptors:
         - urn:camel:group:credentials
       autoCreateBucket:
         title: Autocreate Bucket
-        description: Setting the autocreation of the Google Cloud Storage bucket bucketNameOrArn. 
+        description: Specifies to automatically create the Google Cloud Storage bucket.
         type: boolean
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
