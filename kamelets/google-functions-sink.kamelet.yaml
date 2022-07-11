@@ -30,9 +30,7 @@ spec:
   definition:
     title: "Google Functions Sink"
     description: |-
-      Send messages to Google Functions.
-
-      The serviceAccountKey property needs to be a path to a service account key file.
+      Send data to Google Functions.
     required:
       - projectId
       - functionName
@@ -42,19 +40,19 @@ spec:
     properties:
       projectId:
         title: Project Id
-        description: The Google Cloud Functions Project Id
+        description: The Google Cloud Functions Project ID.
         type: string
       region:
         title: Region 
-        description: The Region where the Google Cloud Functions has been deployed
+        description: The region where Google Cloud Functions has been deployed.
         type: string
       functionName:
         title: Function Name
-        description: The Function Name
+        description: The Function name.
         type: string
       serviceAccountKey:
         title: Service Account Key
-        description: The Service account key that can be used as credentials for the Google Cloud Functions platform
+        description: The path to the service account key file that provides credentials for the Google Cloud Functions platform.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
