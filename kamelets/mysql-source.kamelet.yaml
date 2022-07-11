@@ -32,7 +32,7 @@ spec:
     description: |-
       Query data from a MySQL Database.
 
-      In your KameletBinding file you'll need to explicitly declare the SQL Server driver dependency in spec->integration->dependencies
+      In your KameletBinding file, you must explicitly declare the SQL Server driver dependency in spec->integration->dependencies.
       
       - "mvn:mysql:mysql-connector-java:<version>"
     required:
@@ -45,23 +45,23 @@ spec:
     properties:
       serverName:
         title: Server Name
-        description: Server Name for the data source
+        description: The server name for the data source.
         type: string
         example: localhost
       serverPort:
         title: Server Port
-        description: Server Port for the data source
+        description: The server port for the data source.
         type: string
         default: 3306
       username:
         title: Username
-        description: The username to use for accessing a secured MySQL Database
+        description: The username to access a secured MySQL Database
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to use for accessing a secured MySQL Database
+        description: The password to access a secured MySQL Database.
         type: string
         format: password
         x-descriptors:
@@ -69,16 +69,16 @@ spec:
         - urn:camel:group:credentials
       query:
         title: Query
-        description: The Query to execute against the MySQL Database
+        description: The query to execute against the MySQL Database.
         type: string
         example: 'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
       databaseName:
         title: Database Name
-        description: The Database Name we are pointing
+        description: The name of the MySQL Database.
         type: string
       consumedQuery:
         title: Consumed Query
-        description: A query to run on a tuple consumed
+        description: A query to run on a tuple consumed.
         type: string
         example: 'DELETE FROM accounts where user_id = :#user_id'
   types:
