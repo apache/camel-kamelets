@@ -30,7 +30,7 @@ metadata:
 spec:
   definition:
     title: "JMS - Apache Artemis Kamelet Source"
-    description: "A Kamelet that can consume events from an Apache Artemis message broker using JMS"
+    description: "Receive data from an Apache Artemis message broker by using JMS."
     required:
       - destinationName
       - brokerURL
@@ -38,16 +38,16 @@ spec:
     properties:
       destinationType:
         title: "Destination Type"
-        description: "The JMS destination type (i.e.: queue or topic)"
+        description: "The JMS destination type (queue or topic)."
         type: string
         default: queue
       destinationName:
         title: "Destination Name"
-        description: "The JMS destination name"
+        description: "The JMS destination name."
         type: string
       brokerURL:
         title: "Broker URL"
-        description: "The JMS URL"
+        description: "The JMS URL."
         type: string
         example: "tcp://k3s-node-master.usersys.redhat.com:31616"
   dependencies:
