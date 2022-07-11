@@ -42,33 +42,33 @@ spec:
     properties:
       query:
         title: Query
-        description: The query to execute on Salesforce
+        description: The query to execute on Salesforce.
         type: string
         example: SELECT Id, Name, Email, Phone FROM Contact
       topicName:
         title: Topic Name
-        description: The name of the topic/channel to use
+        description: The name of the topic or channel.
         type: string
         example: ContactTopic
       loginUrl:
         title: Login URL
-        description: The Salesforce instance login URL
+        description: The Salesforce instance login URL.
         type: string
         default: https://login.salesforce.com
       notifyForFields:
         title: Notify For Fields
-        description: Notify for fields, options are ALL, REFERENCED, SELECT, WHERE.
+        description: Notify for fields. Possible options:  ALL, REFERENCED, SELECT, or WHERE.
         type: string
         default: ALL
       clientId:
         title: Consumer Key
-        description: The Salesforce application consumer key
+        description: The Salesforce application consumer key.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       clientSecret:
         title: Consumer Secret
-        description: The Salesforce application consumer secret
+        description: The Salesforce application consumer secret.
         type: string
         format: password
         x-descriptors:
@@ -76,13 +76,13 @@ spec:
         - urn:camel:group:credentials
       userName:
         title: Username
-        description: The Salesforce username
+        description: The Salesforce username.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The Salesforce user password
+        description: The Salesforce user password.
         type: string
         format: password
         x-descriptors:
