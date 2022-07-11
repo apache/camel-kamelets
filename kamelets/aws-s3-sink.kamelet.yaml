@@ -31,17 +31,15 @@ spec:
   definition:
     title: "AWS S3 Sink"
     description: |-
-      Upload data to AWS S3 Bucket.
+      Upload data to an Amazon S3 Bucket.
 
-      Access Key/Secret Key are the basic method for authenticating to the AWS S3 Service. These parameters are optional, because the Kamelet provide also the 'useDefaultCredentialsProvider'.
+      The basic authentication method for the Kinesis service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.
       
-      When using a default Credentials Provider the S3 client will load the credentials through this provider and won't use the static credential. This is reason for not having the access key and secret key as mandatory parameter for this Kamelet.
+      If you use the default credentials provider, the Kinesis client loads the credentials through this provider and doesn't use the basic authentication method.
 
-      The Kamelet can use the following headers to be set to:
+      In the header, you can optionally set the `file` / `ce-partition` property to specify the name of the file to upload.
 
-      - `file` / `ce-file`: as the file name to be uploaded
-
-      If neither of those headers are set and the Kamelet parameter `keyName` is not populated, then the default file name used will be the `exchange id`.
+      If you do not set the property in the header, the Kamelet uses the exchange ID for the file name.
     required:
       - bucketNameOrArn
       - region
@@ -49,7 +47,7 @@ spec:
     properties:
       bucketNameOrArn:
         title: Bucket Name
-        description: The S3 Bucket name or ARN.
+        description: The S3 Bucket name or Amazon Resource Name (ARN).
         type: string
       accessKey:
         title: Access Key
@@ -69,31 +67,31 @@ spec:
         - urn:camel:group:credentials
       region:
         title: AWS Region
-        description: The AWS region to connect to.
+        description: The AWS region to access.
         type: string
         example: eu-west-1
         enum: ["af-south-1", "ap-east-1", "ap-northeast-1", "ap-northeast-2", "ap-northeast-3", "ap-south-1", "ap-southeast-1", "ap-southeast-2", "ap-southeast-3", "ca-central-1", "eu-central-1", "eu-north-1", "eu-south-1", "eu-west-1", "eu-west-2", "eu-west-3", "fips-us-east-1", "fips-us-east-2", "fips-us-west-1", "fips-us-west-2", "me-south-1", "sa-east-1", "us-east-1", "us-east-2", "us-west-1", "us-west-2", "cn-north-1", "cn-northwest-1", "us-gov-east-1", "us-gov-west-1", "us-iso-east-1", "us-iso-west-1", "us-isob-east-1"]
       autoCreateBucket:
         title: Autocreate Bucket
-        description: Setting the autocreation of the S3 bucket bucketName.
+        description: Specifies to automatically create the S3 bucket.
         type: boolean
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
       useDefaultCredentialsProvider:
         title: Default Credentials Provider
-        description: Set whether the S3 client should expect to load credentials through a default credentials provider or to expect static credentials to be passed in.
+        description: If true, the S3 client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
         type: boolean
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
       uriEndpointOverride:
         title: Overwrite Endpoint URI
-        description: Set the overriding endpoint URI. This option needs to be used in combination with overrideEndpoint option.
+        description: The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option.
         type: string
       overrideEndpoint:
         title: Endpoint Overwrite
-        description: Set the need for overiding the endpoint URI. This option needs to be used in combination with uriEndpointOverride setting.
+        description: Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option.
         type: boolean
         x-descriptors:
           - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
