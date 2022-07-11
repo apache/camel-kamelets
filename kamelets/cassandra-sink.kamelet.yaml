@@ -30,9 +30,9 @@ spec:
   definition:
     title: "Cassandra Sink"
     description: |-
-      Send data to a Cassandra Cluster.
+      Send data to an Apache Cassandra cluster.
 
-      This Kamelet expects the body as JSON Array. The content of the JSON Array will be used as input for the CQL Prepared Statement set in the query parameter.
+      This Kamelet expects JSON Array formatted data. The content of the JSON Array is used as input for the CQL Prepared Statement set in the query parameter.
     required:
       - connectionHost
       - connectionPort
@@ -42,28 +42,28 @@ spec:
     properties:
       connectionHost:
         title: Connection Host
-        description: Hostname(s) cassandra server(s). Multiple hosts can be separated by comma.
+        description: The hostname(s) for the Cassandra server(s). Use a comma to seperate multiple hostnames.
         type: string
         example: localhost
       connectionPort:
         title: Connection Port
-        description: Port number of cassandra server(s)
+        description: The port number(s) of the cassandra server(s). Use a comma to seperate multiple port numbers.
         type: string
         example: 9042
       keyspace:
         title: Keyspace 
-        description: Keyspace to use
+        description: The keyspace to use.
         type: string
         example: customers
       username:
         title: Username
-        description: The username to use for accessing a secured Cassandra Cluster
+        description: The username for accessing a secured Cassandra cluster.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to use for accessing a secured Cassandra Cluster
+        description: The password for accessing a secured Cassandra cluster.
         type: string
         format: password
         x-descriptors:
@@ -71,19 +71,19 @@ spec:
         - urn:camel:group:credentials
       consistencyLevel:
         title: Consistency Level
-        description: Consistency level to use. The value can be one of ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_QUORUM, EACH_QUORUM, SERIAL, LOCAL_SERIAL, LOCAL_ONE
+        description: The consistency level to use. Set the value to  one of these options: ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_QUORUM, EACH_QUORUM, SERIAL, LOCAL_SERIAL, or LOCAL_ONE.
         type: string
         default: ANY
       prepareStatements:
         title: Prepare Statements
-        description: Whether to use PreparedStatements or regular Statements as the query.
+        description: If true, specifies to use PreparedStatements as the query. If false, specifies to use regular Statements as the query.
         type: boolean
         default: true
         x-descriptors:
           - urn:alm:descriptor:com.tectonic.ui:checkbox
       query:
         title: Query
-        description: The query to execute against the Cassandra cluster table
+        description: The query to execute against the Cassandra cluster table.
         type: string
   types:
     in:
