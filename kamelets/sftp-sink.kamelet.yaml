@@ -32,11 +32,9 @@ spec:
     description: |-
       Send data to an SFTP Server.
 
-      The Kamelet expects the following headers to be set:
+      In the header, you can set the `file` / `ce-file` property to specify the filename to upload.
 
-      - `file` / `ce-file`: as the file name to upload
-
-      If the header won't be set the exchange ID will be used as file name.
+      If you do not set the property in the header, the Kamelet uses the exchange ID for the filename.
     required:
       - connectionHost
       - connectionPort
@@ -47,11 +45,11 @@ spec:
     properties:
       connectionHost:
         title: Connection Host
-        description: Hostname of the FTP server
+        description: The hostname of the FTP server
         type: string
       connectionPort:
         title: Connection Port
-        description: Port of the FTP server
+        description: The port of the FTP server
         type: string
         default: 22
       username:

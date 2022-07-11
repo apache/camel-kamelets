@@ -30,13 +30,11 @@ spec:
   definition:
     title: "Minio Sink"
     description: |-
-      Upload data to Minio.
+      Upload data to MinIO.
 
-      The Kamelet expects the following headers to be set:
+      In the header, you can set the `file` / `ce-file` property to specify the filename to upload.
 
-      - `file` / `ce-file`: as the file name to upload
-
-      If the header won't be set the exchange ID will be used as file name.
+      If you do not set the property in the header, the Kamelet uses the exchange ID for the filename.
     required:
       - bucketName
       - accessKey
@@ -46,11 +44,11 @@ spec:
     properties:
       bucketName:
         title: Bucket Name
-        description: The Minio Bucket name
+        description: The Minio Bucket name.
         type: string
       accessKey:
         title: Access Key
-        description: The access key obtained from Minio
+        description: The access key obtained from MinIO.
         type: string
         format: password
         x-descriptors:
@@ -58,7 +56,7 @@ spec:
         - urn:camel:group:credentials
       secretKey:
         title: Secret Key
-        description: The secret key obtained from Minio
+        description: The secret key obtained from MinIO.
         type: string
         format: password
         x-descriptors:
@@ -66,12 +64,12 @@ spec:
         - urn:camel:group:credentials
       endpoint:
         title: Endpoint
-        description: The Minio Endpoint, it can be an URL, domain name, IPv4 address or IPv6 address.
+        description: The MinIO Endpoint. You can specify an URL, domain name, IPv4 address, or IPv6 address.
         type: string
         example: http://localhost:9000
       autoCreateBucket:
         title: Autocreate Bucket
-        description: Setting the autocreation of the Minio bucket bucketName. 
+        description: Specify to automatically create the MinIO bucket. 
         type: boolean
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
