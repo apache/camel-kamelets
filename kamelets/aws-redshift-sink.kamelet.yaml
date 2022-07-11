@@ -32,11 +32,11 @@ spec:
     description: |-
       Send data to an AWS Redshift Database.
 
-      This Kamelet expects a JSON as body. The mapping between the JSON fields and parameters is done by key, so if you have the following query:
+      This Kamelet expects a JSON-formatted body. Use key:value pairs to map the JSON fields and parameters. For example, here is a query:
 
       'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
 
-      The Kamelet needs to receive as input something like:
+      Here is example input for the example query:
 
       '{ "username":"oscerd", "city":"Rome"}'
     required:
@@ -49,23 +49,23 @@ spec:
     properties:
       serverName:
         title: Server Name
-        description: Server Name for the data source
+        description: The server name for the data source.
         type: string
         example: localhost
       serverPort:
         title: Server Port
-        description: Server Port for the data source
+        description: The server port for the AWS RedShi data source.
         type: string
         default: 5439
       username:
         title: Username
-        description: The username to use for accessing a secured AWS Redshift Database
+        description: The username to access a secured AWS Redshift Database.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to use for accessing a secured AWS Redshift Database
+        description: The password to access a secured AWS Redshift Database.
         type: string
         format: password
         x-descriptors:
@@ -73,12 +73,12 @@ spec:
         - urn:camel:group:credentials
       query:
         title: Query
-        description: The Query to execute against the AWS Redshift Database
+        description: The query to execute against the AWS Redshift Database.
         type: string
         example: 'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
       databaseName:
         title: Database Name
-        description: The Database Name we are pointing
+        description: The name of the AWS RedShift Database.
         type: string
   types:
     in:
