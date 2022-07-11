@@ -40,12 +40,12 @@ spec:
     properties:
       connectionHost:
         title: Connection Host
-        description: The hostname(s) for the Cassandra server(s). Use a comma to seperate multiple hostnames.
+        description: The hostname(s) for the Cassandra server(s). Use a comma to separate multiple hostnames.
         type: string
         example: localhost
       connectionPort:
         title: Connection Port
-        description: The port number(s) of the cassandra server(s). Use a comma to seperate multiple port numbers.
+        description: The port number(s) of the cassandra server(s). Use a comma to separate multiple port numbers.
         type: string
         example: 9042
       keyspace:
@@ -69,12 +69,12 @@ spec:
         - urn:camel:group:credentials
       resultStrategy:
         title: Result Strategy
-        description: The strategy to convert the result set of the query. Example values: ALL, ONE, LIMIT_10, or LIMIT_100.
+        description: The strategy to convert the result set of the query. Possible values: ALL, ONE, LIMIT_10, or LIMIT_100.
         type: string
         default: ALL
       consistencyLevel:
         title: Consistency Level
-        description: The consistency level to use. Set the value to  one of these options: ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_QUORUM, EACH_QUORUM, SERIAL, LOCAL_SERIAL, or LOCAL_ONE.
+        description: The consistency level to use. Possible values: ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_QUORUM, EACH_QUORUM, SERIAL, LOCAL_SERIAL, or LOCAL_ONE.
         type: string
         default: QUORUM
       query:

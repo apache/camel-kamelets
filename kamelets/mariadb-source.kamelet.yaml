@@ -55,13 +55,13 @@ spec:
         default: 3306
       username:
         title: Username
-        description: The username to access a secured MariaDB Database
+        description: The username to access a secured MariaDB Database.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access a secured MariaDB Database
+        description: The password to access a secured MariaDB Database.
         type: string
         format: password
         x-descriptors:
@@ -69,16 +69,16 @@ spec:
         - urn:camel:group:credentials
       query:
         title: Query
-        description: The query to execute against the MariaDB Database
+        description: The query to execute against the MariaDB Database.
         type: string
         example: 'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
       databaseName:
         title: Database Name
-        description: The name of the Database.
+        description: The name of the MariaDB Database.
         type: string
       consumedQuery:
         title: Consumed Query
-        description: A query to run on a tuple consumed
+        description: A query to run on a tuple consumed.
         type: string
         example: 'DELETE FROM accounts where user_id = :#user_id'
   types:

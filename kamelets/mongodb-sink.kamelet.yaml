@@ -34,9 +34,7 @@ spec:
 
       This Kamelet expects a JSON-formatted body.
 
-      You can set the following header:
-
-      `db-upsert` / `ce-dbupsert`: A boolean value that specifies whether the database should create an element if it does not exist.
+      In the header, you can set the `db-upsert` / `ce-dbupsert` property, a boolean value that specifies whether the database should create an element if it does not exist.
     required:
       - hosts
       - collection
@@ -71,7 +69,7 @@ spec:
         type: string
       writeConcern:
         title: Write Concern
-        description: The level of acknowledgment requested from MongoDB for write operations. Possible values are: ACKNOWLEDGED, W1, W2, W3, UNACKNOWLEDGED, JOURNALED, or MAJORITY.
+        description: The level of acknowledgment requested from MongoDB for write operations. Possible values: ACKNOWLEDGED, W1, W2, W3, UNACKNOWLEDGED, JOURNALED, or MAJORITY.
         type: string
       createCollection:
         title: Collection

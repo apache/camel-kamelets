@@ -33,10 +33,7 @@ spec:
     description: |-
       Send events to Azure Storage queues.
 
-      The Kamelet checks for the `partition` / `ce-partition` header to determine how long an event remains in the Azure Storage queue.
-      Use `PnDTnHnMn.nS.` format. For example, `PT20.345S` parses as 20.345 seconds and `P2D` parses as 2 days.
-
-      A header is optional. If the header is not set, the default of `P27D` (7 days) is used.
+      In the header, you can set the `partition` / `ce-partition` property to determine how long an event remains in the Azure Storage queue. Use `PnDTnHnMn.nS.` format. For example, `PT20.345S` parses as 20.345 seconds and `P2D` parses as 2 days. If you not set the property in the header, the Kamelet uses the default of `P27D` (7 days).
     required:
       - accountName
       - queueName
