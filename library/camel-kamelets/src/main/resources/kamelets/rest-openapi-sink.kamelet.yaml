@@ -29,7 +29,7 @@ metadata:
 spec:
   definition:
     title: REST OpenAPI Sink
-    description: Load OpenAPI specification from URI and call an operation on the HTTP service. The request is generated respecting the rules given in the OpenAPI specification (e.g. path parameters, Content-Type).
+    description: Load an OpenAPI specification from a URI and call an operation on a HTTP service. The request that is generated respects the rules given in the OpenAPI specification (for example, path parameters and Content-Type).
     required:
     - specification
     - operation
@@ -37,13 +37,13 @@ spec:
     properties:
       specification:
         title: Specification URI
-        description: URI to the OpenApi specification file
+        description: The URI to the OpenApi specification file.
         type: string
         example: "https://api.example.com/openapi.json"
         pattern: "^(http|https|file|classpath)://.*"
       operation:
         title: Operation ID
-        description: The operation to call
+        description: The operation to call.
         type: string
   dependencies:
   - "camel:rest-openapi"

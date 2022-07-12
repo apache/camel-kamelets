@@ -29,20 +29,20 @@ metadata:
 spec:
   definition:
     title: HTTP Sink
-    description: Forwards an event to a HTTP endpoint
+    description: Forward data to a HTTP or HTTPS endpoint.
     required:
     - url
     type: object
     properties:
       url:
         title: URL
-        description: The URL to send data to
+        description: The URL to which you want to send data.
         type: string
         example: "https://my-service/path"
         pattern: "^(http|https)://.*"
       method:
         title: Method
-        description: The HTTP method to use
+        description: The HTTP method to use.
         type: string
         default: POST
   dependencies:

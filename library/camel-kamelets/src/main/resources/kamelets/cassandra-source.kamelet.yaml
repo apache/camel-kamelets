@@ -30,7 +30,7 @@ spec:
   definition:
     title: "Cassandra Source"
     description: |-
-      Query a Cassandra cluster table.
+      Send a query to an Apache Cassandra cluster table.
     required:
       - connectionHost
       - connectionPort
@@ -40,28 +40,28 @@ spec:
     properties:
       connectionHost:
         title: Connection Host
-        description: Hostname(s) cassandra server(s). Multiple hosts can be separated by comma.
+        description: The hostname(s) for the Cassandra server(s). Use a comma to separate multiple hostnames.
         type: string
         example: localhost
       connectionPort:
         title: Connection Port
-        description: Port number of cassandra server(s)
+        description: The port number(s) of the cassandra server(s). Use a comma to separate multiple port numbers.
         type: string
         example: 9042
       keyspace:
         title: Keyspace 
-        description: Keyspace to use
+        description: The keyspace to use.
         type: string
         example: customers
       username:
         title: Username
-        description: The username to use for accessing a secured Cassandra Cluster
+        description: The username for accessing a secured Cassandra cluster.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to use for accessing a secured Cassandra Cluster
+        description: The password for accessing a secured Cassandra cluster.
         type: string
         format: password
         x-descriptors:
@@ -69,17 +69,17 @@ spec:
         - urn:camel:group:credentials
       resultStrategy:
         title: Result Strategy
-        description: The strategy to convert the result set of the query. Possible values are ALL, ONE, LIMIT_10, LIMIT_100...
+        description: The strategy to convert the result set of the query. Possible values are ALL, ONE, LIMIT_10, or LIMIT_100.
         type: string
         default: ALL
       consistencyLevel:
         title: Consistency Level
-        description: Consistency level to use. The value can be one of ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_QUORUM, EACH_QUORUM, SERIAL, LOCAL_SERIAL, LOCAL_ONE
+        description: The consistency level to use. Possible values are ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_QUORUM, EACH_QUORUM, SERIAL, LOCAL_SERIAL, or LOCAL_ONE.
         type: string
         default: QUORUM
       query:
         title: Query
-        description: The query to execute against the Cassandra cluster table
+        description: The query to execute against the Cassandra cluster table.
         type: string
   types:
     out:

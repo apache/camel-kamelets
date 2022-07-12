@@ -30,7 +30,7 @@ spec:
   definition:
     title: "Minio Source"
     description: |-
-      Receive data from Minio.
+      Receive data from MinIO.
     required:
       - bucketName
       - accessKey
@@ -40,18 +40,18 @@ spec:
     properties:
       bucketName:
         title: Bucket Name
-        description: The Minio Bucket name
+        description: The MinIO Bucket name.
         type: string
       deleteAfterRead:
         title: Auto-delete Objects
-        description: Delete objects after consuming them
+        description: Delete objects after consuming them.
         type: boolean
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: true
       accessKey:
         title: Access Key
-        description: The access key obtained from Minio
+        description: The access key obtained from MinIO.
         type: string
         format: password
         x-descriptors:
@@ -59,7 +59,7 @@ spec:
         - urn:camel:group:credentials
       secretKey:
         title: Secret Key
-        description: The secret key obtained from Minio
+        description: The secret key obtained from MinIO.
         type: string
         format: password
         x-descriptors:
@@ -67,12 +67,12 @@ spec:
         - urn:camel:group:credentials
       endpoint:
         title: Endpoint
-        description: The Minio Endpoint, it can be an URL, domain name, IPv4 address or IPv6 address.
+        description: The MinIO Endpoint. You can specify an URL, domain name, IPv4 address, or IPv6 address.
         type: string
         example: http://localhost:9000
       autoCreateBucket:
         title: Autocreate Bucket
-        description: Setting the autocreation of the Minio bucket bucketName. 
+        description: Specifies to automatically create the MinIO bucket. 
         type: boolean
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'

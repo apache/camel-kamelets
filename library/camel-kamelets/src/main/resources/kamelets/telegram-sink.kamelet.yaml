@@ -30,9 +30,9 @@ spec:
   definition:
     title: "Telegram Sink"
     description: |-
-      Send a message to a Telegram chat using your Telegram bot as sender.
+      Send a message to a Telegram chat by using your Telegram bot as sender.
 
-      To create a bot, contact the @botfather account using the Telegram app.
+      To create a bot, use your Telegram app to contact the @botfather account.
 
       This sink supports the following message types:
 
@@ -40,17 +40,17 @@ spec:
       - PNG images (`Content-Type` must be set to `image/png`)
       - JPEG images (`Content-Type` must be set to `image/jpeg`)
 
-      This following message headers are also supported:
+      This sink also supports the following message headers:
 
       - `text` / `ce-text`: when sending an image, the image caption
-      - `chat-id` / `ce-chatid`: to override the default chat where messages are sent to
+      - `chat-id` / `ce-chatid`: overrides the default chat where messages are sent to
     required:
       - authorizationToken
     type: object
     properties:
       authorizationToken:
         title: Token
-        description: The token to access your bot on Telegram. You you can obtain it from the Telegram @botfather.
+        description: "The token to access your bot on Telegram. You you can obtain it from the Telegram @botfather."
         type: string
         format: password
         x-descriptors:
@@ -58,7 +58,7 @@ spec:
         - urn:camel:group:credentials
       chatId:
         title: Chat ID
-        description: The Chat ID where messages should be sent by default
+        description: The Chat ID to where you want to send messages by default.
         type: string
   types:
     out:
