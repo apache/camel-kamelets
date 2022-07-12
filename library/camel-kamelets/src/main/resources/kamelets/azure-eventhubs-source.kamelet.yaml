@@ -31,7 +31,7 @@ spec:
   definition:
     title: "Azure Eventhubs Source"
     description: |-
-      Receive events from Azure Eventhubs.
+      Receive events from Azure Event Hubs.
     required:
       - namespaceName
       - eventhubName
@@ -44,21 +44,21 @@ spec:
     properties:
       namespaceName:
         title: Eventhubs Namespace
-        description: The eventhubs namespace
+        description: The Event Hubs namespace.
         type: string
       eventhubName:
         title: Eventhubs Name
-        description: The eventhub name
+        description: The Event Hub name.
         type: string
       sharedAccessName:
         title: Share Access Name
-        description: EventHubs SAS key name
+        description: The Event Hubs SAS key name.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       sharedAccessKey:
         title: Share Access Key
-        description: The key for EventHubs SAS key name
+        description: The key for the Event Hubs SAS key name.
         type: string
         format: password
         x-descriptors:
@@ -66,15 +66,15 @@ spec:
         - urn:camel:group:credentials
       blobAccountName:
         title: Azure Storage Blob Account Name
-        description: The name of the storage blob account to be use
+        description: The name of the Storage Blob account.
         type: string
       blobContainerName:
         title: Azure Storage Blob Container Name
-        description: The name of the storage blob container to be use
+        description: The name of the Storage Blob container.
         type: string
       blobAccessKey:
         title: Azure Storage Blob Access Key
-        description: The key for Azure Storage Blob service associated with the Blob account name
+        description: The key for the Azure Storage Blob service that is associated with the Storage Blob account name.
         type: string
         format: password
         x-descriptors:

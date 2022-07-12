@@ -31,15 +31,9 @@ spec:
   definition:
     title: "Azure Storage Queue Sink"
     description: |-
-      Send Messages to Azure Storage queues.
+      Send events to Azure Storage queues.
 
-      The Kamelet is able to understand the following headers to be set:
-
-      - `expiration` / `ce-expiration`: as the time to live of the message in the queue.
-
-      If the header won't be set the default of 7 days will be used.
-
-      The format should be in this form: PnDTnHnMn.nS., e.g: PT20.345S — parses as 20.345 seconds, P2D — parses as 2 days.
+      In the header, you can set the `partition` / `ce-partition` property to determine how long an event remains in the Azure Storage queue. Use `PnDTnHnMn.nS.` format. For example, `PT20.345S` parses as 20.345 seconds and `P2D` parses as 2 days. If you not set the property in the header, the Kamelet uses the default of `P27D` (7 days).
     required:
       - accountName
       - queueName
@@ -58,7 +52,7 @@ spec:
         type: string
       accessKey:
         title: Access Key
-        description: The Azure Storage Queue access Key.
+        description: The Azure Storage Queue access key.
         type: string
         format: password
         x-descriptors:

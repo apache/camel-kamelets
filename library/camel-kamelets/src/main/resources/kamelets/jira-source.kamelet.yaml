@@ -39,18 +39,18 @@ spec:
     properties:
       jiraUrl:
         title: Jira URL
-        description: The URL of your instance of Jira
+        description: The URL of your instance of Jira.
         type: string
         example: http://my_jira.com:8081
       username:
         title: Username
-        description: The username to access Jira
+        description: The username to access Jira.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password or the API Token to access Jira
+        description: The password or the API Token to access Jira.
         type: string
         format: password
         x-descriptors:
@@ -58,7 +58,7 @@ spec:
         - urn:camel:group:credentials
       jql:
         title: JQL
-        description: A query to filter issues
+        description: A query to filter issues.
         type: string
         example: project=MyProject
 

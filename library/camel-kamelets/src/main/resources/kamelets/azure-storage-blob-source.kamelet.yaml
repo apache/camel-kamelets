@@ -31,7 +31,7 @@ spec:
   definition:
     title: "Azure Storage Blob Source"
     description: |-
-      Consume Files from Azure Storage Blob.
+      Consume files from Azure Storage Blob.
     required:
       - period
       - accountName
@@ -41,7 +41,7 @@ spec:
     properties:
       period:
         title: Period between Polls
-        description: The interval between fetches to the Azure Storage Container in milliseconds
+        description: The interval (in milliseconds) between fetches to the Azure Storage Container.
         type: integer
         default: 10000
       accountName:
@@ -56,7 +56,7 @@ spec:
         type: string
       accessKey:
         title: Access Key
-        description: The Azure Storage Blob access Key.
+        description: The Azure Storage Blob access key.
         type: string
         format: password
         x-descriptors:

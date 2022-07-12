@@ -30,10 +30,9 @@ spec:
   definition:
     title: "Salesforce Create Sink"
     description: |-
-      Creates an object in Salesforce. The body of the message must contain
-      the JSON of the salesforce object.
-
-      Example body: { "Phone": "555", "Name": "Antonia", "LastName": "Garcia" }
+      Create an object in Salesforce. 
+      
+      The body of the message must contain the JSON of the Salesforce object, for example: `{ "Phone": "555", "Name": "Antonia", "LastName": "Garcia" }`.
     required:
       - clientId
       - clientSecret
@@ -43,23 +42,23 @@ spec:
     properties:
       sObjectName:
         title: Object Name
-        description: Type of the object
+        description: The type of the object.
         type: string
         example: Contact
       loginUrl:
         title: Login URL
-        description: The Salesforce instance login URL
+        description: The Salesforce instance login URL.
         type: string
         default: https://login.salesforce.com
       clientId:
         title: Consumer Key
-        description: The Salesforce application consumer key
+        description: The Salesforce application consumer key.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       clientSecret:
         title: Consumer Secret
-        description: The Salesforce application consumer secret
+        description: The Salesforce application consumer secret.
         type: string
         format: password
         x-descriptors:
@@ -67,13 +66,13 @@ spec:
         - urn:camel:group:credentials
       userName:
         title: Username
-        description: The Salesforce username
+        description: The Salesforce username.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The Salesforce user password
+        description: The Salesforce user password.
         type: string
         format: password
         x-descriptors:

@@ -30,7 +30,7 @@ spec:
   definition:
     title: "FTPS Source"
     description: |-
-      Receive data from an FTPS Server.
+      Receive data from an FTPS server.
     required:
       - connectionHost
       - connectionPort
@@ -41,22 +41,22 @@ spec:
     properties:
       connectionHost:
         title: Connection Host
-        description: Hostname of the FTPS server
+        description: The hostname of the FTPS server.
         type: string
       connectionPort:
         title: Connection Port
-        description: Port of the FTPS server
+        description: The port of the FTPS server.
         type: string
         default: 21
       username:
         title: Username
-        description: The username to access the FTPS server
+        description: The username to access the FTPS server.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access the FTPS server
+        description: The password to access the FTPS server.
         type: string
         format: password
         x-descriptors:
@@ -64,25 +64,25 @@ spec:
         - urn:camel:group:credentials
       directoryName:
         title: Directory Name
-        description: The starting directory
+        description: The starting directory.
         type: string
       passiveMode:
         title: Passive Mode
-        description: Sets passive mode connection
+        description: Specifies to use passive mode connection.
         type: boolean
         default: false
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       recursive:
         title: Recursive
-        description: If a directory, will look for files in all the sub-directories as well.
+        description: If a directory, look for files in all sub-directories as well.
         type: boolean
         default: false
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       idempotent:
         title: Idempotency
-        description: Skip already processed files.
+        description: Skip already-processed files.
         type: boolean
         default: true
         x-descriptors:

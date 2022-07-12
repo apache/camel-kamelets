@@ -30,13 +30,11 @@ spec:
   definition:
     title: "FTPS Sink"
     description: |-
-      Send data to an FTPS Server.
+      Send data to an FTPS server.
 
-      The Kamelet expects the following headers to be set:
+      In the header, you can set the `file` / `ce-file` property to specify the filename to upload.
 
-      - `file` / `ce-file`: as the file name to upload
-
-      If the header won't be set the exchange ID will be used as file name.
+      If you do not set the property in the header, the Kamelet uses the exchange ID for the filename.
     required:
       - connectionHost
       - connectionPort
@@ -47,22 +45,22 @@ spec:
     properties:
       connectionHost:
         title: Connection Host
-        description: Hostname of the FTP server
+        description: The hostname of the FTP server.
         type: string
       connectionPort:
         title: Connection Port
-        description: Port of the FTP server
+        description: The port of the FTP server.
         type: string
         default: 21
       username:
         title: Username
-        description: The username to access the FTP server
+        description: The username to access the FTP server.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access the FTP server
+        description: The password to access the FTP server.
         type: string
         format: password
         x-descriptors:
@@ -70,18 +68,18 @@ spec:
         - urn:camel:group:credentials
       directoryName:
         title: Directory Name
-        description: The starting directory
+        description: The starting directory.
         type: string
       passiveMode:
         title: Passive Mode
-        description: Sets passive mode connection
+        description: Set the passive mode connection.
         type: boolean
         default: false
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       fileExist:
         title: File Existence
-        description: How to behave in case of file already existent. There are 4 enums and the value can be one of Override, Append, Fail or Ignore
+        description: "Specifies how the Kamelet behaves if the file already exists. Possible values are Override, Append, Fail, or Ignore."
         type: string
         default: Override
   dependencies:

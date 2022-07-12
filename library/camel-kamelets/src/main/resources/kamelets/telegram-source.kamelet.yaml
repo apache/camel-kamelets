@@ -32,11 +32,11 @@ spec:
     description: |-
       Receive all messages that people send to your Telegram bot.
 
-      To create a bot, contact the @botfather account using the Telegram app.
+      To create a bot, contact the @botfather account by using the Telegram app.
 
-      The source attaches the following headers to the messages:
+      The source attaches the following header to the messages:
 
-      - `chat-id` / `ce-chatid`: the ID of the chat where the message comes from
+      - `chat-id` / `ce-chatid`: The ID of the chat where the message comes from.
 
     required:
       - authorizationToken
@@ -44,7 +44,7 @@ spec:
     properties:
       authorizationToken:
         title: Token
-        description: The token to access your bot on Telegram. You you can obtain it from the Telegram @botfather.
+        description: "The token to access your bot on Telegram. You you can obtain it from the Telegram @botfather."
         type: string
         format: password
         x-descriptors:

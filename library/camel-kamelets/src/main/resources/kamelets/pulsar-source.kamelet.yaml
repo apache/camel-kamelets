@@ -51,7 +51,7 @@ spec:
         type: string
       topicType:
         title: Topic Type
-        description: "The topic type. Possible values are: persistent or non-persistent"
+        description: "The topic type. Possible values are persistent or non-persistent."
         type: string  
       namespaceName:
         title: Pulsar Namespace Name
@@ -118,7 +118,7 @@ spec:
           - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       subscriptionInitialPosition:
         title: Subscription Initial Position
-        description: "Control the initial position in the topic of a newly created subscription. Default is latest message.Possible values: EARLIEST or LATEST"
+        description: "Control the initial position in the topic of a newly created subscription. Default is latest message. Possible values are EARLIEST or LATEST."
         type: string
         default: LATEST
       subscriptionName:
@@ -128,12 +128,12 @@ spec:
         default: subs
       subscriptionTopicsMode:
         title: Subscription Topics Mode
-        description: "Determines to which topics this consumer should be subscribed to - Persistent, Non-Persistent, or both. Only used with pattern subscriptions.Possible values: PersistentOnly, NonPersistentOnly, AllTopics"
+        description: "Determines to which topics this consumer should be subscribed to - Persistent, Non-Persistent, or both. Only used with pattern subscriptions.Possible values are PersistentOnly, NonPersistentOnly, or AllTopics."
         type: string
         default: PersistentOnly
       subscriptionType:
         title: Subscription Type
-        description: "Type of the subscription. Possible values: EXCLUSIVE, SHARED, FAILOVER, KEY_SHARED"
+        description: "Type of the subscription. Possible values are EXCLUSIVE, SHARED, FAILOVER, KEY_SHARED."
         type: string
         default: EXCLUSIVE
       topicsPattern:

@@ -30,9 +30,7 @@ spec:
   definition:
     title: "Google Pubsub Source"
     description: |-
-      Consume messages from Google Pubsub.
-
-      The serviceAccountKey property needs to be encoded in base64, so when you pass it as parameter, don't forget to encode it.
+      Consume messages from Google Cloud Pub/Sub.
     required:
       - projectId
       - subscriptionName
@@ -41,33 +39,33 @@ spec:
     properties:
       projectId:
         title: Project Id
-        description: The Google Cloud PubSub Project Id
+        description: The Google Cloud Pub/Sub Project ID.
         type: string
       subscriptionName:
         title: Subscription Name
-        description: The Subscription Name
+        description: The subscription name.
         type: string
       serviceAccountKey:
         title: Service Account Key
-        description: The Service account key that can be used as credentials for the PubSub publisher/subscriber
+        description: The service account key to use as credentials for the Pub/Sub publisher/subscriber. You must encode this value in base64.
         type: binary
         x-descriptors:
         - urn:camel:group:credentials
       synchronousPull:
         title: Synchronous Pull
-        description: If Synchronously pull batches of messages is enabled or not
+        description: Specifies to synchronously pull batches of messages.
         type: boolean
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
       maxMessagesPerPoll:
         title: Max Messages Per Poll
-        description: The max number of messages to receive from the server in a single API call
+        description: The maximum number of messages to receive from the server in a single API call.
         type: integer
         default: 1
       concurrentConsumers:
         title: Concurrent Consumers
-        description: The number of parallel streams consuming from the subscription
+        description: The number of parallel streams to consume from the subscription.
         type: integer
         default: 1        
   dependencies:

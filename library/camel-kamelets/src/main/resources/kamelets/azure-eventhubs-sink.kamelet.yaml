@@ -31,13 +31,11 @@ spec:
   definition:
     title: "Azure Eventhubs Sink"
     description: |-
-      Send Events to Azure Eventhubs.
+      Send events to Azure Event Hubs.
 
-      The Kamelet is able to understand the following headers to be set:
-
-      - `partition` / `ce-partition`: as the time to live of the message in the queue.
-
-      If the header won't be set then the partition will be assigned by Eventhubs
+      The Kamelet checks for the `partition` / `ce-partition` header to determine how long an event remains in the Azure Storage queue. Use `PnDTnHnMn.nS.` format. For example, `PT20.345S` parses as 20.345 seconds and `P2D` parses as 2 days.
+         
+      A header is optional. If the header is not set, the partition is assigned by Event Hubs.
     required:
       - namespaceName
       - eventhubName
@@ -47,21 +45,21 @@ spec:
     properties:
       namespaceName:
         title: Eventhubs Namespace
-        description: The eventhubs namespace
+        description: The Event Hubs namespace.
         type: string
       eventhubName:
         title: Eventhubs Name
-        description: The eventhub name
+        description: The Event Hub name.
         type: string
       sharedAccessName:
         title: Share Access Name
-        description: EventHubs SAS key name
+        description: The Event Hubs SAS key name.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       sharedAccessKey:
         title: Share Access Key
-        description: The key for EventHubs SAS key name
+        description: The key for the Event Hubs SAS key name.
         type: string
         format: password
         x-descriptors:

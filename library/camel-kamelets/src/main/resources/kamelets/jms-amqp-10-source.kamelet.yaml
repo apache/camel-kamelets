@@ -30,7 +30,7 @@ metadata:
 spec:
   definition:
     title: "JMS - AMQP 1.0 Kamelet Source"
-    description: "A Kamelet that can consume events from any AMQP 1.0 compliant message broker using the Apache Qpid JMS client"
+    description: "Consume data from any AMQP 1.0 compliant message broker by using the Apache Qpid JMS client."
     required:
       - destinationName
       - remoteURI
@@ -38,16 +38,16 @@ spec:
     properties:
       destinationType:
         title: "Destination Type"
-        description: "The JMS destination type (i.e.: queue or topic)"
+        description: "The JMS destination type (queue or topic)."
         type: string
         default: queue
       destinationName:
         title: "Destination Name"
-        description: "The JMS destination name"
+        description: "The JMS destination name."
         type: string
       remoteURI:
         title: "Broker URL"
-        description: "The JMS URL"
+        description: "The JMS URL."
         type: string
         example: "amqp://my-host:31616"
   dependencies:

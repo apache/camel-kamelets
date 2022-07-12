@@ -31,21 +31,19 @@ spec:
   definition:
     title: "AWS SES Sink"
     description: |-
-      Send Email through AWS SES Service.
+      Send email through the Amazon Simple Email Service (SES).
 
-      Access Key/Secret Key are the basic method for authenticating to the AWS SES Service. These parameters are optional, because the Kamelet provide also the 'useDefaultCredentialsProvider'.
+      The basic authentication method for the Kinesis service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.
       
-      When using a default Credentials Provider the SES client will load the credentials through this provider and won't use the static credential. This is reason for not having the access key and secret key as mandatory parameter for this Kamelet.
+      If you use the default credentials provider, the Kinesis client loads the credentials through this provider and doesn't use the basic authentication method.
+      
+      In the header, you can optionally set the following properties:
+      
+      - `subject` / `ce-subject` property to specify the email subject. If you do not set this property in the header, the Kamelet uses the exchange ID for the email subject.
 
-      The Kamelet expects the following headers to be set:
+      - `to` / `ce-to` to provide a comma-separated list of email addresses.
 
-      - `subject` / `ce-subject`: The email subject
-
-      If the header won't be set the exchange ID will be used as email subject.
-
-      - `to` / `ce-to`: a comma separated list of email addresses
-
-      - `reply-to-addresses` / `ce-reply-to-addresses`: a comma separated list of reply-to email addresses
+      - `reply-to-addresses` / `ce-reply-to-addresses`to provider a comma-separated list of reply-to email addresses.
 
     required:
       - from
@@ -75,13 +73,13 @@ spec:
         - urn:camel:group:credentials
       region:
         title: AWS Region
-        description: The AWS region to connect to.
+        description: The AWS region to access.
         type: string
         example: eu-west-1
         enum: ["af-south-1", "ap-east-1", "ap-northeast-1", "ap-northeast-2", "ap-northeast-3", "ap-south-1", "ap-southeast-1", "ap-southeast-2", "ap-southeast-3", "ca-central-1", "eu-central-1", "eu-north-1", "eu-south-1", "eu-west-1", "eu-west-2", "eu-west-3", "fips-us-east-1", "fips-us-east-2", "fips-us-west-1", "fips-us-west-2", "me-south-1", "sa-east-1", "us-east-1", "us-east-2", "us-west-1", "us-west-2", "cn-north-1", "cn-northwest-1", "us-gov-east-1", "us-gov-west-1", "us-iso-east-1", "us-iso-west-1", "us-isob-east-1"]
       useDefaultCredentialsProvider:
         title: Default Credentials Provider
-        description: Set whether the SES client should expect to load credentials through a default credentials provider or to expect static credentials to be passed in.
+        description: If true, the SES client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
         type: boolean
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'

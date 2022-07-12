@@ -30,10 +30,10 @@ spec:
   definition:
     title: "Salesforce Delete Sink"
     description: |-
-      Removes an object from Salesforce. The body received must be a json
-      containing two keys: sObjectId and sObjectName.
-
-      Example body: { "sObjectId": "XXXXX0", "sObjectName": "Contact" }
+      Remove an object from Salesforce. 
+      
+      The data body must be JSON-formatted and it must
+      contain two keys: `sObjectId` and `sObjectName`. For example: `{ "sObjectId": "XXXXX0", "sObjectName": "Contact" }`
     required:
       - clientId
       - clientSecret
@@ -43,18 +43,18 @@ spec:
     properties:
       loginUrl:
         title: Login URL
-        description: The Salesforce instance login URL
+        description: The Salesforce instance login URL.
         type: string
         default: https://login.salesforce.com
       clientId:
         title: Consumer Key
-        description: The Salesforce application consumer key
+        description: The Salesforce application consumer key.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       clientSecret:
         title: Consumer Secret
-        description: The Salesforce application consumer secret
+        description: The Salesforce application consumer secret.
         type: string
         format: password
         x-descriptors:
@@ -62,13 +62,13 @@ spec:
         - urn:camel:group:credentials
       userName:
         title: Username
-        description: The Salesforce username
+        description: The Salesforce username.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The Salesforce user password
+        description: The Salesforce user password.
         type: string
         format: password
         x-descriptors:
