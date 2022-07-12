@@ -51,9 +51,9 @@ spec:
         - urn:camel:group:credentials
       delay:
         title: Delay
-        description: The delay between polls.
+        description: The delay between polls. If no unit provided, miliseconds is the default.
         type: string
-        example: "1s"
+        example: "60s or 6000 or 1m"
   types:
     out:
       mediaType: application/json
