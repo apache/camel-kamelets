@@ -68,7 +68,7 @@ class InsertFieldTest {
         processor.process(exchange);
 
         Assertions.assertEquals(exchange.getMessage().getBody(String.class),
-                "[\"batman\",\"spiderman\",\"wonderwoman\",\"green lantern\"]");
+                "[ \"batman\", \"spiderman\", \"wonderwoman\", \"green lantern\" ]");
     }
 
     @Test
