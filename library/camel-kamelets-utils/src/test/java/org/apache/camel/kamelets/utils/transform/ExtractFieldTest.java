@@ -33,8 +33,8 @@ class ExtractFieldTest {
 
     private ExtractField processor;
 
-    private final String baseJson = "{" +
-                "\"name\":\"Rajesh Koothrappali\"" +
+    private final String baseJson = "{" + "\n" +
+                "\"name\":\"Rajesh Koothrappali\"" + "\n" +
             "}";
 
     @BeforeEach
