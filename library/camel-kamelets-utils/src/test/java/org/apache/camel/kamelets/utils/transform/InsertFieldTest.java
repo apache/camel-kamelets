@@ -70,11 +70,4 @@ class InsertFieldTest {
         Assertions.assertEquals(exchange.getMessage().getBody(String.class),
                 "[ \"batman\", \"spiderman\", \"wonderwoman\", \"green lantern\" ]");
     }
-
-    @Test
-    void shouldFailOnInvalidPayloadType() {
-        Exchange exchange = new DefaultExchange(camelContext);
-        exchange.getMessage().setBody(baseJson);
-        Assertions.assertThrows(InvalidPayloadException.class, () -> processor.process(exchange));
-    }
 }
