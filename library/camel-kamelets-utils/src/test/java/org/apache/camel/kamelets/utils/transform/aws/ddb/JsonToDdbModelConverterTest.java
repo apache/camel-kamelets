@@ -154,15 +154,6 @@ class JsonToDdbModelConverterTest {
         Assertions.assertEquals(0L, attributeValueMap.size());
     }
 
-    @Test
-    void shouldFailForWrongBodyType() throws Exception {
-        Exchange exchange = new DefaultExchange(camelContext);
-
-        exchange.getMessage().setBody("{}");
-
-        Assertions.assertThrows(InvalidPayloadException.class, () -> processor.process(Ddb2Operations.PutItem.name(), exchange));
-    }
-
     @Test()
     void shouldFailForUnsupportedOperation() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);

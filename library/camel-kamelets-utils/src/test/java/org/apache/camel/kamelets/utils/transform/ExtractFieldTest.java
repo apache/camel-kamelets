@@ -34,7 +34,7 @@ class ExtractFieldTest {
     private ExtractField processor;
 
     private final String baseJson = "{" + "\n" +
-                "\"name\":\"Rajesh Koothrappali\"" + "\n" +
+            "  \"name\" : \"Rajesh Koothrappali\"" + "\n" +
             "}";
 
     @BeforeEach
@@ -115,13 +115,6 @@ class ExtractFieldTest {
 
         Assertions.assertEquals(baseJson, exchange.getMessage().getBody(String.class));
         Assertions.assertEquals("Rajesh Koothrappali", exchange.getMessage().getHeader(ExtractField.EXTRACTED_FIELD_HEADER));
-    }
-
-    @Test
-    void shouldFailOnInvalidPayloadType() {
-        Exchange exchange = new DefaultExchange(camelContext);
-        exchange.getMessage().setBody(baseJson);
-        Assertions.assertThrows(InvalidPayloadException.class, () -> processor.process(exchange));
     }
 
 }
