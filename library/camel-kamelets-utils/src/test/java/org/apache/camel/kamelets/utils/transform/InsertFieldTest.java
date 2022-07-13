@@ -33,7 +33,7 @@ class InsertFieldTest {
 
     private InsertField processor;
 
-    private final String baseJson = "{" +
+    private final String baseJson = "{" + 
                 "\"name\":\"Rajesh Koothrappali\"" +
             "}";
 
@@ -51,9 +51,9 @@ class InsertFieldTest {
         processor = new InsertField("age", "29");
         processor.process(exchange);
 
-        Assertions.assertEquals(exchange.getMessage().getBody(String.class), "{" +
-                            "\"name\":\"Rajesh Koothrappali\"," +
-                            "\"age\":\"29\"" +
+        Assertions.assertEquals(exchange.getMessage().getBody(String.class), "{" + "\n" +
+                        "  \"name\" : \"Rajesh Koothrappali\"," + "\n" +
+                        "  \"age\" : \"29\"" + "\n" +
                         "}");
     }
 
