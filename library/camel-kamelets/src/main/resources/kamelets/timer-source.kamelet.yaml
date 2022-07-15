@@ -31,24 +31,24 @@ metadata:
 spec:
   definition:
     title: Timer Source
-    description: Produces periodic events with a custom payload.
+    description: Produces periodic messages with a custom payload.
     required:
       - message
     type: object
     properties:
       period:
         title: Period
-        description: The interval between two events in milliseconds
+        description: "The interval (in milliseconds) to wait between producing the next message."
         type: integer
         default: 1000
       message:
         title: Message
-        description: The message to generate
+        description: The message to generate.
         type: string
         example: hello world
       contentType:
         title: Content Type
-        description: The content type of the message being generated
+        description: The content type of the generated message.
         type: string
         default: text/plain
   dependencies:
