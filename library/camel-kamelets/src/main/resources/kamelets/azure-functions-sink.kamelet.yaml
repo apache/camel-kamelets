@@ -54,7 +54,7 @@ spec:
         - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
   dependencies:
-  - "camel:http"
+  - "camel:vertx-http"
   - "camel:kamelet"
   - "camel:core"
   template:
@@ -66,4 +66,4 @@ spec:
       - set-header:
           name: CamelHttpMethod
           constant: "{{method}}"
-      - to: "{{url}}?code={{?key}}"
+      - to: "vertx-http:{{url}}?code={{?key}}"
