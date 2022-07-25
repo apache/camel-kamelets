@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.fabric8.camelk.v1alpha1.Kamelet;
-import io.fabric8.kubernetes.api.model.apiextensions.v1.JSONSchemaProps;
+import io.fabric8.camelk.v1alpha1.JSONSchemaProps;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.Resource;
 import io.github.classgraph.ScanResult;

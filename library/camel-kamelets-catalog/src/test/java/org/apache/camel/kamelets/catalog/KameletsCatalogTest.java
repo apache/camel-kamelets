@@ -17,7 +17,7 @@
 package org.apache.camel.kamelets.catalog;
 
 import io.fabric8.camelk.v1alpha1.Kamelet;
-import io.fabric8.kubernetes.api.model.apiextensions.v1.JSONSchemaProps;
+import io.fabric8.camelk.v1alpha1.JSONSchemaProps;
 import io.github.classgraph.ClassGraph;
 import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
 import org.junit.jupiter.api.BeforeAll;
