@@ -75,5 +75,7 @@ spec:
         serviceBusReceiveMode: "{{serviceBusReceiveMode}}"
         subscriptionName: "{{?subscriptionName}}"
       steps:
+      - set-body:
+          simple: "${body.toBytes()}"
       - to: "kamelet:sink"
 
