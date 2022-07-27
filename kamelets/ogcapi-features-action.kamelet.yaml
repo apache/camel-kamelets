@@ -33,6 +33,8 @@ spec:
       Returns the items of the collection provided of an OGC API Features server. 
       The collection must be a valid collection name on the server.
       
+      Query can be defined in the body too.
+      
       See https://www.ogc.org/standards/ogcapi-features
     required:
       - url
@@ -88,14 +90,14 @@ spec:
     from:
       uri: "kamelet:source"
       steps:
-      - set-body:
-          simple: ""
       - set-header:
           name: "Accept"
           constant: "application/geo+json"
       - set-header:
           name: "CamelHttpQuery"
-          simple: "limit={{limit}}&bbox={{bbox}}&{{?query}}"
+          simple: "limit={{limit}}&bbox={{bbox}}&{{?query}}&${body}"
+      - set-body:
+          simple: ""
       - to: 
           uri: "{{url}}/collections/{{collection}}/items"
       - remove-header:
