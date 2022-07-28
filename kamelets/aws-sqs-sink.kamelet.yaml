@@ -33,9 +33,9 @@ spec:
     description: |-
       Send messages to an Amazon Simple Queue Service (SQS) queue.
 
-      The basic authentication method for the Kinesis service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.
+      The basic authentication method for the SQS service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.
       
-      If you use the default credentials provider, the Kinesis client loads the credentials through this provider and doesn't use the basic authentication method.
+      If you use the default credentials provider, the SQS client loads the credentials through this provider and doesn't use the basic authentication method.
     required:
       - queueNameOrArn
       - region
