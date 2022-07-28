@@ -16,9 +16,9 @@ spec:
     description: |-
       Receive data from an Amazon S3 Bucket.
 
-      The basic authentication method for the Kinesis service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.
+      The basic authentication method for the S3 service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.
       
-      If you use the default credentials provider, the Kinesis client loads the credentials through this provider and doesn't use the basic authentication method.
+      If you use the default credentials provider, the S3 client loads the credentials through this provider and doesn't use the basic authentication method.
     required:
       - bucketNameOrArn
       - region
