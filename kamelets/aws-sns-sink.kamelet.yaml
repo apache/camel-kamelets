@@ -33,9 +33,9 @@ spec:
     description: |-
       Send message to an Amazon Simple Notification Service (SNS) topic.
 
-      The basic authentication method for the Kinesis service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.
+      The basic authentication method for the SNS service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.
       
-      If you use the default credentials provider, the Kinesis client loads the credentials through this provider and doesn't use the basic authentication method.
+      If you use the default credentials provider, the SNS client loads the credentials through this provider and doesn't use the basic authentication method.
 
       In the header, you can optionally set the `subject` / `ce-subject` property to specify the subject of the message.
     required:
