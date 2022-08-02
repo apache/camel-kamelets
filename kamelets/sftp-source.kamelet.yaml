@@ -87,6 +87,13 @@ spec:
         default: true
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+      ignoreFileNotFoundOrPermissionError:
+        title: Ignore File Not Found Or Permission Error
+        description: Whether to ignore when (trying to list files in directories or when downloading a file), which does not exist or due to permission error. By default when a directory or file does not exists or insufficient permission, then an exception is thrown. Setting this option to true allows to ignore that instead.
+        type: boolean
+        default: false
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
   dependencies:
     - "camel:ftp"
     - "camel:core"
@@ -99,6 +106,7 @@ spec:
         passiveMode: "{{passiveMode}}"
         recursive: "{{recursive}}"
         idempotent: "{{idempotent}}"
+        ignoreFileNotFoundOrPermissionError: "{{ignoreFileNotFoundOrPermissionError}}"
       steps:
       - set-header:
           name: file
