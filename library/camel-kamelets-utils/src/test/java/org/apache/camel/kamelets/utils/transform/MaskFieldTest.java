@@ -25,6 +25,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 class MaskFieldTest {
 
     private DefaultCamelContext camelContext;
@@ -44,7 +49,7 @@ class MaskFieldTest {
     }
 
     @Test
-    void shouldMaskFieldFromJsonNode() throws Exception {
+    void shouldMaskField() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
         exchange.getMessage().setBody(mapper.readTree(baseJson));
@@ -53,4 +58,29 @@ class MaskFieldTest {
         Assertions.assertEquals("\"xxxx\"" , s.get("name").toString());
     }
 
+    @Test
+    void shouldMaskFieldWithNull() throws Exception {
+        Exchange exchange = new DefaultExchange(camelContext);
+
+        exchange.getMessage().setBody(mapper.readTree(baseJson));
+
+        JsonNode s = processor.process("name", null, exchange);
+        Assertions.assertEquals("\"\"" , s.get("name").toString());
+    }
+
+    @Test
+    void shouldMaskFieldList() throws Exception {
+        Map<String, List> names = new HashMap<>();
+        Exchange exchange = new DefaultExchange(camelContext);
+        List<String> els = new ArrayList<>();
+        els.add("Sheldon");
+        els.add("Rajesh");
+        els.add("Leonard");
+        names.put("names", els);
+
+        exchange.getMessage().setBody(mapper.writeValueAsString(names));
+
+        JsonNode s = processor.process("names", null, exchange);
+        Assertions.assertEquals("[]" , s.get("names").toString());
+    }
 }
