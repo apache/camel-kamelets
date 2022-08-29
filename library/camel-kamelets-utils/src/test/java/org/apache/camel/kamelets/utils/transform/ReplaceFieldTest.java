@@ -43,7 +43,7 @@ class ReplaceFieldTest {
         camelContext = new DefaultCamelContext();
         processor = new ReplaceField();
     }
-    
+
     @Test
     void shouldReplaceFieldToPlainJson() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
@@ -56,5 +56,19 @@ class ReplaceFieldTest {
                         "\"firstName\":\"Rajesh Koothrappali\"," +
                         "\"years\":\"29\"" +
                         "}");
+    }
+
+    @Test
+    void shouldReplaceFieldWithSpecificRename() throws Exception {
+        Exchange exchange = new DefaultExchange(camelContext);
+
+        exchange.getMessage().setBody(mapper.readTree(baseJson));
+
+        JsonNode node = processor.process("name,age", "none", "name:firstName", exchange);
+
+        Assertions.assertEquals(node.toString(), "{" +
+                "\"firstName\":\"Rajesh Koothrappali\"," +
+                "\"age\":\"29\"" +
+                "}");
     }
 }
