@@ -43,8 +43,9 @@ class ReplaceFieldTest {
         camelContext = new DefaultCamelContext();
         processor = new ReplaceField();
     }
+    
     @Test
-    void shouldAddFieldToPlainJson() throws Exception {
+    void shouldReplaceFieldToPlainJson() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
         exchange.getMessage().setBody(mapper.readTree(baseJson));
