@@ -71,4 +71,17 @@ class ReplaceFieldTest {
                 "\"age\":\"29\"" +
                 "}");
     }
+
+    @Test
+    void shouldReplaceFieldWithSpecificRenameAndDisableFields() throws Exception {
+        Exchange exchange = new DefaultExchange(camelContext);
+
+        exchange.getMessage().setBody(mapper.readTree(baseJson));
+
+        JsonNode node = processor.process("name", "none", "name:firstName", exchange);
+
+        Assertions.assertEquals(node.toString(), "{" +
+                "\"firstName\":\"Rajesh Koothrappali\"" +
+                "}");
+    }
 }
