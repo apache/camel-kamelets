@@ -32,3 +32,5 @@ wget https://github.com/apache/camel-kamelets/archive/refs/tags/v$1.tar.gz -O ca
 cd ../
 ./sign.sh $1/
 svn import $1/ https://dist.apache.org/repos/dist/dev/camel/camel-kamelets/$2/ -m "Import camel-kamelets release"
+
+rm -rf $1/

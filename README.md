@@ -215,6 +215,23 @@ Then perform the release:
 ./mvnw release:perform -Prelease
 ```
 
+Go to https://repository.apache.org/ and close the staging repository.
+
+A URL will be generated for the repository, like: https://repository.apache.org/content/repositories/orgapachecamel-xxxx. The URL needs to be communicated during the voting process.
+
+Now run:
+
+```
+cd release-utils/scripts/
+./upload-sources.sh $CAMEL_KAMELET_VERSION $CAMEL_KAMELET_VERSION
+```
+
+You'll be requested to insert the password to unlock the secret key to sign the artifacts and after uploading to nexus dev repository.
+
+You could verify the result at the following URL:
+
+https://dist.apache.org/repos/dist/dev/camel/camel-kamelets/<$CAMEL_KAMELET_VERSION> 
+
 Restore Kamelets:
 
 ```
@@ -228,3 +245,5 @@ git commit -am "Restore Kamelets for development"
 
 git push upstream main
 ```
+
+Send an email to dev mailing list to start the vote.
