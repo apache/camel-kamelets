@@ -88,6 +88,34 @@ spec:
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
+      notifyForOperationCreate:
+        title: Notify Operation Create
+        description: Notify for create operation.
+        type: boolean
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: true
+      notifyForOperationUpdate:
+        title: Notify Operation Update
+        description: Notify for update operation.
+        type: boolean
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
+      notifyForOperationDelete:
+        title: Notify Operation Delete
+        description: Notify for delete operation.
+        type: boolean
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
+      notifyForOperationUndelete:
+        title: Notify Operation Undelete
+        description: Notify for undelete operation.
+        type: boolean
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
   types:
     out:
       mediaType: application/json
@@ -110,10 +138,10 @@ spec:
       parameters:
         notifyForFields: "{{notifyForFields}}"
         updateTopic: "true"
-        notifyForOperationCreate: "true"
-        notifyForOperationUpdate: "false"
-        notifyForOperationDelete: "false"
-        notifyForOperationUndelete: "false"
+        notifyForOperationCreate: "{{notifyForOperationCreate}}"
+        notifyForOperationUpdate: "{{notifyForOperationUpdate}}"
+        notifyForOperationDelete: "{{notifyForOperationDelete}}"
+        notifyForOperationUndelete: "{{notifyForOperationUndelete}}"
         sObjectQuery: "{{query}}"
       steps:
       - marshal:
