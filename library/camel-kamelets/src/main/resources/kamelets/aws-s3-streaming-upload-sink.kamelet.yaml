@@ -74,13 +74,6 @@ spec:
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
-      streamingUploadMode:
-        title: Streaming Upload Mode
-        description: Setting the Streaming Upload Mode
-        type: boolean
-        x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
-        default: true
       restartingPolicy:
         title: Restarting Policy
         description: The restarting policy to use in streaming upload mode. There are 2 enums and the value can be one of override, lastPart
@@ -142,7 +135,7 @@ spec:
             accessKey: "{{?accessKey}}"
             region: "{{region}}"
             autoCreateBucket: "{{autoCreateBucket}}"
-            streamingUploadMode: "{{streamingUploadMode}}"
+            streamingUploadMode: "true"
             restartingPolicy: "{{restartingPolicy}}"
             batchMessageNumber: "{{batchMessageNumber}}"
             batchSize: "{{batchSize}}"
