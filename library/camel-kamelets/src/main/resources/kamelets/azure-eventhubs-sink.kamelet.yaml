@@ -33,7 +33,7 @@ spec:
     description: |-
       Send events to Azure Event Hubs.
 
-      The Kamelet checks for the `partition` / `ce-partition` header to determine how long an event remains in the Azure Storage queue. Use `PnDTnHnMn.nS.` format. For example, `PT20.345S` parses as 20.345 seconds and `P2D` parses as 2 days.
+      The Kamelet checks for the `partition-id` / `ce-partition-id` header which is an identifier of the Event Hub partition that the event will be sent to. If the identifier is not specified, the Event Hubs service will be responsible for routing events that are sent to an available partition.
          
       A header is optional. If the header is not set, the partition is assigned by Event Hubs.
     required:
@@ -80,16 +80,16 @@ spec:
       steps:
       - choice:
           when:
-          - simple: "${header[partition]}"
+          - simple: "${header[partition-id]}"
             steps:
             - set-header:
                 name: CamelAzureEventHubsPartitionId
-                simple: "${header[partition]}"
-          - simple: "${header[ce-partition]}"
+                simple: "${header[partition-id]}"
+          - simple: "${header[ce-partition-id]}"
             steps:
             - set-header:
                 name: CamelAzureEventHubsPartitionId
-                simple: "${header[ce-partition]}"
+                simple: "${header[ce-partition-id]}"
       - to:
           uri: "azure-eventhubs://{{namespaceName}}/{{eventhubName}}"
           parameters:
