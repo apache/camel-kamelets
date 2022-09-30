@@ -93,6 +93,9 @@ spec:
     beans:
       - name: local-es
         type: "#class:org.apache.camel.component.elasticsearch.ElasticsearchComponent"
+        properties:
+            user: "{{?user}}"
+            password: "{{?password}}"
     from:
       uri: timer:tick
       parameters:
@@ -110,8 +113,6 @@ spec:
               indexName: "{{indexName}}"
               hostAddresses: "{{hostAddresses}}"
               enableSSL: "{{enableSSL}}"
-              user: "{{?user}}"
-              password: "{{?password}}"
         - marshal:
             json:
               library: Gson
