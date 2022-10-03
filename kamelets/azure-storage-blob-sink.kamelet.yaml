@@ -63,6 +63,11 @@ spec:
         description: The operation to perform.
         type: string
         default: uploadBlockBlob
+      credentialType:
+        title: Credential Type
+        description: Determines the credential strategy to adopt. Possible values are SHARED_ACCOUNT_KEY, SHARED_KEY_CREDENTIAL and AZURE_IDENTITY
+        type: string
+        default: SHARED_ACCOUNT_KEY
   dependencies:
     - "camel:core"
     - "camel:azure-storage-blob"
@@ -93,3 +98,4 @@ spec:
           parameters:
             accessKey: "{{accessKey}}"
             operation: "{{operation}}"
+            credentialType: "{{credentialType}}"
