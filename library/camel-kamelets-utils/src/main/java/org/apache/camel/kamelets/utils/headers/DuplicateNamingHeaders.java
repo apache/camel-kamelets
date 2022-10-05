@@ -16,15 +16,16 @@
  */
 package org.apache.camel.kamelets.utils.headers;
 
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.InvalidPayloadException;
 import org.apache.camel.Processor;
 
-public class RenameHeaders implements Processor {
+public class DuplicateNamingHeaders implements Processor {
 
     String prefix;
     String renamingPrefix;
@@ -32,7 +33,7 @@ public class RenameHeaders implements Processor {
     /**
      * Default constructor.
      */
-    public RenameHeaders() {
+    public DuplicateNamingHeaders() {
     }
 
     /**
@@ -40,14 +41,14 @@ public class RenameHeaders implements Processor {
      * @param prefix a prefix to find all the headers to rename.
      * @param renamingPrefix the renaming prefix to use on all the matching headers
      */
-    public RenameHeaders(String prefix, String renamingPrefix) {
+    public DuplicateNamingHeaders(String prefix, String renamingPrefix) {
         this.prefix = prefix;
         this.renamingPrefix = renamingPrefix;
     }
 
     public void process(Exchange ex) throws InvalidPayloadException {
         Map<String, Object> originalHeaders = ex.getMessage().getHeaders();
-        Map<String, Object> modifiedHeaders = new HashMap<>();
+        Map<String, Object> newHeaders = new HashMap<>();
         for (Map.Entry<String, Object> entry : originalHeaders.entrySet()) {
 			String key = entry.getKey();
 			Object val = entry.getValue();
@@ -58,12 +59,11 @@ public class RenameHeaders implements Processor {
 		                String.format("%s|%s|%s", "(?<=[A-Z])(?=[A-Z][a-z])",
 		                        "(?<=[^A-Z])(?=[A-Z])",
 		                        "(?<=[A-Za-z])(?=[^A-Za-z])"), ".").toLowerCase();
-				modifiedHeaders.put(renamingPrefix+suffix, val);
-			} else {
-				modifiedHeaders.put(key, val);
-			}
+				newHeaders.put(renamingPrefix+suffix, val);
+			} 
 		}
-        ex.getMessage().setHeaders(modifiedHeaders);
+        originalHeaders.putAll(newHeaders);
+        ex.getMessage().setHeaders(originalHeaders);
     }
 
 	public void setPrefix(String prefix) {

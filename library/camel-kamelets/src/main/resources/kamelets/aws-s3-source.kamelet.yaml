@@ -113,7 +113,7 @@ spec:
   template:
     beans:
       - name: renameHeaders
-        type: "#class:org.apache.camel.kamelets.utils.headers.RenameHeaders"
+        type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
         property:
           - key: prefix
             value: 'CamelAwsS3'

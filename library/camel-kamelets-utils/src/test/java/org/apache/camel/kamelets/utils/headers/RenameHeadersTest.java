@@ -30,7 +30,7 @@ class RenameHeadersTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private RenameHeaders processor;
+    private DuplicateNamingHeaders processor;
 
     @BeforeEach
     void setup() {
@@ -45,7 +45,7 @@ class RenameHeadersTest {
         exchange.getMessage().setHeader("CamelAwsS3BucketName", "kamelets-demo");
         exchange.getMessage().setHeader("my-header", "header");
 
-        processor = new RenameHeaders();
+        processor = new DuplicateNamingHeaders();
         processor.setPrefix("CamelAwsS3");
         processor.setRenamingPrefix("aws.s3.");
         processor.process(exchange);
