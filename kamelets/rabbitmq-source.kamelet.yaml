@@ -67,6 +67,11 @@ spec:
         title: Queue name
         description: The queue to receive messages from
         type: string
+      vhost:
+        title: Virtual Host
+        description: The vhost for the channel
+        type: string
+        default: "/"
   dependencies:
     - "camel:rabbitmq"
     - "camel:kamelet"
@@ -79,5 +84,6 @@ spec:
         addresses: "{{addresses}}"
         routingKey: "{{?routingKey}}"
         queue: "{{?queue}}"
+        vhost: "{{vhost}}"
       steps:
       - to: "kamelet:sink"
