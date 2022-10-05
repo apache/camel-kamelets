@@ -16,10 +16,11 @@
  */
 package org.apache.camel.kamelets.utils.headers;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.InvalidPayloadException;
@@ -27,44 +28,66 @@ import org.apache.camel.Processor;
 
 public class DuplicateNamingHeaders implements Processor {
 
-    String prefix;
-    String renamingPrefix;
+	String prefix;
+	String renamingPrefix;
+	String selectedHeaders;
+	String mode = "all";
 
-    /**
-     * Default constructor.
-     */
-    public DuplicateNamingHeaders() {
-    }
+	/**
+	 * Default constructor.
+	 */
+	public DuplicateNamingHeaders() {
+	}
 
-    /**
-     * Constructor using fields.
-     * @param prefix a prefix to find all the headers to rename.
-     * @param renamingPrefix the renaming prefix to use on all the matching headers
-     */
-    public DuplicateNamingHeaders(String prefix, String renamingPrefix) {
-        this.prefix = prefix;
-        this.renamingPrefix = renamingPrefix;
-    }
+	/**
+	 * Constructor using fields.
+	 * 
+	 * @param prefix         a prefix to find all the headers to rename.
+	 * @param renamingPrefix the renaming prefix to use on all the matching headers
+	 */
+	public DuplicateNamingHeaders(String prefix, String renamingPrefix, String selectedHeaders, String mode) {
+		this.prefix = prefix;
+		this.renamingPrefix = renamingPrefix;
+		this.selectedHeaders = selectedHeaders;
+		this.mode = mode;
+	}
 
-    public void process(Exchange ex) throws InvalidPayloadException {
-        Map<String, Object> originalHeaders = ex.getMessage().getHeaders();
-        Map<String, Object> newHeaders = new HashMap<>();
-        for (Map.Entry<String, Object> entry : originalHeaders.entrySet()) {
+	public void process(Exchange ex) throws InvalidPayloadException {
+		Map<String, Object> originalHeaders = ex.getMessage().getHeaders();
+		Map<String, Object> newHeaders = new HashMap<>();
+		for (Map.Entry<String, Object> entry : originalHeaders.entrySet()) {
 			String key = entry.getKey();
 			Object val = entry.getValue();
-			if (key.startsWith(prefix)) {
-				String newKey = key.replaceFirst(prefix,renamingPrefix);
-				String subKey = newKey.substring(renamingPrefix.length());
-				String suffix = subKey.replaceAll(
-		                String.format("%s|%s|%s", "(?<=[A-Z])(?=[A-Z][a-z])",
-		                        "(?<=[^A-Z])(?=[A-Z])",
-		                        "(?<=[A-Za-z])(?=[^A-Za-z])"), ".").toLowerCase();
-				newHeaders.put(renamingPrefix+suffix, val);
-			} 
-		}
-        originalHeaders.putAll(newHeaders);
-        ex.getMessage().setHeaders(originalHeaders);
-    }
+			if (prefix != null && mode.equalsIgnoreCase("all")) {
+				if (key.startsWith(prefix)) {
+					String newKey = key.replaceFirst(prefix, renamingPrefix);
+					String subKey = newKey.substring(renamingPrefix.length());
+					String suffix = subKey.replaceAll(String.format("%s|%s|%s", "(?<=[A-Z])(?=[A-Z][a-z])",
+							"(?<=[^A-Z])(?=[A-Z])", "(?<=[A-Za-z])(?=[^A-Za-z])"), ".").toLowerCase();
+					newHeaders.put(renamingPrefix + suffix, val);
+				}
+			} else {
+					if (selectedHeaders != null && mode.equalsIgnoreCase("filtering")) {
+						List<String> headerList = Arrays.asList(selectedHeaders.split(","));
+						for (Iterator iterator = headerList.iterator(); iterator.hasNext();) {
+							String header = (String) iterator.next();
+							if (key.equalsIgnoreCase(header)) {
+								String newKey = key.replaceFirst(prefix, renamingPrefix);
+								String subKey = newKey.substring(renamingPrefix.length());
+								String suffix = subKey
+										.replaceAll(String.format("%s|%s|%s", "(?<=[A-Z])(?=[A-Z][a-z])",
+												"(?<=[^A-Z])(?=[A-Z])", "(?<=[A-Za-z])(?=[^A-Za-z])"), ".")
+										.toLowerCase();
+								newHeaders.put(renamingPrefix + suffix, val);
+							}
+						}
+
+					}
+				}
+			}
+		originalHeaders.putAll(newHeaders);
+		ex.getMessage().setHeaders(originalHeaders);
+	}
 
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
@@ -74,5 +97,12 @@ public class DuplicateNamingHeaders implements Processor {
 		this.renamingPrefix = renamingPrefix;
 	}
 
+	public void setSelectedHeaders(String selectedHeaders) {
+		this.selectedHeaders = selectedHeaders;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
+	}	
 
 }

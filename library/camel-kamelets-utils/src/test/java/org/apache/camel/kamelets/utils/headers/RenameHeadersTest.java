@@ -38,7 +38,7 @@ class RenameHeadersTest {
     }
     
     @Test
-    void shouldRenameHeaders() throws Exception {
+    void shouldDuplicateHeaders() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
         exchange.getMessage().setHeader("CamelAwsS3Key", "test.txt");
@@ -48,6 +48,26 @@ class RenameHeadersTest {
         processor = new DuplicateNamingHeaders();
         processor.setPrefix("CamelAwsS3");
         processor.setRenamingPrefix("aws.s3.");
+        processor.process(exchange);
+
+        Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("aws.s3.key"));
+        Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("aws.s3.bucket.name"));
+        Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("my-header"));
+    }
+    
+    @Test
+    void shouldDuplicateSelectedHeaders() throws Exception {
+        Exchange exchange = new DefaultExchange(camelContext);
+
+        exchange.getMessage().setHeader("CamelAwsS3Key", "test.txt");
+        exchange.getMessage().setHeader("CamelAwsS3BucketName", "kamelets-demo");
+        exchange.getMessage().setHeader("my-header", "header");
+
+        processor = new DuplicateNamingHeaders();
+        processor.setPrefix("CamelAwsS3");
+        processor.setRenamingPrefix("aws.s3.");
+        processor.setMode("filtering");
+        processor.setSelectedHeaders("CamelAwsS3Key,CamelAwsS3BucketName");
         processor.process(exchange);
 
         Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("aws.s3.key"));
