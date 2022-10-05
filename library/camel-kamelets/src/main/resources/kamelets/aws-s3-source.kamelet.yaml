@@ -107,8 +107,17 @@ spec:
         default: 500
   dependencies:
     - "camel:aws2-s3"
+    - "github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT"
     - "camel:kamelet"
   template:
+    beans:
+      - name: renameHeaders
+        type: "#class:org.apache.camel.kamelets.utils.headers.RenameHeaders"
+        property:
+          - key: prefix
+            value: 'CamelAwsS3'
+          - key: renamingPrefix
+            value: 'aws.s3.'
     from:
       uri: "aws2-s3:{{bucketNameOrArn}}"
       parameters:
@@ -125,4 +134,6 @@ spec:
         overrideEndpoint: "{{overrideEndpoint}}"
         delay: "{{delay}}"
       steps:
+      - process:
+          ref: "{{renameHeaders}}"
       - to: "kamelet:sink"
