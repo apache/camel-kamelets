@@ -55,11 +55,26 @@ spec:
   dependencies:
     - "camel:core"
     - "camel:kafka"
+    - "github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT"
     - "camel:kamelet"
   template:
+    beans:
+      - name: deDuplicateHeaders
+        type: "#class:org.apache.camel.kamelets.utils.headers.DeDuplicateNamingHeaders"
+        property:
+          - key: prefix
+            value: 'kafka.'
+          - key: renamingPrefix
+            value: 'kafka.'
+          - key: mode
+            value: 'filtering'
+          - key: selectedHeaders
+            value: 'kafka.key,kafka.topic,kafka.override_topic'
     from:
       uri: "kamelet:source"
       steps:
+      - process:
+          ref: "{{deDuplicateHeaders}}"
       - choice:
           when:
           - simple: "${header[key]}"
