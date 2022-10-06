@@ -19,6 +19,8 @@ spec:
       The basic authentication method for the S3 service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.
       
       If you use the default credentials provider, the S3 client loads the credentials through this provider and doesn't use the basic authentication method.
+
+      Two headers will be duplicated with different names for clarity at sink level, CamelAwsS3Key will be duplicated into aws.s3.key and CamelAwsS3BucketName will be duplicated in aws.s3.bucket.name
     required:
       - bucketNameOrArn
       - region
