@@ -137,9 +137,23 @@ spec:
           - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
   dependencies:
+    - "camel:core"
     - "camel:aws2-sqs"
+    - "github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT"
     - "camel:kamelet"
   template:
+    beans:
+      - name: renameHeaders
+        type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
+        property:
+          - key: prefix
+            value: 'CamelAwsSqs'
+          - key: renamingPrefix
+            value: 'aws.sqs.'
+          - key: mode
+            value: 'filtering'
+          - key: selectedHeaders
+            value: 'CamelAwsSqsReceiptHandle,CamelAwsSqsMessageId'
     from:
       uri: "aws2-sqs:{{queueNameOrArn}}"
       parameters:
@@ -156,4 +170,6 @@ spec:
         delay: "{{delay}}"
         greedy: "{{greedy}}"
       steps:
+      - process:
+          ref: "{{renameHeaders}}"
       - to: "kamelet:sink"
