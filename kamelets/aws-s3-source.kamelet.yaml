@@ -119,6 +119,10 @@ spec:
             value: 'CamelAwsS3'
           - key: renamingPrefix
             value: 'aws.s3.'
+          - key: mode
+            value: 'filtering'
+          - key: selectedHeaders
+            value: 'CamelAwsS3Key,CamelAwsS3BucketName'
     from:
       uri: "aws2-s3:{{bucketNameOrArn}}"
       parameters:
