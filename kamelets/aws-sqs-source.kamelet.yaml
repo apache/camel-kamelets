@@ -129,6 +129,13 @@ spec:
         description: The number of milliseconds before the next poll of the selected stream
         type: integer
         default: 500
+      greedy:
+        title: Greedy Scheduler
+        description: If greedy is enabled, then the polling will happen immediately again, if the previous run polled 1 or more messages.
+        type: boolean
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
   dependencies:
     - "camel:aws2-sqs"
     - "camel:kamelet"
@@ -146,6 +153,7 @@ spec:
         useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
         uriEndpointOverride: "{{?uriEndpointOverride}}"
         overrideEndpoint: "{{overrideEndpoint}}"
-        delay: "{{delay}}"  
+        delay: "{{delay}}"
+        greedy: "{{greedy}}"
       steps:
       - to: "kamelet:sink"
