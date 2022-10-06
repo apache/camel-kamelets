@@ -24,13 +24,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class RenameHeadersTest {
+class DeDuplicateHeadersTest {
 
     private DefaultCamelContext camelContext;
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private DuplicateNamingHeaders processor;
+    private DeDuplicateNamingHeaders processor;
 
     @BeforeEach
     void setup() {
@@ -41,17 +41,19 @@ class RenameHeadersTest {
     void shouldDuplicateHeaders() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
-        exchange.getMessage().setHeader("CamelAwsS3Key", "test.txt");
-        exchange.getMessage().setHeader("CamelAwsS3BucketName", "kamelets-demo");
+        exchange.getMessage().setHeader("kafka.topic", "peppe");
+        exchange.getMessage().setHeader("kafka.key", "peppe");
+        exchange.getMessage().setHeader("kafka.override_topic", "peppe");
         exchange.getMessage().setHeader("my-header", "header");
 
-        processor = new DuplicateNamingHeaders();
-        processor.setPrefix("CamelAwsS3");
-        processor.setRenamingPrefix("aws.s3.");
+        processor = new DeDuplicateNamingHeaders();
+        processor.setPrefix("kafka.");
+        processor.setRenamingPrefix("kafka.");
         processor.process(exchange);
 
-        Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("aws.s3.key"));
-        Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("aws.s3.bucket.name"));
+        Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("kafka.KEY"));
+        Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("kafka.TOPIC"));
+        Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("kafka.OVERRIDE_TOPIC"));
         Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("my-header"));
     }
     
@@ -59,20 +61,39 @@ class RenameHeadersTest {
     void shouldDuplicateSelectedHeaders() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
-        exchange.getMessage().setHeader("CamelAwsS3Key", "test.txt");
-        exchange.getMessage().setHeader("CamelAwsS3BucketName", "kamelets-demo");
+        exchange.getMessage().setHeader("kafka.TOPIC", "peppe");
+        exchange.getMessage().setHeader("kafka.KEY", "peppe");
         exchange.getMessage().setHeader("my-header", "header");
+        exchange.getMessage().setHeader("kafka.override_topic", "peppe");
 
-        processor = new DuplicateNamingHeaders();
-        processor.setPrefix("CamelAwsS3");
-        processor.setRenamingPrefix("aws.s3.");
+        processor = new DeDuplicateNamingHeaders();
+        processor.setPrefix("kafka.");
+        processor.setRenamingPrefix("kafka.");
+        processor.setSelectedHeaders("kafka.TOPIC,kafka.KEY");
         processor.setMode("filtering");
-        processor.setSelectedHeaders("CamelAwsS3Key,CamelAwsS3BucketName");
         processor.process(exchange);
 
-        Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("aws.s3.key"));
-        Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("aws.s3.bucket.name"));
+        Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("kafka.KEY"));
+        Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("kafka.TOPIC"));
+        Assertions.assertFalse(exchange.getMessage().getHeaders().containsKey("kafka.OVERRIDE_TOPIC"));
         Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("my-header"));
+    }
+    
+    @Test
+    void shouldDeDuplicateSelectedHeaders() throws Exception {
+        Exchange exchange = new DefaultExchange(camelContext);
+
+        exchange.getMessage().setHeader("kafka.override_topic", "peppe");
+
+        processor = new DeDuplicateNamingHeaders();
+        processor.setPrefix("kafka.");
+        processor.setRenamingPrefix("kafka.");
+        processor.setSelectedHeaders("kafka.topic,kafka.key");
+        processor.setMode("filtering");
+        processor.process(exchange);
+
+        Assertions.assertFalse(exchange.getMessage().getHeaders().containsKey("kafka.OVERRIDE_TOPIC"));
+
     }
 
 }
