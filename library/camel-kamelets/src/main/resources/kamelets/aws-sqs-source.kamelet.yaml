@@ -37,6 +37,8 @@ spec:
       Access Key/Secret Key are the basic method for authenticating to the AWS SQS Service. These parameters are optional because the Kamelet provides the 'useDefaultCredentialsProvider'.
       
       When using a default Credentials Provider the SQS client will load the credentials through this provider and won't use the static credential. This is reason for not having the access key and secret key as mandatory parameter for this Kamelet.
+
+      Two headers will be duplicated with different names for clarity at sink level, CamelAwsSqsMessageId will be duplicated into aws.sqs.message.id and CamelAwsSqsReceiptHandle will be duplicated in aws.sqs.receipt.handle
     required:
       - queueNameOrArn
       - region
