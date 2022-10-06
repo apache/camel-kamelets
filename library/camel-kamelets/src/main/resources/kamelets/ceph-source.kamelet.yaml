@@ -123,8 +123,8 @@ spec:
         ignoreBody: "{{ignoreBody}}"
         deleteAfterRead: "{{deleteAfterRead}}"
         prefix: "{{?prefix}}"
-        uriEndpointOverride: "true"
-        overrideEndpoint: "{{cephUrl}}"
+        uriEndpointOverride: "{{cephUrl}}"
+        overrideEndpoint: "true"
         delay: "{{delay}}"
       steps:
       - to: "kamelet:sink"
