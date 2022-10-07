@@ -96,7 +96,20 @@ spec:
     - "camel:aws2-kinesis"
     - "camel:kamelet"
     - "camel:core"
+    - "github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT"
   template:
+    beans:
+      - name: duplicateHeaders
+        type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
+        property:
+          - key: prefix
+            value: 'CamelAwsKinesis'
+          - key: renamingPrefix
+            value: 'aws.kinesis.'
+          - key: mode
+            value: 'filtering'
+          - key: selectedHeaders
+            value: 'CamelAwsKinesisPartitionKey,CamelAwsKinesisShardId,CamelAwsKinesisSequenceNumber'
     from:
       uri: aws2-kinesis:{{stream}}
       parameters:
@@ -108,4 +121,6 @@ spec:
         overrideEndpoint: "{{overrideEndpoint}}"
         delay: "{{delay}}"
       steps:
+      - process:
+          ref: "{{duplicateHeaders}}"
       - to: "kamelet:sink"
