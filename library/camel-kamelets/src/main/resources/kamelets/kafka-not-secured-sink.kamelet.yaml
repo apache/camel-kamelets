@@ -39,6 +39,8 @@ spec:
       - `partition-key` / `ce-partitionkey`: as message partition key
 
       Both the headers are optional.
+
+      Three headers, if specified, will be deduplicated with different names, kafka.key will be duplicated into kafka.KEY, kafka.topic into kafka.TOPIC and kafka.override_topic into kafka.OVERRIDE_TOPIC
     required:
       - topic
       - bootstrapServers
