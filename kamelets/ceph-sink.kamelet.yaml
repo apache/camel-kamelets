@@ -104,12 +104,11 @@ spec:
             - set-header:
                 name: CamelAwsS3Key
                 simple: "${header[ce-file]}"
-          - simple: "${properties:keyName:null} == 'null'"
+          - simple: "'{{?keyName}}' == ''"
             steps:
             - set-header:
                 name: CamelAwsS3Key
                 simple: "${exchangeId}"
-                # this can be simplified when https://issues.apache.org/jira/browse/CAMEL-18070 is resolved
       - to:
           uri: "aws2-s3:{{bucketName}}"
           parameters:

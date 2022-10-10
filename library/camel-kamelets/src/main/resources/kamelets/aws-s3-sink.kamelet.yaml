@@ -34,7 +34,7 @@ spec:
       Upload data to an Amazon S3 Bucket.
 
       The basic authentication method for the S3 service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.
-      
+
       If you use the default credentials provider, the S3 client loads the credentials through this provider and doesn't use the basic authentication method.
 
       In the header, you can optionally set the `file` / `ce-partition` property to specify the name of the file to upload.
@@ -119,12 +119,11 @@ spec:
             - set-header:
                 name: CamelAwsS3Key
                 simple: "${header[ce-file]}"
-          - simple: "${properties:keyName:null} == 'null'"
+          - simple: "'{{?keyName}}' == ''"
             steps:
             - set-header:
                 name: CamelAwsS3Key
-                simple: "${exchangeId}"      
-                # this can be simplified when https://issues.apache.org/jira/browse/CAMEL-18070 is resolved
+                simple: "${exchangeId}"
       - to:
           uri: "aws2-s3:{{bucketNameOrArn}}"
           parameters:
