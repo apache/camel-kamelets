@@ -32,6 +32,8 @@ spec:
     title: "Azure Storage Queue Source"
     description: |-
       Receive events from Azure Storage queues.
+
+      One header will be duplicated with different names for clarity at sink level, CamelAzureStorageQueueMessageId will be duplicated into azure.storage.queue.message.id
     required:
       - accountName
       - queueName
@@ -76,7 +78,7 @@ spec:
           - key: mode
             value: 'filtering'
           - key: selectedHeaders
-            value: 'CamelAzureStorageQueueMessageId,CamelAzureStorageQueueInsertionTime'
+            value: 'CamelAzureStorageQueueMessageId'
     from:
       uri: "azure-storage-queue://{{accountName}}/{{queueName}}"
       parameters:
