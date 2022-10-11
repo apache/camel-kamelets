@@ -66,6 +66,8 @@ spec:
   dependencies:
     - "camel:azure-storage-queue"
     - "camel:kamelet"
+    - "github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT"
+    - "camel:core"
   template:
     beans:
       - name: renameHeaders
