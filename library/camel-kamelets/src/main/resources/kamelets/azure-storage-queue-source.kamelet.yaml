@@ -65,10 +65,24 @@ spec:
     - "camel:azure-storage-queue"
     - "camel:kamelet"
   template:
+    beans:
+      - name: renameHeaders
+        type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
+        property:
+          - key: prefix
+            value: 'CamelAzureStorageQueue'
+          - key: renamingPrefix
+            value: 'azure.storage.queue.'
+          - key: mode
+            value: 'filtering'
+          - key: selectedHeaders
+            value: 'CamelAzureStorageQueueMessageId,CamelAzureStorageQueueInsertionTime'
     from:
       uri: "azure-storage-queue://{{accountName}}/{{queueName}}"
       parameters:
         accessKey: "{{accessKey}}"
         maxMessages: "{{maxMessages}}"
       steps:
+      - process:
+          ref: "{{renameHeaders}}"
       - to: "kamelet:sink"
