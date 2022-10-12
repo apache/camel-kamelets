@@ -67,7 +67,20 @@ spec:
     - "camel:core"
     - "camel:jsonpath"
     - "camel:timer"
+    - "github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT"
   template:
+    beans:
+      - name: renameHeaders
+        type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
+        property:
+          - key: prefix
+            value: 'CamelAzureStorageBlob'
+          - key: renamingPrefix
+            value: 'azure.storage.blob.'
+          - key: mode
+            value: 'filtering'
+          - key: selectedHeaders
+            value: 'CamelAzureStorageBlobETag,CamelAzureStorageBlobCreationTime,CamelAzureStorageBlobLastModified,CamelAzureStorageBlobBlobSize'
     from:
       uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
       parameters:
