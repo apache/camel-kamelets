@@ -75,37 +75,16 @@ spec:
     - "camel:timer"
   template:
     from:
-      uri: "timer:azure-storage-blob-stream"
+      uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
       parameters:
-        period: "{{period}}"
+        accessKey: "{{accessKey}}"
+        credentialType: "{{credentialType}}"
       steps:
-      - to:
-          uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
-          parameters:
-            operation: "listBlobs"
-            accessKey: "{{accessKey}}"
-            credentialType: "{{credentialType}}"
-      - split:
-          jsonpath: "$.*"
-          steps:
-          - set-property:
-              name: azureBlobName
-              simple: ${body.name}
-          - set-header:
-              name: CamelAzureStorageBlobBlobName
-              simple: ${exchangeProperty.azureBlobName}
-          - to:
-              uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
-              parameters:
-                operation: "getBlob"
-                accessKey: "{{accessKey}}"
-          - to: "kamelet:sink"
-          - set-header:
-              name: CamelAzureStorageBlobBlobName
-              simple: ${exchangeProperty.azureBlobName}
-          - to:
-              uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
-              parameters:
-                operation: "deleteBlob"
-                accessKey: "{{accessKey}}"
+        - to: "kamelet:sink"
+        - to:
+            uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
+            parameters:
+              operation: "deleteBlob"
+              accessKey: "{{accessKey}}"
+              credentialType: "{{credentialType}}"
 
