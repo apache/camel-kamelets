@@ -247,3 +247,61 @@ git push upstream main
 ```
 
 Send an email to dev mailing list to start the vote.
+
+## Post Release
+
+Once the vote for the release has been completed, you need to send the Vote Result mail to mailing list.
+
+Now, you'll need to release the artifacts from Apache staging repositories to Apache releases repository.
+
+To do this you'll need to access the Apache Nexus Server.
+
+You'll need then to promote the release from dist/dev location to dist/release location.
+
+There is an handy script for this:
+
+Now run:
+
+```
+cd release-utils/scripts/
+./promote-release.sh $CAMEL_KAMELET_VERSION 
+```
+
+### Updating documentation version
+
+If we are talking about a minor release, it will be enough to edit the 'docs/antora.yml' file like this:
+
+```
+name: camel-kamelets
+title: Kamelet Catalog
+version: 0.9.x
+
+nav:
+- modules/ROOT/nav.adoc
+
+asciidoc:
+  attributes:
+    requires: "'util=camel-website-util,kamelets=xref:js/kamelets.js'"
+    # Update to appropriate released camel-k version on release
+    version-used: true
+    camel-k-version: 1.10.1
+    camel-k-docs-version: 1.10.x
+#    camel-kafka-connector-version: none
+#    camel-kafka-connector-docs-version: none
+    camel-version: 3.18.2
+    camel-docs-version: 3.18.x
+```
+
+and modify the values accordingly.
+
+After this step you'll need to open a PR to Camel-Website for listing the release. The location is the following: https://github.com/apache/camel-website/tree/main/content/releases/k
+
+In the case of a major release, you'll need to create a new branch from the tag release.
+
+You'll need to align the antora.yml file in docs accordingly.
+
+After this step you'll need to open a PR to Camel-Website for listing the release. The location is the following: https://github.com/apache/camel-website/tree/main/content/releases/k
+
+And also adding the branch to the documentation to be published here: https://github.com/apache/camel-website/blob/main/antora-playbook-snippets/antora-playbook.yml
+
+In the camel-kamelets section.
