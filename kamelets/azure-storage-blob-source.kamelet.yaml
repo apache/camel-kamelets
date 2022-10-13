@@ -70,7 +70,7 @@ spec:
     - "github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT"
   template:
     beans:
-      - name: renameHeaders
+      - name: duplicateHeaders
         type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
         property:
           - key: prefix
@@ -87,6 +87,8 @@ spec:
         accessKey: "{{accessKey}}"
         credentialType: "{{credentialType}}"
       steps:
+        - process:
+            ref: "{{duplicateHeaders}}"
         - to: "kamelet:sink"
         - to:
             uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
