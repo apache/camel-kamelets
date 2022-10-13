@@ -80,7 +80,7 @@ spec:
           - key: mode
             value: 'filtering'
           - key: selectedHeaders
-            value: 'CamelAzureStorageBlobETag,CamelAzureStorageBlobCreationTime,CamelAzureStorageBlobLastModified,CamelAzureStorageBlobBlobSize'
+            value: 'CamelAzureStorageBlobETag,CamelAzureStorageBlobBlobSize'
     from:
       uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
       parameters:
