@@ -35,7 +35,8 @@ public enum KameletPrefixSchemeEnum {
     azure_eventhubs("azure-eventhubs","azure-eventhubs"),
     azure_functions("azure-functions","vertx-http"),
     azure_servicebus("azure-servicebus","azure-servicebus"),
-    azure_storage_blob("azure-storage-blob","azure-storage-blob");
+    azure_storage_blob("azure-storage-blob","azure-storage-blob"),
+    azure_storage_blob_changefeed("azure-storage-blob-changefeed","azure-storage-blob");
 
     public final String label;
     public final String prefix;
