@@ -33,7 +33,8 @@ public enum KameletPrefixSchemeEnum {
     aws_sqs_batch("aws-sqs-batch","aws2-sqs"),
     aws_sqs_fifo("aws-sqs-fifo","aws2-sqs"),
     azure_eventhubs("azure-eventhubs","azure-eventhubs"),
-    azure_functions("azure-functions","vertx-http");
+    azure_functions("azure-functions","vertx-http"),
+    azure_servicebus("azure-servicebus","azure-servicebus");
 
     public final String label;
     public final String prefix;
