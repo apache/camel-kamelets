@@ -1,4 +1,19 @@
----
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
 apiVersion: "camel.apache.org/v1alpha1"
 kind: "Kamelet"
 metadata:
@@ -11,79 +26,35 @@ metadata:
   labels:
     camel.apache.org/kamelet.type: "sink"
   name: "aws-s3-sink"
-  Headers:
-    CamelAwsS3Metadata: "A map of metadata to be stored or stored with the object\
-      \ in S3. More details about metadata https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingMetadata.htmlhere."
-    CamelAwsS3ContentEncoding: "The optional Content-Encoding HTTP header specifying\
-      \ what content encodings have been applied to the object and what decoding mechanisms\
-      \ must be applied in order to obtain the media-type referenced by the Content-Type\
-      \ field."
-    CamelAwsS3ETag: "(producer) The ETag value for the newly uploaded object. (consumer)\
-      \ The hex encoded 128-bit MD5 digest of the associated object according to RFC\
-      \ 1864. This data is used as an integrity check to verify that the data received\
-      \ by the caller is the same data that was sent by Amazon S3."
-    CamelAwsS3Operation: "The operation to perform. Permitted values are copyObject,\
-      \ deleteObject, listBuckets, deleteBucket, listObjects"
-    CamelAwsS3DowloadLinkExpirationTime: "The expiration time of the download link\
-      \ in milliseconds"
-    CamelAwsS3DownloadLinkSignedPayload: "The request payload that is needed by the\
-      \ service (not needed when BrowserCompatible is true)"
-    CamelAwsS3DestinationKey: "The Destination key which will be used for the current\
-      \ operation"
-    CamelAwsS3BucketDestinationName: "The bucket Destination Name which will be used\
-      \ for the current operation"
-    CamelMessageTimestamp: "The timestamp of the message"
-    CamelAwsS3ContentDisposition: "The optional Content-Disposition HTTP header, which\
-      \ specifies presentational information such as the recommended filename for\
-      \ the object to be saved as."
-    CamelAwsS3ContentType: "The Content-Type HTTP header, which indicates the type\
-      \ of content stored in the associated object. The value of this header is a\
-      \ standard MIME type."
-    CamelAwsS3LastModified: "The value of the Last-Modified header, indicating the\
-      \ date and time at which Amazon S3 last recorded a modification to the associated\
-      \ object."
-    CamelAwsS3ExpirationTime: "If the object expiration is configured (see PUT Bucket\
-      \ lifecycle), the response includes this header."
-    CamelAwsS3ContentControl: "The optional Cache-Control HTTP header which allows\
-      \ the user to specify caching behavior along the HTTP request/reply chain."
-    CamelAwsS3ServerSideEncryption: "Sets the server-side encryption algorithm when\
-      \ encrypting the object using AWS-managed keys. For example use AES256."
-    CamelAwsS3DownloadLinkHttpRequestHeaders: "The headers that are needed by the\
-      \ service (not needed when BrowserCompatible is true)"
-    CamelAwsS3VersionId: "(producer) The optional version ID of the newly uploaded\
-      \ object. (consumer) The version ID of the associated Amazon S3 object if available.\
-      \ Version IDs are only assigned to objects when an object is uploaded to an\
-      \ Amazon S3 bucket that has object versioning enabled."
-    CamelAwsS3ReplicationStatus: "Amazon S3 can return this if your request involves\
-      \ a bucket that is either a source or destination in a replication rule."
+  headers:
+    CamelAwsS3Metadata: "A map of metadata to be stored or stored with the object in S3. More details about metadata https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingMetadata.htmlhere."
+    CamelAwsS3ContentEncoding: "The optional Content-Encoding HTTP header specifying what content encodings have been applied to the object and what decoding mechanisms must be applied in order to obtain the media-type referenced by the Content-Type field."
+    CamelAwsS3ETag: "(producer) The ETag value for the newly uploaded object. (consumer) The hex encoded 128-bit MD5 digest of the associated object according to RFC 1864. This data is used as an integrity check to verify that the data received by the caller is the same data that was sent by Amazon S3."
+    CamelAwsS3Operation: "The operation to perform. Permitted values are copyObject, deleteObject, listBuckets, deleteBucket, listObjects"
+    CamelAwsS3DowloadLinkExpirationTime: "The expiration time of the download link in milliseconds"
+    CamelAwsS3DownloadLinkSignedPayload: "The request payload that is needed by the service (not needed when BrowserCompatible is true)"
+    CamelAwsS3DestinationKey: "The Destination key which will be used for the current operation"
+    CamelAwsS3BucketDestinationName: "The bucket Destination Name which will be used for the current operation"
+    CamelAwsS3ContentDisposition: "The optional Content-Disposition HTTP header, which specifies presentational information such as the recommended filename for the object to be saved as."
+    CamelAwsS3ContentType: "The Content-Type HTTP header, which indicates the type of content stored in the associated object. The value of this header is a standard MIME type."
+    CamelAwsS3LastModified: "The value of the Last-Modified header, indicating the date and time at which Amazon S3 last recorded a modification to the associated object."
+    CamelAwsS3ContentControl: "The optional Cache-Control HTTP header which allows the user to specify caching behavior along the HTTP request/reply chain."
+    CamelAwsS3ServerSideEncryption: "Sets the server-side encryption algorithm when encrypting the object using AWS-managed keys. For example use AES256."
+    CamelAwsS3DownloadLinkHttpRequestHeaders: "The headers that are needed by the service (not needed when BrowserCompatible is true)"
+    CamelAwsS3VersionId: "(producer) The optional version ID of the newly uploaded object. (consumer) The version ID of the associated Amazon S3 object if available. Version IDs are only assigned to objects when an object is uploaded to an Amazon S3 bucket that has object versioning enabled."
     CamelAwsS3Acl: "A well constructed Amazon S3 Access Control List object."
     CamelAwsS3RangeStart: "The position of the first byte to get"
-    CamelAwsS3CannedAcl: "The canned acl that will be applied to the object. see software.amazon.awssdk.services.s3.model.ObjectCannedACL\
-      \ for allowed values."
-    CamelAwsS3DownloadLinkBrowserCompatible: "Whether the download link is browser\
-      \ compatible"
-    CamelAwsS3BucketName: "The bucket Name which this object will be stored or which\
-      \ will be used for the current operation or in which this object is contained."
-    CamelAwsS3ContentMD5: "The base64 encoded 128-bit MD5 digest of the associated\
-      \ object (content - not including headers) according to RFC 1864. This data\
-      \ is used as a message integrity check to verify that the data received by Amazon\
-      \ S3 is the same data that the caller sent."
-    CamelAwsS3Key: "The key under which this object is stored or will be stored or\
-      \ which will be used for the current operation"
-    CamelAwsS3ContentLength: "The Content-Length HTTP header indicating the size of\
-      \ the associated object in bytes."
+    CamelAwsS3CannedAcl: "The canned acl that will be applied to the object. see software.amazon.awssdk.services.s3.model.ObjectCannedACL for allowed values."
+    CamelAwsS3DownloadLinkBrowserCompatible: "Whether the download link is browser compatible"
+    CamelAwsS3BucketName: "The bucket Name which this object will be stored or which will be used for the current operation or in which this object is contained."
+    CamelAwsS3ContentMD5: "The base64 encoded 128-bit MD5 digest of the associated object (content - not including headers) according to RFC 1864. This data is used as a message integrity check to verify that the data received by Amazon S3 is the same data that the caller sent."
+    CamelAwsS3Key: "The key under which this object is stored or will be stored or which will be used for the current operation"
+    CamelAwsS3ContentLength: "The Content-Length HTTP header indicating the size of the associated object in bytes."
     CamelAwsS3StorageClass: "The storage class of this object."
     CamelAwsS3RangeEnd: "The position of the last byte to get"
 spec:
   definition:
-    description: "Upload data to an Amazon S3 Bucket.\n\nThe basic authentication\
-      \ method for the S3 service is to specify an access key and a secret key. These\
-      \ parameters are optional because the Kamelet provides a default credentials\
-      \ provider.\n\nIf you use the default credentials provider, the S3 client loads\
-      \ the credentials through this provider and doesn't use the basic authentication\
-      \ method.\n\nIn the header, you can optionally set the `file` / `ce-partition`\
-      \ property to specify the name of the file to upload.\n\nIf you do not set the\
-      \ property in the header, the Kamelet uses the exchange ID for the file name."
+    description: "Upload data to an Amazon S3 Bucket.\n\nThe basic authentication method for the S3 service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.\n\nIf you use the default credentials provider, the S3 client loads the credentials through this provider and doesn't use the basic authentication method.\n\nIn the header, you can optionally set the `file` / `ce-partition` property to specify the name of the file to upload.\n\nIf you do not set the property in the header, the Kamelet uses the exchange ID for the file name."
     properties:
       bucketNameOrArn:
         description: "The S3 Bucket name or Amazon Resource Name (ARN)."
@@ -95,54 +66,54 @@ spec:
         title: "Access Key"
         type: "string"
         x-descriptors:
-        - "urn:alm:descriptor:com.tectonic.ui:password"
-        - "urn:camel:group:credentials"
+         - "urn:alm:descriptor:com.tectonic.ui:password"
+         - "urn:camel:group:credentials"
       secretKey:
         description: "The secret key obtained from AWS."
         format: "password"
         title: "Secret Key"
         type: "string"
         x-descriptors:
-        - "urn:alm:descriptor:com.tectonic.ui:password"
-        - "urn:camel:group:credentials"
+         - "urn:alm:descriptor:com.tectonic.ui:password"
+         - "urn:camel:group:credentials"
       region:
         description: "The AWS region to access."
         enum:
-        - "ap-south-1"
-        - "eu-south-1"
-        - "us-gov-east-1"
-        - "me-central-1"
-        - "ca-central-1"
-        - "eu-central-1"
-        - "us-iso-west-1"
-        - "us-west-1"
-        - "us-west-2"
-        - "af-south-1"
-        - "eu-north-1"
-        - "eu-west-3"
-        - "eu-west-2"
-        - "eu-west-1"
-        - "ap-northeast-3"
-        - "ap-northeast-2"
-        - "ap-northeast-1"
-        - "me-south-1"
-        - "sa-east-1"
-        - "ap-east-1"
-        - "cn-north-1"
-        - "us-gov-west-1"
-        - "ap-southeast-1"
-        - "ap-southeast-2"
-        - "us-iso-east-1"
-        - "ap-southeast-3"
-        - "us-east-1"
-        - "us-east-2"
-        - "cn-northwest-1"
-        - "us-isob-east-1"
-        - "aws-global"
-        - "aws-cn-global"
-        - "aws-us-gov-global"
-        - "aws-iso-global"
-        - "aws-iso-b-global"
+         - "ap-south-1"
+         - "eu-south-1"
+         - "us-gov-east-1"
+         - "me-central-1"
+         - "ca-central-1"
+         - "eu-central-1"
+         - "us-iso-west-1"
+         - "us-west-1"
+         - "us-west-2"
+         - "af-south-1"
+         - "eu-north-1"
+         - "eu-west-3"
+         - "eu-west-2"
+         - "eu-west-1"
+         - "ap-northeast-3"
+         - "ap-northeast-2"
+         - "ap-northeast-1"
+         - "me-south-1"
+         - "sa-east-1"
+         - "ap-east-1"
+         - "cn-north-1"
+         - "us-gov-west-1"
+         - "ap-southeast-1"
+         - "ap-southeast-2"
+         - "us-iso-east-1"
+         - "ap-southeast-3"
+         - "us-east-1"
+         - "us-east-2"
+         - "cn-northwest-1"
+         - "us-isob-east-1"
+         - "aws-global"
+         - "aws-cn-global"
+         - "aws-us-gov-global"
+         - "aws-iso-global"
+         - "aws-iso-b-global"
         title: "AWS Region"
         type: "string"
       autoCreateBucket:
@@ -151,64 +122,68 @@ spec:
         title: "Autocreate Bucket"
         type: "boolean"
         x-descriptors:
-        - "urn:alm:descriptor:com.tectonic.ui:checkbox"
+         - "urn:alm:descriptor:com.tectonic.ui:checkbox"
       useDefaultCredentialsProvider:
         default: false
-        description: "If true, the S3 client loads credentials through a default credentials\
-          \ provider. If false, it uses the basic authentication method (access key\
-          \ and secret key)."
+        description: "If true, the S3 client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key)."
         title: "Default Credentials Provider"
         type: "boolean"
         x-descriptors:
-        - "urn:alm:descriptor:com.tectonic.ui:checkbox"
+         - "urn:alm:descriptor:com.tectonic.ui:checkbox"
       uriEndpointOverride:
-        description: "The overriding endpoint URI. To use this option, you must also\
-          \ select the `overrideEndpoint` option."
+        description: "The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option."
         title: "Overwrite Endpoint URI"
         type: "string"
       overrideEndpoint:
         default: false
-        description: "Select this option to override the endpoint URI. To use this\
-          \ option, you must also provide a URI for the `uriEndpointOverride` option."
+        description: "Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option."
         title: "Endpoint Overwrite"
         type: "boolean"
         x-descriptors:
-        - "urn:alm:descriptor:com.tectonic.ui:checkbox"
+         - "urn:alm:descriptor:com.tectonic.ui:checkbox"
       keyName:
         description: "The key name for saving an element in the bucket."
         title: "Key Name"
         type: "string"
     required:
-    - "bucketNameOrArn"
-    - "region"
+     - "bucketNameOrArn"
+     - "region"
     title: "AWS S3 Sink"
     type: "object"
   dependencies:
-  - "camel:core"
-  - "camel:aws2-s3"
-  - "camel:kamelet"
+   - "camel:core"
+   - "camel:aws2-s3"
+   - "camel:kamelet"
   template:
     from:
       uri: "kamelet:source"
       steps:
-      - choice:
+       -
+        choice:
           when:
-          - simple: "${header[file]}"
+           -
+            simple: "${header[file]}"
             steps:
-            - set-header:
+             -
+              set-header:
                 name: "CamelAwsS3Key"
                 simple: "${header[file]}"
-          - simple: "${header[ce-file]}"
+           -
+            simple: "${header[ce-file]}"
             steps:
-            - set-header:
+             -
+              set-header:
                 name: "CamelAwsS3Key"
                 simple: "${header[ce-file]}"
-          - simple: "'{{?keyName}}' == ''"
+           -
+            simple: "'{{?keyName}}' == ''"
             steps:
-            - set-header:
+             -
+              set-header:
                 name: "CamelAwsS3Key"
                 simple: "${exchangeId}"
-      - to:
+       -
+        to:
           uri: "aws2-s3:{{bucketNameOrArn}}"
           parameters:
             secretKey: "{{?secretKey}}"

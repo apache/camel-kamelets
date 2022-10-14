@@ -13,12 +13,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ---------------------------------------------------------------------------
-
-apiVersion: camel.apache.org/v1alpha1
-kind: Kamelet
+# ------------------------------------------------------------------------------
+apiVersion: "camel.apache.org/v1alpha1"
+kind: "Kamelet"
 metadata:
-  name: aws-sqs-sink
   annotations:
     camel.apache.org/kamelet.support.level: "Stable"
     camel.apache.org/catalog.version: "main-SNAPSHOT"
@@ -26,90 +24,129 @@ metadata:
     camel.apache.org/provider: "Apache Software Foundation"
     camel.apache.org/kamelet.group: "AWS SQS"
   labels:
-    camel.apache.org/kamelet.type: sink
+    camel.apache.org/kamelet.type: "sink"
+  name: "aws-sqs-sink"
+  headers:
+    CamelAwsSqsPrefix: "A string to use for filtering the list results."
+    CamelAwsSqsReceiptHandle: "The Amazon SQS message receipt handle."
+    CamelAwsSqsMessageId: "The Amazon SQS message ID."
+    CamelAwsSqsMD5OfBody: "The MD5 checksum of the Amazon SQS message."
+    CamelAwsSqsDelaySeconds: "The delay seconds that the Amazon SQS message can be see by others."
+    CamelAwsSqsOperation: "The operation we want to perform"
 spec:
   definition:
-    title: AWS SQS Sink
-    description: |-
-      Send messages to an Amazon Simple Queue Service (SQS) queue.
-
-      The basic authentication method for the SQS service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.
-      
-      If you use the default credentials provider, the SQS client loads the credentials through this provider and doesn't use the basic authentication method.
-    required:
-      - queueNameOrArn
-      - region
-    type: object
+    description: "Send messages to an Amazon Simple Queue Service (SQS) queue.\n\nThe basic authentication method for the SQS service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.\n\nIf you use the default credentials provider, the SQS client loads the credentials through this provider and doesn't use the basic authentication method."
     properties:
       queueNameOrArn:
-        title: Queue Name
-        description: The SQS Queue name or or Amazon Resource Name (ARN).
-        type: string
+        description: "The SQS Queue name or or Amazon Resource Name (ARN)."
+        title: "Queue Name"
+        type: "string"
       accessKey:
-        title: Access Key
-        description: The access key obtained from AWS.
-        type: string
-        format: password
+        description: "The access key obtained from AWS."
+        format: "password"
+        title: "Access Key"
+        type: "string"
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
-        - urn:camel:group:credentials
+         - "urn:alm:descriptor:com.tectonic.ui:password"
+         - "urn:camel:group:credentials"
       secretKey:
-        title: Secret Key
-        description: The secret key obtained from AWS.
-        type: string
-        format: password
+        description: "The secret key obtained from AWS."
+        format: "password"
+        title: "Secret Key"
+        type: "string"
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
-        - urn:camel:group:credentials
+         - "urn:alm:descriptor:com.tectonic.ui:password"
+         - "urn:camel:group:credentials"
       region:
-        title: AWS Region
-        description: The AWS region to access.
-        type: string
-        enum: ["ap-south-1", "eu-south-1", "us-gov-east-1", "me-central-1", "ca-central-1", "eu-central-1", "us-iso-west-1", "us-west-1", "us-west-2", "af-south-1", "eu-north-1", "eu-west-3", "eu-west-2", "eu-west-1", "ap-northeast-3", "ap-northeast-2", "ap-northeast-1", "me-south-1", "sa-east-1", "ap-east-1", "cn-north-1", "us-gov-west-1", "ap-southeast-1", "ap-southeast-2", "us-iso-east-1", "ap-southeast-3", "us-east-1", "us-east-2", "cn-northwest-1", "us-isob-east-1", "aws-global", "aws-cn-global", "aws-us-gov-global", "aws-iso-global", "aws-iso-b-global"]
+        description: "The AWS region to access."
+        enum:
+         - "ap-south-1"
+         - "eu-south-1"
+         - "us-gov-east-1"
+         - "me-central-1"
+         - "ca-central-1"
+         - "eu-central-1"
+         - "us-iso-west-1"
+         - "us-west-1"
+         - "us-west-2"
+         - "af-south-1"
+         - "eu-north-1"
+         - "eu-west-3"
+         - "eu-west-2"
+         - "eu-west-1"
+         - "ap-northeast-3"
+         - "ap-northeast-2"
+         - "ap-northeast-1"
+         - "me-south-1"
+         - "sa-east-1"
+         - "ap-east-1"
+         - "cn-north-1"
+         - "us-gov-west-1"
+         - "ap-southeast-1"
+         - "ap-southeast-2"
+         - "us-iso-east-1"
+         - "ap-southeast-3"
+         - "us-east-1"
+         - "us-east-2"
+         - "cn-northwest-1"
+         - "us-isob-east-1"
+         - "aws-global"
+         - "aws-cn-global"
+         - "aws-us-gov-global"
+         - "aws-iso-global"
+         - "aws-iso-b-global"
+        title: "AWS Region"
+        type: "string"
       autoCreateQueue:
-        title: Autocreate Queue
-        description: Automatically create the SQS queue. 
-        type: boolean
-        x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+        description: "Automatically create the SQS queue."
+        title: "Autocreate Queue"
+        type: "boolean"
+        x-descriptors:
+         - "urn:alm:descriptor:com.tectonic.ui:checkbox"
       amazonAWSHost:
-        title: AWS Host
-        description: The hostname of the Amazon AWS cloud. 
-        type: string
-        default: amazonaws.com
+        default: "amazonaws.com"
+        description: "The hostname of the Amazon AWS cloud."
+        title: "AWS Host"
+        type: "string"
       protocol:
-        title: Protocol
-        description: The underlying protocol used to communicate with SQS.
-        type: string
-        example: http or https
-        default: https
+        default: "https"
+        description: "The underlying protocol used to communicate with SQS."
+        example: "http or https"
+        title: "Protocol"
+        type: "string"
       useDefaultCredentialsProvider:
-        title: Default Credentials Provider
-        description: If true, the SQS client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
-        type: boolean
-        x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
-      uriEndpointOverride:
-        title: Overwrite Endpoint URI
-        description: The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option.
-        type: string
-      overrideEndpoint:
-        title: Endpoint Overwrite
-        description: Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option.
-        type: boolean
+        description: "If true, the SQS client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key)."
+        title: "Default Credentials Provider"
+        type: "boolean"
         x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
-        default: false    
+         - "urn:alm:descriptor:com.tectonic.ui:checkbox"
+      uriEndpointOverride:
+        description: "The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option."
+        title: "Overwrite Endpoint URI"
+        type: "string"
+      overrideEndpoint:
+        default: false
+        description: "Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option."
+        title: "Endpoint Overwrite"
+        type: "boolean"
+        x-descriptors:
+         - "urn:alm:descriptor:com.tectonic.ui:checkbox"
+    required:
+     - "queueNameOrArn"
+     - "region"
+    title: "AWS SQS Sink"
+    type: "object"
   dependencies:
-    - "camel:aws2-sqs"
-    - "camel:kamelet"
+   - "camel:aws2-sqs"
+   - "camel:kamelet"
   template:
     from:
-      uri: kamelet:source
+      uri: "kamelet:source"
       steps:
-      - to:
+       -
+        to:
           uri: "aws2-sqs:{{queueNameOrArn}}"
           parameters:
             autoCreateQueue: "{{autoCreateQueue}}"
@@ -120,4 +157,4 @@ spec:
             protocol: "{{?protocol}}"
             useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
             uriEndpointOverride: "{{?uriEndpointOverride}}"
-            overrideEndpoint: "{{overrideEndpoint}}"            
+            overrideEndpoint: "{{overrideEndpoint}}"

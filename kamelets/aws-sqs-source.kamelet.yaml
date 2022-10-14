@@ -13,12 +13,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ---------------------------------------------------------------------------
-
-apiVersion: camel.apache.org/v1alpha1
-kind: Kamelet
+# ------------------------------------------------------------------------------
+apiVersion: "camel.apache.org/v1alpha1"
+kind: "Kamelet"
 metadata:
-  name: aws-sqs-source
   annotations:
     camel.apache.org/kamelet.support.level: "Stable"
     camel.apache.org/catalog.version: "main-SNAPSHOT"
@@ -28,134 +26,176 @@ metadata:
     camel.apache.org/keda.type: "aws-sqs-queue"
   labels:
     camel.apache.org/kamelet.type: "source"
+  name: "aws-sqs-source"
+  headers:
+    CamelAwsSqsPrefix: "A string to use for filtering the list results."
+    CamelAwsSqsReceiptHandle: "The Amazon SQS message receipt handle."
+    CamelAwsSqsMessageId: "The Amazon SQS message ID."
+    CamelAwsSqsMessageAttributes: "The Amazon SQS message attributes."
+    CamelAwsSqsMD5OfBody: "The MD5 checksum of the Amazon SQS message."
+    CamelAwsSqsAttributes: "A map of the attributes requested in ReceiveMessage to their respective values."
+    CamelAwsSqsOperation: "The operation we want to perform"
 spec:
   definition:
-    title: "AWS SQS Source"
-    description: |-
-      Receive data from AWS SQS.
-
-      Access Key/Secret Key are the basic method for authenticating to the AWS SQS Service. These parameters are optional because the Kamelet provides the 'useDefaultCredentialsProvider'.
-      
-      When using a default Credentials Provider the SQS client will load the credentials through this provider and won't use the static credential. This is reason for not having the access key and secret key as mandatory parameter for this Kamelet.
-
-      Two headers will be duplicated with different names for clarity at sink level, CamelAwsSqsMessageId will be duplicated into aws.sqs.message.id and CamelAwsSqsReceiptHandle will be duplicated in aws.sqs.receipt.handle
-    required:
-      - queueNameOrArn
-      - region
-    type: object
+    description: "Receive data from AWS SQS.\n\nAccess Key/Secret Key are the basic method for authenticating to the AWS SQS Service. These parameters are optional because the Kamelet provides the 'useDefaultCredentialsProvider'.\n\nWhen using a default Credentials Provider the SQS client will load the credentials through this provider and won't use the static credential. This is reason for not having the access key and secret key as mandatory parameter for this Kamelet.\n\nTwo headers will be duplicated with different names for clarity at sink level, CamelAwsSqsMessageId will be duplicated into aws.sqs.message.id and CamelAwsSqsReceiptHandle will be duplicated in aws.sqs.receipt.handle"
     properties:
       queueNameOrArn:
-        title: Queue Name
-        description: The SQS Queue Name or ARN
-        type: string
+        description: "The SQS Queue Name or ARN"
+        title: "Queue Name"
+        type: "string"
       deleteAfterRead:
-        title: Auto-delete Messages
-        description: Delete messages after consuming them
-        type: boolean
-        x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: true
+        description: "Delete messages after consuming them"
+        title: "Auto-delete Messages"
+        type: "boolean"
+        x-descriptors:
+         - "urn:alm:descriptor:com.tectonic.ui:checkbox"
       accessKey:
-        title: Access Key
-        description: The access key obtained from AWS.
-        type: string
-        format: password
+        description: "The access key obtained from AWS."
+        format: "password"
+        title: "Access Key"
+        type: "string"
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
-        - urn:camel:group:credentials
-        - urn:keda:authentication:awsAccessKeyID
-        - urn:keda:required
+         - "urn:alm:descriptor:com.tectonic.ui:password"
+         - "urn:camel:group:credentials"
+         - "urn:keda:authentication:awsAccessKeyID"
+         - "urn:keda:required"
       secretKey:
-        title: Secret Key
-        description: The secret key obtained from AWS.
-        type: string
-        format: password
+        description: "The secret key obtained from AWS."
+        format: "password"
+        title: "Secret Key"
+        type: "string"
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
-        - urn:camel:group:credentials
-        - urn:keda:authentication:awsSecretAccessKey
-        - urn:keda:required
+         - "urn:alm:descriptor:com.tectonic.ui:password"
+         - "urn:camel:group:credentials"
+         - "urn:keda:authentication:awsSecretAccessKey"
+         - "urn:keda:required"
       region:
-        title: AWS Region
-        description: The AWS region to access.
-        type: string
+        description: "The AWS region to access."
+        enum:
+         - "ap-south-1"
+         - "eu-south-1"
+         - "us-gov-east-1"
+         - "me-central-1"
+         - "ca-central-1"
+         - "eu-central-1"
+         - "us-iso-west-1"
+         - "us-west-1"
+         - "us-west-2"
+         - "af-south-1"
+         - "eu-north-1"
+         - "eu-west-3"
+         - "eu-west-2"
+         - "eu-west-1"
+         - "ap-northeast-3"
+         - "ap-northeast-2"
+         - "ap-northeast-1"
+         - "me-south-1"
+         - "sa-east-1"
+         - "ap-east-1"
+         - "cn-north-1"
+         - "us-gov-west-1"
+         - "ap-southeast-1"
+         - "ap-southeast-2"
+         - "us-iso-east-1"
+         - "ap-southeast-3"
+         - "us-east-1"
+         - "us-east-2"
+         - "cn-northwest-1"
+         - "us-isob-east-1"
+         - "aws-global"
+         - "aws-cn-global"
+         - "aws-us-gov-global"
+         - "aws-iso-global"
+         - "aws-iso-b-global"
+        title: "AWS Region"
+        type: "string"
         x-descriptors:
-        - urn:keda:metadata:awsRegion
-        - urn:keda:required
-        enum: ["ap-south-1", "eu-south-1", "us-gov-east-1", "me-central-1", "ca-central-1", "eu-central-1", "us-iso-west-1", "us-west-1", "us-west-2", "af-south-1", "eu-north-1", "eu-west-3", "eu-west-2", "eu-west-1", "ap-northeast-3", "ap-northeast-2", "ap-northeast-1", "me-south-1", "sa-east-1", "ap-east-1", "cn-north-1", "us-gov-west-1", "ap-southeast-1", "ap-southeast-2", "us-iso-east-1", "ap-southeast-3", "us-east-1", "us-east-2", "cn-northwest-1", "us-isob-east-1", "aws-global", "aws-cn-global", "aws-us-gov-global", "aws-iso-global", "aws-iso-b-global"]
+         - "urn:keda:metadata:awsRegion"
+         - "urn:keda:required"
       autoCreateQueue:
-        title: Autocreate Queue
-        description: Setting the autocreation of the SQS queue. 
-        type: boolean
-        x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+        description: "Setting the autocreation of the SQS queue."
+        title: "Autocreate Queue"
+        type: "boolean"
+        x-descriptors:
+         - "urn:alm:descriptor:com.tectonic.ui:checkbox"
       amazonAWSHost:
-        title: AWS Host
-        description: The hostname of the Amazon AWS cloud. 
-        type: string
-        default: amazonaws.com
+        default: "amazonaws.com"
+        description: "The hostname of the Amazon AWS cloud."
+        title: "AWS Host"
+        type: "string"
       protocol:
-        title: Protocol
-        description: The underlying protocol used to communicate with SQS
-        type: string
-        example: http or https
-        default: https
+        default: "https"
+        description: "The underlying protocol used to communicate with SQS"
+        example: "http or https"
+        title: "Protocol"
+        type: "string"
       queueURL:
-        title: Queue URL
-        description: The full SQS Queue URL (required if using KEDA)
-        type: string
+        description: "The full SQS Queue URL (required if using KEDA)"
+        title: "Queue URL"
+        type: "string"
         x-descriptors:
-        - urn:keda:metadata:queueURL
-        - urn:keda:required
+         - "urn:keda:metadata:queueURL"
+         - "urn:keda:required"
       useDefaultCredentialsProvider:
-        title: Default Credentials Provider
-        description: If true, the SQS client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
-        type: boolean
-        x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+        description: "If true, the SQS client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key)."
+        title: "Default Credentials Provider"
+        type: "boolean"
+        x-descriptors:
+         - "urn:alm:descriptor:com.tectonic.ui:checkbox"
       uriEndpointOverride:
-        title: Overwrite Endpoint URI
-        description: The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option.
-        type: string
+        description: "The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option."
+        title: "Overwrite Endpoint URI"
+        type: "string"
       overrideEndpoint:
-        title: Endpoint Overwrite
-        description: Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option.
-        type: boolean
-        x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+        description: "Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option."
+        title: "Endpoint Overwrite"
+        type: "boolean"
+        x-descriptors:
+         - "urn:alm:descriptor:com.tectonic.ui:checkbox"
       delay:
-        title: Delay
-        description: The number of milliseconds before the next poll of the selected stream
-        type: integer
         default: 500
+        description: "The number of milliseconds before the next poll of the selected stream"
+        title: "Delay"
+        type: "integer"
       greedy:
-        title: Greedy Scheduler
-        description: If greedy is enabled, then the polling will happen immediately again, if the previous run polled 1 or more messages.
-        type: boolean
-        x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+        description: "If greedy is enabled, then the polling will happen immediately again, if the previous run polled 1 or more messages."
+        title: "Greedy Scheduler"
+        type: "boolean"
+        x-descriptors:
+         - "urn:alm:descriptor:com.tectonic.ui:checkbox"
+    required:
+     - "queueNameOrArn"
+     - "region"
+    title: "AWS SQS Source"
+    type: "object"
   dependencies:
-    - "camel:core"
-    - "camel:aws2-sqs"
-    - "github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT"
-    - "camel:kamelet"
+   - "camel:core"
+   - "camel:aws2-sqs"
+   - "github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT"
+   - "camel:kamelet"
   template:
     beans:
-      - name: renameHeaders
-        type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
-        property:
-          - key: prefix
-            value: 'CamelAwsSqs'
-          - key: renamingPrefix
-            value: 'aws.sqs.'
-          - key: mode
-            value: 'filtering'
-          - key: selectedHeaders
-            value: 'CamelAwsSqsReceiptHandle,CamelAwsSqsMessageId'
+     -
+      name: "renameHeaders"
+      type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
+      property:
+       -
+        key: "prefix"
+        value: "CamelAwsSqs"
+       -
+        key: "renamingPrefix"
+        value: "aws.sqs."
+       -
+        key: "mode"
+        value: "filtering"
+       -
+        key: "selectedHeaders"
+        value: "CamelAwsSqsReceiptHandle,CamelAwsSqsMessageId"
     from:
       uri: "aws2-sqs:{{queueNameOrArn}}"
       parameters:
@@ -172,6 +212,8 @@ spec:
         delay: "{{delay}}"
         greedy: "{{greedy}}"
       steps:
-      - process:
+       -
+        process:
           ref: "{{renameHeaders}}"
-      - to: "kamelet:sink"
+       -
+        to: "kamelet:sink"
