@@ -33,15 +33,6 @@ metadata:
     CamelAwsSqsMD5OfBody: "The MD5 checksum of the Amazon SQS message."
     CamelAwsSqsDelaySeconds: "The delay seconds that the Amazon SQS message can be see by others."
     CamelAwsSqsOperation: "The operation we want to perform"
-  Headers:
-    CamelAwsSqsPrefix: "A string to use for filtering the list results."
-    CamelAwsSqsReceiptHandle: "The Amazon SQS message receipt handle."
-    CamelAwsSqsMessageId: "The Amazon SQS message ID."
-    CamelAwsSqsMessageAttributes: "The Amazon SQS message attributes."
-    CamelAwsSqsMD5OfBody: "The MD5 checksum of the Amazon SQS message."
-    CamelAwsSqsAttributes: "A map of the attributes requested in ReceiveMessage to their respective values."
-    CamelAwsSqsDelaySeconds: "The delay seconds that the Amazon SQS message can be see by others."
-    CamelAwsSqsOperation: "The operation we want to perform"
 spec:
   definition:
     description: "Send messages to an Amazon Simple Queue Service (SQS) queue.\n\nThe basic authentication method for the SQS service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.\n\nIf you use the default credentials provider, the SQS client loads the credentials through this provider and doesn't use the basic authentication method."

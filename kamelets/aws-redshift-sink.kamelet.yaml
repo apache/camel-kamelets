@@ -13,11 +13,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ---------------------------------------------------------------------------
-apiVersion: camel.apache.org/v1alpha1
-kind: Kamelet
+# ------------------------------------------------------------------------------
+apiVersion: "camel.apache.org/v1alpha1"
+kind: "Kamelet"
 metadata:
-  name: aws-redshift-sink
   annotations:
     camel.apache.org/kamelet.support.level: "Stable"
     camel.apache.org/catalog.version: "main-SNAPSHOT"
@@ -26,89 +25,97 @@ metadata:
     camel.apache.org/kamelet.group: "AWS Redshift"
   labels:
     camel.apache.org/kamelet.type: "sink"
+  name: "aws-redshift-sink"
+  headers:
+    CamelSqlUpdateCount: "The number of rows updated for update operations, returned as an Integer object. This header is not provided when using outputType=StreamList."
+    CamelSqlParameters: "The SQL parameters when using the option useMessageBodyForSql"
+    CamelSqlGeneratedColumns: "Set it to specify the expected generated columns"
+    CamelSqlGeneratedKeysRowCount: "The number of rows in the header that contains generated keys."
+    CamelSqlRowCount: "The number of rows returned for select operations, returned as an Integer object. This header is not provided when using outputType=StreamList."
+    CamelSqlRetrieveGeneratedKeys: "Set its value to true to retrieve generated keys"
+    CamelSqlQuery: "Query to execute. This query takes precedence over the query specified in the endpoint URI. Note that query parameters in the header _are_ represented by a instead of a pass:# symbol"
+    CamelSqlGeneratedKeyRows: "Rows that contains the generated keys (a list of maps of keys)."
 spec:
   definition:
-    title: "AWS Redshift Sink"
-    description: |-
-      Send data to an AWS Redshift Database.
-
-      This Kamelet expects a JSON-formatted body. Use key:value pairs to map the JSON fields and parameters. For example, here is a query:
-
-      'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
-
-      Here is example input for the example query:
-
-      '{ "username":"oscerd", "city":"Rome"}'
-    required:
-      - serverName
-      - username
-      - password
-      - query
-      - databaseName
-    type: object
+    description: "Send data to an AWS Redshift Database.\n\nThis Kamelet expects a JSON-formatted body. Use key:value pairs to map the JSON fields and parameters. For example, here is a query:\n\n'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'\n\nHere is example input for the example query:\n\n'{ \"username\":\"oscerd\", \"city\":\"Rome\"}'"
     properties:
       serverName:
-        title: Server Name
-        description: The server name for the data source.
-        type: string
-        example: localhost
+        description: "The server name for the data source."
+        example: "localhost"
+        title: "Server Name"
+        type: "string"
       serverPort:
-        title: Server Port
-        description: The server port for the AWS RedShi data source.
-        type: string
         default: 5439
+        description: "The server port for the AWS RedShi data source."
+        title: "Server Port"
+        type: "string"
       username:
-        title: Username
-        description: The username to access a secured AWS Redshift Database.
-        type: string
+        description: "The username to access a secured AWS Redshift Database."
+        title: "Username"
+        type: "string"
         x-descriptors:
-        - urn:camel:group:credentials
+         - "urn:camel:group:credentials"
       password:
-        title: Password
-        description: The password to access a secured AWS Redshift Database.
-        type: string
-        format: password
+        description: "The password to access a secured AWS Redshift Database."
+        format: "password"
+        title: "Password"
+        type: "string"
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
-        - urn:camel:group:credentials
+         - "urn:alm:descriptor:com.tectonic.ui:password"
+         - "urn:camel:group:credentials"
       query:
-        title: Query
-        description: The query to execute against the AWS Redshift Database.
-        type: string
-        example: 'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
+        description: "The query to execute against the AWS Redshift Database."
+        example: "INSERT INTO accounts (username,city) VALUES (:#username,:#city)"
+        title: "Query"
+        type: "string"
       databaseName:
-        title: Database Name
-        description: The name of the AWS RedShift Database.
-        type: string
-  types:
-    in:
-      mediaType: application/json
+        description: "The name of the AWS RedShift Database."
+        title: "Database Name"
+        type: "string"
+    required:
+     - "serverName"
+     - "username"
+     - "password"
+     - "query"
+     - "databaseName"
+    title: "AWS Redshift Sink"
+    type: "object"
   dependencies:
-  - "camel:jackson"
-  - "camel:kamelet"
-  - "camel:sql"
-  - "mvn:com.amazon.redshift:redshift-jdbc42:2.1.0.9"
-  - "mvn:org.apache.commons:commons-dbcp2:2.9.0"
+   - "camel:jackson"
+   - "camel:kamelet"
+   - "camel:sql"
+   - "mvn:com.amazon.redshift:redshift-jdbc42:2.1.0.9"
+   - "mvn:org.apache.commons:commons-dbcp2:2.9.0"
   template:
     beans:
-      - name: dsBean
-        type: "#class:org.apache.commons.dbcp2.BasicDataSource"
-        property:
-          - key: username
-            value: '{{username}}'
-          - key: password
-            value: '{{password}}'
-          - key: url
-            value: 'jdbc:redshift://{{serverName}}:{{serverPort}}/{{databaseName}}'
-          - key: driverClassName
-            value: 'com.amazon.redshift.jdbc.Driver'
+     -
+      name: "dsBean"
+      type: "#class:org.apache.commons.dbcp2.BasicDataSource"
+      property:
+       -
+        key: "username"
+        value: "{{username}}"
+       -
+        key: "password"
+        value: "{{password}}"
+       -
+        key: "url"
+        value: "jdbc:redshift://{{serverName}}:{{serverPort}}/{{databaseName}}"
+       -
+        key: "driverClassName"
+        value: "com.amazon.redshift.jdbc.Driver"
     from:
       uri: "kamelet:source"
       steps:
-      - unmarshal:
-          json: 
-            library: Jackson
-      - to: 
+       -
+        unmarshal:
+          json:
+            library: "Jackson"
+       -
+        to:
           uri: "sql:{{query}}"
           parameters:
             dataSource: "#bean:{{dsBean}}"
+  types:
+    in:
+      mediaType: "application/json"

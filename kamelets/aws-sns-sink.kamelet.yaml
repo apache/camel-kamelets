@@ -13,12 +13,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ---------------------------------------------------------------------------
-
-apiVersion: camel.apache.org/v1alpha1
-kind: Kamelet
+# ------------------------------------------------------------------------------
+apiVersion: "camel.apache.org/v1alpha1"
+kind: "Kamelet"
 metadata:
-  name: aws-sns-sink
   annotations:
     camel.apache.org/kamelet.support.level: "Stable"
     camel.apache.org/catalog.version: "main-SNAPSHOT"
@@ -26,94 +24,133 @@ metadata:
     camel.apache.org/provider: "Apache Software Foundation"
     camel.apache.org/kamelet.group: "AWS SNS"
   labels:
-    camel.apache.org/kamelet.type: sink
+    camel.apache.org/kamelet.type: "sink"
+  name: "aws-sns-sink"
+  headers:
+    CamelAwsSnsSubject: "The Amazon SNS message subject. If not set, the subject from the SnsConfiguration is used."
+    CamelAwsSnsMessageId: "The Amazon SNS message ID."
+    CamelAwsSnsMessageStructure: "The message structure to use such as json."
 spec:
   definition:
-    title: AWS SNS Sink
-    description: |-
-      Send message to an Amazon Simple Notification Service (SNS) topic.
-
-      The basic authentication method for the SNS service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.
-      
-      If you use the default credentials provider, the SNS client loads the credentials through this provider and doesn't use the basic authentication method.
-
-      In the header, you can optionally set the `subject` / `ce-subject` property to specify the subject of the message.
-    required:
-      - topicNameOrArn
-      - region
-    type: object
+    description: "Send message to an Amazon Simple Notification Service (SNS) topic.\n\nThe basic authentication method for the SNS service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.\n\nIf you use the default credentials provider, the SNS client loads the credentials through this provider and doesn't use the basic authentication method.\n\nIn the header, you can optionally set the `subject` / `ce-subject` property to specify the subject of the message."
     properties:
       topicNameOrArn:
-        title: Topic Name
-        description: The SNS topic name name or Amazon Resource Name (ARN).
-        type: string
+        description: "The SNS topic name name or Amazon Resource Name (ARN)."
+        title: "Topic Name"
+        type: "string"
       accessKey:
-        title: Access Key
-        description: The access key obtained from AWS.
-        type: string
-        format: password
+        description: "The access key obtained from AWS."
+        format: "password"
+        title: "Access Key"
+        type: "string"
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
-        - urn:camel:group:credentials
+         - "urn:alm:descriptor:com.tectonic.ui:password"
+         - "urn:camel:group:credentials"
       secretKey:
-        title: Secret Key
-        description: The secret key obtained from AWS.
-        type: string
-        format: password
+        description: "The secret key obtained from AWS."
+        format: "password"
+        title: "Secret Key"
+        type: "string"
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
-        - urn:camel:group:credentials
+         - "urn:alm:descriptor:com.tectonic.ui:password"
+         - "urn:camel:group:credentials"
       region:
-        title: AWS Region
-        description: The AWS region to access.
-        type: string
-        enum: ["ap-south-1", "eu-south-1", "us-gov-east-1", "me-central-1", "ca-central-1", "eu-central-1", "us-iso-west-1", "us-west-1", "us-west-2", "af-south-1", "eu-north-1", "eu-west-3", "eu-west-2", "eu-west-1", "ap-northeast-3", "ap-northeast-2", "ap-northeast-1", "me-south-1", "sa-east-1", "ap-east-1", "cn-north-1", "us-gov-west-1", "ap-southeast-1", "ap-southeast-2", "us-iso-east-1", "ap-southeast-3", "us-east-1", "us-east-2", "cn-northwest-1", "us-isob-east-1", "aws-global", "aws-cn-global", "aws-us-gov-global", "aws-iso-global", "aws-iso-b-global"]
+        description: "The AWS region to access."
+        enum:
+         - "ap-south-1"
+         - "eu-south-1"
+         - "us-gov-east-1"
+         - "me-central-1"
+         - "ca-central-1"
+         - "eu-central-1"
+         - "us-iso-west-1"
+         - "us-west-1"
+         - "us-west-2"
+         - "af-south-1"
+         - "eu-north-1"
+         - "eu-west-3"
+         - "eu-west-2"
+         - "eu-west-1"
+         - "ap-northeast-3"
+         - "ap-northeast-2"
+         - "ap-northeast-1"
+         - "me-south-1"
+         - "sa-east-1"
+         - "ap-east-1"
+         - "cn-north-1"
+         - "us-gov-west-1"
+         - "ap-southeast-1"
+         - "ap-southeast-2"
+         - "us-iso-east-1"
+         - "ap-southeast-3"
+         - "us-east-1"
+         - "us-east-2"
+         - "cn-northwest-1"
+         - "us-isob-east-1"
+         - "aws-global"
+         - "aws-cn-global"
+         - "aws-us-gov-global"
+         - "aws-iso-global"
+         - "aws-iso-b-global"
+        title: "AWS Region"
+        type: "string"
       autoCreateTopic:
-        title: Autocreate Topic
-        description: Setting the autocreation of the SNS topic. 
-        type: boolean
-        x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+        description: "Setting the autocreation of the SNS topic."
+        title: "Autocreate Topic"
+        type: "boolean"
+        x-descriptors:
+         - "urn:alm:descriptor:com.tectonic.ui:checkbox"
       useDefaultCredentialsProvider:
-        title: Default Credentials Provider
-        description: If true, the SNS client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
-        type: boolean
-        x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+        description: "If true, the SNS client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key)."
+        title: "Default Credentials Provider"
+        type: "boolean"
+        x-descriptors:
+         - "urn:alm:descriptor:com.tectonic.ui:checkbox"
       uriEndpointOverride:
-        title: Overwrite Endpoint URI
-        description: The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option.
-        type: string
+        description: "The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option."
+        title: "Overwrite Endpoint URI"
+        type: "string"
       overrideEndpoint:
-        title: Endpoint Overwrite
-        description: Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option.
-        type: boolean
-        x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+        description: "Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option."
+        title: "Endpoint Overwrite"
+        type: "boolean"
+        x-descriptors:
+         - "urn:alm:descriptor:com.tectonic.ui:checkbox"
+    required:
+     - "topicNameOrArn"
+     - "region"
+    title: "AWS SNS Sink"
+    type: "object"
   dependencies:
-    - "camel:core"
-    - "camel:aws2-sns"
-    - "camel:kamelet"
+   - "camel:core"
+   - "camel:aws2-sns"
+   - "camel:kamelet"
   template:
     from:
-      uri: kamelet:source
+      uri: "kamelet:source"
       steps:
-      - choice:
+       -
+        choice:
           when:
-          - simple: "${header[subject]}"
+           -
+            simple: "${header[subject]}"
             steps:
-            - set-header:
-                name: CamelAwsSnsSubject
+             -
+              set-header:
+                name: "CamelAwsSnsSubject"
                 simple: "${header[subject]}"
-          - simple: "${header[ce-subject]}"
+           -
+            simple: "${header[ce-subject]}"
             steps:
-            - set-header:
-                name: CamelAwsSnsSubject
+             -
+              set-header:
+                name: "CamelAwsSnsSubject"
                 simple: "${header[ce-subject]}"
-      - to:
+       -
+        to:
           uri: "aws2-sns:{{topicNameOrArn}}"
           parameters:
             autoCreateTopic: "{{autoCreateTopic}}"

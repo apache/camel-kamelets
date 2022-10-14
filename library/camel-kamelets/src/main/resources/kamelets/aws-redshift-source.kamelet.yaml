@@ -13,11 +13,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ---------------------------------------------------------------------------
-apiVersion: camel.apache.org/v1alpha1
-kind: Kamelet
+# ------------------------------------------------------------------------------
+apiVersion: "camel.apache.org/v1alpha1"
+kind: "Kamelet"
 metadata:
-  name: aws-redshift-source
   annotations:
     camel.apache.org/kamelet.support.level: "Stable"
     camel.apache.org/catalog.version: "main-SNAPSHOT"
@@ -26,84 +25,87 @@ metadata:
     camel.apache.org/kamelet.group: "AWS Redshift"
   labels:
     camel.apache.org/kamelet.type: "source"
+  name: "aws-redshift-source"
+  headers: {}
 spec:
   definition:
-    title: "AWS Redshift Source"
-    description: |-
-      Query data from an AWS RedShift Database.
-    required:
-      - serverName
-      - username
-      - password
-      - query
-      - databaseName
-    type: object
+    description: "Query data from an AWS RedShift Database."
     properties:
       serverName:
-        title: Server Name
-        description: The server name for the data source.
-        type: string
-        example: localhost
+        description: "The server name for the data source."
+        example: "localhost"
+        title: "Server Name"
+        type: "string"
       serverPort:
-        title: Server Port
-        description: The server port for the data source.
-        type: string
         default: 5439
+        description: "The server port for the data source."
+        title: "Server Port"
+        type: "string"
       username:
-        title: Username
-        description: The username to access a secured AWS RedShift Database.
-        type: string
+        description: "The username to access a secured AWS RedShift Database."
+        title: "Username"
+        type: "string"
         x-descriptors:
-        - urn:camel:group:credentials
+         - "urn:camel:group:credentials"
       password:
-        title: Password
-        description: The password to access a secured AWS RedShift Database.
-        type: string
-        format: password
+        description: "The password to access a secured AWS RedShift Database."
+        format: "password"
+        title: "Password"
+        type: "string"
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
-        - urn:camel:group:credentials
+         - "urn:alm:descriptor:com.tectonic.ui:password"
+         - "urn:camel:group:credentials"
       query:
-        title: Query
-        description: The query to execute against the AWS RedShift Database.
-        type: string
-        example: 'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
+        description: "The query to execute against the AWS RedShift Database."
+        example: "INSERT INTO accounts (username,city) VALUES (:#username,:#city)"
+        title: "Query"
+        type: "string"
       databaseName:
-        title: Database Name
-        description: The name of the AWS RedShift Database.
-        type: string
+        description: "The name of the AWS RedShift Database."
+        title: "Database Name"
+        type: "string"
       consumedQuery:
-        title: Consumed Query
-        description: A query to run on a tuple consumed.
-        type: string
-        example: 'DELETE FROM accounts where user_id = :#user_id'
+        description: "A query to run on a tuple consumed."
+        example: "DELETE FROM accounts where user_id = :#user_id"
+        title: "Consumed Query"
+        type: "string"
       delay:
-        title: Delay
-        description: The number of milliseconds before the next poll from the AWS RedShift database.
-        type: integer
         default: 500
-  types:
-    out:
-      mediaType: application/json
+        description: "The number of milliseconds before the next poll from the AWS RedShift database."
+        title: "Delay"
+        type: "integer"
+    required:
+     - "serverName"
+     - "username"
+     - "password"
+     - "query"
+     - "databaseName"
+    title: "AWS Redshift Source"
+    type: "object"
   dependencies:
-  - "camel:jackson"
-  - "camel:kamelet"
-  - "camel:sql"
-  - "mvn:com.amazon.redshift:redshift-jdbc42:2.1.0.9"
-  - "mvn:org.apache.commons:commons-dbcp2:2.9.0"
+   - "camel:jackson"
+   - "camel:kamelet"
+   - "camel:sql"
+   - "mvn:com.amazon.redshift:redshift-jdbc42:2.1.0.9"
+   - "mvn:org.apache.commons:commons-dbcp2:2.9.0"
   template:
     beans:
-      - name: dsBean
-        type: "#class:org.apache.commons.dbcp2.BasicDataSource"
-        property:
-          - key: username
-            value: '{{username}}'
-          - key: password
-            value: '{{password}}'
-          - key: url
-            value: 'jdbc:redshift://{{serverName}}:{{serverPort}}/{{databaseName}}'
-          - key: driverClassName
-            value: 'com.amazon.redshift.jdbc.Driver'
+     -
+      name: "dsBean"
+      type: "#class:org.apache.commons.dbcp2.BasicDataSource"
+      property:
+       -
+        key: "username"
+        value: "{{username}}"
+       -
+        key: "password"
+        value: "{{password}}"
+       -
+        key: "url"
+        value: "jdbc:redshift://{{serverName}}:{{serverPort}}/{{databaseName}}"
+       -
+        key: "driverClassName"
+        value: "com.amazon.redshift.jdbc.Driver"
     from:
       uri: "sql:{{query}}"
       parameters:
@@ -111,7 +113,12 @@ spec:
         onConsume: "{{?consumedQuery}}"
         delay: "{{delay}}"
       steps:
-      - marshal:
-          json: 
-            library: Jackson
-      - to: "kamelet:sink"
+       -
+        marshal:
+          json:
+            library: "Jackson"
+       -
+        to: "kamelet:sink"
+  types:
+    out:
+      mediaType: "application/json"

@@ -13,12 +13,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ---------------------------------------------------------------------------
-
-apiVersion: camel.apache.org/v1alpha1
-kind: Kamelet
+# ------------------------------------------------------------------------------
+apiVersion: "camel.apache.org/v1alpha1"
+kind: "Kamelet"
 metadata:
-  name: aws-ses-sink
   annotations:
     camel.apache.org/kamelet.support.level: "Stable"
     camel.apache.org/catalog.version: "main-SNAPSHOT"
@@ -27,112 +25,162 @@ metadata:
     camel.apache.org/kamelet.group: "AWS SES"
   labels:
     camel.apache.org/kamelet.type: "sink"
+  name: "aws-ses-sink"
+  headers:
+    CamelAwsSesBcc: "List of comma separated destination blind carbon copy (bcc) email address."
+    CamelAwsSesConfigurationSet: "TThe configuration set to send."
+    CamelAwsSesSubject: "The subject of the message."
+    CamelAwsSesFrom: "The sender's email address."
+    CamelAwsSesMessageId: "The Amazon SES message ID."
+    CamelAwsSesTo: "List of comma separated destination email address."
+    CamelAwsSesReturnPath: "The email address to which bounce notifications are to be forwarded."
+    CamelAwsSesCc: "List of comma separated destination carbon copy (cc) email address."
+    CamelAwsSesReplyToAddresses: "The reply-to email address(es) for the message."
+    CamelAwsSesHtmlEmail: "The flag to show if email content is HTML."
 spec:
   definition:
-    title: "AWS SES Sink"
-    description: |-
-      Send email through the Amazon Simple Email Service (SES).
-
-      The basic authentication method for the SES service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.
-      
-      If you use the default credentials provider, the SES client loads the credentials through this provider and doesn't use the basic authentication method.
-      
-      In the header, you can optionally set the following properties:
-      
-      - `subject` / `ce-subject` property to specify the email subject. If you do not set this property in the header, the Kamelet uses the exchange ID for the email subject.
-
-      - `to` / `ce-to` to provide a comma-separated list of email addresses.
-
-      - `reply-to-addresses` / `ce-reply-to-addresses`to provider a comma-separated list of reply-to email addresses.
-
-    required:
-      - from
-      - region
-    type: object
+    description: "Send email through the Amazon Simple Email Service (SES).\n\nThe basic authentication method for the SES service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.\n\nIf you use the default credentials provider, the SES client loads the credentials through this provider and doesn't use the basic authentication method.\n\nIn the header, you can optionally set the following properties:\n\n- `subject` / `ce-subject` property to specify the email subject. If you do not set this property in the header, the Kamelet uses the exchange ID for the email subject.\n\n- `to` / `ce-to` to provide a comma-separated list of email addresses.\n\n- `reply-to-addresses` / `ce-reply-to-addresses`to provider a comma-separated list of reply-to email addresses."
     properties:
       from:
-        title: From 
-        description: From address
-        type: string
-        example: user@example.com
+        description: "From address"
+        example: "user@example.com"
+        title: "From"
+        type: "string"
       accessKey:
-        title: Access Key
-        description: The access key obtained from AWS.
-        type: string
-        format: password
+        description: "The access key obtained from AWS."
+        format: "password"
+        title: "Access Key"
+        type: "string"
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
-        - urn:camel:group:credentials
+         - "urn:alm:descriptor:com.tectonic.ui:password"
+         - "urn:camel:group:credentials"
       secretKey:
-        title: Secret Key
-        description: The secret key obtained from AWS.
-        type: string
-        format: password
+        description: "The secret key obtained from AWS."
+        format: "password"
+        title: "Secret Key"
+        type: "string"
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
-        - urn:camel:group:credentials
+         - "urn:alm:descriptor:com.tectonic.ui:password"
+         - "urn:camel:group:credentials"
       region:
-        title: AWS Region
-        description: The AWS region to access.
-        type: string
-        enum: ["ap-south-1", "eu-south-1", "us-gov-east-1", "me-central-1", "ca-central-1", "eu-central-1", "us-iso-west-1", "us-west-1", "us-west-2", "af-south-1", "eu-north-1", "eu-west-3", "eu-west-2", "eu-west-1", "ap-northeast-3", "ap-northeast-2", "ap-northeast-1", "me-south-1", "sa-east-1", "ap-east-1", "cn-north-1", "us-gov-west-1", "ap-southeast-1", "ap-southeast-2", "us-iso-east-1", "ap-southeast-3", "us-east-1", "us-east-2", "cn-northwest-1", "us-isob-east-1", "aws-global", "aws-cn-global", "aws-us-gov-global", "aws-iso-global", "aws-iso-b-global"]
+        description: "The AWS region to access."
+        enum:
+         - "ap-south-1"
+         - "eu-south-1"
+         - "us-gov-east-1"
+         - "me-central-1"
+         - "ca-central-1"
+         - "eu-central-1"
+         - "us-iso-west-1"
+         - "us-west-1"
+         - "us-west-2"
+         - "af-south-1"
+         - "eu-north-1"
+         - "eu-west-3"
+         - "eu-west-2"
+         - "eu-west-1"
+         - "ap-northeast-3"
+         - "ap-northeast-2"
+         - "ap-northeast-1"
+         - "me-south-1"
+         - "sa-east-1"
+         - "ap-east-1"
+         - "cn-north-1"
+         - "us-gov-west-1"
+         - "ap-southeast-1"
+         - "ap-southeast-2"
+         - "us-iso-east-1"
+         - "ap-southeast-3"
+         - "us-east-1"
+         - "us-east-2"
+         - "cn-northwest-1"
+         - "us-isob-east-1"
+         - "aws-global"
+         - "aws-cn-global"
+         - "aws-us-gov-global"
+         - "aws-iso-global"
+         - "aws-iso-b-global"
+        title: "AWS Region"
+        type: "string"
       useDefaultCredentialsProvider:
-        title: Default Credentials Provider
-        description: If true, the SES client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
-        type: boolean
-        x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+        description: "If true, the SES client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key)."
+        title: "Default Credentials Provider"
+        type: "boolean"
+        x-descriptors:
+         - "urn:alm:descriptor:com.tectonic.ui:checkbox"
+    required:
+     - "from"
+     - "region"
+    title: "AWS SES Sink"
+    type: "object"
   dependencies:
-    - "camel:core"
-    - "camel:aws2-ses"
-    - "camel:kamelet"
+   - "camel:core"
+   - "camel:aws2-ses"
+   - "camel:kamelet"
   template:
     from:
       uri: "kamelet:source"
       steps:
-      - choice:
+       -
+        choice:
           when:
-          - simple: "${header[subject]}"
+           -
+            simple: "${header[subject]}"
             steps:
-            - set-header:
-                name: CamelAwsSesSubject
+             -
+              set-header:
+                name: "CamelAwsSesSubject"
                 simple: "${header[subject]}"
-          - simple: "${header[ce-subject]}"
+           -
+            simple: "${header[ce-subject]}"
             steps:
-            - set-header:
-                name: CamelAwsSesSubject
+             -
+              set-header:
+                name: "CamelAwsSesSubject"
                 simple: "${header[ce-subject]}"
           otherwise:
             steps:
-            - set-header:
-                name: CamelAwsSesSubject
+             -
+              set-header:
+                name: "CamelAwsSesSubject"
                 simple: "${exchangeId}"
-      - choice:
+       -
+        choice:
           when:
-          - simple: "${header[to]}"
+           -
+            simple: "${header[to]}"
             steps:
-            - set-header:
-                name: CamelAwsSesTo
+             -
+              set-header:
+                name: "CamelAwsSesTo"
                 simple: "${header[to]}"
-          - simple: "${header[ce-to]}"
+           -
+            simple: "${header[ce-to]}"
             steps:
-            - set-header:
-                name: CamelAwsSesTo
+             -
+              set-header:
+                name: "CamelAwsSesTo"
                 simple: "${header[ce-to]}"
-      - choice:
+       -
+        choice:
           when:
-          - simple: "${header[reply-to-addresses]}"
+           -
+            simple: "${header[reply-to-addresses]}"
             steps:
-            - set-header:
-                name: CamelAwsSesReplyToAddresses
+             -
+              set-header:
+                name: "CamelAwsSesReplyToAddresses"
                 simple: "${header[reply-to-addresses]}"
-          - simple: "${header[ce-reply-to-addresses]}"
+           -
+            simple: "${header[ce-reply-to-addresses]}"
             steps:
-            - set-header:
-                name: CamelAwsSesReplyToAddresses
+             -
+              set-header:
+                name: "CamelAwsSesReplyToAddresses"
                 simple: "${header[ce-reply-to-addresses]}"
-      - to:
+       -
+        to:
           uri: "aws2-ses://{{from}}"
           parameters:
             secretKey: "{{?secretKey}}"

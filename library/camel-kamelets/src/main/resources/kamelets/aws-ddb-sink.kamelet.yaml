@@ -13,12 +13,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ---------------------------------------------------------------------------
-
-apiVersion: camel.apache.org/v1alpha1
-kind: Kamelet
+# ------------------------------------------------------------------------------
+apiVersion: "camel.apache.org/v1alpha1"
+kind: "Kamelet"
 metadata:
-  name: aws-ddb-sink
   annotations:
     camel.apache.org/kamelet.support.level: "Stable"
     camel.apache.org/catalog.version: "main-SNAPSHOT"
@@ -27,98 +25,145 @@ metadata:
     camel.apache.org/kamelet.group: "AWS DynamoDB Streams"
   labels:
     camel.apache.org/kamelet.type: "sink"
+  name: "aws-ddb-sink"
+  headers:
+    CamelAwsDdbUpdateCondition: "Designates an attribute for a conditional modification."
+    CamelAwsDdbBatchItems: "A map of the table name and corresponding items to get by primary key."
+    CamelAwsDdbReturnValues: "Use this parameter if you want to get the attribute name-value pairs before or after they are modified(NONE, ALL_OLD, UPDATED_OLD, ALL_NEW, UPDATED_NEW)."
+    CamelAwsDdbScanFilter: "Evaluates the scan results and returns only the desired values."
+    CamelAwsDdbUpdateValues: "Map of attribute name to the new value and action for the update."
+    CamelAwsDdbItem: "A map of the attributes for the item, and must include the primary key values that define the item."
+    CamelAwsDdbLimit: "The maximum number of items to return."
+    CamelAwsDdbAttributeNames: "If attribute names are not specified then all attributes will be returned."
+    CamelAwsDdbIndexName: "If set will be used as Secondary Index for Query operation."
+    CamelAwsDdbKeyConditions: "This header specify the selection criteria for the query, and merge together the two old headers CamelAwsDdbHashKeyValue and CamelAwsDdbScanRangeKeyCondition"
+    CamelAwsDdbStartKey: "Primary key of the item from which to continue an earlier query."
+    CamelAwsDdbTableName: "Table Name for this operation."
+    CamelAwsDdbConsistentRead: "If set to true, then a consistent read is issued, otherwise eventually consistent is used."
+    CamelAwsDdbScanIndexForward: "Specifies forward or backward traversal of the index."
+    CamelAwsDdbOperation: "The operation to perform."
+    CamelAwsDdbKey: "The primary key that uniquely identifies each item in a table."
 spec:
   definition:
-    title: "AWS DynamoDB Sink"
-    description: |-
-      Send data to Amazon DynamoDB. The sent data inserts, updates, or deletes an item on the specified AWS DynamoDB table.
-
-      The basic authentication method for the AWS DynamoDB service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.
-
-      If you use the default credentials provider, the DynamoDB client loads the credentials through this provider and doesn't use the basic authentication method.
-
-      This Kamelet expects a JSON-formatted body and it must include the primary key values that define the DynamoDB item. The mapping between the JSON fields and table attribute values is done by key. For example, for  '{"username":"oscerd", "city":"Rome"}' input, the Kamelet inserts or update an item in the specified AWS DynamoDB table and sets the values for the 'username' and 'city' attributes. 
-    required:
-      - table
-      - region
-    type: object
+    description: "Send data to Amazon DynamoDB. The sent data inserts, updates, or deletes an item on the specified AWS DynamoDB table.\n\nThe basic authentication method for the AWS DynamoDB service is to specify an access key and a secret key. These parameters are optional because the Kamelet provides a default credentials provider.\n\nIf you use the default credentials provider, the DynamoDB client loads the credentials through this provider and doesn't use the basic authentication method.\n\nThis Kamelet expects a JSON-formatted body and it must include the primary key values that define the DynamoDB item. The mapping between the JSON fields and table attribute values is done by key. For example, for  '{\"username\":\"oscerd\", \"city\":\"Rome\"}' input, the Kamelet inserts or update an item in the specified AWS DynamoDB table and sets the values for the 'username' and 'city' attributes. "
     properties:
       table:
-        title: Table
-        description: The name of the DynamoDB table.
-        type: string
+        description: "The name of the DynamoDB table."
+        title: "Table"
+        type: "string"
       accessKey:
-        title: Access Key
-        description: The access key obtained from AWS.
-        type: string
-        format: password
+        description: "The access key obtained from AWS."
+        format: "password"
+        title: "Access Key"
+        type: "string"
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
-        - urn:camel:group:credentials
+         - "urn:alm:descriptor:com.tectonic.ui:password"
+         - "urn:camel:group:credentials"
       secretKey:
-        title: Secret Key
-        description: The secret key obtained from AWS.
-        type: string
-        format: password
+        description: "The secret key obtained from AWS."
+        format: "password"
+        title: "Secret Key"
+        type: "string"
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
-        - urn:camel:group:credentials
+         - "urn:alm:descriptor:com.tectonic.ui:password"
+         - "urn:camel:group:credentials"
       region:
-        title: AWS Region
-        description: The AWS region to access.
-        type: string
-        enum: ["ap-south-1", "eu-south-1", "us-gov-east-1", "me-central-1", "ca-central-1", "eu-central-1", "us-iso-west-1", "us-west-1", "us-west-2", "af-south-1", "eu-north-1", "eu-west-3", "eu-west-2", "eu-west-1", "ap-northeast-3", "ap-northeast-2", "ap-northeast-1", "me-south-1", "sa-east-1", "ap-east-1", "cn-north-1", "us-gov-west-1", "ap-southeast-1", "ap-southeast-2", "us-iso-east-1", "ap-southeast-3", "us-east-1", "us-east-2", "cn-northwest-1", "us-isob-east-1", "aws-global", "aws-cn-global", "aws-us-gov-global", "aws-iso-global", "aws-iso-b-global"]
+        description: "The AWS region to access."
+        enum:
+         - "ap-south-1"
+         - "eu-south-1"
+         - "us-gov-east-1"
+         - "me-central-1"
+         - "ca-central-1"
+         - "eu-central-1"
+         - "us-iso-west-1"
+         - "us-west-1"
+         - "us-west-2"
+         - "af-south-1"
+         - "eu-north-1"
+         - "eu-west-3"
+         - "eu-west-2"
+         - "eu-west-1"
+         - "ap-northeast-3"
+         - "ap-northeast-2"
+         - "ap-northeast-1"
+         - "me-south-1"
+         - "sa-east-1"
+         - "ap-east-1"
+         - "cn-north-1"
+         - "us-gov-west-1"
+         - "ap-southeast-1"
+         - "ap-southeast-2"
+         - "us-iso-east-1"
+         - "ap-southeast-3"
+         - "us-east-1"
+         - "us-east-2"
+         - "cn-northwest-1"
+         - "us-isob-east-1"
+         - "aws-global"
+         - "aws-cn-global"
+         - "aws-us-gov-global"
+         - "aws-iso-global"
+         - "aws-iso-b-global"
+        title: "AWS Region"
+        type: "string"
       operation:
-        title: Operation
+        default: "PutItem"
         description: "The operation to perform. The options are PutItem, UpdateItem, or DeleteItem."
-        type: string
-        default: PutItem
-        example: PutItem
+        example: "PutItem"
+        title: "Operation"
+        type: "string"
       writeCapacity:
-        title: Write Capacity
-        description: The provisioned throughput to reserve for writing resources to your table.
-        type: integer
         default: 1
+        description: "The provisioned throughput to reserve for writing resources to your table."
+        title: "Write Capacity"
+        type: "integer"
       useDefaultCredentialsProvider:
-        title: Default Credentials Provider
-        description: If true, the DynamoDB client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
-        type: boolean
-        x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+        description: "If true, the DynamoDB client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key)."
+        title: "Default Credentials Provider"
+        type: "boolean"
+        x-descriptors:
+         - "urn:alm:descriptor:com.tectonic.ui:checkbox"
       uriEndpointOverride:
-        title: Overwrite Endpoint URI
-        description: The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option.
-        type: string
+        description: "The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option."
+        title: "Overwrite Endpoint URI"
+        type: "string"
       overrideEndpoint:
-        title: Endpoint Overwrite
-        description: Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option.
-        type: boolean
-        x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
-  types:
-    in:
-      mediaType: application/json
+        description: "Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option."
+        title: "Endpoint Overwrite"
+        type: "boolean"
+        x-descriptors:
+         - "urn:alm:descriptor:com.tectonic.ui:checkbox"
+    required:
+     - "table"
+     - "region"
+    title: "AWS DynamoDB Sink"
+    type: "object"
   dependencies:
-  - github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT
-  - "camel:core"
-  - "camel:jackson"
-  - "camel:aws2-ddb"
-  - "camel:kamelet"
+   - "github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT"
+   - "camel:core"
+   - "camel:jackson"
+   - "camel:aws2-ddb"
+   - "camel:kamelet"
   template:
     from:
       uri: "kamelet:source"
       steps:
-      - set-property:
-          name: operation
+       -
+        set-property:
+          name: "operation"
           constant: "{{operation}}"
-      - unmarshal:
+       -
+        unmarshal:
           json:
-            library: Jackson
-            unmarshalType: com.fasterxml.jackson.databind.JsonNode
-      - bean: "org.apache.camel.kamelets.utils.transform.aws.ddb.JsonToDdbModelConverter"
-      - to:
+            library: "Jackson"
+            unmarshalType: "com.fasterxml.jackson.databind.JsonNode"
+       -
+        bean: "org.apache.camel.kamelets.utils.transform.aws.ddb.JsonToDdbModelConverter"
+       -
+        to:
           uri: "aws2-ddb:{{table}}"
           parameters:
             secretKey: "{{?secretKey}}"
@@ -129,3 +174,6 @@ spec:
             useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
             uriEndpointOverride: "{{?uriEndpointOverride}}"
             overrideEndpoint: "{{overrideEndpoint}}"
+  types:
+    in:
+      mediaType: "application/json"
