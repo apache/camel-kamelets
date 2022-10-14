@@ -20,6 +20,7 @@ import io.fabric8.camelk.v1alpha1.Kamelet;
 import io.fabric8.camelk.v1alpha1.JSONSchemaProps;
 import io.github.classgraph.ClassGraph;
 import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
+import org.apache.camel.tooling.model.ComponentModel;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -123,5 +124,17 @@ public class KameletsCatalogTest {
     @Test
     void testAllKameletDependencies() throws Exception {
         catalog.getAllKameletDependencies();
+    }
+
+    @Test
+    void testSupportedHeaders() throws Exception {
+        List<ComponentModel.EndpointHeaderModel> headersSource = catalog.getKameletSupportedHeaders("aws-s3-source");
+        assertEquals(18, headersSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersSink = catalog.getKameletSupportedHeaders("aws-s3-sink");
+        assertEquals(25, headersSink.size());
+        List<ComponentModel.EndpointHeaderModel> headerNotExistent = catalog.getKameletSupportedHeaders("aws-not-exists");
+        assertEquals(0, headerNotExistent.size());
+        List<ComponentModel.EndpointHeaderModel> headersAzureSink = catalog.getKameletSupportedHeaders("azure-eventhubs-sink");
+        assertEquals(2, headersAzureSink.size());
     }
 }
