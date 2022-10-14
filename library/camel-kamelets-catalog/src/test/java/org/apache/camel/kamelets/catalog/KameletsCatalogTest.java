@@ -144,5 +144,7 @@ public class KameletsCatalogTest {
         assertEquals(34, headersAzureStorageBlobSource.size());
         List<ComponentModel.EndpointHeaderModel> headersAzureStorageBlobSink = catalog.getKameletSupportedHeaders("azure-storage-blob-sink");
         assertEquals(32, headersAzureStorageBlobSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersAzureStorageBlobChangeefeedSource = catalog.getKameletSupportedHeaders("azure-storage-blob-changefeed-source");
+        assertEquals(34, headersAzureStorageBlobChangeefeedSource.size());
     }
 }
