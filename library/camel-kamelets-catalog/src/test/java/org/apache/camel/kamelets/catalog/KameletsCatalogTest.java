@@ -136,5 +136,7 @@ public class KameletsCatalogTest {
         assertEquals(0, headerNotExistent.size());
         List<ComponentModel.EndpointHeaderModel> headersAzureSink = catalog.getKameletSupportedHeaders("azure-eventhubs-sink");
         assertEquals(2, headersAzureSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersAzureFunctionsSink = catalog.getKameletSupportedHeaders("azure-functions-sink");
+        assertEquals(8, headersAzureFunctionsSink.size());
     }
 }
