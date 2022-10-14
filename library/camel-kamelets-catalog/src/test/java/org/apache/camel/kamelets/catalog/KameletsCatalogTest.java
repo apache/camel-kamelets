@@ -140,5 +140,9 @@ public class KameletsCatalogTest {
         assertEquals(8, headersAzureFunctionsSink.size());
         List<ComponentModel.EndpointHeaderModel> headersAzureServicebusSource = catalog.getKameletSupportedHeaders("azure-servicebus-source");
         assertEquals(22, headersAzureServicebusSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersAzureStorageBlobSource = catalog.getKameletSupportedHeaders("azure-storage-blob-source");
+        assertEquals(34, headersAzureStorageBlobSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersAzureStorageBlobSink = catalog.getKameletSupportedHeaders("azure-storage-blob-sink");
+        assertEquals(32, headersAzureStorageBlobSink.size());
     }
 }
