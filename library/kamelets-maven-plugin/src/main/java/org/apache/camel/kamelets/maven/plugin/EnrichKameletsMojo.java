@@ -46,7 +46,7 @@ import java.util.Map;
 /**
  * Copy the properties from a source POM to a different destination POM for syncing purposes.
  */
-@Mojo(name = "enrich", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, threadSafe = true)
+@Mojo(name = "catalog-enrich", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, threadSafe = true)
 public class EnrichKameletsMojo extends AbstractMojo {
 
     /**
