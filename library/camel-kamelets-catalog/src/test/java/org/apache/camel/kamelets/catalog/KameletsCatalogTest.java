@@ -194,5 +194,7 @@ public class KameletsCatalogTest {
         assertEquals(1, headersGoogleCalendarSource.size());
         List<ComponentModel.EndpointHeaderModel> headersGoogleFunctionsSink = catalog.getKameletSupportedHeaders("google-functions-sink");
         assertEquals(5, headersGoogleFunctionsSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersGoogleMailSource = catalog.getKameletSupportedHeaders("google-mail-source");
+        assertEquals(6, headersGoogleMailSource.size());
     }
 }
