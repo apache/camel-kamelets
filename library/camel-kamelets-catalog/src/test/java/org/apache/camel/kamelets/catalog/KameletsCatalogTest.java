@@ -202,5 +202,9 @@ public class KameletsCatalogTest {
         assertEquals(4, headersGooglePubsubSource.size());
         List<ComponentModel.EndpointHeaderModel> headersGoogleSheetsSource = catalog.getKameletSupportedHeaders("google-sheets-source");
         assertEquals(6, headersGoogleSheetsSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersGoogleStorageSource = catalog.getKameletSupportedHeaders("google-storage-source");
+        assertEquals(20, headersGoogleStorageSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersGoogleStorageSink = catalog.getKameletSupportedHeaders("google-storage-sink");
+        assertEquals(13, headersGoogleStorageSink.size());
     }
 }
