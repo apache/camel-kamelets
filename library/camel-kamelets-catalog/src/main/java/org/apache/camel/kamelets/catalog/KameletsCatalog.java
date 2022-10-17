@@ -206,7 +206,7 @@ public class KameletsCatalog {
 
     private String enumValue(String prefix) {
         for (KameletPrefixSchemeEnum c : KameletPrefixSchemeEnum.values()) {
-            if (c.prefix.equals(prefix)) return c.label;
+            if (c.name.equals(prefix)) return c.scheme;
         }
         return null;
     }
