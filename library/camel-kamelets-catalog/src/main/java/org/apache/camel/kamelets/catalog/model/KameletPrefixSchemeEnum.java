@@ -60,7 +60,8 @@ public enum KameletPrefixSchemeEnum {
     google_bigquery("google-bigquery", "google-bigquery"),
     google_calendar("google-calendar", "google-calendar-stream"),
     google_functions("google-functions", "google-functions"),
-    google_mail("google-mail", "google-mail-stream");
+    google_mail("google-mail", "google-mail-stream"),
+    google_pubsub("google-pubsub", "google-pubsub");
 
     public final String name;
     public final String scheme;
