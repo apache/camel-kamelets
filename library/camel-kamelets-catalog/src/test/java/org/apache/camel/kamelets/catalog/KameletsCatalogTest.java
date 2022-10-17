@@ -160,5 +160,9 @@ public class KameletsCatalogTest {
         assertEquals(0, headersDropboxSource.size());
         List<ComponentModel.EndpointHeaderModel> headersDropboxSink = catalog.getKameletSupportedHeaders("dropbox-source");
         assertEquals(0, headersDropboxSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersESIndexSink = catalog.getKameletSupportedHeaders("elasticsearch-index-sink");
+        assertEquals(8, headersESIndexSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersESSearchSource = catalog.getKameletSupportedHeaders("elasticsearch-search-source");
+        assertEquals(8, headersESSearchSource.size());
     }
 }
