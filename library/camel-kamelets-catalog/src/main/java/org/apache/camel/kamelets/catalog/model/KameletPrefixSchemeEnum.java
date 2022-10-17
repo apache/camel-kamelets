@@ -57,7 +57,8 @@ public enum KameletPrefixSchemeEnum {
     github_pr_comments("github-pullrequest-comment", "github"),
     github_pr("github-pullrequest", "github"),
     github_tag("github-tag", "github"),
-    google_bigquery("google-bigquery", "google-bigquery");
+    google_bigquery("google-bigquery", "google-bigquery"),
+    google_calendar("google-calendar", "google-calendar-stream");
 
     public final String name;
     public final String scheme;
