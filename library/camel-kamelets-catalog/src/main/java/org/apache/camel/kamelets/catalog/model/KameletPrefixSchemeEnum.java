@@ -37,7 +37,8 @@ public enum KameletPrefixSchemeEnum {
     azure_servicebus("azure-servicebus","azure-servicebus"),
     azure_storage_blob("azure-storage-blob","azure-storage-blob"),
     azure_storage_blob_changefeed("azure-storage-blob-changefeed","azure-storage-blob"),
-    azure_storage_queue("azure-storage-queue","azure-storage-queue");
+    azure_storage_queue("azure-storage-queue","azure-storage-queue"),
+    beer_source("beer", "http");
 
     public final String label;
     public final String prefix;
