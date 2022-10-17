@@ -34,8 +34,6 @@ spec:
     required:
       - topic
       - bootstrapServers
-      - sslKeystoreLocation
-      - sslKeystorePassword
       - sslTruststoreLocation
       - sslKeyPassword
     type: object
@@ -124,7 +122,6 @@ spec:
           - urn:alm:descriptor:com.tectonic.ui:password
           - urn:camel:group:credentials
           - urn:keda:authentication:password
-          - urn:keda:required
       sslProtocol:
         description: The SSL protocol used to generate the SSLContext. Default setting is TLS, which is fine for most cases. Allowed values in recent JVMs are TLS, TLSv1.1 and TLSv1.2. SSL, SSLv2 and SSLv3 may be supported in older JVMs, but their usage is discouraged due to known security vulnerabilities.
         title: SSL Protocol
@@ -159,11 +156,11 @@ spec:
           - key: securityProtocol
             value: '{{securityProtocol}}'
           - key: sslKeystoreLocation
-            value: '{{sslKeystoreLocation}}'
+            value: '{{?sslKeystoreLocation}}'
           - key: sslKeyPassword
             value: '{{sslKeyPassword}}'
           - key: sslKeystorePassword
-            value: '{{sslKeystorePassword}}'
+            value: '{{?sslKeystorePassword}}'
           - key: sslTruststoreLocation
             value: '{{sslTruststoreLocation}}'
           - key: sslProtocol
