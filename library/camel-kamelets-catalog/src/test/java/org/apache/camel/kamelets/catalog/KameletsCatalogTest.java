@@ -153,6 +153,9 @@ public class KameletsCatalogTest {
         List<ComponentModel.EndpointHeaderModel> headersCqlSink = catalog.getKameletSupportedHeaders("cassandra-sink");
         assertEquals(1, headersCqlSink.size());
         List<ComponentModel.EndpointHeaderModel> headersCqlSource = catalog.getKameletSupportedHeaders("cassandra-source");
-        assertEquals(16, headersCqlSource.size());
+        assertEquals(1, headersCqlSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersCouchbaseSink = catalog.getKameletSupportedHeaders("couchbase-sink");
+        assertEquals(2, headersCouchbaseSink.size());
+
     }
 }
