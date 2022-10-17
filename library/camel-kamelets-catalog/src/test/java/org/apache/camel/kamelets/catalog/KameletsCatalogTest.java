@@ -164,5 +164,7 @@ public class KameletsCatalogTest {
         assertEquals(8, headersESIndexSink.size());
         List<ComponentModel.EndpointHeaderModel> headersESSearchSource = catalog.getKameletSupportedHeaders("elasticsearch-search-source");
         assertEquals(8, headersESSearchSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersExecSink = catalog.getKameletSupportedHeaders("exec-sink");
+        assertEquals(0, headersExecSink.size());
     }
 }
