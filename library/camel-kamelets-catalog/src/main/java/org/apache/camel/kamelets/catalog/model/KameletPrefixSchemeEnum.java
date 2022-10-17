@@ -47,7 +47,8 @@ public enum KameletPrefixSchemeEnum {
     dropbox("dropbox", "dropbox"),
     elasticsearch_rest_index("elasticsearch-index", "elasticsearch-rest"),
     elasticsearch_rest_search("elasticsearch-search", "elasticsearch-rest"),
-    exec("exec", "exec");
+    exec("exec", "exec"),
+    fhir("fhir", "fhir");
 
     public final String name;
     public final String scheme;

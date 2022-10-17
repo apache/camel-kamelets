@@ -166,5 +166,7 @@ public class KameletsCatalogTest {
         assertEquals(8, headersESSearchSource.size());
         List<ComponentModel.EndpointHeaderModel> headersExecSink = catalog.getKameletSupportedHeaders("exec-sink");
         assertEquals(0, headersExecSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersFhirSource = catalog.getKameletSupportedHeaders("fhir-source");
+        assertEquals(0, headersFhirSource.size());
     }
 }
