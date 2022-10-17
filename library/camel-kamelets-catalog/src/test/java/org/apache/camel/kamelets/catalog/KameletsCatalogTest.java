@@ -178,5 +178,15 @@ public class KameletsCatalogTest {
         assertEquals(10, headersFtpsSource.size());
         List<ComponentModel.EndpointHeaderModel> headersFtpsSink = catalog.getKameletSupportedHeaders("ftps-sink");
         assertEquals(8, headersFtpsSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersGhCommitSource = catalog.getKameletSupportedHeaders("github-commit-source");
+        assertEquals(7, headersGhCommitSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersGhEventSource = catalog.getKameletSupportedHeaders("github-event-source");
+        assertEquals(7, headersGhEventSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersGhPrCommentSource = catalog.getKameletSupportedHeaders("github-pullrequest-comment-source");
+        assertEquals(7, headersGhPrCommentSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersGhPrSource = catalog.getKameletSupportedHeaders("github-pullrequest-source");
+        assertEquals(7, headersGhPrSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersGhTagSource = catalog.getKameletSupportedHeaders("github-tag-source");
+        assertEquals(7, headersGhTagSource.size());
     }
 }

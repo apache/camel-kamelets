@@ -51,7 +51,12 @@ public enum KameletPrefixSchemeEnum {
     fhir("fhir", "fhir"),
     file_watch("file-watch", "file-watch"),
     ftp("ftp", "ftp"),
-    ftps("ftps", "ftps");
+    ftps("ftps", "ftps"),
+    github_commit("github-commit", "github"),
+    github_event("github-event", "github"),
+    github_pr_comments("github-pullrequest-comment", "github"),
+    github_pr("github-pullrequest", "github"),
+    github_tag("github-tag", "github");
 
     public final String name;
     public final String scheme;
