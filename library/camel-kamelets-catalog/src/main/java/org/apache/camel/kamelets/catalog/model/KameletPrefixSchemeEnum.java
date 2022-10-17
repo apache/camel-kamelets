@@ -38,8 +38,9 @@ public enum KameletPrefixSchemeEnum {
     azure_storage_blob("azure-storage-blob","azure-storage-blob"),
     azure_storage_blob_changefeed("azure-storage-blob-changefeed","azure-storage-blob"),
     azure_storage_queue("azure-storage-queue","azure-storage-queue"),
-    beer_source("beer", "http"),
-    bitcoin_source("bitcoin", "xchange");
+    beer("beer", "http"),
+    bitcoin("bitcoin", "xchange"),
+    cassandra("cassandra", "cql");
 
     public final String label;
     public final String prefix;
