@@ -41,7 +41,8 @@ public enum KameletPrefixSchemeEnum {
     beer("beer", "http"),
     bitcoin("bitcoin", "xchange"),
     cassandra("cassandra", "cql"),
-    ceph("ceph", "aws2-s3");
+    ceph("ceph", "aws2-s3"),
+    chuck_norris("chuck-norris", "http");
 
     public final String label;
     public final String prefix;
