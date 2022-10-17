@@ -156,6 +156,9 @@ public class KameletsCatalogTest {
         assertEquals(1, headersCqlSource.size());
         List<ComponentModel.EndpointHeaderModel> headersCouchbaseSink = catalog.getKameletSupportedHeaders("couchbase-sink");
         assertEquals(2, headersCouchbaseSink.size());
-
+        List<ComponentModel.EndpointHeaderModel> headersDropboxSource = catalog.getKameletSupportedHeaders("dropbox-source");
+        assertEquals(0, headersDropboxSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersDropboxSink = catalog.getKameletSupportedHeaders("dropbox-source");
+        assertEquals(0, headersDropboxSink.size());
     }
 }
