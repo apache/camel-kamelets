@@ -206,5 +206,13 @@ public class KameletsCatalogTest {
         assertEquals(20, headersGoogleStorageSource.size());
         List<ComponentModel.EndpointHeaderModel> headersGoogleStorageSink = catalog.getKameletSupportedHeaders("google-storage-sink");
         assertEquals(13, headersGoogleStorageSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersHttpSource = catalog.getKameletSupportedHeaders("http-source");
+        assertEquals(5, headersHttpSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersHttpSink = catalog.getKameletSupportedHeaders("http-sink");
+        assertEquals(14, headersHttpSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersHttpSecuredSource = catalog.getKameletSupportedHeaders("http-secured-source");
+        assertEquals(5, headersHttpSecuredSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersHttpSecuredSink = catalog.getKameletSupportedHeaders("http-secured-sink");
+        assertEquals(14, headersHttpSecuredSink.size());
     }
 }
