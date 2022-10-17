@@ -44,7 +44,9 @@ public enum KameletPrefixSchemeEnum {
     ceph("ceph", "aws2-s3"),
     chuck_norris("chuck-norris", "http"),
     couchbase("couchbase", "couchbase"),
-    dropbox("dropbox", "dropbox");
+    dropbox("dropbox", "dropbox"),
+    elasticsearch_rest_index("elasticsearch-index", "elasticsearch-rest"),
+    elasticsearch_rest_search("elasticsearch-search", "elasticsearch-rest");
 
     public final String label;
     public final String prefix;
