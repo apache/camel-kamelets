@@ -64,7 +64,8 @@ public enum KameletPrefixSchemeEnum {
     google_pubsub("google-pubsub", "google-pubsub"),
     google_sheets("google-sheets", "google-sheets-stream"),
     google_storage("google-storage", "google-storage"),
-    http("http", "http");
+    http("http", "http"),
+    http_secured("http-secured", "http");
 
     public final String name;
     public final String scheme;
