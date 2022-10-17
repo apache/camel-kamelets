@@ -46,13 +46,14 @@ public enum KameletPrefixSchemeEnum {
     couchbase("couchbase", "couchbase"),
     dropbox("dropbox", "dropbox"),
     elasticsearch_rest_index("elasticsearch-index", "elasticsearch-rest"),
-    elasticsearch_rest_search("elasticsearch-search", "elasticsearch-rest");
+    elasticsearch_rest_search("elasticsearch-search", "elasticsearch-rest"),
+    exec("exec", "exec");
 
-    public final String label;
-    public final String prefix;
+    public final String name;
+    public final String scheme;
 
-    private KameletPrefixSchemeEnum(String prefix, String label) {
-        this.prefix = prefix;
-        this.label = label;
+    private KameletPrefixSchemeEnum(String name, String scheme) {
+        this.name = name;
+        this.scheme = scheme;
     }
 }
