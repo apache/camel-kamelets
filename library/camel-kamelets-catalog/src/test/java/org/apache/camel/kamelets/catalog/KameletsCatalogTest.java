@@ -168,5 +168,7 @@ public class KameletsCatalogTest {
         assertEquals(0, headersExecSink.size());
         List<ComponentModel.EndpointHeaderModel> headersFhirSource = catalog.getKameletSupportedHeaders("fhir-source");
         assertEquals(0, headersFhirSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersFileWatchSource = catalog.getKameletSupportedHeaders("file-watch-source");
+        assertEquals(10, headersFileWatchSource.size());
     }
 }
