@@ -196,5 +196,9 @@ public class KameletsCatalogTest {
         assertEquals(5, headersGoogleFunctionsSink.size());
         List<ComponentModel.EndpointHeaderModel> headersGoogleMailSource = catalog.getKameletSupportedHeaders("google-mail-source");
         assertEquals(6, headersGoogleMailSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersGooglePubsubSink = catalog.getKameletSupportedHeaders("google-pubsub-sink");
+        assertEquals(3, headersGooglePubsubSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersGooglePubsubSource = catalog.getKameletSupportedHeaders("google-pubsub-source");
+        assertEquals(4, headersGooglePubsubSource.size());
     }
 }
