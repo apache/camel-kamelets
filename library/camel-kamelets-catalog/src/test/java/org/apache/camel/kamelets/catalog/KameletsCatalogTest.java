@@ -170,5 +170,13 @@ public class KameletsCatalogTest {
         assertEquals(0, headersFhirSource.size());
         List<ComponentModel.EndpointHeaderModel> headersFileWatchSource = catalog.getKameletSupportedHeaders("file-watch-source");
         assertEquals(10, headersFileWatchSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersFtpSource = catalog.getKameletSupportedHeaders("ftp-source");
+        assertEquals(10, headersFtpSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersFtpSink = catalog.getKameletSupportedHeaders("ftp-sink");
+        assertEquals(8, headersFtpSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersFtpsSource = catalog.getKameletSupportedHeaders("ftps-source");
+        assertEquals(10, headersFtpsSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersFtpsSink = catalog.getKameletSupportedHeaders("ftps-sink");
+        assertEquals(8, headersFtpsSink.size());
     }
 }

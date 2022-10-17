@@ -49,7 +49,9 @@ public enum KameletPrefixSchemeEnum {
     elasticsearch_rest_search("elasticsearch-search", "elasticsearch-rest"),
     exec("exec", "exec"),
     fhir("fhir", "fhir"),
-    file_watch("file-watch", "file-watch");
+    file_watch("file-watch", "file-watch"),
+    ftp("ftp", "ftp"),
+    ftps("ftps", "ftps");
 
     public final String name;
     public final String scheme;
