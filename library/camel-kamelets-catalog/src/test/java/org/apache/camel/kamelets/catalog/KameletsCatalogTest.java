@@ -150,5 +150,9 @@ public class KameletsCatalogTest {
         assertEquals(6, headersAzureStorageQueueSource.size());
         List<ComponentModel.EndpointHeaderModel> headersAzureStorageQueueSink = catalog.getKameletSupportedHeaders("azure-storage-queue-sink");
         assertEquals(16, headersAzureStorageQueueSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersCqlSink = catalog.getKameletSupportedHeaders("cassandra-sink");
+        assertEquals(1, headersCqlSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersCqlSource = catalog.getKameletSupportedHeaders("cassandra-source");
+        assertEquals(16, headersCqlSource.size());
     }
 }
