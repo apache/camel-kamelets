@@ -62,7 +62,8 @@ public enum KameletPrefixSchemeEnum {
     google_functions("google-functions", "google-functions"),
     google_mail("google-mail", "google-mail-stream"),
     google_pubsub("google-pubsub", "google-pubsub"),
-    google_sheets("google-sheets", "google-sheets-stream");
+    google_sheets("google-sheets", "google-sheets-stream"),
+    google_storage("google-storage", "google-storage");
 
     public final String name;
     public final String scheme;
