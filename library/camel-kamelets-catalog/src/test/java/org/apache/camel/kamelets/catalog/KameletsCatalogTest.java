@@ -188,5 +188,9 @@ public class KameletsCatalogTest {
         assertEquals(7, headersGhPrSource.size());
         List<ComponentModel.EndpointHeaderModel> headersGhTagSource = catalog.getKameletSupportedHeaders("github-tag-source");
         assertEquals(7, headersGhTagSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersGoogleBigquerySink = catalog.getKameletSupportedHeaders("google-bigquery-sink");
+        assertEquals(4, headersGoogleBigquerySink.size());
+        List<ComponentModel.EndpointHeaderModel> headersGoogleCalendarSource = catalog.getKameletSupportedHeaders("google-calendar-source");
+        assertEquals(1, headersGoogleCalendarSource.size());
     }
 }
