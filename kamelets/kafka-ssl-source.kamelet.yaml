@@ -140,6 +140,10 @@ spec:
         title: SSL Enabled Protocols
         type: string
         default: TLSv1.2,TLSv1.1,TLSv1
+      saslJaasConfig:
+        description: Java Authentication and Authorization Service (JAAS) for Simple Authentication and Security Layer (SASL) configuration.
+        title: JAAS Configuration
+        type: string
   dependencies:
     - "github:apache.camel-kamelets:camel-kamelets-utils:main-SNAPSHOT"
     - "camel:core"
@@ -179,6 +183,8 @@ spec:
             value: '{{allowManualCommit}}'
           - key: autoCommitEnable
             value: '{{autoCommitEnable}}'
+          - key: saslJaasConfig
+            value: '{{?saslJaasConfig}}'
         type: '#class:org.apache.camel.component.kafka.KafkaConfiguration'
       - name: kafkaHeaderDeserializer
         type: "#class:org.apache.camel.kamelets.utils.serialization.kafka.KafkaHeaderDeserializer"
