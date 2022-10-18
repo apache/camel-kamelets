@@ -65,7 +65,8 @@ public enum KameletPrefixSchemeEnum {
     google_sheets("google-sheets", "google-sheets-stream"),
     google_storage("google-storage", "google-storage"),
     http("http", "http"),
-    http_secured("http-secured", "http");
+    http_secured("http-secured", "http"),
+    infinispan("infinispan", "infinispan");
 
     public final String name;
     public final String scheme;

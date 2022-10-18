@@ -214,5 +214,9 @@ public class KameletsCatalogTest {
         assertEquals(5, headersHttpSecuredSource.size());
         List<ComponentModel.EndpointHeaderModel> headersHttpSecuredSink = catalog.getKameletSupportedHeaders("http-secured-sink");
         assertEquals(14, headersHttpSecuredSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersInfinispanSource = catalog.getKameletSupportedHeaders("infinispan-source");
+        assertEquals(6, headersInfinispanSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersInfinispanSink = catalog.getKameletSupportedHeaders("infinispan-sink");
+        assertEquals(14, headersInfinispanSink.size());
     }
 }
