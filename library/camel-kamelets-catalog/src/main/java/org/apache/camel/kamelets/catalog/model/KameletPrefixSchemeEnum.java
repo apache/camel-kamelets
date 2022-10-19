@@ -86,7 +86,9 @@ public enum KameletPrefixSchemeEnum {
     log("log", "log"),
     mail("mail", "imaps"),
     mariadb("mariadb", "sql"),
-    minio("minio", "minio");
+    minio("minio", "minio"),
+    mongodb_changes_stream("mongodb-changes-stream", "mongodb"),
+    mongodb("mongodb", "mongodb");
 
     public final String name;
     public final String scheme;

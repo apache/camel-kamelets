@@ -274,5 +274,11 @@ public class KameletsCatalogTest {
         assertEquals(14, headersMinioSource.size());
         List<ComponentModel.EndpointHeaderModel> headersMinioSink= catalog.getKameletSupportedHeaders("minio-sink");
         assertEquals(21, headersMinioSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersMongodbChangesStreamSource= catalog.getKameletSupportedHeaders("mongodb-changes-stream-source");
+        assertEquals(3, headersMongodbChangesStreamSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersMongoDbSink= catalog.getKameletSupportedHeaders("mongodb-sink");
+        assertEquals(12, headersMongoDbSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersMongoDbSource= catalog.getKameletSupportedHeaders("mongodb-source");
+        assertEquals(3, headersMongoDbSource.size());
     }
 }
