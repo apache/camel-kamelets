@@ -84,7 +84,8 @@ public enum KameletPrefixSchemeEnum {
     kubernetes_nodes("kubernetes-nodes", "kubernetes-nodes"),
     kubernetes_pods("kubernetes-pods", "kubernetes-pods"),
     log("log", "log"),
-    mail("mail", "imaps");
+    mail("mail", "imaps"),
+    mariadb("mariadb", "sql");
 
     public final String name;
     public final String scheme;
