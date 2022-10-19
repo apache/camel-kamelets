@@ -82,7 +82,8 @@ public enum KameletPrefixSchemeEnum {
     kafka_ssl("kafka-ssl", "kafka"),
     kubernetes_namespaces("kubernetes-namespaces", "kubernetes-namespaces"),
     kubernetes_nodes("kubernetes-nodes", "kubernetes-nodes"),
-    kubernetes_pods("kubernetes-pods", "kubernetes-pods");
+    kubernetes_pods("kubernetes-pods", "kubernetes-pods"),
+    log("log", "log");
 
     public final String name;
     public final String scheme;
