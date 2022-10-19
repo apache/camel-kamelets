@@ -270,5 +270,9 @@ public class KameletsCatalogTest {
         assertEquals(0, headersMariaDBSource.size());
         List<ComponentModel.EndpointHeaderModel> headersMariaDBSink= catalog.getKameletSupportedHeaders("mariadb-sink");
         assertEquals(8, headersMariaDBSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersMinioSource= catalog.getKameletSupportedHeaders("minio-source");
+        assertEquals(14, headersMinioSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersMinioSink= catalog.getKameletSupportedHeaders("minio-sink");
+        assertEquals(21, headersMinioSink.size());
     }
 }
