@@ -262,5 +262,9 @@ public class KameletsCatalogTest {
         assertEquals(2, headersKubePodsSource.size());
         List<ComponentModel.EndpointHeaderModel> headersLogSink= catalog.getKameletSupportedHeaders("log-sink");
         assertEquals(0, headersLogSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersMailSource= catalog.getKameletSupportedHeaders("mail-source");
+        assertEquals(0, headersMailSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersMailSink= catalog.getKameletSupportedHeaders("mail-sink");
+        assertEquals(8, headersMailSink.size());
     }
 }
