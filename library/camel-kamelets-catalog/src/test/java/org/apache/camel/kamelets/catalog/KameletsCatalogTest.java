@@ -238,5 +238,9 @@ public class KameletsCatalogTest {
         assertEquals(14, headersJmsArtemisSource.size());
         List<ComponentModel.EndpointHeaderModel> headersJmsArtemisSink= catalog.getKameletSupportedHeaders("jms-apache-artemis-sink");
         assertEquals(17, headersJmsArtemisSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersJmsIBMSource= catalog.getKameletSupportedHeaders("jms-ibm-mq-source");
+        assertEquals(14, headersJmsIBMSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersJmsIBMSink= catalog.getKameletSupportedHeaders("jms-ibm-mq-sink");
+        assertEquals(17, headersJmsIBMSink.size());
     }
 }
