@@ -226,5 +226,9 @@ public class KameletsCatalogTest {
         assertEquals(3, headersJiraSource.size());
         List<ComponentModel.EndpointHeaderModel> headersJiraOauthSource= catalog.getKameletSupportedHeaders("jira-oauth-source");
         assertEquals(3, headersJiraOauthSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersJmsAmqp10Source= catalog.getKameletSupportedHeaders("jms-amqp-10-source");
+        assertEquals(14, headersJmsAmqp10Source.size());
+        List<ComponentModel.EndpointHeaderModel> headersJmsAmqp10Sink= catalog.getKameletSupportedHeaders("jms-amqp-10-sink");
+        assertEquals(17, headersJmsAmqp10Sink.size());
     }
 }
