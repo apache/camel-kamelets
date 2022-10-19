@@ -218,5 +218,9 @@ public class KameletsCatalogTest {
         assertEquals(6, headersInfinispanSource.size());
         List<ComponentModel.EndpointHeaderModel> headersInfinispanSink = catalog.getKameletSupportedHeaders("infinispan-sink");
         assertEquals(14, headersInfinispanSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersJiraAddCommentSink = catalog.getKameletSupportedHeaders("jira-add-comment-sink");
+        assertEquals(16, headersJiraAddCommentSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersJiraAddIssueSink = catalog.getKameletSupportedHeaders("jira-add-issue-sink");
+        assertEquals(16, headersJiraAddIssueSink.size());
     }
 }
