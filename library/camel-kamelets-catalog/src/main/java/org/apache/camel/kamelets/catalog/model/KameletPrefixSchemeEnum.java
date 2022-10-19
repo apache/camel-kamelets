@@ -75,7 +75,8 @@ public enum KameletPrefixSchemeEnum {
     jira_update_issue("jira-update-issue", "jira"),
     jms_amqp_10("jms-amqp-10", "jms"),
     jms_apache_activemq("jms-apache-activemq", "activemq"),
-    jms_apache_artemis("jms-apache-artemis", "jms");
+    jms_apache_artemis("jms-apache-artemis", "jms"),
+    jms_ibm_mq("jms-ibm-mq", "jms");
 
     public final String name;
     public final String scheme;
