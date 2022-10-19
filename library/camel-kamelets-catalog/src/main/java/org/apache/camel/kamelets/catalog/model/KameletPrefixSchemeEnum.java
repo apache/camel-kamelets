@@ -66,7 +66,13 @@ public enum KameletPrefixSchemeEnum {
     google_storage("google-storage", "google-storage"),
     http("http", "http"),
     http_secured("http-secured", "http"),
-    infinispan("infinispan", "infinispan");
+    infinispan("infinispan", "infinispan"),
+    jira_add_comment("jira-add-comment", "jira"),
+    jira_add_issue("jira-add-issue", "jira"),
+    jira_oauth("jira-oauth", "jira"),
+    jira("jira", "jira"),
+    jira_transition_issue("jira-transition-issue", "jira"),
+    jira_update_issue("jira-update-issue", "jira");
 
     public final String name;
     public final String scheme;
