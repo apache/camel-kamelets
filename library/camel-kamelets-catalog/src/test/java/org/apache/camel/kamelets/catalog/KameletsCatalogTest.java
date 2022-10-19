@@ -266,5 +266,9 @@ public class KameletsCatalogTest {
         assertEquals(0, headersMailSource.size());
         List<ComponentModel.EndpointHeaderModel> headersMailSink= catalog.getKameletSupportedHeaders("mail-sink");
         assertEquals(8, headersMailSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersMariaDBSource= catalog.getKameletSupportedHeaders("mariadb-source");
+        assertEquals(0, headersMariaDBSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersMariaDBSink= catalog.getKameletSupportedHeaders("mariadb-sink");
+        assertEquals(8, headersMariaDBSink.size());
     }
 }
