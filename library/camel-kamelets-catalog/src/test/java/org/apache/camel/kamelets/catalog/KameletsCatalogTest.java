@@ -254,5 +254,11 @@ public class KameletsCatalogTest {
         assertEquals(9, headersKafkaNotSecuredSource.size());
         List<ComponentModel.EndpointHeaderModel> headersKafkaNotSecuredSink= catalog.getKameletSupportedHeaders("kafka-not-secured-sink");
         assertEquals(5, headersKafkaNotSecuredSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersKubeNamespacesSource= catalog.getKameletSupportedHeaders("kubernetes-namespaces-source");
+        assertEquals(2, headersKubeNamespacesSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersKubeNodesSource= catalog.getKameletSupportedHeaders("kubernetes-nodes-source");
+        assertEquals(2, headersKubeNodesSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersKubePodsSource= catalog.getKameletSupportedHeaders("kubernetes-pods-source");
+        assertEquals(2, headersKubePodsSource.size());
     }
 }
