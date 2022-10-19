@@ -242,5 +242,17 @@ public class KameletsCatalogTest {
         assertEquals(14, headersJmsIBMSource.size());
         List<ComponentModel.EndpointHeaderModel> headersJmsIBMSink= catalog.getKameletSupportedHeaders("jms-ibm-mq-sink");
         assertEquals(17, headersJmsIBMSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersKafkaSource= catalog.getKameletSupportedHeaders("kafka-source");
+        assertEquals(9, headersKafkaSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersKafkaSink= catalog.getKameletSupportedHeaders("kafka-sink");
+        assertEquals(5, headersKafkaSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersKafkaSSLSource= catalog.getKameletSupportedHeaders("kafka-ssl-source");
+        assertEquals(9, headersKafkaSSLSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersKafkaSSLSink= catalog.getKameletSupportedHeaders("kafka-ssl-sink");
+        assertEquals(5, headersKafkaSSLSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersKafkaNotSecuredSource= catalog.getKameletSupportedHeaders("kafka-not-secured-source");
+        assertEquals(9, headersKafkaNotSecuredSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersKafkaNotSecuredSink= catalog.getKameletSupportedHeaders("kafka-not-secured-sink");
+        assertEquals(5, headersKafkaNotSecuredSink.size());
     }
 }
