@@ -106,7 +106,9 @@ public enum KameletPrefixSchemeEnum {
     scp("scp", "scp"),
     sftp("sftp", "sftp"),
     slack("slack", "slack"),
-    solr("solr", "solr");
+    solr("solr", "solr"),
+    splunk_hec("splunk-hec", "splunk-hec"),
+    splunk("splunk", "splunk");
 
     public final String name;
     public final String scheme;
