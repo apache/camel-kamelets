@@ -298,5 +298,9 @@ public class KameletsCatalogTest {
         assertEquals(5, headersNatsSink.size());
         List<ComponentModel.EndpointHeaderModel> headersNatsSource= catalog.getKameletSupportedHeaders("nats-source");
         assertEquals(5, headersNatsSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersOracleDBSink= catalog.getKameletSupportedHeaders("oracle-database-sink");
+        assertEquals(8, headersOracleDBSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersOracleDBSource= catalog.getKameletSupportedHeaders("oracle-database-source");
+        assertEquals(0, headersOracleDBSource.size());
     }
 }
