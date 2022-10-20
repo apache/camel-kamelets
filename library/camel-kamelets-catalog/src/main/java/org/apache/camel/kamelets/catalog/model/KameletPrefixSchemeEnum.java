@@ -97,7 +97,8 @@ public enum KameletPrefixSchemeEnum {
     postgresql("postgresql", "sql"),
     pulsar("pulsar", "pulsar"),
     rabbitmq("rabbitmq", "rabbitmq"),
-    redis("redis", "spring-redis");
+    redis("redis", "spring-redis"),
+    rest_openapi("rest-openapi", "rest-openapi");
 
     public final String name;
     public final String scheme;
