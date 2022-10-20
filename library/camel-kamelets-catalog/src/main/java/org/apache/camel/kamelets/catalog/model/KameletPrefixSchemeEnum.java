@@ -104,7 +104,8 @@ public enum KameletPrefixSchemeEnum {
     salesforce_update("salesforce-update", "salesforce"),
     salesforce("salesforce", "salesforce"),
     scp("scp", "scp"),
-    sftp("sftp", "sftp");
+    sftp("sftp", "sftp"),
+    slack("slack", "slack");
 
     public final String name;
     public final String scheme;
