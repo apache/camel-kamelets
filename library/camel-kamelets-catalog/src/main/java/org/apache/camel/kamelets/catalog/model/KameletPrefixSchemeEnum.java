@@ -105,7 +105,8 @@ public enum KameletPrefixSchemeEnum {
     salesforce("salesforce", "salesforce"),
     scp("scp", "scp"),
     sftp("sftp", "sftp"),
-    slack("slack", "slack");
+    slack("slack", "slack"),
+    solr("solr", "solr");
 
     public final String name;
     public final String scheme;
