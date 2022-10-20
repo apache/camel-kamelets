@@ -316,5 +316,7 @@ public class KameletsCatalogTest {
         assertEquals(29, headersRedisSink.size());
         List<ComponentModel.EndpointHeaderModel> headersRedisSource= catalog.getKameletSupportedHeaders("redis-source");
         assertEquals(28, headersRedisSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersRestOpenAPISink= catalog.getKameletSupportedHeaders("rest-openapi-sink");
+        assertEquals(0, headersRestOpenAPISink.size());
     }
 }
