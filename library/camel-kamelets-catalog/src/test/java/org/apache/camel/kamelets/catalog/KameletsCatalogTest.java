@@ -306,5 +306,9 @@ public class KameletsCatalogTest {
         assertEquals(8, headersPostgreSQLSink.size());
         List<ComponentModel.EndpointHeaderModel> headersPostgreSQLSource= catalog.getKameletSupportedHeaders("postgresql-source");
         assertEquals(0, headersPostgreSQLSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersPulsarSink= catalog.getKameletSupportedHeaders("pulsar-sink");
+        assertEquals(3, headersPulsarSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersPulsarSource= catalog.getKameletSupportedHeaders("pulsar-source");
+        assertEquals(11, headersPulsarSource.size());
     }
 }
