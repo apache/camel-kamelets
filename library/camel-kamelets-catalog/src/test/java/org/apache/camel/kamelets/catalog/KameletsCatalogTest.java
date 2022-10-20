@@ -132,6 +132,8 @@ public class KameletsCatalogTest {
         assertEquals(18, headersSource.size());
         List<ComponentModel.EndpointHeaderModel> headersSink = catalog.getKameletSupportedHeaders("aws-s3-sink");
         assertEquals(25, headersSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersRedshiftSource = catalog.getKameletSupportedHeaders("aws-redshift-source");
+        assertEquals(0, headersRedshiftSource.size());
         List<ComponentModel.EndpointHeaderModel> headerNotExistent = catalog.getKameletSupportedHeaders("aws-not-exists");
         assertEquals(0, headerNotExistent.size());
         List<ComponentModel.EndpointHeaderModel> headersAzureSink = catalog.getKameletSupportedHeaders("azure-eventhubs-sink");
@@ -288,5 +290,9 @@ public class KameletsCatalogTest {
         assertEquals(3, headersMQTT5Sink.size());
         List<ComponentModel.EndpointHeaderModel> headersMQTT5Source= catalog.getKameletSupportedHeaders("mqtt5-source");
         assertEquals(2, headersMQTT5Source.size());
+        List<ComponentModel.EndpointHeaderModel> headersMySQLSink= catalog.getKameletSupportedHeaders("mysql-sink");
+        assertEquals(8, headersMySQLSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersMySQLSource= catalog.getKameletSupportedHeaders("mysql-source");
+        assertEquals(0, headersMySQLSource.size());
     }
 }
