@@ -354,5 +354,9 @@ public class KameletsCatalogTest {
         assertEquals(4, headersSSHSink.size());
         List<ComponentModel.EndpointHeaderModel> headersSSHSource= catalog.getKameletSupportedHeaders("ssh-source");
         assertEquals(4, headersSSHSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersTelegramSink= catalog.getKameletSupportedHeaders("telegram-sink");
+        assertEquals(6, headersTelegramSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersTelegramSource= catalog.getKameletSupportedHeaders("telegram-source");
+        assertEquals(5, headersTelegramSource.size());
     }
 }

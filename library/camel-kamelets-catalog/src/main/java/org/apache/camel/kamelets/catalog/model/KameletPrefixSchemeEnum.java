@@ -110,7 +110,8 @@ public enum KameletPrefixSchemeEnum {
     splunk_hec("splunk-hec", "splunk-hec"),
     splunk("splunk", "splunk"),
     sqlserver("sqlserver", "sql"),
-    ssh("ssh", "ssh");
+    ssh("ssh", "ssh"),
+    telegram("telegram", "telegram");
 
     public final String name;
     public final String scheme;
