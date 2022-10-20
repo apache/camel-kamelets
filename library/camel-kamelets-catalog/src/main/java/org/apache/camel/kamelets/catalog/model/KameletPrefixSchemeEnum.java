@@ -93,7 +93,8 @@ public enum KameletPrefixSchemeEnum {
     mqtt5("mqtt5", "paho-mqtt5"),
     mysql("mysql", "sql"),
     nats("nats", "nats"),
-    oracle_database("oracle-database", "sql");
+    oracle_database("oracle-database", "sql"),
+    postgresql("postgresql", "sql");
 
     public final String name;
     public final String scheme;
