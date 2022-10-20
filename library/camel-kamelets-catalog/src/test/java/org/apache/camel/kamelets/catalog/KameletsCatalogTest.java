@@ -332,5 +332,9 @@ public class KameletsCatalogTest {
         assertEquals(8, headersSFTPSink.size());
         List<ComponentModel.EndpointHeaderModel> headersSFTPSource= catalog.getKameletSupportedHeaders("sftp-source");
         assertEquals(10, headersSFTPSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersSlackSink= catalog.getKameletSupportedHeaders("slack-sink");
+        assertEquals(0, headersSlackSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersSlackSource= catalog.getKameletSupportedHeaders("slack-source");
+        assertEquals(0, headersSlackSource.size());
     }
 }
