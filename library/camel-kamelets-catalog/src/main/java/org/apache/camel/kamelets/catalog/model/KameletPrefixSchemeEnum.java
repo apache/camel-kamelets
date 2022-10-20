@@ -94,7 +94,8 @@ public enum KameletPrefixSchemeEnum {
     mysql("mysql", "sql"),
     nats("nats", "nats"),
     oracle_database("oracle-database", "sql"),
-    postgresql("postgresql", "sql");
+    postgresql("postgresql", "sql"),
+    pulsar("pulsar", "pulsar");
 
     public final String name;
     public final String scheme;
