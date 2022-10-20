@@ -302,5 +302,9 @@ public class KameletsCatalogTest {
         assertEquals(8, headersOracleDBSink.size());
         List<ComponentModel.EndpointHeaderModel> headersOracleDBSource= catalog.getKameletSupportedHeaders("oracle-database-source");
         assertEquals(0, headersOracleDBSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersPostgreSQLSink= catalog.getKameletSupportedHeaders("postgresql-sink");
+        assertEquals(8, headersPostgreSQLSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersPostgreSQLSource= catalog.getKameletSupportedHeaders("postgresql-source");
+        assertEquals(0, headersPostgreSQLSource.size());
     }
 }
