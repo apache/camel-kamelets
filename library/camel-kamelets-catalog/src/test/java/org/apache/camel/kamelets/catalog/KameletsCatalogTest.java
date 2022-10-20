@@ -294,5 +294,9 @@ public class KameletsCatalogTest {
         assertEquals(8, headersMySQLSink.size());
         List<ComponentModel.EndpointHeaderModel> headersMySQLSource= catalog.getKameletSupportedHeaders("mysql-source");
         assertEquals(0, headersMySQLSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersNatsSink= catalog.getKameletSupportedHeaders("nats-sink");
+        assertEquals(5, headersNatsSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersNatsSource= catalog.getKameletSupportedHeaders("nats-source");
+        assertEquals(5, headersNatsSource.size());
     }
 }
