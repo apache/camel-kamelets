@@ -310,5 +310,7 @@ public class KameletsCatalogTest {
         assertEquals(3, headersPulsarSink.size());
         List<ComponentModel.EndpointHeaderModel> headersPulsarSource= catalog.getKameletSupportedHeaders("pulsar-source");
         assertEquals(11, headersPulsarSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersRabbitMQSource= catalog.getKameletSupportedHeaders("rabbitmq-source");
+        assertEquals(23, headersRabbitMQSource.size());
     }
 }
