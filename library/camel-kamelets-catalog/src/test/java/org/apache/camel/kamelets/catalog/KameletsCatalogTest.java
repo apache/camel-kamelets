@@ -366,5 +366,11 @@ public class KameletsCatalogTest {
         assertEquals(1, headersTwitterTimelineSource.size());
         List<ComponentModel.EndpointHeaderModel> headersTwitterSearchSource= catalog.getKameletSupportedHeaders("twitter-search-source");
         assertEquals(7, headersTwitterSearchSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersWebhookSource= catalog.getKameletSupportedHeaders("webhook-source");
+        assertEquals(0, headersWebhookSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersWebsocketSource= catalog.getKameletSupportedHeaders("websocket-source");
+        assertEquals(4, headersWebsocketSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersWttrinSource= catalog.getKameletSupportedHeaders("wttrin-source");
+        assertEquals(5, headersWttrinSource.size());
     }
 }
