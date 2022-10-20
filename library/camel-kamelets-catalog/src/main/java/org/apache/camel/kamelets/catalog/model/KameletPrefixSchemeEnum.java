@@ -98,7 +98,11 @@ public enum KameletPrefixSchemeEnum {
     pulsar("pulsar", "pulsar"),
     rabbitmq("rabbitmq", "rabbitmq"),
     redis("redis", "spring-redis"),
-    rest_openapi("rest-openapi", "rest-openapi");
+    rest_openapi("rest-openapi", "rest-openapi"),
+    salesforce_create("salesforce-create", "salesforce"),
+    salesforce_delete("salesforce-delete", "salesforce"),
+    salesforce_update("salesforce-update", "salesforce"),
+    salesforce("salesforce", "salesforce");
 
     public final String name;
     public final String scheme;
