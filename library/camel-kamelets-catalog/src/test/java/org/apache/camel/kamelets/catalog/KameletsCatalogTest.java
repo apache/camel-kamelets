@@ -346,5 +346,9 @@ public class KameletsCatalogTest {
         assertEquals(0, headersSplunkSink.size());
         List<ComponentModel.EndpointHeaderModel> headersSplunkSource= catalog.getKameletSupportedHeaders("splunk-source");
         assertEquals(0, headersSplunkSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersSqlServerSink= catalog.getKameletSupportedHeaders("sqlserver-sink");
+        assertEquals(8, headersSqlServerSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersSqlServerSource= catalog.getKameletSupportedHeaders("sqlserver-source");
+        assertEquals(0, headersSqlServerSource.size());
     }
 }
