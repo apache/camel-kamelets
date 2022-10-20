@@ -350,5 +350,9 @@ public class KameletsCatalogTest {
         assertEquals(8, headersSqlServerSink.size());
         List<ComponentModel.EndpointHeaderModel> headersSqlServerSource= catalog.getKameletSupportedHeaders("sqlserver-source");
         assertEquals(0, headersSqlServerSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersSSHSink= catalog.getKameletSupportedHeaders("ssh-sink");
+        assertEquals(4, headersSSHSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersSSHSource= catalog.getKameletSupportedHeaders("ssh-source");
+        assertEquals(4, headersSSHSource.size());
     }
 }

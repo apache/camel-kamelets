@@ -109,7 +109,8 @@ public enum KameletPrefixSchemeEnum {
     solr("solr", "solr"),
     splunk_hec("splunk-hec", "splunk-hec"),
     splunk("splunk", "splunk"),
-    sqlserver("sqlserver", "sql");
+    sqlserver("sqlserver", "sql"),
+    ssh("ssh", "ssh");
 
     public final String name;
     public final String scheme;
