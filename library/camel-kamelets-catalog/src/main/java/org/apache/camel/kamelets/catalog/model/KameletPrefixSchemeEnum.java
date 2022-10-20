@@ -112,7 +112,10 @@ public enum KameletPrefixSchemeEnum {
     sqlserver("sqlserver", "sql"),
     ssh("ssh", "ssh"),
     telegram("telegram", "telegram"),
-    timer("timer", "timer");
+    timer("timer", "timer"),
+    twitter_directmessage("twitter-directmessage", "twitter-directmessage"),
+    twitter_timeline("twitter-timeline", "twitter-timeline"),
+    twitter_search("twitter-search", "twitter-search"),;
 
     public final String name;
     public final String scheme;
