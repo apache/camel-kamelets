@@ -284,5 +284,9 @@ public class KameletsCatalogTest {
         assertEquals(3, headersMQTTSink.size());
         List<ComponentModel.EndpointHeaderModel> headersMQTTSource= catalog.getKameletSupportedHeaders("mqtt-source");
         assertEquals(2, headersMQTTSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersMQTT5Sink= catalog.getKameletSupportedHeaders("mqtt5-sink");
+        assertEquals(3, headersMQTT5Sink.size());
+        List<ComponentModel.EndpointHeaderModel> headersMQTT5Source= catalog.getKameletSupportedHeaders("mqtt5-source");
+        assertEquals(2, headersMQTT5Source.size());
     }
 }
