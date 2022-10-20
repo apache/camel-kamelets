@@ -111,7 +111,8 @@ public enum KameletPrefixSchemeEnum {
     splunk("splunk", "splunk"),
     sqlserver("sqlserver", "sql"),
     ssh("ssh", "ssh"),
-    telegram("telegram", "telegram");
+    telegram("telegram", "telegram"),
+    timer("timer", "timer");
 
     public final String name;
     public final String scheme;
