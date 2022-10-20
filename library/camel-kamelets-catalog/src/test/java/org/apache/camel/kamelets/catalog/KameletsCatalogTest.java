@@ -326,5 +326,11 @@ public class KameletsCatalogTest {
         assertEquals(1, headersSalesforceUpdateSink.size());
         List<ComponentModel.EndpointHeaderModel> headersSalesforceSource= catalog.getKameletSupportedHeaders("salesforce-source");
         assertEquals(18, headersSalesforceSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersSCPSink= catalog.getKameletSupportedHeaders("scp-sink");
+        assertEquals(0, headersSCPSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersSFTPSink= catalog.getKameletSupportedHeaders("sftp-sink");
+        assertEquals(8, headersSFTPSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersSFTPSource= catalog.getKameletSupportedHeaders("sftp-source");
+        assertEquals(10, headersSFTPSource.size());
     }
 }

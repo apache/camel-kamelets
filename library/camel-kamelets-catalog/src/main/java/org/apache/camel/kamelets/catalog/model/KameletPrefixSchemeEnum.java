@@ -102,7 +102,9 @@ public enum KameletPrefixSchemeEnum {
     salesforce_create("salesforce-create", "salesforce"),
     salesforce_delete("salesforce-delete", "salesforce"),
     salesforce_update("salesforce-update", "salesforce"),
-    salesforce("salesforce", "salesforce");
+    salesforce("salesforce", "salesforce"),
+    scp("scp", "scp"),
+    sftp("sftp", "sftp");
 
     public final String name;
     public final String scheme;
