@@ -336,5 +336,9 @@ public class KameletsCatalogTest {
         assertEquals(0, headersSlackSink.size());
         List<ComponentModel.EndpointHeaderModel> headersSlackSource= catalog.getKameletSupportedHeaders("slack-source");
         assertEquals(0, headersSlackSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersSolrSink= catalog.getKameletSupportedHeaders("solr-sink");
+        assertEquals(5, headersSolrSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersSolrSource= catalog.getKameletSupportedHeaders("solr-source");
+        assertEquals(5, headersSolrSource.size());
     }
 }
