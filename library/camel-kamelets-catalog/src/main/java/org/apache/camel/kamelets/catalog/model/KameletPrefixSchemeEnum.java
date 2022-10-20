@@ -115,7 +115,10 @@ public enum KameletPrefixSchemeEnum {
     timer("timer", "timer"),
     twitter_directmessage("twitter-directmessage", "twitter-directmessage"),
     twitter_timeline("twitter-timeline", "twitter-timeline"),
-    twitter_search("twitter-search", "twitter-search"),;
+    twitter_search("twitter-search", "twitter-search"),
+    webhook("webhook", "platform-http"),
+    websocket("websocket", "websocket"),
+    wttrin("wttrin", "https");
 
     public final String name;
     public final String scheme;
