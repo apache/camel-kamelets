@@ -318,5 +318,13 @@ public class KameletsCatalogTest {
         assertEquals(28, headersRedisSource.size());
         List<ComponentModel.EndpointHeaderModel> headersRestOpenAPISink= catalog.getKameletSupportedHeaders("rest-openapi-sink");
         assertEquals(0, headersRestOpenAPISink.size());
+        List<ComponentModel.EndpointHeaderModel> headersSalesforceCreateSink= catalog.getKameletSupportedHeaders("salesforce-create-sink");
+        assertEquals(1, headersSalesforceCreateSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersSalesforceDeleteSink= catalog.getKameletSupportedHeaders("salesforce-delete-sink");
+        assertEquals(1, headersSalesforceDeleteSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersSalesforceUpdateSink= catalog.getKameletSupportedHeaders("salesforce-update-sink");
+        assertEquals(1, headersSalesforceUpdateSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersSalesforceSource= catalog.getKameletSupportedHeaders("salesforce-source");
+        assertEquals(18, headersSalesforceSource.size());
     }
 }
