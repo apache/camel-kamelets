@@ -280,5 +280,9 @@ public class KameletsCatalogTest {
         assertEquals(12, headersMongoDbSink.size());
         List<ComponentModel.EndpointHeaderModel> headersMongoDbSource= catalog.getKameletSupportedHeaders("mongodb-source");
         assertEquals(3, headersMongoDbSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersMQTTSink= catalog.getKameletSupportedHeaders("mqtt-sink");
+        assertEquals(3, headersMQTTSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersMQTTSource= catalog.getKameletSupportedHeaders("mqtt-source");
+        assertEquals(2, headersMQTTSource.size());
     }
 }
