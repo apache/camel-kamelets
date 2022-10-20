@@ -358,5 +358,7 @@ public class KameletsCatalogTest {
         assertEquals(6, headersTelegramSink.size());
         List<ComponentModel.EndpointHeaderModel> headersTelegramSource= catalog.getKameletSupportedHeaders("telegram-source");
         assertEquals(5, headersTelegramSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersTimerSource= catalog.getKameletSupportedHeaders("timer-source");
+        assertEquals(2, headersTimerSource.size());
     }
 }
