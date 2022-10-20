@@ -88,7 +88,8 @@ public enum KameletPrefixSchemeEnum {
     mariadb("mariadb", "sql"),
     minio("minio", "minio"),
     mongodb_changes_stream("mongodb-changes-stream", "mongodb"),
-    mongodb("mongodb", "mongodb");
+    mongodb("mongodb", "mongodb"),
+    mqtt("mqtt", "paho");
 
     public final String name;
     public final String scheme;
