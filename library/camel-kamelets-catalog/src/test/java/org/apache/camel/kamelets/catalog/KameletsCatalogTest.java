@@ -340,5 +340,11 @@ public class KameletsCatalogTest {
         assertEquals(5, headersSolrSink.size());
         List<ComponentModel.EndpointHeaderModel> headersSolrSource= catalog.getKameletSupportedHeaders("solr-source");
         assertEquals(5, headersSolrSource.size());
+        List<ComponentModel.EndpointHeaderModel> headersSplunkHecSink= catalog.getKameletSupportedHeaders("splunk-hec-sink");
+        assertEquals(1, headersSplunkHecSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersSplunkSink= catalog.getKameletSupportedHeaders("splunk-sink");
+        assertEquals(0, headersSplunkSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersSplunkSource= catalog.getKameletSupportedHeaders("splunk-source");
+        assertEquals(0, headersSplunkSource.size());
     }
 }
