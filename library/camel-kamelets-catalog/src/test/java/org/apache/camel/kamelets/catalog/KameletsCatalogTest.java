@@ -373,4 +373,10 @@ public class KameletsCatalogTest {
         List<ComponentModel.EndpointHeaderModel> headersWttrinSource= catalog.getKameletSupportedHeaders("wttrin-source");
         assertEquals(5, headersWttrinSource.size());
     }
+
+    @Test
+    void testGetKameletScheme() throws Exception {
+        assertEquals("aws2-s3", catalog.getKameletScheme("aws-s3"));
+        assertEquals("aws2-sqs", catalog.getKameletScheme("aws-sqs"));
+    }
 }
