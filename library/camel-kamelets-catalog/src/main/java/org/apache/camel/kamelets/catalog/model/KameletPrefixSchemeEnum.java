@@ -17,6 +17,7 @@
 package org.apache.camel.kamelets.catalog.model;
 
 public enum KameletPrefixSchemeEnum {
+    aws_cloudtrail("aws-cloudtrail","aws-cloudtrail"),
     aws_cloudwatch("aws-cloudwatch","aws2-cw"),
     aws_ddb("aws-ddb","aws2-ddb"),
     aws_ddb_streams("aws-ddb","aws2-ddbstream"),
