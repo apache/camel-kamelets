@@ -18,7 +18,13 @@ package org.apache.camel.kamelets.catalog;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -193,15 +199,21 @@ public class KameletsCatalog {
             String prefixName = local.getMetadata().getName().substring(0, lastIndex);
             String schemeName = enumValue(prefixName);
             if (schemeName != null) {
-                List<ComponentModel.EndpointHeaderModel> headers = cc.componentModel(schemeName).getEndpointHeaders();
-                for (ComponentModel.EndpointHeaderModel e : headers) {
-                    if (ObjectHelper.isEmpty(e.getLabel()) || e.getLabel().equalsIgnoreCase(camelType)) {
-                        resultingHeaders.add(e);
+                if (ObjectHelper.isNotEmpty(cc.componentModel(schemeName).getEndpointHeaders())) {
+                    List<ComponentModel.EndpointHeaderModel> headers = cc.componentModel(schemeName).getEndpointHeaders();
+                    for (ComponentModel.EndpointHeaderModel e : headers) {
+                        if (ObjectHelper.isEmpty(e.getLabel()) || e.getLabel().equalsIgnoreCase(camelType)) {
+                            resultingHeaders.add(e);
+                        }
                     }
                 }
             }
         }
         return resultingHeaders;
+    }
+
+    public String getKameletScheme(String prefix) {
+        return enumValue(prefix);
     }
 
     private String enumValue(String prefix) {
