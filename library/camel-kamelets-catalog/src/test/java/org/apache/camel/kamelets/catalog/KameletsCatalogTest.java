@@ -132,6 +132,8 @@ public class KameletsCatalogTest {
         assertEquals(18, headersSource.size());
         List<ComponentModel.EndpointHeaderModel> headersSink = catalog.getKameletSupportedHeaders("aws-s3-sink");
         assertEquals(25, headersSink.size());
+        List<ComponentModel.EndpointHeaderModel> headersCloudtrailSource = catalog.getKameletSupportedHeaders("aws-cloudtrail-source");
+        assertEquals(0, headersCloudtrailSource.size());
         List<ComponentModel.EndpointHeaderModel> headersRedshiftSource = catalog.getKameletSupportedHeaders("aws-redshift-source");
         assertEquals(0, headersRedshiftSource.size());
         List<ComponentModel.EndpointHeaderModel> headerNotExistent = catalog.getKameletSupportedHeaders("aws-not-exists");
