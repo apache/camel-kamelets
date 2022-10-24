@@ -116,6 +116,11 @@ spec:
         x-descriptors:
           - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+      operation:
+	title: Operation
+        description: The operation to use
+        type: string
+        default: subscribe
   types:
     out:
       mediaType: application/json
@@ -143,6 +148,7 @@ spec:
         notifyForOperationDelete: "{{notifyForOperationDelete}}"
         notifyForOperationUndelete: "{{notifyForOperationUndelete}}"
         sObjectQuery: "{{query}}"
+        operationName: "{{operation}}"
       steps:
       - marshal:
           json: {}
