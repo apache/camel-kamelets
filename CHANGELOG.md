@@ -9,6 +9,7 @@
 - Kafka SSL SCRAM Login [\#1085](https://github.com/apache/camel-kamelets/issues/1085)
 - Azure Storage Blob Source Kamelet: Switch from the current implementation to real consumer [\#1083](https://github.com/apache/camel-kamelets/issues/1083)
 - AWS SQS Source Kamelet: Add greedy parameter [\#1069](https://github.com/apache/camel-kamelets/issues/1069)
+- Salesforce kamelet - Adjust for Camel 3.19.x [\#998](https://github.com/apache/camel-kamelets/issues/998)
 - Add AWS CloudTrail Source Kamelet [\#993](https://github.com/apache/camel-kamelets/issues/993)
 
 ## [v0.9.1](https://github.com/apache/camel-kamelets/tree/v0.9.1) (2022-10-05)
