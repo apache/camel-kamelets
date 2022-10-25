@@ -52,8 +52,8 @@ spec:
         type: string
       serviceAccountKey:
         title: Service Account Key
-        description: The path to the service account key file that provides credentials for the Google Cloud Functions platform.
-        type: string
+        description: The path to the service account key file that provides credentials for the Google Cloud Functions platform. You must encode this value in base64.
+        type: binary
         x-descriptors:
         - urn:camel:group:credentials
   dependencies:
@@ -67,6 +67,6 @@ spec:
       - to:
           uri: "google-functions://{{functionName}}"
           parameters:
-            serviceAccountKey: "{{serviceAccountKey}}"
+            serviceAccountKey: "base64:{{serviceAccountKey}}"
             project: "{{projectId}}"
             location: "{{region}}"
