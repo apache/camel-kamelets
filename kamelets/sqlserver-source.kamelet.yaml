@@ -81,6 +81,20 @@ spec:
         description: A query to run on a tuple consumed
         type: string
         example: 'DELETE FROM accounts where user_id = :#user_id'
+      encrypt:
+        title: Encrypt Connection
+        description: Encrypt the connection to SQL Server.
+        type: boolean
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
+      trustServerCertificate:
+        title: Trust Server Certificate
+        description: Trust Server Ceritificate
+        type: boolean
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: true
   types:
     in:
       mediaType: application/json
@@ -99,7 +113,7 @@ spec:
           - key: password
             value: '{{password}}'
           - key: url
-            value: 'jdbc:sqlserver://{{serverName}}:{{serverPort}};databaseName={{databaseName}};encrypt=true;trustServerCertificate=true;'
+            value: 'jdbc:sqlserver://{{serverName}}:{{serverPort}};databaseName={{databaseName}};encrypt={{encrypt}};trustServerCertificate={{trustServerCertificate}};'
           - key: driverClassName
             value: 'com.microsoft.sqlserver.jdbc.SQLServerDriver'
     from:
