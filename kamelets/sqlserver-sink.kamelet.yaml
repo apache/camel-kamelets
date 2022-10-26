@@ -84,6 +84,20 @@ spec:
         title: Database Name
         description: The name of the SQL Server Database.
         type: string
+      encrypt:
+        title: Encrypt Connection
+        description: Encrypt the connection to SQL Server.
+        type: boolean
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
+      trustServerCertificate:
+        title: Trust Server Certificate
+        description: Trust Server Ceritificate
+        type: boolean
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: true
   types:
     in:
       mediaType: application/json
@@ -102,7 +116,7 @@ spec:
           - key: password
             value: '{{password}}'
           - key: url
-            value: 'jdbc:sqlserver://{{serverName}}:{{serverPort}};databaseName={{databaseName}}'
+            value: 'jdbc:sqlserver://{{serverName}}:{{serverPort}};databaseName={{databaseName}};encrypt={{encrypt}};trustServerCertificate={{trustServerCertificate}};'
           - key: driverClassName
             value: 'com.microsoft.sqlserver.jdbc.SQLServerDriver'
     from:
