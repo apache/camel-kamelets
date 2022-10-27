@@ -2,7 +2,17 @@
 
 ## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v0.9.1...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v0.9.2...HEAD)
+
+**Closed issues:**
+
+- Azure Storage Blob Source Kamelet: Switch from timer to pure consumer implementation \(0.9.x\) [\#1120](https://github.com/apache/camel-kamelets/issues/1120)
+- Azure Storage Blob Kamelets: Specify the kind of the authentication \(0.9.x\) [\#1117](https://github.com/apache/camel-kamelets/issues/1117)
+- SQL Server Sink and Source: When using driver \>= 11.0 the jdbc connection fails [\#1113](https://github.com/apache/camel-kamelets/issues/1113)
+
+## [v0.9.2](https://github.com/apache/camel-kamelets/tree/v0.9.2) (2022-10-26)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v0.9.1...v0.9.2)
 
 **Closed issues:**
 
