@@ -63,6 +63,11 @@ spec:
         description: Determines the credential strategy to adopt. Possible values are SHARED_ACCOUNT_KEY, SHARED_KEY_CREDENTIAL and AZURE_IDENTITY
         type: string
         default: SHARED_ACCOUNT_KEY
+      delay:
+        title: Delay
+        description: The number of milliseconds before the next poll of the selected blob.
+        type: integer
+        default: 500
   dependencies:
     - "camel:azure-storage-blob"
     - "camel:kamelet"
@@ -88,6 +93,7 @@ spec:
       parameters:
         accessKey: "{{accessKey}}"
         credentialType: "{{credentialType}}"
+        delay: "{{delay}}"
       steps:
         - process:
             ref: "{{duplicateHeaders}}"
