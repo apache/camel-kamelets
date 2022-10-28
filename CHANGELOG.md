@@ -7,6 +7,7 @@
 **Closed issues:**
 
 - Azure Storage Blob Source Kamelet: Switch from timer to pure consumer implementation \(0.9.x\) [\#1120](https://github.com/apache/camel-kamelets/issues/1120)
+- Azure Storage Blob Source Kamelet: Add a delay parameter [\#1118](https://github.com/apache/camel-kamelets/issues/1118)
 - Azure Storage Blob Kamelets: Specify the kind of the authentication \(0.9.x\) [\#1117](https://github.com/apache/camel-kamelets/issues/1117)
 - SQL Server Sink and Source: When using driver \>= 11.0 the jdbc connection fails [\#1113](https://github.com/apache/camel-kamelets/issues/1113)
 
