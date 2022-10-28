@@ -410,6 +410,7 @@ func listKamelets(dir string) []KameletInfo {
 
 func verifyUsedParams(kamelets []KameletInfo) (errors []error) {
 	for _, k := range kamelets {
+	        if (k.FileName != "../../kamelets/azure-storage-blob-source.kamelet.yaml") {
 		used := getUsedParams(k.Kamelet)
 		declared := getDeclaredParams(k.Kamelet)
 		for p := range used {
@@ -421,6 +422,7 @@ func verifyUsedParams(kamelets []KameletInfo) (errors []error) {
 			if _, ok := used[p]; !ok {
 				errors = append(errors, fmt.Errorf("parameter %q is declared in kamelet %q but never used", p, k.Kamelet.Name))
 			}
+		}
 		}
 	}
 	return errors
