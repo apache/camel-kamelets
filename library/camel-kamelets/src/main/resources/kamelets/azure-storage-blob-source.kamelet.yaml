@@ -68,6 +68,11 @@ spec:
         description: The number of milliseconds before the next poll of the selected blob.
         type: integer
         default: 500
+      deleteAfterRead:
+        title: Auto-delete Blob 
+        description: Specifies to delete blobs after consuming them
+        type: boolean
+        default: false
   dependencies:
     - "camel:azure-storage-blob"
     - "camel:kamelet"
@@ -98,10 +103,15 @@ spec:
         - process:
             ref: "{{duplicateHeaders}}"
         - to: "kamelet:sink"
-        - to:
-            uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
-            parameters:
-              operation: "deleteBlob"
-              accessKey: "{{accessKey}}"
-              credentialType: "{{credentialType}}"
+        - choice:
+            precondition: true
+            when:
+              - simple: '${properties:deleteAfterRead:true}'
+                steps:
+                  - to:
+                      uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
+                      parameters:
+                        operation: "deleteBlob"
+                        accessKey: "{{accessKey}}"
+                        credentialType: "{{credentialType}}"
 
