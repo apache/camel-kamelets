@@ -70,6 +70,8 @@ spec:
         title: Auto-delete Blob 
         description: Specifies to delete blobs after consuming them
         type: boolean
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
   dependencies:
     - "camel:azure-storage-blob"
