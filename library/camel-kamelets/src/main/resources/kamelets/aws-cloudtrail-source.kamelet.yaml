@@ -65,6 +65,11 @@ spec:
         description: Maximum number of records that will be fetched in each poll.
         type: integer
         default: 1
+      eventSource:
+        title: Event Source
+        description: Specify an event source to select events.
+        type: string
+        example: secretsmanager.amazonaws.com
   dependencies:
     - "camel:core"
     - "camel:aws-cloudtrail"
@@ -76,6 +81,7 @@ spec:
         secretKey: "{{?secretKey}}"
         accessKey: "{{?accessKey}}"
         region: "{{region}}"
+        eventSource: "{{?eventSource}}"
         useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
         uriEndpointOverride: "{{?uriEndpointOverride}}"
         overrideEndpoint: "{{overrideEndpoint}}"
