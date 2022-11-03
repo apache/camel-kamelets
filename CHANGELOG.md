@@ -6,6 +6,8 @@
 
 **Closed issues:**
 
+- Create an AWS S3 CDC Source Kamelet [\#1133](https://github.com/apache/camel-kamelets/issues/1133)
+- AWS Cloudtrail Source Kamelet: Add an eventsource parameter [\#1130](https://github.com/apache/camel-kamelets/issues/1130)
 - Azure Storage Blob Source Kamelet: Switch from timer to pure consumer implementation \(0.9.x\) [\#1120](https://github.com/apache/camel-kamelets/issues/1120)
 - Azure Storage Blob Source: Add a deleteAfterRead parameter [\#1119](https://github.com/apache/camel-kamelets/issues/1119)
 - Azure Storage Blob Source Kamelet: Add a delay parameter [\#1118](https://github.com/apache/camel-kamelets/issues/1118)
