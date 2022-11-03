@@ -120,7 +120,7 @@ spec:
             - set-header:
                 name: CamelAwsS3Key
                 simple: "${header[ce-file]}"
-          - simple: "${properties:keyName:null} == 'null'"
+          - simple: "${propertiesExist:!keyName}"
             steps:
             - set-header:
                 name: CamelAwsS3Key
