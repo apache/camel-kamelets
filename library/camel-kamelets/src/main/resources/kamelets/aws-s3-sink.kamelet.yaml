@@ -108,22 +108,27 @@ spec:
       uri: "kamelet:source"
       steps:
       - choice:
+          precondition: true
           when:
-          - simple: "${header[file]}"
-            steps:
-            - set-header:
-                name: CamelAwsS3Key
-                simple: "${header[file]}"
-          - simple: "${header[ce-file]}"
-            steps:
-            - set-header:
-                name: CamelAwsS3Key
-                simple: "${header[ce-file]}"
-          - simple: "'{{?keyName}}' == ''"
-            steps:
-            - set-header:
-                name: CamelAwsS3Key
-                simple: "${exchangeId}"
+            - simple: '${propertiesExist:!keyName}'
+              steps:
+                - choice:   
+                    when:
+                      - simple: "${header[file]}"
+                        steps:
+                          - set-header:
+                              name: CamelAwsS3Key
+                              simple: "${header[file]}"
+                      - simple: "${header[ce-file]}"
+                        steps:
+                          - set-header:
+                              name: CamelAwsS3Key
+                              simple: "${header[ce-file]}"
+                    otherwise:
+                      steps:
+                        - set-header:
+                            name: CamelAwsS3Key
+                            simple: "${exchangeId}"
       - to:
           uri: "aws2-s3:{{bucketNameOrArn}}"
           parameters:
