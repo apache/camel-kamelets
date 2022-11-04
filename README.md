@@ -223,7 +223,7 @@ Now run:
 
 ```
 cd release-utils/scripts/
-./upload-sources.sh $CAMEL_KAMELET_VERSION $CAMEL_KAMELET_VERSION
+./upload-source.sh $CAMEL_KAMELET_VERSION $CAMEL_KAMELET_VERSION
 ```
 
 You'll be requested to insert the password to unlock the secret key to sign the artifacts and after uploading to nexus dev repository.
