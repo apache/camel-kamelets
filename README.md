@@ -153,7 +153,7 @@ Kamelets **MAY** choose not to declare a `mediaType` when it varies depending on
 
 ### Testing
 
-Kamelets **SHOULD** be accompained with testing code that verifies their correct behavior.
+Kamelets **SHOULD** be accompanied with testing code that verifies their correct behavior.
 
 [Yaks](https://github.com/citrusframework/yaks) is the testing framework of choice for Kamelets and the one implemented in the CI.
 
