@@ -44,6 +44,10 @@ spec:
         title: Servers
         description: Comma separated list of NATS Servers
         type: string
+        format: password
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:password
+        - urn:camel:group:credentials
   dependencies:
   - "camel:nats"
   - "camel:kamelet"
