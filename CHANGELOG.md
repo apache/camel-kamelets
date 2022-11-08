@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v0.9.3...HEAD)
+
+**Closed issues:**
+
+- Release 0.9.3 [\#1129](https://github.com/apache/camel-kamelets/issues/1129)
+- Nats Kamelets: Mark servers as secret parameter since it could contains sensitive data if authenticated [\#1086](https://github.com/apache/camel-kamelets/issues/1086)
+
 ## [v0.9.3](https://github.com/apache/camel-kamelets/tree/v0.9.3) (2022-11-04)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v0.9.2...v0.9.3)
