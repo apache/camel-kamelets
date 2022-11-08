@@ -33,6 +33,18 @@ spec:
       A sink that logs all data that it receives, useful for debugging purposes.
     type: object
     properties:
+      level:
+        title: Log Level
+        description: Logging level to use
+        type: string
+        default: "INFO"
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:select:TRACE'
+        - 'urn:alm:descriptor:com.tectonic.ui:select:DEBUG'
+        - 'urn:alm:descriptor:com.tectonic.ui:select:INFO'
+        - 'urn:alm:descriptor:com.tectonic.ui:select:WARN'
+        - 'urn:alm:descriptor:com.tectonic.ui:select:ERROR'
+        - 'urn:alm:descriptor:com.tectonic.ui:select:OFF'
       showHeaders:
         title: Show Headers
         description: Show the headers received
@@ -55,7 +67,8 @@ spec:
       uri: "kamelet:source"
       steps:
       - to:
-          uri: "log:info"
+          uri: "log:log-sink"
           parameters:
+            level: "{{?level}}"
             showHeaders: "{{?showHeaders}}"
             showStreams: "{{?showStreams}}"
