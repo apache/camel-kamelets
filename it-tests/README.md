@@ -9,4 +9,6 @@ You'll need:
 
 Once everything is set you'll just need to run
 
+```console
   make tests camel-version=3.20.0-SNAPSHOT or 3.19.0
+```
