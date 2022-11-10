@@ -33,6 +33,11 @@ spec:
       A sink that logs all data that it receives, useful for debugging purposes.
     type: object
     properties:
+      loggerName:
+        title: Logger Name
+        description: Name of the logging category to use
+        type: string
+        default: "log-sink"
       level:
         title: Log Level
         description: Logging level to use
@@ -45,9 +50,62 @@ spec:
         - 'urn:alm:descriptor:com.tectonic.ui:select:WARN'
         - 'urn:alm:descriptor:com.tectonic.ui:select:ERROR'
         - 'urn:alm:descriptor:com.tectonic.ui:select:OFF'
+      logMask:
+        title: Log Mask
+        description: Mask sensitive information like password or passphrase in the log
+        type: boolean
+        default: false
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+      marker:
+        title: Marker
+        description: An optional Marker name to use
+        type: string
+      multiline:
+        title: Multiline
+        description: If enabled then each information is outputted on a newline
+        type: boolean
+        default: false
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+      showAllProperties:
+        title: Show All Properties
+        description: Show all of the exchange properties (both internal and custom)
+        type: boolean
+        default: false
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+      showBody:
+        title: Show Body
+        description: Show the message body
+        type: boolean
+        default: true
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+      showBodyType:
+        title: Show Body Type
+        description: Show the body Java type
+        type: boolean
+        default: true
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+      showExchangePattern:
+        title: Show Exchange Pattern
+        description: Shows the Message Exchange Pattern (or MEP for short)
+        type: boolean
+        default: true
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       showHeaders:
         title: Show Headers
         description: Show the headers received
+        type: boolean
+        default: false
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+      showProperties:
+        title: Show Properties
+        description: Show the exchange properties (only custom). Use showAllProperties to show both internal and custom properties.
         type: boolean
         default: false
         x-descriptors:
@@ -67,8 +125,16 @@ spec:
       uri: "kamelet:source"
       steps:
       - to:
-          uri: "log:log-sink"
+          uri: "log:{{loggerName}}"
           parameters:
             level: "{{?level}}"
+            logMask: "{{?logMask}}"
+            marker: "{{?marker}}"
+            multiline: "{{?multiline}}"
+            showAllProperties: "{{?showAllProperties}}"
+            showBody: "{{?showBody}}"
+            showBodyType: "{{?showBodyType}}"
+            showExchangePattern: "{{?showExchangePattern}}"
             showHeaders: "{{?showHeaders}}"
+            showProperties: "{{?showProperties}}"
             showStreams: "{{?showStreams}}"
