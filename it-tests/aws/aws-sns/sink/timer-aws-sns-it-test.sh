@@ -19,7 +19,6 @@ sleep 10
 variable=`jbang run -Dcamel.jbang.version=$camel_version camel@apache/camel get | tail -n +2` 
 success=`echo $variable | cut -d' ' -f11`
 fail=`echo $variable | cut -d' ' -f12`
-echo $success $fail
 if [[ $success == 5 && $fail == 0 ]] 
 then 
     mkdir -p ../../../tests/
