@@ -14,7 +14,7 @@
 # limitations under the License.
 
 tests:
-	mkdir tests
+	mkdir -p tests
 	cd aws/aws-s3/source/ && \
 	./aws-s3-log-it-test.sh $(camel-version)
 	cd aws/aws-s3/sink/ && \
@@ -29,6 +29,8 @@ tests:
 	./timer-aws-sqs-it-test.sh $(camel-version)
 	cd aws/aws-sqs-fifo/sink/ && \
 	./timer-aws-sqs-fifo-it-test.sh $(camel-version)
+	cd aws/aws-sns/sink/ && \
+	./timer-aws-sns-it-test.sh $(camel-version)
 	./scripts/results.sh
 	rm -rf tests
 	

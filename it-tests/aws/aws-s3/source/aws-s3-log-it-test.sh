@@ -29,8 +29,10 @@ success=`echo $variable | cut -d' ' -f11`
 fail=`echo $variable | cut -d' ' -f12`
 if [[ $success == 5 && $fail == 0 ]] 
 then 
+    mkdir -p ../../../tests/
     echo "Test Successful" > ../../../tests/aws-s3-log-it-test.result;
 else
+    mkdir -p ../../../tests/
     echo "Test failed" > ../../../tests/aws-s3-log-it-test.result;
 fi
 
@@ -39,3 +41,5 @@ jbang run -Dcamel.jbang.version=$camel_version camel@apache/camel stop aws-s3-lo
 cd terraform/
 terraform destroy -auto-approve
 cd ../
+
+cat ../../../tests/aws-s3-log-it-test.result
