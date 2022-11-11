@@ -6,6 +6,8 @@
 
 **Closed issues:**
 
+- IT Tests: Add tests for AWS SNS [\#1150](https://github.com/apache/camel-kamelets/issues/1150)
+- Integration tests based on camel-jbang [\#1147](https://github.com/apache/camel-kamelets/issues/1147)
 - Release 0.9.3 [\#1129](https://github.com/apache/camel-kamelets/issues/1129)
 - Nats Kamelets: Mark servers as secret parameter since it could contains sensitive data if authenticated [\#1086](https://github.com/apache/camel-kamelets/issues/1086)
 
