@@ -31,6 +31,8 @@ tests:
 	./timer-aws-sqs-fifo-it-test.sh $(camel-version)
 	cd aws/aws-sns/sink/ && \
 	./timer-aws-sns-it-test.sh $(camel-version)
+	cd aws/aws-kinesis-firehose/sink/ && \
+	./timer-aws-kinesis-firehose-it-test.sh $(camel-version)
 	./scripts/results.sh
 	rm -rf tests
 	
