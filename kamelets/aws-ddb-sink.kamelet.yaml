@@ -97,6 +97,12 @@ spec:
         x-descriptors:
           - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+      inputFormat:
+        title: Input Type
+        description: Specify the input type for this Kamelet. The Kamelet will automatically apply conversion logic in order to transform message content to this data type.
+        type: string
+        default: json
+        example: json
   types:
     in:
       mediaType: application/json
@@ -107,17 +113,24 @@ spec:
   - "camel:aws2-ddb"
   - "camel:kamelet"
   template:
+    beans:
+    - name: dataTypeRegistry
+      type: "#class:org.apache.camel.kamelets.utils.format.DefaultDataTypeRegistry"
+    - name: inputTypeProcessor
+      type: "#class:org.apache.camel.kamelets.utils.format.DataTypeProcessor"
+      property:
+        - key: scheme
+          value: 'aws2-ddb'
+        - key: format
+          value: '{{inputFormat}}'
     from:
       uri: "kamelet:source"
       steps:
       - set-property:
-          name: operation
-          constant: "{{operation}}"
-      - unmarshal:
-          json:
-            library: Jackson
-            unmarshalType: com.fasterxml.jackson.databind.JsonNode
-      - bean: "org.apache.camel.kamelets.utils.transform.aws.ddb.JsonToDdbModelConverter"
+        name: operation
+        constant: "{{operation}}"
+      - process:
+          ref: "{{inputTypeProcessor}}"
       - to:
           uri: "aws2-ddb:{{table}}"
           parameters:

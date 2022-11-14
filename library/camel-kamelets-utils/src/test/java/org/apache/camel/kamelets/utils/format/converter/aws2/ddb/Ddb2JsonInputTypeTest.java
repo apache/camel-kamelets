@@ -14,16 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.camel.kamelets.utils.transform.aws.ddb;
+
+package org.apache.camel.kamelets.utils.format.converter.aws2.ddb;
 
 import java.util.Map;
+import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.camel.CamelContextAware;
+import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
-import org.apache.camel.InvalidPayloadException;
 import org.apache.camel.component.aws2.ddb.Ddb2Constants;
 import org.apache.camel.component.aws2.ddb.Ddb2Operations;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.kamelets.utils.format.DefaultDataTypeRegistry;
+import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.apache.camel.support.DefaultExchange;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,25 +38,25 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValueUpdate;
 import software.amazon.awssdk.services.dynamodb.model.ReturnValue;
 
-class JsonToDdbModelConverterTest {
+public class Ddb2JsonInputTypeTest {
 
     private DefaultCamelContext camelContext;
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private final JsonToDdbModelConverter processor = new JsonToDdbModelConverter();
+    private final Ddb2JsonInputType inputType = new Ddb2JsonInputType();
 
     private final String keyJson = "{" +
-                "\"name\": \"Rajesh Koothrappali\"" +
+            "\"name\": \"Rajesh Koothrappali\"" +
             "}";
 
     private final String itemJson = "{" +
-                "\"name\": \"Rajesh Koothrappali\"," +
-                "\"age\": 29," +
-                "\"super-heroes\": [\"batman\", \"spiderman\", \"wonderwoman\"]," +
-                "\"issues\": [5, 3, 9, 1]," +
-                "\"girlfriend\": null," +
-                "\"doctorate\": true" +
+            "\"name\": \"Rajesh Koothrappali\"," +
+            "\"age\": 29," +
+            "\"super-heroes\": [\"batman\", \"spiderman\", \"wonderwoman\"]," +
+            "\"issues\": [5, 3, 9, 1]," +
+            "\"girlfriend\": null," +
+            "\"doctorate\": true" +
             "}";
 
     @BeforeEach
@@ -65,8 +70,8 @@ class JsonToDdbModelConverterTest {
         Exchange exchange = new DefaultExchange(camelContext);
 
         exchange.getMessage().setBody(mapper.readTree(itemJson));
-
-        processor.process(Ddb2Operations.PutItem.name(), exchange);
+        exchange.setProperty("operation", Ddb2Operations.PutItem.name());
+        inputType.convert(exchange);
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
         Assertions.assertEquals(Ddb2Operations.PutItem, exchange.getMessage().getHeader(Ddb2Constants.OPERATION));
@@ -80,9 +85,10 @@ class JsonToDdbModelConverterTest {
     void shouldMapUpdateItemHeaders() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
-        exchange.getMessage().setBody(mapper.readTree("{\"key\": " + keyJson + ", \"item\": " + itemJson + "}"));
+        exchange.getMessage().setBody(mapper.readTree("{\"operation\": \"" + Ddb2Operations.UpdateItem.name() + "\", \"key\": "
+                + keyJson + ", \"item\": " + itemJson + "}"));
 
-        processor.process(Ddb2Operations.UpdateItem.name(), exchange);
+        inputType.convert(exchange);
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
         Assertions.assertEquals(Ddb2Operations.UpdateItem, exchange.getMessage().getHeader(Ddb2Constants.OPERATION));
@@ -101,8 +107,9 @@ class JsonToDdbModelConverterTest {
         Exchange exchange = new DefaultExchange(camelContext);
 
         exchange.getMessage().setBody(mapper.readTree("{\"key\": " + keyJson + "}"));
+        exchange.setProperty("operation", Ddb2Operations.DeleteItem.name());
 
-        processor.process(Ddb2Operations.DeleteItem.name(), exchange);
+        inputType.convert(exchange);
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
         Assertions.assertEquals(Ddb2Operations.DeleteItem, exchange.getMessage().getHeader(Ddb2Constants.OPERATION));
@@ -119,8 +126,8 @@ class JsonToDdbModelConverterTest {
         Exchange exchange = new DefaultExchange(camelContext);
 
         exchange.getMessage().setBody(mapper.readTree("{\"user\":" + itemJson + "}"));
-
-        processor.process(Ddb2Operations.PutItem.name(), exchange);
+        exchange.setProperty("operation", Ddb2Operations.PutItem.name());
+        inputType.convert(exchange);
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
         Assertions.assertEquals(Ddb2Operations.PutItem, exchange.getMessage().getHeader(Ddb2Constants.OPERATION));
@@ -130,11 +137,12 @@ class JsonToDdbModelConverterTest {
         Assertions.assertEquals(1L, attributeValueMap.size());
 
         Assertions.assertEquals("AttributeValue(M={name=AttributeValue(S=Rajesh Koothrappali), " +
-                "age=AttributeValue(N=29), " +
-                "super-heroes=AttributeValue(SS=[batman, spiderman, wonderwoman]), " +
-                "issues=AttributeValue(NS=[5, 3, 9, 1]), " +
-                "girlfriend=AttributeValue(NUL=true), " +
-                "doctorate=AttributeValue(BOOL=true)})", attributeValueMap.get("user").toString());
+                        "age=AttributeValue(N=29), " +
+                        "super-heroes=AttributeValue(SS=[batman, spiderman, wonderwoman]), " +
+                        "issues=AttributeValue(NS=[5, 3, 9, 1]), " +
+                        "girlfriend=AttributeValue(NUL=true), " +
+                        "doctorate=AttributeValue(BOOL=true)})",
+                attributeValueMap.get("user").toString());
     }
 
     @Test
@@ -142,9 +150,10 @@ class JsonToDdbModelConverterTest {
     void shouldMapEmptyJson() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
-        exchange.getMessage().setBody(mapper.readTree("{}"));
+        exchange.getMessage().setBody("{}");
+        exchange.getMessage().setHeader(Ddb2Constants.OPERATION, Ddb2Operations.PutItem.name());
 
-        processor.process(Ddb2Operations.PutItem.name(), exchange);
+        inputType.convert(exchange);
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
         Assertions.assertEquals(Ddb2Operations.PutItem, exchange.getMessage().getHeader(Ddb2Constants.OPERATION));
@@ -154,20 +163,39 @@ class JsonToDdbModelConverterTest {
         Assertions.assertEquals(0L, attributeValueMap.size());
     }
 
-    @Test()
+    @Test
+    void shouldFailForWrongBodyType() throws Exception {
+        Exchange exchange = new DefaultExchange(camelContext);
+
+        exchange.getMessage().setBody("Hello");
+
+        Assertions.assertThrows(CamelExecutionException.class, () -> inputType.convert(exchange));
+    }
+
+    @Test
     void shouldFailForUnsupportedOperation() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
         exchange.getMessage().setBody(mapper.readTree("{}"));
+        exchange.setProperty("operation", Ddb2Operations.BatchGetItems.name());
 
-        Assertions.assertThrows(UnsupportedOperationException.class, () -> processor.process(Ddb2Operations.BatchGetItems.name(), exchange));
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> inputType.convert(exchange));
+    }
+
+    @Test
+    public void shouldLookupDataType() throws Exception {
+        DefaultDataTypeRegistry dataTypeRegistry = new DefaultDataTypeRegistry();
+        CamelContextAware.trySetCamelContext(dataTypeRegistry, camelContext);
+        Optional<DataTypeConverter> converter = dataTypeRegistry.lookup("aws2-ddb", "json");
+        Assertions.assertTrue(converter.isPresent());
     }
 
     private void assertAttributeValueMap(Map<String, AttributeValue> attributeValueMap) {
         Assertions.assertEquals(6L, attributeValueMap.size());
         Assertions.assertEquals(AttributeValue.builder().s("Rajesh Koothrappali").build(), attributeValueMap.get("name"));
         Assertions.assertEquals(AttributeValue.builder().n("29").build(), attributeValueMap.get("age"));
-        Assertions.assertEquals(AttributeValue.builder().ss("batman", "spiderman", "wonderwoman").build(), attributeValueMap.get("super-heroes"));
+        Assertions.assertEquals(AttributeValue.builder().ss("batman", "spiderman", "wonderwoman").build(),
+                attributeValueMap.get("super-heroes"));
         Assertions.assertEquals(AttributeValue.builder().ns("5", "3", "9", "1").build(), attributeValueMap.get("issues"));
         Assertions.assertEquals(AttributeValue.builder().nul(true).build(), attributeValueMap.get("girlfriend"));
         Assertions.assertEquals(AttributeValue.builder().bool(true).build(), attributeValueMap.get("doctorate"));
@@ -175,11 +203,19 @@ class JsonToDdbModelConverterTest {
 
     private void assertAttributeValueUpdateMap(Map<String, AttributeValueUpdate> attributeValueMap) {
         Assertions.assertEquals(6L, attributeValueMap.size());
-        Assertions.assertEquals(AttributeValueUpdate.builder().value(AttributeValue.builder().s("Rajesh Koothrappali").build()).action(AttributeAction.PUT).build(), attributeValueMap.get("name"));
-        Assertions.assertEquals(AttributeValueUpdate.builder().value(AttributeValue.builder().n("29").build()).action(AttributeAction.PUT).build(), attributeValueMap.get("age"));
-        Assertions.assertEquals(AttributeValueUpdate.builder().value(AttributeValue.builder().ss("batman", "spiderman", "wonderwoman").build()).action(AttributeAction.PUT).build(), attributeValueMap.get("super-heroes"));
-        Assertions.assertEquals(AttributeValueUpdate.builder().value(AttributeValue.builder().ns("5", "3", "9", "1").build()).action(AttributeAction.PUT).build(), attributeValueMap.get("issues"));
-        Assertions.assertEquals(AttributeValueUpdate.builder().value(AttributeValue.builder().nul(true).build()).action(AttributeAction.PUT).build(), attributeValueMap.get("girlfriend"));
-        Assertions.assertEquals(AttributeValueUpdate.builder().value(AttributeValue.builder().bool(true).build()).action(AttributeAction.PUT).build(), attributeValueMap.get("doctorate"));
+        Assertions.assertEquals(AttributeValueUpdate.builder().value(AttributeValue.builder().s("Rajesh Koothrappali").build())
+                .action(AttributeAction.PUT).build(), attributeValueMap.get("name"));
+        Assertions.assertEquals(AttributeValueUpdate.builder().value(AttributeValue.builder().n("29").build())
+                .action(AttributeAction.PUT).build(), attributeValueMap.get("age"));
+        Assertions.assertEquals(
+                AttributeValueUpdate.builder().value(AttributeValue.builder().ss("batman", "spiderman", "wonderwoman").build())
+                        .action(AttributeAction.PUT).build(),
+                attributeValueMap.get("super-heroes"));
+        Assertions.assertEquals(AttributeValueUpdate.builder().value(AttributeValue.builder().ns("5", "3", "9", "1").build())
+                .action(AttributeAction.PUT).build(), attributeValueMap.get("issues"));
+        Assertions.assertEquals(AttributeValueUpdate.builder().value(AttributeValue.builder().nul(true).build())
+                .action(AttributeAction.PUT).build(), attributeValueMap.get("girlfriend"));
+        Assertions.assertEquals(AttributeValueUpdate.builder().value(AttributeValue.builder().bool(true).build())
+                .action(AttributeAction.PUT).build(), attributeValueMap.get("doctorate"));
     }
 }
