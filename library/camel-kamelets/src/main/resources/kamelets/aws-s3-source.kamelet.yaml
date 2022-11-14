@@ -107,6 +107,12 @@ spec:
         description: The number of milliseconds before the next poll of the selected bucket.
         type: integer
         default: 500
+      outputFormat:
+        title: Output Type
+        description: Choose the output type for this Kamelet. The Kamelet supports different output types and performs automatic message conversion according to this data type.
+        type: string
+        default: binary
+        example: binary
   dependencies:
     - "camel:core"
     - "camel:aws2-s3"
@@ -114,6 +120,15 @@ spec:
     - "camel:kamelet"
   template:
     beans:
+      - name: dataTypeRegistry
+        type: "#class:org.apache.camel.kamelets.utils.format.DefaultDataTypeRegistry"
+      - name: outputTypeProcessor
+        type: "#class:org.apache.camel.kamelets.utils.format.DataTypeProcessor"
+        property:
+          - key: scheme
+            value: 'aws2-s3'
+          - key: format
+            value: '{{outputFormat}}'
       - name: renameHeaders
         type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
         property:
@@ -143,4 +158,6 @@ spec:
       steps:
       - process:
           ref: "{{renameHeaders}}"
+      - process:
+          ref: "{{outputTypeProcessor}}"
       - to: "kamelet:sink"

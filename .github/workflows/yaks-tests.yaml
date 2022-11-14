@@ -43,7 +43,7 @@ concurrency:
 env:
   CAMEL_K_VERSION: 1.10.3
   YAKS_VERSION: 0.11.0
-  YAKS_IMAGE_NAME: "docker.io/yaks/yaks"
+  YAKS_IMAGE_NAME: "docker.io/citrusframework/yaks"
   YAKS_RUN_OPTIONS: "--timeout=15m"
 
 jobs:
@@ -110,6 +110,7 @@ jobs:
       run: |
         echo "Running tests"
         yaks run test/aws-ddb-sink $YAKS_RUN_OPTIONS
+        yaks run test/aws-s3 $YAKS_RUN_OPTIONS
         yaks run test/extract-field-action $YAKS_RUN_OPTIONS
         yaks run test/insert-field-action $YAKS_RUN_OPTIONS
         yaks run test/mail-sink $YAKS_RUN_OPTIONS
