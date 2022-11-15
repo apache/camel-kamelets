@@ -6,6 +6,8 @@
 
 **Closed issues:**
 
+- Add a JQ Action [\#1153](https://github.com/apache/camel-kamelets/issues/1153)
+- IT Tests: Add Tests for Kinesis Firehose [\#1151](https://github.com/apache/camel-kamelets/issues/1151)
 - IT Tests: Add tests for AWS SNS [\#1150](https://github.com/apache/camel-kamelets/issues/1150)
 - Integration tests based on camel-jbang [\#1147](https://github.com/apache/camel-kamelets/issues/1147)
 - Release 0.9.3 [\#1129](https://github.com/apache/camel-kamelets/issues/1129)
