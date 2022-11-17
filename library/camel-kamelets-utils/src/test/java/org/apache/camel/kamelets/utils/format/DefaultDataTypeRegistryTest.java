@@ -22,6 +22,7 @@ import java.util.Optional;
 import org.apache.camel.CamelContextAware;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.kamelets.utils.format.converter.standard.JsonModelDataType;
+import org.apache.camel.kamelets.utils.format.converter.test.UppercaseDataType;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,6 +50,11 @@ class DefaultDataTypeRegistryTest {
         Assertions.assertTrue(converter.isPresent());
         Assertions.assertEquals(DefaultDataTypeConverter.class, converter.get().getClass());
         Assertions.assertEquals(byte[].class, ((DefaultDataTypeConverter) converter.get()).getType());
+        converter = dataTypeRegistry.lookup( "lowercase");
+        Assertions.assertTrue(converter.isPresent());
+        converter = dataTypeRegistry.lookup( "uppercase");
+        Assertions.assertTrue(converter.isPresent());
+        Assertions.assertEquals(UppercaseDataType.class, converter.get().getClass());
     }
 
 }

@@ -15,13 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.camel.kamelets.utils.format.converter.standard;
+package org.apache.camel.kamelets.utils.format.converter.aws2.s3;
 
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.camel.CamelContextAware;
 import org.apache.camel.Exchange;
+import org.apache.camel.component.aws2.s3.AWS2S3Constants;
+import org.apache.camel.component.cloudevents.CloudEvents;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.kamelets.utils.format.DefaultDataTypeRegistry;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
@@ -31,54 +34,35 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class JsonModelDataTypeTest {
+class AWS2S3CloudEventOutputTypeTest {
 
     private final DefaultCamelContext camelContext = new DefaultCamelContext();
 
-    private final JsonModelDataType dataType = new JsonModelDataType();
+    private final AWS2S3CloudEventOutputType outputType = new AWS2S3CloudEventOutputType();
 
     @Test
-    void shouldMapFromStringToJsonModel() throws Exception {
+    void shouldMapToCloudEvent() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
-        exchange.setProperty(JsonModelDataType.DATA_TYPE_MODEL_PROPERTY, Person.class.getName());
-        exchange.getMessage().setBody("{ \"name\": \"Sheldon\", \"age\": 29}");
-        dataType.convert(exchange);
+        exchange.getMessage().setHeader(AWS2S3Constants.KEY, "test1.txt");
+        exchange.getMessage().setHeader(AWS2S3Constants.BUCKET_NAME, "myBucket");
+        exchange.getMessage().setHeader(AWS2S3Constants.CONTENT_TYPE, "text/plain");
+        exchange.getMessage().setHeader(AWS2S3Constants.CONTENT_ENCODING, StandardCharsets.UTF_8.toString());
+        exchange.getMessage().setBody(new ByteArrayInputStream("Test1".getBytes(StandardCharsets.UTF_8)));
+        outputType.convert(exchange);
 
-        assertEquals(Person.class, exchange.getMessage().getBody().getClass());
-        assertEquals("Sheldon", exchange.getMessage().getBody(Person.class).getName());
+        Assertions.assertTrue(exchange.getMessage().hasHeaders());
+        Assertions.assertFalse(exchange.getMessage().getHeaders().containsKey(AWS2S3Constants.KEY));
+        assertEquals("kamelet:aws-s3-source", exchange.getMessage().getHeader(CloudEvents.CAMEL_CLOUD_EVENT_TYPE));
+        assertEquals("test1.txt", exchange.getMessage().getHeader(CloudEvents.CAMEL_CLOUD_EVENT_SUBJECT));
+        assertEquals("myBucket", exchange.getMessage().getHeader(CloudEvents.CAMEL_CLOUD_EVENT_SOURCE));
     }
 
     @Test
     public void shouldLookupDataType() throws Exception {
         DefaultDataTypeRegistry dataTypeRegistry = new DefaultDataTypeRegistry();
         CamelContextAware.trySetCamelContext(dataTypeRegistry, camelContext);
-        Optional<DataTypeConverter> converter = dataTypeRegistry.lookup("jsonObject");
+        Optional<DataTypeConverter> converter = dataTypeRegistry.lookup("aws2-s3", "cloudevents");
         Assertions.assertTrue(converter.isPresent());
     }
-
-    public static class Person {
-        @JsonProperty
-        private String name;
-
-        @JsonProperty
-        private Long age;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public Long getAge() {
-            return age;
-        }
-
-        public void setAge(Long age) {
-            this.age = age;
-        }
-    }
-
 }
