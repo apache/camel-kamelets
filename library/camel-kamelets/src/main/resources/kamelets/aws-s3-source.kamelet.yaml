@@ -130,7 +130,7 @@ spec:
           - key: format
             value: '{{outputFormat}}'
           - key: registry
-            value: '{{dataTypeRegistry}}'
+            value: '#bean:{{dataTypeRegistry}}'
       - name: renameHeaders
         type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
         property:

@@ -36,15 +36,15 @@ import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
 @DataType(name = "jsonObject")
 public class JsonModelDataType implements DataTypeConverter {
 
-    public static final String JSON_DATA_TYPE_KEY = "CamelJsonModelDataType";
+    public static final String DATA_TYPE_MODEL_PROPERTY = "CamelDataTypeModel";
 
     @Override
     public void convert(Exchange exchange) {
-        if (!exchange.hasProperties() || !exchange.getProperties().containsKey(JSON_DATA_TYPE_KEY)) {
+        if (!exchange.hasProperties() || !exchange.getProperties().containsKey(DATA_TYPE_MODEL_PROPERTY)) {
             return;
         }
 
-        String type = exchange.getProperty(JSON_DATA_TYPE_KEY, String.class);
+        String type = exchange.getProperty(DATA_TYPE_MODEL_PROPERTY, String.class);
         try (JacksonDataFormat dataFormat = new JacksonDataFormat(new ObjectMapper(), Class.forName(type))) {
             Object unmarshalled = dataFormat.unmarshal(exchange, getBodyAsStream(exchange));
             exchange.getMessage().setBody(unmarshalled);

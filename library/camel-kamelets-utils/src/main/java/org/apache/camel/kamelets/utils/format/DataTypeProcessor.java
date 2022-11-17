@@ -31,6 +31,8 @@ import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
  */
 public class DataTypeProcessor implements Processor, CamelContextAware {
 
+    public static final String DATA_TYPE_FORMAT_PROPERTY = "CamelDataTypeFormat";
+
     private CamelContext camelContext;
 
     private DefaultDataTypeRegistry registry;
@@ -42,6 +44,10 @@ public class DataTypeProcessor implements Processor, CamelContextAware {
 
     @Override
     public void process(Exchange exchange) throws Exception {
+        if (exchange.hasProperties() && exchange.getProperties().containsKey(DATA_TYPE_FORMAT_PROPERTY)) {
+            format = exchange.getProperty(DATA_TYPE_FORMAT_PROPERTY, String.class);
+        }
+
         if (format == null || format.isEmpty()) {
             return;
         }

@@ -56,6 +56,9 @@ class DefaultDataTypeConverterResolverTest {
         converter = resolver.resolve("foo", "json", camelContext);
         Assertions.assertTrue(converter.isPresent());
         Assertions.assertEquals(FooConverter.class, converter.get().getClass());
+
+        converter = resolver.resolve("camel", "lowercase", camelContext);
+        Assertions.assertTrue(converter.isPresent());
     }
 
     public static class FooConverter implements DataTypeConverter {
