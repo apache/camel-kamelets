@@ -77,6 +77,11 @@ spec:
         description: A query to run on a tuple consumed.
         type: string
         example: 'DELETE FROM accounts where user_id = :#user_id'
+      delay:
+        title: Delay
+        description: The number of milliseconds before the next poll
+        type: integer
+        default: 500
   types:
     out:
       mediaType: application/json
@@ -104,6 +109,7 @@ spec:
       parameters:
         dataSource: "#bean:{{dsBean}}"
         onConsume: "{{?consumedQuery}}"
+        delay: "{{delay}}"
       steps:
       - marshal:
           json: 
