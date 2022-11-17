@@ -123,6 +123,8 @@ spec:
           value: 'aws2-ddb'
         - key: format
           value: '{{inputFormat}}'
+        - key: registry
+          value: '{{dataTypeRegistry}}'
     from:
       uri: "kamelet:source"
       steps:

@@ -17,11 +17,13 @@
 
 package org.apache.camel.kamelets.utils.format;
 
-import org.apache.camel.BeanInject;
+import java.util.Optional;
+
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelContextAware;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 
 /**
  * Processor applies data type conversion based on given format name. Searches for matching data type converter
@@ -31,11 +33,12 @@ public class DataTypeProcessor implements Processor, CamelContextAware {
 
     private CamelContext camelContext;
 
-    @BeanInject
-    private DefaultDataTypeRegistry dataTypeRegistry;
+    private DefaultDataTypeRegistry registry;
 
     private String scheme;
     private String format;
+
+    private DataTypeConverter converter;
 
     @Override
     public void process(Exchange exchange) throws Exception {
@@ -43,8 +46,18 @@ public class DataTypeProcessor implements Processor, CamelContextAware {
             return;
         }
 
-        dataTypeRegistry.lookup(scheme, format)
-                        .ifPresent(converter -> converter.convert(exchange));
+        doConverterLookup().ifPresent(converter -> converter.convert(exchange));
+    }
+
+    private Optional<DataTypeConverter> doConverterLookup() {
+        if (converter != null) {
+            return Optional.of(converter);
+        }
+
+        Optional<DataTypeConverter> maybeConverter = registry.lookup(scheme, format);
+        maybeConverter.ifPresent(dataTypeConverter -> this.converter = dataTypeConverter);
+
+        return maybeConverter;
     }
 
     public void setFormat(String format) {
@@ -53,6 +66,10 @@ public class DataTypeProcessor implements Processor, CamelContextAware {
 
     public void setScheme(String scheme) {
         this.scheme = scheme;
+    }
+
+    public void setRegistry(DefaultDataTypeRegistry dataTypeRegistry) {
+        this.registry = dataTypeRegistry;
     }
 
     @Override

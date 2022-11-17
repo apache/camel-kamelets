@@ -26,12 +26,15 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.camel.CamelContext;
+import org.apache.camel.CamelContextAware;
+import org.apache.camel.ExtendedCamelContext;
 import org.apache.camel.TypeConverterLoaderException;
+import org.apache.camel.impl.engine.DefaultPackageScanClassResolver;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeLoader;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeRegistry;
 import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
-import org.apache.camel.spi.Injector;
 import org.apache.camel.spi.PackageScanClassResolver;
 import org.apache.camel.util.IOHelper;
 import org.apache.camel.util.ObjectHelper;
@@ -41,25 +44,31 @@ import org.slf4j.LoggerFactory;
 /**
  * Data type loader scans packages for {@link DataTypeConverter} classes annotated with {@link DataType} annotation.
  */
-public class AnnotationDataTypeLoader implements DataTypeLoader {
+public class AnnotationDataTypeLoader implements DataTypeLoader, CamelContextAware {
 
-    public static final String META_INF_SERVICES = "META-INF/services/org/apache/camel/DataType";
+    public static final String META_INF_SERVICES = "META-INF/services/org/apache/camel/DataTypeConverter";
 
     private static final Logger LOG = LoggerFactory.getLogger(AnnotationDataTypeLoader.class);
 
-    protected final PackageScanClassResolver resolver;
-    protected final Injector injector;
+    private CamelContext camelContext;
+
+    protected PackageScanClassResolver resolver;
 
     protected Set<Class<?>> visitedClasses = new HashSet<>();
     protected Set<String> visitedURIs = new HashSet<>();
 
-    public AnnotationDataTypeLoader(Injector injector, PackageScanClassResolver resolver) {
-        this.injector = injector;
-        this.resolver = resolver;
-    }
-
     @Override
     public void load(DataTypeRegistry registry) {
+        ObjectHelper.notNull(camelContext, "camelContext");
+
+        if (resolver == null) {
+            if (camelContext instanceof ExtendedCamelContext) {
+                resolver = camelContext.adapt(ExtendedCamelContext.class).getPackageScanClassResolver();
+            } else {
+                resolver = new DefaultPackageScanClassResolver();
+            }
+        }
+
         Set<String> packages = new HashSet<>();
 
         LOG.trace("Searching for {} services", META_INF_SERVICES);
@@ -111,7 +120,7 @@ public class AnnotationDataTypeLoader implements DataTypeLoader {
         try {
             if (DataTypeConverter.class.isAssignableFrom(type) && type.isAnnotationPresent(DataType.class)) {
                 DataType dt = type.getAnnotation(DataType.class);
-                DataTypeConverter converter = (DataTypeConverter) injector.newInstance(type);
+                DataTypeConverter converter = (DataTypeConverter) camelContext.getInjector().newInstance(type);
                 registry.addDataTypeConverter(dt.scheme(), converter);
             }
         } catch (NoClassDefFoundError e) {
@@ -148,5 +157,15 @@ public class AnnotationDataTypeLoader implements DataTypeLoader {
                 }
             }
         }
+    }
+
+    @Override
+    public void setCamelContext(CamelContext camelContext) {
+        this.camelContext = camelContext;
+    }
+
+    @Override
+    public CamelContext getCamelContext() {
+        return camelContext;
     }
 }
