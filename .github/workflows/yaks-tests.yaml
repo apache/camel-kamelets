@@ -61,10 +61,10 @@ jobs:
         HEAD_REF: ${{ github.head_ref }}
         HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
       run: |
-        echo "Set JitPack dependency coordinates to ${HEAD_REPO/\//.}:camel-kamelets-utils:${HEAD_REF/\//'~'}-SNAPSHOT"
+        echo "Set JitPack dependency coordinates to ${HEAD_REPO/\//.}:camel-kamelets-utils:${HEAD_REF//\//'~'}-SNAPSHOT"
 
         # Overwrite JitPack coordinates in the local Kamelets so the tests can use the utility classes in this PR
-        find kamelets -maxdepth 1 -name '*.kamelet.yaml' -exec sed  -i "s/github:apache.camel-kamelets:camel-kamelets-utils:${BASE_REF}-SNAPSHOT/github:${HEAD_REPO/\//.}:camel-kamelets-utils:${HEAD_REF/\//'~'}-SNAPSHOT/g" {} +
+        find kamelets -maxdepth 1 -name '*.kamelet.yaml' -exec sed -i "s/github:apache.camel-kamelets:camel-kamelets-utils:${BASE_REF}-SNAPSHOT/github:${HEAD_REPO/\//.}:camel-kamelets-utils:${HEAD_REF//\//'~'}-SNAPSHOT/g" {} +
     - name: Get Camel K CLI
       run: |
         curl --fail -L --silent https://github.com/apache/camel-k/releases/download/v${CAMEL_K_VERSION}/camel-k-client-${CAMEL_K_VERSION}-linux-64bit.tar.gz -o kamel.tar.gz
@@ -83,6 +83,9 @@ jobs:
         rm -r _yaks
     - name: Kubernetes KinD Cluster
       uses: container-tools/kind-action@v1
+      with:
+        version: v0.14.0
+        node_image: kindest/node:v1.23.6@sha256:b1fa224cc6c7ff32455e0b1fd9cbfd3d3bc87ecaa8fcb06961ed1afb3db0f9ae
     - name: Info
       run: |
         kubectl version
@@ -95,11 +98,7 @@ jobs:
         export KAMEL_INSTALL_REGISTRY=$KIND_REGISTRY
         export KAMEL_INSTALL_REGISTRY_INSECURE=true
 
-        kamel install -w
-
-        # TODO replaces the below statement with --operator-env-vars KAMEL_INSTALL_DEFAULT_KAMELETS=false
-        # when we use camel k 1.8.0
-        kubectl delete kamelets --all
+        kamel install -w --operator-env-vars KAMEL_INSTALL_DEFAULT_KAMELETS=false
 
         # Install the local kamelets
         find kamelets -maxdepth 1 -name '*.kamelet.yaml' -exec kubectl apply -f {} \;
@@ -110,7 +109,7 @@ jobs:
       run: |
         echo "Running tests"
         yaks run test/aws-ddb-sink $YAKS_RUN_OPTIONS
-        yaks run test/aws-s3 $YAKS_RUN_OPTIONS
+        yaks run test/aws-s3/aws-s3-uri-binding.feature $YAKS_RUN_OPTIONS
         yaks run test/extract-field-action $YAKS_RUN_OPTIONS
         yaks run test/insert-field-action $YAKS_RUN_OPTIONS
         yaks run test/mail-sink $YAKS_RUN_OPTIONS
