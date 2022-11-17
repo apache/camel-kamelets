@@ -95,6 +95,11 @@ spec:
         x-descriptors:
           - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: true
+      delay:
+        title: Delay
+        description: The number of milliseconds before the next poll
+        type: integer
+        default: 500
   types:
     in:
       mediaType: application/json
@@ -121,6 +126,7 @@ spec:
       parameters:
         dataSource: "#bean:{{dsBean}}"
         onConsume: "{{?consumedQuery}}"
+        delay: "{{delay}}"
       steps:
       - marshal:
           json: 
