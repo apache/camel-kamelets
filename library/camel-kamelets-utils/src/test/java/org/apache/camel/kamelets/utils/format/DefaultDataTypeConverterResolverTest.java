@@ -19,7 +19,7 @@ package org.apache.camel.kamelets.utils.format;
 
 import java.util.Optional;
 
-import org.apache.camel.CamelContextAware;
+import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.kamelets.utils.format.converter.standard.JsonModelDataType;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
@@ -27,28 +27,47 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class DefaultDataTypeRegistryTest {
+class DefaultDataTypeConverterResolverTest {
 
-    private final DefaultDataTypeRegistry dataTypeRegistry = new DefaultDataTypeRegistry();
+    private DefaultCamelContext camelContext;
+
+    private final DefaultDataTypeConverterResolver resolver = new DefaultDataTypeConverterResolver();
 
     @BeforeEach
     void setup() {
-        CamelContextAware.trySetCamelContext(dataTypeRegistry, new DefaultCamelContext());
+        this.camelContext = new DefaultCamelContext();
     }
 
     @Test
-    public void shouldLookupDefaultDataTypeConverters() throws Exception {
-        Optional<DataTypeConverter> converter = dataTypeRegistry.lookup( "jsonObject");
-        Assertions.assertTrue(converter.isPresent());
-        Assertions.assertEquals(JsonModelDataType.class, converter.get().getClass());
-        converter = dataTypeRegistry.lookup( "string");
-        Assertions.assertTrue(converter.isPresent());
-        Assertions.assertEquals(DefaultDataTypeConverter.class, converter.get().getClass());
-        Assertions.assertEquals(String.class, ((DefaultDataTypeConverter) converter.get()).getType());
-        converter = dataTypeRegistry.lookup( "binary");
-        Assertions.assertTrue(converter.isPresent());
-        Assertions.assertEquals(DefaultDataTypeConverter.class, converter.get().getClass());
-        Assertions.assertEquals(byte[].class, ((DefaultDataTypeConverter) converter.get()).getType());
+    public void shouldHandleUnresolvableDataTypeConverters() throws Exception {
+        Optional<DataTypeConverter> converter = resolver.resolve("unknown", camelContext);
+        Assertions.assertFalse(converter.isPresent());
+
+        converter = resolver.resolve("foo", "unknown", camelContext);
+        Assertions.assertFalse(converter.isPresent());
     }
 
+    @Test
+    public void shouldResolveDataTypeConverters() throws Exception {
+        Optional<DataTypeConverter> converter = resolver.resolve("jsonObject", camelContext);
+        Assertions.assertTrue(converter.isPresent());
+        Assertions.assertEquals(JsonModelDataType.class, converter.get().getClass());
+
+        converter = resolver.resolve("foo", "json", camelContext);
+        Assertions.assertTrue(converter.isPresent());
+        Assertions.assertEquals(FooConverter.class, converter.get().getClass());
+    }
+
+    public static class FooConverter implements DataTypeConverter {
+
+        @Override
+        public void convert(Exchange exchange) {
+            exchange.getMessage().setBody("Foo");
+        }
+
+        @Override
+        public String getName() {
+            return "foo";
+        }
+    }
 }

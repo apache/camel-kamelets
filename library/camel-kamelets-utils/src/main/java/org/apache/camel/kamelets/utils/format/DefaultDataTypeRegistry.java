@@ -25,14 +25,11 @@ import java.util.Optional;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelContextAware;
-import org.apache.camel.ExtendedCamelContext;
 import org.apache.camel.RuntimeCamelException;
-import org.apache.camel.impl.engine.DefaultInjector;
-import org.apache.camel.impl.engine.DefaultPackageScanClassResolver;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
+import org.apache.camel.kamelets.utils.format.spi.DataTypeConverterResolver;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeLoader;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeRegistry;
-import org.apache.camel.spi.PackageScanClassResolver;
 import org.apache.camel.support.service.ServiceSupport;
 
 /**
@@ -46,9 +43,9 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
 
     private CamelContext camelContext;
 
-    private PackageScanClassResolver resolver;
-
     protected final List<DataTypeLoader> dataTypeLoaders = new ArrayList<>();
+
+    private DataTypeConverterResolver dataTypeConverterResolver;
 
     private final Map<String, List<DataTypeConverter>> dataTypeConverters = new HashMap<>();
 
@@ -71,30 +68,19 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
             return Optional.empty();
         }
 
-        Optional<DataTypeConverter> componentDataTypeConverter = getComponentDataTypeConverters(scheme).stream()
-                .filter(dtc -> name.equals(dtc.getName()))
-                .findFirst();
-
-        if (componentDataTypeConverter.isPresent()) {
-            return componentDataTypeConverter;
+        Optional<DataTypeConverter> dataTypeConverter = getDataTypeConverter(scheme, name);
+        if (!dataTypeConverter.isPresent()) {
+            dataTypeConverter = getDataTypeConverter("camel", name);
         }
 
-        return getDefaultDataTypeConverter(name);
+        return dataTypeConverter;
     }
 
     @Override
     protected void doInit() throws Exception {
         super.doInit();
 
-        if (resolver == null) {
-            if (camelContext != null) {
-                resolver = camelContext.adapt(ExtendedCamelContext.class).getPackageScanClassResolver();
-            } else {
-                resolver = new DefaultPackageScanClassResolver();
-            }
-        }
-
-        dataTypeLoaders.add(new AnnotationDataTypeLoader(new DefaultInjector(camelContext), resolver));
+        dataTypeLoaders.add(new AnnotationDataTypeLoader());
 
         addDataTypeConverter(new DefaultDataTypeConverter("string", String.class));
         addDataTypeConverter(new DefaultDataTypeConverter("binary", byte[].class));
@@ -113,20 +99,36 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
     }
 
     /**
-     * Retrieve default data output type from Camel context for given format name.
+     * Retrieve data type converter for given scheme and format name. First checks for matching bean in Camel registry then
+     * tries to get from local cache or perform lazy lookup.
+     * @param scheme
      * @param name
      * @return
      */
-    private Optional<DataTypeConverter> getDefaultDataTypeConverter(String name) {
-        Optional<DataTypeConverter> dataTypeConverter = getComponentDataTypeConverters("camel").stream()
-                .filter(dtc -> name.equals(dtc.getName()))
-                .findFirst();
-
-        if (dataTypeConverter.isPresent()) {
-            return dataTypeConverter;
+    private Optional<DataTypeConverter> getDataTypeConverter(String scheme, String name) {
+        if (dataTypeConverterResolver == null) {
+             dataTypeConverterResolver = Optional.ofNullable(camelContext.getRegistry().findSingleByType(DataTypeConverterResolver.class))
+                     .orElseGet(DefaultDataTypeConverterResolver::new);
         }
 
-        return Optional.ofNullable(camelContext.getRegistry().lookupByNameAndType(name, DataTypeConverter.class));
+        // Looking for matching beans in Camel registry first
+        Optional<DataTypeConverter> dataTypeConverter = Optional.ofNullable(camelContext.getRegistry()
+                .lookupByNameAndType(String.format("%s-%s", scheme, name), DataTypeConverter.class));
+
+        if (!dataTypeConverter.isPresent()) {
+            // Try to retrieve converter from preloaded converters in local cache
+            dataTypeConverter = getComponentDataTypeConverters(scheme).stream()
+                .filter(dtc -> name.equals(dtc.getName()))
+                .findFirst();
+        }
+
+        if (!dataTypeConverter.isPresent()) {
+            // Try to lazy load converter via resource path lookup
+            dataTypeConverter = dataTypeConverterResolver.resolve(scheme, name, camelContext);
+            dataTypeConverter.ifPresent(converter -> getComponentDataTypeConverters(scheme).add(converter));
+        }
+
+        return dataTypeConverter;
     }
 
     /**
@@ -135,11 +137,7 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
      * @return
      */
     private List<DataTypeConverter> getComponentDataTypeConverters(String scheme) {
-        if (!dataTypeConverters.containsKey(scheme)) {
-            dataTypeConverters.put(scheme, new ArrayList<>());
-        }
-
-        return dataTypeConverters.get(scheme);
+        return dataTypeConverters.computeIfAbsent(scheme, (s) -> new ArrayList<>());
     }
 
     @Override

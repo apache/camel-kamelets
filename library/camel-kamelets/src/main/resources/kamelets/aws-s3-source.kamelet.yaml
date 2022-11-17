@@ -129,6 +129,8 @@ spec:
             value: 'aws2-s3'
           - key: format
             value: '{{outputFormat}}'
+          - key: registry
+            value: '{{dataTypeRegistry}}'
       - name: renameHeaders
         type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
         property:
