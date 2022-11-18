@@ -30,6 +30,7 @@ import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverterResolver;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeLoader;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeRegistry;
+import org.apache.camel.support.CamelContextHelper;
 import org.apache.camel.support.service.ServiceSupport;
 import org.apache.camel.util.ObjectHelper;
 import org.slf4j.Logger;
@@ -104,7 +105,7 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
             loader.load(this);
         }
 
-        LOG.debug("Loaded {} initial data type converters", dataTypeConverters.size());
+        LOG.debug("Loaded {} schemes holding {} data type converters", dataTypeConverters.size(), dataTypeConverters.values().stream().mapToInt(List::size).sum());
     }
 
     @Override
@@ -128,8 +129,8 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
         }
 
         // Looking for matching beans in Camel registry first
-        Optional<DataTypeConverter> dataTypeConverter = Optional.ofNullable(camelContext.getRegistry()
-                .lookupByNameAndType(String.format("%s-%s", scheme, name), DataTypeConverter.class));
+        Optional<DataTypeConverter> dataTypeConverter = Optional.ofNullable(CamelContextHelper.lookup(getCamelContext(),
+                String.format("%s-%s", scheme, name), DataTypeConverter.class));
 
         if (dataTypeConverter.isPresent()) {
             if (LOG.isDebugEnabled()) {
