@@ -50,8 +50,6 @@ public class AWS2S3CloudEventOutputType implements DataTypeConverter {
         if (encoding != null) {
             headers.put(CloudEvent.CAMEL_CLOUD_EVENT_DATA_CONTENT_ENCODING, encoding);
         }
-
-        exchange.getMessage().removeHeaders("CamelAwsS3*");
     }
 
     private String getEventTime(Exchange exchange) {
