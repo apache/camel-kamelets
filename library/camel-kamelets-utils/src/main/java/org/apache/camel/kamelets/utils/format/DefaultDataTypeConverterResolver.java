@@ -23,7 +23,7 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.ExtendedCamelContext;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverterResolver;
-import org.apache.camel.spi.FactoryFinder;
+import org.apache.camel.util.ObjectHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,51 +34,31 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultDataTypeConverterResolver implements DataTypeConverterResolver {
 
-    public static final String RESOURCE_PATH = "META-INF/services/org/apache/camel/datatype/converter/";
+    public static final String DATA_TYPE_CONVERTER_RESOURCE_PATH = "META-INF/services/org/apache/camel/datatype/converter/";
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultDataTypeConverterResolver.class);
-
-    private FactoryFinder factoryFinder;
 
     @Override
     public Optional<DataTypeConverter> resolve(String scheme, String name, CamelContext context) {
         String converterName = String.format("%s-%s", scheme, name);
 
         if (getLog().isDebugEnabled()) {
-            getLog().debug("Resolving data type converter {} via: {}{}", converterName, RESOURCE_PATH, converterName);
+            getLog().debug("Resolving data type converter {} via: {}{}", converterName, DATA_TYPE_CONVERTER_RESOURCE_PATH, converterName);
         }
 
-        Class<?> type = findConverter(converterName, context);
-        if (type == null) {
-            // not found
-            return Optional.empty();
-        }
-
-        if (getLog().isDebugEnabled()) {
+        Optional<DataTypeConverter> converter = findConverter(converterName, context);
+        if (getLog().isDebugEnabled() && converter.isPresent()) {
             getLog().debug("Found data type converter: {} via type: {} via: {}{}", converterName,
-                    type.getName(), factoryFinder.getResourcePath(), converterName);
+                    ObjectHelper.name(converter.getClass()), DATA_TYPE_CONVERTER_RESOURCE_PATH, converterName);
         }
 
-        // create the converter instance
-        if (DataTypeConverter.class.isAssignableFrom(type)) {
-            try {
-                return Optional.of((DataTypeConverter) context.getInjector().newInstance(type));
-            } catch (NoClassDefFoundError e) {
-                LOG.debug("Ignoring converter type: {} as a dependent class could not be found: {}",
-                        type.getCanonicalName(), e, e);
-            }
-        } else {
-            throw new IllegalArgumentException("Type is not a DataTypeConverter implementation. Found: " + type.getName());
-        }
-
-        return Optional.empty();
+        return converter;
     }
 
-    private Class<?> findConverter(String name, CamelContext context) {
-        if (factoryFinder == null) {
-            factoryFinder = context.adapt(ExtendedCamelContext.class).getFactoryFinder(RESOURCE_PATH);
-        }
-        return factoryFinder.findClass(name).orElse(null);
+    private Optional<DataTypeConverter> findConverter(String name, CamelContext context) {
+        return context.adapt(ExtendedCamelContext.class)
+                .getBootstrapFactoryFinder(DATA_TYPE_CONVERTER_RESOURCE_PATH)
+                .newInstance(name, DataTypeConverter.class);
     }
 
     protected Logger getLog() {
