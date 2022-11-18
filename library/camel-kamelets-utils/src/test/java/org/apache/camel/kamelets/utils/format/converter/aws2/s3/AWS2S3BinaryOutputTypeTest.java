@@ -35,14 +35,14 @@ import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AWS2S3JsonOutputTypeTest {
+public class AWS2S3BinaryOutputTypeTest {
 
     private final DefaultCamelContext camelContext = new DefaultCamelContext();
 
-    private final AWS2S3JsonOutputType outputType = new AWS2S3JsonOutputType();
+    private final AWS2S3BinaryOutputType outputType = new AWS2S3BinaryOutputType();
 
     @Test
-    void shouldMapFromStringToJsonModel() throws Exception {
+    void shouldMapFromStringToBytesModel() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
         exchange.getMessage().setHeader(AWS2S3Constants.KEY, "test1.txt");
@@ -50,13 +50,11 @@ public class AWS2S3JsonOutputTypeTest {
         outputType.convert(exchange);
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
-        assertEquals("test1.txt", exchange.getMessage().getHeader(AWS2S3Constants.KEY));
-
-        assertJsonModelBody(exchange, "test1.txt", "Test1");
+        assertBinaryBody(exchange, "test1.txt", "Test1");
     }
 
     @Test
-    void shouldMapFromBytesToJsonModel() throws Exception {
+    void shouldMapFromBytesToBytesModel() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
         exchange.getMessage().setHeader(AWS2S3Constants.KEY, "test2.txt");
@@ -64,13 +62,11 @@ public class AWS2S3JsonOutputTypeTest {
         outputType.convert(exchange);
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
-        assertEquals("test2.txt", exchange.getMessage().getHeader(AWS2S3Constants.KEY));
-
-        assertJsonModelBody(exchange, "test2.txt", "Test2");
+        assertBinaryBody(exchange, "test2.txt", "Test2");
     }
 
     @Test
-    void shouldMapFromInputStreamToJsonModel() throws Exception {
+    void shouldMapFromInputStreamToBytesModel() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
         exchange.getMessage().setHeader(AWS2S3Constants.KEY, "test3.txt");
@@ -79,20 +75,21 @@ public class AWS2S3JsonOutputTypeTest {
         outputType.convert(exchange);
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
-        assertEquals("test3.txt", exchange.getMessage().getHeader(AWS2S3Constants.KEY));
-
-        assertJsonModelBody(exchange, "test3.txt", "Test3");
+        assertBinaryBody(exchange, "test3.txt", "Test3");
     }
 
     @Test
     public void shouldLookupDataType() throws Exception {
         DefaultDataTypeRegistry dataTypeRegistry = new DefaultDataTypeRegistry();
         CamelContextAware.trySetCamelContext(dataTypeRegistry, camelContext);
-        Optional<DataTypeConverter> converter = dataTypeRegistry.lookup("aws2-s3", "json");
+        Optional<DataTypeConverter> converter = dataTypeRegistry.lookup("aws2-s3", "binary");
         Assertions.assertTrue(converter.isPresent());
     }
 
-    private static void assertJsonModelBody(Exchange exchange, String key, String content) {
-        assertEquals(String.format("{\"key\": \"%s\", \"content\": \"%s\"}", key, content), exchange.getMessage().getBody());
+    private static void assertBinaryBody(Exchange exchange, String key, String content) {
+        assertEquals(key, exchange.getMessage().getHeader(AWS2S3Constants.KEY));
+
+        assertEquals(byte[].class, exchange.getMessage().getBody().getClass());
+        assertEquals(content, exchange.getMessage().getBody(String.class));
     }
 }
