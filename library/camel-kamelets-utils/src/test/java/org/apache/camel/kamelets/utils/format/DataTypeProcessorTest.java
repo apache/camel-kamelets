@@ -70,10 +70,11 @@ class DataTypeProcessorTest {
     }
 
     @Test
-    public void shouldHandleUnknownDataType() throws Exception {
+    public void shouldIgnoreUnknownDataType() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
         exchange.getMessage().setBody(new ByteArrayInputStream("Test".getBytes(StandardCharsets.UTF_8)));
+        processor.setIgnoreMissingDataType(true);
         processor.setScheme("foo");
         processor.setFormat("unknown");
         processor.process(exchange);

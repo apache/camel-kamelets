@@ -21,9 +21,12 @@ import java.util.Optional;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelContextAware;
+import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Processor applies data type conversion based on given format name. Searches for matching data type converter
@@ -33,12 +36,16 @@ public class DataTypeProcessor implements Processor, CamelContextAware {
 
     public static final String DATA_TYPE_FORMAT_PROPERTY = "CamelDataTypeFormat";
 
+    private static final Logger LOG = LoggerFactory.getLogger(DataTypeProcessor.class);
+
     private CamelContext camelContext;
 
     private DefaultDataTypeRegistry registry;
 
     private String scheme;
     private String format;
+
+    private boolean ignoreMissingDataType = false;
 
     private DataTypeConverter converter;
 
@@ -52,7 +59,16 @@ public class DataTypeProcessor implements Processor, CamelContextAware {
             return;
         }
 
-        doConverterLookup().ifPresent(converter -> converter.convert(exchange));
+        Optional<DataTypeConverter> dataTypeConverter = doConverterLookup();
+        dataTypeConverter.ifPresent(converter -> converter.convert(exchange));
+
+        if (!dataTypeConverter.isPresent()) {
+            LOG.debug("Unable to find data type for scheme {} and format name {}", scheme, format);
+
+            if (!ignoreMissingDataType) {
+                throw new CamelExecutionException(String.format("Missing data type for scheme %s and format name %s", scheme, format), exchange);
+            }
+        }
     }
 
     private Optional<DataTypeConverter> doConverterLookup() {
@@ -76,6 +92,10 @@ public class DataTypeProcessor implements Processor, CamelContextAware {
 
     public void setRegistry(DefaultDataTypeRegistry dataTypeRegistry) {
         this.registry = dataTypeRegistry;
+    }
+
+    public void setIgnoreMissingDataType(boolean ignoreMissingDataType) {
+        this.ignoreMissingDataType = ignoreMissingDataType;
     }
 
     @Override

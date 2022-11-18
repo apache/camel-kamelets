@@ -31,6 +31,9 @@ import org.apache.camel.kamelets.utils.format.spi.DataTypeConverterResolver;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeLoader;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeRegistry;
 import org.apache.camel.support.service.ServiceSupport;
+import org.apache.camel.util.ObjectHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default data type registry able to resolve data types converters in the project. Data types may be defined at the component level
@@ -40,6 +43,8 @@ import org.apache.camel.support.service.ServiceSupport;
  * The registry is able to retrieve converters for a given data type based on the component scheme and the given data type name.
  */
 public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeRegistry, CamelContextAware {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultDataTypeRegistry.class);
 
     private CamelContext camelContext;
 
@@ -51,12 +56,21 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
 
     @Override
     public void addDataTypeConverter(String scheme, DataTypeConverter converter) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Adding data type for scheme {} and name {}", scheme, converter.getName());
+        }
+
         this.getComponentDataTypeConverters(scheme).add(converter);
     }
 
     @Override
     public Optional<DataTypeConverter> lookup(String scheme, String name) {
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Searching for data type with scheme {} and name {}", scheme, name);
+        }
+
         if (dataTypeLoaders.isEmpty()) {
+            LOG.trace("Lazy initializing data type registry");
             try {
                 doInit();
             } catch (Exception e) {
@@ -89,6 +103,8 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
             CamelContextAware.trySetCamelContext(loader, getCamelContext());
             loader.load(this);
         }
+
+        LOG.debug("Loaded {} initial data type converters", dataTypeConverters.size());
     }
 
     @Override
@@ -115,17 +131,31 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
         Optional<DataTypeConverter> dataTypeConverter = Optional.ofNullable(camelContext.getRegistry()
                 .lookupByNameAndType(String.format("%s-%s", scheme, name), DataTypeConverter.class));
 
-        if (!dataTypeConverter.isPresent()) {
-            // Try to retrieve converter from preloaded converters in local cache
-            dataTypeConverter = getComponentDataTypeConverters(scheme).stream()
-                .filter(dtc -> name.equals(dtc.getName()))
-                .findFirst();
+        if (dataTypeConverter.isPresent()) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Found data type {} for scheme {} and name {} in Camel registry", ObjectHelper.name(dataTypeConverter.get().getClass()), scheme, name);
+            }
+            return dataTypeConverter;
         }
 
-        if (!dataTypeConverter.isPresent()) {
-            // Try to lazy load converter via resource path lookup
-            dataTypeConverter = dataTypeConverterResolver.resolve(scheme, name, camelContext);
-            dataTypeConverter.ifPresent(converter -> getComponentDataTypeConverters(scheme).add(converter));
+        // Try to retrieve converter from preloaded converters in local cache
+        dataTypeConverter = getComponentDataTypeConverters(scheme).stream()
+                .filter(dtc -> name.equals(dtc.getName()))
+                .findFirst();
+
+        if (dataTypeConverter.isPresent()) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Found data type {} for scheme {} and name {}", ObjectHelper.name(dataTypeConverter.get().getClass()), scheme, name);
+            }
+            return dataTypeConverter;
+        }
+
+        // Try to lazy load converter via resource path lookup
+        dataTypeConverter = dataTypeConverterResolver.resolve(scheme, name, camelContext);
+        dataTypeConverter.ifPresent(converter -> getComponentDataTypeConverters(scheme).add(converter));
+
+        if (LOG.isDebugEnabled() && dataTypeConverter.isPresent()) {
+            LOG.debug("Resolved data type {} for scheme {} and name {} via resource path", ObjectHelper.name(dataTypeConverter.get().getClass()), scheme, name);
         }
 
         return dataTypeConverter;
