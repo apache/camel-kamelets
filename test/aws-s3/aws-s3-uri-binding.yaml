@@ -34,4 +34,9 @@ spec:
       secretKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}
       region: ${YAKS_TESTCONTAINERS_LOCALSTACK_REGION}
   sink:
-    uri: log:info
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: log-sink
+    properties:
+      showHeaders: true
