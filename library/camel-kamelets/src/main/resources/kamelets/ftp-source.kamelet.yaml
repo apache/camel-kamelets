@@ -87,6 +87,13 @@ spec:
         default: true
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+      binary:
+        title: Binary
+        description: Specifies the file transfer mode, BINARY or ASCII. Default is ASCII (false).
+        type: boolean
+        default: false
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
   dependencies:
     - "camel:ftp"
     - "camel:core"
@@ -99,6 +106,7 @@ spec:
         passiveMode: "{{passiveMode}}"
         recursive: "{{recursive}}"
         idempotent: "{{idempotent}}"
+        binary: "{{binary}}"
       steps:
       - set-header:
           name: file
