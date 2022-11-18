@@ -43,6 +43,11 @@ public class DefaultDataTypeConverterResolver implements DataTypeConverterResolv
     @Override
     public Optional<DataTypeConverter> resolve(String scheme, String name, CamelContext context) {
         String converterName = String.format("%s-%s", scheme, name);
+
+        if (getLog().isDebugEnabled()) {
+            getLog().debug("Resolving data type converter {} via: {}{}", converterName, RESOURCE_PATH, converterName);
+        }
+
         Class<?> type = findConverter(converterName, context);
         if (type == null) {
             // not found
