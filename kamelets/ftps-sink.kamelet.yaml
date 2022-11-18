@@ -82,6 +82,13 @@ spec:
         description: "Specifies how the Kamelet behaves if the file already exists. Possible values are Override, Append, Fail, or Ignore."
         type: string
         default: Override
+      binary:
+        title: Binary
+        description: Specifies the file transfer mode, BINARY or ASCII. Default is ASCII (false).
+        type: boolean
+        default: false
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
   dependencies:
     - "camel:ftp"
     - "camel:core"
@@ -108,3 +115,4 @@ spec:
             password: "{{password}}"
             passiveMode: "{{passiveMode}}"
             fileExist: "{{fileExist}}"
+            binary: "{{binary}}"
