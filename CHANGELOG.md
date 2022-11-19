@@ -6,7 +6,9 @@
 
 **Closed issues:**
 
+- Add delay parameter to all SQL Source Kamelets [\#1161](https://github.com/apache/camel-kamelets/issues/1161)
 - Azure Storage Blob Changefeed Source Kamelet: Add CredentialType to parameters [\#1158](https://github.com/apache/camel-kamelets/issues/1158)
+- FTP / SFTP connectors missing setting for binary mode transfers [\#1156](https://github.com/apache/camel-kamelets/issues/1156)
 - Add a JQ Action [\#1153](https://github.com/apache/camel-kamelets/issues/1153)
 - IT Tests: Add Tests for Kinesis Firehose [\#1151](https://github.com/apache/camel-kamelets/issues/1151)
 - IT Tests: Add tests for AWS SNS [\#1150](https://github.com/apache/camel-kamelets/issues/1150)
@@ -16,6 +18,8 @@
 
 **Merged pull requests:**
 
+- FTP / SFTP connectors missing setting for binary mode transfers [\#1165](https://github.com/apache/camel-kamelets/pull/1165) ([oscerd](https://github.com/oscerd))
+- Add delay parameter to all SQL Source Kamelets [\#1163](https://github.com/apache/camel-kamelets/pull/1163) ([oscerd](https://github.com/oscerd))
 - Azure Storage Blob Changefeed Source Kamelet: Add CredentialType to parameters [\#1159](https://github.com/apache/camel-kamelets/pull/1159) ([oscerd](https://github.com/oscerd))
 - Kinesis Firehose Sink IT Test [\#1155](https://github.com/apache/camel-kamelets/pull/1155) ([oscerd](https://github.com/oscerd))
 - IT Tests: Add tests for AWS SNS [\#1152](https://github.com/apache/camel-kamelets/pull/1152) ([oscerd](https://github.com/oscerd))
