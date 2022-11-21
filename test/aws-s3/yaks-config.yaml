@@ -42,12 +42,17 @@ config:
       - aws-s3-to-log-uri-based.groovy
       - aws-s3-to-log-secret-based.groovy
       - aws-s3-uri-binding.yaml
-      - aws-s3-to-inmem.yaml
-      - ../utils/inmem-to-log.yaml
+      - aws-s3-to-knative.yaml
+      - ../utils/knative-to-log.yaml
     cucumber:
       tags:
         - "not @ignored"
     settings:
+      loggers:
+        - name: Logger.Message_IN
+          level: DEBUG
+        - name: Logger.Message_OUT
+          level: DEBUG
       dependencies:
         - groupId: com.amazonaws
           artifactId: aws-java-sdk-kinesis

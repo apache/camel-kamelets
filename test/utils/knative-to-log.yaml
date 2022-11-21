@@ -18,12 +18,19 @@
 apiVersion: camel.apache.org/v1alpha1
 kind: KameletBinding
 metadata:
-  name: inmem-to-log
+  name: knative-to-log
 spec:
   source:
     ref:
-      kind: InMemoryChannel
-      apiVersion: messaging.knative.dev/v1
-      name: messages
+      kind: Broker
+      apiVersion: eventing.knative.dev/v1
+      name: default
+    properties:
+      type: org.apache.camel.event
   sink:
-    uri: log:info
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: log-sink
+    properties:
+      showHeaders: true
