@@ -40,16 +40,10 @@ public class AWS2S3CloudEventOutputType implements DataTypeConverter {
     public void convert(Exchange exchange) {
         final Map<String, Object> headers = exchange.getMessage().getHeaders();
 
-        headers.put(CloudEvent.CAMEL_CLOUD_EVENT_TYPE, "kamelet:aws-s3-source");
+        headers.put(CloudEvent.CAMEL_CLOUD_EVENT_TYPE, "kamelet.aws.s3.source");
         headers.put(CloudEvent.CAMEL_CLOUD_EVENT_SOURCE, exchange.getMessage().getHeader(AWS2S3Constants.BUCKET_NAME, String.class));
         headers.put(CloudEvent.CAMEL_CLOUD_EVENT_SUBJECT, exchange.getMessage().getHeader(AWS2S3Constants.KEY, String.class));
         headers.put(CloudEvent.CAMEL_CLOUD_EVENT_TIME, getEventTime(exchange));
-        headers.put(CloudEvent.CAMEL_CLOUD_EVENT_DATA_CONTENT_TYPE, exchange.getMessage().getHeader(AWS2S3Constants.CONTENT_TYPE, String.class));
-
-        String encoding = exchange.getMessage().getHeader(AWS2S3Constants.CONTENT_ENCODING, String.class);
-        if (encoding != null) {
-            headers.put(CloudEvent.CAMEL_CLOUD_EVENT_DATA_CONTENT_ENCODING, encoding);
-        }
     }
 
     private String getEventTime(Exchange exchange) {
