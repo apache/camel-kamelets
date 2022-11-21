@@ -129,8 +129,8 @@ spec:
       uri: "kamelet:source"
       steps:
       - set-property:
-        name: operation
-        constant: "{{operation}}"
+          name: operation
+          constant: "{{operation}}"
       - process:
           ref: "{{inputTypeProcessor}}"
       - to:
