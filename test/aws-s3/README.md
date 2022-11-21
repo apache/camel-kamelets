@@ -70,7 +70,7 @@ $ yaks test aws-s3-uri-binding.feature
 To run tests with binding to Knative channel:
 
 ```shell script
-$ yaks test aws-s3-inmem-binding.feature
+$ yaks test aws-s3-knative-binding.feature
 ```
 
 You will be provided with the test log output and the test results.

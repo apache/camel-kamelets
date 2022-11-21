@@ -18,7 +18,7 @@
 apiVersion: camel.apache.org/v1alpha1
 kind: KameletBinding
 metadata:
-  name: aws-s3-to-inmem
+  name: aws-s3-to-knative
 spec:
   source:
     ref:
@@ -28,12 +28,20 @@ spec:
     properties:
       bucketNameOrArn: ${aws.s3.bucketNameOrArn}
       overrideEndpoint: true
+      outputFormat: ${aws.s3.output}
       uriEndpointOverride: ${YAKS_TESTCONTAINERS_LOCALSTACK_S3_URL}
       accessKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}
       secretKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}
       region: ${YAKS_TESTCONTAINERS_LOCALSTACK_REGION}
+  steps:
+    - ref:
+        kind: Kamelet
+        apiVersion: camel.apache.org/v1alpha1
+        name: log-sink
+      properties:
+        showHeaders: true
   sink:
     ref:
-      kind: InMemoryChannel
-      apiVersion: messaging.knative.dev/v1
-      name: messages
+      kind: Broker
+      apiVersion: eventing.knative.dev/v1
+      name: default
