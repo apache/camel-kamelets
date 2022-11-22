@@ -35,6 +35,8 @@ tests:
 	./timer-aws-kinesis-firehose-it-test.sh $(camel-version)
 	cd misc/sftp/source/ && \
 	./sftp-log-it-test.sh $(camel-version)
+	cd misc/sftp/sink/ && \
+	./timer-sftp-it-test.sh $(camel-version)
 	./scripts/results.sh
 	rm -rf tests
 	
