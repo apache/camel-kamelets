@@ -1,4 +1,4 @@
-Feature: AWS S3 Kamelet - output data type
+Feature: AWS S3 Kamelet - Knative binding
 
   Background:
     Given Knative event consumer timeout is 20000 ms
@@ -6,7 +6,7 @@ Feature: AWS S3 Kamelet - output data type
       | maxAttempts          | 200   |
       | delayBetweenAttempts | 4000  |
     Given variables
-      | aws.s3.output | cloudevents |
+      | aws.s3.output | string |
       | aws.s3.bucketNameOrArn | mybucket |
       | aws.s3.message | Hello from S3 Kamelet |
       | aws.s3.key | hello.txt |
@@ -37,7 +37,6 @@ Feature: AWS S3 Kamelet - output data type
     And verify Knative event
       | type            | org.apache.camel.event |
       | source          | @ignore@ |
-      | subject         | @ignore@ |
       | id              | @ignore@ |
 
   Scenario: Remove Camel K resources
