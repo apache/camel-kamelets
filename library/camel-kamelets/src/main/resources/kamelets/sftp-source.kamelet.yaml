@@ -34,8 +34,6 @@ spec:
     required:
       - connectionHost
       - connectionPort
-      - username
-      - password
       - directoryName
     type: object
     properties:
@@ -101,27 +99,58 @@ spec:
         default: false
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+      privateKeyFile:
+        title: Private Key File
+        description: Set the private key file so that the SFTP endpoint can do private key verification.
+        type: string
+      privateKeyPassphrase:
+        title: Private Key Passphrase
+        description: Set the private key file passphrase so that the SFTP endpoint can do private key verification.
+        type: string
+      privateKeyUri:
+        title: Private Key URI
+        description: Set the private key file (loaded from classpath by default) so that the SFTP endpoint can do private key verification.
+        type: string
+        pattern: "^(http|https|file|classpath)://.*"
+      strictHostKeyChecking:
+        title: Strict Host Checking
+        description: Sets whether to use strict host key checking.
+        type: string
+        default: no
+      useUserKnownHostsFile:
+        title: Use User Known Hosts File
+        description: If knownHostFile has not been explicit configured then use the host file from System.getProperty(user.home)/.ssh/known_hosts.
+        type: boolean
+        default: true
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
   dependencies:
     - "camel:ftp"
     - "camel:core"
     - "camel:kamelet"
   template:
     from:
-      uri: "sftp:{{username}}@{{connectionHost}}:{{connectionPort}}/{{directoryName}}"
+      uri: "sftp:{{connectionHost}}:{{connectionPort}}/{{directoryName}}"
       parameters:
-        password: "{{password}}"
+        username: "{{?username}}"
+        password: "{{?password}}"
+        privateKeyFile: "{{?privateKeyFile}}"
+        privateKeyPassphrase: "{{?privateKeyPassphrase}}"
+        privateKeyUri: "{{?privateKeyUri}}"
+        strictHostKeyChecking: "{{?strictHostKeyChecking}}"
+        useUserKnownHostsFile: "{{?useUserKnownHostsFile}}"   
         passiveMode: "{{passiveMode}}"
         recursive: "{{recursive}}"
         idempotent: "{{idempotent}}"
         ignoreFileNotFoundOrPermissionError: "{{ignoreFileNotFoundOrPermissionError}}"
         binary: "{{binary}}"
       steps:
+      - set-body:
+          simple: "${body.getBody()}"
       - set-header:
           name: file
           simple: "${header[CamelFileName]}"
       - set-header:
           name: ce-file
           simple: "${header[CamelFileName]}"
-      - convert-body-to:
-          type: "java.io.InputStream"
       - to: "kamelet:sink"
