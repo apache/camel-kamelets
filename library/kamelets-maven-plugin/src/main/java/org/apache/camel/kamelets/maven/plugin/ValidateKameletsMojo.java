@@ -101,7 +101,7 @@ public class ValidateKameletsMojo extends AbstractMojo {
                                         .map(ComponentModel.EndpointOptionModel::getName)
                                         .collect(Collectors.toList());
                         for (Map.Entry<String, Object> entry : p.entrySet()) {
-                            if (!entry.getKey().equals("period") && (!name.equals("kafka-ssl-source") && !name.equals("timer-source") && !name.equals("cron-source") && !name.equals("fhir-source") && !name.equals("beer-source"))) {
+                            if (!entry.getKey().equals("period") && (!name.equals("sftp-source") && !name.equals("kafka-ssl-source") && !name.equals("timer-source") && !name.equals("cron-source") && !name.equals("fhir-source") && !name.equals("beer-source"))) {
                                 if (!ceInternal.contains(entry.getKey())) {
                                     getLog().error("Kamelet Name: " + name);
                                     getLog().error("Scheme Name: " + cleanName);
