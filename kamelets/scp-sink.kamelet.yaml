@@ -57,6 +57,26 @@ spec:
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
+      privateKeyFile:
+        title: Private Key File
+        description: Set the private key file so that the SFTP endpoint can do private key verification.
+        type: string
+      privateKeyPassphrase:
+        title: Private Key Passphrase
+        description: Set the private key file passphrase so that the SFTP endpoint can do private key verification.
+        type: string
+      strictHostKeyChecking:
+        title: Strict Host Checking
+        description: Sets whether to use strict host key checking.
+        type: string
+        default: no
+      useUserKnownHostsFile:
+        title: Use User Known Hosts File
+        description: If knownHostFile has not been explicit configured then use the host file from System.getProperty(user.home)/.ssh/known_hosts.
+        type: boolean
+        default: true
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
   dependencies:
     - "camel:core"
     - "camel:jsch"
@@ -70,4 +90,8 @@ spec:
           parameters:
             username: "{{?username}}"
             password: "{{?password}}"
+            privateKeyFile: "{{?privateKeyFile}}"
+            privateKeyPassphrase: "{{?privateKeyPassphrase}}"
+            strictHostKeyChecking: "{{?strictHostKeyChecking}}"
+            useUserKnownHostsFile: "{{?useUserKnownHostsFile}}"   
             strictHostKeyChecking: "no"
