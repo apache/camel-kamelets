@@ -53,6 +53,8 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
 
     private DataTypeConverterResolver dataTypeConverterResolver;
 
+    private boolean classpathScan = true;
+
     private final Map<String, List<DataTypeConverter>> dataTypeConverters = new HashMap<>();
 
     @Override
@@ -95,7 +97,9 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
     protected void doInit() throws Exception {
         super.doInit();
 
-        dataTypeLoaders.add(new AnnotationDataTypeLoader());
+        if (classpathScan) {
+            dataTypeLoaders.add(new AnnotationDataTypeLoader());
+        }
 
         addDataTypeConverter(new DefaultDataTypeConverter("string", String.class));
         addDataTypeConverter(new DefaultDataTypeConverter("binary", byte[].class));
@@ -169,6 +173,10 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
      */
     private List<DataTypeConverter> getComponentDataTypeConverters(String scheme) {
         return dataTypeConverters.computeIfAbsent(scheme, (s) -> new ArrayList<>());
+    }
+
+    public void setClasspathScan(boolean classpathScan) {
+        this.classpathScan = classpathScan;
     }
 
     @Override
