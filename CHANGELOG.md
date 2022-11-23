@@ -8,6 +8,7 @@
 
 - Add delay parameter to all SQL Source Kamelets [\#1161](https://github.com/apache/camel-kamelets/issues/1161)
 - Azure Storage Blob Changefeed Source Kamelet: Add CredentialType to parameters [\#1158](https://github.com/apache/camel-kamelets/issues/1158)
+- SFTP / SCP connectors missing authentication options to use a private key [\#1157](https://github.com/apache/camel-kamelets/issues/1157)
 - FTP / SFTP connectors missing setting for binary mode transfers [\#1156](https://github.com/apache/camel-kamelets/issues/1156)
 - Add a JQ Action [\#1153](https://github.com/apache/camel-kamelets/issues/1153)
 - IT Tests: Add Tests for Kinesis Firehose [\#1151](https://github.com/apache/camel-kamelets/issues/1151)
@@ -15,9 +16,15 @@
 - Integration tests based on camel-jbang [\#1147](https://github.com/apache/camel-kamelets/issues/1147)
 - Release 0.9.3 [\#1129](https://github.com/apache/camel-kamelets/issues/1129)
 - Nats Kamelets: Mark servers as secret parameter since it could contains sensitive data if authenticated [\#1086](https://github.com/apache/camel-kamelets/issues/1086)
+- Support key authentication in sftp kamelet [\#778](https://github.com/apache/camel-kamelets/issues/778)
 
 **Merged pull requests:**
 
+- SCP connector missing authentication options to use a private key [\#1172](https://github.com/apache/camel-kamelets/pull/1172) ([oscerd](https://github.com/oscerd))
+- Added it-test for SFTP Sink [\#1171](https://github.com/apache/camel-kamelets/pull/1171) ([oscerd](https://github.com/oscerd))
+- SFTP / SCP connectors missing authentication options to use a private key [\#1170](https://github.com/apache/camel-kamelets/pull/1170) ([oscerd](https://github.com/oscerd))
+- Upgrade Classgraph to version 4.8.151 [\#1168](https://github.com/apache/camel-kamelets/pull/1168) ([oscerd](https://github.com/oscerd))
+- JSLT Action - Fix too many slashes in example of template [\#1167](https://github.com/apache/camel-kamelets/pull/1167) ([tadayosi](https://github.com/tadayosi))
 - FTP / SFTP connectors missing setting for binary mode transfers [\#1165](https://github.com/apache/camel-kamelets/pull/1165) ([oscerd](https://github.com/oscerd))
 - Add delay parameter to all SQL Source Kamelets [\#1163](https://github.com/apache/camel-kamelets/pull/1163) ([oscerd](https://github.com/oscerd))
 - Azure Storage Blob Changefeed Source Kamelet: Add CredentialType to parameters [\#1159](https://github.com/apache/camel-kamelets/pull/1159) ([oscerd](https://github.com/oscerd))
