@@ -11,8 +11,6 @@ docker pull emberstack/sftp
 docker run -p 24:22 --name sftp -d emberstack/sftp 
 sftpid=`docker ps -aqf "name=sftp"`
 
-echo $sftpid
-
 jbang run -Dcamel.jbang.version=$camel_version camel@apache/camel run --local-kamelet-dir=../../../../kamelets/ sftp-log.yaml &
 
 sleep 10
