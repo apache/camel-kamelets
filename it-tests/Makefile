@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-tests:
+all:
 	mkdir -p tests
 	cd aws/aws-s3/source/ && \
 	./aws-s3-log-it-test.sh $(camel-version)
@@ -38,6 +38,36 @@ tests:
 	cd misc/sftp/sink/ && \
 	./timer-sftp-it-test.sh $(camel-version)
 	./scripts/results.sh
+	rm -rf tests	
+aws:
+	mkdir -p tests
+	cd aws/aws-s3/source/ && \
+	./aws-s3-log-it-test.sh $(camel-version)
+	cd aws/aws-s3/sink/ && \
+	./timer-aws-s3-it-test.sh $(camel-version)
+	cd aws/aws-kinesis/source/ && \
+	./aws-kinesis-log-it-test.sh $(camel-version)
+	cd aws/aws-kinesis/sink/ && \
+	./timer-aws-kinesis-it-test.sh $(camel-version)
+	cd aws/aws-sqs/source/ && \
+	./aws-sqs-log-it-test.sh $(camel-version)
+	cd aws/aws-sqs/sink/ && \
+	./timer-aws-sqs-it-test.sh $(camel-version)
+	cd aws/aws-sqs-fifo/sink/ && \
+	./timer-aws-sqs-fifo-it-test.sh $(camel-version)
+	cd aws/aws-sns/sink/ && \
+	./timer-aws-sns-it-test.sh $(camel-version)
+	cd aws/aws-kinesis-firehose/sink/ && \
+	./timer-aws-kinesis-firehose-it-test.sh $(camel-version)
+	./scripts/results.sh
+	rm -rf tests
+misc:
+	mkdir -p tests
+	cd misc/sftp/source/ && \
+	./sftp-log-it-test.sh $(camel-version)
+	cd misc/sftp/sink/ && \
+	./timer-sftp-it-test.sh $(camel-version)
+	./scripts/results.sh
 	rm -rf tests
 	
-.PHONY: tests clean
+.PHONY: all aws misc clean
