@@ -37,6 +37,8 @@ all:
 	./sftp-log-it-test.sh $(camel-version)
 	cd misc/sftp/sink/ && \
 	./timer-sftp-it-test.sh $(camel-version)
+	cd misc/scp/sink/ && \
+	./timer-scp-it-test.sh $(camel-version)
 	./scripts/results.sh
 	rm -rf tests	
 aws:
@@ -67,6 +69,8 @@ misc:
 	./sftp-log-it-test.sh $(camel-version)
 	cd misc/sftp/sink/ && \
 	./timer-sftp-it-test.sh $(camel-version)
+	cd misc/scp/sink/ && \
+	./timer-scp-it-test.sh $(camel-version)
 	./scripts/results.sh
 	rm -rf tests
 	
