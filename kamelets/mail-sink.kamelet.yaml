@@ -36,11 +36,6 @@ spec:
       - password
     type: object
     properties:
-      protocol:
-        description: The mail protocol to use
-        default: smtp
-        title: Protocol
-        type: string
       connectionHost:
         description: The mail server host
         example: smtp.gmail.com
@@ -115,4 +110,12 @@ spec:
                     simple: "${header[ce-cc]}"
         - remove-headers:
             pattern: "ce-*"
-        - to: '{{protocol}}://{{connectionHost}}:{{connectionPort}}?subject={{subject}}&from={{from}}&to={{to}}&username={{username}}&password={{password}}'
+        - to:
+            uri: "smtp:{{connectionHost}}:{{connectionPort}}"
+            parameters:
+              subject: "{{subject}}"
+              from: "{{from}}"
+              to: "{{to}}"
+              username: "{{username}}"
+              password: "{{password}}"
+
