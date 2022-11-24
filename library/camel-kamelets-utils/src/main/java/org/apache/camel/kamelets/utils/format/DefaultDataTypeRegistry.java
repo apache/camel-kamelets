@@ -30,6 +30,7 @@ import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverterResolver;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeLoader;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeRegistry;
+import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
 import org.apache.camel.support.CamelContextHelper;
 import org.apache.camel.support.service.ServiceSupport;
 import org.apache.camel.util.ObjectHelper;
@@ -87,7 +88,7 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
 
         Optional<DataTypeConverter> dataTypeConverter = getDataTypeConverter(scheme, name);
         if (!dataTypeConverter.isPresent()) {
-            dataTypeConverter = getDataTypeConverter("camel", name);
+            dataTypeConverter = getDataTypeConverter(DataType.DEFAULT_SCHEME, name);
         }
 
         return dataTypeConverter;
@@ -101,8 +102,8 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
             dataTypeLoaders.add(new AnnotationDataTypeLoader());
         }
 
-        addDataTypeConverter(new DefaultDataTypeConverter("string", String.class));
-        addDataTypeConverter(new DefaultDataTypeConverter("binary", byte[].class));
+        addDataTypeConverter(new DefaultDataTypeConverter(DataType.DEFAULT_SCHEME, "string", "text/plain", String.class));
+        addDataTypeConverter(new DefaultDataTypeConverter(DataType.DEFAULT_SCHEME, "binary", "application/octet-stream", byte[].class));
 
         for (DataTypeLoader loader : dataTypeLoaders) {
             CamelContextAware.trySetCamelContext(loader, getCamelContext());

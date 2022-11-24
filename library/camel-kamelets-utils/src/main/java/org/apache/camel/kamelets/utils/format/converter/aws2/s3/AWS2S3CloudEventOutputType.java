@@ -33,7 +33,7 @@ import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
  * Output data type represents AWS S3 get object response as CloudEvent V1. The data type sets Camel specific
  * CloudEvent headers on the exchange.
  */
-@DataType(scheme = "aws2-s3", name = "cloudevents")
+@DataType(scheme = "aws2-s3", name = "cloudevents", mediaType = "application/octet-stream")
 public class AWS2S3CloudEventOutputType implements DataTypeConverter {
 
     @Override

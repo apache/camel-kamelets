@@ -31,11 +31,13 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE })
 public @interface DataType {
 
+    String DEFAULT_SCHEME = "camel";
+
     /**
      * Camel component scheme.
      * @return
      */
-    String scheme() default "camel";
+    String scheme() default DEFAULT_SCHEME;
 
     /**
      * Data type name.
