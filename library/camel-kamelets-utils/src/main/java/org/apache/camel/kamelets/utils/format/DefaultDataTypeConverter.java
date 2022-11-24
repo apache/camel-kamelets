@@ -19,6 +19,7 @@ package org.apache.camel.kamelets.utils.format;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
+import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
 
 /**
  * Default data type converter receives a name and a target type in order to use traditional exchange body conversion
@@ -26,12 +27,24 @@ import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
  */
 public class DefaultDataTypeConverter implements DataTypeConverter {
 
+    private final String scheme;
     private final String name;
+    private final String mediaType;
     private final Class<?> type;
 
-    public DefaultDataTypeConverter(String name, Class<?> type) {
+    public DefaultDataTypeConverter(String scheme, String name, String mediaType, Class<?> type) {
+        this.scheme = scheme;
         this.name = name;
+        this.mediaType = mediaType;
         this.type = type;
+    }
+
+    public DefaultDataTypeConverter(String scheme, String name, Class<?> type) {
+        this(scheme, name, "", type);
+    }
+
+    public DefaultDataTypeConverter(String name, Class<?> type) {
+        this(DataType.DEFAULT_SCHEME, name, type);
     }
 
     @Override
@@ -46,6 +59,16 @@ public class DefaultDataTypeConverter implements DataTypeConverter {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getScheme() {
+        return scheme;
+    }
+
+    @Override
+    public String getMediaType() {
+        return mediaType;
     }
 
     public Class<?> getType() {

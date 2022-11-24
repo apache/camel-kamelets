@@ -33,7 +33,7 @@ import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
  * <p/>
  * Unmarshal type should be given as a fully qualified class name in the exchange properties.
  */
-@DataType(name = "jsonObject")
+@DataType(name = "jsonObject", mediaType = "application/json")
 public class JsonModelDataType implements DataTypeConverter {
 
     public static final String DATA_TYPE_MODEL_PROPERTY = "CamelDataTypeModel";

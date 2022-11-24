@@ -30,7 +30,7 @@ import software.amazon.awssdk.utils.IoUtils;
 /**
  * Binary output type.
  */
-@DataType(scheme = "aws2-s3", name = "binary")
+@DataType(scheme = "aws2-s3", name = "binary", mediaType = "application/octet-stream")
 public class AWS2S3BinaryOutputType implements DataTypeConverter {
 
     @Override

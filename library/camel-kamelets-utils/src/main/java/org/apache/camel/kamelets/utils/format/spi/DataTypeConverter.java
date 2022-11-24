@@ -26,7 +26,7 @@ public interface DataTypeConverter {
     void convert(Exchange exchange);
 
     /**
-     * Gets the data type converter name. Automatically derives the name from given type annotation.
+     * Gets the data type converter name. Automatically derives the name from given data type annotation.
      * @return
      */
     default String getName() {
@@ -35,5 +35,29 @@ public interface DataTypeConverter {
         }
 
         throw new UnsupportedOperationException("Missing data type converter name");
+    }
+
+    /**
+     * Gets the data type component scheme. Automatically derived from given data type annotation.
+     * @return
+     */
+    default String getScheme() {
+        if (this.getClass().isAnnotationPresent(DataType.class)) {
+            return this.getClass().getAnnotation(DataType.class).scheme();
+        }
+
+        return DataType.DEFAULT_SCHEME;
+    }
+
+    /**
+     * Gets the data type media type. Automatically derived from given data type annotation.
+     * @return
+     */
+    default String getMediaType() {
+        if (this.getClass().isAnnotationPresent(DataType.class)) {
+            return this.getClass().getAnnotation(DataType.class).mediaType();
+        }
+
+        return "";
     }
 }
