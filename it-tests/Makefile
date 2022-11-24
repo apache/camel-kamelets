@@ -74,4 +74,11 @@ misc:
 	./scripts/results.sh
 	rm -rf tests
 	
-.PHONY: all aws misc clean
+cdc:
+	mkdir -p tests
+	cd aws/aws-s3-cdc/source/ && \
+	./aws-s3-cdc-log-it-test.sh $(camel-version)
+	./scripts/results.sh
+	rm -rf tests
+	
+.PHONY: all aws misc cdc clean
