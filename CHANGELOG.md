@@ -13,6 +13,7 @@
 - Add a JQ Action [\#1153](https://github.com/apache/camel-kamelets/issues/1153)
 - IT Tests: Add Tests for Kinesis Firehose [\#1151](https://github.com/apache/camel-kamelets/issues/1151)
 - IT Tests: Add tests for AWS SNS [\#1150](https://github.com/apache/camel-kamelets/issues/1150)
+- IT Tests: make terraform configuration more stable [\#1149](https://github.com/apache/camel-kamelets/issues/1149)
 - Integration tests based on camel-jbang [\#1147](https://github.com/apache/camel-kamelets/issues/1147)
 - Release 0.9.3 [\#1129](https://github.com/apache/camel-kamelets/issues/1129)
 - Nats Kamelets: Mark servers as secret parameter since it could contains sensitive data if authenticated [\#1086](https://github.com/apache/camel-kamelets/issues/1086)
@@ -20,6 +21,8 @@
 
 **Merged pull requests:**
 
+- SCP Sink IT Test [\#1175](https://github.com/apache/camel-kamelets/pull/1175) ([oscerd](https://github.com/oscerd))
+- It-Tests Makefile: Add specific targets for different kind of it-tests [\#1174](https://github.com/apache/camel-kamelets/pull/1174) ([oscerd](https://github.com/oscerd))
 - SCP connector missing authentication options to use a private key [\#1172](https://github.com/apache/camel-kamelets/pull/1172) ([oscerd](https://github.com/oscerd))
 - Added it-test for SFTP Sink [\#1171](https://github.com/apache/camel-kamelets/pull/1171) ([oscerd](https://github.com/oscerd))
 - SFTP / SCP connectors missing authentication options to use a private key [\#1170](https://github.com/apache/camel-kamelets/pull/1170) ([oscerd](https://github.com/oscerd))
