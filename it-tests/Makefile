@@ -39,6 +39,8 @@ all:
 	./timer-sftp-it-test.sh $(camel-version)
 	cd misc/scp/sink/ && \
 	./timer-scp-it-test.sh $(camel-version)
+	cd azure/azure-storage-blob/source/ && \
+	./azure-storage-blob-log-it-test.sh $(camel-version)
 	./scripts/results.sh
 	rm -rf tests	
 aws:
@@ -63,6 +65,12 @@ aws:
 	./timer-aws-kinesis-firehose-it-test.sh $(camel-version)
 	./scripts/results.sh
 	rm -rf tests
+azure:
+	mkdir -p tests
+	cd azure/azure-storage-blob/source/ && \
+	./azure-storage-blob-log-it-test.sh $(camel-version)
+	./scripts/results.sh
+	rm -rf tests	
 misc:
 	mkdir -p tests
 	cd misc/sftp/source/ && \
@@ -81,4 +89,4 @@ cdc:
 	./scripts/results.sh
 	rm -rf tests
 	
-.PHONY: all aws misc cdc clean
+.PHONY: all aws azure misc cdc clean
