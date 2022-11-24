@@ -28,15 +28,16 @@ Feature: Mail Sink
       | message   | Camel K rocks |
 
   Scenario: Create mail server
-    Given load endpoint mail-server.groovy
+    Given HTTP server "mail-server"
+    Given HTTP server listening on port 22222
     Given create Kubernetes service mail-server with port mapping 25:22222
+    And stop HTTP server
+    Given load endpoint mail-server.groovy
 
   Scenario: Create Camel K resources
     Given Camel K resource polling configuration
       | maxAttempts          | 200   |
       | delayBetweenAttempts | 2000  |
-    Given Kamelet mail-sink is available
-    Given Kamelet timer-source is available
     Given load KameletBinding timer-to-mail.yaml
     And Camel K integration timer-to-mail should be running
     And Camel K integration timer-to-mail should print Routes startup
