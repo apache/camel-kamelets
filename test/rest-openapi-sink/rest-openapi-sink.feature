@@ -41,7 +41,7 @@ Feature: REST OpenAPI Kamelet sink
     Then send HTTP 200 OK
 
   Scenario: Verify proper addPet request message sent
-    Given expect HTTP request body: citrus:readFile(classpath:openapi.json)
+    Given expect HTTP request body: ${pet}
     And HTTP request header Content-Type is "application/json"
     When receive POST /petstore/pet
     And send HTTP 201 CREATED
