@@ -21,6 +21,11 @@
 
 **Merged pull requests:**
 
+- Added an Azure Storage Blob Source It Test [\#1180](https://github.com/apache/camel-kamelets/pull/1180) ([oscerd](https://github.com/oscerd))
+- Added an it-tests for AWS S3 CDC [\#1179](https://github.com/apache/camel-kamelets/pull/1179) ([oscerd](https://github.com/oscerd))
+- Upgrade Jackson to version 2.14.1 [\#1178](https://github.com/apache/camel-kamelets/pull/1178) ([oscerd](https://github.com/oscerd))
+- Upgrade ActiveMQ Artemis to version 2.27.0 [\#1177](https://github.com/apache/camel-kamelets/pull/1177) ([oscerd](https://github.com/oscerd))
+- Upgrade PostgreSQL driver to version 42.5.1 [\#1176](https://github.com/apache/camel-kamelets/pull/1176) ([oscerd](https://github.com/oscerd))
 - SCP Sink IT Test [\#1175](https://github.com/apache/camel-kamelets/pull/1175) ([oscerd](https://github.com/oscerd))
 - It-Tests Makefile: Add specific targets for different kind of it-tests [\#1174](https://github.com/apache/camel-kamelets/pull/1174) ([oscerd](https://github.com/oscerd))
 - SCP connector missing authentication options to use a private key [\#1172](https://github.com/apache/camel-kamelets/pull/1172) ([oscerd](https://github.com/oscerd))
