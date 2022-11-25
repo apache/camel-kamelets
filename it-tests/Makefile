@@ -41,6 +41,8 @@ all:
 	./timer-scp-it-test.sh $(camel-version)
 	cd azure/azure-storage-blob/source/ && \
 	./azure-storage-blob-log-it-test.sh $(camel-version)
+	cd azure/azure-storage-blob/sink/ && \
+	./timer-azure-storage-blob-it-test.sh $(camel-version)
 	./scripts/results.sh
 	rm -rf tests	
 aws:
@@ -69,6 +71,8 @@ azure:
 	mkdir -p tests
 	cd azure/azure-storage-blob/source/ && \
 	./azure-storage-blob-log-it-test.sh $(camel-version)
+	cd azure/azure-storage-blob/sink/ && \
+	./timer-azure-storage-blob-it-test.sh $(camel-version)
 	./scripts/results.sh
 	rm -rf tests	
 misc:
