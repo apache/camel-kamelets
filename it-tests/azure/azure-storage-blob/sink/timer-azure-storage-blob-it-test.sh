@@ -15,18 +15,15 @@ cd ../
 sleep 10
 
 accountKey=`az storage account keys list -n kameletsaccount | jq -r ' .[0] | .value'`
-echo $accountKey
 az storage account keys list -n kameletsaccount | echo "camel.kamelet.azure-storage-blob-sink.accessKey = $accountKey" > azure-keys.properties
 
 jbang run --fresh -Dcamel.jbang.version=$camel_version camel@apache/camel run --properties=azure-keys.properties timer-azure-storage-blob.yaml &
 
 sleep 30
 
-variable=`jbang run -Dcamel.jbang.version=$camel_version camel@apache/camel get integration timer-azure-storage-blob | tail -n +2` 
-echo $variable 
+variable=`jbang run -Dcamel.jbang.version=$camel_version camel@apache/camel get integration timer-azure-storage-blob | tail -n +2`  
 success=`echo $variable | cut -d' ' -f11`
 fail=`echo $variable | cut -d' ' -f12`
-echo $success $fail
 if [[ $success == 5 && $fail == 0 ]] 
 then 
     mkdir -p ../../../tests/
