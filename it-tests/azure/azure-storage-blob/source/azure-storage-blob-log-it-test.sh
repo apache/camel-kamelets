@@ -13,7 +13,6 @@ terraform apply -auto-approve
 cd ../
 
 accountKey=`az storage account keys list -n kameletsaccount | jq -r ' .[0] | .value'`
-echo $accountKey
 az storage account keys list -n kameletsaccount | echo "camel.kamelet.azure-storage-blob-source.accessKey = $accountKey" > azure-keys.properties
 
 jbang run --fresh -Dcamel.jbang.version=$camel_version camel@apache/camel run --properties=azure-keys.properties azure-storage-blob-log.yaml &
