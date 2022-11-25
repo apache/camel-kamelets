@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.component.aws2.s3.AWS2S3Constants;
-import org.apache.camel.component.cloudevents.CloudEvent;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
 
@@ -36,14 +35,19 @@ import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
 @DataType(scheme = "aws2-s3", name = "cloudevents", mediaType = "application/octet-stream")
 public class AWS2S3CloudEventOutputType implements DataTypeConverter {
 
+    static final String CAMEL_CLOUD_EVENT_TYPE = "CamelCloudEventType";
+    static final String CAMEL_CLOUD_EVENT_SOURCE = "CamelCloudEventSource";
+    static final String CAMEL_CLOUD_EVENT_SUBJECT = "CamelCloudEventSubject";
+    static final String CAMEL_CLOUD_EVENT_TIME = "CamelCloudEventTime";
+
     @Override
     public void convert(Exchange exchange) {
         final Map<String, Object> headers = exchange.getMessage().getHeaders();
 
-        headers.put(CloudEvent.CAMEL_CLOUD_EVENT_TYPE, "kamelet.aws.s3.source");
-        headers.put(CloudEvent.CAMEL_CLOUD_EVENT_SOURCE, exchange.getMessage().getHeader(AWS2S3Constants.BUCKET_NAME, String.class));
-        headers.put(CloudEvent.CAMEL_CLOUD_EVENT_SUBJECT, exchange.getMessage().getHeader(AWS2S3Constants.KEY, String.class));
-        headers.put(CloudEvent.CAMEL_CLOUD_EVENT_TIME, getEventTime(exchange));
+        headers.put(CAMEL_CLOUD_EVENT_TYPE, "kamelet.aws.s3.source");
+        headers.put(CAMEL_CLOUD_EVENT_SOURCE, exchange.getMessage().getHeader(AWS2S3Constants.BUCKET_NAME, String.class));
+        headers.put(CAMEL_CLOUD_EVENT_SUBJECT, exchange.getMessage().getHeader(AWS2S3Constants.KEY, String.class));
+        headers.put(CAMEL_CLOUD_EVENT_TIME, getEventTime(exchange));
     }
 
     private String getEventTime(Exchange exchange) {

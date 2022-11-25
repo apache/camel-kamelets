@@ -24,7 +24,6 @@ import java.util.Optional;
 import org.apache.camel.CamelContextAware;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.aws2.s3.AWS2S3Constants;
-import org.apache.camel.component.cloudevents.CloudEvents;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.kamelets.utils.format.DefaultDataTypeRegistry;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
@@ -53,9 +52,9 @@ class AWS2S3CloudEventOutputTypeTest {
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
         Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey(AWS2S3Constants.KEY));
-        assertEquals("kamelet.aws.s3.source", exchange.getMessage().getHeader(CloudEvents.CAMEL_CLOUD_EVENT_TYPE));
-        assertEquals("test1.txt", exchange.getMessage().getHeader(CloudEvents.CAMEL_CLOUD_EVENT_SUBJECT));
-        assertEquals("myBucket", exchange.getMessage().getHeader(CloudEvents.CAMEL_CLOUD_EVENT_SOURCE));
+        assertEquals("kamelet.aws.s3.source", exchange.getMessage().getHeader(AWS2S3CloudEventOutputType.CAMEL_CLOUD_EVENT_TYPE));
+        assertEquals("test1.txt", exchange.getMessage().getHeader(AWS2S3CloudEventOutputType.CAMEL_CLOUD_EVENT_SUBJECT));
+        assertEquals("myBucket", exchange.getMessage().getHeader(AWS2S3CloudEventOutputType.CAMEL_CLOUD_EVENT_SOURCE));
     }
 
     @Test
