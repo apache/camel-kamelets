@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Azure Storage Blob Sink Kamelet: Add it-test [\#1182](https://github.com/apache/camel-kamelets/issues/1182)
 - Add delay parameter to all SQL Source Kamelets [\#1161](https://github.com/apache/camel-kamelets/issues/1161)
 - Azure Storage Blob Changefeed Source Kamelet: Add CredentialType to parameters [\#1158](https://github.com/apache/camel-kamelets/issues/1158)
 - SFTP / SCP connectors missing authentication options to use a private key [\#1157](https://github.com/apache/camel-kamelets/issues/1157)
@@ -21,6 +22,8 @@
 
 **Merged pull requests:**
 
+- Azure Storage Blob Sink Kamelet: Add it-test to Makefile [\#1183](https://github.com/apache/camel-kamelets/pull/1183) ([oscerd](https://github.com/oscerd))
+- Fix mail-sink Kamelet [\#1181](https://github.com/apache/camel-kamelets/pull/1181) ([christophd](https://github.com/christophd))
 - Added an Azure Storage Blob Source It Test [\#1180](https://github.com/apache/camel-kamelets/pull/1180) ([oscerd](https://github.com/oscerd))
 - Added an it-tests for AWS S3 CDC [\#1179](https://github.com/apache/camel-kamelets/pull/1179) ([oscerd](https://github.com/oscerd))
 - Upgrade Jackson to version 2.14.1 [\#1178](https://github.com/apache/camel-kamelets/pull/1178) ([oscerd](https://github.com/oscerd))
