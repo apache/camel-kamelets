@@ -51,6 +51,10 @@ spec:
         description: The content type of the generated message.
         type: string
         default: text/plain
+      repeatCount:
+        title: Repeat Count
+        description: Specifies a maximum limit of number of fires
+        type: integer
   dependencies:
     - "camel:core"
     - "camel:timer"
@@ -60,6 +64,7 @@ spec:
       uri: timer:tick
       parameters:
         period: "{{period}}"
+        repeatCount: "{{?repeatCount}}"
       steps:
         - set-body:
             constant: "{{message}}"
