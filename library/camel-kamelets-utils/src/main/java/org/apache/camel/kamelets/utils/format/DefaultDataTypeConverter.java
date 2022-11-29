@@ -17,9 +17,12 @@
 
 package org.apache.camel.kamelets.utils.format;
 
+import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
+import org.apache.camel.InvalidPayloadException;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
+import org.apache.camel.util.ObjectHelper;
 
 /**
  * Default data type converter receives a name and a target type in order to use traditional exchange body conversion
@@ -53,7 +56,12 @@ public class DefaultDataTypeConverter implements DataTypeConverter {
             return;
         }
 
-        exchange.getMessage().setBody(exchange.getMessage().getBody(type));
+        try {
+            exchange.getMessage().setBody(exchange.getMessage().getMandatoryBody(type));
+        } catch (InvalidPayloadException e) {
+            throw new CamelExecutionException(String.format("Failed to convert exchange body to '%s' content using type %s",
+                    name, ObjectHelper.name(type)), exchange, e);
+        }
     }
 
     @Override

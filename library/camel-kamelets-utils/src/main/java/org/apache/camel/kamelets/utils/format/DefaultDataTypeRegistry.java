@@ -26,6 +26,9 @@ import java.util.Optional;
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelContextAware;
 import org.apache.camel.RuntimeCamelException;
+import org.apache.camel.kamelets.utils.format.converter.standard.BinaryDataType;
+import org.apache.camel.kamelets.utils.format.converter.standard.JsonModelDataType;
+import org.apache.camel.kamelets.utils.format.converter.standard.StringDataType;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverterResolver;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeLoader;
@@ -55,6 +58,7 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
     private DataTypeConverterResolver dataTypeConverterResolver;
 
     private boolean classpathScan = true;
+    private boolean useDefaultConverters = true;
 
     private final Map<String, List<DataTypeConverter>> dataTypeConverters = new HashMap<>();
 
@@ -100,10 +104,11 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
 
         if (classpathScan) {
             dataTypeLoaders.add(new AnnotationDataTypeLoader());
+        } else if (useDefaultConverters) {
+            addDataTypeConverter(new BinaryDataType());
+            addDataTypeConverter(new StringDataType());
+            addDataTypeConverter(new JsonModelDataType());
         }
-
-        addDataTypeConverter(new DefaultDataTypeConverter(DataType.DEFAULT_SCHEME, "string", "text/plain", String.class));
-        addDataTypeConverter(new DefaultDataTypeConverter(DataType.DEFAULT_SCHEME, "binary", "application/octet-stream", byte[].class));
 
         for (DataTypeLoader loader : dataTypeLoaders) {
             CamelContextAware.trySetCamelContext(loader, getCamelContext());
@@ -178,6 +183,10 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
 
     public void setClasspathScan(boolean classpathScan) {
         this.classpathScan = classpathScan;
+    }
+
+    public void setUseDefaultConverters(boolean useDefaultConverters) {
+        this.useDefaultConverters = useDefaultConverters;
     }
 
     @Override
