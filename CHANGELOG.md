@@ -22,6 +22,7 @@
 
 **Merged pull requests:**
 
+- Added repeatCount parameter to timer source Kamelet [\#1184](https://github.com/apache/camel-kamelets/pull/1184) ([oscerd](https://github.com/oscerd))
 - Azure Storage Blob Sink Kamelet: Add it-test to Makefile [\#1183](https://github.com/apache/camel-kamelets/pull/1183) ([oscerd](https://github.com/oscerd))
 - Fix mail-sink Kamelet [\#1181](https://github.com/apache/camel-kamelets/pull/1181) ([christophd](https://github.com/christophd))
 - Added an Azure Storage Blob Source It Test [\#1180](https://github.com/apache/camel-kamelets/pull/1180) ([oscerd](https://github.com/oscerd))
