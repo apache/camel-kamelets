@@ -27,6 +27,7 @@ import org.apache.camel.kamelets.utils.format.DefaultDataTypeRegistry;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.apache.camel.support.DefaultExchange;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,6 +37,11 @@ public class JsonModelDataTypeTest {
     private final DefaultCamelContext camelContext = new DefaultCamelContext();
 
     private final JsonModelDataType dataType = new JsonModelDataType();
+
+    @BeforeEach
+    public void setup() {
+        dataType.setCamelContext(camelContext);
+    }
 
     @Test
     void shouldMapFromStringToJsonModel() throws Exception {

@@ -115,6 +115,13 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
             loader.load(this);
         }
 
+        // if applicable set Camel context on all loaded data type converters
+        dataTypeConverters.values().forEach(converters -> converters.forEach(converter -> {
+            if (converter instanceof CamelContextAware && ((CamelContextAware) converter).getCamelContext() == null) {
+                CamelContextAware.trySetCamelContext(converter, camelContext);
+            }
+        }));
+
         LOG.debug("Loaded {} schemes holding {} data type converters", dataTypeConverters.size(), dataTypeConverters.values().stream().mapToInt(List::size).sum());
     }
 
