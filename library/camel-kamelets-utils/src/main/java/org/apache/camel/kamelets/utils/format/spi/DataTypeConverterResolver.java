@@ -20,30 +20,34 @@ package org.apache.camel.kamelets.utils.format.spi;
 import java.util.Optional;
 
 import org.apache.camel.CamelContext;
+import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
 
 /**
- * Represents a resolver of data type converters from a URI to be able to lazy load them using some discovery mechanism.
+ * Resolves data type converters from URI to be able to lazy load converters using factory finder discovery mechanism.
  */
 @FunctionalInterface
 public interface DataTypeConverterResolver {
 
     /**
-     * Attempts to resolve the converter for the given URI.
+     * Attempts to resolve the converter for the given scheme and name. Usually uses the factory finder URI to resolve the converter.
+     * Scheme and name may be combined in order to resolve component specific converters. Usually implements a fallback
+     * resolving mechanism when no matching converter for scheme and name is found (e.g. search for generic Camel converters just using the name).
      *
-     * @param scheme
-     * @param name
-     * @param camelContext
-     * @return
+     * @param scheme the data type scheme.
+     * @param name the data type name.
+     * @param camelContext the current Camel context.
+     * @return optional data type resolved via URI factory finder.
      */
     Optional<DataTypeConverter> resolve(String scheme, String name, CamelContext camelContext);
 
     /**
-     * Attempts to resolve default converter for the given name.
-     * @param name
-     * @param camelContext
-     * @return
+     * Attempts to resolve default converter for the given name. Uses default Camel scheme to resolve the converter via factory finder mechanism.
+     *
+     * @param name the data type name.
+     * @param camelContext the current Camel context.
+     * @return optional data type resolved via URI factory finder.
      */
     default Optional<DataTypeConverter> resolve(String name, CamelContext camelContext) {
-        return resolve("camel", name, camelContext);
+        return resolve(DataType.DEFAULT_SCHEME, name, camelContext);
     }
 }

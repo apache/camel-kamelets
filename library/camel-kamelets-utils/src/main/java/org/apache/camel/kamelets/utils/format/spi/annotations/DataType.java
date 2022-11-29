@@ -24,7 +24,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Data type annotation defines a type with its component scheme, a name and input/output types.
+ * Data type annotation defines a data type with its component scheme, a name and optional media types.
+ * <p/>
+ * The annotation is used by specific classpath scanning data type loaders to automatically add the data types to
+ * a registry.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -34,20 +37,20 @@ public @interface DataType {
     String DEFAULT_SCHEME = "camel";
 
     /**
-     * Camel component scheme.
-     * @return
+     * Camel component scheme. Specifies whether a data type is component specific.
+     * @return the data type scheme.
      */
     String scheme() default DEFAULT_SCHEME;
 
     /**
-     * Data type name.
-     * @return
+     * Data type name. Identifies the data type. Should be unique in combination with scheme.
+     * @return the data type name.
      */
     String name();
 
     /**
      * The media type associated with this data type.
-     * @return
+     * @return the media type or empty string as default.
      */
     String mediaType() default "";
 }

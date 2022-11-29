@@ -18,14 +18,14 @@
 package org.apache.camel.kamelets.utils.format.spi;
 
 /**
- * A pluggable strategy to load data types into a {@link DataTypeRegistry}.
+ * A pluggable strategy to load data types into a {@link DataTypeRegistry}. Loads one to many data type converters to the given registry.
  */
 public interface DataTypeLoader {
 
     /**
-     * A pluggable strategy to load data types into a registry.
+     * A pluggable strategy to load data types into a given registry.
      *
-     * @param  registry the registry to load the data types into
+     * @param  registry the registry to load the data types into.
      */
     void load(DataTypeRegistry registry);
 }
