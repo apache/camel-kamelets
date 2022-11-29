@@ -20,14 +20,23 @@ package org.apache.camel.kamelets.utils.format.spi;
 import org.apache.camel.Exchange;
 import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
 
+/**
+ * Converter applies custom logic to a given exchange in order to update the message content in that exchange according to
+ * the data type.
+ */
 @FunctionalInterface
 public interface DataTypeConverter {
 
+    /**
+     * Changes the exchange message content (body and/or header) to represent the data type.
+     * @param exchange the exchange that should have its message content applied to the data type.
+     */
     void convert(Exchange exchange);
 
     /**
-     * Gets the data type converter name. Automatically derives the name from given data type annotation.
-     * @return
+     * Gets the data type converter name. Automatically derives the name from given data type annotation if any.
+     * Subclasses may add a fallback logic to determine the data type name in case the annotation is missing.
+     * @return the name of the data type.
      */
     default String getName() {
         if (this.getClass().isAnnotationPresent(DataType.class)) {
@@ -39,7 +48,8 @@ public interface DataTypeConverter {
 
     /**
      * Gets the data type component scheme. Automatically derived from given data type annotation.
-     * @return
+     * Subclasses may add custom logic to determine the data type scheme. By default, the generic Camel scheme is used.
+     * @return the component scheme of the data type.
      */
     default String getScheme() {
         if (this.getClass().isAnnotationPresent(DataType.class)) {
@@ -51,7 +61,9 @@ public interface DataTypeConverter {
 
     /**
      * Gets the data type media type. Automatically derived from given data type annotation.
-     * @return
+     * Subclasses may add additional logic to determine the media type when annotation is missing.
+     * By default, returns empty String as a media type.
+     * @return the media type of the data type.
      */
     default String getMediaType() {
         if (this.getClass().isAnnotationPresent(DataType.class)) {
