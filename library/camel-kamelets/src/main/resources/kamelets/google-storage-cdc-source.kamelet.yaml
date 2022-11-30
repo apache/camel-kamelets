@@ -35,6 +35,8 @@ spec:
       Service account key is the basic method for authenticating to the Google Pubsub and Google Storage.
 
       To use this Kamelet you'll need to set up Events notification for your Google Storage Bucket.
+      
+      You must encode the `serviceAccountKey` property before you pass it as a parameter.
     required:
       - projectId
       - subscriptionName
