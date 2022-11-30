@@ -118,7 +118,7 @@ spec:
         - choice:
             precondition: true
             when:
-              - simple: '${properties:getObject:true}'
+              - simple: '${properties:getBlob:true}'
                 steps:
                   - set-body:
                       simple: ${body.toString()}
