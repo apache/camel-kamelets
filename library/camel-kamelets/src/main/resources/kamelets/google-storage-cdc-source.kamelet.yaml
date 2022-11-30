@@ -91,6 +91,7 @@ spec:
     - "camel:google-pubsub"
     - "camel:google-storage"
     - "camel:jackson"
+    - "camel:core"
   template:
     from:
       uri: "google-pubsub://{{projectId}}:{{subscriptionName}}"
