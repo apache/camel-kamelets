@@ -28,37 +28,25 @@ config:
         value: false
       - name: YAKS_KAMELETS_AUTO_REMOVE_RESOURCES
         value: false
-      - name: YAKS_KUBERNETES_AUTO_REMOVE_RESOURCES
-        value: false
-      - name: YAKS_KNATIVE_AUTO_REMOVE_RESOURCES
-        value: false
       - name: YAKS_TESTCONTAINERS_AUTO_REMOVE_RESOURCES
         value: false
       - name: CITRUS_TYPE_CONVERTER
         value: camel
     resources:
-      - amazonS3Client.groovy
-      - aws-s3-credentials.properties
-      - aws-s3-to-log-uri-based.groovy
-      - aws-s3-to-log-secret-based.groovy
-      - aws-s3-uri-binding.yaml
-      - aws-s3-to-knative-channel.yaml
-      - ../utils/knative-channel-to-log.yaml
+      - putItem.groovy
+      - verifyItems.groovy
+      - amazonDDBClient.groovy
+      - aws-ddb-sink-binding.yaml
     cucumber:
       tags:
         - "not @ignored"
     settings:
-      loggers:
-        - name: Logger.Message_IN
-          level: DEBUG
-        - name: Logger.Message_OUT
-          level: DEBUG
       dependencies:
         - groupId: com.amazonaws
-          artifactId: aws-java-sdk-kinesis
+          artifactId: aws-java-sdk-dynamodb
           version: "@aws-java-sdk.version@"
         - groupId: org.apache.camel
-          artifactId: camel-aws2-s3
+          artifactId: camel-aws2-ddb
           version: "@camel.version@"
         - groupId: org.apache.camel
           artifactId: camel-jackson
@@ -68,3 +56,7 @@ config:
     failedOnly: true
     includes:
       - app=camel-k
+pre:
+  - name: Install experimental Kamelets
+    run: |
+      kubectl apply -f ../../aws-ddb-sink.exp.kamelet.yaml -n $YAKS_NAMESPACE

@@ -1,7 +1,9 @@
 @knative
+@experimental
 Feature: AWS S3 Kamelet - Knative binding
 
   Background:
+    Given Kamelet aws-s3-source-experimental is available
     Given Knative event consumer timeout is 20000 ms
     Given Camel K resource polling configuration
       | maxAttempts          | 200   |
