@@ -28,9 +28,13 @@ metadata:
     camel.apache.org/kamelet.type: "source"
 spec:
   definition:
-    title: "Google Pubsub Source"
+    title: "Google Storage CDC Source"
     description: |-
-      Consume messages from Google Cloud Pub/Sub.
+      Receive data from Google Pubsub reporting events related to a Google Storage bucket.
+
+      Service account key is the basic method for authenticating to the Google Pubsub and Google Storage.
+
+      To use this Kamelet you'll need to set up Events notification for your Google Storage Bucket.
     required:
       - projectId
       - subscriptionName
