@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Add an Azure Storage Blob CDC Source Kamelet [\#1185](https://github.com/apache/camel-kamelets/issues/1185)
 - Azure Storage Blob Sink Kamelet: Add it-test [\#1182](https://github.com/apache/camel-kamelets/issues/1182)
 - Add delay parameter to all SQL Source Kamelets [\#1161](https://github.com/apache/camel-kamelets/issues/1161)
 - Azure Storage Blob Changefeed Source Kamelet: Add CredentialType to parameters [\#1158](https://github.com/apache/camel-kamelets/issues/1158)
@@ -22,6 +23,8 @@
 
 **Merged pull requests:**
 
+- Add an Azure Storage Blob CDC Source Kamelet - Fix description [\#1187](https://github.com/apache/camel-kamelets/pull/1187) ([oscerd](https://github.com/oscerd))
+- Add an Azure Storage Blob CDC Source Kamelet [\#1186](https://github.com/apache/camel-kamelets/pull/1186) ([oscerd](https://github.com/oscerd))
 - Added repeatCount parameter to timer source Kamelet [\#1184](https://github.com/apache/camel-kamelets/pull/1184) ([oscerd](https://github.com/oscerd))
 - Azure Storage Blob Sink Kamelet: Add it-test to Makefile [\#1183](https://github.com/apache/camel-kamelets/pull/1183) ([oscerd](https://github.com/oscerd))
 - Fix mail-sink Kamelet [\#1181](https://github.com/apache/camel-kamelets/pull/1181) ([christophd](https://github.com/christophd))
