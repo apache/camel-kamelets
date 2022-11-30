@@ -44,7 +44,19 @@ public class JsonModelDataTypeTest {
     }
 
     @Test
-    void shouldMapFromStringToJsonModel() throws Exception {
+    void shouldMapStringToJsonModelWithModelProperty() throws Exception {
+        Exchange exchange = new DefaultExchange(camelContext);
+
+        exchange.getMessage().setBody("{ \"name\": \"Rajesh\", \"age\": 28}");
+        dataType.setModel(Person.class.getName());
+        dataType.convert(exchange);
+
+        assertEquals(Person.class, exchange.getMessage().getBody().getClass());
+        assertEquals("Rajesh", exchange.getMessage().getBody(Person.class).getName());
+    }
+
+    @Test
+    void shouldMapStringToJsonModelWithExchangeProperty() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
         exchange.setProperty(JsonModelDataType.DATA_TYPE_MODEL_PROPERTY, Person.class.getName());

@@ -26,7 +26,6 @@ import org.apache.camel.CamelContextAware;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.InvalidPayloadException;
-import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
 import org.apache.camel.util.ObjectHelper;
@@ -41,21 +40,30 @@ public class JsonModelDataType implements DataTypeConverter, CamelContextAware {
 
     public static final String DATA_TYPE_MODEL_PROPERTY = "CamelDataTypeModel";
 
+    private String model;
+
     private CamelContext camelContext;
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public void convert(Exchange exchange) {
-        if (!exchange.hasProperties() || !exchange.getProperties().containsKey(DATA_TYPE_MODEL_PROPERTY)) {
+        String type;
+        if (exchange.hasProperties() && exchange.getProperties().containsKey(DATA_TYPE_MODEL_PROPERTY)) {
+            type = exchange.getProperty(DATA_TYPE_MODEL_PROPERTY, String.class);
+        } else {
+            type = model;
+        }
+
+        if (type == null) {
+            // neither model property nor exchange property defines proper type - do nothing
             return;
         }
 
         ObjectHelper.notNull(camelContext, "camelContext");
 
-        String type = exchange.getProperty(DATA_TYPE_MODEL_PROPERTY, String.class);
-        try (JacksonDataFormat dataFormat = new JacksonDataFormat(mapper, camelContext.getClassResolver().resolveMandatoryClass(type))) {
-            Object unmarshalled = dataFormat.unmarshal(exchange, getBodyAsStream(exchange));
+        try {
+            Object unmarshalled = mapper.reader().forType(camelContext.getClassResolver().resolveMandatoryClass(type)).readValue(getBodyAsStream(exchange));
             exchange.getMessage().setBody(unmarshalled);
         } catch (Exception e) {
             throw new CamelExecutionException(
@@ -76,6 +84,10 @@ public class JsonModelDataType implements DataTypeConverter, CamelContextAware {
     @Override
     public CamelContext getCamelContext() {
         return camelContext;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
     }
 
     @Override
