@@ -1,3 +1,4 @@
+@knative
 Feature: AWS S3 Kamelet - cloud events data type
 
   Background:
@@ -34,7 +35,7 @@ Feature: AWS S3 Kamelet - cloud events data type
   Scenario: Verify Kamelet source
     Given create Knative event consumer service event-consumer-service
     Given create Knative trigger event-service-trigger on service event-consumer-service with filter on attributes
-      | type   | kamelet.aws.s3.source |
+      | type   | org.apache.camel.event.aws.s3.getObject |
     Given Camel exchange message header CamelAwsS3Key="${aws.s3.key}"
     Given send Camel exchange to("aws2-s3://${aws.s3.bucketNameOrArn}?amazonS3Client=#amazonS3Client") with body: ${aws.s3.message}
     Then expect Knative event data: ${aws.s3.message}

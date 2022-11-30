@@ -1,3 +1,4 @@
+@knative
 Feature: AWS S3 Kamelet - Knative binding
 
   Background:
