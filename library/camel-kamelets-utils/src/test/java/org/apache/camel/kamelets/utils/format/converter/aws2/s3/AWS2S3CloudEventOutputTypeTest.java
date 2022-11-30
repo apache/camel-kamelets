@@ -52,9 +52,9 @@ class AWS2S3CloudEventOutputTypeTest {
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
         Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey(AWS2S3Constants.KEY));
-        assertEquals("kamelet.aws.s3.source", exchange.getMessage().getHeader(AWS2S3CloudEventOutputType.CAMEL_CLOUD_EVENT_TYPE));
+        assertEquals("org.apache.camel.event.aws.s3.getObject", exchange.getMessage().getHeader(AWS2S3CloudEventOutputType.CAMEL_CLOUD_EVENT_TYPE));
         assertEquals("test1.txt", exchange.getMessage().getHeader(AWS2S3CloudEventOutputType.CAMEL_CLOUD_EVENT_SUBJECT));
-        assertEquals("myBucket", exchange.getMessage().getHeader(AWS2S3CloudEventOutputType.CAMEL_CLOUD_EVENT_SOURCE));
+        assertEquals("aws.s3.bucket.myBucket", exchange.getMessage().getHeader(AWS2S3CloudEventOutputType.CAMEL_CLOUD_EVENT_SOURCE));
     }
 
     @Test

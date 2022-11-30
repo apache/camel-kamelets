@@ -91,6 +91,8 @@ jobs:
         kubectl version
         kubectl cluster-info
         kubectl describe nodes
+    - name: Install Knative
+      uses: ./.github/actions/install-knative
     - name: Install Camel K
       run: |
         # Configure install options
@@ -110,10 +112,7 @@ jobs:
         echo "Running tests"
         yaks run test/aws-ddb-sink $YAKS_RUN_OPTIONS
         
-        yaks run test/aws-s3/aws-s3-uri-binding.feature $YAKS_RUN_OPTIONS
-        yaks run test/aws-s3/aws-s3-source-property-conf.feature $YAKS_RUN_OPTIONS
-        yaks run test/aws-s3/aws-s3-source-secret-conf.feature $YAKS_RUN_OPTIONS
-        yaks run test/aws-s3/aws-s3-source-uri-conf.feature $YAKS_RUN_OPTIONS
+        yaks run test/aws-s3 $YAKS_RUN_OPTIONS
         
         yaks run test/extract-field-action $YAKS_RUN_OPTIONS
         yaks run test/insert-field-action $YAKS_RUN_OPTIONS
