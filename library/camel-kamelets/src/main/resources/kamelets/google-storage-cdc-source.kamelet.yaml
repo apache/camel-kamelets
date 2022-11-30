@@ -111,7 +111,6 @@ spec:
                   - set-header:
                       name: attributesStorage
                       simple: ${headers.CamelGooglePubsub.Attributes}
-                  - log: "${headers.attributesStorage}"
                   - set-property:
                       name: google-storage-event-type
                       simple: "${headers.attributesStorage[eventType]}"
