@@ -20,6 +20,10 @@ Feature: AWS S3 Kamelet - Knative binding
     Given New global Camel context
     Given load to Camel registry amazonS3Client.groovy
 
+  Scenario: Create Knative broker
+    Given create Knative broker default
+    And Knative broker default is running
+
   Scenario: Create AWS-S3 Kamelet to Knative binding
     Given variable loginfo is "Installed features"
     When load KameletBinding aws-s3-to-knative.yaml
@@ -42,6 +46,7 @@ Feature: AWS S3 Kamelet - Knative binding
   Scenario: Remove Camel K resources
     Given delete KameletBinding aws-s3-to-knative
     Given delete Kubernetes service event-consumer-service
+    Given delete Knative broker default
 
   Scenario: Stop container
     Given stop LocalStack container

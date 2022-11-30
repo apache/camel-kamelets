@@ -20,6 +20,10 @@ Feature: AWS S3 Kamelet - cloud events data type
     Given New global Camel context
     Given load to Camel registry amazonS3Client.groovy
 
+  Scenario: Create Knative broker
+    Given create Knative broker default
+    And Knative broker default is running
+
   Scenario: Create AWS-S3 Kamelet to Knative binding
     Given variable loginfo is "Installed features"
     When load KameletBinding aws-s3-to-knative.yaml
@@ -35,8 +39,8 @@ Feature: AWS S3 Kamelet - cloud events data type
     Given send Camel exchange to("aws2-s3://${aws.s3.bucketNameOrArn}?amazonS3Client=#amazonS3Client") with body: ${aws.s3.message}
     Then expect Knative event data: ${aws.s3.message}
     And verify Knative event
-      | type            | kamelet.aws.s3.source |
-      | source          | ${aws.s3.bucketNameOrArn} |
+      | type            | org.apache.camel.event.aws.s3.getObject |
+      | source          | aws.s3.bucket.${aws.s3.bucketNameOrArn} |
       | subject         | ${aws.s3.key} |
       | id              | @ignore@ |
 
