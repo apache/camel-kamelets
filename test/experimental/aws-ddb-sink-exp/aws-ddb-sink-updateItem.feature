@@ -18,7 +18,7 @@
 Feature: AWS DDB Sink - UpdateItem
 
   Background:
-    Given Kamelet aws-ddb-sink-experimental is available
+    Given Kamelet aws-ddb-experimental-sink is available
     Given Camel K resource polling configuration
       | maxAttempts          | 200   |
       | delayBetweenAttempts | 2000  |
@@ -50,9 +50,9 @@ Feature: AWS DDB Sink - UpdateItem
 
   Scenario: Create AWS-DDB Kamelet sink binding
     When load KameletBinding aws-ddb-sink-binding.yaml
-    And KameletBinding aws-ddb-sink-binding is available
-    And Camel K integration aws-ddb-sink-binding is running
-    And Camel K integration aws-ddb-sink-binding should print Routes startup
+    And KameletBinding aws-ddb-experimental-sink-binding is available
+    And Camel K integration aws-ddb-experimental-sink-binding is running
+    And Camel K integration aws-ddb-experimental-sink-binding should print Routes startup
     Then sleep 10sec
 
   Scenario: Verify Kamelet sink
@@ -62,7 +62,7 @@ Feature: AWS DDB Sink - UpdateItem
     Then run script verifyItems.groovy
 
   Scenario: Remove Camel K resources
-    Given delete KameletBinding aws-ddb-sink-binding
+    Given delete KameletBinding aws-ddb-experimental-sink-binding
 
   Scenario: Stop container
     Given stop LocalStack container

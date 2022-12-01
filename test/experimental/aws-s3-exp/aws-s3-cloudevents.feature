@@ -3,7 +3,7 @@
 Feature: AWS S3 Kamelet - cloud events data type
 
   Background:
-    Given Kamelet aws-s3-source-experimental is available
+    Given Kamelet aws-s3-experimental-source is available
     Given Knative event consumer timeout is 20000 ms
     Given Camel K resource polling configuration
       | maxAttempts          | 200   |
@@ -30,9 +30,9 @@ Feature: AWS S3 Kamelet - cloud events data type
   Scenario: Create AWS-S3 Kamelet to Knative binding
     Given variable loginfo is "Installed features"
     When load KameletBinding aws-s3-to-knative.yaml
-    And KameletBinding aws-s3-to-knative is available
-    And Camel K integration aws-s3-to-knative is running
-    Then Camel K integration aws-s3-to-knative should print ${loginfo}
+    And KameletBinding aws-s3-to-knative-binding is available
+    And Camel K integration aws-s3-to-knative-binding is running
+    Then Camel K integration aws-s3-to-knative-binding should print ${loginfo}
 
   Scenario: Verify Kamelet source
     Given create Knative event consumer service event-consumer-service
@@ -48,7 +48,7 @@ Feature: AWS S3 Kamelet - cloud events data type
       | id              | @ignore@ |
 
   Scenario: Remove Camel K resources
-    Given delete KameletBinding aws-s3-to-knative
+    Given delete KameletBinding aws-s3-to-knative-binding
     Given delete Kubernetes service event-consumer-service
 
   Scenario: Stop container
