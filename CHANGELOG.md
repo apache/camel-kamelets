@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Add a Google Cloud Storage CDC Source Kamelet [\#1188](https://github.com/apache/camel-kamelets/issues/1188)
 - Add an Azure Storage Blob CDC Source Kamelet [\#1185](https://github.com/apache/camel-kamelets/issues/1185)
 - Azure Storage Blob Sink Kamelet: Add it-test [\#1182](https://github.com/apache/camel-kamelets/issues/1182)
 - Add delay parameter to all SQL Source Kamelets [\#1161](https://github.com/apache/camel-kamelets/issues/1161)
@@ -23,6 +24,9 @@
 
 **Merged pull requests:**
 
+- Add a Google Cloud Storage CDC Source Kamelet - Remove useless logging [\#1191](https://github.com/apache/camel-kamelets/pull/1191) ([oscerd](https://github.com/oscerd))
+- Azure Storage Blob CDC Source Kamelet: Parameter is getBlob and not getObject [\#1190](https://github.com/apache/camel-kamelets/pull/1190) ([oscerd](https://github.com/oscerd))
+- Add a Google Cloud Storage CDC Source Kamelet [\#1189](https://github.com/apache/camel-kamelets/pull/1189) ([oscerd](https://github.com/oscerd))
 - Add an Azure Storage Blob CDC Source Kamelet - Fix description [\#1187](https://github.com/apache/camel-kamelets/pull/1187) ([oscerd](https://github.com/oscerd))
 - Add an Azure Storage Blob CDC Source Kamelet [\#1186](https://github.com/apache/camel-kamelets/pull/1186) ([oscerd](https://github.com/oscerd))
 - Added repeatCount parameter to timer source Kamelet [\#1184](https://github.com/apache/camel-kamelets/pull/1184) ([oscerd](https://github.com/oscerd))
