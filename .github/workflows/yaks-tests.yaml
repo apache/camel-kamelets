@@ -65,7 +65,6 @@ jobs:
 
         # Overwrite JitPack coordinates in the local Kamelets so the tests can use the utility classes in this PR
         find kamelets -maxdepth 1 -name '*.kamelet.yaml' -exec sed -i "s/github:apache.camel-kamelets:camel-kamelets-utils:${BASE_REF}-SNAPSHOT/github:${HEAD_REPO/\//.}:camel-kamelets-utils:${HEAD_REF//\//'~'}-SNAPSHOT/g" {} +
-        find experimental -maxdepth 1 -name '*.kamelet.yaml' -exec sed -i "s/github:apache.camel-kamelets:camel-kamelets-utils:${BASE_REF}-SNAPSHOT/github:${HEAD_REPO/\//.}:camel-kamelets-utils:${HEAD_REF//\//'~'}-SNAPSHOT/g" {} +
     - name: Get Camel K CLI
       run: |
         curl --fail -L --silent https://github.com/apache/camel-k/releases/download/v${CAMEL_K_VERSION}/camel-k-client-${CAMEL_K_VERSION}-linux-64bit.tar.gz -o kamel.tar.gz
@@ -110,7 +109,7 @@ jobs:
         yaks install --operator-image $YAKS_IMAGE_NAME:$YAKS_VERSION
     - name: YAKS Tests
       run: |
-        echo "Running tests"
+        echo "Running tests for Kamelets"
         yaks run test/aws-ddb-sink $YAKS_RUN_OPTIONS
         
         yaks run test/aws-s3 $YAKS_RUN_OPTIONS
@@ -122,11 +121,11 @@ jobs:
         yaks run test/earthquake-source $YAKS_RUN_OPTIONS
         yaks run test/rest-openapi-sink $YAKS_RUN_OPTIONS
         yaks run test/kafka $YAKS_RUN_OPTIONS
-    - name: YAKS Tests on experimental Kamelets
+    - name: YAKS Tests experimental Kamelets
       run: |
         echo "Running tests for experimental Kamelets"
-        yaks run experimental/test/aws-ddb-sink $YAKS_RUN_OPTIONS
-        yaks run experimental/test/aws-s3 $YAKS_RUN_OPTIONS
+        yaks run test/experimental/aws-ddb-sink-exp $YAKS_RUN_OPTIONS
+        yaks run test/experimental/aws-s3-exp $YAKS_RUN_OPTIONS
     - name: YAKS Report
       if: failure()
       run: |

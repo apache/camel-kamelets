@@ -63,7 +63,3 @@ config:
     failedOnly: true
     includes:
       - app=camel-k
-pre:
-  - name: Install experimental Kamelets
-    run: |
-      kubectl apply -f ../../aws-s3-source.exp.kamelet.yaml -n $YAKS_NAMESPACE

@@ -18,30 +18,33 @@
 apiVersion: camel.apache.org/v1alpha1
 kind: KameletBinding
 metadata:
-  name: aws-s3-to-knative
+  name: aws-ddb-experimental-sink-binding
 spec:
   source:
     ref:
       kind: Kamelet
       apiVersion: camel.apache.org/v1alpha1
-      name: aws-s3-source-experimental
+      name: timer-source
     properties:
-      bucketNameOrArn: ${aws.s3.bucketNameOrArn}
-      overrideEndpoint: true
-      outputFormat: ${aws.s3.output}
-      uriEndpointOverride: ${YAKS_TESTCONTAINERS_LOCALSTACK_S3_URL}
-      accessKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}
-      secretKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}
-      region: ${YAKS_TESTCONTAINERS_LOCALSTACK_REGION}
+      period: ${timer.source.period}
+      message: '${aws.ddb.json.data}'
   steps:
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1alpha1
-        name: log-sink
-      properties:
-        showHeaders: true
+        name: log-action
+        properties:
+          showHeaders: true
   sink:
     ref:
-      kind: Broker
-      apiVersion: eventing.knative.dev/v1
-      name: default
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: aws-ddb-experimental-sink
+    properties:
+      table: ${aws.ddb.tableName}
+      operation: ${aws.ddb.operation}
+      overrideEndpoint: true
+      uriEndpointOverride: ${YAKS_TESTCONTAINERS_LOCALSTACK_DYNAMODB_URL}
+      accessKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}
+      secretKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}
+      region: ${YAKS_TESTCONTAINERS_LOCALSTACK_REGION}
