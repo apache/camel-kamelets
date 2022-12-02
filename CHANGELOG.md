@@ -24,6 +24,10 @@
 
 **Merged pull requests:**
 
+- Generated sources regen [\#1197](https://github.com/apache/camel-kamelets/pull/1197) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Review level support 0.10.x [\#1195](https://github.com/apache/camel-kamelets/pull/1195) ([oscerd](https://github.com/oscerd))
+- CDC Source Kamelets for AWS S3, Azure Storage Blob and Google Storage are in a Preview state [\#1193](https://github.com/apache/camel-kamelets/pull/1193) ([oscerd](https://github.com/oscerd))
+- Added Microsoft Exchange IMAP OAUTH source kamelet [\#1192](https://github.com/apache/camel-kamelets/pull/1192) ([luigidemasi](https://github.com/luigidemasi))
 - Add a Google Cloud Storage CDC Source Kamelet - Remove useless logging [\#1191](https://github.com/apache/camel-kamelets/pull/1191) ([oscerd](https://github.com/oscerd))
 - Azure Storage Blob CDC Source Kamelet: Parameter is getBlob and not getObject [\#1190](https://github.com/apache/camel-kamelets/pull/1190) ([oscerd](https://github.com/oscerd))
 - Add a Google Cloud Storage CDC Source Kamelet [\#1189](https://github.com/apache/camel-kamelets/pull/1189) ([oscerd](https://github.com/oscerd))
