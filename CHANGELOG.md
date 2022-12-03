@@ -24,6 +24,7 @@
 
 **Merged pull requests:**
 
+- Generated sources regen [\#1199](https://github.com/apache/camel-kamelets/pull/1199) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Generated sources regen [\#1197](https://github.com/apache/camel-kamelets/pull/1197) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Review level support 0.10.x [\#1195](https://github.com/apache/camel-kamelets/pull/1195) ([oscerd](https://github.com/oscerd))
 - CDC Source Kamelets for AWS S3, Azure Storage Blob and Google Storage are in a Preview state [\#1193](https://github.com/apache/camel-kamelets/pull/1193) ([oscerd](https://github.com/oscerd))
@@ -50,6 +51,7 @@
 - JSLT Action - Fix too many slashes in example of template [\#1167](https://github.com/apache/camel-kamelets/pull/1167) ([tadayosi](https://github.com/tadayosi))
 - FTP / SFTP connectors missing setting for binary mode transfers [\#1165](https://github.com/apache/camel-kamelets/pull/1165) ([oscerd](https://github.com/oscerd))
 - Add delay parameter to all SQL Source Kamelets [\#1163](https://github.com/apache/camel-kamelets/pull/1163) ([oscerd](https://github.com/oscerd))
+- chore: Introduce Kamelet input/output data types [\#1162](https://github.com/apache/camel-kamelets/pull/1162) ([christophd](https://github.com/christophd))
 - Azure Storage Blob Changefeed Source Kamelet: Add CredentialType to parameters [\#1159](https://github.com/apache/camel-kamelets/pull/1159) ([oscerd](https://github.com/oscerd))
 - Kinesis Firehose Sink IT Test [\#1155](https://github.com/apache/camel-kamelets/pull/1155) ([oscerd](https://github.com/oscerd))
 - IT Tests: Add tests for AWS SNS [\#1152](https://github.com/apache/camel-kamelets/pull/1152) ([oscerd](https://github.com/oscerd))
