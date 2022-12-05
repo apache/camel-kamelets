@@ -140,7 +140,6 @@ spec:
                       when:
                         - simple: '${exchangeProperty.azure-storage-blob-event-type} == "Microsoft.Storage.BlobCreated" && ${exchangeProperty.azure-storage-blob-subject} contains "{{containerName}}"'
                           steps:
-                            - log: "Cia {{accessKey}}"
                             - toD: >-
                                 azure-storage-blob:{{accountName}}/{{containerName}}?accessKey=RAW({{accessKey}})&operation=getBlob&blobName=${exchangeProperty.azure-storage-blob-blob-name}&credentialType={{credentialType}}
         - to: 'kamelet:sink'
