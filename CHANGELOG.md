@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v0.10.0](https://github.com/apache/camel-kamelets/tree/v0.10.0) (2022-12-05)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v0.9.3...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v0.9.3...v0.10.0)
 
 **Closed issues:**
 
@@ -24,6 +24,7 @@
 
 **Merged pull requests:**
 
+- Azure Storage Blob CDC: Add RAW to toD accessKey parameter [\#1201](https://github.com/apache/camel-kamelets/pull/1201) ([oscerd](https://github.com/oscerd))
 - Generated sources regen [\#1199](https://github.com/apache/camel-kamelets/pull/1199) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Generated sources regen [\#1197](https://github.com/apache/camel-kamelets/pull/1197) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Review level support 0.10.x [\#1195](https://github.com/apache/camel-kamelets/pull/1195) ([oscerd](https://github.com/oscerd))
