@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- MQTT source kamelet does not include topic [\#1204](https://github.com/apache/camel-kamelets/issues/1204)
 - Add Camel test for the beans used in some of the Kamelet action [\#730](https://github.com/apache/camel-kamelets/issues/730)
 
 ## [v0.10.0](https://github.com/apache/camel-kamelets/tree/v0.10.0) (2022-12-05)
