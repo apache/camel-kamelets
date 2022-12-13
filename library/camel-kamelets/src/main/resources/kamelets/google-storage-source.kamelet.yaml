@@ -32,7 +32,7 @@ spec:
     description: |-
       Consume objects from Google Cloud Storage.
 
-      You must encode the `serviceAccountKey` property before you pass it as a parameter.
+      If you specify the `serviceAccountKey` property, you must base64 encode it before you pass it as a parameter.
     required:
       - bucketNameOrArn
     type: object
