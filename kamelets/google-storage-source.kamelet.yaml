@@ -35,7 +35,6 @@ spec:
       You must encode the `serviceAccountKey` property before you pass it as a parameter.
     required:
       - bucketNameOrArn
-      - serviceAccountKey
     type: object
     properties:
       bucketNameOrArn:
@@ -71,7 +70,7 @@ spec:
       uri: "google-storage://{{bucketNameOrArn}}"
       parameters:
         autoCreateBucket: "{{autoCreateBucket}}"
-        serviceAccountKey: "base64:{{serviceAccountKey}}"
+        serviceAccountKey: "base64:{{?serviceAccountKey}}"
         deleteAfterRead: "{{deleteAfterRead}}"
       steps:
       - to: kamelet:sink
