@@ -117,6 +117,13 @@ spec:
         default: false
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+      showCachedStreams:
+        title: Show Cached Streams
+        description: Whether Camel should show cached stream bodies or not.
+        type: boolean
+        default: true
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
   dependencies:
   - "camel:kamelet"
   - "camel:log"
@@ -138,3 +145,4 @@ spec:
             showHeaders: "{{?showHeaders}}"
             showProperties: "{{?showProperties}}"
             showStreams: "{{?showStreams}}"
+            showCachedStreams: "{{?showCachedStreams}}"
