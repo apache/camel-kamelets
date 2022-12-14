@@ -32,11 +32,10 @@ spec:
     description: |-
       Send messages to Google Cloud Pub/Sub.
 
-      You must encode the `serviceAccountKey` property before you pass it as a parameter.
+      If you specify the `serviceAccountKey` property, you must base64 encode it before you pass it as a parameter.
     required:
       - projectId
       - destinationName
-      - serviceAccountKey
     type: object
     properties:
       projectId:
@@ -64,4 +63,4 @@ spec:
       - to:
           uri: "google-pubsub://{{projectId}}:{{destinationName}}"
           parameters:
-            serviceAccountKey: "base64:{{serviceAccountKey}}"
+            serviceAccountKey: "base64:{{?serviceAccountKey}}"
