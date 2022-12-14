@@ -31,10 +31,11 @@ spec:
     title: "Google Pubsub Source"
     description: |-
       Consume messages from Google Cloud Pub/Sub.
+      
+      If you specify the `serviceAccountKey` property, you must base64 encode it before you pass it as a parameter.
     required:
       - projectId
       - subscriptionName
-      - serviceAccountKey
     type: object
     properties:
       projectId:
@@ -76,7 +77,7 @@ spec:
     from:
       uri: "google-pubsub://{{projectId}}:{{subscriptionName}}"
       parameters:
-        serviceAccountKey: "base64:{{serviceAccountKey}}"
+        serviceAccountKey: "base64:{{?serviceAccountKey}}"
         synchronousPull: "{{synchronousPull}}"
         maxMessagesPerPoll: "{{maxMessagesPerPoll}}"
         concurrentConsumers: "{{concurrentConsumers}}"
