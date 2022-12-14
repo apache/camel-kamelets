@@ -108,18 +108,15 @@ spec:
             when:
               - simple: '${properties:getObject:true}'
                 steps:
-                  - set-header:
-                      name: attributesStorage
-                      simple: ${headers.CamelGooglePubsub.Attributes}
                   - set-property:
                       name: google-storage-event-type
-                      simple: "${headers.attributesStorage[eventType]}"
+                      simple: "${headers.CamelGooglePubsubAttributes[eventType]}"
                   - set-property:
                       name: google-storage-object-id
-                      simple: "${headers.attributesStorage[objectId]}"
+                      simple: "${headers.CamelGooglePubsubAttributes[objectId]}"
                   - set-property:
                       name: google-storage-bucket-id
-                      simple: "${headers.attributesStorage[bucketId]}"
+                      simple: "${headers.CamelGooglePubsubAttributes[bucketId]}"
                   - choice:
                       when:
                         - simple: '${exchangeProperty.google-storage-event-type} == "OBJECT_FINALIZE" && ${exchangeProperty.google-storage-bucket-id} == "{{bucketNameOrArn}}"'
