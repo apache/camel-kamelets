@@ -6,14 +6,22 @@
 
 **Closed issues:**
 
+- Google Pubsub Kamelets: Make serviceAccountKey optional [\#1214](https://github.com/apache/camel-kamelets/issues/1214)
 - Slack Source Kamelet: Set default delay to 1 minute [\#1207](https://github.com/apache/camel-kamelets/issues/1207)
+- Documentation. Can Kamelet pull dependencies from private artifactory? [\#1205](https://github.com/apache/camel-kamelets/issues/1205)
 - MQTT source kamelet does not include topic [\#1204](https://github.com/apache/camel-kamelets/issues/1204)
 - google-storage-sink serviceAccountKey is not required [\#1203](https://github.com/apache/camel-kamelets/issues/1203)
+- RAW does not seem to work in Kamelet [\#1200](https://github.com/apache/camel-kamelets/issues/1200)
+- Log sink should show streams by default [\#1198](https://github.com/apache/camel-kamelets/issues/1198)
+- Camel Google Pubsub headers names changed in Camel 3.20.0 [\#1194](https://github.com/apache/camel-kamelets/issues/1194)
 - Release 0.10.0 [\#1128](https://github.com/apache/camel-kamelets/issues/1128)
 - Add Camel test for the beans used in some of the Kamelet action [\#730](https://github.com/apache/camel-kamelets/issues/730)
 
 **Merged pull requests:**
 
+- Google pubsub optional service account key [\#1215](https://github.com/apache/camel-kamelets/pull/1215) ([oscerd](https://github.com/oscerd))
+- Log sink and log action should show streams by default [\#1213](https://github.com/apache/camel-kamelets/pull/1213) ([oscerd](https://github.com/oscerd))
+- Camel Google Pubsub headers names changed in Camel 3.20.0 [\#1212](https://github.com/apache/camel-kamelets/pull/1212) ([oscerd](https://github.com/oscerd))
 - Slack Source Kamelet: Set default delay to 1 minute [\#1208](https://github.com/apache/camel-kamelets/pull/1208) ([oscerd](https://github.com/oscerd))
 - Google Storage Source/Sink Kamelet: serviceAccountKey is not required [\#1206](https://github.com/apache/camel-kamelets/pull/1206) ([oscerd](https://github.com/oscerd))
 
