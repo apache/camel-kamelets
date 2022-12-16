@@ -66,18 +66,72 @@ spec:
     - "camel:azure-storage-blob"
     - "camel:kamelet"
     - "camel:core"
+    - 'camel:jackson'
     - "camel:jsonpath"
     - "camel:timer"
+    - "mvn:com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4"
+    - "mvn:com.azure:azure-storage-blob-changefeed:12.0.0-beta.17"
   template:
     from:
       uri: "timer:azure-storage-blob-stream"
       parameters:
         period: "{{period}}"
       steps:
-      - to:
-          uri: "azure-storage-blob:{{accountName}}"
-          parameters:
-            operation: "getChangeFeed"
-            accessKey: "{{accessKey}}"
-            credentialType: "{{credentialType}}"
-      - to: "kamelet:sink"
+        - to:
+            uri: "azure-storage-blob:{{accountName}}"
+            parameters:
+              operation: "getChangeFeed"
+              accessKey: "{{accessKey}}"
+              credentialType: "{{credentialType}}"
+        - split:
+            expression:
+              simple: "${body}"
+        - marshal:
+            json:
+              library: Jackson
+              module-class-names: com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+              unmarshalType: com.fasterxml.jackson.databind.JsonNode
+        - set-header:
+            name: "azure-storage-blob-changefeed-topic"
+            jsonpath:
+              suppress-exceptions: true
+              expression: $.topic
+        - set-header:
+            name: "azure-storage-blob-changefeed-subject"
+            jsonpath:
+              suppress-exceptions: true
+              expression: $.subject
+        - set-header:
+            name: "azure-storage-blob-changefeed-eventType"
+            jsonpath:
+              suppress-exceptions: true
+              expression: $.eventType
+        - set-header:
+            name: "azure-storage-blob-changefeed-eventTime"
+            jsonpath:
+              suppress-exceptions: true
+              expression: $.eventTime
+        - set-header:
+            name: "azure-storage-blob-changefeed-id"
+            jsonpath:
+              suppress-exceptions: true
+              expression: $.id
+        - set-header:
+            name: "azure-storage-blob-changefeed-dataVersion"
+            jsonpath:
+              suppress-exceptions: true
+              expression: $.dataVersion
+        - set-header:
+            name: "azure-storage-blob-changefeed-metadataVersion"
+            jsonpath:
+              suppress-exceptions: true
+              expression: $.metadataVersion
+        - set-body:
+            jsonpath:
+              expression: $.data
+        - marshal:
+            json:
+              library: Jackson
+              module-class-names: com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+        - to: "kamelet:sink"
+
