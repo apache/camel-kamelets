@@ -19,6 +19,7 @@
 
 **Merged pull requests:**
 
+- Upgrade Redshift Jdbc42 to version 2.1.0.10 [\#1216](https://github.com/apache/camel-kamelets/pull/1216) ([oscerd](https://github.com/oscerd))
 - Google pubsub optional service account key [\#1215](https://github.com/apache/camel-kamelets/pull/1215) ([oscerd](https://github.com/oscerd))
 - Log sink and log action should show streams by default [\#1213](https://github.com/apache/camel-kamelets/pull/1213) ([oscerd](https://github.com/oscerd))
 - Camel Google Pubsub headers names changed in Camel 3.20.0 [\#1212](https://github.com/apache/camel-kamelets/pull/1212) ([oscerd](https://github.com/oscerd))
