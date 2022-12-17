@@ -19,6 +19,8 @@
 
 **Merged pull requests:**
 
+- Add FHIR sink kamelet [\#1219](https://github.com/apache/camel-kamelets/pull/1219) ([bramplouvier](https://github.com/bramplouvier))
+- fixed Azure Storage Blob changefeed source connector [\#1217](https://github.com/apache/camel-kamelets/pull/1217) ([valdar](https://github.com/valdar))
 - Upgrade Redshift Jdbc42 to version 2.1.0.10 [\#1216](https://github.com/apache/camel-kamelets/pull/1216) ([oscerd](https://github.com/oscerd))
 - Google pubsub optional service account key [\#1215](https://github.com/apache/camel-kamelets/pull/1215) ([oscerd](https://github.com/oscerd))
 - Log sink and log action should show streams by default [\#1213](https://github.com/apache/camel-kamelets/pull/1213) ([oscerd](https://github.com/oscerd))
