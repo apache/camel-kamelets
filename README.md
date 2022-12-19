@@ -195,7 +195,7 @@ Check that everything is alright with a dryRun:
 ./mvnw release:prepare -Prelease \
   -DdryRun \
   -DreleaseVersion=$CAMEL_KAMELET_VERSION \
-  -DdevelopmentVersion=main-SNAPSHOT \
+  -DdevelopmentVersion=<next_snapshot> \
   -Dtag=v$CAMEL_KAMELET_VERSION
 ```
 
@@ -205,7 +205,7 @@ Check the signatures of the files, then clean and prepare the actual release:
 ./mvnw release:clean -Prelease
 ./mvnw release:prepare -Prelease \
   -DreleaseVersion=$CAMEL_KAMELET_VERSION \
-  -DdevelopmentVersion=main-SNAPSHOT \
+  -DdevelopmentVersion=<next_snapshot> \
   -Dtag=v$CAMEL_KAMELET_VERSION
 ```
 
