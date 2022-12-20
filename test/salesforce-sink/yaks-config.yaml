@@ -19,23 +19,17 @@ config:
   namespace:
     temporary: false
   runtime:
-    settings:
-      loggers:
-        - name: root
-          level: INFO
-        - name: org.citrusframework.yaks
-          level: DEBUG
-        - name: com.consol.citrus
-          level: INFO
-        - name: Logger.Message_IN
-          level: DEBUG
-        - name: Logger.Message_OUT
-          level: DEBUG
     env:
       - name: YAKS_CAMELK_AUTO_REMOVE_RESOURCES
         value: false
       - name: YAKS_KUBERNETES_AUTO_REMOVE_RESOURCES
         value: false
+    settings:
+      loggers:
+        - name: INTEGRATION_STATUS
+          level: INFO
+        - name: INTEGRATION_LOGS
+          level: INFO
     secret:  salesforce-credentials
     resources:
       - timer-to-salesforce-binding.yaml

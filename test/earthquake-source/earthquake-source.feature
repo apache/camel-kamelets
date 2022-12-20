@@ -18,7 +18,7 @@
 Feature: Kamelet earthquake-source
 
   Background:
-    Given HTTP server timeout is 15000 ms
+    Given HTTP server timeout is 150000 ms
     Given HTTP server "test-service"
 
   Scenario: Create Http server
@@ -32,7 +32,6 @@ Feature: Kamelet earthquake-source
     And create KameletBinding earthquake-source-uri
     Then KameletBinding earthquake-source-uri should be available
     Then Camel K integration earthquake-source-uri should be running
-    And Camel K integration earthquake-source-uri should print Routes startup
 
   Scenario: Verify binding
     Given expect HTTP request header: Content-Type="application/json;charset=UTF-8"

@@ -40,9 +40,9 @@ Feature: Kafka Kamelet source
     Given Camel K resource polling configuration
       | maxAttempts          | 200   |
       | delayBetweenAttempts | 2000  |
-    When load KameletBinding kafka-source-test.yaml
-    Then Camel K integration kafka-source-test should be running
-    And Camel K integration kafka-source-test should print Subscribing ${topic}-Thread 0 to topic ${topic}
+    When load KameletBinding kafka-source-binding.yaml
+    Then Camel K integration kafka-source-binding should be running
+    And Camel K integration kafka-source-binding should print Subscribing ${topic}-Thread 0 to topic ${topic}
     And sleep 10sec
 
   Scenario: Send message to Kafka topic and verify sink output
@@ -62,5 +62,5 @@ Feature: Kafka Kamelet source
     And send HTTP 200 OK
 
   Scenario: Remove resources
-    Given delete KameletBinding kafka-source-test
+    Given delete KameletBinding kafka-source-binding
     And delete Kubernetes service kafka-to-http-service
