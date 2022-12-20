@@ -6,7 +6,9 @@
 
 **Closed issues:**
 
+- Use a semantic version instead of `main-SNAPSHOT` [\#1218](https://github.com/apache/camel-kamelets/issues/1218)
 - Google Pubsub Kamelets: Make serviceAccountKey optional [\#1214](https://github.com/apache/camel-kamelets/issues/1214)
+- Version alignment: Align the camel-kamelets project version to the camel core version [\#1211](https://github.com/apache/camel-kamelets/issues/1211)
 - Slack Source Kamelet: Set default delay to 1 minute [\#1207](https://github.com/apache/camel-kamelets/issues/1207)
 - Documentation. Can Kamelet pull dependencies from private artifactory? [\#1205](https://github.com/apache/camel-kamelets/issues/1205)
 - MQTT source kamelet does not include topic [\#1204](https://github.com/apache/camel-kamelets/issues/1204)
@@ -16,17 +18,6 @@
 - Camel Google Pubsub headers names changed in Camel 3.20.0 [\#1194](https://github.com/apache/camel-kamelets/issues/1194)
 - Release 0.10.0 [\#1128](https://github.com/apache/camel-kamelets/issues/1128)
 - Add Camel test for the beans used in some of the Kamelet action [\#730](https://github.com/apache/camel-kamelets/issues/730)
-
-**Merged pull requests:**
-
-- Add FHIR sink kamelet [\#1219](https://github.com/apache/camel-kamelets/pull/1219) ([bramplouvier](https://github.com/bramplouvier))
-- fixed Azure Storage Blob changefeed source connector [\#1217](https://github.com/apache/camel-kamelets/pull/1217) ([valdar](https://github.com/valdar))
-- Upgrade Redshift Jdbc42 to version 2.1.0.10 [\#1216](https://github.com/apache/camel-kamelets/pull/1216) ([oscerd](https://github.com/oscerd))
-- Google pubsub optional service account key [\#1215](https://github.com/apache/camel-kamelets/pull/1215) ([oscerd](https://github.com/oscerd))
-- Log sink and log action should show streams by default [\#1213](https://github.com/apache/camel-kamelets/pull/1213) ([oscerd](https://github.com/oscerd))
-- Camel Google Pubsub headers names changed in Camel 3.20.0 [\#1212](https://github.com/apache/camel-kamelets/pull/1212) ([oscerd](https://github.com/oscerd))
-- Slack Source Kamelet: Set default delay to 1 minute [\#1208](https://github.com/apache/camel-kamelets/pull/1208) ([oscerd](https://github.com/oscerd))
-- Google Storage Source/Sink Kamelet: serviceAccountKey is not required [\#1206](https://github.com/apache/camel-kamelets/pull/1206) ([oscerd](https://github.com/oscerd))
 
 ## [v0.10.0](https://github.com/apache/camel-kamelets/tree/v0.10.0) (2022-12-05)
 
