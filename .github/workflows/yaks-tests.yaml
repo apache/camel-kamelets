@@ -57,14 +57,15 @@ jobs:
     - name: Set JitPack coordinates for pull requests
       if: github.event_name == 'pull_request'
       env:
-        BASE_REF: ${{ github.base_ref }}
         HEAD_REF: ${{ github.head_ref }}
         HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
       run: |
         echo "Set JitPack dependency coordinates to ${HEAD_REPO/\//.}:camel-kamelets-utils:${HEAD_REF//\//'~'}-SNAPSHOT"
 
+        export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        
         # Overwrite JitPack coordinates in the local Kamelets so the tests can use the utility classes in this PR
-        find kamelets -maxdepth 1 -name '*.kamelet.yaml' -exec sed -i "s/github:apache.camel-kamelets:camel-kamelets-utils:${BASE_REF}-SNAPSHOT/github:${HEAD_REPO/\//.}:camel-kamelets-utils:${HEAD_REF//\//'~'}-SNAPSHOT/g" {} +
+        find kamelets -maxdepth 1 -name '*.kamelet.yaml' -exec sed -i "s/github:apache.camel-kamelets:camel-kamelets-utils:${PROJECT_VERSION}/github:${HEAD_REPO/\//.}:camel-kamelets-utils:${HEAD_REF//\//'~'}-SNAPSHOT/g" {} +
     - name: Get Camel K CLI
       run: |
         curl --fail -L --silent https://github.com/apache/camel-k/releases/download/v${CAMEL_K_VERSION}/camel-k-client-${CAMEL_K_VERSION}-linux-64bit.tar.gz -o kamel.tar.gz

@@ -49,10 +49,10 @@ config:
         - "not @ignored"
     settings:
       loggers:
-        - name: Logger.Message_IN
-          level: DEBUG
-        - name: Logger.Message_OUT
-          level: DEBUG
+        - name: INTEGRATION_STATUS
+          level: INFO
+        - name: INTEGRATION_LOGS
+          level: INFO
       dependencies:
         - groupId: com.amazonaws
           artifactId: aws-java-sdk-kinesis

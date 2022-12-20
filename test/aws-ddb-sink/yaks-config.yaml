@@ -41,6 +41,11 @@ config:
       tags:
         - "not @ignored"
     settings:
+      loggers:
+        - name: INTEGRATION_STATUS
+          level: INFO
+        - name: INTEGRATION_LOGS
+          level: INFO
       dependencies:
         - groupId: com.amazonaws
           artifactId: aws-java-sdk-dynamodb
