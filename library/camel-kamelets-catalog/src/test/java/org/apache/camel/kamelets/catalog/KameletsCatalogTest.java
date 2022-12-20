@@ -147,7 +147,7 @@ public class KameletsCatalogTest {
         List<ComponentModel.EndpointHeaderModel> headersAzureStorageBlobSource = catalog.getKameletSupportedHeaders("azure-storage-blob-source");
         assertEquals(34, headersAzureStorageBlobSource.size());
         List<ComponentModel.EndpointHeaderModel> headersAzureStorageBlobSink = catalog.getKameletSupportedHeaders("azure-storage-blob-sink");
-        assertEquals(32, headersAzureStorageBlobSink.size());
+        assertEquals(33, headersAzureStorageBlobSink.size());
         List<ComponentModel.EndpointHeaderModel> headersAzureStorageBlobChangeefeedSource = catalog.getKameletSupportedHeaders("azure-storage-blob-changefeed-source");
         assertEquals(34, headersAzureStorageBlobChangeefeedSource.size());
         List<ComponentModel.EndpointHeaderModel> headersAzureStorageQueueSource = catalog.getKameletSupportedHeaders("azure-storage-queue-source");
@@ -235,9 +235,9 @@ public class KameletsCatalogTest {
         List<ComponentModel.EndpointHeaderModel> headersJmsAmqp10Sink= catalog.getKameletSupportedHeaders("jms-amqp-10-sink");
         assertEquals(17, headersJmsAmqp10Sink.size());
         List<ComponentModel.EndpointHeaderModel> headersActivemqSource= catalog.getKameletSupportedHeaders("jms-apache-activemq-source");
-        assertEquals(0, headersActivemqSource.size());
+        assertEquals(14, headersActivemqSource.size());
         List<ComponentModel.EndpointHeaderModel> headersActivemqSink= catalog.getKameletSupportedHeaders("jms-apache-activemq-sink");
-        assertEquals(0, headersActivemqSink.size());
+        assertEquals(17, headersActivemqSink.size());
         List<ComponentModel.EndpointHeaderModel> headersJmsArtemisSource= catalog.getKameletSupportedHeaders("jms-apache-artemis-source");
         assertEquals(14, headersJmsArtemisSource.size());
         List<ComponentModel.EndpointHeaderModel> headersJmsArtemisSink= catalog.getKameletSupportedHeaders("jms-apache-artemis-sink");
