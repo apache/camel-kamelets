@@ -33,8 +33,8 @@ Feature: Kafka Kamelet sink
     Given Camel K resource polling configuration
       | maxAttempts          | 200   |
       | delayBetweenAttempts | 2000  |
-    When load KameletBinding kafka-sink-test.yaml
-    Then Camel K integration kafka-sink-test should be running
+    When load KameletBinding kafka-sink-binding.yaml
+    Then Camel K integration kafka-sink-binding should be running
 
   Scenario: Receive message on Kafka topic and verify sink output
     Given Kafka connection
@@ -42,4 +42,4 @@ Feature: Kafka Kamelet sink
     Then receive Kafka message with body: ${message}
 
   Scenario: Remove resources
-    Given delete KameletBinding kafka-sink-test
+    Given delete KameletBinding kafka-sink-binding

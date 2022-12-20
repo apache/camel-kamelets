@@ -24,6 +24,12 @@ config:
         value: false
       - name: YAKS_KUBERNETES_AUTO_REMOVE_RESOURCES
         value: false
+    settings:
+      loggers:
+        - name: INTEGRATION_STATUS
+          level: INFO
+        - name: INTEGRATION_LOGS
+          level: INFO
     resources:
       - pet.json
       - openapi.json

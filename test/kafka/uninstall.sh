@@ -16,7 +16,7 @@
 # limitations under the License.
 
 # delete Kafka cluster
-kubectl delete kafka/my-cluster
+kubectl delete kafka/my-cluster -n $YAKS_NAMESPACE
 
 # delete default topic
-kubectl delete kafkatopic/my-topic
+kubectl delete kafkatopic/my-topic -n $YAKS_NAMESPACE

@@ -27,7 +27,7 @@ import software.amazon.awssdk.services.dynamodb.model.ScalarAttributeType
 
 DynamoDbClient amazonDDBClient = DynamoDbClient
         .builder()
-        .endpointOverride(URI.create("${YAKS_TESTCONTAINERS_LOCALSTACK_DYNAMODB_URL}"))
+        .endpointOverride(URI.create("${YAKS_TESTCONTAINERS_LOCALSTACK_DYNAMODB_LOCAL_URL}"))
         .credentialsProvider(StaticCredentialsProvider.create(
                 AwsBasicCredentials.create(
                         "${YAKS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}",

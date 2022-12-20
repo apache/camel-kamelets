@@ -26,9 +26,15 @@ config:
         value: false
       - name: CITRUS_TYPE_CONVERTER
         value: camel
+    settings:
+      loggers:
+        - name: INTEGRATION_STATUS
+          level: INFO
+        - name: INTEGRATION_LOGS
+          level: INFO
     resources:
-      - kafka-source-test.yaml
-      - kafka-sink-test.yaml
+      - kafka-source-binding.yaml
+      - kafka-sink-binding.yaml
   dump:
     enabled: true
     failedOnly: true
@@ -36,13 +42,10 @@ config:
       - app=camel-k
 pre:
   - name: Install Kafka
-    if: env:CI=true
     script: install.sh
   - name: Setup Kafka roles
-    if: env:CI=true
     run: |
       yaks role --add strimzi
 post:
   - name: Uninstall Kafka
-    if: env:CI=true
     script: uninstall.sh
