@@ -17,6 +17,7 @@
 - Log sink should show streams by default [\#1198](https://github.com/apache/camel-kamelets/issues/1198)
 - Camel Google Pubsub headers names changed in Camel 3.20.0 [\#1194](https://github.com/apache/camel-kamelets/issues/1194)
 - Release 0.10.0 [\#1128](https://github.com/apache/camel-kamelets/issues/1128)
+- aws-ddb-sink-binding doesn't send data to DynamoDB [\#1038](https://github.com/apache/camel-kamelets/issues/1038)
 - Add Camel test for the beans used in some of the Kamelet action [\#730](https://github.com/apache/camel-kamelets/issues/730)
 
 ## [v0.10.0](https://github.com/apache/camel-kamelets/tree/v0.10.0) (2022-12-05)
