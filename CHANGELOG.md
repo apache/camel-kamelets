@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v3.20.0](https://github.com/apache/camel-kamelets/tree/v3.20.0) (2022-12-21)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v0.10.0...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v0.10.0...v3.20.0)
 
 **Closed issues:**
 
@@ -19,6 +19,23 @@
 - Release 0.10.0 [\#1128](https://github.com/apache/camel-kamelets/issues/1128)
 - aws-ddb-sink-binding doesn't send data to DynamoDB [\#1038](https://github.com/apache/camel-kamelets/issues/1038)
 - Add Camel test for the beans used in some of the Kamelet action [\#730](https://github.com/apache/camel-kamelets/issues/730)
+
+**Merged pull requests:**
+
+- Point to 3.20.0 since it has been released [\#1229](https://github.com/apache/camel-kamelets/pull/1229) ([oscerd](https://github.com/oscerd))
+- 3.20.0-SNAPSHOT upgrade, until 3.20.0 will be released [\#1225](https://github.com/apache/camel-kamelets/pull/1225) ([oscerd](https://github.com/oscerd))
+- Upgrade Activemq-http to version 5.17.3 [\#1224](https://github.com/apache/camel-kamelets/pull/1224) ([oscerd](https://github.com/oscerd))
+- Upgrade Artemis to version 2.27.1 [\#1223](https://github.com/apache/camel-kamelets/pull/1223) ([oscerd](https://github.com/oscerd))
+- Added a Deploy action on push [\#1222](https://github.com/apache/camel-kamelets/pull/1222) ([oscerd](https://github.com/oscerd))
+- Version alignment: Align the camel-kamelets project version to the camel core version [\#1221](https://github.com/apache/camel-kamelets/pull/1221) ([oscerd](https://github.com/oscerd))
+- Add FHIR sink kamelet [\#1219](https://github.com/apache/camel-kamelets/pull/1219) ([bramplouvier](https://github.com/bramplouvier))
+- fixed Azure Storage Blob changefeed source connector [\#1217](https://github.com/apache/camel-kamelets/pull/1217) ([valdar](https://github.com/valdar))
+- Upgrade Redshift Jdbc42 to version 2.1.0.10 [\#1216](https://github.com/apache/camel-kamelets/pull/1216) ([oscerd](https://github.com/oscerd))
+- Google pubsub optional service account key [\#1215](https://github.com/apache/camel-kamelets/pull/1215) ([oscerd](https://github.com/oscerd))
+- Log sink and log action should show streams by default [\#1213](https://github.com/apache/camel-kamelets/pull/1213) ([oscerd](https://github.com/oscerd))
+- Camel Google Pubsub headers names changed in Camel 3.20.0 [\#1212](https://github.com/apache/camel-kamelets/pull/1212) ([oscerd](https://github.com/oscerd))
+- Slack Source Kamelet: Set default delay to 1 minute [\#1208](https://github.com/apache/camel-kamelets/pull/1208) ([oscerd](https://github.com/oscerd))
+- Google Storage Source/Sink Kamelet: serviceAccountKey is not required [\#1206](https://github.com/apache/camel-kamelets/pull/1206) ([oscerd](https://github.com/oscerd))
 
 ## [v0.10.0](https://github.com/apache/camel-kamelets/tree/v0.10.0) (2022-12-05)
 
