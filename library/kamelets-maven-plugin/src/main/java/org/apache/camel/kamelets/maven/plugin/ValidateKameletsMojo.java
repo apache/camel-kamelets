@@ -58,7 +58,7 @@ public class ValidateKameletsMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        String[] bannedDeps = {"mvn:", "camel:gson", "camel:core", "camel:kamelet", "github:apache.camel-kamelets:camel-kamelets-utils:3.20.0-SNAPSHOT"};
+        String[] bannedDeps = {"mvn:", "camel:gson", "camel:core", "camel:kamelet", "github:apache.camel-kamelets:camel-kamelets-utils:3.20.1-SNAPSHOT"};
         List<String> bannedDepsList = Arrays.asList(bannedDeps);
         KameletsCatalog catalog = new KameletsCatalog();
         DefaultCamelCatalog cc = new DefaultCamelCatalog();
