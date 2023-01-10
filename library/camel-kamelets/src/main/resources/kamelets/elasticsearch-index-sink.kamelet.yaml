@@ -34,6 +34,8 @@ spec:
 
       The input data must be formatted in JSON according to the requirements of the index. 
 
+      If you specify the `certificate` property, you must base64 encode it before you pass it as a parameter.
+      
       In the header, you can set the following properties:
 
       - `indexId` / `ce-indexid`: The index ID for ElasticSearch.
@@ -82,22 +84,27 @@ spec:
         description: The name of the ElasticSearch index.
         type: string
         example: data
+      certificate:
+        title: Certificate 
+        description: The Certificate for accessing the Elasticsearch cluster. You must encode this value in base64.
+        type: string
+        example: data
   types:
     out:
-      mediaType: application/json
+      mediaType: text/plain
     in:
       mediaType: application/json
   dependencies:
     - "camel:core"
     - "camel:jackson"
     - "camel:kamelet"
-    - "camel:elasticsearch-rest"
+    - "camel:elasticsearch"
     - "camel:gson"
     - "camel:bean"
   template:
     beans:
       - name: local-es
-        type: "#class:org.apache.camel.component.elasticsearch.ElasticsearchComponent"
+        type: "#class:org.apache.camel.component.es.ElasticsearchComponent"
         properties:
             user: "{{?user}}"
             password: "{{?password}}"
@@ -128,6 +135,8 @@ spec:
             - set-header:
                 name: "indexName"
                 simple: "${header[ce-indexname]}"
+      - unmarshal:
+          json: {}
       - to:
           uri: "{{local-es}}:{{clusterName}}"
           parameters:
@@ -135,5 +144,4 @@ spec:
             hostAddresses: "{{hostAddresses}}"
             enableSSL: "{{enableSSL}}"
             indexName: "{{?indexName}}"
-      - marshal:
-          json: { }
+            certificatePath: "base64:{{?certificatePath}}"
