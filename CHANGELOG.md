@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.0...HEAD)
+
+**Closed issues:**
+
+- Upgrade to Camel 3.20.1 [\#1231](https://github.com/apache/camel-kamelets/issues/1231)
+- Errors with log-sink and log-action Kamelet [\#1227](https://github.com/apache/camel-kamelets/issues/1227)
+
 ## [v3.20.0](https://github.com/apache/camel-kamelets/tree/v3.20.0) (2022-12-21)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v0.10.0...v3.20.0)
