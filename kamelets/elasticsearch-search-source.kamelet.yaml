@@ -31,6 +31,10 @@ spec:
     title: "ElasticSearch Search Source"
     description: |-
       Search data on ElasticSearch
+      
+      The `query` parameter must be formatted in JSON.
+
+      If you specify the `certificate` property, you must base64 encode it before you pass it as a parameter.
     required:
       - query
       - clusterName
