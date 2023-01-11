@@ -80,6 +80,10 @@ spec:
         title: ElasticSearch Cluster Name
         description: The name of the cluster.
         type: string
+      certificate:
+        title: Certificate 
+        description: The Certificate for accessing the Elasticsearch cluster. You must encode this value in base64.
+        type: string
   types:
     out:
       mediaType: application/json
@@ -87,12 +91,12 @@ spec:
       - "camel:core"
       - "camel:kamelet"
       - "camel:timer"
-      - "camel:elasticsearch-rest"
+      - "camel:elasticsearch"
       - "camel:gson"
   template:
     beans:
       - name: local-es
-        type: "#class:org.apache.camel.component.elasticsearch.ElasticsearchComponent"
+        type: "#class:org.apache.camel.component.es.ElasticsearchComponent"
         properties:
             user: "{{?user}}"
             password: "{{?password}}"
@@ -102,10 +106,7 @@ spec:
         period: "{{period}}"
       steps:
         - set-body:
-            constant: "{{query}}"
-        - set-header:
-            name: "Content-Type"
-            constant: "text/plain"
+            constant: "{{query?nested=false}}"
         - to:
             uri: "{{local-es}}:{{clusterName}}"
             parameters:
@@ -113,6 +114,7 @@ spec:
               indexName: "{{indexName}}"
               hostAddresses: "{{hostAddresses}}"
               enableSSL: "{{enableSSL}}"
+              certificatePath: "base64:{{?certificate}}"
         - marshal:
             json:
               library: Gson
