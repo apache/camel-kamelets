@@ -29,7 +29,11 @@ spec:
       period: 60000
       message: |-
         {
-          "Phone": "1234567890"
+          "payload": {
+            "Phone": "1234567890"
+          },
+          "sObjectId": "Contact",
+          "sObjectName": "Contact"
         }
   sink:
     ref:
@@ -41,5 +45,3 @@ spec:
       clientSecret: "${client_secret}"
       userName: "${userName}"
       password: "${password}"
-      sObjectId: "${id}"
-      sObjectName: "Contact"
