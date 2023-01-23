@@ -65,6 +65,20 @@ spec:
         type: string
         x-descriptors:
         - urn:camel:group:credentials
+      ssl:
+        title: Enable Ssl for Mongodb Connection
+        description: whether to enable ssl connection to mongodb
+        type: boolean
+        default: true
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+      sslValidationEnabled:
+        title: Enables Ssl Certificates Validation and Host name checks.
+        description: IMPORTANT this should be disabled only in test environment since can pose security issues.
+        type: boolean
+        default: true
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       database:
         title: MongoDB Database
         description: The name of the MongoDB database.
@@ -88,16 +102,22 @@ spec:
     beans:
       - name: local-mongodb
         type: "#class:org.apache.camel.component.mongodb.MongoDbComponent"
+      - name: mongo-client
+        type: "#class:org.apache.camel.kamelets.utils.mongodb.SslAwareMongoClient"
+        properties:
+          password: "{{?password}}"
+          username: "{{?username}}"
+          hosts: "{{hosts}}"
+          ssl: "{{ssl}}"
+          sslValidationEnabled: "{{sslValidationEnabled}}"
     from:
       uri: "{{local-mongodb}}:test"
       parameters:
-        hosts: "{{hosts}}"
         collection: "{{collection}}"
-        password: "{{?password}}"
-        username: "{{?username}}"
         database: "{{database}}"
         persistentTailTracking: "{{persistentTailTracking}}"
         tailTrackIncreasingField: "{{?tailTrackIncreasingField}}"
+        mongoConnection: "#{{mongo-client}}"
       steps:
       - marshal:
           json: {}
