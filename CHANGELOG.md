@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.1...HEAD)
+
+**Closed issues:**
+
+- Elasticsearch Kamelets: Moving from Camel-Elasticsearch-Rest to Camel-Elastichsearch [\#1235](https://github.com/apache/camel-kamelets/issues/1235)
+
 ## [v3.20.1](https://github.com/apache/camel-kamelets/tree/v3.20.1) (2023-01-10)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.0...v3.20.1)
