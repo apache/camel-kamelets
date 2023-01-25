@@ -1,12 +1,13 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v0.9.4](https://github.com/apache/camel-kamelets/tree/v0.9.4) (2023-01-24)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.1...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.1...v0.9.4)
 
 **Closed issues:**
 
 - Elasticsearch Kamelets: Moving from Camel-Elasticsearch-Rest to Camel-Elastichsearch [\#1235](https://github.com/apache/camel-kamelets/issues/1235)
+- Release 3.20.1 [\#1234](https://github.com/apache/camel-kamelets/issues/1234)
 
 ## [v3.20.1](https://github.com/apache/camel-kamelets/tree/v3.20.1) (2023-01-10)
 
