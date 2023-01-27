@@ -1,5 +1,9 @@
 # Changelog
 
+## [v3.20.1.1](https://github.com/apache/camel-kamelets/tree/v3.20.1.1) (2023-01-26)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v0.9.4...v3.20.1.1)
+
 ## [v0.9.4](https://github.com/apache/camel-kamelets/tree/v0.9.4) (2023-01-24)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.1...v0.9.4)
