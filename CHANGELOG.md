@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.1.1...HEAD)
+
+**Closed issues:**
+
+- Release 3.20.1.1 [\#1253](https://github.com/apache/camel-kamelets/issues/1253)
+- kamelets catalog 3.20.1 contains some SNAPSHOT dependencies [\#1252](https://github.com/apache/camel-kamelets/issues/1252)
+
 ## [v3.20.1.1](https://github.com/apache/camel-kamelets/tree/v3.20.1.1) (2023-01-26)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v0.9.4...v3.20.1.1)
