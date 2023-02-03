@@ -70,9 +70,10 @@ spec:
         example: it
       targetLanguage:
         title: Target Language
-        description: The target language of the translating text. Possible values are ARABIC("ar"), CHINESE_SIMPLIFIED("zh"), CHINESE_TRADITIONAL("zh-TW"), CZECH("cs"), DANISH("da"), DUTCH("nl"), ENGLISH("en"), FINNISH("fi"), FRENCH("fr"), GERMAN("de"), HEBREW("he"), HINDI("hi"), INDONESIAN("id"), ITALIAN("it"), JAPANESE("ja"), KOREAN("ko"), MALAY("ms"), NORWEGIAN("no"), PERSIAN("fa"), POLISH("pl"), PORTUGUESE("pt"), RUSSIAN("ru"), SPANISH("es"), SWEDISH("sv") and TURKISH("tr").
+        description: The target language of the translating text.
         type: string
-        example: en
+        example: it
+        enum: ["ar", "zh", "zh-TW", "cs", "da", "nl", "en", "fi", "fr", "de", "he", "hi", "id", "it", "ja", "ko", "ms", "no", "fa", "pl", "pt", "ru", "es", "sv", "tr"]
       useDefaultCredentialsProvider:
         title: Default Credentials Provider
         description: Set whether the Translate client should expect to load credentials through a default credentials provider or to expect static credentials to be passed in.
