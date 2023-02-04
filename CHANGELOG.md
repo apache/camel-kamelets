@@ -6,8 +6,10 @@
 
 **Closed issues:**
 
+- Cassandra Kamelets: add extraTypesCodec parameter [\#1256](https://github.com/apache/camel-kamelets/issues/1256)
 - Release 3.20.1.1 [\#1253](https://github.com/apache/camel-kamelets/issues/1253)
 - kamelets catalog 3.20.1 contains some SNAPSHOT dependencies [\#1252](https://github.com/apache/camel-kamelets/issues/1252)
+- Release 0.9.4 [\#1241](https://github.com/apache/camel-kamelets/issues/1241)
 
 ## [v3.20.1.1](https://github.com/apache/camel-kamelets/tree/v3.20.1.1) (2023-01-26)
 
