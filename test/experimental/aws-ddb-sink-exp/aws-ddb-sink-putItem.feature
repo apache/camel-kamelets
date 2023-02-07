@@ -30,7 +30,6 @@ Feature: AWS DDB Sink - PutItem
       | aws.ddb.item.year    | 1977 |
       | aws.ddb.item.title   | Star Wars IV |
       | aws.ddb.json.data    | { "id":${aws.ddb.item.id}, "year":${aws.ddb.item.year}, "title":"${aws.ddb.item.title}" } |
-      | aws.ddb.items        | [{year=AttributeValue(N=${aws.ddb.item.year}), id=AttributeValue(N=${aws.ddb.item.id}), title=AttributeValue(S=${aws.ddb.item.title})}] |
 
   Scenario: Start LocalStack container
     Given Enable service DYNAMODB
@@ -46,10 +45,12 @@ Feature: AWS DDB Sink - PutItem
     And KameletBinding aws-ddb-experimental-sink-binding is available
     And Camel K integration aws-ddb-experimental-sink-binding is running
     And Camel K integration aws-ddb-experimental-sink-binding should print Routes startup
-    Then sleep 10sec
 
   Scenario: Verify Kamelet sink
-    Then run script verifyItems.groovy
+    Given variables
+      | maxRetryAttempts  | 20 |
+      | aws.ddb.items     | [{year=AttributeValue(N=${aws.ddb.item.year}), id=AttributeValue(N=${aws.ddb.item.id}), title=AttributeValue(S=${aws.ddb.item.title})}] |
+    Then apply actions verifyItems.groovy
 
   Scenario: Remove Camel K resources
     Given delete KameletBinding aws-ddb-experimental-sink-binding

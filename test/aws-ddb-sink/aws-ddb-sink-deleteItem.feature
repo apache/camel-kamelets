@@ -43,20 +43,21 @@ Feature: AWS DDB Sink - DeleteItem
   Scenario: Create item on AWS-DDB
     Given run script putItem.groovy
     Given variables
+      | maxRetryAttempts  | 20 |
       | aws.ddb.items     | [{year=AttributeValue(N=${aws.ddb.item.year}), id=AttributeValue(N=${aws.ddb.item.id}), title=AttributeValue(S=${aws.ddb.item.title})}] |
-    Then run script verifyItems.groovy
+    Then apply actions verifyItems.groovy
 
   Scenario: Create AWS-DDB Kamelet sink binding
     When load KameletBinding aws-ddb-sink-binding.yaml
     And KameletBinding aws-ddb-sink-binding is available
     And Camel K integration aws-ddb-sink-binding is running
     And Camel K integration aws-ddb-sink-binding should print Routes startup
-    Then sleep 10sec
 
   Scenario: Verify Kamelet sink
     Given variables
+      | maxRetryAttempts  | 20 |
       | aws.ddb.items     | [] |
-    Then run script verifyItems.groovy
+    Then apply actions verifyItems.groovy
 
   Scenario: Remove Camel K resources
     Given delete KameletBinding aws-ddb-sink-binding
