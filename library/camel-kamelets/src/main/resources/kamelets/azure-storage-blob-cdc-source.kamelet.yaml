@@ -61,6 +61,7 @@ spec:
         description: Sets the receive mode for the receiver, possible values are PEEK_LOCK and RECEIVE_AND_DELETE
         type: string
         default: RECEIVE_AND_DELETE
+        enum: ["RECEIVE_AND_DELETE", "PEEK_LOCK"]
       subscriptionName:
         title: Subscription Name
         description: Sets the name of the subscription in the topic to listen to. This parameter is mandatory in case of topic.
@@ -85,9 +86,10 @@ spec:
         - urn:camel:group:credentials
       credentialType:
         title: Credential Type
-        description: Determines the credential strategy to adopt. Possible values are SHARED_ACCOUNT_KEY, SHARED_KEY_CREDENTIAL and AZURE_IDENTITY
+        description: Determines the credential strategy to adopt.
         type: string
         default: SHARED_ACCOUNT_KEY
+        enum: ["SHARED_ACCOUNT_KEY", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY"]
       getBlob:
         title: Get Object in Container
         description: >-
