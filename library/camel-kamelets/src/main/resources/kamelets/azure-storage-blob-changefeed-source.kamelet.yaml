@@ -62,6 +62,7 @@ spec:
         description: Determines the credential strategy to adopt. Possible values are SHARED_ACCOUNT_KEY, SHARED_KEY_CREDENTIAL and AZURE_IDENTITY
         type: string
         default: SHARED_ACCOUNT_KEY
+        enum: ["SHARED_ACCOUNT_KEY", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY"]
   dependencies:
     - "camel:azure-storage-blob"
     - "camel:kamelet"
