@@ -53,9 +53,10 @@ spec:
         - urn:camel:group:credentials
       serviceBusReceiveMode:
         title: Servicebus Receive Mode
-        description: Sets the receive mode for the receiver, possible values are PEEK_LOCK and RECEIVE_AND_DELETE
+        description: Sets the receive mode for the receiver
         type: string
         default: PEEK_LOCK
+        enum: ["PEEK_LOCK", "RECEIVE_AND_DELETE"]
       subscriptionName:
         title: Subscription Name
         description: Sets the name of the subscription in the topic to listen to. This parameter is mandatory in case of topic.
