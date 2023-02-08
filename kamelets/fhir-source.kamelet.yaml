@@ -48,14 +48,16 @@ spec:
         default: "/Patient"
       encoding:
         title: Encoding
-        description: Encoding to use for all request. Possible values are JSON and XML
+        description: Encoding to use for all request. 
         type: string
         default: "JSON"
+        enum: ["JSON", "XML"]
       fhirVersion:
         title: Fhir Version
-        description: The FHIR Version to use. There are 6 enums and the value can be one of DSTU2, DSTU2_HL7ORG, DSTU2_1, DSTU3, R4, R5
+        description: The FHIR Version to use.
         type: string
         default: "R4"
+        enum: ["DSTU2", "DSTU2_HL7ORG", "DSTU2_1", "DSTU3", "R4", "R5"]
       username:
         title: Username
         description: The username to access the Fhir server
