@@ -69,22 +69,25 @@ spec:
         - urn:camel:group:credentials
       resultStrategy:
         title: Result Strategy
-        description: The strategy to convert the result set of the query. Possible values are ALL, ONE, LIMIT_10, or LIMIT_100.
+        description: The strategy to convert the result set of the query. 
         type: string
         default: ALL
+        enum: ["ALL", "ONE", "LIMIT_10", "LIMIT_100"]
       consistencyLevel:
         title: Consistency Level
-        description: The consistency level to use. Possible values are ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_QUORUM, EACH_QUORUM, SERIAL, LOCAL_SERIAL, or LOCAL_ONE.
+        description: The consistency level to use.
         type: string
         default: QUORUM
+        enum: ["ANY", "ONE", "TWO", "THREE", "QUORUM", "ALL", "LOCAL_QUORUM", "EACH_QUORUM", "SERIAL", "LOCAL_SERIAL", "LOCAL_ONE"]
       query:
         title: Query
         description: The query to execute against the Cassandra cluster table.
         type: string
       extraTypeCodecs:
         title: Extra Type Codecs
-        description: To use a specific comma separated list of Extra Type codecs. Possible values are BLOB_TO_ARRAY, BOOLEAN_LIST_TO_ARRAY, BYTE_LIST_TO_ARRAY, SHORT_LIST_TO_ARRAY, INT_LIST_TO_ARRAY, LONG_LIST_TO_ARRAY, FLOAT_LIST_TO_ARRAY, DOUBLE_LIST_TO_ARRAY, TIMESTAMP_UTC, TIMESTAMP_MILLIS_SYSTEM, TIMESTAMP_MILLIS_UTC, ZONED_TIMESTAMP_SYSTEM, ZONED_TIMESTAMP_UTC, ZONED_TIMESTAMP_PERSISTED, LOCAL_TIMESTAMP_SYSTEM and LOCAL_TIMESTAMP_UTC
+        description: To use a specific comma separated list of Extra Type codecs. 
         type: string
+        enum: ["BLOB_TO_ARRAY", "BOOLEAN_LIST_TO_ARRAY", "BYTE_LIST_TO_ARRAY", "SHORT_LIST_TO_ARRAY", "INT_LIST_TO_ARRAY", "LONG_LIST_TO_ARRAY", "FLOAT_LIST_TO_ARRAY", "DOUBLE_LIST_TO_ARRAY", "TIMESTAMP_UTC", "TIMESTAMP_MILLIS_SYSTEM", "TIMESTAMP_MILLIS_UTC", "ZONED_TIMESTAMP_SYSTEM", "ZONED_TIMESTAMP_UTC", "ZONED_TIMESTAMP_PERSISTED", "LOCAL_TIMESTAMP_SYSTEM", "LOCAL_TIMESTAMP_UTC"]
   types:
     out:
       mediaType: application/json
