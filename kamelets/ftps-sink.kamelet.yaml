@@ -79,9 +79,10 @@ spec:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       fileExist:
         title: File Existence
-        description: "Specifies how the Kamelet behaves if the file already exists. Possible values are Override, Append, Fail, or Ignore."
+        description: "Specifies how the Kamelet behaves if the file already exists."
         type: string
         default: Override
+        enum: ["Override", "Append", "Fail", "Ignore"]
       binary:
         title: Binary
         description: Specifies the file transfer mode, BINARY or ASCII. Default is ASCII (false).
