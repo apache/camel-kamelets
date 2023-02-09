@@ -47,19 +47,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java:
-          - '11'
     steps:
     - uses: actions/checkout@v3
       with:
         persist-credentials: false
-    - name: Set up JDK ${{ matrix.java }}
-      uses: actions/setup-java@v2
+    - name: Set up JDK
+      uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
-        java-version: ${{ matrix.java }}
+        java-version: 17
+        cache: 'maven'
     - name: Build camel-kamelets
       run: ./mvnw -V -ntp clean install
     - name: Tar Maven Repo
@@ -81,10 +78,11 @@ jobs:
     - uses: actions/checkout@v3
       with:
         persist-credentials: false
-    - name: Set up JDK 11
-      uses: AdoptOpenJDK/install-jdk@v1
+    - name: Set up JDK
+      uses: actions/setup-java@v3
       with:
-        version: '11'
+        distribution: 'temurin'
+        java-version: 17
     - name: Deploy to ASF Snapshots Repository
       # Deploy both artifacts and sources (may be required by Camel K)
       run: |
