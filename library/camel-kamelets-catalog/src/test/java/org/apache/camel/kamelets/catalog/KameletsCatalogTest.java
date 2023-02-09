@@ -181,8 +181,6 @@ public class KameletsCatalogTest {
         verifyHeaders("jira-oauth-source", 3);
         verifyHeaders("jms-amqp-10-source", 14);
         verifyHeaders("jms-amqp-10-sink", 17);
-        //verifyHeaders("jms-apache-activemq-source", 14);
-        //verifyHeaders("jms-apache-activemq-sink", 17);
         verifyHeaders("jms-apache-artemis-source", 14);
         verifyHeaders("jms-apache-artemis-sink", 17);
         verifyHeaders("jms-ibm-mq-source", 14);
@@ -220,7 +218,6 @@ public class KameletsCatalogTest {
         verifyHeaders("postgresql-source", 0);
         verifyHeaders("pulsar-sink", 3);
         verifyHeaders("pulsar-source", 11);
-        //verifyHeaders("rabbitmq-source", 23);
         verifyHeaders("redis-sink", 29);
         verifyHeaders("redis-source", 28);
         verifyHeaders("rest-openapi-sink", 0);
@@ -249,7 +246,6 @@ public class KameletsCatalogTest {
         verifyHeaders("twitter-timeline-source", 1);
         verifyHeaders("twitter-search-source", 7);
         verifyHeaders("webhook-source", 0);
-        //verifyHeaders("websocket-source", 4);
         verifyHeaders("wttrin-source", 5);
     }
 
