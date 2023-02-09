@@ -37,8 +37,9 @@ spec:
     properties:
       direction:
         title: Direction
-        description: The transform direction, possible values are XML2JSON or JSON2XML
+        description: The transform direction.
         type: string
+        enum: ["XML2JSON", "JSON2XML"]
   dependencies:
   - "camel:xj"
   - "camel:kamelet"
