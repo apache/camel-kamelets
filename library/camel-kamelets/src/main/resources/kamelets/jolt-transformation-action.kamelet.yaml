@@ -43,9 +43,10 @@ spec:
         pattern: "^(http|https|file|classpath)://.*"
       transform:
         title: Transform DSL
-        description: Specifies the Transform DSL of the endpoint resource. If none is specified Chainr will be used. Possible values are Chainr, Shiftr, Defaultr, Removr and Sortr.
+        description: Specifies the Transform DSL of the endpoint resource. If none is specified Chainr will be used. 
         type: string
         default: "Chainr"
+        enum: ["Chainr", "Shiftr", "Defaultr", "Removr", "Sortr"]
   dependencies:
   - "camel:jolt"
   - "camel:kamelet"
