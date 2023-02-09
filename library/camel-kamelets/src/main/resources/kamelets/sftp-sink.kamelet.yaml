@@ -77,9 +77,10 @@ spec:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       fileExist:
         title: File Existence
-        description: How to behave in case of file already existent. There are 4 enums. Possible values are Override, Append, Fail, or Ignore.
+        description: How to behave in case of file already existent.
         type: string
         default: Override
+        enum: ["Override", "Append", "Fail", "Ignore"]
       binary:
         title: Binary
         description: Specifies the file transfer mode, BINARY or ASCII. Default is ASCII (false).
