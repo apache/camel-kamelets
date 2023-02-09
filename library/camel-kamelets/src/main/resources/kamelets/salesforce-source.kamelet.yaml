@@ -57,9 +57,10 @@ spec:
         default: https://login.salesforce.com
       notifyForFields:
         title: Notify For Fields
-        description: Notify for fields. Possible values are ALL, REFERENCED, SELECT, or WHERE.
+        description: Notify for fields.
         type: string
         default: ALL
+        enum: [ "ALL", "REFERENCED", "SELECT", "WHERE"]
       clientId:
         title: Consumer Key
         description: The Salesforce application consumer key.
