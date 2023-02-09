@@ -52,7 +52,8 @@ spec:
       topicType:
         title: Topic Type
         description: "The topic type. Possible values are persistent or non-persistent."
-        type: string  
+        type: string 
+        enum: ["persistent", "non-persistent"]
       namespaceName:
         title: Pulsar Namespace Name
         description: The Pulsar Namespace Name
@@ -97,7 +98,7 @@ spec:
           - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       compressionType:
         title: Compression Type
-        description: "Compression type to use. Possible values are NONE, LZ4, ZLIB, ZSTD, or SNAPPY."
+        description: "Compression type to use."
         type: string
         default: "NONE"
         x-descriptors:
@@ -106,6 +107,7 @@ spec:
           - 'urn:alm:descriptor:com.tectonic.ui:select:ZLIB'
           - 'urn:alm:descriptor:com.tectonic.ui:select:ZSTD'
           - 'urn:alm:descriptor:com.tectonic.ui:select:SNAPPY'
+        enum: ["ONE", "LZ4", "ZLIB", "ZSTD", "SNAPPY"]
       initialSequenceId:
         title: Initial SequenceId
         description: "The first message published will have a sequence Id of initialSequenceId 1."
@@ -130,13 +132,14 @@ spec:
         default: 50000
       messageRoutingMode:
         title: Message Routing Mode
-        description: "Message Routing Mode to use. Possible values are SinglePartition, RoundRobinPartition, CustomPartition"
+        description: "Message Routing Mode to use."
         type: string
         default: "RoundRobinPartition"
         x-descriptors:
           - 'urn:alm:descriptor:com.tectonic.ui:select:SinglePartition'
           - 'urn:alm:descriptor:com.tectonic.ui:select:RoundRobinPartition'
           - 'urn:alm:descriptor:com.tectonic.ui:select:CustomPartition'
+        enum: ["SinglePartition", "RoundRobinPartition", "CustomPartition"]
       producerName:
         title: Producer Name
         description: "Name of the producer. If unset, lets Pulsar select a unique identifier."
