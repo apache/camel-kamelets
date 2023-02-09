@@ -69,8 +69,9 @@ spec:
         type: string
       writeConcern:
         title: Write Concern
-        description: The level of acknowledgment requested from MongoDB for write operations. Possible values are ACKNOWLEDGED, W1, W2, W3, UNACKNOWLEDGED, JOURNALED, or MAJORITY.
+        description: The level of acknowledgment requested from MongoDB for write operations.
         type: string
+        enum: ["ACKNOWLEDGED", "W1", "W2", "W3", "UNACKNOWLEDGED", "JOURNALED", "MAJORITY"]
       createCollection:
         title: Collection
         description: Create a collection during initialization if it doesn't exist.
