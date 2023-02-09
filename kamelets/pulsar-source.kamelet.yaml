@@ -51,8 +51,9 @@ spec:
         type: string
       topicType:
         title: Topic Type
-        description: "The topic type. Possible values are persistent or non-persistent."
-        type: string  
+        description: "The topic type."
+        type: string
+        enum: ["persistent", "non-persistent"]
       namespaceName:
         title: Pulsar Namespace Name
         description: The Pulsar Namespace Name
@@ -118,9 +119,10 @@ spec:
           - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       subscriptionInitialPosition:
         title: Subscription Initial Position
-        description: "Control the initial position in the topic of a newly created subscription. Default is latest message. Possible values are EARLIEST or LATEST."
+        description: "Control the initial position in the topic of a newly created subscription. Default is latest message."
         type: string
         default: LATEST
+        enum: ["EARLIEST", "LATEST"]
       subscriptionName:
         title: Subscription Name
         description: "Name of the subscription to use."
@@ -128,14 +130,16 @@ spec:
         default: subs
       subscriptionTopicsMode:
         title: Subscription Topics Mode
-        description: "Determines to which topics this consumer should be subscribed to - Persistent, Non-Persistent, or both. Only used with pattern subscriptions.Possible values are PersistentOnly, NonPersistentOnly, or AllTopics."
+        description: "Determines to which topics this consumer should be subscribed to - Persistent, Non-Persistent, or both. Only used with pattern subscriptions."
         type: string
         default: PersistentOnly
+        enum: ["PersistentOnly", "NonPersistentOnly", "AllTopics"]
       subscriptionType:
         title: Subscription Type
-        description: "Type of the subscription. Possible values are EXCLUSIVE, SHARED, FAILOVER, KEY_SHARED."
+        description: "Type of the subscription."
         type: string
         default: EXCLUSIVE
+        enum: ["EXCLUSIVE", "SHARED", "FAILOVER", "KEY_SHARED"]
       topicsPattern:
         title: Topic Pattern
         description: "Whether the topic is a pattern (regular expression) that allows the consumer to subscribe to all matching topics in the namespace."
