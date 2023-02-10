@@ -6,6 +6,8 @@
 
 **Closed issues:**
 
+- Switch Main branch to Camel 4 [\#1287](https://github.com/apache/camel-kamelets/issues/1287)
+- Convert all the parameters with multiple possible values to enum [\#1260](https://github.com/apache/camel-kamelets/issues/1260)
 - Cassandra Kamelets: add extraTypesCodec parameter [\#1256](https://github.com/apache/camel-kamelets/issues/1256)
 - Release 3.20.1.1 [\#1253](https://github.com/apache/camel-kamelets/issues/1253)
 - kamelets catalog 3.20.1 contains some SNAPSHOT dependencies [\#1252](https://github.com/apache/camel-kamelets/issues/1252)
