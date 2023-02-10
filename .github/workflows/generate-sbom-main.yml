@@ -25,7 +25,7 @@ on:
 permissions: {}
 jobs:
   build:
-    if: github.repository == 'apache/camel'
+    if: github.repository == 'apache/camel-kamelets'
     permissions:
       contents: write # to create branch (peter-evans/create-pull-request)
       pull-requests: write # to create a PR (peter-evans/create-pull-request)
