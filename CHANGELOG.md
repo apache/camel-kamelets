@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Add SBOM Generation and related Github Action [\#1292](https://github.com/apache/camel-kamelets/issues/1292)
 - Switch Main branch to Camel 4 [\#1287](https://github.com/apache/camel-kamelets/issues/1287)
 - Convert all the parameters with multiple possible values to enum [\#1260](https://github.com/apache/camel-kamelets/issues/1260)
 - Cassandra Kamelets: add extraTypesCodec parameter [\#1256](https://github.com/apache/camel-kamelets/issues/1256)
