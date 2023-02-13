@@ -2,8 +2,7 @@
 
 This repository contains the default Kamelet catalog used by Apache Camel and its sub-projects.
 
-Kamelets in this repository can be used natively in [Apache Camel K](https://github.com/apache/camel-k) integrations, without additional configuration steps:
-users just need to reference the Kamelets by name in the URI (e.g. `kamelet:timer-source?message=Hello`), or use them in a `KameletBinding`.
+Kamelets in this repository can be used natively in Camel K, Camel, Camel-Quarkus and Camel-spring-boot integrations, without additional configuration steps. Users just need to reference the Kamelets by name in the URI (e.g. `kamelet:timer-source?message=Hello`), or use them in a `KameletBinding`, for Camel K, in particular.
 
 **NOTE**: Camel K (and other sub-projects) will only use a specific version of this Kamelet catalog. Refer to the release notes of the sub-project for more information.
 
