@@ -121,7 +121,7 @@ public class KameletsCatalog {
 
     public List<Kamelet> getKameletsByNamespace(String namespace) {
         List<Kamelet> collect = kameletModels.entrySet().stream()
-                .filter(x -> x.getValue().getMetadata().getLabels().get(KameletAnnotationsNames.KAMELET_ANNOTATION_NAMESPACE).contains(namespace))
+                .filter(x -> x.getValue().getMetadata().getAnnotations().get(KameletAnnotationsNames.KAMELET_ANNOTATION_NAMESPACE).contains(namespace))
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
         return collect;
