@@ -22,7 +22,6 @@ import io.github.classgraph.ClassGraph;
 import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
 import org.apache.camel.tooling.model.ComponentModel;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -102,7 +101,6 @@ public class KameletsCatalogTest {
     }
 
     @Test
-    @Disabled
     void testGetKameletsByNamespace() throws Exception {
         List<Kamelet> c = catalog.getKameletsByNamespace("AWS");
         assertTrue(!c.isEmpty());
