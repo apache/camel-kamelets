@@ -22,6 +22,7 @@ import io.github.classgraph.ClassGraph;
 import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
 import org.apache.camel.tooling.model.ComponentModel;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -96,6 +97,16 @@ public class KameletsCatalogTest {
         assertTrue(!c.isEmpty());
         c = catalog.getKameletsByGroups("AWS SQS");
         assertTrue(!c.isEmpty());
+        c = catalog.getKameletsByGroups("Not-existing-group");
+        assertTrue(c.isEmpty());
+    }
+
+    @Test
+    @Disabled
+    void testGetKameletsByNamespace() throws Exception {
+        List<Kamelet> c = catalog.getKameletsByNamespace("AWS");
+        assertTrue(!c.isEmpty());
+        assertTrue(c.size() == 1);
         c = catalog.getKameletsByGroups("Not-existing-group");
         assertTrue(c.isEmpty());
     }
