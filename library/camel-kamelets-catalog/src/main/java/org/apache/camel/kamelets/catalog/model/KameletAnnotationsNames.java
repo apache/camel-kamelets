@@ -21,4 +21,5 @@ public interface KameletAnnotationsNames {
     String KAMELET_ANNOTATION_ICON = "camel.apache.org/kamelet.icon";
     String KAMELET_ANNOTATION_PROVIDER = "camel.apache.org/provider";
     String KAMELET_ANNOTATION_GROUP = "camel.apache.org/kamelet.group";
+    String KAMELET_ANNOTATION_NAMESPACE = "camel.apache.org/kamelet.namespace";
 }
