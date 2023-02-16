@@ -8,11 +8,16 @@
 
 - Add SBOM Generation and related Github Action [\#1292](https://github.com/apache/camel-kamelets/issues/1292)
 - Switch Main branch to Camel 4 [\#1287](https://github.com/apache/camel-kamelets/issues/1287)
+- Add an annotations to Kamelets to define the level of complexity [\#1267](https://github.com/apache/camel-kamelets/issues/1267)
 - Convert all the parameters with multiple possible values to enum [\#1260](https://github.com/apache/camel-kamelets/issues/1260)
 - Cassandra Kamelets: add extraTypesCodec parameter [\#1256](https://github.com/apache/camel-kamelets/issues/1256)
 - Release 3.20.1.1 [\#1253](https://github.com/apache/camel-kamelets/issues/1253)
 - kamelets catalog 3.20.1 contains some SNAPSHOT dependencies [\#1252](https://github.com/apache/camel-kamelets/issues/1252)
 - Release 0.9.4 [\#1241](https://github.com/apache/camel-kamelets/issues/1241)
+- Kamelet - Parameters that are enum based should have a way to define this in the spec [\#1046](https://github.com/apache/camel-kamelets/issues/1046)
+- Steps in KameletBinding accept also non-action kamelets resources [\#741](https://github.com/apache/camel-kamelets/issues/741)
+- Kamelet for ElasticSearch Sink provides no mechanism to set indexId or ce-indexId [\#673](https://github.com/apache/camel-kamelets/issues/673)
+- Add a "namespace" label to help group kamelets [\#640](https://github.com/apache/camel-kamelets/issues/640)
 
 ## [v3.20.1.1](https://github.com/apache/camel-kamelets/tree/v3.20.1.1) (2023-01-26)
 
