@@ -47,6 +47,7 @@ spec:
       - `chat-id` / `ce-chatid`: overrides the default chat where messages are sent to
     required:
       - authorizationToken
+      - chatId
     type: object
     properties:
       authorizationToken:
@@ -59,7 +60,7 @@ spec:
         - urn:camel:group:credentials
       chatId:
         title: Chat ID
-        description: The Chat ID to where you want to send messages by default.
+        description: The Chat ID to where you want to send messages by default. Optional if the `chat-id` / `ce-chatid` header is used.
         type: string
   types:
     out:
