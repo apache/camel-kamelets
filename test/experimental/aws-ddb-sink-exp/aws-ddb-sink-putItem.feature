@@ -18,10 +18,6 @@
 Feature: AWS DDB Sink - PutItem
 
   Background:
-    Given Kamelet aws-ddb-experimental-sink is available
-    Given Camel K resource polling configuration
-      | maxAttempts          | 200   |
-      | delayBetweenAttempts | 2000  |
     Given variables
       | timer.source.period  | 10000 |
       | aws.ddb.operation    | PutItem |
@@ -31,29 +27,34 @@ Feature: AWS DDB Sink - PutItem
       | aws.ddb.item.title   | Star Wars IV |
       | aws.ddb.json.data    | { "id":${aws.ddb.item.id}, "year":${aws.ddb.item.year}, "title":"${aws.ddb.item.title}" } |
 
-  Scenario: Start LocalStack container
+  Scenario: Create infrastructure
+    # Start LocalStack container
     Given Enable service DYNAMODB
     Given start LocalStack container
-    And log 'Started LocalStack container: ${YAKS_TESTCONTAINERS_LOCALSTACK_CONTAINER_NAME}'
-
-  Scenario: Create AWS-DDB client
+    # Create AWS-DDB client
     Given New global Camel context
     Given load to Camel registry amazonDDBClient.groovy
 
-  Scenario: Create AWS-DDB Kamelet sink binding
-    When load KameletBinding aws-ddb-sink-binding.yaml
-    And KameletBinding aws-ddb-experimental-sink-binding is available
-    And Camel K integration aws-ddb-experimental-sink-binding is running
-    And Camel K integration aws-ddb-experimental-sink-binding should print Routes startup
-
-  Scenario: Verify Kamelet sink
+  Scenario: Verify empty items on AWS-DDB
     Given variables
       | maxRetryAttempts  | 20 |
-      | aws.ddb.items     | [{year=AttributeValue(N=${aws.ddb.item.year}), id=AttributeValue(N=${aws.ddb.item.id}), title=AttributeValue(S=${aws.ddb.item.title})}] |
+      | aws.ddb.items | [] |
     Then apply actions verifyItems.groovy
 
-  Scenario: Remove Camel K resources
-    Given delete KameletBinding aws-ddb-experimental-sink-binding
+  Scenario: Verify AWS-DDB Kamelet sink binding
+    # Create binding
+    When load KameletBinding aws-ddb-sink-binding.yaml
+    And KameletBinding aws-ddb-sink-binding is available
+    And Camel K integration aws-ddb-sink-binding is running
+    And Camel K integration aws-ddb-sink-binding should print Started aws-ddb-sink-binding
+    # Verify Kamelet sink
+    Given variables
+      | maxRetryAttempts  | 20 |
+      | aws.ddb.items     | [[year:AttributeValue(N=${aws.ddb.item.year}), id:AttributeValue(N=${aws.ddb.item.id}), title:AttributeValue(S=${aws.ddb.item.title})]] |
+    Then apply actions verifyItems.groovy
 
-  Scenario: Stop container
+  Scenario: Remove resources
+    # Remove Camel K binding
+    Given delete KameletBinding aws-ddb-sink-binding
+    # Stop LocalStack container
     Given stop LocalStack container

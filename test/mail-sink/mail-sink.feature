@@ -19,7 +19,8 @@ Feature: Mail Sink
 
   Background:
     Given variables
-      | host      | mail-server |
+      | host      | yaks:env('MAIL_SERVICE_HOST','localhost') |
+      | port      | yaks:env('MAIL_SERVICE_PORT','22222') |
       | username  | test |
       | password  | secret |
       | from      | user@demo.yaks |
@@ -35,9 +36,6 @@ Feature: Mail Sink
     Given load endpoint mail-server.groovy
 
   Scenario: Create Camel K resources
-    Given Camel K resource polling configuration
-      | maxAttempts          | 200   |
-      | delayBetweenAttempts | 2000  |
     Given load KameletBinding timer-to-mail.yaml
     And Camel K integration timer-to-mail should be running
     And Camel K integration timer-to-mail should print Routes startup

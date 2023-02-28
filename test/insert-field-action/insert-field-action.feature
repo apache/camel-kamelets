@@ -19,18 +19,15 @@ Feature: Insert field Kamelet action
 
   Background:
     Given HTTP server timeout is 15000 ms
-    Given HTTP server "test-insert-service"
+    Given HTTP server "test-service"
     Given variables
       | field | subject |
       | value | Camel K rocks! |
 
   Scenario: Create Http server
-    Given create Kubernetes service test-insert-service with target port 8080
+    Given create Kubernetes service test-service with target port 8080
 
   Scenario: Create Kamelet binding
-    Given Camel K resource polling configuration
-      | maxAttempts          | 200   |
-      | delayBetweenAttempts | 2000  |
     Given variable input is
     """
     { "id": "citrus:randomUUID()" }
@@ -50,4 +47,4 @@ Feature: Insert field Kamelet action
 
   Scenario: Remove resources
     Given delete KameletBinding insert-field-action-binding
-    And delete Kubernetes service test-insert-service
+    And delete Kubernetes service test-service

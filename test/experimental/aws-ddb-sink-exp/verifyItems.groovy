@@ -15,19 +15,16 @@
  * limitations under the License.
  */
 
-$actions {
-    $(repeatOnError()
-        .until('i > ${maxRetryAttempts}')
-        .actions(new com.consol.citrus.TestAction() {
-            @Override
-            void execute(com.consol.citrus.context.TestContext context) {
-                try {
-                    assert context.getVariable('aws.ddb.items')
-                            .equals(amazonDDBClient.scan(b -> b.tableName(context.getVariable('aws.ddb.tableName')))?.items()?.toString())
-                } catch (AssertionError e) {
-                    throw new com.consol.citrus.exceptions.CitrusRuntimeException("AWS DDB item verification failed", e)
-                }
+$(repeatOnError()
+    .until('i > ${maxRetryAttempts}')
+    .actions(new com.consol.citrus.TestAction() {
+        @Override
+        void execute(com.consol.citrus.context.TestContext context) {
+            try {
+                assert context.getVariable('aws.ddb.items').equals(amazonDDBClient.scan(b -> b.tableName(context.getVariable('aws.ddb.tableName')))?.items()?.toListString())
+            } catch (AssertionError e) {
+                throw new com.consol.citrus.exceptions.CitrusRuntimeException("AWS DDB item verification failed", e)
             }
-        })
-    )
-}
+        }
+    })
+)

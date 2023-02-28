@@ -19,16 +19,13 @@ Feature: Extract field Kamelet action
 
   Background:
     Given HTTP server timeout is 15000 ms
-    Given HTTP server "test-extract-service"
+    Given HTTP server "test-service"
     Given variable field = "subject"
 
   Scenario: Create Http server
-    Given create Kubernetes service test-extract-service with target port 8080
+    Given create Kubernetes service test-service with target port 8080
 
   Scenario: Create Kamelet binding
-    Given Camel K resource polling configuration
-      | maxAttempts          | 200   |
-      | delayBetweenAttempts | 2000  |
     Given variable input is
     """
     { "id": "citrus:randomUUID()", "${field}": "Camel K rocks!" }
@@ -44,4 +41,4 @@ Feature: Extract field Kamelet action
 
   Scenario: Remove resources
     Given delete KameletBinding extract-field-action-binding
-    And delete Kubernetes service test-extract-service
+    And delete Kubernetes service test-service

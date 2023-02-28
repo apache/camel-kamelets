@@ -32,6 +32,8 @@ config:
         value: false
       - name: YAKS_KNATIVE_AUTO_REMOVE_RESOURCES
         value: false
+      - name: YAKS_JBANG_CAMEL_DUMP_INTEGRATION_OUTPUT
+        value: true
       - name: YAKS_TESTCONTAINERS_AUTO_REMOVE_RESOURCES
         value: false
       - name: CITRUS_TYPE_CONVERTER
@@ -41,7 +43,7 @@ config:
       - aws-s3-to-knative.yaml
     cucumber:
       tags:
-        - "not @ignored"
+        - "not @ignored and not @knative"
     settings:
       loggers:
         - name: INTEGRATION_STATUS
