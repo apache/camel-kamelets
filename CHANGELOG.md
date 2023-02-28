@@ -6,6 +6,9 @@
 
 **Closed issues:**
 
+-  Bind variables cannot be used for table names  [\#1310](https://github.com/apache/camel-kamelets/issues/1310)
+- Is there any kind of SMT available in camel-kamelets [\#1309](https://github.com/apache/camel-kamelets/issues/1309)
+- jms-apache-activemq-sink-binding: error during trait customization: component not found for uri [\#1304](https://github.com/apache/camel-kamelets/issues/1304)
 - Add SBOM Generation and related Github Action [\#1292](https://github.com/apache/camel-kamelets/issues/1292)
 - Switch Main branch to Camel 4 [\#1287](https://github.com/apache/camel-kamelets/issues/1287)
 - Add an annotations to Kamelets to define the level of complexity [\#1267](https://github.com/apache/camel-kamelets/issues/1267)
