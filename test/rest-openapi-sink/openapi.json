@@ -9,13 +9,8 @@
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         }
     },
-    "servers": [
-        {
-            "url": "http://test-service/petstore"
-        }
-    ],
     "paths": {
-        "/pet": {
+        "/petstore/pet": {
             "put": {
                 "requestBody": {
                     "description": "Pet object that needs to be added to the store",
@@ -92,7 +87,7 @@
                 "description": ""
             }
         },
-        "/pet/{petId}": {
+        "/petstore/pet/{petId}": {
             "get": {
                 "tags": [
                     "pet"

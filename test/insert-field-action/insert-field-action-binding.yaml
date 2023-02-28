@@ -39,4 +39,4 @@ spec:
         field: ${field}
         value: ${value}
   sink:
-    uri: http://test-insert-service.${YAKS_NAMESPACE}/result
+    uri: yaks:resolveURL('test-service')/result

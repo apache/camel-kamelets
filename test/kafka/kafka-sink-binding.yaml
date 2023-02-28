@@ -35,7 +35,7 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: kafka-sink
     properties:
-      bootstrapServers: ${bootstrap.server.host}.${YAKS_NAMESPACE}:${bootstrap.server.port}
+      bootstrapServers: ${YAKS_TESTCONTAINERS_REDPANDA_LOCAL_BOOTSTRAP_SERVERS}
       user: ${user}
       password: ${password}
       topic: ${topic}

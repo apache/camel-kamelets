@@ -25,10 +25,7 @@ Feature: Kamelet earthquake-source
     Given create Kubernetes service test-service with target port 8080
 
   Scenario: Create Kamelet binding
-    Given Camel K resource polling configuration
-      | maxAttempts          | 200   |
-      | delayBetweenAttempts | 2000 |
-    When bind Kamelet earthquake-source to uri http://test-service.${YAKS_NAMESPACE}/test
+    When bind Kamelet earthquake-source to uri yaks:resolveURL('test-service')/test
     And create KameletBinding earthquake-source-uri
     Then KameletBinding earthquake-source-uri should be available
     Then Camel K integration earthquake-source-uri should be running

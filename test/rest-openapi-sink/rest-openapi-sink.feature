@@ -27,17 +27,14 @@ Feature: REST OpenAPI Kamelet sink
     Given create Kubernetes service test-service
 
   Scenario: Create Kamelet binding for addPet
-    Given Camel K resource polling configuration
-      | maxAttempts          | 200   |
-      | delayBetweenAttempts | 2000  |
     Given variable operation is "addPet"
-    When load KameletBinding rest-openapi-sink-binding.yaml
-    Then Camel K integration rest-openapi-sink-binding should be running
+    Then load KameletBinding rest-openapi-sink-binding.yaml
 
   Scenario: Provide OpenAPI specification to Camel K integration
+    Given load variable openapi from openapi.json
     When receive GET /petstore/openapi.json
     Then HTTP request header Content-Type is "application/json"
-    Then HTTP response body: citrus:readFile(classpath:openapi.json)
+    Then HTTP response body: ${openapi}
     Then send HTTP 200 OK
 
   Scenario: Verify proper addPet request message sent
@@ -52,12 +49,12 @@ Feature: REST OpenAPI Kamelet sink
   Scenario: Create Kamelet binding for deletePet
     Given variable operation is "deletePet"
     When load KameletBinding rest-openapi-sink-binding.yaml
-    Then Camel K integration rest-openapi-sink-binding should be running
 
   Scenario: Provide OpenAPI specification to Camel K integration
+    Given load variable openapi from openapi.json
     When receive GET /petstore/openapi.json
     Then HTTP request header Content-Type is "application/json"
-    Then HTTP response body: citrus:readFile(classpath:openapi.json)
+    Then HTTP response body: ${openapi}
     Then send HTTP 200 OK
 
   Scenario: Verify proper deletePet request message sent

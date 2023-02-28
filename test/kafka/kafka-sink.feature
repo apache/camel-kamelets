@@ -21,25 +21,24 @@ Feature: Kafka Kamelet sink
     Given variable user is ""
     Given variable password is ""
     Given variables
-      | bootstrap.server.host     | my-cluster-kafka-bootstrap |
-      | bootstrap.server.port     | 9092 |
-      | securityProtocol          | PLAINTEXT |
-      | topic                     | my-topic |
-      | message                   | Camel K rocks! |
+      | securityProtocol | PLAINTEXT |
+      | topic            | my-topic |
+      | message          | Camel K rocks! |
     Given Kafka topic: ${topic}
     Given Kafka topic partition: 0
 
+  Scenario: Create infrastructure
+    Given start Redpanda container
+
   Scenario: Create Kamelet binding
-    Given Camel K resource polling configuration
-      | maxAttempts          | 200   |
-      | delayBetweenAttempts | 2000  |
     When load KameletBinding kafka-sink-binding.yaml
     Then Camel K integration kafka-sink-binding should be running
 
-  Scenario: Receive message on Kafka topic and verify sink output
+  Scenario: Verify Kafka sink output
     Given Kafka connection
-      | url         | ${bootstrap.server.host}.${YAKS_NAMESPACE}:${bootstrap.server.port} |
+      | url | ${YAKS_TESTCONTAINERS_REDPANDA_LOCAL_BOOTSTRAP_SERVERS} |
     Then receive Kafka message with body: ${message}
 
   Scenario: Remove resources
     Given delete KameletBinding kafka-sink-binding
+    And stop Redpanda container

@@ -42,5 +42,5 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: rest-openapi-sink
     properties:
-      specification: http://test-service.${YAKS_NAMESPACE}/petstore/openapi.json
+      specification: yaks:resolveURL('test-service')/petstore/openapi.json
       operation: ${operation}

@@ -21,25 +21,21 @@ Feature: Kafka Kamelet source
     Given variable user is ""
     Given variable password is ""
     Given variables
-      | bootstrap.server.host     | my-cluster-kafka-bootstrap |
-      | bootstrap.server.port     | 9092 |
-      | securityProtocol          | PLAINTEXT |
-      | deserializeHeaders        | true |
-      | topic                     | my-topic |
-      | source                    | Kafka Kamelet source |
-      | message                   | Camel K rocks! |
+      | securityProtocol   | PLAINTEXT |
+      | deserializeHeaders | true |
+      | topic              | my-topic |
+      | source             | Kafka Kamelet source |
+      | message            | Camel K rocks! |
     Given Kafka topic: ${topic}
     Given Kafka topic partition: 0
     Given HTTP server timeout is 15000 ms
-    Given HTTP server "kafka-to-http-service"
+    Given HTTP server "test-service"
 
-  Scenario: Create Http server
-    Given create Kubernetes service kafka-to-http-service with target port 8080
+  Scenario: Create infrastructure
+    Given start Redpanda container
+    Given create Kubernetes service test-service with target port 8080
 
   Scenario: Create Kamelet binding
-    Given Camel K resource polling configuration
-      | maxAttempts          | 200   |
-      | delayBetweenAttempts | 2000  |
     When load KameletBinding kafka-source-binding.yaml
     Then Camel K integration kafka-source-binding should be running
     And Camel K integration kafka-source-binding should print Subscribing ${topic}-Thread 0 to topic ${topic}
@@ -48,7 +44,7 @@ Feature: Kafka Kamelet source
   Scenario: Send message to Kafka topic and verify sink output
     Given variable key is "citrus:randomNumber(4)"
     Given Kafka connection
-      | url         | ${bootstrap.server.host}.${YAKS_NAMESPACE}:${bootstrap.server.port} |
+      | url | ${YAKS_TESTCONTAINERS_REDPANDA_LOCAL_BOOTSTRAP_SERVERS} |
     Given Kafka message key: ${key}
     When send Kafka message with body and headers: ${message}
       | event-source | ${source} |
@@ -63,4 +59,5 @@ Feature: Kafka Kamelet source
 
   Scenario: Remove resources
     Given delete KameletBinding kafka-source-binding
-    And delete Kubernetes service kafka-to-http-service
+    And delete Kubernetes service test-service
+    And stop Redpanda container

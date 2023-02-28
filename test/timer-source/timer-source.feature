@@ -19,18 +19,15 @@ Feature: Timer Source Kamelet
 
   Background:
     Given HTTP server timeout is 15000 ms
-    Given HTTP server "probe-service"
+    Given HTTP server "test-service"
 
   Scenario: Create Http server
-    Given create Kubernetes service probe-service with target port 8080
+    Given create Kubernetes service test-service with target port 8080
 
   Scenario: Create Kamelet binding
-    Given Camel K resource polling configuration
-      | maxAttempts          | 200   |
-      | delayBetweenAttempts | 2000 |
     And KameletBinding source properties
       | message  | Hello World |
-    And bind Kamelet timer-source to uri http://probe-service.${YAKS_NAMESPACE}/events
+    And bind Kamelet timer-source to uri yaks:resolveURL('test-service')/events
     When create KameletBinding timer-source-binding
     Then KameletBinding timer-source-binding should be available
     Then Camel K integration timer-source-binding should be running
@@ -43,4 +40,4 @@ Feature: Timer Source Kamelet
 
   Scenario: Remove Camel K resources
     Given delete KameletBinding timer-source-binding
-    And delete Kubernetes service probe-service
+    And delete Kubernetes service test-service

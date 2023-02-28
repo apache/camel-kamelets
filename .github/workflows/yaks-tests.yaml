@@ -41,20 +41,23 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  CAMEL_K_VERSION: 1.12.0-nightly
-  YAKS_VERSION: 0.14.1
-  YAKS_IMAGE_NAME: "docker.io/citrusframework/yaks"
-  YAKS_RUN_OPTIONS: "--timeout=15m"
+  YAKS_VERSION: 0.14.2
+  YAKS_RUN_OPTIONS: "--timeout=15m --local -e YAKS_CAMELK_MAX_ATTEMPTS=10 -e YAKS_JBANG_CAMEL_VERSION=4.0.0-M1"
 
 jobs:
   test:
-    if: ${{ false }}  # disable until YAKS support Camel 4
-
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
+      with:
+        persist-credentials: false
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: 17
+        cache: 'maven'
     - name: Set JitPack coordinates for pull requests
       if: github.event_name == 'pull_request'
       env:
@@ -67,14 +70,6 @@ jobs:
         
         # Overwrite JitPack coordinates in the local Kamelets so the tests can use the utility classes in this PR
         find kamelets -maxdepth 1 -name '*.kamelet.yaml' -exec sed -i "s/github:apache.camel-kamelets:camel-kamelets-utils:${PROJECT_VERSION}/github:${HEAD_REPO/\//.}:camel-kamelets-utils:${HEAD_REF//\//'~'}-SNAPSHOT/g" {} +
-    - name: Get Camel K CLI
-      run: |
-        curl --fail -L --silent https://github.com/apache/camel-k/releases/download/${CAMEL_K_VERSION}/camel-k-client-${CAMEL_K_VERSION}-linux-64bit.tar.gz -o kamel.tar.gz
-        mkdir -p _kamel
-        tar -zxf kamel.tar.gz --directory ./_kamel
-        sudo mv ./_kamel/kamel /usr/local/bin/
-        rm kamel.tar.gz
-        rm -r _kamel
     - name: Get YAKS CLI
       run: |
         curl --fail -L --silent https://github.com/citrusframework/yaks/releases/download/v${YAKS_VERSION}/yaks-${YAKS_VERSION}-linux-64bit.tar.gz -o yaks.tar.gz
@@ -83,51 +78,38 @@ jobs:
         sudo mv ./_yaks/yaks /usr/local/bin/
         rm yaks.tar.gz
         rm -r _yaks
-    - name: Kubernetes KinD Cluster
-      uses: container-tools/kind-action@v1
-      with:
-        version: v0.14.0
-        node_image: kindest/node:v1.23.6@sha256:b1fa224cc6c7ff32455e0b1fd9cbfd3d3bc87ecaa8fcb06961ed1afb3db0f9ae
     - name: Info
       run: |
-        kubectl version
-        kubectl cluster-info
-        kubectl describe nodes
-    - name: Install Knative
-      uses: ./.github/actions/install-knative
-    - name: Install Camel K
-      run: |
-        # Configure install options
-        export KAMEL_INSTALL_BUILD_PUBLISH_STRATEGY=Spectrum
-        export KAMEL_INSTALL_REGISTRY=$KIND_REGISTRY
-        export KAMEL_INSTALL_REGISTRY_INSECURE=true
-
-        kamel install -w --operator-env-vars KAMEL_INSTALL_DEFAULT_KAMELETS=false --maven-repository=https://repository.apache.org/content/repositories/snapshots@id=apache-snapshots@snapshots
-
-        # Install the local kamelets
-        find kamelets -maxdepth 1 -name '*.kamelet.yaml' -exec kubectl apply -f {} \;
-    - name: Install YAKS
-      run: |
-        yaks install --operator-image $YAKS_IMAGE_NAME:$YAKS_VERSION
+        yaks version
     - name: YAKS Tests
       run: |
-        echo "Running tests for Kamelets"
+        echo "Install JBang via SDKMAN"
+
+        curl -s "https://get.sdkman.io" | bash 
+        source "/home/runner/.sdkman/bin/sdkman-init.sh"
+        sdk install jbang
+        
+        jbang trust add https://github.com/citrusframework/yaks/
+        jbang trust add https://github.com/apache/camel/
+
+        jbang yaks@citrusframework/yaks --version
+        jbang camel@apache/camel --version
+        
+        echo "Running YAKS tests for Kamelets"
+        
         yaks run test/aws-ddb-sink $YAKS_RUN_OPTIONS
         yaks run test/aws-s3 $YAKS_RUN_OPTIONS
         
         yaks run test/extract-field-action $YAKS_RUN_OPTIONS
         yaks run test/insert-field-action $YAKS_RUN_OPTIONS
+        
         yaks run test/mail-sink $YAKS_RUN_OPTIONS
         yaks run test/timer-source $YAKS_RUN_OPTIONS
         yaks run test/earthquake-source $YAKS_RUN_OPTIONS
         yaks run test/rest-openapi-sink $YAKS_RUN_OPTIONS
         yaks run test/kafka $YAKS_RUN_OPTIONS
-    - name: YAKS Report
-      if: failure()
-      run: |
-        yaks report
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
         name: dumps
-        path: _output/*-dump.log
+        path: test/**/.yaks-jbang/*-output.txt

@@ -38,4 +38,4 @@ spec:
       properties:
         field: ${field}
   sink:
-    uri: http://test-extract-service.${YAKS_NAMESPACE}/result
+    uri: yaks:resolveURL('test-service')/result
