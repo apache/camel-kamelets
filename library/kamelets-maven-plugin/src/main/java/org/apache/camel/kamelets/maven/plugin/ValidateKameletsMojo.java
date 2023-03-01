@@ -58,7 +58,7 @@ public class ValidateKameletsMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        String[] bannedDeps = {"mvn:", "camel:gson", "camel:core", "camel:kamelet", "github:apache.camel-kamelets:camel-kamelets-utils:3.20.1-SNAPSHOT"};
+        String[] bannedDeps = {"mvn:", "camel:gson", "camel:core", "camel:kamelet"};
         List<String> bannedDepsList = Arrays.asList(bannedDeps);
         KameletsCatalog catalog = new KameletsCatalog();
         DefaultCamelCatalog cc = new DefaultCamelCatalog();
@@ -69,7 +69,8 @@ public class ValidateKameletsMojo extends AbstractMojo {
             Map<String,Object> f = (Map) kd.get("from");
             Map<String,Object> p = (Map) f.get("parameters");
             List<String> deps = catalog.getKameletDependencies(name).stream()
-                    .filter(Predicate.not(bannedDepsList::contains)).collect(Collectors.toList());
+                    .filter(Predicate.not(bannedDepsList::contains))
+                    .collect(Collectors.toList());
             String cleanName;
             if (!deps.isEmpty()) {
                 if (deps.get(0).equals("camel:jackson") && deps.size() > 1) {
