@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v4.0.0-M1](https://github.com/apache/camel-kamelets/tree/v4.0.0-M1) (2023-02-28)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.1.1...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.1.1...v4.0.0-M1)
 
 **Closed issues:**
 
@@ -21,6 +21,50 @@
 - Steps in KameletBinding accept also non-action kamelets resources [\#741](https://github.com/apache/camel-kamelets/issues/741)
 - Kamelet for ElasticSearch Sink provides no mechanism to set indexId or ce-indexId [\#673](https://github.com/apache/camel-kamelets/issues/673)
 - Add a "namespace" label to help group kamelets [\#640](https://github.com/apache/camel-kamelets/issues/640)
+
+**Merged pull requests:**
+
+- Release should be set to JDK17 [\#1316](https://github.com/apache/camel-kamelets/pull/1316) ([oscerd](https://github.com/oscerd))
+- Regen [\#1315](https://github.com/apache/camel-kamelets/pull/1315) ([oscerd](https://github.com/oscerd))
+- Upgrade PostgreSQL driver to version 42.5.4 [\#1314](https://github.com/apache/camel-kamelets/pull/1314) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1311](https://github.com/apache/camel-kamelets/pull/1311) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen [\#1306](https://github.com/apache/camel-kamelets/pull/1306) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Issue-981: Improve narrative for chatId. [\#1305](https://github.com/apache/camel-kamelets/pull/1305) ([manstis](https://github.com/manstis))
+- Generated sources regen for SBOM [\#1303](https://github.com/apache/camel-kamelets/pull/1303) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Add a "namespace" label to help group kamelets  [\#1302](https://github.com/apache/camel-kamelets/pull/1302) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1298](https://github.com/apache/camel-kamelets/pull/1298) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen for SBOM [\#1297](https://github.com/apache/camel-kamelets/pull/1297) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen for SBOM [\#1296](https://github.com/apache/camel-kamelets/pull/1296) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Added SBOM generation action [\#1295](https://github.com/apache/camel-kamelets/pull/1295) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#1294](https://github.com/apache/camel-kamelets/pull/1294) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Added SBOM generation to camel-kamelets [\#1293](https://github.com/apache/camel-kamelets/pull/1293) ([oscerd](https://github.com/oscerd))
+- Convert all the parameters with multiple possible values to enum  [\#1291](https://github.com/apache/camel-kamelets/pull/1291) ([oscerd](https://github.com/oscerd))
+- Switch Main branch to Camel 4 [\#1288](https://github.com/apache/camel-kamelets/pull/1288) ([oscerd](https://github.com/oscerd))
+- Convert all the parameters with multiple possible values to enum - FTP/FTPS Source [\#1286](https://github.com/apache/camel-kamelets/pull/1286) ([oscerd](https://github.com/oscerd))
+- Convert all the parameters with multiple possible values to enum - Fhir Source [\#1283](https://github.com/apache/camel-kamelets/pull/1283) ([oscerd](https://github.com/oscerd))
+- Convert all the parameters with multiple possible values to enum - Cassandra  [\#1282](https://github.com/apache/camel-kamelets/pull/1282) ([oscerd](https://github.com/oscerd))
+- Convert all the parameters with multiple possible values to enum - Azure Storage Blob CDC [\#1279](https://github.com/apache/camel-kamelets/pull/1279) ([oscerd](https://github.com/oscerd))
+- Convert all the parameters with multiple possible values to enum - Azure Servicebus Source [\#1278](https://github.com/apache/camel-kamelets/pull/1278) ([oscerd](https://github.com/oscerd))
+- Convert all the parameters with multiple possible values to enum - Azure Storage Blob [\#1272](https://github.com/apache/camel-kamelets/pull/1272) ([oscerd](https://github.com/oscerd))
+- Convert all the parameters with multiple possible values to enum - Azure Storage Blob Changefeed [\#1270](https://github.com/apache/camel-kamelets/pull/1270) ([oscerd](https://github.com/oscerd))
+- chore: Fix flaky AWS DDB sink YAKS tests [\#1268](https://github.com/apache/camel-kamelets/pull/1268) ([christophd](https://github.com/christophd))
+- Convert all the parameters with multiple possible values to enum - Azure Storage Blob CDC [\#1266](https://github.com/apache/camel-kamelets/pull/1266) ([oscerd](https://github.com/oscerd))
+- Convert all the parameters with multiple possible values to enum - AWS Translate [\#1264](https://github.com/apache/camel-kamelets/pull/1264) ([oscerd](https://github.com/oscerd))
+- Convert all the parameters with multiple possible values to enum - AWS Translate [\#1261](https://github.com/apache/camel-kamelets/pull/1261) ([oscerd](https://github.com/oscerd))
+- Cassandra Kamelets: add extraTypesCodec parameter  [\#1258](https://github.com/apache/camel-kamelets/pull/1258) ([oscerd](https://github.com/oscerd))
+- chore: Fix YAKS tests [\#1255](https://github.com/apache/camel-kamelets/pull/1255) ([christophd](https://github.com/christophd))
+- Added ssl support to mongodb kamelets. [\#1251](https://github.com/apache/camel-kamelets/pull/1251) ([valdar](https://github.com/valdar))
+- Kafka secured kamelets: Fixed description [\#1249](https://github.com/apache/camel-kamelets/pull/1249) ([oscerd](https://github.com/oscerd))
+- Kafka SCRAM kamelets: Fixed description [\#1248](https://github.com/apache/camel-kamelets/pull/1248) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#1247](https://github.com/apache/camel-kamelets/pull/1247) ([github-actions[bot]](https://github.com/apps/github-actions))
+- KafkaKameletsWithScram512 [\#1245](https://github.com/apache/camel-kamelets/pull/1245) ([mthirion](https://github.com/mthirion))
+- isolate the verifyHeader method in testSupportedHeaders to allow customizations [\#1243](https://github.com/apache/camel-kamelets/pull/1243) ([claudio4j](https://github.com/claudio4j))
+- fix: salesforce update kamelet fix [\#1240](https://github.com/apache/camel-kamelets/pull/1240) ([Matheusafonsouza](https://github.com/Matheusafonsouza))
+- Elasticsearch Kamelets: Moving from Camel-Elasticsearch-Rest to Camel-Elastichsearch - Index Kamelet [\#1239](https://github.com/apache/camel-kamelets/pull/1239) ([oscerd](https://github.com/oscerd))
+- Elasticsearch Kamelets: Moving from Camel-Elasticsearch-Rest to Camel-Elastichsearch - Search Kamelet [\#1238](https://github.com/apache/camel-kamelets/pull/1238) ([oscerd](https://github.com/oscerd))
+- Next is 3.21.0-SNAPSHOT [\#1237](https://github.com/apache/camel-kamelets/pull/1237) ([oscerd](https://github.com/oscerd))
+- Elasticsearch Kamelets: Moving from Camel-Elasticsearch-Rest to Camel-Elastichsearch - Index Kamelet [\#1236](https://github.com/apache/camel-kamelets/pull/1236) ([oscerd](https://github.com/oscerd))
+- Upgrade to Camel 3.20.1 [\#1232](https://github.com/apache/camel-kamelets/pull/1232) ([oscerd](https://github.com/oscerd))
 
 ## [v3.20.1.1](https://github.com/apache/camel-kamelets/tree/v3.20.1.1) (2023-01-26)
 
