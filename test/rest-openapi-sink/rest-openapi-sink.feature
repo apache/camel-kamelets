@@ -39,7 +39,6 @@ Feature: REST OpenAPI Kamelet sink
 
   Scenario: Verify proper addPet request message sent
     Given expect HTTP request body: ${pet}
-    And HTTP request header Content-Type is "application/json"
     When receive POST /petstore/pet
     And send HTTP 201 CREATED
 

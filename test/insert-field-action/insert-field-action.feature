@@ -41,7 +41,7 @@ Feature: Insert field Kamelet action
     """
     { "id": "@ignore@", "${field}": "${value}" }
     """
-    And HTTP request header Content-Type="application/json"
+    And expect HTTP request header: Content-Type="application/json;charset=UTF-8"
     When receive POST /result
     Then send HTTP 200 OK
 
