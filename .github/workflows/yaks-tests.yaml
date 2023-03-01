@@ -42,7 +42,7 @@ concurrency:
 
 env:
   YAKS_VERSION: 0.14.2
-  YAKS_RUN_OPTIONS: "--timeout=15m --local -e YAKS_CAMELK_MAX_ATTEMPTS=10 -e YAKS_JBANG_CAMEL_VERSION=4.0.0-M1"
+  YAKS_RUN_OPTIONS: "--timeout=15m --local -e YAKS_CAMELK_MAX_ATTEMPTS=10 -e YAKS_JBANG_CAMEL_VERSION=4.0.0-M1 -e YAKS_JBANG_KAMELETS_LOCAL_DIR=../../../kamelets"
 
 jobs:
   test:
@@ -58,6 +58,9 @@ jobs:
         distribution: 'temurin'
         java-version: 17
         cache: 'maven'
+    - name: Build Kamelet libraries
+      run: |
+        ./mvnw clean install -DskipTests
     - name: Get YAKS CLI
       run: |
         curl --fail -L --silent https://github.com/citrusframework/yaks/releases/download/v${YAKS_VERSION}/yaks-${YAKS_VERSION}-linux-64bit.tar.gz -o yaks.tar.gz
@@ -93,10 +96,12 @@ jobs:
         
         yaks run test/mail-sink $YAKS_RUN_OPTIONS
         yaks run test/timer-source $YAKS_RUN_OPTIONS
+        yaks run test/timer-to-http $YAKS_RUN_OPTIONS
+        yaks run test/data-type-action $YAKS_RUN_OPTIONS
         yaks run test/earthquake-source $YAKS_RUN_OPTIONS
         yaks run test/rest-openapi-sink $YAKS_RUN_OPTIONS
         yaks run test/kafka $YAKS_RUN_OPTIONS
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       if: failure()
       with:
         name: dumps

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.camel.kamelets.utils.format.converter.aws2.s3;
+package org.apache.camel.kamelets.utils.format.converter.http;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import org.apache.camel.CamelContextAware;
 import org.apache.camel.Exchange;
-import org.apache.camel.component.aws2.s3.AWS2S3Constants;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.kamelets.utils.format.DefaultDataTypeRegistry;
 import org.apache.camel.kamelets.utils.format.converter.utils.CloudEvents;
@@ -33,36 +32,42 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class AWS2S3CloudEventOutputTypeTest {
+class HttpCloudEventOutputTypeTest {
 
     private final DefaultCamelContext camelContext = new DefaultCamelContext();
 
-    private final AWS2S3CloudEventOutputType outputType = new AWS2S3CloudEventOutputType();
+    private final HttpCloudEventOutputType outputType = new HttpCloudEventOutputType();
 
     @Test
-    void shouldMapToCloudEvent() throws Exception {
+    void shouldMapToHttpCloudEvent() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
-        exchange.getMessage().setHeader(AWS2S3Constants.KEY, "test1.txt");
-        exchange.getMessage().setHeader(AWS2S3Constants.BUCKET_NAME, "myBucket");
-        exchange.getMessage().setHeader(AWS2S3Constants.CONTENT_TYPE, "text/plain");
-        exchange.getMessage().setHeader(AWS2S3Constants.CONTENT_ENCODING, StandardCharsets.UTF_8.toString());
+        exchange.getMessage().setHeader(CloudEvents.CAMEL_CLOUD_EVENT_SUBJECT, "test1.txt");
+        exchange.getMessage().setHeader(CloudEvents.CAMEL_CLOUD_EVENT_TYPE, "org.apache.camel.event");
+        exchange.getMessage().setHeader(CloudEvents.CAMEL_CLOUD_EVENT_SOURCE, "org.apache.camel.test");
+        exchange.getMessage().setHeader(CloudEvents.CAMEL_CLOUD_EVENT_CONTENT_TYPE, "text/plain");
         exchange.getMessage().setBody(new ByteArrayInputStream("Test1".getBytes(StandardCharsets.UTF_8)));
+
         outputType.convert(exchange);
 
-        Assertions.assertTrue(exchange.getMessage().hasHeaders());
-        Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey(AWS2S3Constants.KEY));
-        assertEquals("org.apache.camel.event.aws.s3.getObject", exchange.getMessage().getHeader(CloudEvents.CAMEL_CLOUD_EVENT_TYPE));
-        assertEquals("test1.txt", exchange.getMessage().getHeader(CloudEvents.CAMEL_CLOUD_EVENT_SUBJECT));
-        assertEquals("aws.s3.bucket.myBucket", exchange.getMessage().getHeader(CloudEvents.CAMEL_CLOUD_EVENT_SOURCE));
+        assertTrue(exchange.getMessage().hasHeaders());
+        assertEquals(exchange.getExchangeId(), exchange.getMessage().getHeader("ce-id"));
+        assertEquals("1.0", exchange.getMessage().getHeader("ce-specversion"));
+        assertEquals("org.apache.camel.event", exchange.getMessage().getHeader("ce-type"));
+        assertEquals("test1.txt", exchange.getMessage().getHeader("ce-subject"));
+        assertEquals("org.apache.camel.test", exchange.getMessage().getHeader("ce-source"));
+        assertTrue(exchange.getMessage().getHeaders().containsKey("ce-time"));
+        assertEquals("text/plain", exchange.getMessage().getHeader(Exchange.CONTENT_TYPE));
+        assertEquals("Test1", exchange.getMessage().getBody(String.class));
     }
 
     @Test
     public void shouldLookupDataType() throws Exception {
         DefaultDataTypeRegistry dataTypeRegistry = new DefaultDataTypeRegistry();
         CamelContextAware.trySetCamelContext(dataTypeRegistry, camelContext);
-        Optional<DataTypeConverter> converter = dataTypeRegistry.lookup("aws2-s3", "cloudevents");
+        Optional<DataTypeConverter> converter = dataTypeRegistry.lookup("http", "cloudevents");
         Assertions.assertTrue(converter.isPresent());
     }
 }
