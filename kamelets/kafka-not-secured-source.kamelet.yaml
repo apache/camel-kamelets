@@ -86,10 +86,24 @@ spec:
         x-descriptors:
         - urn:keda:metadata:consumerGroup
         - urn:keda:required
+      deserializeHeaders:
+        title: Automatically Deserialize Headers
+        description: When enabled the Kamelet source will deserialize all message headers to String representation.
+        type: boolean
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
   dependencies:
+    - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.0.0-M1"
     - "camel:kafka"
     - "camel:kamelet"
   template:
+    beans:
+      - name: kafkaHeaderDeserializer
+        type: "#class:org.apache.camel.kamelets.utils.serialization.kafka.KafkaHeaderDeserializer"
+        property:
+          - key: enabled
+            value: '{{deserializeHeaders}}'
     from:
       uri: "kafka:{{topic}}"
       parameters:
@@ -100,4 +114,6 @@ spec:
         autoOffsetReset: "{{autoOffsetReset}}"
         groupId: "{{?consumerGroup}}"
       steps:
-      - to: "kamelet:sink"
+        - process:
+            ref: "{{kafkaHeaderDeserializer}}"
+        - to: "kamelet:sink"
