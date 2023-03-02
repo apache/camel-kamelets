@@ -1,47 +1,47 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.4",
-  "serialNumber" : "urn:uuid:20eb3443-1176-4598-984a-a25ced4691bc",
+  "serialNumber" : "urn:uuid:56e9a5e2-4d37-4c98-99f6-80fdf8eb6abd",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2023-02-26T11:32:17Z",
+    "timestamp" : "2023-03-02T17:41:50Z",
     "tools" : [
       {
         "vendor" : "OWASP Foundation",
-        "name" : "CycloneDX Maven plugin",
-        "version" : "2.7.4",
+        "name" : "CycloneDX Maven plugin makeAggregateBom",
+        "version" : "2.7.5",
         "hashes" : [
           {
             "alg" : "MD5",
-            "content" : "1c0045824ba8b7c3459faf37fadb5ca4"
+            "content" : "11cd12fd5f8b60a961c385ef2be00f52"
           },
           {
             "alg" : "SHA-1",
-            "content" : "c0259ad78634a65918e328d793d2ea0b8a9c2220"
+            "content" : "3576a6392958d12709ba803922ca8ee0c7a233ed"
           },
           {
             "alg" : "SHA-256",
-            "content" : "47bd0e0176ba679b66739820bc52880a9e667c57c8b7301de698c0ce7e271bb1"
+            "content" : "802bf55759d1a44b12e01879614bae19c096302d881d1b52bf36e6051b9dc1ef"
           },
           {
             "alg" : "SHA-512",
-            "content" : "e8b72acd176d5d3e13646c2422d6fac1e47d369162cbde8796afa567d36bd182a5f8f4cbdc46185f3607a71e92c410ab0eacd87ab8c17b38e352eb3077a46ecb"
+            "content" : "779fc38723c9b02448a7cd16c432cb6504771ea5969eedb5ce72bcb96b58d0f52c3ee534f38f88e26967e2a18c93b307bbc98a65ad346df0859af89f7d963c2c"
           },
           {
             "alg" : "SHA-384",
-            "content" : "8759a5908a1dbd6797ce597bba7d67a073d63129e1affd9b827482581ee85815b118fb4e950991b9d6793a5d70e8b901"
+            "content" : "4caddd8effbaa3379638798216c03a881e1eef799c0f179fde19dbfb038a2a12c261bfd28b18594052787f5460429584"
           },
           {
             "alg" : "SHA3-384",
-            "content" : "7721f8119070762eed34e1d7fbe0eb2f590130a62f9ebcf15dbb9d3321ef25ba2b0709eb6f3e922b59f7203554db555c"
+            "content" : "490cc3412260a126b0cea502da5338e47b6e354338c128c588d7d0ab776e0ed15398d6f1042c8a5f3a98a152323a0c18"
           },
           {
             "alg" : "SHA3-256",
-            "content" : "3fc2ede35393130c22e8ea1985092c498f51f88c67925701906c910829aaac1e"
+            "content" : "538aa1dfe3e87abb3b4608b2d53508eb13f9a3d2b735f6fd7287bb285c938d78"
           },
           {
             "alg" : "SHA3-512",
-            "content" : "7f54ea340410b97d5ccf4b417928359ea30be0d71d4aaa859389f308407e9d94fa3617d395f7e81e00881da67143aa8910fdae2dd01a8fc9c9a07b8bc03fb3b1"
+            "content" : "5a18cc565eb102ce88049b104fa283b1510866ac945286c9e5de1f7f8a098246c881289eda147c1a130c231b8092099faa7caa149d4651f68c215f40eab3425b"
           }
         ]
       }
@@ -308,6 +308,7 @@
       "name" : "jackson-databind",
       "version" : "2.14.1",
       "description" : "General data-binding functionality for Jackson: works on core streaming API",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -445,6 +446,7 @@
       "name" : "jackson-core",
       "version" : "2.14.1",
       "description" : "Core Jackson processing abstractions (aka Streaming API), implementation for JSON",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -514,7 +516,7 @@
       "name" : "camel-k-model-v1alpha1",
       "version" : "6.1.1",
       "description" : "Java client for Kubernetes and OpenShift",
-      "scope" : "optional",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -975,6 +977,7 @@
       "name" : "jackson-annotations",
       "version" : "2.14.1",
       "description" : "Core annotations used for value types, used by Jackson data binding package.",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -1043,7 +1046,7 @@
       "name" : "classgraph",
       "version" : "4.8.151",
       "description" : "The uber-fast, ultra-lightweight classpath and module scanner for JVM languages.",
-      "scope" : "optional",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -1113,7 +1116,7 @@
       "name" : "camel-tooling-model",
       "version" : "4.0.0-M1",
       "description" : "Tooling Model",
-      "scope" : "optional",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -1254,7 +1257,7 @@
       "name" : "camel-catalog",
       "version" : "4.0.0-M1",
       "description" : "Camel Catalog",
-      "scope" : "optional",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -1395,7 +1398,7 @@
       "name" : "camel-api",
       "version" : "4.0.0-M1",
       "description" : "The Camel API",
-      "scope" : "optional",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -1466,7 +1469,7 @@
       "name" : "camel-util",
       "version" : "4.0.0-M1",
       "description" : "The Camel Utilities",
-      "scope" : "optional",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -1691,6 +1694,7 @@
       "name" : "slf4j-api",
       "version" : "2.0.6",
       "description" : "The slf4j API",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -1906,7 +1910,7 @@
       "name" : "maven-core",
       "version" : "3.8.5",
       "description" : "Maven Core classes.",
-      "scope" : "optional",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -4173,7 +4177,7 @@
       "name" : "maven-plugin-api",
       "version" : "3.8.5",
       "description" : "The API for plugins - Mojos - development.",
-      "scope" : "optional",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -4251,7 +4255,7 @@
       "name" : "maven-plugin-annotations",
       "version" : "3.6.4",
       "description" : "Java annotations to use in Mojos",
-      "scope" : "optional",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -5027,6 +5031,7 @@
       "name" : "camel-support",
       "version" : "4.0.0-M1",
       "description" : "The Camel Support",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -5167,6 +5172,7 @@
       "name" : "jackson-dataformat-protobuf",
       "version" : "2.14.1",
       "description" : "Support for reading and writing protobuf-encoded data via Jackson abstractions.",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -5305,7 +5311,7 @@
       "name" : "camel-jackson",
       "version" : "4.0.0-M1",
       "description" : "Camel Jackson support",
-      "scope" : "optional",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -5376,6 +5382,7 @@
       "name" : "camel-core-engine",
       "version" : "4.0.0-M1",
       "description" : "Just the Camel Core engine without any core components",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -5446,6 +5453,7 @@
       "name" : "camel-base-engine",
       "version" : "4.0.0-M1",
       "description" : "The Base Engine Camel Framework",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -5867,6 +5875,7 @@
       "name" : "jackson-dataformat-avro",
       "version" : "2.14.1",
       "description" : "Support for reading and writing AVRO-encoded data via Jackson abstractions.",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -5936,6 +5945,7 @@
       "name" : "avro",
       "version" : "1.8.2",
       "description" : "Avro core components",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -6340,7 +6350,7 @@
       "name" : "camel-kafka",
       "version" : "4.0.0-M1",
       "description" : "Camel Kafka support",
-      "scope" : "optional",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -6648,9 +6658,11 @@
       "bom-ref" : "pkg:maven/org.lz4/lz4-java@1.8.0?type=jar"
     },
     {
+      "publisher" : "xerial.org",
       "group" : "org.xerial.snappy",
       "name" : "snappy-java",
       "version" : "1.1.8.4",
+      "description" : "snappy-java: A fast compression/decompression library",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -6685,7 +6697,25 @@
           "content" : "ca3133b812890dad36943599d6a7af0a8aab9aff645376afbfe7348996654298c3473d3fc7a1aab542b4e3a7dd1d44a897572b8e14ceec99333c048ea9e2274c"
         }
       ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0",
+            "url" : "https://www.apache.org/licenses/LICENSE-2.0"
+          }
+        }
+      ],
       "purl" : "pkg:maven/org.xerial.snappy/snappy-java@1.1.8.4?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "https://github.com/xerial/snappy-java"
+        },
+        {
+          "type" : "vcs",
+          "url" : "https://github.com/xerial/snappy-java"
+        }
+      ],
       "type" : "library",
       "bom-ref" : "pkg:maven/org.xerial.snappy/snappy-java@1.1.8.4?type=jar"
     },
@@ -6695,7 +6725,7 @@
       "name" : "camel-aws2-ddb",
       "version" : "4.0.0-M1",
       "description" : "A Camel Amazon DynamoDB Web Service Component Version 2",
-      "scope" : "optional",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -6765,6 +6795,7 @@
       "name" : "dynamodb",
       "version" : "2.19.24",
       "description" : "The AWS Java SDK for Amazon DynamoDB module holds the client classes that are used for communicating with Amazon DynamoDB Service",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -8852,7 +8883,7 @@
       "name" : "camel-aws2-s3",
       "version" : "4.0.0-M1",
       "description" : "A Camel Amazon S3 Web Service Component Version 2",
-      "scope" : "optional",
+      "scope" : "required",
       "hashes" : [
         {
           "alg" : "MD5",
@@ -9548,20 +9579,24 @@
     {
       "ref" : "pkg:maven/io.fabric8/kubernetes-model-core@6.1.1?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.fabric8/kubernetes-model-common@6.1.1?type=jar"
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.1.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.14.1?type=jar"
       ]
     },
     {
       "ref" : "pkg:maven/io.fabric8/kubernetes-model-common@6.1.1?type=jar",
       "dependsOn" : [
-        "pkg:maven/org.slf4j/slf4j-api@1.7.36?type=jar"
+        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.1?type=jar",
+        "pkg:maven/org.slf4j/slf4j-api@1.7.36?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.14.1?type=jar"
       ]
     },
     {
       "ref" : "pkg:maven/io.fabric8/kubernetes-model-apiextensions@6.1.1?type=jar",
       "dependsOn" : [
         "pkg:maven/io.fabric8/kubernetes-model-core@6.1.1?type=jar",
-        "pkg:maven/io.fabric8/kubernetes-model-common@6.1.1?type=jar"
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.1.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.14.1?type=jar"
       ]
     },
     {
@@ -9618,12 +9653,15 @@
       "ref" : "pkg:maven/org.apache.camel/camel-api@4.0.0-M1?type=jar",
       "dependsOn" : [
         "pkg:maven/org.apache.camel/camel-util@4.0.0-M1?type=jar",
+        "pkg:maven/org.slf4j/slf4j-api@1.7.36?type=jar",
         "pkg:maven/jakarta.xml.bind/jakarta.xml.bind-api@4.0.0?type=jar"
       ]
     },
     {
       "ref" : "pkg:maven/org.apache.camel/camel-util@4.0.0-M1?type=jar",
-      "dependsOn" : [ ]
+      "dependsOn" : [
+        "pkg:maven/org.slf4j/slf4j-api@1.7.36?type=jar"
+      ]
     },
     {
       "ref" : "pkg:maven/jakarta.xml.bind/jakarta.xml.bind-api@4.0.0?type=jar",
@@ -9678,6 +9716,7 @@
         "pkg:maven/org.apache.maven/maven-model-builder@3.8.5?type=jar",
         "pkg:maven/org.apache.maven/maven-resolver-provider@3.8.5?type=jar",
         "pkg:maven/org.apache.maven.resolver/maven-resolver-impl@1.6.3?type=jar",
+        "pkg:maven/org.apache.maven.resolver/maven-resolver-api@1.8.0?type=jar",
         "pkg:maven/org.apache.maven.resolver/maven-resolver-spi@1.6.3?type=jar",
         "pkg:maven/org.apache.maven.resolver/maven-resolver-util@1.6.3?type=jar",
         "pkg:maven/org.apache.maven.shared/maven-shared-utils@3.3.4?type=jar",
@@ -9685,19 +9724,29 @@
         "pkg:maven/org.eclipse.sisu/org.eclipse.sisu.inject@0.3.5?type=jar",
         "pkg:maven/com.google.inject/guice@4.2.2?classifier=no_aop&type=jar",
         "pkg:maven/javax.inject/javax.inject@1?type=jar",
+        "pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar",
         "pkg:maven/org.codehaus.plexus/plexus-classworlds@2.6.0?type=jar",
         "pkg:maven/org.codehaus.plexus/plexus-interpolation@1.26?type=jar",
         "pkg:maven/org.codehaus.plexus/plexus-component-annotations@2.1.0?type=jar",
-        "pkg:maven/org.apache.commons/commons-lang3@3.8.1?type=jar"
+        "pkg:maven/org.apache.commons/commons-lang3@3.8.1?type=jar",
+        "pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"
       ]
     },
     {
       "ref" : "pkg:maven/org.apache.maven/maven-model@3.8.5?type=jar",
+      "dependsOn" : [
+        "pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar",
       "dependsOn" : [ ]
     },
     {
       "ref" : "pkg:maven/org.apache.maven/maven-settings@3.8.5?type=jar",
-      "dependsOn" : [ ]
+      "dependsOn" : [
+        "pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar"
+      ]
     },
     {
       "ref" : "pkg:maven/org.apache.maven/maven-settings-builder@3.8.5?type=jar",
@@ -9705,6 +9754,7 @@
         "pkg:maven/org.apache.maven/maven-builder-support@3.8.5?type=jar",
         "pkg:maven/javax.inject/javax.inject@1?type=jar",
         "pkg:maven/org.codehaus.plexus/plexus-interpolation@1.26?type=jar",
+        "pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar",
         "pkg:maven/org.apache.maven/maven-settings@3.8.5?type=jar",
         "pkg:maven/org.codehaus.plexus/plexus-sec-dispatcher@2.0?type=jar"
       ]
@@ -9730,10 +9780,6 @@
       ]
     },
     {
-      "ref" : "pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar",
-      "dependsOn" : [ ]
-    },
-    {
       "ref" : "pkg:maven/org.codehaus.plexus/plexus-cipher@2.0?type=jar",
       "dependsOn" : [
         "pkg:maven/javax.inject/javax.inject@1?type=jar"
@@ -9741,11 +9787,14 @@
     },
     {
       "ref" : "pkg:maven/org.apache.maven/maven-repository-metadata@3.8.5?type=jar",
-      "dependsOn" : [ ]
+      "dependsOn" : [
+        "pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar"
+      ]
     },
     {
       "ref" : "pkg:maven/org.apache.maven/maven-artifact@3.8.5?type=jar",
       "dependsOn" : [
+        "pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar",
         "pkg:maven/org.apache.commons/commons-lang3@3.8.1?type=jar"
       ]
     },
@@ -9755,12 +9804,14 @@
         "pkg:maven/org.apache.maven/maven-model@3.8.5?type=jar",
         "pkg:maven/org.apache.maven/maven-artifact@3.8.5?type=jar",
         "pkg:maven/org.eclipse.sisu/org.eclipse.sisu.plexus@0.3.5?type=jar",
+        "pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar",
         "pkg:maven/org.codehaus.plexus/plexus-classworlds@2.6.0?type=jar"
       ]
     },
     {
       "ref" : "pkg:maven/org.apache.maven/maven-model-builder@3.8.5?type=jar",
       "dependsOn" : [
+        "pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar",
         "pkg:maven/org.codehaus.plexus/plexus-interpolation@1.26?type=jar",
         "pkg:maven/javax.inject/javax.inject@1?type=jar",
         "pkg:maven/org.apache.maven/maven-model@3.8.5?type=jar",
@@ -9779,26 +9830,34 @@
         "pkg:maven/org.apache.maven/maven-model@3.8.5?type=jar",
         "pkg:maven/org.apache.maven/maven-model-builder@3.8.5?type=jar",
         "pkg:maven/org.apache.maven/maven-repository-metadata@3.8.5?type=jar",
+        "pkg:maven/org.apache.maven.resolver/maven-resolver-api@1.8.0?type=jar",
         "pkg:maven/org.apache.maven.resolver/maven-resolver-spi@1.6.3?type=jar",
         "pkg:maven/org.apache.maven.resolver/maven-resolver-util@1.6.3?type=jar",
         "pkg:maven/org.apache.maven.resolver/maven-resolver-impl@1.6.3?type=jar",
+        "pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar",
         "pkg:maven/javax.inject/javax.inject@1?type=jar"
       ]
     },
     {
       "ref" : "pkg:maven/org.apache.maven.resolver/maven-resolver-spi@1.6.3?type=jar",
-      "dependsOn" : [ ]
+      "dependsOn" : [
+        "pkg:maven/org.apache.maven.resolver/maven-resolver-api@1.8.0?type=jar"
+      ]
     },
     {
       "ref" : "pkg:maven/org.apache.maven.resolver/maven-resolver-util@1.6.3?type=jar",
-      "dependsOn" : [ ]
+      "dependsOn" : [
+        "pkg:maven/org.apache.maven.resolver/maven-resolver-api@1.8.0?type=jar"
+      ]
     },
     {
       "ref" : "pkg:maven/org.apache.maven.resolver/maven-resolver-impl@1.6.3?type=jar",
       "dependsOn" : [
+        "pkg:maven/org.apache.maven.resolver/maven-resolver-api@1.8.0?type=jar",
         "pkg:maven/org.apache.maven.resolver/maven-resolver-spi@1.6.3?type=jar",
         "pkg:maven/org.apache.maven.resolver/maven-resolver-util@1.6.3?type=jar",
-        "pkg:maven/org.apache.commons/commons-lang3@3.8.1?type=jar"
+        "pkg:maven/org.apache.commons/commons-lang3@3.8.1?type=jar",
+        "pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"
       ]
     },
     {
@@ -9807,17 +9866,34 @@
     },
     {
       "ref" : "pkg:maven/org.apache.maven.shared/maven-shared-utils@3.3.4?type=jar",
+      "dependsOn" : [
+        "pkg:maven/commons-io/commons-io@2.11.0?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/commons-io/commons-io@2.11.0?type=jar",
       "dependsOn" : [ ]
     },
     {
       "ref" : "pkg:maven/org.eclipse.sisu/org.eclipse.sisu.plexus@0.3.5?type=jar",
       "dependsOn" : [
         "pkg:maven/javax.annotation/javax.annotation-api@1.2?type=jar",
-        "pkg:maven/org.eclipse.sisu/org.eclipse.sisu.inject@0.3.5?type=jar"
+        "pkg:maven/org.eclipse.sisu/org.eclipse.sisu.inject@0.3.5?type=jar",
+        "pkg:maven/org.codehaus.plexus/plexus-component-annotations@2.1.0?type=jar",
+        "pkg:maven/org.codehaus.plexus/plexus-classworlds@2.6.0?type=jar",
+        "pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar"
       ]
     },
     {
       "ref" : "pkg:maven/javax.annotation/javax.annotation-api@1.2?type=jar",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "pkg:maven/org.codehaus.plexus/plexus-component-annotations@2.1.0?type=jar",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "pkg:maven/org.codehaus.plexus/plexus-classworlds@2.6.0?type=jar",
       "dependsOn" : [ ]
     },
     {
@@ -9863,14 +9939,6 @@
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/org.codehaus.plexus/plexus-classworlds@2.6.0?type=jar",
-      "dependsOn" : [ ]
-    },
-    {
-      "ref" : "pkg:maven/org.codehaus.plexus/plexus-component-annotations@2.1.0?type=jar",
-      "dependsOn" : [ ]
-    },
-    {
       "ref" : "pkg:maven/org.apache.maven.plugin-tools/maven-plugin-annotations@3.6.4?type=jar",
       "dependsOn" : [ ]
     },
@@ -9885,8 +9953,10 @@
         "pkg:maven/org.apache.maven/maven-core@3.8.5?type=jar",
         "pkg:maven/org.apache.maven/maven-resolver-provider@3.8.5?type=jar",
         "pkg:maven/org.apache.maven/maven-repository-metadata@3.8.5?type=jar",
+        "pkg:maven/org.apache.maven.resolver/maven-resolver-api@1.8.0?type=jar",
         "pkg:maven/org.apache.maven.resolver/maven-resolver-util@1.6.3?type=jar",
         "pkg:maven/org.apache.maven.resolver/maven-resolver-impl@1.6.3?type=jar",
+        "pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar",
         "pkg:maven/org.codehaus.plexus/plexus-interpolation@1.26?type=jar",
         "pkg:maven/org.eclipse.sisu/org.eclipse.sisu.plexus@0.3.5?type=jar",
         "pkg:maven/org.codehaus.plexus/plexus-component-annotations@2.1.0?type=jar",
@@ -9895,11 +9965,14 @@
     },
     {
       "ref" : "pkg:maven/org.apache.maven.wagon/wagon-provider-api@3.5.1?type=jar",
-      "dependsOn" : [ ]
+      "dependsOn" : [
+        "pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar"
+      ]
     },
     {
       "ref" : "pkg:maven/org.codehaus.plexus/plexus-container-default@2.1.1?type=jar",
       "dependsOn" : [
+        "pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar",
         "pkg:maven/org.codehaus.plexus/plexus-classworlds@2.6.0?type=jar",
         "pkg:maven/org.apache.xbean/xbean-reflect@3.7?type=jar",
         "pkg:maven/junit/junit@4.13.2?type=jar"
@@ -9917,10 +9990,6 @@
     },
     {
       "ref" : "pkg:maven/org.hamcrest/hamcrest-core@1.3?type=jar",
-      "dependsOn" : [ ]
-    },
-    {
-      "ref" : "pkg:maven/commons-io/commons-io@2.11.0?type=jar",
       "dependsOn" : [ ]
     },
     {
@@ -10057,8 +10126,10 @@
         "pkg:maven/org.codehaus.jackson/jackson-core-asl@1.9.13?type=jar",
         "pkg:maven/org.codehaus.jackson/jackson-mapper-asl@1.9.13?type=jar",
         "pkg:maven/com.thoughtworks.paranamer/paranamer@2.7?type=jar",
+        "pkg:maven/org.xerial.snappy/snappy-java@1.1.8.4?type=jar",
         "pkg:maven/org.apache.commons/commons-compress@1.8.1?type=jar",
-        "pkg:maven/org.tukaani/xz@1.5?type=jar"
+        "pkg:maven/org.tukaani/xz@1.5?type=jar",
+        "pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"
       ]
     },
     {
@@ -10073,6 +10144,10 @@
     },
     {
       "ref" : "pkg:maven/com.thoughtworks.paranamer/paranamer@2.7?type=jar",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "pkg:maven/org.xerial.snappy/snappy-java@1.1.8.4?type=jar",
       "dependsOn" : [ ]
     },
     {
@@ -10105,7 +10180,7 @@
         "pkg:maven/com.github.luben/zstd-jni@1.5.2-1?type=jar",
         "pkg:maven/org.lz4/lz4-java@1.8.0?type=jar",
         "pkg:maven/org.xerial.snappy/snappy-java@1.1.8.4?type=jar",
-        "pkg:maven/org.slf4j/slf4j-api@1.7.36?type=jar"
+        "pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"
       ]
     },
     {
@@ -10114,10 +10189,6 @@
     },
     {
       "ref" : "pkg:maven/org.lz4/lz4-java@1.8.0?type=jar",
-      "dependsOn" : [ ]
-    },
-    {
-      "ref" : "pkg:maven/org.xerial.snappy/snappy-java@1.1.8.4?type=jar",
       "dependsOn" : [ ]
     },
     {
@@ -10195,6 +10266,7 @@
         "pkg:maven/software.amazon.awssdk/endpoints-spi@2.19.24?type=jar",
         "pkg:maven/software.amazon.awssdk/utils@2.19.24?type=jar",
         "pkg:maven/software.amazon.awssdk/profiles@2.19.24?type=jar",
+        "pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar",
         "pkg:maven/org.reactivestreams/reactive-streams@1.0.3?type=jar"
       ]
     },
@@ -10215,7 +10287,8 @@
       "ref" : "pkg:maven/software.amazon.awssdk/utils@2.19.24?type=jar",
       "dependsOn" : [
         "pkg:maven/org.reactivestreams/reactive-streams@1.0.3?type=jar",
-        "pkg:maven/software.amazon.awssdk/annotations@2.19.24?type=jar"
+        "pkg:maven/software.amazon.awssdk/annotations@2.19.24?type=jar",
+        "pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"
       ]
     },
     {
@@ -10274,7 +10347,8 @@
         "pkg:maven/software.amazon.awssdk/utils@2.19.24?type=jar",
         "pkg:maven/software.amazon.awssdk/sdk-core@2.19.24?type=jar",
         "pkg:maven/software.amazon.awssdk/profiles@2.19.24?type=jar",
-        "pkg:maven/software.amazon.awssdk/json-utils@2.19.24?type=jar"
+        "pkg:maven/software.amazon.awssdk/json-utils@2.19.24?type=jar",
+        "pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"
       ]
     },
     {
@@ -10307,7 +10381,8 @@
         "pkg:maven/io.netty/netty-buffer@4.1.86.Final?type=jar",
         "pkg:maven/io.netty/netty-handler@4.1.86.Final?type=jar",
         "pkg:maven/io.netty/netty-transport-classes-epoll@4.1.86.Final?type=jar",
-        "pkg:maven/org.reactivestreams/reactive-streams@1.0.3?type=jar"
+        "pkg:maven/org.reactivestreams/reactive-streams@1.0.3?type=jar",
+        "pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"
       ]
     },
     {
