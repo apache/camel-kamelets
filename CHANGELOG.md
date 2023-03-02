@@ -1,5 +1,13 @@
 # Changelog
 
+## [v3.20.2](https://github.com/apache/camel-kamelets/tree/v3.20.2) (2023-03-01)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.0.0-M1...v3.20.2)
+
+**Closed issues:**
+
+- MQ sink does not map headers from Kafka source [\#1321](https://github.com/apache/camel-kamelets/issues/1321)
+
 ## [v4.0.0-M1](https://github.com/apache/camel-kamelets/tree/v4.0.0-M1) (2023-02-28)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.1.1...v4.0.0-M1)
