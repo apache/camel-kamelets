@@ -58,7 +58,7 @@
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <maven-groovy-plugin.version>2.1.1</maven-groovy-plugin.version>
         <apache-rat-plugin.version>0.14</apache-rat-plugin.version>
-	<cyclonedx-maven-plugin-version>2.7.4</cyclonedx-maven-plugin-version>
+	<cyclonedx-maven-plugin-version>2.7.5</cyclonedx-maven-plugin-version>
 
         <camel.version>4.0.0-M1</camel.version>
         <slf4j.version>1.7.36</slf4j.version>
@@ -130,7 +130,7 @@
             <id>apache.snapshots</id>
             <url>https://repository.apache.org/snapshots/</url>
             <name>Apache Snapshot Repo</name>
-            <snapshots>
+	    <snapshots>
                 <enabled>true</enabled>
             </snapshots>
             <releases>
@@ -448,6 +448,7 @@
                    <inherited>false</inherited>
                    <configuration>
                         <outputName>camel-kamelets-sbom</outputName>
+                        <outputDirectory>${project.basedir}/camel-kamelets-sbom/</outputDirectory>
                    </configuration>
                    <executions>
                        <execution>
@@ -456,26 +457,6 @@
                                <goal>makeAggregateBom</goal>
                            </goals>
                       </execution>
-                   </executions>
-                </plugin>
-                <plugin>
-                     <groupId>org.apache.maven.plugins</groupId>
-                     <artifactId>maven-antrun-plugin</artifactId>
-                     <version>${maven-antrun-plugin.version}</version>
-                     <inherited>false</inherited>
-                     <executions>
-                         <execution>
-                             <phase>package</phase>
-                             <configuration>
-                                 <target>
-                                     <copy file="${project.build.directory}/camel-kamelets-sbom.json" todir="${project.basedir}/camel-kamelets-sbom/" />
-                                     <copy file="${project.build.directory}/camel-kamelets-sbom.xml" todir="${project.basedir}/camel-kamelets-sbom/" />
-                                 </target>
-                             </configuration>
-                             <goals>
-                                 <goal>run</goal>
-                             </goals>
-                         </execution>
                    </executions>
                 </plugin>
             </plugins>
