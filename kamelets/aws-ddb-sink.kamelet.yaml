@@ -38,7 +38,7 @@ spec:
 
       If you use the default credentials provider, the DynamoDB client loads the credentials through this provider and doesn't use the basic authentication method.
 
-      This Kamelet expects a JSON-formatted body and it must include the primary key values that define the DynamoDB item. The mapping between the JSON fields and table attribute values is done by key. For example, for  '{"username":"oscerd", "city":"Rome"}' input, the Kamelet inserts or update an item in the specified AWS DynamoDB table and sets the values for the 'username' and 'city' attributes. 
+      This Kamelet expects a JSON-formatted body and it must include the primary key values that define the DynamoDB item. The mapping between the JSON fields and table attribute values is done by key. For example, for  '{"username":"oscerd", "city":"Rome"}' input, the Kamelet inserts or update an item in the specified AWS DynamoDB table and sets the values for the 'username' and 'city' attributes.
     required:
       - table
       - region
@@ -108,17 +108,26 @@ spec:
   - "camel:aws2-ddb"
   - "camel:kamelet"
   template:
+    beans:
+      - name: dataTypeRegistry
+        type: "#class:org.apache.camel.kamelets.utils.format.DefaultDataTypeRegistry"
+      - name: dataTypeProcessor
+        type: "#class:org.apache.camel.kamelets.utils.format.DataTypeProcessor"
+        property:
+          - key: scheme
+            value: 'aws2-ddb'
+          - key: format
+            value: 'json'
+          - key: registry
+            value: '#bean:{{dataTypeRegistry}}'
     from:
       uri: "kamelet:source"
       steps:
       - set-property:
           name: operation
           constant: "{{operation}}"
-      - unmarshal:
-          json:
-            library: Jackson
-            unmarshalType: com.fasterxml.jackson.databind.JsonNode
-      - bean: "org.apache.camel.kamelets.utils.transform.aws.ddb.JsonToDdbModelConverter"
+      - process:
+          ref: "{{dataTypeProcessor}}"
       - to:
           uri: "aws2-ddb:{{table}}"
           parameters:

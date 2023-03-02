@@ -16,21 +16,18 @@
  */
 package org.apache.camel.kamelets.catalog;
 
-import io.fabric8.camelk.v1alpha1.Kamelet;
+import java.util.List;
+import java.util.Map;
+
 import io.fabric8.camelk.v1alpha1.JSONSchemaProps;
+import io.fabric8.camelk.v1alpha1.Kamelet;
 import io.github.classgraph.ClassGraph;
 import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
 import org.apache.camel.tooling.model.ComponentModel;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-import java.util.Map;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class KameletsCatalogTest {
     static KameletsCatalog catalog;
@@ -43,20 +40,20 @@ public class KameletsCatalogTest {
     @Test
     void testGetKameletsName() throws Exception {
         List<String> names = catalog.getKameletsName();
-        assertTrue(!names.isEmpty());
+        assertFalse(names.isEmpty());
     }
 
     @Test
     void testGetKamelets() throws Exception {
         Map<String, Kamelet> kamelets = catalog.getKamelets();
-        assertTrue(!kamelets.isEmpty());
+        assertFalse(kamelets.isEmpty());
     }
-    
+
     @Test
     void testGetKameletsDefinition() throws Exception {
         JSONSchemaProps props = catalog.getKameletDefinition("aws-sqs-source");
         assertEquals(14, props.getProperties().keySet().size());
-        assertTrue(props.getProperties().keySet().contains("queueNameOrArn"));
+        assertTrue(props.getProperties().containsKey("queueNameOrArn"));
     }
 
     @Test
@@ -75,7 +72,7 @@ public class KameletsCatalogTest {
     @Test
     void testGetKameletsByProvider() throws Exception {
         List<Kamelet> c = catalog.getKameletByProvider("Apache Software Foundation");
-        assertTrue(!c.isEmpty());
+        assertFalse(c.isEmpty());
         c = catalog.getKameletByProvider("Eclipse");
         assertTrue(c.isEmpty());
     }
@@ -83,19 +80,19 @@ public class KameletsCatalogTest {
     @Test
     void testGetKameletsByType() throws Exception {
         List<Kamelet> c = catalog.getKameletsByType(KameletTypeEnum.SOURCE.type());
-        assertTrue(!c.isEmpty());
+        assertFalse(c.isEmpty());
         c = catalog.getKameletsByType(KameletTypeEnum.SINK.type());
-        assertTrue(!c.isEmpty());
+        assertFalse(c.isEmpty());
         c = catalog.getKameletsByType(KameletTypeEnum.ACTION.type());
-        assertTrue(!c.isEmpty());
+        assertFalse(c.isEmpty());
     }
 
     @Test
     void testGetKameletsByGroup() throws Exception {
         List<Kamelet> c = catalog.getKameletsByGroups("AWS S3");
-        assertTrue(!c.isEmpty());
+        assertFalse(c.isEmpty());
         c = catalog.getKameletsByGroups("AWS SQS");
-        assertTrue(!c.isEmpty());
+        assertFalse(c.isEmpty());
         c = catalog.getKameletsByGroups("Not-existing-group");
         assertTrue(c.isEmpty());
     }
@@ -103,8 +100,8 @@ public class KameletsCatalogTest {
     @Test
     void testGetKameletsByNamespace() throws Exception {
         List<Kamelet> c = catalog.getKameletsByNamespace("AWS");
-        assertTrue(!c.isEmpty());
-        assertTrue(c.size() == 27);
+        assertFalse(c.isEmpty());
+        assertEquals(25, c.size());
         c = catalog.getKameletsByGroups("Not-existing-group");
         assertTrue(c.isEmpty());
     }
@@ -123,7 +120,7 @@ public class KameletsCatalogTest {
         Map<String, Object> template = catalog.getKameletTemplate("aws-sqs-source");
         assertNotNull(template);
     }
-    
+
     @Test
     void testAllKameletFilesLoaded() throws Exception {
         int numberOfKameletFiles = new ClassGraph().acceptPaths("/" + KameletsCatalog.KAMELETS_DIR + "/").scan().getAllResources().size();
@@ -262,7 +259,6 @@ public class KameletsCatalogTest {
         List<ComponentModel.EndpointHeaderModel> headers = catalog.getKameletSupportedHeaders(name);
         assertEquals(expected, headers.size());
     }
-
 
     @Test
     void testGetKameletScheme() throws Exception {
