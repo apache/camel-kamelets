@@ -73,6 +73,7 @@ spec:
         title: Operation
         description: "The operation to perform. The options are PutItem, UpdateItem, or DeleteItem."
         type: string
+        enum: ["PutItem", "UpdateItem", "DeleteItem"]
         default: PutItem
         example: PutItem
       writeCapacity:
