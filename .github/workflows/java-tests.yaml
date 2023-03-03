@@ -45,6 +45,6 @@ jobs:
           java-version: 17
           cache: 'maven'
       - name: Build catalog 1st Run
-        run: ./mvnw clean install -DskipTests
+        run: ./mvnw clean install -DskipTests -DskipITs
       - name: Build catalog 2nd Run
         run: ./mvnw clean install

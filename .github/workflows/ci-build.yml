@@ -69,8 +69,8 @@ jobs:
         path: maven-repo-${{ github.run_id }}-${{ github.run_number }}.tgz
   deploy:
     runs-on: ubuntu-latest
-    # Run only when pushing to the branches (either main or release), never on merge requests
-    if: ${{ github.event_name == 'push' }}
+    # Run only when pushing to the branches (either main or release), never on merge requests and forks
+    if: ${{ github.repository == 'apache/camel-kamelets' && github.event_name == 'push' }}
     env:
       NEXUS_DEPLOY_USERNAME: ${{ secrets.NEXUS_USER }}
       NEXUS_DEPLOY_PASSWORD: ${{ secrets.NEXUS_PW }}
