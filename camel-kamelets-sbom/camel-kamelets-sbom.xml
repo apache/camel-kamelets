@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bom serialNumber="urn:uuid:56e9a5e2-4d37-4c98-99f6-80fdf8eb6abd" version="1" xmlns="http://cyclonedx.org/schema/bom/1.4">
+<bom serialNumber="urn:uuid:6e682fdc-fa65-4abe-90b2-52dd95b9a2b5" version="1" xmlns="http://cyclonedx.org/schema/bom/1.4">
   <metadata>
-    <timestamp>2023-03-02T17:41:50Z</timestamp>
+    <timestamp>2023-03-05T11:31:59Z</timestamp>
     <tools>
       <tool>
         <vendor>OWASP Foundation</vendor>
@@ -63,22 +63,22 @@
       <purl>pkg:maven/org.apache.camel.kamelets/camel-kamelets-catalog@4.0.0-SNAPSHOT?type=jar</purl>
       <externalReferences><reference type="website"><url>https://www.apache.org/camel-kamelets-parent/library/camel-kamelets-catalog/</url></reference><reference type="distribution"><url>https://repository.apache.org/service/local/staging/deploy/maven2</url></reference><reference type="issue-tracker"><url>https://github.com/apache/camel-kamelets/issues</url></reference><reference type="mailing-list"><url>dev-subscribe@camel.apache.org</url></reference><reference type="vcs"><url>https://gitbox.apache.org/repos/asf?p=camel-kamelets.git;a=summary/library/camel-kamelets-catalog</url></reference></externalReferences>
     </component>
-    <component type="library" bom-ref="pkg:maven/org.slf4j/slf4j-api@1.7.36?type=jar">
+    <component type="library" bom-ref="pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar">
       <publisher>QOS.ch</publisher>
       <group>org.slf4j</group>
       <name>slf4j-api</name>
-      <version>1.7.36</version>
+      <version>2.0.6</version>
       <description>The slf4j API</description>
       <scope>optional</scope>
       <hashes>
-        <hash alg="MD5">872da51f5de7f3923da4de871d57fd85</hash>
-        <hash alg="SHA-1">6c62681a2f655b49963a5983b8b0950a6120ae14</hash>
-        <hash alg="SHA-256">d3ef575e3e4979678dc01bf1dcce51021493b4d11fb7f1be8ad982877c16a1c0</hash>
-        <hash alg="SHA-512">f9b033fc019a44f98b16048da7e2b59edd4a6a527ba60e358f65ab88e0afae03a9340f1b3e8a543d49fa542290f499c5594259affa1ff3e6e7bf3b428d4c610b</hash>
-        <hash alg="SHA-384">2b14ad035877087157e379d3277dcdcd79e58d6bdb147c47d29e377d75ce53ad42cafbf22f5fb7827c7e946ff4876b9a</hash>
-        <hash alg="SHA3-384">3bc3110dafb8d5be16a39f3b2671a466463cd99eb39610c0e4719a7bf2d928f2ea213c734887c6926a07c4cca7769e4b</hash>
-        <hash alg="SHA3-256">ba2608179fcf46e2291a90b9cbb4aa30d718e481f59c350cc21c73b88d826881</hash>
-        <hash alg="SHA3-512">14c4edcd19702ef607d78826839d8a6d3a39157df54b89a801d3d3cbbe1307131a77671b041c761122730fb1387888c5ec2e46bdd80e1cb07f8f144676441824</hash>
+        <hash alg="MD5">0dd65c386e8c5f4e6e014de3f7a7ae60</hash>
+        <hash alg="SHA-1">88c40d8b4f33326f19a7d3c0aaf2c7e8721d4953</hash>
+        <hash alg="SHA-256">2f2a92d410b268139d7d63b75ed25e21995cfe4100c19bf23577cfdbc8077bda</hash>
+        <hash alg="SHA-512">4f8bcafcbb105542ae9333a79f1779aa299570c129abc718331cb5969af52e06e53e645ba52e67ebbe822006ea95093186656742dd24a4b167e270ba9e55e1e1</hash>
+        <hash alg="SHA-384">aae19620668b33d8a5837cd39bfd398644199693c08869812948b52eff238cd9d363cbe1a5bbdd25d6efaac4bd2caa67</hash>
+        <hash alg="SHA3-384">e70ca0766bfb4ab7b5d4f22855fa7ea28bc26f51e345ce34f11f0d042d08d8fa9b718fa6eab3c19d669dd05ce8075962</hash>
+        <hash alg="SHA3-256">e0c8b3a870481be3bd73d454901bb6db2a2bd0b34dcd62a13eac94890861caa7</hash>
+        <hash alg="SHA3-512">d5a1aabdb809a4eb9bf2b81747d33438ec52dbd4cfa87d4f7c11213ec582553d6921c5537e5a09547feb8830c9a7265a163f21df118b9c2e11bc4379a0f514a3</hash>
       </hashes>
       <licenses>
         <license>
@@ -86,7 +86,7 @@
           <url>https://opensource.org/licenses/MIT</url>
         </license>
       </licenses>
-      <purl>pkg:maven/org.slf4j/slf4j-api@1.7.36?type=jar</purl>
+      <purl>pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar</purl>
       <externalReferences><reference type="website"><url>http://www.slf4j.org</url></reference><reference type="distribution"><url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url></reference><reference type="vcs"><url>https://github.com/qos-ch/slf4j/slf4j-api</url></reference></externalReferences>
     </component>
     <component type="library" bom-ref="pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml@2.14.1?type=jar">
@@ -120,7 +120,6 @@
       <name>jackson-databind</name>
       <version>2.14.1</version>
       <description>General data-binding functionality for Jackson: works on core streaming API</description>
-      <scope>required</scope>
       <hashes>
         <hash alg="MD5">3e3e7aab8799ccc169b10f244e6fb5b4</hash>
         <hash alg="SHA-1">268524b9056cae1211b9f1f52560ef19347f4d17</hash>
@@ -168,7 +167,6 @@
       <name>jackson-core</name>
       <version>2.14.1</version>
       <description>Core Jackson processing abstractions (aka Streaming API), implementation for JSON</description>
-      <scope>required</scope>
       <hashes>
         <hash alg="MD5">f9604a5f31129cdb7db4bdec90111850</hash>
         <hash alg="SHA-1">7a07bc535ccf0b7f6929c4d0f2ab9b294ef7c4a3</hash>
@@ -193,7 +191,7 @@
       <name>camel-k-model-v1alpha1</name>
       <version>6.1.1</version>
       <description>Java client for Kubernetes and OpenShift</description>
-      <scope>required</scope>
+      <scope>optional</scope>
       <hashes>
         <hash alg="MD5">ab101626801d9cc714686cde94c008dd</hash>
         <hash alg="SHA-1">7bb4fc76dbb54c02daad5396a99f0561b91283c0</hash>
@@ -363,7 +361,6 @@
       <name>jackson-annotations</name>
       <version>2.14.1</version>
       <description>Core annotations used for value types, used by Jackson data binding package.</description>
-      <scope>required</scope>
       <hashes>
         <hash alg="MD5">da4742ba6aeb24bf1bd29382fd95647b</hash>
         <hash alg="SHA-1">2a6ad504d591a7903ffdec76b5b7252819a2d162</hash>
@@ -387,7 +384,7 @@
       <name>classgraph</name>
       <version>4.8.151</version>
       <description>The uber-fast, ultra-lightweight classpath and module scanner for JVM languages.</description>
-      <scope>required</scope>
+      <scope>optional</scope>
       <hashes>
         <hash alg="MD5">9531a08d13dbe4c63ff76e85a48b9cb7</hash>
         <hash alg="SHA-1">3943720402fb4c139df4193f5e6c5da9e46cb2a9</hash>
@@ -412,7 +409,7 @@
       <name>camel-tooling-model</name>
       <version>4.0.0-M1</version>
       <description>Tooling Model</description>
-      <scope>required</scope>
+      <scope>optional</scope>
       <hashes>
         <hash alg="MD5">08ba50d7ea2e2a2943838103b8e319e2</hash>
         <hash alg="SHA-1">7a8114b2e9cc60ad3d2cc80d124b4681c4d5e16c</hash>
@@ -463,7 +460,7 @@
       <name>camel-catalog</name>
       <version>4.0.0-M1</version>
       <description>Camel Catalog</description>
-      <scope>required</scope>
+      <scope>optional</scope>
       <hashes>
         <hash alg="MD5">2b2f3cc6248cf3d7c8e2a9ab1817b067</hash>
         <hash alg="SHA-1">acb737e0ac0be4bc06134d2d3f9e96df56c34295</hash>
@@ -514,7 +511,7 @@
       <name>camel-api</name>
       <version>4.0.0-M1</version>
       <description>The Camel API</description>
-      <scope>required</scope>
+      <scope>optional</scope>
       <hashes>
         <hash alg="MD5">c09dfbf5cb909d4faa02485510bf9ef7</hash>
         <hash alg="SHA-1">eb734f9f287f97ae5925ad0a6a78d5b503ad225e</hash>
@@ -540,7 +537,7 @@
       <name>camel-util</name>
       <version>4.0.0-M1</version>
       <description>The Camel Utilities</description>
-      <scope>required</scope>
+      <scope>optional</scope>
       <hashes>
         <hash alg="MD5">0c0fefea0216fbec15dd9233f99dcbac</hash>
         <hash alg="SHA-1">a2672dbcf9f4994a511171e68d948cc1fb1cf0df</hash>
@@ -614,32 +611,6 @@
       <version>4.0.0-SNAPSHOT</version>
       <purl>pkg:maven/org.apache.camel.kamelets/kamelets-maven-plugin@4.0.0-SNAPSHOT?type=maven-plugin</purl>
     </component>
-    <component type="library" bom-ref="pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar">
-      <publisher>QOS.ch</publisher>
-      <group>org.slf4j</group>
-      <name>slf4j-api</name>
-      <version>2.0.6</version>
-      <description>The slf4j API</description>
-      <scope>required</scope>
-      <hashes>
-        <hash alg="MD5">0dd65c386e8c5f4e6e014de3f7a7ae60</hash>
-        <hash alg="SHA-1">88c40d8b4f33326f19a7d3c0aaf2c7e8721d4953</hash>
-        <hash alg="SHA-256">2f2a92d410b268139d7d63b75ed25e21995cfe4100c19bf23577cfdbc8077bda</hash>
-        <hash alg="SHA-512">4f8bcafcbb105542ae9333a79f1779aa299570c129abc718331cb5969af52e06e53e645ba52e67ebbe822006ea95093186656742dd24a4b167e270ba9e55e1e1</hash>
-        <hash alg="SHA-384">aae19620668b33d8a5837cd39bfd398644199693c08869812948b52eff238cd9d363cbe1a5bbdd25d6efaac4bd2caa67</hash>
-        <hash alg="SHA3-384">e70ca0766bfb4ab7b5d4f22855fa7ea28bc26f51e345ce34f11f0d042d08d8fa9b718fa6eab3c19d669dd05ce8075962</hash>
-        <hash alg="SHA3-256">e0c8b3a870481be3bd73d454901bb6db2a2bd0b34dcd62a13eac94890861caa7</hash>
-        <hash alg="SHA3-512">d5a1aabdb809a4eb9bf2b81747d33438ec52dbd4cfa87d4f7c11213ec582553d6921c5537e5a09547feb8830c9a7265a163f21df118b9c2e11bc4379a0f514a3</hash>
-      </hashes>
-      <licenses>
-        <license>
-          <id>MIT</id>
-          <url>https://opensource.org/licenses/MIT</url>
-        </license>
-      </licenses>
-      <purl>pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar</purl>
-      <externalReferences><reference type="website"><url>http://www.slf4j.org</url></reference><reference type="distribution"><url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url></reference><reference type="vcs"><url>https://github.com/qos-ch/slf4j/slf4j-api</url></reference></externalReferences>
-    </component>
     <component type="library" bom-ref="pkg:maven/org.apache.camel/camel-tooling-util@4.0.0-M1?type=jar">
       <publisher>The Apache Software Foundation</publisher>
       <group>org.apache.camel</group>
@@ -697,7 +668,7 @@
       <name>maven-core</name>
       <version>3.8.5</version>
       <description>Maven Core classes.</description>
-      <scope>required</scope>
+      <scope>optional</scope>
       <hashes>
         <hash alg="MD5">d3e9fdaacc7bffc1ee89a94de453d491</hash>
         <hash alg="SHA-1">404e410171f1139d79425c3b1dddbba5b2d81a99</hash>
@@ -1454,7 +1425,7 @@
       <name>maven-plugin-api</name>
       <version>3.8.5</version>
       <description>The API for plugins - Mojos - development.</description>
-      <scope>required</scope>
+      <scope>optional</scope>
       <hashes>
         <hash alg="MD5">8c3cfcb85098c31c049ae4aa088afbfa</hash>
         <hash alg="SHA-1">13cdd6e6c4df758065e1e367e9e60a3a6c622e7b</hash>
@@ -1479,7 +1450,7 @@
       <name>maven-plugin-annotations</name>
       <version>3.6.4</version>
       <description>Java annotations to use in Mojos</description>
-      <scope>required</scope>
+      <scope>optional</scope>
       <hashes>
         <hash alg="MD5">00a800d6df39e3ae3a96135983e21e36</hash>
         <hash alg="SHA-1">23dcee7834a0b854365c14eaa9f473d2fed951e5</hash>
@@ -1742,7 +1713,6 @@ file comparators, endian transformation classes, and much more.</description>
       <name>camel-support</name>
       <version>4.0.0-M1</version>
       <description>The Camel Support</description>
-      <scope>required</scope>
       <hashes>
         <hash alg="MD5">e9b1c16787a4a5aa2038091014764056</hash>
         <hash alg="SHA-1">81006043d5ce8ed0a474c20f3ed1370fd48ee967</hash>
@@ -1794,7 +1764,6 @@ file comparators, endian transformation classes, and much more.</description>
       <version>2.14.1</version>
       <description>Support for reading and writing protobuf-encoded data via Jackson
 abstractions.</description>
-      <scope>required</scope>
       <hashes>
         <hash alg="MD5">b4a14fd6352eeb806e298765d10efdfc</hash>
         <hash alg="SHA-1">94a65a2d73f776d67adaf1153d28e8a803eae10e</hash>
@@ -1843,7 +1812,7 @@ abstractions.</description>
       <name>camel-jackson</name>
       <version>4.0.0-M1</version>
       <description>Camel Jackson support</description>
-      <scope>required</scope>
+      <scope>optional</scope>
       <hashes>
         <hash alg="MD5">269a6037a437635ac3fdd0e6cd653e8e</hash>
         <hash alg="SHA-1">03652bfe44337b68fcbc890adac02c8d8c1723d0</hash>
@@ -1869,7 +1838,6 @@ abstractions.</description>
       <name>camel-core-engine</name>
       <version>4.0.0-M1</version>
       <description>Just the Camel Core engine without any core components</description>
-      <scope>required</scope>
       <hashes>
         <hash alg="MD5">64d0883749e00ee878508af064ada2f9</hash>
         <hash alg="SHA-1">9ae9d02c6be7b4c48e239ca25f9afb38139f8897</hash>
@@ -1895,7 +1863,6 @@ abstractions.</description>
       <name>camel-base-engine</name>
       <version>4.0.0-M1</version>
       <description>The Base Engine Camel Framework</description>
-      <scope>required</scope>
       <hashes>
         <hash alg="MD5">445b46ec0e26a4a95858a39a093b6639</hash>
         <hash alg="SHA-1">0cfa86190fba5517d43fdff0d3729e7e3f8c63ba</hash>
@@ -2048,7 +2015,6 @@ abstractions.</description>
       <version>2.14.1</version>
       <description>Support for reading and writing AVRO-encoded data via Jackson
 abstractions.</description>
-      <scope>required</scope>
       <hashes>
         <hash alg="MD5">89b4e96ab3532fabf42a2d12fad3e838</hash>
         <hash alg="SHA-1">6f5b56fc4e2b1f675e463636a6618a90eccdafdf</hash>
@@ -2073,7 +2039,6 @@ abstractions.</description>
       <name>avro</name>
       <version>1.8.2</version>
       <description>Avro core components</description>
-      <scope>required</scope>
       <hashes>
         <hash alg="MD5">10395e5a571e1a1f6113411f276d2fea</hash>
         <hash alg="SHA-1">91e3146dfff4bd510181032c8276a3a0130c0697</hash>
@@ -2218,7 +2183,7 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <name>camel-kafka</name>
       <version>4.0.0-M1</version>
       <description>Camel Kafka support</description>
-      <scope>required</scope>
+      <scope>optional</scope>
       <hashes>
         <hash alg="MD5">e725e507b9ad6d51a2b0fad14032a534</hash>
         <hash alg="SHA-1">4065163a5a9905ff27cd59b3a7c82d0732e7665d</hash>
@@ -2363,7 +2328,7 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <name>camel-aws2-ddb</name>
       <version>4.0.0-M1</version>
       <description>A Camel Amazon DynamoDB Web Service Component Version 2</description>
-      <scope>required</scope>
+      <scope>optional</scope>
       <hashes>
         <hash alg="MD5">eabb8e2b96a3d0a47071a02c55f05d4b</hash>
         <hash alg="SHA-1">2d537679103d3f51a5b46af5568f0d238ca2a777</hash>
@@ -2390,7 +2355,6 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <description>The AWS Java SDK for Amazon DynamoDB module holds the client classes that are used for communicating
         with Amazon DynamoDB
         Service</description>
-      <scope>required</scope>
       <hashes>
         <hash alg="MD5">6c332530e0e25091722f46899e32fd02</hash>
         <hash alg="SHA-1">cb6d2b6d6ca058e2adfd8691574d2c956613f4b2</hash>
@@ -3217,7 +3181,7 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <name>camel-aws2-s3</name>
       <version>4.0.0-M1</version>
       <description>A Camel Amazon S3 Web Service Component Version 2</description>
-      <scope>required</scope>
+      <scope>optional</scope>
       <hashes>
         <hash alg="MD5">4e9ce76a4ba32d1ef1c2054eca30cb2c</hash>
         <hash alg="SHA-1">5ff43976a6d11d00cb6148ec6584e8580484d2c1</hash>
@@ -3466,7 +3430,7 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
     </dependency>
     <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets@4.0.0-SNAPSHOT?type=jar"/>
     <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-catalog@4.0.0-SNAPSHOT?type=jar">
-      <dependency ref="pkg:maven/org.slf4j/slf4j-api@1.7.36?type=jar"/>
+      <dependency ref="pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"/>
       <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets@4.0.0-SNAPSHOT?type=jar"/>
       <dependency ref="pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml@2.14.1?type=jar"/>
       <dependency ref="pkg:maven/io.fabric8/camel-k-model-v1alpha1@6.1.1?type=jar"/>
@@ -3475,7 +3439,7 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <dependency ref="pkg:maven/org.apache.camel/camel-tooling-model@4.0.0-M1?type=jar"/>
       <dependency ref="pkg:maven/org.apache.camel/camel-catalog@4.0.0-M1?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/org.slf4j/slf4j-api@1.7.36?type=jar"/>
+    <dependency ref="pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"/>
     <dependency ref="pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml@2.14.1?type=jar">
       <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.1?type=jar"/>
       <dependency ref="pkg:maven/org.yaml/snakeyaml@1.33?type=jar"/>
@@ -3500,7 +3464,7 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
     </dependency>
     <dependency ref="pkg:maven/io.fabric8/kubernetes-model-common@6.1.1?type=jar">
       <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.1?type=jar"/>
-      <dependency ref="pkg:maven/org.slf4j/slf4j-api@1.7.36?type=jar"/>
+      <dependency ref="pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"/>
       <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.14.1?type=jar"/>
     </dependency>
     <dependency ref="pkg:maven/io.fabric8/kubernetes-model-apiextensions@6.1.1?type=jar">
@@ -3536,11 +3500,11 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
     </dependency>
     <dependency ref="pkg:maven/org.apache.camel/camel-api@4.0.0-M1?type=jar">
       <dependency ref="pkg:maven/org.apache.camel/camel-util@4.0.0-M1?type=jar"/>
-      <dependency ref="pkg:maven/org.slf4j/slf4j-api@1.7.36?type=jar"/>
+      <dependency ref="pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"/>
       <dependency ref="pkg:maven/jakarta.xml.bind/jakarta.xml.bind-api@4.0.0?type=jar"/>
     </dependency>
     <dependency ref="pkg:maven/org.apache.camel/camel-util@4.0.0-M1?type=jar">
-      <dependency ref="pkg:maven/org.slf4j/slf4j-api@1.7.36?type=jar"/>
+      <dependency ref="pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"/>
     </dependency>
     <dependency ref="pkg:maven/jakarta.xml.bind/jakarta.xml.bind-api@4.0.0?type=jar">
       <dependency ref="pkg:maven/jakarta.activation/jakarta.activation-api@2.1.0?type=jar"/>
@@ -3561,7 +3525,6 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <dependency ref="pkg:maven/org.apache.camel/camel-catalog@4.0.0-M1?type=jar"/>
       <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-catalog@4.0.0-SNAPSHOT?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"/>
     <dependency ref="pkg:maven/org.apache.camel/camel-tooling-util@4.0.0-M1?type=jar"/>
     <dependency ref="pkg:maven/org.apache.maven.resolver/maven-resolver-api@1.8.0?type=jar"/>
     <dependency ref="pkg:maven/org.apache.maven/maven-core@3.8.5?type=jar">
