@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.2...HEAD)
+
+**Closed issues:**
+
+- Deprecating parameters [\#1330](https://github.com/apache/camel-kamelets/issues/1330)
+
 ## [v3.20.2](https://github.com/apache/camel-kamelets/tree/v3.20.2) (2023-03-01)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.0.0-M1...v3.20.2)
