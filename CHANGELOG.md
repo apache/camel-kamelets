@@ -6,7 +6,11 @@
 
 **Closed issues:**
 
+- DynamoDB Sink - use enum for available operations [\#1336](https://github.com/apache/camel-kamelets/issues/1336)
 - Deprecating parameters [\#1330](https://github.com/apache/camel-kamelets/issues/1330)
+- Release Camel-Kamelets 4.0.0-M1 [\#1313](https://github.com/apache/camel-kamelets/issues/1313)
+- Release Camel-Kamelets 3.20.2 [\#1312](https://github.com/apache/camel-kamelets/issues/1312)
+- Bump to Camel 3.20.2 [\#1299](https://github.com/apache/camel-kamelets/issues/1299)
 
 ## [v3.20.2](https://github.com/apache/camel-kamelets/tree/v3.20.2) (2023-03-01)
 
