@@ -101,6 +101,13 @@ spec:
         default: false
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+      autocreate:
+        title: Autocreate Missing Directories
+        description: Automatically create starting directory.
+        type: boolean
+        default: true
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
   dependencies:
     - "camel:ftp"
     - "camel:core"
@@ -115,6 +122,7 @@ spec:
         idempotent: "{{idempotent}}"
         ignoreFileNotFoundOrPermissionError: "{{ignoreFileNotFoundOrPermissionError}}"
         binary: "{{binary}}"
+        autocreate: "{{autocreate}}"
       steps:
       - set-header:
           name: file
