@@ -190,9 +190,12 @@ const kameletBindings = {
           ref: {
             kind: 'Kamelet',
             apiVersion: 'camel.apache.org/v1alpha1',
-            name: 'timer-source',
+            name: 'kafka-source',
             properties: {
-              message: 'Hello',
+              bootstrapServers: 'localhost:9092',
+              topic: 'mytopic',
+              user: 'kafka',
+              password: 'kafka123!'
             },
           },
         },
