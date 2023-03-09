@@ -75,7 +75,6 @@ public enum KameletPrefixSchemeEnum {
     jira_transition_issue("jira-transition-issue", "jira"),
     jira_update_issue("jira-update-issue", "jira"),
     jms_amqp_10("jms-amqp-10", "jms"),
-    jms_apache_activemq("jms-apache-activemq", "activemq"),
     jms_apache_artemis("jms-apache-artemis", "jms"),
     jms_ibm_mq("jms-ibm-mq", "jms"),
     kafka("kafka", "kafka"),
@@ -97,7 +96,6 @@ public enum KameletPrefixSchemeEnum {
     oracle_database("oracle-database", "sql"),
     postgresql("postgresql", "sql"),
     pulsar("pulsar", "pulsar"),
-    rabbitmq("rabbitmq", "rabbitmq"),
     redis("redis", "spring-redis"),
     rest_openapi("rest-openapi", "rest-openapi"),
     salesforce_create("salesforce-create", "salesforce"),
@@ -118,7 +116,6 @@ public enum KameletPrefixSchemeEnum {
     twitter_timeline("twitter-timeline", "twitter-timeline"),
     twitter_search("twitter-search", "twitter-search"),
     webhook("webhook", "platform-http"),
-    websocket("websocket", "websocket"),
     wttrin("wttrin", "https");
 
     public final String name;
