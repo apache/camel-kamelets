@@ -22,6 +22,7 @@ import java.util.Map;
 import io.fabric8.camelk.v1alpha1.JSONSchemaProps;
 import io.fabric8.camelk.v1alpha1.Kamelet;
 import io.github.classgraph.ClassGraph;
+import org.apache.camel.kamelets.catalog.model.KameletPrefixSchemeEnum;
 import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
 import org.apache.camel.tooling.model.ComponentModel;
 import org.junit.jupiter.api.BeforeAll;
