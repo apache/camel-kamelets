@@ -95,7 +95,7 @@ spec:
         default: false
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
-      autocreate:
+      autoCreate:
         title: Autocreate Missing Directories
         description: Automatically create starting directory.
         type: boolean
@@ -115,7 +115,7 @@ spec:
         recursive: "{{recursive}}"
         idempotent: "{{idempotent}}"
         binary: "{{binary}}"
-        autocreate: "{{autocreate}}"
+        autoCreate: "{{autoCreate}}"
       steps:
       - set-header:
           name: file
