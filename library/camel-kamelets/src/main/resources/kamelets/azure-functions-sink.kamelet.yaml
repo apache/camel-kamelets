@@ -46,6 +46,7 @@ spec:
         description: The HTTP method to use.
         type: string
         default: POST
+        enum: ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "TRACE", "PATCH"]
       key:
         title: Key
         description: A function-specific API key is required, if the authLevel of the function is FUNCTION or master key if the authLevel is ADMIN.
