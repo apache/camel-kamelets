@@ -6,11 +6,13 @@
 
 **Closed issues:**
 
+- SFTP source - it creates a new folder \(if doesn't exist\) instead of throwing an exception [\#1345](https://github.com/apache/camel-kamelets/issues/1345)
 - DynamoDB Sink - use enum for available operations [\#1336](https://github.com/apache/camel-kamelets/issues/1336)
 - Deprecating parameters [\#1330](https://github.com/apache/camel-kamelets/issues/1330)
 - Release Camel-Kamelets 4.0.0-M1 [\#1313](https://github.com/apache/camel-kamelets/issues/1313)
 - Release Camel-Kamelets 3.20.2 [\#1312](https://github.com/apache/camel-kamelets/issues/1312)
 - Bump to Camel 3.20.2 [\#1299](https://github.com/apache/camel-kamelets/issues/1299)
+- Switch examples to use Kafka kamelets [\#389](https://github.com/apache/camel-kamelets/issues/389)
 
 ## [v3.20.2](https://github.com/apache/camel-kamelets/tree/v3.20.2) (2023-03-01)
 
