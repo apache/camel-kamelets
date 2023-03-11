@@ -304,3 +304,4 @@ After this step you'll need to open a PR to Camel-Website for listing the releas
 And also adding the branch to the documentation to be published here: https://github.com/apache/camel-website/blob/main/antora-playbook-snippets/antora-playbook.yml
 
 In the camel-kamelets section.
+What to do if mvn is not tackling all these files
