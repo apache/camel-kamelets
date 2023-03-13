@@ -46,6 +46,7 @@ spec:
         description: The HTTP method to use
         type: string
         default: POST
+        enum: ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "TRACE", "PATCH"]
       authMethod:
         title: Authentication Method
         description: Authentication methods allowed to use as a comma separated list of values Basic, Digest or NTLM.
