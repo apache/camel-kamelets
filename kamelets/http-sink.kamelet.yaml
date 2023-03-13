@@ -45,6 +45,7 @@ spec:
         description: The HTTP method to use.
         type: string
         default: POST
+        enum: ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "TRACE", "PATCH"]
   dependencies:
   - "camel:http"
   - "camel:kamelet"
