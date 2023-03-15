@@ -63,13 +63,6 @@ spec:
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
-      includeBody:
-        title: Include Body
-        description: If true, the exchange is consumed and put into the body and closed. If false, the S3Object stream is put raw into the body and the headers are set with the S3 object metadata.
-        type: boolean
-        x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
-        default: true
       prefix:
         title: Prefix
         description: The AWS S3 bucket prefix to consider while searching.
@@ -117,7 +110,6 @@ spec:
         secretKey: "{{?secretKey}}"
         accessKey: "{{?accessKey}}"
         region: "{{region}}"
-        includeBody: "{{includeBody}}"
         ignoreBody: "{{ignoreBody}}"
         deleteAfterRead: "{{deleteAfterRead}}"
         prefix: "{{?prefix}}"
