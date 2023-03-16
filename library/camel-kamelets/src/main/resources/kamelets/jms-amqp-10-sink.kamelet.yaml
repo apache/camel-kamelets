@@ -53,8 +53,8 @@ spec:
         example: "amqp://my-host:31616"
   dependencies:
   - "camel:jms"
+  - "camel:amqp"
   - "camel:kamelet"
-  - "mvn:org.apache.qpid:qpid-jms-client:1.0.0"
   template:
     beans:
       - name: connectionFactoryBean
