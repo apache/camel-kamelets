@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- AWS S3 Source Kamelet: Removing includeBody option [\#1373](https://github.com/apache/camel-kamelets/issues/1373)
 - SFTP source - it creates a new folder \(if doesn't exist\) instead of throwing an exception [\#1345](https://github.com/apache/camel-kamelets/issues/1345)
 - DynamoDB Sink - use enum for available operations [\#1336](https://github.com/apache/camel-kamelets/issues/1336)
 - Deprecating parameters [\#1330](https://github.com/apache/camel-kamelets/issues/1330)
