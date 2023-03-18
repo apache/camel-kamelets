@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Kafka Source Kamelets: Enable deserializeHeaders by default [\#1382](https://github.com/apache/camel-kamelets/issues/1382)
 - AWS S3 Source Kamelet: Removing includeBody option [\#1373](https://github.com/apache/camel-kamelets/issues/1373)
 - SFTP source - it creates a new folder \(if doesn't exist\) instead of throwing an exception [\#1345](https://github.com/apache/camel-kamelets/issues/1345)
 - DynamoDB Sink - use enum for available operations [\#1336](https://github.com/apache/camel-kamelets/issues/1336)
