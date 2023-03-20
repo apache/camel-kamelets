@@ -76,11 +76,6 @@ spec:
         enum: ["PutItem", "UpdateItem", "DeleteItem"]
         default: PutItem
         example: PutItem
-      writeCapacity:
-        title: Write Capacity
-        description: The provisioned throughput to reserve for writing resources to your table.
-        type: integer
-        default: 1
       useDefaultCredentialsProvider:
         title: Default Credentials Provider
         description: If true, the DynamoDB client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
@@ -127,7 +122,6 @@ spec:
             accessKey: "{{?accessKey}}"
             region: "{{region}}"
             operation: "{{operation}}"
-            writeCapacity: "{{?writeCapacity}}"
             useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
             uriEndpointOverride: "{{?uriEndpointOverride}}"
             overrideEndpoint: "{{overrideEndpoint}}"
