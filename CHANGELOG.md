@@ -7,6 +7,7 @@
 **Closed issues:**
 
 - Kafka Source Kamelets: Enable deserializeHeaders by default [\#1382](https://github.com/apache/camel-kamelets/issues/1382)
+- AWS DDB Sink Kamelet: Remove WriteCapacity parameter [\#1381](https://github.com/apache/camel-kamelets/issues/1381)
 - AWS S3 Source Kamelet: Removing includeBody option [\#1373](https://github.com/apache/camel-kamelets/issues/1373)
 - SFTP source - it creates a new folder \(if doesn't exist\) instead of throwing an exception [\#1345](https://github.com/apache/camel-kamelets/issues/1345)
 - DynamoDB Sink - use enum for available operations [\#1336](https://github.com/apache/camel-kamelets/issues/1336)
@@ -14,6 +15,7 @@
 - Release Camel-Kamelets 4.0.0-M1 [\#1313](https://github.com/apache/camel-kamelets/issues/1313)
 - Release Camel-Kamelets 3.20.2 [\#1312](https://github.com/apache/camel-kamelets/issues/1312)
 - Bump to Camel 3.20.2 [\#1299](https://github.com/apache/camel-kamelets/issues/1299)
+- Add azure data lake gen2 [\#1075](https://github.com/apache/camel-kamelets/issues/1075)
 - Switch examples to use Kafka kamelets [\#389](https://github.com/apache/camel-kamelets/issues/389)
 
 ## [v3.20.2](https://github.com/apache/camel-kamelets/tree/v3.20.2) (2023-03-01)
