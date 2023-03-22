@@ -59,12 +59,6 @@ spec:
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
-      credentialType:
-        title: Credential Type
-        description: Determines the credential strategy to adopt.
-        type: string
-        default: SHARED_ACCOUNT_KEY
-        enum: ["SHARED_ACCOUNT_KEY", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY"]
       delay:
         title: Delay
         description: The number of milliseconds before the next poll of the selected blob.
@@ -117,5 +111,5 @@ spec:
                       parameters:
                         operation: "deleteBlob"
                         accessKey: "{{accessKey}}"
-                        credentialType: "{{credentialType}}"
+                        credentialType: "SHARED_ACCOUNT_KEY"
 
