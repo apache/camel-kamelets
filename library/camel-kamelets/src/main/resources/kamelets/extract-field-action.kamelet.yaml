@@ -71,6 +71,13 @@ spec:
         default: false
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+      trimField:
+        title: Trim Field
+        description: If enabled we return the Raw extracted field
+        type: boolean
+        default: false
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
     type: object
   dependencies:
   - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.0.0-SNAPSHOT"
@@ -92,6 +99,8 @@ spec:
             value: '{{headerOutputName}}'
           - key: strictHeaderCheck
             value: '{{strictHeaderCheck}}'
+          - key: trimField
+            value: '{{trimField}}'
     from:
       uri: kamelet:source
       steps:
@@ -110,12 +119,16 @@ spec:
           ref: "{{extractField}}"
       - choice:
           when:
-          - simple: "${exchangeProperty[deserialized]} == 'true'"
+          - simple: "${exchangeProperty[trimField]} == 'false'"
             steps:
-            - marshal:
-                json:
-                  library: Jackson
-                  unmarshalType: com.fasterxml.jackson.databind.JsonNode
-            - set-header:
-                name: "Content-Type"
-                constant: "application/json"
+            - choice:
+                when:
+                - simple: "${exchangeProperty[deserialized]} == 'true'"
+                  steps:
+                  - marshal:
+                      json:
+                        library: Jackson
+                        unmarshalType: com.fasterxml.jackson.databind.JsonNode
+                  - set-header:
+                      name: "Content-Type"
+                      constant: "application/json"
