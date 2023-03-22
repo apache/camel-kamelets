@@ -58,12 +58,6 @@ spec:
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
-      credentialType:
-        title: Credential Type
-        description: Determines the credential strategy to adopt. 
-        type: string
-        default: SHARED_ACCOUNT_KEY
-        enum: ["SHARED_ACCOUNT_KEY", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY"]
   dependencies:
     - "camel:azure-storage-blob"
     - "camel:kamelet"
@@ -84,7 +78,7 @@ spec:
             parameters:
               operation: "getChangeFeed"
               accessKey: "{{accessKey}}"
-              credentialType: "{{credentialType}}"
+              credentialType: "SHARED_ACCOUNT_KEY"
         - split:
             expression:
               simple: "${body}"
