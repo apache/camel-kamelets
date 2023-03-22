@@ -31,6 +31,7 @@ public class ExtractField implements Processor {
     String headerOutputName;
     boolean headerOutput;
     boolean strictHeaderCheck;
+    boolean trimField;
 
     static final String EXTRACTED_FIELD_HEADER = "CamelKameletsExtractFieldName";
 
@@ -64,6 +65,11 @@ public class ExtractField implements Processor {
         } else {
             extractToHeader(ex, body);
         }
+        if (trimField) {
+            ex.setProperty("trimField", "true");
+        } else {
+            ex.setProperty("trimField", "false");
+        }
     }
 
     private void extractToHeader(Exchange ex, Map<Object, Object> body) {
@@ -96,5 +102,9 @@ public class ExtractField implements Processor {
 
     public void setStrictHeaderCheck(boolean strictHeaderCheck) {
         this.strictHeaderCheck = strictHeaderCheck;
+    }
+
+    public void setTrimField(boolean trimField) {
+        this.trimField = trimField;
     }
 }
