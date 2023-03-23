@@ -59,11 +59,6 @@ spec:
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
-      operation:
-        title: Operation name
-        description: The operation to perform.
-        type: string
-        default: uploadBlockBlob
   dependencies:
     - "camel:core"
     - "camel:azure-storage-blob"
@@ -93,5 +88,5 @@ spec:
           uri: "azure-storage-blob://{{accountName}}/{{containerName}}"
           parameters:
             accessKey: "{{accessKey}}"
-            operation: "{{operation}}"
+            operation: "uploadBlockBlob"
             credentialType: "SHARED_ACCOUNT_KEY"
