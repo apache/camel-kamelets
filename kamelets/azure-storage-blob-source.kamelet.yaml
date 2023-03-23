@@ -79,7 +79,7 @@ spec:
       uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
       parameters:
         accessKey: "{{accessKey}}"
-        credentialType: "{{credentialType}}"
+        credentialType: "SHARED_ACCOUNT_KEY"
         delay: "{{delay}}"
       steps:
         - to: "kamelet:sink"
