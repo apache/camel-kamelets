@@ -6,6 +6,8 @@
 
 **Closed issues:**
 
+- Azure Storage Blob Kamelets: Use just the SHARED\_ACCOUNT\_KEY credentials as default  [\#1400](https://github.com/apache/camel-kamelets/issues/1400)
+- Extract Field: Add a property to trim the field [\#1395](https://github.com/apache/camel-kamelets/issues/1395)
 - Kafka Source Kamelets: Enable deserializeHeaders by default [\#1382](https://github.com/apache/camel-kamelets/issues/1382)
 - AWS DDB Sink Kamelet: Remove WriteCapacity parameter [\#1381](https://github.com/apache/camel-kamelets/issues/1381)
 - AWS S3 Source Kamelet: Removing includeBody option [\#1373](https://github.com/apache/camel-kamelets/issues/1373)
