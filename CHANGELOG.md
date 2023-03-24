@@ -6,6 +6,8 @@
 
 **Closed issues:**
 
+- Cassandra Kamelets: Consistency Level in source should list only available consistency level for reading [\#1410](https://github.com/apache/camel-kamelets/issues/1410)
+- Azure Storage Blob Sink: Remove operation parameter, since the kamelet has been developed just for uploadBlockBlob operation [\#1405](https://github.com/apache/camel-kamelets/issues/1405)
 - Azure Storage Blob Kamelets: Use just the SHARED\_ACCOUNT\_KEY credentials as default  [\#1400](https://github.com/apache/camel-kamelets/issues/1400)
 - Extract Field: Add a property to trim the field [\#1395](https://github.com/apache/camel-kamelets/issues/1395)
 - Kafka Source Kamelets: Enable deserializeHeaders by default [\#1382](https://github.com/apache/camel-kamelets/issues/1382)
