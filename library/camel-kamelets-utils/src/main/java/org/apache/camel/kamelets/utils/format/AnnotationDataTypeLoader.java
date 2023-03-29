@@ -63,7 +63,7 @@ public class AnnotationDataTypeLoader implements DataTypeLoader, CamelContextAwa
 
         if (resolver == null) {
             if (camelContext instanceof ExtendedCamelContext) {
-                resolver = camelContext.getCamelContextExtension(ExtendedCamelContext.class).getPackageScanClassResolver();
+                resolver = camelContext.getCamelContextExtension().getPackageScanClassResolver();
             } else {
                 resolver = new DefaultPackageScanClassResolver();
             }
