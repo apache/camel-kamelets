@@ -56,7 +56,7 @@ public class DefaultDataTypeConverterResolver implements DataTypeConverterResolv
     }
 
     private Optional<DataTypeConverter> findConverter(String name, CamelContext context) {
-        return context.getCamelContextExtension(ExtendedCamelContext.class)
+        return context.getCamelContextExtension()
                 .getBootstrapFactoryFinder(DATA_TYPE_CONVERTER_RESOURCE_PATH)
                 .newInstance(name, DataTypeConverter.class);
     }
