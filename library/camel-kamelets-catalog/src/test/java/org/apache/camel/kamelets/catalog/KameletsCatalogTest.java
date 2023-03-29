@@ -207,7 +207,7 @@ public class KameletsCatalogTest {
         verifyHeaders("mariadb-source", 0);
         verifyHeaders("mariadb-sink", 8);
         verifyHeaders("minio-source", 14);
-        verifyHeaders("minio-sink", 21);
+        verifyHeaders("minio-sink", 22);
         verifyHeaders("mongodb-changes-stream-source", 3);
         verifyHeaders("mongodb-sink", 12);
         verifyHeaders("mongodb-source", 3);
