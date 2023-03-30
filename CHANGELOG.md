@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Create a Graphql Sink Kamelet [\#1424](https://github.com/apache/camel-kamelets/issues/1424)
 - Cassandra Kamelets: Consistency Level in source should list only available consistency level for reading [\#1410](https://github.com/apache/camel-kamelets/issues/1410)
 - Azure Storage Blob Sink: Remove operation parameter, since the kamelet has been developed just for uploadBlockBlob operation [\#1405](https://github.com/apache/camel-kamelets/issues/1405)
 - Azure Storage Blob Kamelets: Use just the SHARED\_ACCOUNT\_KEY credentials as default  [\#1400](https://github.com/apache/camel-kamelets/issues/1400)
