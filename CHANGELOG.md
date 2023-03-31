@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.2...HEAD)
 
+**Fixed bugs:**
+
+- catalog: io.fabric8.kubernetes.api.model.apiextensions.v1.JSONSchemaProps does not retain extensions [\#284](https://github.com/apache/camel-kamelets/issues/284)
+
 **Closed issues:**
 
 - Create a Graphql Sink Kamelet [\#1424](https://github.com/apache/camel-kamelets/issues/1424)
@@ -22,6 +26,7 @@
 - Bump to Camel 3.20.2 [\#1299](https://github.com/apache/camel-kamelets/issues/1299)
 - Add azure data lake gen2 [\#1075](https://github.com/apache/camel-kamelets/issues/1075)
 - Switch examples to use Kafka kamelets [\#389](https://github.com/apache/camel-kamelets/issues/389)
+- Expose user-relevant options in kafka sources/sinks [\#247](https://github.com/apache/camel-kamelets/issues/247)
 
 ## [v3.20.2](https://github.com/apache/camel-kamelets/tree/v3.20.2) (2023-03-01)
 
