@@ -10,6 +10,8 @@
 
 **Closed issues:**
 
+- Create a Kamelet action for setting a specific kafka key based on a particular header incoming [\#1430](https://github.com/apache/camel-kamelets/issues/1430)
+- Transformer not printing the custom headers set in Processor [\#1429](https://github.com/apache/camel-kamelets/issues/1429)
 - Create a Graphql Sink Kamelet [\#1424](https://github.com/apache/camel-kamelets/issues/1424)
 - Cassandra Kamelets: Consistency Level in source should list only available consistency level for reading [\#1410](https://github.com/apache/camel-kamelets/issues/1410)
 - Azure Storage Blob Sink: Remove operation parameter, since the kamelet has been developed just for uploadBlockBlob operation [\#1405](https://github.com/apache/camel-kamelets/issues/1405)
