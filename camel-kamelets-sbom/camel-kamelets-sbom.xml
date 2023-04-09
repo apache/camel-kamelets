@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bom serialNumber="urn:uuid:6e269291-3670-4af6-a1ed-1276b2d1589b" version="1" xmlns="http://cyclonedx.org/schema/bom/1.4">
+<bom serialNumber="urn:uuid:e1e7a917-7407-420d-94a8-1e7f9ea9ac8c" version="1" xmlns="http://cyclonedx.org/schema/bom/1.4">
   <metadata>
-    <timestamp>2023-04-02T11:32:01Z</timestamp>
+    <timestamp>2023-04-09T11:32:00Z</timestamp>
     <tools>
       <tool>
         <vendor>OWASP Foundation</vendor>
-        <name>CycloneDX Maven plugin makeAggregateBom</name>
-        <version>2.7.5</version>
+        <name>CycloneDX Maven plugin makeAggregateBom compile+provided+runtime+system</name>
+        <version>2.7.6</version>
         <hashes>
-          <hash alg="MD5">11cd12fd5f8b60a961c385ef2be00f52</hash>
-          <hash alg="SHA-1">3576a6392958d12709ba803922ca8ee0c7a233ed</hash>
-          <hash alg="SHA-256">802bf55759d1a44b12e01879614bae19c096302d881d1b52bf36e6051b9dc1ef</hash>
-          <hash alg="SHA-512">779fc38723c9b02448a7cd16c432cb6504771ea5969eedb5ce72bcb96b58d0f52c3ee534f38f88e26967e2a18c93b307bbc98a65ad346df0859af89f7d963c2c</hash>
-          <hash alg="SHA-384">4caddd8effbaa3379638798216c03a881e1eef799c0f179fde19dbfb038a2a12c261bfd28b18594052787f5460429584</hash>
-          <hash alg="SHA3-384">490cc3412260a126b0cea502da5338e47b6e354338c128c588d7d0ab776e0ed15398d6f1042c8a5f3a98a152323a0c18</hash>
-          <hash alg="SHA3-256">538aa1dfe3e87abb3b4608b2d53508eb13f9a3d2b735f6fd7287bb285c938d78</hash>
-          <hash alg="SHA3-512">5a18cc565eb102ce88049b104fa283b1510866ac945286c9e5de1f7f8a098246c881289eda147c1a130c231b8092099faa7caa149d4651f68c215f40eab3425b</hash>
+          <hash alg="MD5">639c35c7f79c5514f3abe11247999b70</hash>
+          <hash alg="SHA-1">649239e622d8d454bb9ab6fafd6746c85cd11b7d</hash>
+          <hash alg="SHA-256">1e3bc10146c370fe8b8f0a2edcb64329907d61dbc2f445db6ac1034cd3221ce3</hash>
+          <hash alg="SHA-512">894a4b5762d32c88cc58ae1a35a3cc3d45a3c494accadb31b55b5832af65f60c0f8164623521a81de73e3ed6a4c994cca0f1951c8368b9d07fb41c82eaa84bbd</hash>
+          <hash alg="SHA-384">3c385acc773a41056fb58ea27096c8ec86d46d8bd74a2eee9cf0913051981611afc68cf13a88d31af16590a489a97c0e</hash>
+          <hash alg="SHA3-384">93695160055039f4791ecebd61c7aa6130f074f50a823de6e5aff7217c35548062829ec2b930658c2702cd47ea3118a1</hash>
+          <hash alg="SHA3-256">4c9f5d3ab2b6ab9b4b4a8968a7ee2373b85a496bec34eefd96ed7c8260d2a45b</hash>
+          <hash alg="SHA3-512">c2af46fe07c4be746fdc0b54e9eb3285231055c5401bcfb34c2d9392efe27fe9c16a0edd91615970bfae3f4a59846e89c3d88a6a36d4ba110a6d140a04fe184d</hash>
         </hashes>
       </tool>
     </tools>
@@ -3658,6 +3658,7 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <dependency ref="pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar"/>
       <dependency ref="pkg:maven/org.apache.commons/commons-lang3@3.8.1?type=jar"/>
     </dependency>
+    <dependency ref="pkg:maven/org.apache.commons/commons-lang3@3.8.1?type=jar"/>
     <dependency ref="pkg:maven/org.apache.maven/maven-plugin-api@3.8.5?type=jar">
       <dependency ref="pkg:maven/org.apache.maven/maven-model@3.8.5?type=jar"/>
       <dependency ref="pkg:maven/org.apache.maven/maven-artifact@3.8.5?type=jar"/>
@@ -3665,6 +3666,17 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <dependency ref="pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar"/>
       <dependency ref="pkg:maven/org.codehaus.plexus/plexus-classworlds@2.6.0?type=jar"/>
     </dependency>
+    <dependency ref="pkg:maven/org.eclipse.sisu/org.eclipse.sisu.plexus@0.3.5?type=jar">
+      <dependency ref="pkg:maven/javax.annotation/javax.annotation-api@1.2?type=jar"/>
+      <dependency ref="pkg:maven/org.eclipse.sisu/org.eclipse.sisu.inject@0.3.5?type=jar"/>
+      <dependency ref="pkg:maven/org.codehaus.plexus/plexus-component-annotations@2.1.0?type=jar"/>
+      <dependency ref="pkg:maven/org.codehaus.plexus/plexus-classworlds@2.6.0?type=jar"/>
+      <dependency ref="pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar"/>
+    </dependency>
+    <dependency ref="pkg:maven/javax.annotation/javax.annotation-api@1.2?type=jar"/>
+    <dependency ref="pkg:maven/org.eclipse.sisu/org.eclipse.sisu.inject@0.3.5?type=jar"/>
+    <dependency ref="pkg:maven/org.codehaus.plexus/plexus-component-annotations@2.1.0?type=jar"/>
+    <dependency ref="pkg:maven/org.codehaus.plexus/plexus-classworlds@2.6.0?type=jar"/>
     <dependency ref="pkg:maven/org.apache.maven/maven-model-builder@3.8.5?type=jar">
       <dependency ref="pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar"/>
       <dependency ref="pkg:maven/org.codehaus.plexus/plexus-interpolation@1.26?type=jar"/>
@@ -3674,7 +3686,6 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <dependency ref="pkg:maven/org.apache.maven/maven-builder-support@3.8.5?type=jar"/>
       <dependency ref="pkg:maven/org.eclipse.sisu/org.eclipse.sisu.inject@0.3.5?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/org.eclipse.sisu/org.eclipse.sisu.inject@0.3.5?type=jar"/>
     <dependency ref="pkg:maven/org.apache.maven/maven-resolver-provider@3.8.5?type=jar">
       <dependency ref="pkg:maven/org.apache.maven/maven-model@3.8.5?type=jar"/>
       <dependency ref="pkg:maven/org.apache.maven/maven-model-builder@3.8.5?type=jar"/>
@@ -3699,21 +3710,10 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <dependency ref="pkg:maven/org.apache.commons/commons-lang3@3.8.1?type=jar"/>
       <dependency ref="pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/org.apache.commons/commons-lang3@3.8.1?type=jar"/>
     <dependency ref="pkg:maven/org.apache.maven.shared/maven-shared-utils@3.3.4?type=jar">
       <dependency ref="pkg:maven/commons-io/commons-io@2.11.0?type=jar"/>
     </dependency>
     <dependency ref="pkg:maven/commons-io/commons-io@2.11.0?type=jar"/>
-    <dependency ref="pkg:maven/org.eclipse.sisu/org.eclipse.sisu.plexus@0.3.5?type=jar">
-      <dependency ref="pkg:maven/javax.annotation/javax.annotation-api@1.2?type=jar"/>
-      <dependency ref="pkg:maven/org.eclipse.sisu/org.eclipse.sisu.inject@0.3.5?type=jar"/>
-      <dependency ref="pkg:maven/org.codehaus.plexus/plexus-component-annotations@2.1.0?type=jar"/>
-      <dependency ref="pkg:maven/org.codehaus.plexus/plexus-classworlds@2.6.0?type=jar"/>
-      <dependency ref="pkg:maven/org.codehaus.plexus/plexus-utils@3.4.1?type=jar"/>
-    </dependency>
-    <dependency ref="pkg:maven/javax.annotation/javax.annotation-api@1.2?type=jar"/>
-    <dependency ref="pkg:maven/org.codehaus.plexus/plexus-component-annotations@2.1.0?type=jar"/>
-    <dependency ref="pkg:maven/org.codehaus.plexus/plexus-classworlds@2.6.0?type=jar"/>
     <dependency ref="pkg:maven/com.google.inject/guice@4.2.2?classifier=no_aop&amp;type=jar">
       <dependency ref="pkg:maven/javax.inject/javax.inject@1?type=jar"/>
       <dependency ref="pkg:maven/aopalliance/aopalliance@1.0?type=jar"/>
@@ -3796,17 +3796,6 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <dependency ref="pkg:maven/org.apache.camel/camel-core-engine@4.0.0-M2?type=jar"/>
       <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.2?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-protobuf@2.14.2?type=jar">
-      <dependency ref="pkg:maven/com.squareup/protoparser@4.0.3?type=jar"/>
-      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.2?type=jar"/>
-      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-core@2.14.2?type=jar"/>
-    </dependency>
-    <dependency ref="pkg:maven/com.squareup/protoparser@4.0.3?type=jar"/>
-    <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.2?type=jar">
-      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.14.2?type=jar"/>
-      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-core@2.14.2?type=jar"/>
-    </dependency>
-    <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-core@2.14.2?type=jar"/>
     <dependency ref="pkg:maven/org.apache.camel/camel-core-engine@4.0.0-M2?type=jar">
       <dependency ref="pkg:maven/org.apache.camel/camel-api@4.0.0-M2?type=jar"/>
       <dependency ref="pkg:maven/org.apache.camel/camel-base-engine@4.0.0-M2?type=jar"/>
@@ -3844,7 +3833,18 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <dependency ref="pkg:maven/org.apache.camel/camel-support@4.0.0-M2?type=jar"/>
       <dependency ref="pkg:maven/org.apache.camel/camel-util@4.0.0-M2?type=jar"/>
     </dependency>
+    <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.2?type=jar">
+      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.14.2?type=jar"/>
+      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-core@2.14.2?type=jar"/>
+    </dependency>
     <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.14.2?type=jar"/>
+    <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-core@2.14.2?type=jar"/>
+    <dependency ref="pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-protobuf@2.14.2?type=jar">
+      <dependency ref="pkg:maven/com.squareup/protoparser@4.0.3?type=jar"/>
+      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.2?type=jar"/>
+      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-core@2.14.2?type=jar"/>
+    </dependency>
+    <dependency ref="pkg:maven/com.squareup/protoparser@4.0.3?type=jar"/>
     <dependency ref="pkg:maven/org.apache.camel/camel-jackson-avro@4.0.0-M2?type=jar">
       <dependency ref="pkg:maven/org.apache.camel/camel-support@4.0.0-M2?type=jar"/>
       <dependency ref="pkg:maven/org.apache.camel/camel-jackson@4.0.0-M2?type=jar"/>
@@ -3936,12 +3936,21 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <dependency ref="pkg:maven/software.amazon.awssdk/utils@2.20.17?type=jar"/>
       <dependency ref="pkg:maven/software.amazon.eventstream/eventstream@1.0.1?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/software.amazon.awssdk/protocol-core@2.20.17?type=jar">
-      <dependency ref="pkg:maven/software.amazon.awssdk/sdk-core@2.20.17?type=jar"/>
+    <dependency ref="pkg:maven/software.amazon.awssdk/annotations@2.20.17?type=jar"/>
+    <dependency ref="pkg:maven/software.amazon.awssdk/regions@2.20.17?type=jar">
       <dependency ref="pkg:maven/software.amazon.awssdk/annotations@2.20.17?type=jar"/>
       <dependency ref="pkg:maven/software.amazon.awssdk/utils@2.20.17?type=jar"/>
-      <dependency ref="pkg:maven/software.amazon.awssdk/http-client-spi@2.20.17?type=jar"/>
+      <dependency ref="pkg:maven/software.amazon.awssdk/sdk-core@2.20.17?type=jar"/>
+      <dependency ref="pkg:maven/software.amazon.awssdk/profiles@2.20.17?type=jar"/>
+      <dependency ref="pkg:maven/software.amazon.awssdk/json-utils@2.20.17?type=jar"/>
+      <dependency ref="pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"/>
     </dependency>
+    <dependency ref="pkg:maven/software.amazon.awssdk/utils@2.20.17?type=jar">
+      <dependency ref="pkg:maven/org.reactivestreams/reactive-streams@1.0.3?type=jar"/>
+      <dependency ref="pkg:maven/software.amazon.awssdk/annotations@2.20.17?type=jar"/>
+      <dependency ref="pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"/>
+    </dependency>
+    <dependency ref="pkg:maven/org.reactivestreams/reactive-streams@1.0.3?type=jar"/>
     <dependency ref="pkg:maven/software.amazon.awssdk/sdk-core@2.20.17?type=jar">
       <dependency ref="pkg:maven/software.amazon.awssdk/annotations@2.20.17?type=jar"/>
       <dependency ref="pkg:maven/software.amazon.awssdk/http-client-spi@2.20.17?type=jar"/>
@@ -3952,27 +3961,11 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <dependency ref="pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"/>
       <dependency ref="pkg:maven/org.reactivestreams/reactive-streams@1.0.3?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/software.amazon.awssdk/annotations@2.20.17?type=jar"/>
     <dependency ref="pkg:maven/software.amazon.awssdk/http-client-spi@2.20.17?type=jar">
       <dependency ref="pkg:maven/software.amazon.awssdk/annotations@2.20.17?type=jar"/>
       <dependency ref="pkg:maven/software.amazon.awssdk/utils@2.20.17?type=jar"/>
       <dependency ref="pkg:maven/software.amazon.awssdk/metrics-spi@2.20.17?type=jar"/>
       <dependency ref="pkg:maven/org.reactivestreams/reactive-streams@1.0.3?type=jar"/>
-    </dependency>
-    <dependency ref="pkg:maven/software.amazon.awssdk/utils@2.20.17?type=jar">
-      <dependency ref="pkg:maven/org.reactivestreams/reactive-streams@1.0.3?type=jar"/>
-      <dependency ref="pkg:maven/software.amazon.awssdk/annotations@2.20.17?type=jar"/>
-      <dependency ref="pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"/>
-    </dependency>
-    <dependency ref="pkg:maven/software.amazon.awssdk/third-party-jackson-core@2.20.17?type=jar"/>
-    <dependency ref="pkg:maven/software.amazon.awssdk/json-utils@2.20.17?type=jar">
-      <dependency ref="pkg:maven/software.amazon.awssdk/utils@2.20.17?type=jar"/>
-      <dependency ref="pkg:maven/software.amazon.awssdk/annotations@2.20.17?type=jar"/>
-      <dependency ref="pkg:maven/software.amazon.awssdk/third-party-jackson-core@2.20.17?type=jar"/>
-    </dependency>
-    <dependency ref="pkg:maven/software.amazon.awssdk/profiles@2.20.17?type=jar">
-      <dependency ref="pkg:maven/software.amazon.awssdk/utils@2.20.17?type=jar"/>
-      <dependency ref="pkg:maven/software.amazon.awssdk/annotations@2.20.17?type=jar"/>
     </dependency>
     <dependency ref="pkg:maven/software.amazon.awssdk/metrics-spi@2.20.17?type=jar">
       <dependency ref="pkg:maven/software.amazon.awssdk/annotations@2.20.17?type=jar"/>
@@ -3981,7 +3974,16 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
     <dependency ref="pkg:maven/software.amazon.awssdk/endpoints-spi@2.20.17?type=jar">
       <dependency ref="pkg:maven/software.amazon.awssdk/annotations@2.20.17?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/org.reactivestreams/reactive-streams@1.0.3?type=jar"/>
+    <dependency ref="pkg:maven/software.amazon.awssdk/profiles@2.20.17?type=jar">
+      <dependency ref="pkg:maven/software.amazon.awssdk/utils@2.20.17?type=jar"/>
+      <dependency ref="pkg:maven/software.amazon.awssdk/annotations@2.20.17?type=jar"/>
+    </dependency>
+    <dependency ref="pkg:maven/software.amazon.awssdk/json-utils@2.20.17?type=jar">
+      <dependency ref="pkg:maven/software.amazon.awssdk/utils@2.20.17?type=jar"/>
+      <dependency ref="pkg:maven/software.amazon.awssdk/annotations@2.20.17?type=jar"/>
+      <dependency ref="pkg:maven/software.amazon.awssdk/third-party-jackson-core@2.20.17?type=jar"/>
+    </dependency>
+    <dependency ref="pkg:maven/software.amazon.awssdk/third-party-jackson-core@2.20.17?type=jar"/>
     <dependency ref="pkg:maven/software.amazon.awssdk/auth@2.20.17?type=jar">
       <dependency ref="pkg:maven/software.amazon.awssdk/annotations@2.20.17?type=jar"/>
       <dependency ref="pkg:maven/software.amazon.awssdk/utils@2.20.17?type=jar"/>
@@ -3992,15 +3994,13 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <dependency ref="pkg:maven/software.amazon.awssdk/json-utils@2.20.17?type=jar"/>
       <dependency ref="pkg:maven/software.amazon.eventstream/eventstream@1.0.1?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/software.amazon.awssdk/regions@2.20.17?type=jar">
+    <dependency ref="pkg:maven/software.amazon.eventstream/eventstream@1.0.1?type=jar"/>
+    <dependency ref="pkg:maven/software.amazon.awssdk/protocol-core@2.20.17?type=jar">
+      <dependency ref="pkg:maven/software.amazon.awssdk/sdk-core@2.20.17?type=jar"/>
       <dependency ref="pkg:maven/software.amazon.awssdk/annotations@2.20.17?type=jar"/>
       <dependency ref="pkg:maven/software.amazon.awssdk/utils@2.20.17?type=jar"/>
-      <dependency ref="pkg:maven/software.amazon.awssdk/sdk-core@2.20.17?type=jar"/>
-      <dependency ref="pkg:maven/software.amazon.awssdk/profiles@2.20.17?type=jar"/>
-      <dependency ref="pkg:maven/software.amazon.awssdk/json-utils@2.20.17?type=jar"/>
-      <dependency ref="pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar"/>
+      <dependency ref="pkg:maven/software.amazon.awssdk/http-client-spi@2.20.17?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/software.amazon.eventstream/eventstream@1.0.1?type=jar"/>
     <dependency ref="pkg:maven/software.amazon.awssdk/apache-client@2.20.17?type=jar">
       <dependency ref="pkg:maven/software.amazon.awssdk/http-client-spi@2.20.17?type=jar"/>
       <dependency ref="pkg:maven/software.amazon.awssdk/metrics-spi@2.20.17?type=jar"/>
@@ -4010,6 +4010,14 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <dependency ref="pkg:maven/org.apache.httpcomponents/httpcore@4.4.13?type=jar"/>
       <dependency ref="pkg:maven/commons-codec/commons-codec@1.15?type=jar"/>
     </dependency>
+    <dependency ref="pkg:maven/org.apache.httpcomponents/httpclient@4.5.13?type=jar">
+      <dependency ref="pkg:maven/org.apache.httpcomponents/httpcore@4.4.13?type=jar"/>
+      <dependency ref="pkg:maven/commons-logging/commons-logging@1.2?type=jar"/>
+      <dependency ref="pkg:maven/commons-codec/commons-codec@1.15?type=jar"/>
+    </dependency>
+    <dependency ref="pkg:maven/org.apache.httpcomponents/httpcore@4.4.13?type=jar"/>
+    <dependency ref="pkg:maven/commons-logging/commons-logging@1.2?type=jar"/>
+    <dependency ref="pkg:maven/commons-codec/commons-codec@1.15?type=jar"/>
     <dependency ref="pkg:maven/software.amazon.awssdk/netty-nio-client@2.20.17?type=jar">
       <dependency ref="pkg:maven/software.amazon.awssdk/annotations@2.20.17?type=jar"/>
       <dependency ref="pkg:maven/software.amazon.awssdk/http-client-spi@2.20.17?type=jar"/>
@@ -4042,6 +4050,9 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <dependency ref="pkg:maven/io.netty/netty-buffer@4.1.86.Final?type=jar"/>
       <dependency ref="pkg:maven/io.netty/netty-resolver@4.1.86.Final?type=jar"/>
     </dependency>
+    <dependency ref="pkg:maven/io.netty/netty-resolver@4.1.86.Final?type=jar">
+      <dependency ref="pkg:maven/io.netty/netty-common@4.1.86.Final?type=jar"/>
+    </dependency>
     <dependency ref="pkg:maven/io.netty/netty-codec@4.1.86.Final?type=jar">
       <dependency ref="pkg:maven/io.netty/netty-common@4.1.86.Final?type=jar"/>
       <dependency ref="pkg:maven/io.netty/netty-buffer@4.1.86.Final?type=jar"/>
@@ -4055,6 +4066,11 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <dependency ref="pkg:maven/io.netty/netty-transport-native-unix-common@4.1.86.Final?type=jar"/>
       <dependency ref="pkg:maven/io.netty/netty-codec@4.1.86.Final?type=jar"/>
     </dependency>
+    <dependency ref="pkg:maven/io.netty/netty-transport-native-unix-common@4.1.86.Final?type=jar">
+      <dependency ref="pkg:maven/io.netty/netty-common@4.1.86.Final?type=jar"/>
+      <dependency ref="pkg:maven/io.netty/netty-buffer@4.1.86.Final?type=jar"/>
+      <dependency ref="pkg:maven/io.netty/netty-transport@4.1.86.Final?type=jar"/>
+    </dependency>
     <dependency ref="pkg:maven/io.netty/netty-codec-http2@4.1.86.Final?type=jar">
       <dependency ref="pkg:maven/io.netty/netty-common@4.1.86.Final?type=jar"/>
       <dependency ref="pkg:maven/io.netty/netty-buffer@4.1.86.Final?type=jar"/>
@@ -4063,28 +4079,12 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <dependency ref="pkg:maven/io.netty/netty-handler@4.1.86.Final?type=jar"/>
       <dependency ref="pkg:maven/io.netty/netty-codec-http@4.1.86.Final?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/io.netty/netty-resolver@4.1.86.Final?type=jar">
-      <dependency ref="pkg:maven/io.netty/netty-common@4.1.86.Final?type=jar"/>
-    </dependency>
-    <dependency ref="pkg:maven/io.netty/netty-transport-native-unix-common@4.1.86.Final?type=jar">
-      <dependency ref="pkg:maven/io.netty/netty-common@4.1.86.Final?type=jar"/>
-      <dependency ref="pkg:maven/io.netty/netty-buffer@4.1.86.Final?type=jar"/>
-      <dependency ref="pkg:maven/io.netty/netty-transport@4.1.86.Final?type=jar"/>
-    </dependency>
     <dependency ref="pkg:maven/io.netty/netty-transport-classes-epoll@4.1.86.Final?type=jar">
       <dependency ref="pkg:maven/io.netty/netty-common@4.1.86.Final?type=jar"/>
       <dependency ref="pkg:maven/io.netty/netty-buffer@4.1.86.Final?type=jar"/>
       <dependency ref="pkg:maven/io.netty/netty-transport@4.1.86.Final?type=jar"/>
       <dependency ref="pkg:maven/io.netty/netty-transport-native-unix-common@4.1.86.Final?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/org.apache.httpcomponents/httpclient@4.5.13?type=jar">
-      <dependency ref="pkg:maven/org.apache.httpcomponents/httpcore@4.4.13?type=jar"/>
-      <dependency ref="pkg:maven/commons-logging/commons-logging@1.2?type=jar"/>
-      <dependency ref="pkg:maven/commons-codec/commons-codec@1.15?type=jar"/>
-    </dependency>
-    <dependency ref="pkg:maven/org.apache.httpcomponents/httpcore@4.4.13?type=jar"/>
-    <dependency ref="pkg:maven/commons-logging/commons-logging@1.2?type=jar"/>
-    <dependency ref="pkg:maven/commons-codec/commons-codec@1.15?type=jar"/>
     <dependency ref="pkg:maven/org.apache.camel/camel-aws2-s3@4.0.0-M2?type=jar">
       <dependency ref="pkg:maven/org.apache.camel/camel-support@4.0.0-M2?type=jar"/>
       <dependency ref="pkg:maven/software.amazon.awssdk/s3@2.20.17?type=jar"/>
