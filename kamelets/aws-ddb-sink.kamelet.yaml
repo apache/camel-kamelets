@@ -38,7 +38,17 @@ spec:
 
       If you use the default credentials provider, the DynamoDB client loads the credentials through this provider and doesn't use the basic authentication method.
 
-      This Kamelet expects a JSON-formatted body and it must include the primary key values that define the DynamoDB item. The mapping between the JSON fields and table attribute values is done by key. For example, for  '{"username":"oscerd", "city":"Rome"}' input, the Kamelet inserts or update an item in the specified AWS DynamoDB table and sets the values for the 'username' and 'city' attributes.
+      This Kamelet expects a JSON-formatted body and it must include the primary key values that define the DynamoDB item. The mapping between the JSON fields and table attribute values is done by key. For example, for  '{"username":"oscerd", "city":"Rome"}' input, the Kamelet inserts or update an item in the specified AWS DynamoDB table and sets the values for the 'username' and 'city' attributes. 
+      
+      For PutItem operation the Json body defines all item attributes.
+      For DeleteItem operation the Json body defines only the primary key attributes that identify the item to delete.
+      For UpdateItem operation the Json body defines both key attributes to identify the item to be updated and all item attributes tht get updated on the item.
+      
+      The given Json body can use "key" and "item" as top level properties. Both define a Json object that will be mapped to respective attribute value maps
+      {
+          "key": {},
+          "item": {}
+      }
     required:
       - table
       - region
