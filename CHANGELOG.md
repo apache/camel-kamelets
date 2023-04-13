@@ -10,6 +10,7 @@
 
 **Closed issues:**
 
+- oracle-database-source.kamelet doesn't create the correct JDBC connection String  [\#1443](https://github.com/apache/camel-kamelets/issues/1443)
 - Create a Kamelet action for setting a specific kafka key based on a particular header incoming [\#1430](https://github.com/apache/camel-kamelets/issues/1430)
 - Transformer not printing the custom headers set in Processor [\#1429](https://github.com/apache/camel-kamelets/issues/1429)
 - Create a Graphql Sink Kamelet [\#1424](https://github.com/apache/camel-kamelets/issues/1424)
