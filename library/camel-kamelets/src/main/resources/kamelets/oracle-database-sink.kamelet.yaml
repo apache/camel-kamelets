@@ -103,7 +103,7 @@ spec:
           - key: password
             value: '{{password}}'
           - key: url
-            value: 'jdbc:oracle:thin://{{serverName}}:{{serverPort}}/{{databaseName}}'
+            value: 'jdbc:oracle:thin:@{{serverName}}:{{serverPort}}/{{databaseName}}'
           - key: driverClassName
             value: 'oracle.jdbc.driver.OracleDriver'
     from:
