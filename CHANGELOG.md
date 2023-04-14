@@ -1,8 +1,12 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v3.20.3](https://github.com/apache/camel-kamelets/tree/v3.20.3) (2023-04-13)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.2...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.0.0-M2...v3.20.3)
+
+## [v4.0.0-M2](https://github.com/apache/camel-kamelets/tree/v4.0.0-M2) (2023-04-13)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.2...v4.0.0-M2)
 
 **Fixed bugs:**
 
@@ -30,6 +34,56 @@
 - Add azure data lake gen2 [\#1075](https://github.com/apache/camel-kamelets/issues/1075)
 - Switch examples to use Kafka kamelets [\#389](https://github.com/apache/camel-kamelets/issues/389)
 - Expose user-relevant options in kafka sources/sinks [\#247](https://github.com/apache/camel-kamelets/issues/247)
+
+**Merged pull requests:**
+
+-  fixed Oracle connection URL [\#1442](https://github.com/apache/camel-kamelets/pull/1442) ([mrinalsharma](https://github.com/mrinalsharma))
+- DynamoDB Sink Kamelet: Improved description for put, update and delete item operation [\#1438](https://github.com/apache/camel-kamelets/pull/1438) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1437](https://github.com/apache/camel-kamelets/pull/1437) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Upgrade CycloneDX maven plugin to version 2.7.6 [\#1436](https://github.com/apache/camel-kamelets/pull/1436) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#1435](https://github.com/apache/camel-kamelets/pull/1435) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Fix typo in description of telegram source kamelet [\#1434](https://github.com/apache/camel-kamelets/pull/1434) ([apupier](https://github.com/apupier))
+- Generated sources regen for SBOM [\#1433](https://github.com/apache/camel-kamelets/pull/1433) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Create a Kamelet action for setting a specific kafka key based on a particular header incoming [\#1432](https://github.com/apache/camel-kamelets/pull/1432) ([oscerd](https://github.com/oscerd))
+- Upgrade to Camel 4.0.0-M2 [\#1426](https://github.com/apache/camel-kamelets/pull/1426) ([oscerd](https://github.com/oscerd))
+- Added GraphQL basic sink Kamelet [\#1425](https://github.com/apache/camel-kamelets/pull/1425) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1423](https://github.com/apache/camel-kamelets/pull/1423) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Cassandra Kamelets: Consistency Level in source should list only available consistency level for writing [\#1422](https://github.com/apache/camel-kamelets/pull/1422) ([oscerd](https://github.com/oscerd))
+- Azure Storage Blob Kamelets: Use just the SHARED\_ACCOUNT\_KEY credentials as default [\#1415](https://github.com/apache/camel-kamelets/pull/1415) ([oscerd](https://github.com/oscerd))
+- Cassandra Kamelets: Consistency Level in source should list only available consistency level for reading [\#1411](https://github.com/apache/camel-kamelets/pull/1411) ([oscerd](https://github.com/oscerd))
+- Azure Storage Blob Sink: Remove operation parameter, since the kamelet has been developed just for uploadBlockBlob operation [\#1406](https://github.com/apache/camel-kamelets/pull/1406) ([oscerd](https://github.com/oscerd))
+- Azure Storage Blob Kamelets: Use just the SHARED\_ACCOUNT\_KEY credentials as default [\#1401](https://github.com/apache/camel-kamelets/pull/1401) ([oscerd](https://github.com/oscerd))
+- Extract Field: Add a property to trim the field [\#1396](https://github.com/apache/camel-kamelets/pull/1396) ([oscerd](https://github.com/oscerd))
+- AWS DDB Sink Kamelet: Remove WriteCapacity parameter [\#1391](https://github.com/apache/camel-kamelets/pull/1391) ([oscerd](https://github.com/oscerd))
+- Add azure data lake gen2 - Sink Kamelet [\#1390](https://github.com/apache/camel-kamelets/pull/1390) ([oscerd](https://github.com/oscerd))
+- Add azure data lake gen2 - Source Kamelet [\#1387](https://github.com/apache/camel-kamelets/pull/1387) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1386](https://github.com/apache/camel-kamelets/pull/1386) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Kafka Source Kamelets: Enable deserializeHeaders by default  [\#1383](https://github.com/apache/camel-kamelets/pull/1383) ([oscerd](https://github.com/oscerd))
+- JMS AMQP 1.0 Source/Sink Kamelets: Replace QPID client with camel-amqp [\#1378](https://github.com/apache/camel-kamelets/pull/1378) ([gansheer](https://github.com/gansheer))
+- AWS S3 Source Kamelet: Removing includeBody option [\#1374](https://github.com/apache/camel-kamelets/pull/1374) ([oscerd](https://github.com/oscerd))
+- Add Enum for Http Methods in HTTP Sink Kamelets [\#1369](https://github.com/apache/camel-kamelets/pull/1369) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1368](https://github.com/apache/camel-kamelets/pull/1368) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Azure functions HTTP methods enum [\#1362](https://github.com/apache/camel-kamelets/pull/1362) ([oscerd](https://github.com/oscerd))
+- Adding autoCreate parameter to FTPS Kamelets [\#1358](https://github.com/apache/camel-kamelets/pull/1358) ([oscerd](https://github.com/oscerd))
+- Adding autoCreate option to FTP too [\#1354](https://github.com/apache/camel-kamelets/pull/1354) ([oscerd](https://github.com/oscerd))
+- Switch examples to use Kafka kamelets [\#1353](https://github.com/apache/camel-kamelets/pull/1353) ([oscerd](https://github.com/oscerd))
+- SFTP source - it creates a new folder \(if doesn't exist\) instead of throwing an exception [\#1349](https://github.com/apache/camel-kamelets/pull/1349) ([oscerd](https://github.com/oscerd))
+- Remove Activemq-http from POM and BOM since we don't use it anymore [\#1348](https://github.com/apache/camel-kamelets/pull/1348) ([oscerd](https://github.com/oscerd))
+- Upgrade Artemis to version 2.28.0 [\#1347](https://github.com/apache/camel-kamelets/pull/1347) ([oscerd](https://github.com/oscerd))
+- Upgrade Redshift-jdbc42 to version 2.1.0.12 [\#1346](https://github.com/apache/camel-kamelets/pull/1346) ([oscerd](https://github.com/oscerd))
+- Updated Prefix Enum after Kamelets removal [\#1344](https://github.com/apache/camel-kamelets/pull/1344) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1338](https://github.com/apache/camel-kamelets/pull/1338) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Issue-1336: DynamoDB Sink - use enum for available operations [\#1337](https://github.com/apache/camel-kamelets/pull/1337) ([manstis](https://github.com/manstis))
+- chore: Run deploy GitHub workflow job on main repo only [\#1335](https://github.com/apache/camel-kamelets/pull/1335) ([christophd](https://github.com/christophd))
+- chore: Fix Log4j2 to SLF4J2 binding [\#1334](https://github.com/apache/camel-kamelets/pull/1334) ([christophd](https://github.com/christophd))
+- chore: Remove experimental data type Kamelets [\#1333](https://github.com/apache/camel-kamelets/pull/1333) ([christophd](https://github.com/christophd))
+- Upgrade to Cyclonedx Maven Plugin 2.7.5 [\#1332](https://github.com/apache/camel-kamelets/pull/1332) ([oscerd](https://github.com/oscerd))
+- chore: Add data-type-action Kamelet [\#1328](https://github.com/apache/camel-kamelets/pull/1328) ([christophd](https://github.com/christophd))
+- chore: Remove Jitpack [\#1326](https://github.com/apache/camel-kamelets/pull/1326) ([christophd](https://github.com/christophd))
+- MQ sink does not map headers from Kafka source [\#1323](https://github.com/apache/camel-kamelets/pull/1323) ([oscerd](https://github.com/oscerd))
+- chore: Fix YAKS tests [\#1322](https://github.com/apache/camel-kamelets/pull/1322) ([christophd](https://github.com/christophd))
+- Issue-981: Restore optional usage of chatId Configuration Option and correct narrative [\#1318](https://github.com/apache/camel-kamelets/pull/1318) ([manstis](https://github.com/manstis))
+- Generated sources regen [\#1317](https://github.com/apache/camel-kamelets/pull/1317) ([github-actions[bot]](https://github.com/apps/github-actions))
 
 ## [v3.20.2](https://github.com/apache/camel-kamelets/tree/v3.20.2) (2023-03-01)
 
