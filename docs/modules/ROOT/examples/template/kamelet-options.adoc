@@ -30,7 +30,41 @@ At runtime, the \`{name}\` Kamelet relies upon the presence of the following dep
 
 jsonpathList::example$yaml/${basename}.kamelet.yaml[query='nodes$.spec.dependencies.*',format='value']
 
-== Usage
+== Camel Jbang usage
+
+=== *Prerequisites*
+
+* You've installed https://www.jbang.dev/[Jbang].
+* You have executed the following command:
+
+[source,shell,subs=+attributes]
+----
+jbang app install camel@apache/camel
+----
+
+Supposing you have a file named route.yaml with this content:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 10000
+        message: 'test'
+      steps:
+        - to: 
+            uri: "kamelet:log-sink"
+----
+
+You can now run it directly through the following command
+
+[source,shell,subs=+attributes]
+----
+camel run route.yaml
+----
+
+== Camel K Enviroment Usage
 
 This section describes how you can use the \`{name}\`.
 
