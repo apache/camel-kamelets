@@ -105,7 +105,6 @@ public enum KameletPrefixSchemeEnum {
     scp("scp", "scp"),
     sftp("sftp", "sftp"),
     slack("slack", "slack"),
-    solr("solr", "solr"),
     splunk_hec("splunk-hec", "splunk-hec"),
     splunk("splunk", "splunk"),
     sqlserver("sqlserver", "sql"),
