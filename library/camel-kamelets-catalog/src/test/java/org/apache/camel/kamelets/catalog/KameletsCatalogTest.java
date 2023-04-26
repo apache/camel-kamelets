@@ -237,8 +237,6 @@ public class KameletsCatalogTest {
         verifyHeaders("sftp-source", 10);
         verifyHeaders("slack-sink", 0);
         verifyHeaders("slack-source", 0);
-        verifyHeaders("solr-sink", 5);
-        verifyHeaders("solr-source", 5);
         verifyHeaders("splunk-hec-sink", 1);
         verifyHeaders("splunk-sink", 0);
         verifyHeaders("splunk-source", 0);
