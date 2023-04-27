@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Remove Solr Kamelets [\#1456](https://github.com/apache/camel-kamelets/issues/1456)
 - Add a Simple Filter Action [\#1448](https://github.com/apache/camel-kamelets/issues/1448)
 - Upgrade to Camel 3.20.3 [\#1428](https://github.com/apache/camel-kamelets/issues/1428)
 - Release 4.0.0-M2 [\#1427](https://github.com/apache/camel-kamelets/issues/1427)
