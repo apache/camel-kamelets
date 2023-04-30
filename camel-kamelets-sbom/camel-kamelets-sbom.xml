@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bom serialNumber="urn:uuid:eb23b1f9-ef12-46b2-b2f2-43a277128bf2" version="1" xmlns="http://cyclonedx.org/schema/bom/1.4">
+<bom serialNumber="urn:uuid:1a21d7b8-b436-4c76-93b9-c8d03339a0e8" version="1" xmlns="http://cyclonedx.org/schema/bom/1.4">
   <metadata>
-    <timestamp>2023-04-23T11:31:55Z</timestamp>
+    <timestamp>2023-04-30T11:31:52Z</timestamp>
     <tools>
       <tool>
         <vendor>OWASP Foundation</vendor>
-        <name>CycloneDX Maven plugin makeAggregateBom compile+provided+runtime+system</name>
-        <version>2.7.6</version>
+        <name>CycloneDX Maven plugin</name>
+        <version>2.7.7</version>
         <hashes>
-          <hash alg="MD5">639c35c7f79c5514f3abe11247999b70</hash>
-          <hash alg="SHA-1">649239e622d8d454bb9ab6fafd6746c85cd11b7d</hash>
-          <hash alg="SHA-256">1e3bc10146c370fe8b8f0a2edcb64329907d61dbc2f445db6ac1034cd3221ce3</hash>
-          <hash alg="SHA-512">894a4b5762d32c88cc58ae1a35a3cc3d45a3c494accadb31b55b5832af65f60c0f8164623521a81de73e3ed6a4c994cca0f1951c8368b9d07fb41c82eaa84bbd</hash>
-          <hash alg="SHA-384">3c385acc773a41056fb58ea27096c8ec86d46d8bd74a2eee9cf0913051981611afc68cf13a88d31af16590a489a97c0e</hash>
-          <hash alg="SHA3-384">93695160055039f4791ecebd61c7aa6130f074f50a823de6e5aff7217c35548062829ec2b930658c2702cd47ea3118a1</hash>
-          <hash alg="SHA3-256">4c9f5d3ab2b6ab9b4b4a8968a7ee2373b85a496bec34eefd96ed7c8260d2a45b</hash>
-          <hash alg="SHA3-512">c2af46fe07c4be746fdc0b54e9eb3285231055c5401bcfb34c2d9392efe27fe9c16a0edd91615970bfae3f4a59846e89c3d88a6a36d4ba110a6d140a04fe184d</hash>
+          <hash alg="MD5">436dfb24c63a322708e4a5143d8543af</hash>
+          <hash alg="SHA-1">3ef2e8728dc9eff2f129c34057e46e9d2b10629a</hash>
+          <hash alg="SHA-256">c185b79bf0f9264f43bc8c222c44db67bea275bb727e3327cf9aea6bf45292c9</hash>
+          <hash alg="SHA-512">41488733e31e6c5315327dcc86187c2b9a6b96cd08f7e2157ce130688afde29c313fc6a73edb8a76333a930c78874aa2eac874448920030c0f7af0ac05e65ced</hash>
+          <hash alg="SHA-384">f9462f86240fd9fc0942f34981e6d2371f252aa1a4e5e8c3c14e7f0f1a4e4de69ef972e51cf09a749afb6d97c13e67ed</hash>
+          <hash alg="SHA3-384">c755af6239348bc7dd1e1e6b5f14f7cf7e1560d689b252d9610cd865fa4b419d0b8e26260731dfc5da2176b6e706b414</hash>
+          <hash alg="SHA3-256">309aac91005470c9c834354ab918759e2ae7ec52fc1676002621a5bbdf3b7827</hash>
+          <hash alg="SHA3-512">c634570dcf8302e61005e5fa91a9a0d9b81542f731967b3c9f6d3ef89e3b945bd36d7ab69e2ebad8124b9c05da504361c8b36a8ce528d844409eeb7df4eea6ce</hash>
         </hashes>
       </tool>
     </tools>
@@ -33,6 +33,10 @@
       <purl>pkg:maven/org.apache.camel.kamelets/camel-kamelets-parent@4.0.0-SNAPSHOT?type=pom</purl>
       <externalReferences><reference type="website"><url>https://www.apache.org/camel-kamelets-parent/</url></reference><reference type="distribution"><url>https://repository.apache.org/service/local/staging/deploy/maven2</url></reference><reference type="issue-tracker"><url>https://github.com/apache/camel-kamelets/issues</url></reference><reference type="mailing-list"><url>dev-subscribe@camel.apache.org</url></reference><reference type="vcs"><url>https://gitbox.apache.org/repos/asf?p=camel-kamelets.git;a=summary</url></reference></externalReferences>
     </component>
+    <properties>
+      <property name="maven.goal">makeAggregateBom</property>
+      <property name="maven.scopes">compile,provided,runtime,system</property>
+    </properties>
   </metadata>
   <components>
     <component type="library" bom-ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets@4.0.0-SNAPSHOT?type=jar">
@@ -379,28 +383,28 @@
       <purl>pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.14.1?type=jar</purl>
       <externalReferences><reference type="website"><url>https://github.com/FasterXML/jackson</url></reference><reference type="distribution"><url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url></reference><reference type="issue-tracker"><url>https://github.com/FasterXML/jackson-annotations/issues</url></reference><reference type="vcs"><url>https://github.com/FasterXML/jackson-annotations</url></reference></externalReferences>
     </component>
-    <component type="library" bom-ref="pkg:maven/io.github.classgraph/classgraph@4.8.151?type=jar">
+    <component type="library" bom-ref="pkg:maven/io.github.classgraph/classgraph@4.8.157?type=jar">
       <group>io.github.classgraph</group>
       <name>classgraph</name>
-      <version>4.8.151</version>
+      <version>4.8.157</version>
       <description>The uber-fast, ultra-lightweight classpath and module scanner for JVM languages.</description>
       <scope>optional</scope>
       <hashes>
-        <hash alg="MD5">9531a08d13dbe4c63ff76e85a48b9cb7</hash>
-        <hash alg="SHA-1">3943720402fb4c139df4193f5e6c5da9e46cb2a9</hash>
-        <hash alg="SHA-256">4541dde48ed085345efaa5734f7bc7495c5843589a9c0a4cb9594d9c81735cec</hash>
-        <hash alg="SHA-512">4b47eabc83f3f672a7e91af6ae97bbdbc6f01ed7149540cb06b0f530f45a95d025cc7807a6640982d23d2da50bd973ad788a4c8fdfa025da7cf93c560abbe61e</hash>
-        <hash alg="SHA-384">c708bb0f877200c7b4b89c3aae3a37babe799d9e1e3c4b25323cb6597172f39fe1e5d5094370f1aa73c38a4ce4294776</hash>
-        <hash alg="SHA3-384">78ab539f7448085039b476fe347a4a72097eaab202593ec27a7755609a48cc32d32b67d74a678e57e4bbd30563a4a5b5</hash>
-        <hash alg="SHA3-256">406774b51a6d2fdee6ecc4b5295205a2bb225f651b2e76fe16322af079c210a7</hash>
-        <hash alg="SHA3-512">3d16d1867cdc22397abd0236c59ed2c8ab345cdd24036c10dc238978c9654cb4e6872642648b8bd5b8e70d8f5853c39b4e1f0c2d54917efd73815965ecb0dabd</hash>
+        <hash alg="MD5">9b6d964be622ef16ede9497995a2626d</hash>
+        <hash alg="SHA-1">6618a0fab91cba321618db59d6b77f79590a80ac</hash>
+        <hash alg="SHA-256">38be6bbbbb06110f7683dc4b04964d9ca4d32fdeeace58169aab8f16b592aabe</hash>
+        <hash alg="SHA-512">d478311acef71ddc430b0da370428f5dacbc28bb02057946f21b98a78d6dd6fd11d31176a4a48a84dab6cafab58977dc88d66ffb9fa877f16367923e887890ff</hash>
+        <hash alg="SHA-384">95d60f18e48622e256a4bdadaf6e003c0cebc6abe754614c009d9be60ad29b2f0a93b4adff54d4d53b1e4b680f9c11a9</hash>
+        <hash alg="SHA3-384">6cacd8f0e19e0b9a3d9c0215ffe90529a846c6ade05948cc39a652eeaca9dd352d184e175d54d0e42beb6bb7d8538444</hash>
+        <hash alg="SHA3-256">edb4c9206e9031f4ea0b290467756a48991b62928ff83c02ca5fd8b634c16d6e</hash>
+        <hash alg="SHA3-512">d719cb8b5542dd1a4107b59193e052cd2526737bd2d06d6917592e8de1a2a113db99435963d1e8727d6cabd982ec5ab35c01181898c8b33d922abe17072c7675</hash>
       </hashes>
       <licenses>
         <license>
           <id>MIT</id>
         </license>
       </licenses>
-      <purl>pkg:maven/io.github.classgraph/classgraph@4.8.151?type=jar</purl>
+      <purl>pkg:maven/io.github.classgraph/classgraph@4.8.157?type=jar</purl>
       <externalReferences><reference type="website"><url>https://github.com/classgraph/classgraph</url></reference><reference type="distribution"><url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url></reference><reference type="issue-tracker"><url>https://github.com/classgraph/classgraph/issues</url></reference><reference type="vcs"><url>https://github.com/classgraph/classgraph</url></reference></externalReferences>
     </component>
     <component type="library" bom-ref="pkg:maven/org.apache.camel/camel-tooling-model@4.0.0-M2?type=jar">
@@ -3507,7 +3511,7 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <dependency ref="pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml@2.14.1?type=jar"/>
       <dependency ref="pkg:maven/io.fabric8/camel-k-model-v1alpha1@6.1.1?type=jar"/>
       <dependency ref="pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.14.1?type=jar"/>
-      <dependency ref="pkg:maven/io.github.classgraph/classgraph@4.8.151?type=jar"/>
+      <dependency ref="pkg:maven/io.github.classgraph/classgraph@4.8.157?type=jar"/>
       <dependency ref="pkg:maven/org.apache.camel/camel-tooling-model@4.0.0-M2?type=jar"/>
       <dependency ref="pkg:maven/org.apache.camel/camel-catalog@4.0.0-M2?type=jar"/>
     </dependency>
@@ -3556,7 +3560,7 @@ These include: bzip2, gzip, pack200, lzma, xz, Snappy, traditional Unix Compress
       <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-core@2.14.1?type=jar"/>
       <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.1?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/io.github.classgraph/classgraph@4.8.151?type=jar"/>
+    <dependency ref="pkg:maven/io.github.classgraph/classgraph@4.8.157?type=jar"/>
     <dependency ref="pkg:maven/org.apache.camel/camel-tooling-model@4.0.0-M2?type=jar">
       <dependency ref="pkg:maven/org.apache.camel/camel-util-json@4.0.0-M2?type=jar"/>
     </dependency>
