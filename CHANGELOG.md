@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Migrate deprecated jackson-dataformat-yaml used in Kamelets catalog [\#1463](https://github.com/apache/camel-kamelets/issues/1463)
 - Remove Solr Kamelets [\#1456](https://github.com/apache/camel-kamelets/issues/1456)
 - Add a Simple Filter Action [\#1448](https://github.com/apache/camel-kamelets/issues/1448)
 - Upgrade to Camel 3.20.3 [\#1428](https://github.com/apache/camel-kamelets/issues/1428)
