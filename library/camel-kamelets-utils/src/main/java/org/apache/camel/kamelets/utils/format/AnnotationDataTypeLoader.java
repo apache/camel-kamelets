@@ -35,7 +35,7 @@ import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeLoader;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeRegistry;
 import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
-import org.apache.camel.spi.PackageScanClassResolver;
+import org.apache.camel.support.PluginHelper;
 import org.apache.camel.util.IOHelper;
 import org.apache.camel.util.ObjectHelper;
 import org.slf4j.Logger;
@@ -63,7 +63,7 @@ public class AnnotationDataTypeLoader implements DataTypeLoader, CamelContextAwa
 
         if (resolver == null) {
             if (camelContext instanceof ExtendedCamelContext) {
-                resolver = camelContext.getCamelContextExtension().getPackageScanClassResolver();
+                resolver = PluginHelper.getPackageScanClassResolver(camelContext);
             } else {
                 resolver = new DefaultPackageScanClassResolver();
             }
