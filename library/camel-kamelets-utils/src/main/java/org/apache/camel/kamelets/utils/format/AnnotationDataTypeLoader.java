@@ -35,6 +35,7 @@ import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeLoader;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeRegistry;
 import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
+import org.apache.camel.spi.PackageScanClassResolver;
 import org.apache.camel.support.PluginHelper;
 import org.apache.camel.util.IOHelper;
 import org.apache.camel.util.ObjectHelper;
