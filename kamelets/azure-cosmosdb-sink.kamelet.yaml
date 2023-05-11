@@ -33,6 +33,10 @@ spec:
     title: "Azure CosmosDB Sink"
     description: |-
       Send Data to an Azure CosmosDB instance
+      
+      In the headers, you can optionally set the `itemPartitionKey` / `ce-itemPartitionKey` property to specify the partition key for a specific item.
+
+      If you do not set the property in the header, you'll need to use the static property itemPartitonKey.
     required:
       - databaseName
       - containerName
