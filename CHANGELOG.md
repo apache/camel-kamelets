@@ -1,11 +1,12 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v4.0.0-M3](https://github.com/apache/camel-kamelets/tree/v4.0.0-M3) (2023-05-11)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.3...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.3...v4.0.0-M3)
 
 **Closed issues:**
 
+- Bump to Camel 4.0.0-M3 [\#1468](https://github.com/apache/camel-kamelets/issues/1468)
 - Migrate deprecated jackson-dataformat-yaml used in Kamelets catalog [\#1463](https://github.com/apache/camel-kamelets/issues/1463)
 - Bump to 3.20.4 [\#1459](https://github.com/apache/camel-kamelets/issues/1459)
 - Remove Solr Kamelets [\#1456](https://github.com/apache/camel-kamelets/issues/1456)
@@ -13,6 +14,24 @@
 - Upgrade to Camel 3.20.3 [\#1428](https://github.com/apache/camel-kamelets/issues/1428)
 - Release 4.0.0-M2 [\#1427](https://github.com/apache/camel-kamelets/issues/1427)
 - telegram-sink chat-id property must be required and/or have a default? [\#981](https://github.com/apache/camel-kamelets/issues/981)
+- Add Azure CosmosDB Sink Kamelet [\#446](https://github.com/apache/camel-kamelets/issues/446)
+
+**Merged pull requests:**
+
+- Add Azure CosmosDB Sink Kamelet [\#1471](https://github.com/apache/camel-kamelets/pull/1471) ([oscerd](https://github.com/oscerd))
+- Upgrade Camel to 4.0.0-M3 [\#1470](https://github.com/apache/camel-kamelets/pull/1470) ([oscerd](https://github.com/oscerd))
+- Upgrade CycloneDX Maven plugin to version 2.7.8 [\#1467](https://github.com/apache/camel-kamelets/pull/1467) ([oscerd](https://github.com/oscerd))
+- Upgrade Jackson from 2.14.1 to 2.15.0 [\#1465](https://github.com/apache/camel-kamelets/pull/1465) ([apupier](https://github.com/apupier))
+- Generated sources regen for SBOM [\#1462](https://github.com/apache/camel-kamelets/pull/1462) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen for SBOM [\#1461](https://github.com/apache/camel-kamelets/pull/1461) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Make Kamelet Catalog examples to use Camel JBang [\#1458](https://github.com/apache/camel-kamelets/pull/1458) ([oscerd](https://github.com/oscerd))
+- Remove Solr Kamelets [\#1457](https://github.com/apache/camel-kamelets/pull/1457) ([oscerd](https://github.com/oscerd))
+- Upgrade Classgraph to version 4.8.157 [\#1455](https://github.com/apache/camel-kamelets/pull/1455) ([oscerd](https://github.com/oscerd))
+- Upgrade CycloneDX Maven Plugin to version 2.7.7 [\#1454](https://github.com/apache/camel-kamelets/pull/1454) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1453](https://github.com/apache/camel-kamelets/pull/1453) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen [\#1452](https://github.com/apache/camel-kamelets/pull/1452) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Simple Filter Action Kamelet [\#1449](https://github.com/apache/camel-kamelets/pull/1449) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1447](https://github.com/apache/camel-kamelets/pull/1447) ([github-actions[bot]](https://github.com/apps/github-actions))
 
 ## [v3.20.3](https://github.com/apache/camel-kamelets/tree/v3.20.3) (2023-04-13)
 
