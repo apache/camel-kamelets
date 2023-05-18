@@ -90,6 +90,10 @@ spec:
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
+      sslCipherSuite:
+        title: "CipherSuite"
+        description: "CipherSuite to use for enabling TLS"
+        type: string
   dependencies:
   - "camel:jms"
   - "camel:kamelet"
@@ -114,6 +118,8 @@ spec:
             value: '{{password}}'
           - key: XMSC_CLIENT_ID
             value: '{{?clientId}}'
+          - key: XMSC_WMQ_SSL_CIPHER_SUITE
+            value: '{{?sslCipherSuite}}'
     from:
       uri: "jms:{{destinationType}}:{{destinationName}}"
       parameters:
