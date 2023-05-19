@@ -117,4 +117,4 @@ spec:
             brokers: "{{bootstrapServers}}"
             securityProtocol: "{{securityProtocol}}"
             saslMechanism: "{{saslMechanism}}"
-            saslJaasConfig: "org.apache.kafka.common.security.plain.PlainLoginModule required username='{{user}}' password='{{password}}';"
+            saslJaasConfig: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="{{user}}" password="{{password}}";'
