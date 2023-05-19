@@ -143,7 +143,7 @@ spec:
         brokers: "{{?bootstrapServers}}"
         securityProtocol: "{{securityProtocol}}"
         saslMechanism: "{{saslMechanism}}"
-        saslJaasConfig: "org.apache.kafka.common.security.scram.ScramLoginModule required username='{{user}}' password='{{password}}';"
+        saslJaasConfig: 'org.apache.kafka.common.security.scram.ScramLoginModule required username="{{user}}" password="{{password}}";'
         autoCommitEnable: "{{autoCommitEnable}}"
         allowManualCommit: "{{allowManualCommit}}"
         pollOnError: "{{pollOnError}}"
