@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.4...HEAD)
+
+**Closed issues:**
+
+- Kafka Secured Kamelets: use double quote around user and password [\#1476](https://github.com/apache/camel-kamelets/issues/1476)
+
 ## [v3.20.4](https://github.com/apache/camel-kamelets/tree/v3.20.4) (2023-05-16)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.0.0-M3...v3.20.4)
