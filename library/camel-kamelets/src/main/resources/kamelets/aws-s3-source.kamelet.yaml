@@ -110,15 +110,11 @@ spec:
     beans:
       - name: renameHeaders
         type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
-        property:
-          - key: prefix
-            value: 'CamelAwsS3'
-          - key: renamingPrefix
-            value: 'aws.s3.'
-          - key: mode
-            value: 'filtering'
-          - key: selectedHeaders
-            value: 'CamelAwsS3Key,CamelAwsS3BucketName'
+        properties:
+          prefix: 'CamelAwsS3'
+          renamingPrefix: 'aws.s3.'
+          mode: 'filtering'
+          selectedHeaders: 'CamelAwsS3Key,CamelAwsS3BucketName'
     from:
       uri: "aws2-s3:{{bucketNameOrArn}}"
       parameters:
