@@ -104,15 +104,11 @@ spec:
     beans:
       - name: duplicateHeaders
         type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
-        property:
-          - key: prefix
-            value: 'CamelAwsKinesis'
-          - key: renamingPrefix
-            value: 'aws.kinesis.'
-          - key: mode
-            value: 'filtering'
-          - key: selectedHeaders
-            value: 'CamelAwsKinesisPartitionKey,CamelAwsKinesisSequenceNumber'
+        properties:
+          prefix: 'CamelAwsKinesis'
+          renamingPrefix: 'aws.kinesis.'
+          mode: 'filtering'
+          selectedHeaders: 'CamelAwsKinesisPartitionKey,CamelAwsKinesisSequenceNumber'
     from:
       uri: aws2-kinesis:{{stream}}
       parameters:
