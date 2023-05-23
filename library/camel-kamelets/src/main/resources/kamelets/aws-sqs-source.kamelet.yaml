@@ -148,15 +148,11 @@ spec:
     beans:
       - name: renameHeaders
         type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
-        property:
-          - key: prefix
-            value: 'CamelAwsSqs'
-          - key: renamingPrefix
-            value: 'aws.sqs.'
-          - key: mode
-            value: 'filtering'
-          - key: selectedHeaders
-            value: 'CamelAwsSqsReceiptHandle,CamelAwsSqsMessageId'
+        properties:
+          prefix: 'CamelAwsSqs'
+          renamingPrefix: 'aws.sqs.'
+          mode: 'filtering'
+          selectedHeaders: 'CamelAwsSqsReceiptHandle,CamelAwsSqsMessageId'
     from:
       uri: "aws2-sqs:{{queueNameOrArn}}"
       parameters:
