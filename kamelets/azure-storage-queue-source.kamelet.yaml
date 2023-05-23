@@ -73,15 +73,11 @@ spec:
     beans:
       - name: renameHeaders
         type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
-        property:
-          - key: prefix
-            value: 'CamelAzureStorageQueue'
-          - key: renamingPrefix
-            value: 'azure.storage.queue.'
-          - key: mode
-            value: 'filtering'
-          - key: selectedHeaders
-            value: 'CamelAzureStorageQueueMessageId'
+        properties:
+          prefix: 'CamelAzureStorageQueue'
+          renamingPrefix: 'azure.storage.queue.'
+          mode: 'filtering'
+          selectedHeaders: 'CamelAzureStorageQueueMessageId'
     from:
       uri: "azure-storage-queue://{{accountName}}/{{queueName}}"
       parameters:
