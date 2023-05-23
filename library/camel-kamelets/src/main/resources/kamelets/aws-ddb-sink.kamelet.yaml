@@ -119,13 +119,10 @@ spec:
         type: "#class:org.apache.camel.kamelets.utils.format.DefaultDataTypeRegistry"
       - name: dataTypeProcessor
         type: "#class:org.apache.camel.kamelets.utils.format.DataTypeProcessor"
-        property:
-          - key: scheme
-            value: 'aws2-ddb'
-          - key: format
-            value: 'json'
-          - key: registry
-            value: '#bean:{{dataTypeRegistry}}'
+        properties:
+          scheme: 'aws2-ddb'
+          format: 'json'
+          registry: '#bean:{{dataTypeRegistry}}'
     from:
       uri: "kamelet:source"
       steps:
