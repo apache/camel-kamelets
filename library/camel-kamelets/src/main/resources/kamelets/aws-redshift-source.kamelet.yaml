@@ -96,15 +96,11 @@ spec:
     beans:
       - name: dsBean
         type: "#class:org.apache.commons.dbcp2.BasicDataSource"
-        property:
-          - key: username
-            value: '{{username}}'
-          - key: password
-            value: '{{password}}'
-          - key: url
-            value: 'jdbc:redshift://{{serverName}}:{{serverPort}}/{{databaseName}}'
-          - key: driverClassName
-            value: 'com.amazon.redshift.jdbc.Driver'
+        properties:
+          username: '{{username}}'
+          password: '{{password}}'
+          url: 'jdbc:redshift://{{serverName}}:{{serverPort}}/{{databaseName}}'
+          driverClassName: 'com.amazon.redshift.jdbc.Driver'
     from:
       uri: "sql:{{query}}"
       parameters:
