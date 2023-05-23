@@ -56,13 +56,10 @@ spec:
         type: "#class:org.apache.camel.kamelets.utils.format.DefaultDataTypeRegistry"
       - name: dataTypeProcessor
         type: "#class:org.apache.camel.kamelets.utils.format.DataTypeProcessor"
-        property:
-          - key: scheme
-            value: '{{scheme}}'
-          - key: format
-            value: '{{format}}'
-          - key: registry
-            value: '#bean:{{dataTypeRegistry}}'
+        properties:
+          scheme: '{{scheme}}'
+          format: '{{format}}'
+          registry: '#bean:{{dataTypeRegistry}}'
     from:
       uri: "kamelet:source"
       steps:
