@@ -32,6 +32,8 @@ config:
           level: INFO
         - name: INTEGRATION_LOGS
           level: INFO
+    resources:
+      - timer-to-http.yaml
   dump:
     enabled: true
     failedOnly: true
