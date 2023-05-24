@@ -15,24 +15,35 @@
  * limitations under the License.
  */
 
-package org.apache.camel.kamelets.utils.format.converter.standard;
+package org.apache.camel.kamelets.utils.format;
 
-import org.apache.camel.Exchange;
-import org.apache.camel.kamelets.utils.format.DefaultDataTypeConverter;
-import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
-import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
- * Binary data type.
+ * Supported schema type for Java object serialization/deserialization
  */
-@DataType(name = "binary", mediaType = "application/octet-stream")
-public class BinaryDataType implements DataTypeConverter {
+public enum SchemaType {
+    PROTOBUF("protobuf"),
+    AVRO("avsc"),
+    JSON("json");
 
-    private static final DataTypeConverter DELEGATE =
-            new DefaultDataTypeConverter(DataType.DEFAULT_SCHEME, "binary", "application/octet-stream", byte[].class);
+    private static final SchemaType[] VALUES = values();
 
-    @Override
-    public void convert(Exchange exchange) {
-        DELEGATE.convert(exchange);
+    private final String schemaType;
+
+    SchemaType(String type) {
+        this.schemaType = type;
+    }
+
+    public String type() {
+        return schemaType;
+    }
+
+    public static SchemaType of(String type) {
+        return Arrays.stream(VALUES)
+                .filter(s -> Objects.equals(s.schemaType, type))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Unsupported schema type '%s'", type)));
     }
 }

@@ -26,9 +26,8 @@ import java.util.Optional;
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelContextAware;
 import org.apache.camel.RuntimeCamelException;
-import org.apache.camel.kamelets.utils.format.converter.standard.BinaryDataType;
-import org.apache.camel.kamelets.utils.format.converter.standard.JsonModelDataType;
-import org.apache.camel.kamelets.utils.format.converter.standard.StringDataType;
+import org.apache.camel.kamelets.utils.format.converter.bytes.ByteArrayDataType;
+import org.apache.camel.kamelets.utils.format.converter.text.StringDataType;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverterResolver;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeLoader;
@@ -105,9 +104,8 @@ public class DefaultDataTypeRegistry extends ServiceSupport implements DataTypeR
         if (classpathScan) {
             dataTypeLoaders.add(new AnnotationDataTypeLoader());
         } else if (useDefaultConverters) {
-            addDataTypeConverter(new BinaryDataType());
+            addDataTypeConverter(new ByteArrayDataType());
             addDataTypeConverter(new StringDataType());
-            addDataTypeConverter(new JsonModelDataType());
         }
 
         for (DataTypeLoader loader : dataTypeLoaders) {

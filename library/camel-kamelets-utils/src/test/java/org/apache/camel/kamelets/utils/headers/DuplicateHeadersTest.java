@@ -16,10 +16,6 @@
  */
 package org.apache.camel.kamelets.utils.headers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.util.HashMap;
-
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.DefaultExchange;
@@ -31,15 +27,13 @@ class DuplicateHeadersTest {
 
     private DefaultCamelContext camelContext;
 
-    private final ObjectMapper mapper = new ObjectMapper();
-
     private DuplicateNamingHeaders processor;
 
     @BeforeEach
     void setup() {
         camelContext = new DefaultCamelContext();
     }
-    
+
     @Test
     void shouldDuplicateHeaders() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
@@ -57,7 +51,7 @@ class DuplicateHeadersTest {
         Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("aws.s3.bucket.name"));
         Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("my-header"));
     }
-    
+
     @Test
     void shouldDuplicateSelectedHeaders() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);

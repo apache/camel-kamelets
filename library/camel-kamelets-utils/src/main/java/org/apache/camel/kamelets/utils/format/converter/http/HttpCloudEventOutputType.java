@@ -30,7 +30,7 @@ import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
  *
  * By default, sets the Http content type header to application/json when not set explicitly.
  */
-@DataType(scheme = "http", name = "cloudevents", mediaType = "application/json")
+@DataType(scheme = "http", name = "application-cloudevents", mediaType = "application/json")
 public class HttpCloudEventOutputType implements DataTypeConverter {
 
     @Override

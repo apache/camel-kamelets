@@ -67,7 +67,7 @@ class HttpCloudEventOutputTypeTest {
     public void shouldLookupDataType() throws Exception {
         DefaultDataTypeRegistry dataTypeRegistry = new DefaultDataTypeRegistry();
         CamelContextAware.trySetCamelContext(dataTypeRegistry, camelContext);
-        Optional<DataTypeConverter> converter = dataTypeRegistry.lookup("http", "cloudevents");
+        Optional<DataTypeConverter> converter = dataTypeRegistry.lookup("http", "application-cloudevents");
         Assertions.assertTrue(converter.isPresent());
     }
 }

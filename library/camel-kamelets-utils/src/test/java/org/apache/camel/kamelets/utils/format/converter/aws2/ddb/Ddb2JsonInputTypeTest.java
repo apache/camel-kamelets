@@ -20,7 +20,6 @@ package org.apache.camel.kamelets.utils.format.converter.aws2.ddb;
 import java.util.Map;
 import java.util.Optional;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.CamelContextAware;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
@@ -28,6 +27,7 @@ import org.apache.camel.component.aws2.ddb.Ddb2Constants;
 import org.apache.camel.component.aws2.ddb.Ddb2Operations;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.kamelets.utils.format.DefaultDataTypeRegistry;
+import org.apache.camel.kamelets.utils.format.converter.json.Json;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.apache.camel.support.DefaultExchange;
 import org.junit.jupiter.api.Assertions;
@@ -41,8 +41,6 @@ import software.amazon.awssdk.services.dynamodb.model.ReturnValue;
 public class Ddb2JsonInputTypeTest {
 
     private DefaultCamelContext camelContext;
-
-    private final ObjectMapper mapper = new ObjectMapper();
 
     private final Ddb2JsonInputType inputType = new Ddb2JsonInputType();
 
@@ -69,7 +67,7 @@ public class Ddb2JsonInputTypeTest {
     void shouldMapPutItemHeaders() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
-        exchange.getMessage().setBody(mapper.readTree(itemJson));
+        exchange.getMessage().setBody(Json.MAPPER.readTree(itemJson));
         exchange.setProperty("operation", Ddb2Operations.PutItem.name());
         inputType.convert(exchange);
 
@@ -85,7 +83,7 @@ public class Ddb2JsonInputTypeTest {
     void shouldMapUpdateItemHeaders() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
-        exchange.getMessage().setBody(mapper.readTree("{\"operation\": \"" + Ddb2Operations.UpdateItem.name() + "\", \"key\": "
+        exchange.getMessage().setBody(Json.MAPPER.readTree("{\"operation\": \"" + Ddb2Operations.UpdateItem.name() + "\", \"key\": "
                 + keyJson + ", \"item\": " + itemJson + "}"));
 
         inputType.convert(exchange);
@@ -106,7 +104,7 @@ public class Ddb2JsonInputTypeTest {
     void shouldMapDeleteItemHeaders() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
-        exchange.getMessage().setBody(mapper.readTree("{\"key\": " + keyJson + "}"));
+        exchange.getMessage().setBody(Json.MAPPER.readTree("{\"key\": " + keyJson + "}"));
         exchange.setProperty("operation", Ddb2Operations.DeleteItem.name());
 
         inputType.convert(exchange);
@@ -125,7 +123,7 @@ public class Ddb2JsonInputTypeTest {
     void shouldMapNestedObjects() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
-        exchange.getMessage().setBody(mapper.readTree("{\"user\":" + itemJson + "}"));
+        exchange.getMessage().setBody(Json.MAPPER.readTree("{\"user\":" + itemJson + "}"));
         exchange.setProperty("operation", Ddb2Operations.PutItem.name());
         inputType.convert(exchange);
 
@@ -176,7 +174,7 @@ public class Ddb2JsonInputTypeTest {
     void shouldFailForUnsupportedOperation() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
 
-        exchange.getMessage().setBody(mapper.readTree("{}"));
+        exchange.getMessage().setBody(Json.MAPPER.readTree("{}"));
         exchange.setProperty("operation", Ddb2Operations.BatchGetItems.name());
 
         Assertions.assertThrows(UnsupportedOperationException.class, () -> inputType.convert(exchange));
@@ -186,7 +184,7 @@ public class Ddb2JsonInputTypeTest {
     public void shouldLookupDataType() throws Exception {
         DefaultDataTypeRegistry dataTypeRegistry = new DefaultDataTypeRegistry();
         CamelContextAware.trySetCamelContext(dataTypeRegistry, camelContext);
-        Optional<DataTypeConverter> converter = dataTypeRegistry.lookup("aws2-ddb", "json");
+        Optional<DataTypeConverter> converter = dataTypeRegistry.lookup("aws2-ddb", "application-json");
         Assertions.assertTrue(converter.isPresent());
     }
 

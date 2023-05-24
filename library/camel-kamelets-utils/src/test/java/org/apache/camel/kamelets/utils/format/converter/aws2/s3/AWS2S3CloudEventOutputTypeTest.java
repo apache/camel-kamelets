@@ -62,7 +62,7 @@ class AWS2S3CloudEventOutputTypeTest {
     public void shouldLookupDataType() throws Exception {
         DefaultDataTypeRegistry dataTypeRegistry = new DefaultDataTypeRegistry();
         CamelContextAware.trySetCamelContext(dataTypeRegistry, camelContext);
-        Optional<DataTypeConverter> converter = dataTypeRegistry.lookup("aws2-s3", "cloudevents");
+        Optional<DataTypeConverter> converter = dataTypeRegistry.lookup("aws2-s3", "application-cloudevents");
         Assertions.assertTrue(converter.isPresent());
     }
 }

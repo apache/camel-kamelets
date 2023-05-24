@@ -21,7 +21,7 @@ import java.util.Optional;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.apache.camel.kamelets.utils.format.converter.standard.JsonModelDataType;
+import org.apache.camel.kamelets.utils.format.converter.json.JsonStructDataType;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,9 +49,9 @@ class DefaultDataTypeConverterResolverTest {
 
     @Test
     public void shouldResolveDataTypeConverters() throws Exception {
-        Optional<DataTypeConverter> converter = resolver.resolve("jsonObject", camelContext);
+        Optional<DataTypeConverter> converter = resolver.resolve("application-x-struct", camelContext);
         Assertions.assertTrue(converter.isPresent());
-        Assertions.assertEquals(JsonModelDataType.class, converter.get().getClass());
+        Assertions.assertEquals(JsonStructDataType.class, converter.get().getClass());
 
         converter = resolver.resolve("foo", "json", camelContext);
         Assertions.assertTrue(converter.isPresent());

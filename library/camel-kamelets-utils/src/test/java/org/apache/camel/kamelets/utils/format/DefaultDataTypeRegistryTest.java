@@ -21,9 +21,8 @@ import java.util.Optional;
 
 import org.apache.camel.CamelContextAware;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.apache.camel.kamelets.utils.format.converter.standard.BinaryDataType;
-import org.apache.camel.kamelets.utils.format.converter.standard.JsonModelDataType;
-import org.apache.camel.kamelets.utils.format.converter.standard.StringDataType;
+import org.apache.camel.kamelets.utils.format.converter.bytes.ByteArrayDataType;
+import org.apache.camel.kamelets.utils.format.converter.text.StringDataType;
 import org.apache.camel.kamelets.utils.format.converter.test.UppercaseDataType;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.junit.jupiter.api.Assertions;
@@ -41,15 +40,12 @@ class DefaultDataTypeRegistryTest {
 
     @Test
     public void shouldLookupDefaultDataTypeConverters() throws Exception {
-        Optional<DataTypeConverter> converter = dataTypeRegistry.lookup( "jsonObject");
-        Assertions.assertTrue(converter.isPresent());
-        Assertions.assertEquals(JsonModelDataType.class, converter.get().getClass());
-        converter = dataTypeRegistry.lookup( "string");
+        Optional<DataTypeConverter> converter = dataTypeRegistry.lookup( "plain-text");
         Assertions.assertTrue(converter.isPresent());
         Assertions.assertEquals(StringDataType.class, converter.get().getClass());
-        converter = dataTypeRegistry.lookup( "binary");
+        converter = dataTypeRegistry.lookup( "application-octet-stream");
         Assertions.assertTrue(converter.isPresent());
-        Assertions.assertEquals(BinaryDataType.class, converter.get().getClass());
+        Assertions.assertEquals(ByteArrayDataType.class, converter.get().getClass());
         converter = dataTypeRegistry.lookup( "lowercase");
         Assertions.assertTrue(converter.isPresent());
         converter = dataTypeRegistry.lookup( "uppercase");
