@@ -25,10 +25,10 @@ Feature: Kamelet earthquake-source
     Given create Kubernetes service test-service with target port 8080
 
   Scenario: Create Kamelet binding
-    When bind Kamelet earthquake-source to uri yaks:resolveURL('test-service')/test
-    And create KameletBinding earthquake-source-uri
-    Then KameletBinding earthquake-source-uri should be available
-    Then Camel K integration earthquake-source-uri should be running
+    Given load KameletBinding earthquake-to-http.yaml
+    Then KameletBinding earthquake-to-http should be available
+    Then Camel K integration earthquake-to-http should be running
+    And Camel K integration earthquake-to-http should print Routes startup
 
   Scenario: Verify binding
     Given expect HTTP request header: Content-Type="application/json;charset=UTF-8"
@@ -36,5 +36,5 @@ Feature: Kamelet earthquake-source
     Then send HTTP 200 OK
 
   Scenario: Remove Camel K resources
-    Given delete KameletBinding earthquake-source-uri
+    Given delete KameletBinding earthquake-to-http
     And delete Kubernetes service test-service

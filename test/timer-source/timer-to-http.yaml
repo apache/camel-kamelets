@@ -15,28 +15,17 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-Feature: Timer Source Kamelet
-
-  Background:
-    Given HTTP server timeout is 150000 ms
-    Given HTTP server "test-service"
-
-  Scenario: Create Http server
-    Given create Kubernetes service test-service with target port 8080
-
-  Scenario: Create Kamelet binding
-    And variables
-      | message  | Hello World |
-    Given load KameletBinding timer-to-http.yaml
-    Then KameletBinding timer-to-http should be available
-    Then Camel K integration timer-to-http should be running
-    And Camel K integration timer-to-http should print Routes startup
-
-  Scenario: Verify binding
-    Given expect HTTP request body: Hello World
-    When receive POST /events
-    Then send HTTP 200 OK
-
-  Scenario: Remove Camel K resources
-    Given delete KameletBinding timer-to-http
-    And delete Kubernetes service test-service
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: timer-to-http
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: timer-source
+    properties:
+      message: "${message}"
+  sink:
+    uri: yaks:resolveURL('test-service')/events
