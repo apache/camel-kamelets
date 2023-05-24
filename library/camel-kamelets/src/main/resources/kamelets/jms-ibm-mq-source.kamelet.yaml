@@ -101,25 +101,16 @@ spec:
     beans:
       - name: wmqConnectionFactory
         type: "#class:com.ibm.mq.jms.MQConnectionFactory"
-        property:
-          - key: XMSC_WMQ_HOST_NAME
-            value: '{{serverName}}'
-          - key: XMSC_WMQ_PORT
-            value: '{{serverPort}}'
-          - key: XMSC_WMQ_CHANNEL
-            value: '{{channel}}'
-          - key: XMSC_WMQ_QUEUE_MANAGER
-            value: '{{queueManager}}'
-          - key: XMSC_WMQ_CONNECTION_MODE
-            value: 1
-          - key: XMSC_USERID
-            value: '{{username}}'
-          - key: XMSC_PASSWORD
-            value: '{{password}}'
-          - key: XMSC_CLIENT_ID
-            value: '{{?clientId}}'
-          - key: XMSC_WMQ_SSL_CIPHER_SUITE
-            value: '{{?sslCipherSuite}}'
+        properties:
+          XMSC_WMQ_HOST_NAME: '{{serverName}}'
+          XMSC_WMQ_PORT: '{{serverPort}}'
+          XMSC_WMQ_CHANNEL: '{{channel}}'
+          XMSC_WMQ_QUEUE_MANAGER: '{{queueManager}}'
+          XMSC_WMQ_CONNECTION_MODE: 1
+          XMSC_USERID: '{{username}}'
+          XMSC_PASSWORD: '{{password}}'
+          XMSC_CLIENT_ID: '{{?clientId}}'
+          XMSC_WMQ_SSL_CIPHER_SUITE: '{{?sslCipherSuite}}'
     from:
       uri: "jms:{{destinationType}}:{{destinationName}}"
       parameters:
