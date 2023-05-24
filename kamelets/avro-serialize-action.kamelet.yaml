@@ -33,8 +33,6 @@ spec:
     title: "Avro Serialize Action"
     description: "Serialize payload to Avro"
     type: object
-    required:
-    - schema
     properties:
       schema:
         title: Schema
@@ -54,24 +52,22 @@ spec:
   - "camel:core"
   - "camel:jackson-avro"
   template:
+    beans:
+      - name: schemaResolver
+        type: "#class:org.apache.camel.kamelets.utils.format.converter.avro.AvroSchemaResolver"
+        property:
+          - key: validate
+            value: '{{validate}}'
+          - key: schema
+            value: '{{schema:}}'
     from:
       uri: kamelet:source
       steps:
-      - set-property:
-          name: schema
-          constant: "{{schema}}"
-      - set-property:
-          name: validate
-          constant: "{{validate}}"
       - marshal:
           avro:
             library: Jackson
             unmarshalType: com.fasterxml.jackson.databind.JsonNode
-            schemaResolver: "#class:org.apache.camel.kamelets.utils.serialization.InflightAvroSchemaResolver"
-      - remove-property:
-          name: schema
-      - remove-property:
-          name: validate
+            schemaResolver: "#bean:{{schemaResolver}}"
       - set-header:
           name: "Content-Type"
           constant: "application/avro"

@@ -32,8 +32,6 @@ spec:
     title: "Protobuf Serialize Action"
     description: "Serialize payload to Protobuf"
     type: object
-    required:
-    - schema
     properties:
       schema:
         title: Schema
@@ -46,19 +44,20 @@ spec:
   - "camel:core"
   - "camel:jackson-protobuf"
   template:
+    beans:
+      - name: schemaResolver
+        type: "#class:org.apache.camel.kamelets.utils.format.converter.protobuf.ProtobufSchemaResolver"
+        property:
+          - key: schema
+            value: '{{schema:}}'
     from:
       uri: kamelet:source
       steps:
-      - set-property:
-          name: schema
-          constant: "{{schema}}"
       - marshal:
           protobuf:
             library: Jackson
             unmarshalType: com.fasterxml.jackson.databind.JsonNode
-            schemaResolver: "#class:org.apache.camel.kamelets.utils.serialization.InflightProtobufSchemaResolver"
-      - remove-property:
-          name: schema
+            schemaResolver: "#bean:{{schemaResolver}}"
       - set-header:
           name: "Content-Type"
           constant: "application/protobuf"

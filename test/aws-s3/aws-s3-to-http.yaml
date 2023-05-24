@@ -39,14 +39,14 @@ spec:
         name: data-type-action
       properties:
         scheme: "aws2-s3"
-        format: "cloudevents"
+        format: "application-cloudevents"
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1alpha1
         name: data-type-action
       properties:
         scheme: "http"
-        format: "cloudevents"
+        format: "application-cloudevents"
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1alpha1

@@ -27,12 +27,12 @@ import java.util.stream.Stream;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.aws2.ddb.Ddb2Constants;
 import org.apache.camel.component.aws2.ddb.Ddb2Operations;
 import org.apache.camel.component.jackson.JacksonDataFormat;
+import org.apache.camel.kamelets.utils.format.converter.json.Json;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
 import software.amazon.awssdk.services.dynamodb.model.AttributeAction;
@@ -77,10 +77,10 @@ import software.amazon.awssdk.services.dynamodb.model.ReturnValue;
  * In case key and item attribute value maps are identical you can omit the special top level properties completely. The
  * converter will map the whole Json body as is then and use it as source for the attribute value map.
  */
-@DataType(scheme = "aws2-ddb", name = "json", mediaType = "application/json")
+@DataType(scheme = "aws2-ddb", name = "application-json", mediaType = "application/json")
 public class Ddb2JsonInputType implements DataTypeConverter {
 
-    private final JacksonDataFormat dataFormat = new JacksonDataFormat(new ObjectMapper(), JsonNode.class);
+    private final JacksonDataFormat dataFormat = new JacksonDataFormat(Json.MAPPER, JsonNode.class);
 
     @Override
     public void convert(Exchange exchange) {

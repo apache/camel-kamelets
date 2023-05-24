@@ -5,7 +5,7 @@ Feature: AWS S3 Kamelet - cloud events data type
     Given Knative event consumer timeout is 20000 ms
     Given variables
       | aws.s3.scheme | aws2-s3 |
-      | aws.s3.format | cloudevents |
+      | aws.s3.format | application-cloudevents |
       | aws.s3.bucketNameOrArn | mybucket |
       | aws.s3.message | Hello from S3 Kamelet |
       | aws.s3.key | hello.txt |

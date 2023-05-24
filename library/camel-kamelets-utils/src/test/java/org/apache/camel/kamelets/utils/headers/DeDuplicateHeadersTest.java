@@ -16,7 +16,6 @@
  */
 package org.apache.camel.kamelets.utils.headers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.DefaultExchange;
@@ -28,15 +27,13 @@ class DeDuplicateHeadersTest {
 
     private DefaultCamelContext camelContext;
 
-    private final ObjectMapper mapper = new ObjectMapper();
-
     private DeDuplicateNamingHeaders processor;
 
     @BeforeEach
     void setup() {
         camelContext = new DefaultCamelContext();
     }
-    
+
     @Test
     void shouldDuplicateHeaders() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
@@ -56,7 +53,7 @@ class DeDuplicateHeadersTest {
         Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("kafka.OVERRIDE_TOPIC"));
         Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("my-header"));
     }
-    
+
     @Test
     void shouldDuplicateSelectedHeaders() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);
@@ -78,7 +75,7 @@ class DeDuplicateHeadersTest {
         Assertions.assertFalse(exchange.getMessage().getHeaders().containsKey("kafka.OVERRIDE_TOPIC"));
         Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("my-header"));
     }
-    
+
     @Test
     void shouldDeDuplicateSelectedHeaders() throws Exception {
         Exchange exchange = new DefaultExchange(camelContext);

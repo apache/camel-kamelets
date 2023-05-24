@@ -14,24 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.camel.kamelets.utils.serialization;
 
-import com.fasterxml.jackson.core.FormatSchema;
-import com.fasterxml.jackson.dataformat.avro.AvroSchema;
+package org.apache.camel.kamelets.utils.format.converter.protobuf;
 
-import org.apache.avro.Schema;
-import org.apache.camel.Exchange;
-import org.apache.camel.component.jackson.SchemaResolver;
+import com.fasterxml.jackson.dataformat.protobuf.ProtobufMapper;
 
-public class InflightAvroSchemaResolver implements SchemaResolver {
+public final class Protobuf {
 
-    @Override
-    public FormatSchema resolve(Exchange exchange) {
-        String schemaJson = (String) exchange.getProperty("schema");
-        Boolean validate = Boolean.valueOf((String) exchange.getProperty("validate"));
-        Schema raw = new Schema.Parser().setValidate(validate).parse(schemaJson);
-        AvroSchema schema = new AvroSchema(raw);
-        return schema;
+    public static final ProtobufMapper MAPPER = new ProtobufMapper();
+
+    private Protobuf() {
+        // prevent instantiation of utility class
     }
-
 }

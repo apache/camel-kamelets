@@ -15,24 +15,33 @@
  * limitations under the License.
  */
 
-package org.apache.camel.kamelets.utils.format.converter.standard;
+package org.apache.camel.kamelets.utils.format.converter.text;
+
+import java.nio.charset.StandardCharsets;
 
 import org.apache.camel.Exchange;
+import org.apache.camel.ExchangePropertyKey;
 import org.apache.camel.kamelets.utils.format.DefaultDataTypeConverter;
+import org.apache.camel.kamelets.utils.format.MimeType;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
 
 /**
- * String data type.
+ * Generic String data type converts Exchange payload to String representation using the Camel message body converter mechanism.
+ * By default, uses UTF-8 charset as encoding.
  */
-@DataType(name = "string", mediaType = "text/plain")
+@DataType(name = "text-plain", mediaType = "text/plain")
 public class StringDataType implements DataTypeConverter {
 
-    private static final DataTypeConverter DELEGATE =
-            new DefaultDataTypeConverter(DataType.DEFAULT_SCHEME, "string", "text/plain", String.class);
+    private static final DataTypeConverter DELEGATE = new DefaultDataTypeConverter(DataType.DEFAULT_SCHEME, "string",
+            MimeType.TEXT.type(), String.class);
 
     @Override
     public void convert(Exchange exchange) {
+        exchange.setProperty(ExchangePropertyKey.CHARSET_NAME, StandardCharsets.UTF_8.name());
+
         DELEGATE.convert(exchange);
+
+        exchange.getMessage().setHeader(Exchange.CONTENT_TYPE, MimeType.TEXT.type());
     }
 }
