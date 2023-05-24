@@ -64,15 +64,11 @@ spec:
     beans:
       - name: deDuplicateHeaders
         type: "#class:org.apache.camel.kamelets.utils.headers.DeDuplicateNamingHeaders"
-        property:
-          - key: prefix
-            value: 'kafka.'
-          - key: renamingPrefix
-            value: 'kafka.'
-          - key: mode
-            value: 'filtering'
-          - key: selectedHeaders
-            value: 'kafka.key,kafka.topic,kafka.override_topic'
+        properties:
+          prefix: 'kafka.'
+          renamingPrefix: 'kafka.'
+          mode: 'filtering'
+          selectedHeaders: 'kafka.key,kafka.topic,kafka.override_topic'
     from:
       uri: "kamelet:source"
       steps:
