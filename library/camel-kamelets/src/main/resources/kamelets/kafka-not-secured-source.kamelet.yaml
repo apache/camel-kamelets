@@ -102,9 +102,8 @@ spec:
     beans:
       - name: kafkaHeaderDeserializer
         type: "#class:org.apache.camel.kamelets.utils.serialization.kafka.KafkaHeaderDeserializer"
-        property:
-          - key: enabled
-            value: '{{deserializeHeaders}}'
+        properties:
+          enabled: '{{deserializeHeaders}}'
     from:
       uri: "kafka:{{topic}}"
       parameters:
