@@ -60,9 +60,8 @@ spec:
     beans:
       - name: connectionFactoryBean
         type: "#class:org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory"
-        property:
-          - key: brokerURL
-            value: '{{brokerURL}}'
+        properties:
+          brokerURL: '{{brokerURL}}'
     from:
       uri: "kamelet:source"
       steps:
