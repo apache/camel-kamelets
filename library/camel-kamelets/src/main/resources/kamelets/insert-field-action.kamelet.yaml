@@ -58,11 +58,9 @@ spec:
     beans:
       - name: insertField
         type: "#class:org.apache.camel.kamelets.utils.transform.InsertField"
-        property:
-          - key: field
-            value: '{{field}}'
-          - key: value
-            value: '{{value}}'
+        properties:
+          field: '{{field}}'
+          value: '{{value}}'
     from:
       uri: kamelet:source
       steps:
