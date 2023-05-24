@@ -88,19 +88,12 @@ spec:
     beans:
       - name: extractField
         type: "#class:org.apache.camel.kamelets.utils.transform.ExtractField"
-        property:
-          - key: field
-            value: '{{field}}'
-          - key: headerOutput
-            value: '{{headerOutput}}'
-          - key: headerOutput
-            value: '{{headerOutput}}'
-          - key: headerOutputName
-            value: '{{headerOutputName}}'
-          - key: strictHeaderCheck
-            value: '{{strictHeaderCheck}}'
-          - key: trimField
-            value: '{{trimField}}'
+        properties:
+          field: '{{field}}'
+          headerOutput: '{{headerOutput}}'
+          headerOutputName: '{{headerOutputName}}'
+          strictHeaderCheck: '{{strictHeaderCheck}}'
+          trimField: '{{trimField}}'
     from:
       uri: kamelet:source
       steps:
