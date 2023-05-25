@@ -123,25 +123,16 @@ spec:
       - name: kafka-ssl-sink-local
         type: '#class:org.apache.camel.component.kafka.KafkaComponent'
       - name: kafka-ssl-sink-configuration-local
-        property:
-          - key: brokers
-            value: '{{bootstrapServers}}'
-          - key: securityProtocol
-            value: '{{securityProtocol}}'
-          - key: sslKeystoreLocation
-            value: '{{sslKeystoreLocation}}'
-          - key: sslKeyPassword
-            value: '{{sslKeyPassword}}'
-          - key: sslKeystorePassword
-            value: '{{sslKeystorePassword}}'
-          - key: sslTruststoreLocation
-            value: '{{sslTruststoreLocation}}'
-          - key: sslProtocol
-            value: '{{sslProtocol}}'
-          - key: sslEnabledProtocols
-            value: '{{sslEnabledProtocols}}'
-          - key: saslMechanism
-            value: '{{saslMechanism}}'
+        properties:
+          brokers: '{{bootstrapServers}}'
+          securityProtocol: '{{securityProtocol}}'
+          sslKeystoreLocation: '{{sslKeystoreLocation}}'
+          sslKeyPassword: '{{sslKeyPassword}}'
+          sslKeystorePassword: '{{sslKeystorePassword}}'
+          sslTruststoreLocation: '{{sslTruststoreLocation}}'
+          sslProtocol: '{{sslProtocol}}'
+          sslEnabledProtocols: '{{sslEnabledProtocols}}'
+          saslMechanism: '{{saslMechanism}}' 
         type: '#class:org.apache.camel.component.kafka.KafkaConfiguration'
     from:
       uri: "kamelet:source"
