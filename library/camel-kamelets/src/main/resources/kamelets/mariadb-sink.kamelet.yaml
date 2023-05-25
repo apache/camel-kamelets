@@ -97,15 +97,11 @@ spec:
     beans:
       - name: dsBean
         type: "#class:org.apache.commons.dbcp2.BasicDataSource"
-        property:
-          - key: username
-            value: '{{username}}'
-          - key: password
-            value: '{{password}}'
-          - key: url
-            value: 'jdbc:mariadb://{{serverName}}:{{serverPort}}/{{databaseName}}'
-          - key: driverClassName
-            value: 'org.mariadb.jdbc.Driver'
+        properties:
+          username: '{{username}}'
+          password: '{{password}}'
+          url: 'jdbc:mariadb://{{serverName}}:{{serverPort}}/{{databaseName}}'
+          driverClassName: 'org.mariadb.jdbc.Driver'
     from:
       uri: "kamelet:source"
       steps:
