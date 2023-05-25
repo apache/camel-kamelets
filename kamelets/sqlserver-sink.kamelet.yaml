@@ -111,15 +111,11 @@ spec:
     beans:
       - name: dsBean
         type: "#class:org.apache.commons.dbcp2.BasicDataSource"
-        property:
-          - key: username
-            value: '{{username}}'
-          - key: password
-            value: '{{password}}'
-          - key: url
-            value: 'jdbc:sqlserver://{{serverName}}:{{serverPort}};databaseName={{databaseName}};encrypt={{encrypt}};trustServerCertificate={{trustServerCertificate}};'
-          - key: driverClassName
-            value: 'com.microsoft.sqlserver.jdbc.SQLServerDriver'
+        properties:
+          username: '{{username}}'
+          password: '{{password}}'
+          url: 'jdbc:sqlserver://{{serverName}}:{{serverPort}};databaseName={{databaseName}};encrypt={{encrypt}};trustServerCertificate={{trustServerCertificate}};'
+          driverClassName: 'com.microsoft.sqlserver.jdbc.SQLServerDriver'
     from:
       uri: "kamelet:source"
       steps:
