@@ -154,7 +154,7 @@ spec:
     beans:
       - name: kafka-ssl-source-local
         type: '#class:org.apache.camel.component.kafka.KafkaComponent'
-      - name: kafka-ssl-sink-configuration-local
+      - name: kafka-ssl-source-configuration-local
         properties:
           brokers: '{{bootstrapServers}}'
           securityProtocol: '{{securityProtocol}}'
@@ -180,7 +180,7 @@ spec:
     from:
       uri: "{{kafka-ssl-source-local}}:{{topic}}"
       parameters:
-        configuration: '#bean:{{kafka-ssl-sink-configuration-local}}'
+        configuration: '#bean:{{kafka-ssl-source-configuration-local}}'
       steps:
         - process:
             ref: "{{kafkaHeaderDeserializer}}"
