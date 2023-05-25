@@ -99,15 +99,11 @@ spec:
     beans:
       - name: dsBean
         type: "#class:org.apache.commons.dbcp2.BasicDataSource"
-        property:
-          - key: username
-            value: '{{username}}'
-          - key: password
-            value: '{{password}}'
-          - key: url
-            value: 'jdbc:mysql://{{serverName}}:{{serverPort}}/{{databaseName}}'
-          - key: driverClassName
-            value: 'com.mysql.cj.jdbc.Driver'
+        properties:
+          username: '{{username}}'
+          password: '{{password}}'
+          url: 'jdbc:mysql://{{serverName}}:{{serverPort}}/{{databaseName}}'
+          driverClassName: 'com.mysql.cj.jdbc.Driver'
     from:
       uri: "sql:{{query}}"
       parameters:
