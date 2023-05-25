@@ -154,38 +154,23 @@ spec:
     beans:
       - name: kafka-ssl-source-local
         type: '#class:org.apache.camel.component.kafka.KafkaComponent'
-      - name: kafka-ssl-sink-configuration-local
-        property:
-          - key: brokers
-            value: '{{bootstrapServers}}'
-          - key: securityProtocol
-            value: '{{securityProtocol}}'
-          - key: sslKeystoreLocation
-            value: '{{?sslKeystoreLocation}}'
-          - key: sslKeyPassword
-            value: '{{sslKeyPassword}}'
-          - key: sslKeystorePassword
-            value: '{{?sslKeystorePassword}}'
-          - key: sslTruststoreLocation
-            value: '{{sslTruststoreLocation}}'
-          - key: sslProtocol
-            value: '{{sslProtocol}}'
-          - key: sslEnabledProtocols
-            value: '{{sslEnabledProtocols}}'
-          - key: saslMechanism
-            value: '{{saslMechanism}}'
-          - key: groupId
-            value: '{{?consumerGroup}}'
-          - key: autoOffsetReset
-            value: '{{autoOffsetReset}}'
-          - key: pollOnError
-            value: '{{pollOnError}}'
-          - key: allowManualCommit
-            value: '{{allowManualCommit}}'
-          - key: autoCommitEnable
-            value: '{{autoCommitEnable}}'
-          - key: saslJaasConfig
-            value: '{{?saslJaasConfig}}'
+      - name: kafka-ssl-source-configuration-local
+        properties:
+          brokers: '{{bootstrapServers}}'
+          securityProtocol: '{{securityProtocol}}'
+          sslKeystoreLocation: '{{sslKeystoreLocation}}'
+          sslKeyPassword: '{{sslKeyPassword}}'
+          sslKeystorePassword: '{{sslKeystorePassword}}'
+          sslTruststoreLocation: '{{sslTruststoreLocation}}'
+          sslProtocol: '{{sslProtocol}}'
+          sslEnabledProtocols: '{{sslEnabledProtocols}}'
+          saslMechanism: '{{saslMechanism}}' 
+          groupId: '{{?consumerGroup}}'
+          autoOffsetReset: '{{autoOffsetReset}}'
+          pollOnError: '{{pollOnError}}'
+          allowManualCommit: '{{allowManualCommit}}'
+          autoCommitEnable: '{{autoCommitEnable}}'
+          saslJaasConfig: '{{?saslJaasConfig}}'
         type: '#class:org.apache.camel.component.kafka.KafkaConfiguration'
       - name: kafkaHeaderDeserializer
         type: "#class:org.apache.camel.kamelets.utils.serialization.kafka.KafkaHeaderDeserializer"
@@ -195,7 +180,7 @@ spec:
     from:
       uri: "{{kafka-ssl-source-local}}:{{topic}}"
       parameters:
-        configuration: '#bean:{{kafka-ssl-sink-configuration-local}}'
+        configuration: '#bean:{{kafka-ssl-source-configuration-local}}'
       steps:
         - process:
             ref: "{{kafkaHeaderDeserializer}}"
