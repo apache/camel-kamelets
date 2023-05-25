@@ -96,15 +96,11 @@ spec:
     beans:
       - name: dsBean
         type: "#class:org.apache.commons.dbcp2.BasicDataSource"
-        property:
-          - key: username
-            value: '{{username}}'
-          - key: password
-            value: '{{password}}'
-          - key: url
-            value: 'jdbc:postgresql://{{serverName}}:{{serverPort}}/{{databaseName}}'
-          - key: driverClassName
-            value: 'org.postgresql.Driver'
+        properties:
+          username: '{{username}}'
+          password: '{{password}}'
+          url: 'jdbc:postgresql://{{serverName}}:{{serverPort}}/{{databaseName}}'
+          driverClassName: 'org.postgresql.Driver'
     from:
       uri: "sql:{{query}}"
       parameters:
