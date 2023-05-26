@@ -7,6 +7,7 @@
 **Closed issues:**
 
 - Kafka Secured Kamelets: use double quote around user and password [\#1476](https://github.com/apache/camel-kamelets/issues/1476)
+- Bean: Use `properties` instead of `property` with `key` and `value` [\#1475](https://github.com/apache/camel-kamelets/issues/1475)
 - Release 3.20.4 [\#1472](https://github.com/apache/camel-kamelets/issues/1472)
 
 ## [v3.20.4](https://github.com/apache/camel-kamelets/tree/v3.20.4) (2023-05-16)
