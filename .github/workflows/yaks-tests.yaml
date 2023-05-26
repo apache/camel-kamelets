@@ -41,8 +41,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  YAKS_VERSION: 0.14.2
-  YAKS_RUN_OPTIONS: "--timeout=15m --local -e YAKS_CAMELK_MAX_ATTEMPTS=10 -e YAKS_JBANG_CAMEL_VERSION=4.0.0-M1 -e YAKS_JBANG_KAMELETS_LOCAL_DIR=../../../kamelets"
+  YAKS_VERSION: 0.15.1
+  YAKS_RUN_OPTIONS: "--timeout=15m --local -e YAKS_CAMELK_MAX_ATTEMPTS=10 -e YAKS_JBANG_CAMEL_VERSION=4.0.0-M1 -e YAKS_JBANG_KAMELETS_LOCAL_DIR=../../../kamelets -e YAKS_CAMELK_KAMELET_API_VERSION=v1alpha1"
 
 jobs:
   test:
