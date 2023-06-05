@@ -1,0 +1,15 @@
+---
+- name: Create AWS S3 Bucket
+  hosts: localhost
+  vars:
+    bucket_name: "s3_example"
+    encryption_type: "AES256"
+    bucket_policy: "generic"
+    s3_acl: "public-read"
+  tasks:
+    - name: Create bucket without JSON policy
+      amazon.aws.s3_bucket:
+        name: "{{ bucket_name }}"
+        state: present
+        encryption: "{{ encryption_type }}"
+      register: created_bucket
