@@ -43,3 +43,10 @@ The commmand to create the infra is:
 $ aws cloudformation deploy --template-file cloudformation/aws-s3.yaml --stack-name my-new-stack --parameter-overrides BucketName=<bucket-name>
 ```
 
+Once completed do:
+
+```bash
+$ aws cloudformation delete-stack --stack-name my-new-stack
+```
+
+
