@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.5...HEAD)
+
+**Closed issues:**
+
+- Align jackson version with core camel project [\#1499](https://github.com/apache/camel-kamelets/issues/1499)
+- Release 3.20.5 [\#1497](https://github.com/apache/camel-kamelets/issues/1497)
+- Bump to Camel 3.20.5 [\#1496](https://github.com/apache/camel-kamelets/issues/1496)
+
 ## [v3.20.5](https://github.com/apache/camel-kamelets/tree/v3.20.5) (2023-05-29)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.4...v3.20.5)
