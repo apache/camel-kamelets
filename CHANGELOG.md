@@ -9,6 +9,7 @@
 - Align jackson version with core camel project [\#1499](https://github.com/apache/camel-kamelets/issues/1499)
 - Release 3.20.5 [\#1497](https://github.com/apache/camel-kamelets/issues/1497)
 - Bump to Camel 3.20.5 [\#1496](https://github.com/apache/camel-kamelets/issues/1496)
+- AWS S3 Source Connector: Add an maxMessagesPerPoll option so we can define the batch dimension [\#1250](https://github.com/apache/camel-kamelets/issues/1250)
 
 ## [v3.20.5](https://github.com/apache/camel-kamelets/tree/v3.20.5) (2023-05-29)
 
