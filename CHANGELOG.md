@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- coffee-source.kamelet.yaml not found [\#1508](https://github.com/apache/camel-kamelets/issues/1508)
 - Align jackson version with core camel project [\#1499](https://github.com/apache/camel-kamelets/issues/1499)
 - Release 3.20.5 [\#1497](https://github.com/apache/camel-kamelets/issues/1497)
 - Bump to Camel 3.20.5 [\#1496](https://github.com/apache/camel-kamelets/issues/1496)
