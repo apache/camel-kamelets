@@ -102,6 +102,13 @@ spec:
         default: true
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+      delete:
+        title: Delete
+        description: If true, the file will be deleted after it is processed successfully.
+        type: boolean
+        default: false
+        x-descriptors:
+        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
   dependencies:
     - "camel:ftp"
     - "camel:core"
@@ -116,6 +123,7 @@ spec:
         idempotent: "{{idempotent}}"
         binary: "{{binary}}"
         autoCreate: "{{autoCreate}}"
+        delete: "{{delete}}"
       steps:
       - set-header:
           name: file
