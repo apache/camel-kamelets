@@ -1,11 +1,12 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v3.20.6](https://github.com/apache/camel-kamelets/tree/v3.20.6) (2023-06-26)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.5...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.5...v3.20.6)
 
 **Closed issues:**
 
+- Bump to Camel 3.20.6 [\#1514](https://github.com/apache/camel-kamelets/issues/1514)
 - coffee-source.kamelet.yaml not found [\#1508](https://github.com/apache/camel-kamelets/issues/1508)
 - FTP/SFTP/FTPS Source Kamelets: Add Delete option [\#1507](https://github.com/apache/camel-kamelets/issues/1507)
 - Align jackson version with core camel project [\#1499](https://github.com/apache/camel-kamelets/issues/1499)
