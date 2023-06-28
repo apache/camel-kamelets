@@ -38,7 +38,6 @@ spec:
     required:
       - accountName
       - containerName
-      - accessKey
     type: object
     properties:
       accountName:
@@ -59,6 +58,12 @@ spec:
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
+      credentialType:
+        title: Credential Type
+        description: Determines the credential strategy to adopt.
+        type: string
+        enum: ["SHARED_ACCOUNT_KEY", "AZURE_IDENTITY"]
+        default: "SHARED_ACCOUNT_KEY"
   dependencies:
     - "camel:core"
     - "camel:azure-storage-blob"
@@ -87,6 +92,6 @@ spec:
       - to:
           uri: "azure-storage-blob://{{accountName}}/{{containerName}}"
           parameters:
-            accessKey: "{{accessKey}}"
+            accessKey: "{{?accessKey}}"
             operation: "uploadBlockBlob"
-            credentialType: "SHARED_ACCOUNT_KEY"
+            credentialType: "{{credentialType}}"
