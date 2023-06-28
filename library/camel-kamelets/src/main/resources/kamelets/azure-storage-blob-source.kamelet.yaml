@@ -38,7 +38,6 @@ spec:
     required:
       - accountName
       - containerName
-      - accessKey
     type: object
     properties:
       accountName:
@@ -71,6 +70,12 @@ spec:
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+      credentialType:
+        title: Credential Type
+        description: Determines the credential strategy to adopt.
+        type: string
+        enum: ["SHARED_ACCOUNT_KEY", "AZURE_IDENTITY"]
+        default: "SHARED_ACCOUNT_KEY"
   dependencies:
     - "camel:azure-storage-blob"
     - "camel:kamelet"
@@ -90,8 +95,8 @@ spec:
     from:
       uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
       parameters:
-        accessKey: "{{accessKey}}"
-        credentialType: "SHARED_ACCOUNT_KEY"
+        accessKey: "{{?accessKey}}"
+        credentialType: "{{credentialType}}"
         delay: "{{delay}}"
       steps:
         - process:
@@ -106,6 +111,6 @@ spec:
                       uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
                       parameters:
                         operation: "deleteBlob"
-                        accessKey: "{{accessKey}}"
-                        credentialType: "SHARED_ACCOUNT_KEY"
+                        accessKey: "{{?accessKey}}"
+                        credentialType: "{{credentialType}}"
 
