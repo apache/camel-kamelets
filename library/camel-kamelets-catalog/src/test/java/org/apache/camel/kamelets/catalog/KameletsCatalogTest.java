@@ -137,8 +137,8 @@ public class KameletsCatalogTest {
 
     @Test
     void testSupportedHeaders() throws Exception {
-        verifyHeaders("aws-s3-source", 18);
-        verifyHeaders("aws-s3-sink", 25);
+        verifyHeaders("aws-s3-source", 20);
+        verifyHeaders("aws-s3-sink", 27);
         verifyHeaders("aws-cloudtrail-source", 0);
         verifyHeaders("aws-redshift-source", 0);
         verifyHeaders("aws-not-exists", 0);
@@ -211,7 +211,7 @@ public class KameletsCatalogTest {
         verifyHeaders("mariadb-source", 0);
         verifyHeaders("mariadb-sink", 8);
         verifyHeaders("minio-source", 14);
-        verifyHeaders("minio-sink", 21);
+        verifyHeaders("minio-sink", 22);
         verifyHeaders("mongodb-changes-stream-source", 3);
         verifyHeaders("mongodb-sink", 12);
         verifyHeaders("mongodb-source", 3);
@@ -227,7 +227,7 @@ public class KameletsCatalogTest {
         verifyHeaders("oracle-database-source", 0);
         verifyHeaders("postgresql-sink", 8);
         verifyHeaders("postgresql-source", 0);
-        verifyHeaders("pulsar-sink", 3);
+        verifyHeaders("pulsar-sink", 4);
         verifyHeaders("pulsar-source", 11);
         verifyHeaders("rabbitmq-source", 23);
         verifyHeaders("redis-sink", 29);
