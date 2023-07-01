@@ -1,12 +1,13 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v3.21.0](https://github.com/apache/camel-kamelets/tree/v3.21.0) (2023-06-30)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.6...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.6...v3.21.0)
 
 **Closed issues:**
 
 - Azure Storage Blob Kamelets: Expose the credentialsType parameter with SHARED\_ACCOUNT\_KEY as default [\#1517](https://github.com/apache/camel-kamelets/issues/1517)
+- Release 3.20.6 [\#1515](https://github.com/apache/camel-kamelets/issues/1515)
 - Add Twitter timeline sink Kamelet [\#102](https://github.com/apache/camel-kamelets/issues/102)
 - Add Twitter Direct Message Sink Kamelet [\#100](https://github.com/apache/camel-kamelets/issues/100)
 - Add Box Source Kamelet [\#17](https://github.com/apache/camel-kamelets/issues/17)
