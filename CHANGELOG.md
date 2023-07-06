@@ -1,5 +1,44 @@
 # Changelog
 
+## [v4.0.0-RC1](https://github.com/apache/camel-kamelets/tree/v4.0.0-RC1) (2023-07-05)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.21.0...v4.0.0-RC1)
+
+**Closed issues:**
+
+- Bump to Camel 4.0.0-RC1 [\#1524](https://github.com/apache/camel-kamelets/issues/1524)
+- Release 3.21.0 [\#1523](https://github.com/apache/camel-kamelets/issues/1523)
+
+**Merged pull requests:**
+
+- Upgrade Camel to version 4.0.0-RC1 [\#1528](https://github.com/apache/camel-kamelets/pull/1528) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1526](https://github.com/apache/camel-kamelets/pull/1526) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Azure Storage Blob Kamelets: Expose the credentialsType parameter wit… [\#1518](https://github.com/apache/camel-kamelets/pull/1518) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1513](https://github.com/apache/camel-kamelets/pull/1513) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen for SBOM [\#1512](https://github.com/apache/camel-kamelets/pull/1512) ([github-actions[bot]](https://github.com/apps/github-actions))
+- FTP/SFTP/FTPS Source Kamelets: Add Delete option [\#1509](https://github.com/apache/camel-kamelets/pull/1509) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1506](https://github.com/apache/camel-kamelets/pull/1506) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Provide some infrastructure as code configuration files for Terraform/Ansible/Cloudformation  [\#1505](https://github.com/apache/camel-kamelets/pull/1505) ([oscerd](https://github.com/oscerd))
+- Align jackson version with core camel project [\#1502](https://github.com/apache/camel-kamelets/pull/1502) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1500](https://github.com/apache/camel-kamelets/pull/1500) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen for SBOM [\#1495](https://github.com/apache/camel-kamelets/pull/1495) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Upgrade PostgreSQL Driver to version 42.6.0 [\#1494](https://github.com/apache/camel-kamelets/pull/1494) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#1491](https://github.com/apache/camel-kamelets/pull/1491) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump Redshift-jdbc to version 2.1.0.14 [\#1490](https://github.com/apache/camel-kamelets/pull/1490) ([oscerd](https://github.com/oscerd))
+- chore: Enhance Kamelet data type implementations [\#1489](https://github.com/apache/camel-kamelets/pull/1489) ([christophd](https://github.com/christophd))
+- Bean: Use properties instead of property with key and value [\#1488](https://github.com/apache/camel-kamelets/pull/1488) ([oscerd](https://github.com/oscerd))
+- Bean: Use properties instead of property with key and value [\#1487](https://github.com/apache/camel-kamelets/pull/1487) ([oscerd](https://github.com/oscerd))
+- chore: Improve YAKS tests [\#1486](https://github.com/apache/camel-kamelets/pull/1486) ([christophd](https://github.com/christophd))
+- Bean: Use properties instead of property with key and value [\#1485](https://github.com/apache/camel-kamelets/pull/1485) ([oscerd](https://github.com/oscerd))
+- Bean: Use properties instead of property with key and value [\#1484](https://github.com/apache/camel-kamelets/pull/1484) ([oscerd](https://github.com/oscerd))
+- Bean: Use properties instead of property with key and value [\#1483](https://github.com/apache/camel-kamelets/pull/1483) ([oscerd](https://github.com/oscerd))
+- Bean: Use properties instead of property with key and value  [\#1482](https://github.com/apache/camel-kamelets/pull/1482) ([oscerd](https://github.com/oscerd))
+- Bean: Use properties instead of property with key and value - AWS DDB Sink [\#1481](https://github.com/apache/camel-kamelets/pull/1481) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1480](https://github.com/apache/camel-kamelets/pull/1480) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Kafka Secured Kamelets: use double quote around user and password [\#1477](https://github.com/apache/camel-kamelets/pull/1477) ([oscerd](https://github.com/oscerd))
+- added sslCipherSuite property so TLS can be enabled [\#1474](https://github.com/apache/camel-kamelets/pull/1474) ([vedran-kolka-syntio](https://github.com/vedran-kolka-syntio))
+- Generated sources regen for SBOM [\#1473](https://github.com/apache/camel-kamelets/pull/1473) ([github-actions[bot]](https://github.com/apps/github-actions))
+
 ## [v3.21.0](https://github.com/apache/camel-kamelets/tree/v3.21.0) (2023-06-30)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.20.6...v3.21.0)
