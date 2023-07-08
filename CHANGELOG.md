@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.0.0-RC1...HEAD)
+
+**Closed issues:**
+
+- Support personal token authentication in jira kamelet [\#1529](https://github.com/apache/camel-kamelets/issues/1529)
+
 ## [v4.0.0-RC1](https://github.com/apache/camel-kamelets/tree/v4.0.0-RC1) (2023-07-05)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.21.0...v4.0.0-RC1)
