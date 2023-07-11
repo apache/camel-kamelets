@@ -25,7 +25,7 @@ The commmand to create the infra is:
 ```bash
 $ cd terraform/
 $ terraform init
-$ terraform apply -var="bucket_name=<bucket-name>"
+$ terraform apply -var="queue_name=<queue-name>"
 ```
 
 Once completed do:
@@ -35,18 +35,6 @@ $ cd terraform/
 $ terraform destroy
 ```
 
-## Cloudformation
 
-The commmand to create the infra is:
-
-```bash
-$ aws cloudformation deploy --template-file cloudformation/aws-s3.yaml --stack-name my-new-stack --parameter-overrides BucketName=<bucket-name>
-```
-
-Once completed do:
-
-```bash
-$ aws cloudformation delete-stack --stack-name my-new-stack
-```
 
 
