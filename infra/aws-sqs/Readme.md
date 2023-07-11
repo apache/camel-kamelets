@@ -35,6 +35,18 @@ $ cd terraform/
 $ terraform destroy
 ```
 
+## Cloudformation
 
+The commmand to create the infra is:
+
+```bash
+$ aws cloudformation deploy --template-file cloudformation/aws-sqs.yaml --stack-name my-new-stack --parameter-overrides QueueName=<queue-name>
+```
+
+Once completed do:
+
+```bash
+$ aws cloudformation delete-stack --stack-name my-new-stack
+```
 
 

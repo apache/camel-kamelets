@@ -1,0 +1,11 @@
+Parameters:
+  QueueName:
+    Type: String
+    Description: The queue name.
+
+Resources:
+  SQSQueue:
+    Type: 'AWS::SQS::Queue'
+    Properties:
+      QueueName: 
+        Ref: QueueName
