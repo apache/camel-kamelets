@@ -1,0 +1,10 @@
+---
+- name: Create AWS SQS Queue
+  hosts: localhost
+  tasks:
+    - name: Create SQS Queue
+      community.aws.sqs_queue:
+        name: "{{ queue_name }}"
+        state: present
+        region: "{{ region }}"
+      register: created_queue
