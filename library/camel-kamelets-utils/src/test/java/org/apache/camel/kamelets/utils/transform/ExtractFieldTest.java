@@ -117,4 +117,18 @@ class ExtractFieldTest {
         Assertions.assertEquals("Rajesh Koothrappali", exchange.getMessage().getHeader(ExtractField.EXTRACTED_FIELD_HEADER));
     }
 
+    @Test
+    void shouldExtractFieldWithT() throws Exception {
+        final String baseJson = "{\"id\":\"1\",\"message\":\"Camel\\\\tRocks\"}";
+        Exchange exchange = new DefaultExchange(camelContext);
+
+        exchange.getMessage().setBody(mapper.readTree(baseJson));
+
+        processor.setField("message");
+        processor.setTrimField(true);
+        processor.process(exchange);
+
+        Assertions.assertEquals("Camel\\tRocks", exchange.getMessage().getBody());
+    }
+
 }
