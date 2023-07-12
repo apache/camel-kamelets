@@ -7,6 +7,8 @@
 **Closed issues:**
 
 - Support personal token authentication in jira kamelet [\#1529](https://github.com/apache/camel-kamelets/issues/1529)
+- Release Camel Kamelets 4.0.0-RC1 [\#1525](https://github.com/apache/camel-kamelets/issues/1525)
+- ElasicSearchSink-TrustCertificates [\#1246](https://github.com/apache/camel-kamelets/issues/1246)
 
 ## [v4.0.0-RC1](https://github.com/apache/camel-kamelets/tree/v4.0.0-RC1) (2023-07-05)
 
