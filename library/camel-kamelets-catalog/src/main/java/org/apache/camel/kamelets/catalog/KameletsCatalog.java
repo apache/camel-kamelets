@@ -30,8 +30,6 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import io.fabric8.camelk.v1alpha1.Kamelet;
-import io.fabric8.camelk.v1alpha1.JSONSchemaProps;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.Resource;
 import io.github.classgraph.ScanResult;
@@ -42,6 +40,9 @@ import org.apache.camel.kamelets.catalog.model.KameletPrefixSchemeEnum;
 import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
 import org.apache.camel.tooling.model.ComponentModel;
 import org.apache.camel.util.ObjectHelper;
+import org.apache.camel.v1alpha1.Kamelet;
+import org.apache.camel.v1alpha1.kameletspec.Definition;
+import org.apache.camel.v1alpha1.kameletspec.Template;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,7 +136,7 @@ public class KameletsCatalog {
         return collect;
     }
 
-    public JSONSchemaProps getKameletDefinition(String name) {
+    public Definition getKameletDefinition(String name) {
         Kamelet kamelet = kameletModels.get(name);
         if (kamelet != null) {
             return kamelet.getSpec().getDefinition();
@@ -188,7 +189,7 @@ public class KameletsCatalog {
         }
     }
 
-    public Map<String, Object> getKameletTemplate(String name) {
+    public Template getKameletTemplate(String name) {
         Kamelet kamelet = kameletModels.get(name);
         if (kamelet != null) {
             return kamelet.getSpec().getTemplate();

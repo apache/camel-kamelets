@@ -19,12 +19,13 @@ package org.apache.camel.kamelets.catalog;
 import java.util.List;
 import java.util.Map;
 
-import io.fabric8.camelk.v1alpha1.JSONSchemaProps;
-import io.fabric8.camelk.v1alpha1.Kamelet;
+
 import io.github.classgraph.ClassGraph;
-import org.apache.camel.kamelets.catalog.model.KameletPrefixSchemeEnum;
 import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
 import org.apache.camel.tooling.model.ComponentModel;
+import org.apache.camel.v1alpha1.Kamelet;
+import org.apache.camel.v1alpha1.kameletspec.Definition;
+import org.apache.camel.v1alpha1.kameletspec.Template;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -52,7 +53,7 @@ public class KameletsCatalogTest {
 
     @Test
     void testGetKameletsDefinition() throws Exception {
-        JSONSchemaProps props = catalog.getKameletDefinition("aws-sqs-source");
+        Definition props = catalog.getKameletDefinition("aws-sqs-source");
         assertEquals(14, props.getProperties().keySet().size());
         assertTrue(props.getProperties().containsKey("queueNameOrArn"));
     }
@@ -66,7 +67,7 @@ public class KameletsCatalogTest {
 
     @Test
     void testGetKameletsDefinitionNotExists() throws Exception {
-        JSONSchemaProps props = catalog.getKameletDefinition("word");
+        Definition props = catalog.getKameletDefinition("word");
         assertNull(props);
     }
 
@@ -118,7 +119,7 @@ public class KameletsCatalogTest {
 
     @Test
     void testGetKameletsTemplate() throws Exception {
-        Map<String, Object> template = catalog.getKameletTemplate("aws-sqs-source");
+        Template template = catalog.getKameletTemplate("aws-sqs-source");
         assertNotNull(template);
     }
 
