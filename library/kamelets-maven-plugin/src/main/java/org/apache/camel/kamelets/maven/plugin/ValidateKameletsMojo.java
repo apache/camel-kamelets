@@ -22,9 +22,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.catalog.DefaultCamelCatalog;
 import org.apache.camel.kamelets.catalog.KameletsCatalog;
 import org.apache.camel.tooling.model.ComponentModel;
+import org.apache.camel.v1alpha1.kameletspec.Template;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -64,9 +69,12 @@ public class ValidateKameletsMojo extends AbstractMojo {
         KameletsCatalog catalog = new KameletsCatalog();
         DefaultCamelCatalog cc = new DefaultCamelCatalog();
         List<String> names = catalog.getKameletsName();
+        ObjectMapper om = new ObjectMapper();
         for (String name: names) {
-            Map<String, Object> kd = catalog.getKameletTemplate(name);
-            Map<String,Object> f = (Map) kd.get("from");
+            Map<Object, Object> templateJson;
+            Template kd = catalog.getKameletTemplate(name);
+            templateJson = om.convertValue(kd, new TypeReference<Map<Object, Object>>(){});
+            Map<String,Object> f = (Map) templateJson.get("from");
             Map<String,Object> p = (Map) f.get("parameters");
             List<String> deps = catalog.getKameletDependencies(name).stream()
                     .filter(Predicate.not(bannedDepsList::contains))
