@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Switch from Fabric 8 Camel K Extension to Camel K CRDS in Catalog [\#1539](https://github.com/apache/camel-kamelets/issues/1539)
 - Support personal token authentication in jira kamelet [\#1529](https://github.com/apache/camel-kamelets/issues/1529)
 - Release Camel Kamelets 4.0.0-RC1 [\#1525](https://github.com/apache/camel-kamelets/issues/1525)
 - ElasicSearchSink-TrustCertificates [\#1246](https://github.com/apache/camel-kamelets/issues/1246)
