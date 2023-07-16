@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.4",
-  "serialNumber" : "urn:uuid:5cf5b6c9-a82a-4a3a-bee2-45d8678a3db2",
+  "serialNumber" : "urn:uuid:8fb12fe8-2510-439f-86ba-7b415765d795",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2023-07-09T11:32:01Z",
+    "timestamp" : "2023-07-16T11:32:04Z",
     "tools" : [
       {
         "vendor" : "OWASP Foundation",
@@ -588,44 +588,44 @@
       "bom-ref" : "pkg:maven/org.yaml/snakeyaml@2.0?type=jar"
     },
     {
-      "publisher" : "Red Hat",
-      "group" : "io.fabric8",
-      "name" : "camel-k-model-v1alpha1",
-      "version" : "6.1.1",
-      "description" : "Java client for Kubernetes and OpenShift",
+      "publisher" : "The Apache Software Foundation",
+      "group" : "org.apache.camel.k",
+      "name" : "camel-k-crds",
+      "version" : "1.12.1",
+      "description" : "The Apache Software Foundation provides support for the Apache community of open-source software projects. The Apache projects are characterized by a collaborative, consensus based development process, an open and pragmatic software license, and a desire to create high quality software that leads the way in its field. We consider ourselves not simply a group of projects sharing a server, but rather a community of developers and users.",
       "scope" : "optional",
       "hashes" : [
         {
           "alg" : "MD5",
-          "content" : "ab101626801d9cc714686cde94c008dd"
+          "content" : "d2f241530e253ca6a9c32d32efbcb7ea"
         },
         {
           "alg" : "SHA-1",
-          "content" : "7bb4fc76dbb54c02daad5396a99f0561b91283c0"
+          "content" : "7fc9eae951562b430a3bf9c3d64e8860d9588445"
         },
         {
           "alg" : "SHA-256",
-          "content" : "5282237a2fce8e9c9537877a1b7ff610f6860f0a0ab226c5cc7296a6b11d1a9a"
+          "content" : "24f217b2abd5a1da6d0e08ff68f039fe5986911670cb7017da5eb9be5eb6a0c9"
         },
         {
           "alg" : "SHA-512",
-          "content" : "a16127304d2e5d17319e7b0175b1600cf0cde19cc540dcb3c429e3c035f473cb60ff84109872d9c60b3de1090827c7ca0202e0937eee0a8632ea36e3b777d7ff"
+          "content" : "258293a499c8231a35cc106fed253c331eff99764254c6a521419831688c2840affbb43dbb0f6ef3ddcb96eebdb45f5464a0e1bea31e537238fe784c12a7c24a"
         },
         {
           "alg" : "SHA-384",
-          "content" : "260f580948997fdf649fc32673cc2908f41650fcb717ac1ee0b5f91818fc34d2d909eb131fc2b068cbd1c95a9d10c321"
+          "content" : "be9fca22940857d1c4e2331945c89693a0e86d708e69a5f7eccb95405f12d923efd4243232cd3c70a399fc0093c36323"
         },
         {
           "alg" : "SHA3-384",
-          "content" : "8977169042b89a6d366896c956ee2f5805d961201bb11d71b97db80bb9c2a0b4c426a1f3bf7b66a988f9f81f7387c4af"
+          "content" : "d92807da23031d765eab491cc9adb6a4f57f48991f4a00b2f0bc5526baaa5d928790c5f6cf5484d6ce1f4533bfedb5e8"
         },
         {
           "alg" : "SHA3-256",
-          "content" : "80c561c06314f7f639fb414c109ef80d24a4d9b6a79faedecbadc206951f4f06"
+          "content" : "a86f2f9d5d30a5ea69cbbfe0640b713416a7bc63f7024ebe1a0511a18c522cad"
         },
         {
           "alg" : "SHA3-512",
-          "content" : "57e9724d717ecb1472fa1fceca24ef4b993476ffb59b12d440c84d08a26b3234c4eaa02071e7f76622dfd0a7b0b85147596849306556ec432cfe9fb84bbbc58a"
+          "content" : "8e16c7bf1bb1b316a750a47ed6a2216cd05f6117dfb9fb710ed36c0c3fcdbd337c292e07e865710c97f61aecacc00eee60b16423296f8d8ec20a8a374282cfcc"
         }
       ],
       "licenses" : [
@@ -635,11 +635,84 @@
           }
         }
       ],
-      "purl" : "pkg:maven/io.fabric8/camel-k-model-v1alpha1@6.1.1?type=jar",
+      "purl" : "pkg:maven/org.apache.camel.k/camel-k-crds@1.12.1?type=jar",
       "externalReferences" : [
         {
           "type" : "website",
-          "url" : "http://fabric8.io/kubernetes-extensions/camel-k-extension-pom/camel-k-model-v1alpha1/"
+          "url" : "https://www.apache.org/camel-k-crds/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://repository.apache.org/service/local/staging/deploy/maven2"
+        },
+        {
+          "type" : "issue-tracker",
+          "url" : "https://github.com/apache/camel-k/issues"
+        },
+        {
+          "type" : "mailing-list",
+          "url" : "https://mail-archives.apache.org/mod_mbox/www-announce/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "https://gitbox.apache.org/repos/asf?p=camel-k.git;a=summary"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/org.apache.camel.k/camel-k-crds@1.12.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-client",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "fe1331e72595aea93a142d16b85edd8e"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "0c6a7e245dc69928d22fc97dee884a1578c22e53"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "8cb3094972c8408c19ee8e9dfb78f57d5e36bc1b826864717419582442ff7d7d"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "a80a327c56aedb9e2d63f718a73fc05d8cae9f2008895951c709b1d1ea1f57e162f3d1849bf5fea075c68a44118f8f865f486071b78a6889ca4db34072c53a71"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "4d06cf15ac7f0ea1e7f7bc41a67332e6135c221bc51567ebdff0496ce5ecb440e24b2de634d26e4393ccbbead244e842"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "f9219a53872df1895badcdd9fa657162115e03b2c3d508daf2d3c41cacac8155049bfc1c5163aafc097e2c43ea6b5a36"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "7e5ff7280a2ff2d54b81d01dcf98d687d429ac7071f2c4bd3dc49261084957d4"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "fe7ff957181561b9b1ae117397c503b517f3f35552af800d27d0fc83462fe13396adea449c193a806c025de669cc046c7205d6f795e2da3a348a0aa0f0ba7f14"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-client@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-client/"
         },
         {
           "type" : "distribution",
@@ -647,50 +720,50 @@
         },
         {
           "type" : "vcs",
-          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-extensions/camel-k-extension-pom/camel-k-model-v1alpha1/"
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-client/"
         }
       ],
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.fabric8/camel-k-model-v1alpha1@6.1.1?type=jar"
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-client@6.4.1?type=jar"
     },
     {
       "publisher" : "Red Hat",
       "group" : "io.fabric8",
-      "name" : "kubernetes-model-core",
-      "version" : "6.1.1",
+      "name" : "kubernetes-client-api",
+      "version" : "6.4.1",
       "description" : "Java client for Kubernetes and OpenShift",
       "hashes" : [
         {
           "alg" : "MD5",
-          "content" : "ddffa4507aef251121addde575aceee2"
+          "content" : "8e5f9e66e43b44810220149a64206dcd"
         },
         {
           "alg" : "SHA-1",
-          "content" : "5be2da4955a972f852e434e9ac00946f0992eeae"
+          "content" : "b7dae1732e0883f796c4c794391555f1a4e0e72b"
         },
         {
           "alg" : "SHA-256",
-          "content" : "60d1d8185a2fc430d14dbb2b6581dd641436f94f1675db95bda1a7578f131ff0"
+          "content" : "c9f698c2e38eb5c823f6df37db1e05b04d082c2e5f621ea41c92846d3aac7aed"
         },
         {
           "alg" : "SHA-512",
-          "content" : "a048a8cda4b116a93e4ee5db52034f7b1e51986f3d19af52017327953d43cd98e7c7f95526263f5ba188c4d86e0b1f5d7b56cf21880f3e5bbae8c839c6c2036f"
+          "content" : "2a486e58d6880cd691197b5ca4e4cc176128d706431f252e2ce0e4cd6670838665f99367125705f7e3fc095ba0d9ce0a715459a4c305cb2dc7653e5b44946998"
         },
         {
           "alg" : "SHA-384",
-          "content" : "783415e1e1b74128d4e603cae8d21ff9f6b98b8079656e45c973d15faabdaba527af6e3c7fbcc87da4db9bd93c34b583"
+          "content" : "5c85ea820777411f91a20e0a30e5fd9ef04b8cb236ef2bcb2ea21a56c5c8e2ced935da0318985d1aac9a8c417cb3a0d6"
         },
         {
           "alg" : "SHA3-384",
-          "content" : "f44522b9a4b3d147b77c9e373fae2a9dcd51c05b2b7f391df0c0e8a014f54676cb85c572c7d7b4c8787011ffb8519420"
+          "content" : "b0e33900011f27e1b7ec48a7a3cac67cdc88ba00e25257d1869e893af82f26afcd3abde9ce48b39005ba7971437ebe29"
         },
         {
           "alg" : "SHA3-256",
-          "content" : "8c012b84cb5fb873c1b575ab885f9f315f27ace6a18f2a5bad9585faf7c6c906"
+          "content" : "04d563cb8b872d895dabb25158f30ed5eb85130a4a85672da2d4afbbd037f2cc"
         },
         {
           "alg" : "SHA3-512",
-          "content" : "5f79903256ed7e67cd8950b944d7c2955bf81e5121583cad69de0e0bb42cb7cd4a77d99707f1ffda9c21d379aab138990a26817aac14efcd6765828e34e30aed"
+          "content" : "3dbfa0dfcda940c832817dd2aa91540444bb73e010a0e21bc9f421bcdcb0a87c3ef7176d869bd4e5c4b2b46b7099f546e0921c164497e83afc072fa09cb58a8b"
         }
       ],
       "licenses" : [
@@ -700,7 +773,72 @@
           }
         }
       ],
-      "purl" : "pkg:maven/io.fabric8/kubernetes-model-core@6.1.1?type=jar",
+      "purl" : "pkg:maven/io.fabric8/kubernetes-client-api@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-client-api/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-client-api/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-client-api@6.4.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-model-core",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "bde38818aaad2b4ef089080338e12f25"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "fa64acb69bba6233136cc22fe904257d913ed1d8"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "50de280799020a1981aeae3f32480da233aac27df099ff3e0774a636c20c68ac"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "fe155c6067272b0c5845b6b7103b2e1fcf84db5b92d96c01ec3b5107197d40fe8e27d20d63747a0b40c74bcebe6807a71b4ffdf0be25d3282370f45f406cf053"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "133fed7e90871ec2d74d83f9b73f448ee84df2b02f20cf1c448b55d7fb1d73a54b64e53f4661278babb3a8855be8c1c3"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "faafb260da10abf3974054d9a4954fb357682533c710f80bb0b4e5a5b5afcbca72177d2af5751aa69d16c899290d4bc9"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "c54bece2ccd5799d4df93fcf495029f5fbab49bc68b279ea6c24c6b670fbdf59"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "9d4491d476478b5efc1fa9a742fcb68760fae830dd8e424fd9b7a91d5d3655d2940c5fe1b8645e34409657496d383cbcaccdb133a06d4bbc5d49a40ba0e6a8d9"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
       "externalReferences" : [
         {
           "type" : "website",
@@ -716,46 +854,46 @@
         }
       ],
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-core@6.1.1?type=jar"
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar"
     },
     {
       "publisher" : "Red Hat",
       "group" : "io.fabric8",
       "name" : "kubernetes-model-common",
-      "version" : "6.1.1",
+      "version" : "6.4.1",
       "description" : "Java client for Kubernetes and OpenShift",
       "hashes" : [
         {
           "alg" : "MD5",
-          "content" : "c00e0fd313489a405af9387e411b5c38"
+          "content" : "3371937bbb1405b56a7b3c94e60de60f"
         },
         {
           "alg" : "SHA-1",
-          "content" : "df82cf1becd002c0242341950a7ffa62ac3e4667"
+          "content" : "fc79d83b2e37911de06885ad3d53b51395bad77e"
         },
         {
           "alg" : "SHA-256",
-          "content" : "216e04ef21573f1a8f64402b7d6cfde222a4a9f4ef0df0b0e0e993495cb109b6"
+          "content" : "d832e20d051279897f13034c187c65dea9a293ed6872dde27c0892639c1559d9"
         },
         {
           "alg" : "SHA-512",
-          "content" : "31f90ffbd3d2a259efaea8c802b2932423db3365e1c1f0ac171198be909a3b031db65939bf85aae029d20d10c454dbe9ac44edc44a0f6cb0bd9c14c77ca46e34"
+          "content" : "d85338ebe0121740473ab9797c33b2b34058e5353fd747289a3f52536778b0d66302b8ae02a525b96a2d3334897c41e5ae753a24d92b79bf257ac902f5acab2c"
         },
         {
           "alg" : "SHA-384",
-          "content" : "a94480b7c8e1203ba20d898be1cfcd2de63939c16d7edbce29f6e65328efe9eeffc1ab4fca729e245520a2383b61e248"
+          "content" : "624cb68d73c236c08b4b8560e9084574787092d9f4165a1310f5f83cc5a87b21057d820b092b75a1f2bfbb8f46006cdb"
         },
         {
           "alg" : "SHA3-384",
-          "content" : "6ee2f0ac3d75ab9bf5331d8d15129ac4e21abf1150b708b8b28f45503482e8b25cf8c27b836781d1a83060fe7debd7b0"
+          "content" : "d1d36442b03cf163d0a3c40f91224275c0b35a88ca96374eac02c210bd7801fe4cad8d017c148a0489e76690e085caf3"
         },
         {
           "alg" : "SHA3-256",
-          "content" : "6a5e39c41b66dd4c1594c4dabaaed114f4f8179e92fe1d81cdb1a47f6fd66290"
+          "content" : "692df993a7c0aafc131cdae74301f26218ef48182934335a2448cffed2fa4162"
         },
         {
           "alg" : "SHA3-512",
-          "content" : "015e31eb2593e3604e7eb5849b1125285c6654f9c054d0c027cfb5bd8f6121c56761ec8886392141e1abf47b76f47a75c4635ad479ceea738f09ad2c448fb2d0"
+          "content" : "f325765aaed5292e2bba30d943a71c36888679e45acf0d11c4d923ff6857b585bb8d9d1c722a469a7df3b01cb111913e9f06dafc0171f906765ab907c5c8f5b4"
         }
       ],
       "licenses" : [
@@ -765,7 +903,7 @@
           }
         }
       ],
-      "purl" : "pkg:maven/io.fabric8/kubernetes-model-common@6.1.1?type=jar",
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
       "externalReferences" : [
         {
           "type" : "website",
@@ -781,46 +919,46 @@
         }
       ],
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-common@6.1.1?type=jar"
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar"
     },
     {
       "publisher" : "Red Hat",
       "group" : "io.fabric8",
-      "name" : "kubernetes-model-apiextensions",
-      "version" : "6.1.1",
+      "name" : "kubernetes-model-gatewayapi",
+      "version" : "6.4.1",
       "description" : "Java client for Kubernetes and OpenShift",
       "hashes" : [
         {
           "alg" : "MD5",
-          "content" : "6af014559a97eb064d7d379b463fcdf1"
+          "content" : "bd8dcef12dbf858aabaeca91a2ba068f"
         },
         {
           "alg" : "SHA-1",
-          "content" : "9037aa6979072d9046a3429010dbf4fd65633252"
+          "content" : "8e9e8aef4a83cfb8df22bf5e067287ea4ad89d52"
         },
         {
           "alg" : "SHA-256",
-          "content" : "c6b8da5ea720496b712cab1c1f75fc83c3bd01ea50bfb0c98880d1fde2828c3a"
+          "content" : "c25fa089983d8c9110e46dd2b82ed6b00213c9c6f29e5691b18465e60433a6e3"
         },
         {
           "alg" : "SHA-512",
-          "content" : "62aca7f8931acfc9976c7135a5e216eef1f33610869f13372a583bf448dbbf14bec6abe8dd667350058b4ae3e49b4dd024a470dd8c78984e987c4a1cc701cd5e"
+          "content" : "00247ef4c51df609501df1224459c47692d9b5748f32b374c75753bf37798433c1d909c1d791dcadb237d867db2c9135ea9a8279c15ee8811fa188a817f6bc37"
         },
         {
           "alg" : "SHA-384",
-          "content" : "e38c7191b589ada5ad3431f525146ed27d23aa1438653ac64a98441af7e5bd5fc68070fc3b0a01500fa1efcd9b6dd0ea"
+          "content" : "957d2713b4183841876fb086a425863fa30bef28772f53c906220c2ae9417a111aa7f6842c31bf0e9e06c341730d9f72"
         },
         {
           "alg" : "SHA3-384",
-          "content" : "70d5192580785e30f081256f0b7f7e08eaece3d67c4c8eb858f7c6159796a1d62bee4e4b32967870f5e13a8d8cc6a2ac"
+          "content" : "9afea866e1ef866a0880fd88b19be0d061008b3121bfaee663449be675e98bd0929aeba1be71a0410776c876701e0f8d"
         },
         {
           "alg" : "SHA3-256",
-          "content" : "063686e8e3cee0a364fe2bdb07dd520ea3f561ee92d46be7c123d24d5e36fd2c"
+          "content" : "6bc4b186bca6e399b54344ff60a34602fb159b54c4f8862bb366c11cd7283275"
         },
         {
           "alg" : "SHA3-512",
-          "content" : "5352dc52c78df2531a70a7001b8427eaf27873c6f5abbd929ad8b55ef2e7b9d6ebe294857dee2aac445e85aa7d58613ad4a9bfc1c95e7ffbf8088b98d8c52498"
+          "content" : "fb1518cfcfdab792304d8311fcabd2959a1c52db8b13e07fda0129846efca07e45a5d1021ee39a9b1229aa39a20441765a5c183d367090c1488cce4bb0175f3b"
         }
       ],
       "licenses" : [
@@ -830,7 +968,332 @@
           }
         }
       ],
-      "purl" : "pkg:maven/io.fabric8/kubernetes-model-apiextensions@6.1.1?type=jar",
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-gatewayapi@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-model-generator/kubernetes-model-gatewayapi/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-model-generator/kubernetes-model-gatewayapi/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-gatewayapi@6.4.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-model-rbac",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "2b7157d568cafba5d78481646d2a5d18"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "4d728a817a60e15c6638bdcfee69e259aaa0dbac"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "a769bf67ba6c559a0806160e9c419c56641966b316a4ff88d7f1e0d9929f47eb"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "1fab630d5c856b21f5ad214c8931bb7f7f78afd0599116de21e0f3d5ce11ddebea9a3c0a9691668cd9fbb17f99f01382a17aad7338d29c1a8f23872e54e890a3"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "938201c9ef789216d6e26148cfc5a955e122695b77f998bcc00385dc18294c481b3e33f8bf44f0fdaf81d5c6f96df115"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "12084a287c6488e1e24f894ae2f08ef407231bb969f151c303491d8c4b93e298e5a789e719918fcf2072b52d7ea4affb"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "6120a70f9cd50e7393a5406a56512fc204c2e6456ae6af25c465026b7016c207"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "172114cc4daf5d8b2335d33a2c60ceffcc33679b81334b1721c5c4502f8ec03c64948b07ce5ba35d6eacd71176aa043c397b620aa303f514e8960dd045195328"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-rbac@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-model-generator/kubernetes-model-rbac/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-model-generator/kubernetes-model-rbac/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-rbac@6.4.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-model-admissionregistration",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "e7edd9fb0a545de9eb4786219eb71c94"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "88a09306735e1525421886a45476a84ad49a83a5"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "2ec6318a566791433195e6db3773a31aa50c6eca37f9b5caec7365076c4d28f3"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "00f7eca45020bf0b212e209af35914988e2a7a6475fa498d83b9c265a242a7b941bf76c3884be944432125d322558f0dbbc9ba2f6ec01a3e1c95bbfeb89338cd"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "8f1091983b7ee8f1db265d9a219d2a6098f727a29ffccae6b4a8567d409f6dd556769f533329775a61a161d14358800f"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "9b5d004fcdcdf75edaf6339a6ce20db8ac2ee537cfab94478d194e03769e9b004a68f32ee5c7d9ab7e750a52ba70aef3"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "c5150dae1b2b6d3d721cc7f5163a5d8693b891bb3a291ab3f06714ecbe222941"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "b7e45cd704151b96d3632c152b68b3a9228c5f9d1ffbdd80754875c121b034e660d65c29432965f90488881d82938e9f017fe44e600143469fef780043b31645"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-admissionregistration@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-model-generator/kubernetes-model-admissionregistration/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-model-generator/kubernetes-model-admissionregistration/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-admissionregistration@6.4.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-model-apps",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "f1027c25fea8bad2a3412829dd86294a"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "4969f3c5b020d749240525aa836acf5f8bfd56b8"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "fb22e5b2f39701e047d2c237d32a73c1121a1921a6255c9af9f9f82aa44fffea"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "fdecd2988dc189aa77fb057b854b859b6ed109dc2fae800e835dc7212094339453ce5377558514f7ea1c9541fc428a6f7dc9073efed956fc126adf445785aade"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "a49fa211480030f99a968a2fb3472894c0b39b089abb1da2b933823d2f5eb3f7fbbd78262619e325c171132cf62ff064"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "df6c23bca00b86d104860e2802991fb8482a7b6b7da830445d4cf1c5df4b2e673edc38bc38e76f33aa598e1b0c01b5a4"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "3f42c5cf21eebb91f1074d3a09388fdcce310cf87adbd4e3930a2c9b74d2052e"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "2a6494f5d142207c8741719462aed34e15328b918eae4f0c86a7bb8a4cdb4dd4c40bbd6bb62d5c8475c9334634666b9f6107d7cdbf6c1548c2a7f6e8759bb5b8"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-apps@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-model-generator/kubernetes-model-apps/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-model-generator/kubernetes-model-apps/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-apps@6.4.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-model-autoscaling",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "873d5416457b723f09f93071d02d5090"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "29d5fcf449fd2275d29bbc3867cdee7d05b75e92"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "0660f6643fc1cf4f881ab0a2c85f736119bab4429af16f1b3d952c4aa9e3f5f0"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "4abd51da435a97f26a37e46a38f0a6857d9e1371c527e495f874231a0a3105a21447a91fccf6712cefddd60c2aba6283e4dfdf9e7f50977f6c565f9a106e305c"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "73161566bc7482f466801827dbfc059165594d1d77697b7ae82ad276ca770910a80d86198019b09653f5e042114f36a3"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "583500affe386b1473f26da1740b4beb1821a75167280511da86da04d8638ece03b14ec18c61d20af50c13d666d0e9de"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "f4c660f42f52f1591b8cc981be7976ecb427073095f3ee62fa3f1ba5536819e6"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "9997fbb80237e99e48c92e81b78cdb3e2f626b467089f8665ceff2b9261ec9991596d348e08c0a1a1d6176c5f56242b7f527005d7034643dd1ee314dc96e6a0a"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-autoscaling@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-model-generator/kubernetes-model-autoscaling/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-model-generator/kubernetes-model-autoscaling/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-autoscaling@6.4.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-model-apiextensions",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "3534d465097d74a6b1ade3b612dcba7f"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "46e2cd8080b9f2bad13da5ac2aa92210349c2ada"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "5231f99648e8ae1479444f5769b6d9334127e3729bc837569c56a758c832aeb7"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "f4f2fdf6468b59a73a658c7c1b50a9cc51acb3b89fa54202d92d2374bb1a6a7567d572d3689d7afc9856e58a84c1dbba24dd2bc908e0e9b04834f6d255cb3398"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "81dd60ef30291f80660b4809c269aea0ba6a744e9353f1f0aded0a477bffe4cfa561fc4640a2653f7e59bfd15b5f2824"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "7c7dd943e9fa3cff1b92d5b283b0e95354aa0b27b2a9ea0b963072d170f621c200fda4fe94f4c794bb5006eb7c0f3e9b"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "0d65e4b19dfbd83d041f7fa2e6afc3bd6e41e3a5dc2eedab6fd7a88435bcc971"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "98c3e5baf0bfc0364262f5fb64284f0357b33cd5f7dd187a685fea28b5329d34545a62bb14f46add90387893bb3339e8d147173e103ca5324d3473a9859d9f48"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-apiextensions@6.4.1?type=jar",
       "externalReferences" : [
         {
           "type" : "website",
@@ -846,46 +1309,46 @@
         }
       ],
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-apiextensions@6.1.1?type=jar"
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-apiextensions@6.4.1?type=jar"
     },
     {
       "publisher" : "Red Hat",
       "group" : "io.fabric8",
-      "name" : "knative-model",
-      "version" : "6.1.1",
+      "name" : "kubernetes-model-batch",
+      "version" : "6.4.1",
       "description" : "Java client for Kubernetes and OpenShift",
       "hashes" : [
         {
           "alg" : "MD5",
-          "content" : "ff64374b68dd0faf6f847004e0f800ef"
+          "content" : "55577367cf64ab7f0ebf6690cfd6754b"
         },
         {
           "alg" : "SHA-1",
-          "content" : "ce844d99136af96888e31fc6becd47f14b07cfa2"
+          "content" : "7166ba25d6844a48c86e78afdd71c71949950342"
         },
         {
           "alg" : "SHA-256",
-          "content" : "3289dd74e08fd6fcf19f6429b9e791e9717404949f0aca49630c8488a49076f3"
+          "content" : "924cc5b2e191ea02f02ded5a179474ac50d58a6e7878080751316d1dfcdbf1f5"
         },
         {
           "alg" : "SHA-512",
-          "content" : "0e4246d21b7639d5d4a81ea0cca227a6ddb3e5ee1066c2e3fde7b5c930693b582fd9073df597fe8cdc40501a3528b0f918657429bb8dab573b2a9bc274ca0813"
+          "content" : "aeff17baeaf7894c5309fffdcdb86fe8110bd2982b13655f84960e8086b40c74daead3c1013bffcd15933b5a2ce166a3c68bb1581def7dd698138e7de1e17e73"
         },
         {
           "alg" : "SHA-384",
-          "content" : "0431f7a6dab8a17d15c999d44358ce28972a00ed23f94722fb16bf71fb724b066207a63452bd774463fe3d1f975795ad"
+          "content" : "ae44e2149aa7e488d160bf799a1951904c99106640fe9d31747de3e1f96d95a5361b6993971d1e303c984b5fc6b8eb91"
         },
         {
           "alg" : "SHA3-384",
-          "content" : "07b09b8bdd3a4ff4c9a27a7f498160c1e99dbef4a60e59d4c042c39fc20a3d24b3b9a0cfa0fb10ed39b1e9cacba33ee2"
+          "content" : "db801fd40193dbfd0083c9e919f2f5f38c4159cb2d00fbb99520010be35872100024fca24c54080e4fc39c9c5f5bc3ec"
         },
         {
           "alg" : "SHA3-256",
-          "content" : "354a1956980dc310b63c92333c306f9edf8cbcdae668ca418ec1921610fcdfc8"
+          "content" : "e0b15965a38dbbcb743594fd81b0e7754b4305428f5aab6ef34dc26cbf0ef76f"
         },
         {
           "alg" : "SHA3-512",
-          "content" : "c3a4492053c946040ec58c9fb0d9baf571d397ac6402e8a41c748af1cb67c6b522984be6bdd4269881503f4571ec0e9c9df23001fc82ab936b1ae4737ab6f290"
+          "content" : "f28d903affc05a8c9b37c0128ab145d014d40bcc883e67f4d954d514a1635a0dd267ec525a9ac6c4afc5501cace13838f61ba76646d8b548c412b025e2d3c89a"
         }
       ],
       "licenses" : [
@@ -895,11 +1358,11 @@
           }
         }
       ],
-      "purl" : "pkg:maven/io.fabric8/knative-model@6.1.1?type=jar",
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-batch@6.4.1?type=jar",
       "externalReferences" : [
         {
           "type" : "website",
-          "url" : "http://fabric8.io/kubernetes-extensions/knative-extension-pom/knative-model/"
+          "url" : "http://fabric8.io/kubernetes-model-generator/kubernetes-model-batch/"
         },
         {
           "type" : "distribution",
@@ -907,50 +1370,50 @@
         },
         {
           "type" : "vcs",
-          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-extensions/knative-extension-pom/knative-model/"
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-model-generator/kubernetes-model-batch/"
         }
       ],
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.fabric8/knative-model@6.1.1?type=jar"
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-batch@6.4.1?type=jar"
     },
     {
       "publisher" : "Red Hat",
       "group" : "io.fabric8",
-      "name" : "camel-k-model-v1",
-      "version" : "6.1.1",
+      "name" : "kubernetes-model-certificates",
+      "version" : "6.4.1",
       "description" : "Java client for Kubernetes and OpenShift",
       "hashes" : [
         {
           "alg" : "MD5",
-          "content" : "650d26672af6a17c91ce9fe9d5ab1c5a"
+          "content" : "38f9b9570ffa4f702f15554f71ac473d"
         },
         {
           "alg" : "SHA-1",
-          "content" : "168845a4831602903c5c5829baf364a023f96a1c"
+          "content" : "9c81b60242df13f01680fe51bc4fbdc1dcd30e25"
         },
         {
           "alg" : "SHA-256",
-          "content" : "f9ac25dfc337c71ba26937b74df387ab84ac6819a6fba0caee15d13fa5a20e06"
+          "content" : "bf8213f52573d441db8c8edede7a1dbee366bff5d9b366b01f70b8e363900cd2"
         },
         {
           "alg" : "SHA-512",
-          "content" : "de7b04ebc7e680ee6a426f8d8bb8f1c0d15d0e8173852db77b8bf63ecb06af9aa15a76a8c864e2c2944f1ea10cb0267f08219c1c96c66fb5b1a579669d42bd7b"
+          "content" : "f1346e2043c79f07d95486e2ed6bd0dfbc881c98ed22afc180214053bdf116806610172eeefd5a77f9b2f1048074590ea5be9614f8aa4ba0399a62eaa8573fa6"
         },
         {
           "alg" : "SHA-384",
-          "content" : "c8cd9e085f929c472fc9a46c8546653fd713c936f83e28f6e0fc7978a048f660fd86bcc53ed0dede3eac1061dd2bc058"
+          "content" : "1dd90321476735a14773ba034addf939f92693f884778e091122bd4185e2193fef9b9f611dd4fb7c15c5a714a32b8651"
         },
         {
           "alg" : "SHA3-384",
-          "content" : "151566c2b48bddb21976c5d1a7d3f236dac1c84bb623d8392626866955d7bf6fea1a79f9e552d6a6fdcdae7812c8568e"
+          "content" : "a78d684e394bae3ee7204224c6b4087f21daf0702ff4c52eabfa8eda306046b890525ed2dd4403c7c502c00f10ca13af"
         },
         {
           "alg" : "SHA3-256",
-          "content" : "58d039ab72309eeeeebde3a2cd5f80323f5795e3db816321c034c5c1a9e72df2"
+          "content" : "49b28e403de6d959b3821a32c041ede1e492d19daafc57f8482cbbb9755057df"
         },
         {
           "alg" : "SHA3-512",
-          "content" : "4cb74d765babc27bd596e4f9dcfa754a2e77475ed7cdc55b80e55c06eff8aa20b1a68e296d4267d57f5401d9bada7c5bbf9853e98c54709a740d46d6086d3e7b"
+          "content" : "4d91d283e29b3e6ed97ba716392e8e9b12a66ac4753396363f34721b520b8ebb64980e5e946d359c3124e82fc23d71173e4c499e9e180c02f0886749319b50b7"
         }
       ],
       "licenses" : [
@@ -960,11 +1423,11 @@
           }
         }
       ],
-      "purl" : "pkg:maven/io.fabric8/camel-k-model-v1@6.1.1?type=jar",
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-certificates@6.4.1?type=jar",
       "externalReferences" : [
         {
           "type" : "website",
-          "url" : "http://fabric8.io/kubernetes-extensions/camel-k-extension-pom/camel-k-model-v1/"
+          "url" : "http://fabric8.io/kubernetes-model-generator/kubernetes-model-certificates/"
         },
         {
           "type" : "distribution",
@@ -972,11 +1435,1124 @@
         },
         {
           "type" : "vcs",
-          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-extensions/camel-k-extension-pom/camel-k-model-v1/"
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-model-generator/kubernetes-model-certificates/"
         }
       ],
       "type" : "library",
-      "bom-ref" : "pkg:maven/io.fabric8/camel-k-model-v1@6.1.1?type=jar"
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-certificates@6.4.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-model-coordination",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "64605992e63996d71025efaeb832a658"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "778c5ac12b47347c9644b8f62f695fbaa95df3b4"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "6bd7fff7d8eb4be69051622d92136e7b6c5251eb9dd1bd46f48f427ab8a8984a"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "ea0f7f74a9dd677029d4c14b88715e86560eba326aa353775143a1e77212ed88797c2d641af190dfc1002c083ce2304aa422a7c123033712e11cc37e09a88f39"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "9d321e57e64e54ed83570408bbe62fe55b24e22317563c6bd9dd27e3b70a9bae0b157795caccbe29fa03272adab443ea"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "9f572514dbec41f7c5680fa376a28c474e0f7750e55bbfae53e98053dc6c397e6ffb353088498008cfbef436ec172f61"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "4f3667367b62994e97d10037ca162913b7339b15d4fc313d0298be2248230131"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "f09e63b8801705c8d3958f46d6226f739b284cdefab110186d5bec43d828da90a66a42d04aa0ac791fde5d61965bd284a6320ae86bde31bc3de6bdc9ed32bd9d"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-coordination@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-model-generator/kubernetes-model-coordination/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-model-generator/kubernetes-model-coordination/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-coordination@6.4.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-model-discovery",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "b9fdc4249b22238e538fd469cfcb8f06"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "680339d555435cd8206e6b30a993f059badf1c18"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "02edda6a8b10f702d151a127173addad793a83fe3388b1157e4183ce5c5dea5b"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "96793de102157901ba9f4917f699dd4819f7a8fe0a150cd252c29532bfd32c177b1ccc7656a7d28dce432e19e6f1fc28810682489df8dcf15c6e210e4cf4cf3d"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "ded240a1b747d5b80096d033a595c9e848243ba614f43849add71f074b82d873df34310f7bc410bcde5db534bf320235"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "c3b583c9b8a98e521010be25eb567e13ebe93a5d50380de521c5a3618f7dd088eed775ca6625caf24539d97a2b3131ec"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "9473350194cfed7c9d02331db616f8b0bab26bedec01994978bdb0fe2d0333f5"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "aa5dbea488fe5d668913313791fd758e18fc347cc319458b7d9bc64cf5e372eadbf230354eacb62bf4827bed870943d5b436bd0d842dd90f1fc193ba06532e06"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-discovery@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-model-generator/kubernetes-model-discovery/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-model-generator/kubernetes-model-discovery/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-discovery@6.4.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-model-events",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "022862f34589dce6821de0bd47e64e08"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "1706b3938f859dc737d803e167b3b24979b9cb94"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "1a9f2eae843de36f2a7701e8c9f1c7175030d87932b1928f88caeec8945913df"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "de3e0b497162c5201bc2b638097bd4426ee4c19f365df3ba02cd753333cdc76e054efc393a9eac198e344adf6faa69cbf183ecf8fbc53853e1e967418f4e435f"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "57507af01c28e4bb5ab63598e8e9da5aa1f7c213a85025542ec9d173ac7401b9c3ec64c18e8e8ddc4d367b3c756c60e1"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "69f63ad2266d69ee756a9a93ad8617cf447c9a3ca9b1747a3bb4cfcbd8204459fa7b8fd4a8809cf045a3e1c174078362"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "c8a8db8810d27aa34e23cd6dcbdd66bb70a1d71d5d479ff00735302927f5760e"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "07fde47b4c3a47a3a86eac33fd92e4384d9e9b69cafd3b9a1d79919e27a501225ce128edfc0d19eeec1c71b27a4d413c473ecd2279752d35cc059791fa6da4c8"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-events@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-model-generator/kubernetes-model-events/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-model-generator/kubernetes-model-events/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-events@6.4.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-model-extensions",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "4a13fdbcc68711c8153a4d9b50b80c45"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "2f2d0a74f7d2889e9fd1340cdb861f5ede7777f7"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "415572e2fc9830a87aa63968e02af685cc3b904de93e134b9d22104c93bc3ee3"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "032e79bdc06717500ca152848cac47ec85cf7e839bd18fec24fdccee53eb2176aedf89dcd723bde1a3b744a144de8aace306e18d17baf6ba33e66547295a8c4f"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "e3fcf277e719f6e4a94f28aedf4968c7df68d96753cc98025e690f1a0375817a2b47e5b9b2fd23508032aa030649a8ac"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "9376467284e76b771687070d4559849e38aef7bd445475f63c4e510755c06f419838078834a3d9b83327e38ffd18ee30"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "c5602b96f4b40047bdb6fc6b2fc0eaa567c724a8dfd722c6f62f46318a910948"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "55bf0747e2d09277af716935062cf7dbafd2420e68bf32ab805624d9efa5358081dc89d408c8569be91f4a01ee60a355cce7f11d3364789a6541dc7dd2288c23"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-extensions@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-model-generator/kubernetes-model-extensions/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-model-generator/kubernetes-model-extensions/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-extensions@6.4.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-model-flowcontrol",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "85637048f5809ad99caababe5abb19d7"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "547054f42ea92fd717a7fe5684f781ebe725af2b"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "a7fe1df3b258838e3d7a4ab5827d6feadf427364724556b5b967b446a6340460"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "aecc6891497b877e69a3b9b255419fd1969b0970cd63b268f62ebe72fc6b0b4b748c9ac72c23497f11df54fd41ff90e5f323a4c08595841893279d97331aa541"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "77823816fbcde114a1a13437d403ea896d6567f21f5433f2ee6e365c643468f8726740e9c337a13b201f8ab414a2d0e7"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "78c5483248836255d6a1a6149f3fe484cd64a8f4e6dae7888d7e1fba00b9522823759d174a541cb7f27923bc702998ae"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "254e13ecd2c794e44cb2845f3b659c7c0bdb6cf7cc0312e633d543e19b6ddbca"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "8c9eef08a0382b6db65bc4ce6498d9c671623757d05983b6e637120ed7e55d0342fb52c62d17f63c7e3819c062431586e93e1675d83fb800662c589061e2db06"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-flowcontrol@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-model-generator/kubernetes-model-flowcontrol/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-model-generator/kubernetes-model-flowcontrol/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-flowcontrol@6.4.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-model-networking",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "88d4f28860f0a1a108489f8ebb4d20ba"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "67910b5bc146da3799d3714aeefbcdc2e1721a0c"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "41c6478be08b1a6d15ffc7f24355a81b43f317169d04afd00bfd25aec07e15ac"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "c284e8b8980dd9af9788271a6dd3b46bf562b17348860e1ea9ab978f806495a65f3cbba56fbe95151d004c70a455e51215bee33e0f8d562ec99e0c1aeb55d7be"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "b3da564243555ff57905e5303ccee61f02e947591d4fe0f32925ed198ac01d976d00fedb4b52518d3a140a17e99ecce2"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "cf2dfd50d21cc2cd16a03445474542f363552bc1dc10e34996128ff38e4fb59f9591a4611b86e28b9668d4b0fead4b52"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "98ad74991e83055120ef10d8cac8d910938c45a5e3d4efdb38b93a1bbd9037b4"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "dd8d9334ece503c5ea82f8842f79655c2ee3f88ea2987d00d27e25b2a7ec0e9082274ffb041b5b5c555ae5e4c4df8900ccf09d3fe35b75b380103f5cc605f40f"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-networking@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-model-generator/kubernetes-model-networking/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-model-generator/kubernetes-model-networking/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-networking@6.4.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-model-metrics",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "73e4fa86a6b24dc9339d393d72b5b091"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "fe0538eb8832d02e5875c821b0e9263e3a95fe70"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "9eaaca8683e10afeafdcefcc3c7e8e19b1f15fe33cc607070c0e0e47e8e8ef96"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "0e894960f5ac3862847dfcf1d46c550abb9acdd1ddd214f156fb550ae2caf67638025315e9faac2b288935c73121f628bb43389f748a815ba1ff99dc9f06ac29"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "fe0aaed6ca14826acc9c68768fa1a0d0f040dc9377081ff26fdc9240da60a3ad799e8f702832e6981eb3e6bbebfa77ca"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "5c5e416e95914219ab0deaec7b0d693cbcbb4e0d9aa9904a5db4f7b276852f0416cd7cefff6755d8437de148698bb615"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "37419cd0aba2ed31e325eed0b257b3c7514d2b4d55951ec0502f9b0480645263"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "e14701d5eaeff57cac8399144daa3e5210e38e9b8f0c159c201c731755533e4583c125ab7cb795936a36655477d8b729e84ef8a2b2cc5850bdfeacb5d654accc"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-metrics@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-model-generator/kubernetes-model-metrics/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-model-generator/kubernetes-model-metrics/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-metrics@6.4.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-model-policy",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "db6cc57040a8495f51acc997ce74c118"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "c2ff8fc05c086cf7b9676b0160e253005260c923"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "db66179a422efb0bd198aedd92fa35cee0edf07138e6d0fc6ed383adfa2db338"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "98d374934b7415d5c7fbdb77a0bdc00706169adccc1596c0d406817a9b83d522bb5e645d407ee32b7a779a3a3e995bbbb459b32a82cbcaed6fa6011f091c3a6d"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "5853218a34f7b6621040a527a4a11c496824b76e55a917ec01627e237b42d95e08b1b4b5427d5830a277e9e4072c2f94"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "f964941b159fcd249d13e4b082c254086272a44f16126882a52c679643030c1c6299e36d8f0b9fb9495ee38592dd2270"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "c271fbae3c7500682721424f1a3becaa36ce85570458f26670185c2f2f6d8d7b"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "fc823e317f12901ef2effbe5fede4b73de4e2301fcb5a22c394c168c12f97505a9672aa50d20067ba70f984da7ccb4c692e5ba006c6ea849d4b49309f468e3cd"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-policy@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-model-generator/kubernetes-model-policy/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-model-generator/kubernetes-model-policy/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-policy@6.4.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-model-scheduling",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "787afd048a3e2147c8b9a64d2335ebc5"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "ca665886f6ee0cb7920f14edc9bf692b13b44c45"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "957dc709961e5f4e702f63a29567af13588fedab79db2a775378074e73fed5fc"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "586be0d686f826661cf7c9efddbca808e4d0759e08d5eae2751e544e45b725fd14ac68b41f6592620d6a329aecce6771468c7a5de21900b19ed6cc97636466db"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "895e0fc85d57021e9c685aade1cd1651d159f71752cc1f2db816f16c994a1606436f55f8a265199e26bd7daa19bd662e"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "44b34fc306cc8475da5f70a238040055b072a15bb138702338d824a867b6fa86acffd76676698f45c382becff7aaba6e"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "bc6fa055a5b8953a2189b88166540f7c17778a53d08854630efd8e9d4f78cc81"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "7353801268605a5eeb1a2c726f1dc5282b3d8ae83c411403054b0ddaf3e65cde589a73af5a39bcd703e9c8331882d71b519f0264072ff651726c8e61fe13d746"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-scheduling@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-model-generator/kubernetes-model-scheduling/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-model-generator/kubernetes-model-scheduling/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-scheduling@6.4.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-model-storageclass",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "6a13f14a8945997d292aa4700b707039"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "eeaf2e1a4467751d6eaa34f2b5ac0f8f54e2e008"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "114a09205602293957b53026e17364c9acbbf75cc9d5f9ea38cb517a6a37ff81"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "b559d091b6f110a53069ecd0c34b5325cedcebbf367bfcb1ce3847643db841960778b5c31975acbe1e586ee3178ab1106b40647909c1b424561db0a5db13e4ae"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "28185cacd673ffa13c39bc22ebc1c4796f7177a50169128532ebdb03be5b8c11bfa9b6d5ea00ead906bfc5b14f42884c"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "e2174beae6671bef04ea056993794a57213a263ad1c7f292eaa55e78e97a563a419f53a22af8875a0049a81a5cc361ec"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "1b93fd398b8bf5c98387c97f54848e19979b1340fd886d0887ef11db7bd5720c"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "d4f1df32e205e8a71e81f3fd38e5f828ecb0a482eb0957c4bb8402f84db36e476429019630a068c15c2a5c993eff54cc916cd55494d087049dafb03888179347"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-storageclass@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-model-generator/kubernetes-model-storageclass/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-model-generator/kubernetes-model-storageclass/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-storageclass@6.4.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-model-node",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "08179c13c51ddae8b958961290f317bd"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "608e3391677c5610eb87b3f2bbbc7e5503b35048"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "b3bffac4ef863bfe76cf71a6afd68283918089c065e4ec89f405babf5aa6da77"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "3f70162047c781943650a9b3f35dba0acfb4fb25217694a616318771dd275b0ba8a94af288c0ce444eec998586158587d2a3260746c799aa3f6b588cd0748281"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "15d5feb8251a1d66a77418a69e4c50e11df74ae61825555261bf807a867e8bb69bc6784c99e08cb8c5a06b93aade988e"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "e697f99979d865218bb745f8b840585bc1c4c50f1d76ddc21228e6a182d2ca491c877376a6c55998136943e1a9d4e10d"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "3b24e856e984ad7791e070b63707dc89715afdfad0f37306ef20dda3080dbdd6"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "a90093d79880926f7cc3e295d2042f921d655f1a8c10dfcf016ba13af4d66dd5386a3a4df8bb6b5d755ad9c89e16a4d645331e60aace9b92234921c282efb091"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-model-node@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-model-generator/kubernetes-model-node/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-model-generator/kubernetes-model-node/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-model-node@6.4.1?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "kubernetes-httpclient-okhttp",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "53239cd5aa3df1fc19dafbee6bf49758"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "59f68a23d775a5e701eb77b0916b6bdc555e4c9d"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "f124443febdf8b23a7bacc62b53c9ea5a23544d85a83b78d8929202bde85d59b"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "b1b3a2a4efc4d069f7144dea25d51ccd25e807178c219c9acf68955134eb830d46b1b963fcc58f5d37989bb9f0fda121926e388bb68254edfeef402dd5e0e781"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "9ab5db6e1bd0bd1fd9c6168f76db3fd7015e02dab864c37c954d5e11beb822224efe10eaf403a9ef66e9fb454fcd290b"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "00751fbb90c76f6263e74bc57af9c32e4331e29f7d6e14fd9fa9b46fc5b299f46f641e8fe0488464761d7068cbc2bdc0"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "9b678ce2d0998af2e8ea3550852efe16a681de5f5e275429c30d4d51b3f1ebb6"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "5c415690468b3fbc309a29f3a00a83a93e010581a66e26197be2b9fb8220e401bd6369d7e871e3674ad9771c0431f72003b42b2ab4159b116f685ac8c3ecb5ae"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/kubernetes-httpclient-okhttp@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/kubernetes-httpclient-okhttp/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/kubernetes-httpclient-okhttp/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/kubernetes-httpclient-okhttp@6.4.1?type=jar"
+    },
+    {
+      "group" : "com.squareup.okhttp3",
+      "name" : "okhttp",
+      "version" : "3.12.12",
+      "description" : "An HTTP+HTTP/2 client for Android and Java applications",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "8c4278a115ce8862eda078738f19047e"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "d3e1ce1d2b3119adf270b2d00d947beb03fe3321"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "36f1cd0798fb231e5be189d0bfe2634d5879f73082be5718ca30a73d1ee15e4b"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "e162af91087a02d27469c4327a1730eee48962f94bb7668795c2279ae5218d907a2e8d2e082cc10e11a4ecc9a61d2de8372f1061bd8e386e8c4e58abdba42dfe"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "82d5e410bfc4263b1b33e78ca2171727f0b489aec16064b40448eae58bd11b370c65ddb03468947bb853a2bd28546b34"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "dc45a7a1e6262a01a158fcdc7678a69f544d7e5c091117801c87b5e550444505775eaa0f1cfc7987163e4cad6ac1a38c"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "8e9311110798afa19f36cd0d5c1c43778119330d8a2643568294d4f889c99c84"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "bff8e25420c5100ac38f09921599b18110130babd9a4ed11b0d66655e8d70d53417eb960933d911075e73bd7c091aa43f4c054755aba5e254eb70a96fa36fc93"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/com.squareup.okhttp3/okhttp@3.12.12?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "https://github.com/square/okhttp/okhttp"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "issue-tracker",
+          "url" : "https://github.com/square/okhttp/issues"
+        },
+        {
+          "type" : "vcs",
+          "url" : "https://github.com/square/okhttp/okhttp/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/com.squareup.okhttp3/okhttp@3.12.12?type=jar"
+    },
+    {
+      "group" : "com.squareup.okio",
+      "name" : "okio",
+      "version" : "1.15.0",
+      "description" : "A modern I/O API for Java",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "e8ddbcb79210050527c2eda7562e63ce"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "bc28b5a964c8f5721eb58ee3f3c47a9bcbf4f4d8"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "693fa319a7e8843300602b204023b7674f106ebcb577f2dd5807212b66118bd2"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "d9e9f3b1f9765dd6eb8e1ebd4e1ded5d93b73ff80e5bd4d8efb9dc8d8f894b32f5bd78f4533f5727d0183a5d6a7f55df623d9ba8e8d97bc468a07c1b777a09da"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "b0fb659b3d5a328bdc2d9077f36fd179354cd0373d51d3cab72ac2daec6c4a5c1a3ecd7cb61f1f35999bccf0d45196c9"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "0ffc5758c7ccac248a1a7ddc159a3d1f1ef3451534488b7a2b74aaa13ae61d9760244c0b2d5d0183db40f821edbdd68f"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "c63bfaf77e2a2ca50af52bb95a8b496c0af9734d3cc6699af8a7e729ddc92337"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "6324a11fae156045af66707fd0f397f8798af01d5dbb2eeab7e50c40cd8bb02ee5e12299765e3c9b15edc6aac271dc2ea30272422d4eeb395a19892638126509"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/com.squareup.okio/okio@1.15.0?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "https://github.com/square/okio/okio"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "issue-tracker",
+          "url" : "https://github.com/square/okio/issues"
+        },
+        {
+          "type" : "vcs",
+          "url" : "https://github.com/square/okio/okio/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/com.squareup.okio/okio@1.15.0?type=jar"
+    },
+    {
+      "group" : "com.squareup.okhttp3",
+      "name" : "logging-interceptor",
+      "version" : "3.12.12",
+      "description" : "An HTTP+HTTP/2 client for Android and Java applications",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "91025bd23c916c14fe2c54c0a1b74a7d"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "d952189f6abb148ff72aab246aa8c28cf99b469f"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "dbf83bebfae07c7d9823eb0cd3a11d74e3b387f9fd98ce6438c6c12c1d9f870f"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "9a504a91655a957429dc250f6d7d25f207d4bdafc4bc185494f20cf8b79b85211469dedf3a9d6552083ea12c436d438418bdd6993d87b5650ef11893b6be108e"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "3fb50437843d6c90b9d15c799892565f941de8969e6b80031d2c75a68822e7add4eff8f78e2a915728d8b32bd00badea"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "4c370c93f206865a2c49fb0c44023f6876f877a6f3af4fa1c58c9b096854ed6d43686b97ba891a53993708c5ff7d5129"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "d1e07fc88150791663d74f91d6e9e23a326352d9169063b1b3e6168fbcc9ed13"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "508842c497711dab2ca2f9da5770f07e52d6df28a76bf039db4e81d693a4c025fd9349bb6868bd46a3dad840a34a03f6ffe6e43272b7b58f0817811660333097"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/com.squareup.okhttp3/logging-interceptor@3.12.12?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "https://github.com/square/okhttp/logging-interceptor"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "issue-tracker",
+          "url" : "https://github.com/square/okhttp/issues"
+        },
+        {
+          "type" : "vcs",
+          "url" : "https://github.com/square/okhttp/logging-interceptor/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/com.squareup.okhttp3/logging-interceptor@3.12.12?type=jar"
+    },
+    {
+      "group" : "io.fabric8",
+      "name" : "zjsonpatch",
+      "version" : "0.3.0",
+      "description" : "Java Library to find / apply JSON Patches according to RFC 6902",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "c47f98189f594bd86ccbf40c5391b600"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "d3ebf0f291297649b4c8dc3ecc81d2eddedc100d"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "ae4e5e931646a25cb09b55186de4f3346e358e01130bef279ddf495a719c71d5"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "7dabd119a1f500f031da506901c4dd03f11ccd53a15e089ee3917372293b32d56196f621614b20663715e00cd77a17636d44fb95aea8a711aa8a8869741d065a"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "712dd69436caf0fbd144bce2e12871353cb6c6c58d52a4b795146028fcd8ab929acadbb890fb14fa02ea2ea6a85c4fcb"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "e696db3c82365c18b4705e6fcb0eddb4a81eeb0aadbb48a259620455aaf590230b5617d9590bc1d45a6d848deb79948b"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "24edbbfeb6b8be6c1597f45768b8304b703f89e485c4e497cca596b069b123d9"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "79412b78a9d8f61994eabc84ae4185ddaa446a28a44015ae69eb5e5c0b6ec8b904f41e2c98188358c7e9b5caaf7d21be766b88828caad8ea92b3b1d70aca0912"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/zjsonpatch@0.3.0?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "https://github.com/fabric8io/zjsonpatch/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+        },
+        {
+          "type" : "vcs",
+          "url" : "https://github.com/fabric8io/zjsonpatch"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/zjsonpatch@0.3.0?type=jar"
+    },
+    {
+      "publisher" : "Red Hat",
+      "group" : "io.fabric8",
+      "name" : "generator-annotations",
+      "version" : "6.4.1",
+      "description" : "Java client for Kubernetes and OpenShift",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "16173ccbdec6efb085a1d85c9f488e8f"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "d199788c60665bc7c42a04877b22b289230e176c"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "a82c7f1c84cbb8cf2537b4f4f911b5ed5859dde6bc43ffee707c1d7064fa509b"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "9ebe60a5d897395c5503a3c765b288d5edc66ce73cea9337bc5c76f808786e6554de06f013d0c71338b36e886804e958f2014b8f0f1b34d754eca35a134ddfc8"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "d516cc41820b6bebf25ec035e414b6783dafa151a3eccf85972ef0f42b0079108f03d8fbb94ad9347252647e7ae9eb8c"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "4323c20e3b14f765936dd2ae48ee5b2b6dab1f9e8a56093ac527e9ed332989ecd5484bb3d678380964ccf93695794e03"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "20aef8dcbe54fc880af4bd8b19ba7657851b370aebb47e5bc6b45c194842a973"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "b9858a5b9a526d9b071ca5812a6e8ea84c09c665e56c19ffbf304a04581658daa90faaeb27b461c54405b9c00a6601c94437e567a7f39ddd56f8cadbf3afa390"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/io.fabric8/generator-annotations@6.4.1?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://fabric8.io/generator-annotations/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        },
+        {
+          "type" : "vcs",
+          "url" : "http://github.com/fabric8io/kubernetes-client/generator-annotations/"
+        }
+      ],
+      "type" : "library",
+      "bom-ref" : "pkg:maven/io.fabric8/generator-annotations@6.4.1?type=jar"
     },
     {
       "publisher" : "FasterXML",
@@ -9592,7 +11168,7 @@
         "pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar",
         "pkg:maven/org.apache.camel.kamelets/camel-kamelets@4.0.0-SNAPSHOT?type=jar",
         "pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml@2.15.2?type=jar",
-        "pkg:maven/io.fabric8/camel-k-model-v1alpha1@6.1.1?type=jar",
+        "pkg:maven/org.apache.camel.k/camel-k-crds@1.12.1?type=jar",
         "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.15.2?type=jar",
         "pkg:maven/io.github.classgraph/classgraph@4.8.157?type=jar",
         "pkg:maven/org.apache.camel/camel-tooling-model@4.0.0-RC1?type=jar",
@@ -9631,23 +11207,60 @@
       "dependsOn" : [ ]
     },
     {
-      "ref" : "pkg:maven/io.fabric8/camel-k-model-v1alpha1@6.1.1?type=jar",
+      "ref" : "pkg:maven/org.apache.camel.k/camel-k-crds@1.12.1?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.fabric8/kubernetes-model-core@6.1.1?type=jar",
-        "pkg:maven/io.fabric8/kubernetes-model-apiextensions@6.1.1?type=jar",
-        "pkg:maven/io.fabric8/knative-model@6.1.1?type=jar",
-        "pkg:maven/io.fabric8/camel-k-model-v1@6.1.1?type=jar"
+        "pkg:maven/io.fabric8/kubernetes-client@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/generator-annotations@6.4.1?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.fabric8/kubernetes-model-core@6.1.1?type=jar",
+      "ref" : "pkg:maven/io.fabric8/kubernetes-client@6.4.1?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.fabric8/kubernetes-model-common@6.1.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-client-api@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-httpclient-okhttp@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/zjsonpatch@0.3.0?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-client-api@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-gatewayapi@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-rbac@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-admissionregistration@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-apps@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-autoscaling@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-apiextensions@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-batch@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-certificates@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-coordination@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-discovery@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-events@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-extensions@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-flowcontrol@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-networking@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-metrics@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-policy@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-scheduling@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-storageclass@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-node@6.4.1?type=jar",
+        "pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar",
+        "pkg:maven/org.yaml/snakeyaml@2.0?type=jar",
+        "pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml@2.15.2?type=jar",
+        "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.15.2?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.15.2?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.15.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
         "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.fabric8/kubernetes-model-common@6.1.1?type=jar",
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
       "dependsOn" : [
         "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.15.2?type=jar",
         "pkg:maven/org.slf4j/slf4j-api@2.0.6?type=jar",
@@ -9655,24 +11268,155 @@
       ]
     },
     {
-      "ref" : "pkg:maven/io.fabric8/kubernetes-model-apiextensions@6.1.1?type=jar",
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-gatewayapi@6.4.1?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.fabric8/kubernetes-model-core@6.1.1?type=jar",
-        "pkg:maven/io.fabric8/kubernetes-model-common@6.1.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
         "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.fabric8/knative-model@6.1.1?type=jar",
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-rbac@6.4.1?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.fabric8/kubernetes-model-core@6.1.1?type=jar"
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
       ]
     },
     {
-      "ref" : "pkg:maven/io.fabric8/camel-k-model-v1@6.1.1?type=jar",
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-admissionregistration@6.4.1?type=jar",
       "dependsOn" : [
-        "pkg:maven/io.fabric8/kubernetes-model-core@6.1.1?type=jar",
-        "pkg:maven/io.fabric8/knative-model@6.1.1?type=jar"
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-apps@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-autoscaling@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-apiextensions@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-batch@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-certificates@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-coordination@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-discovery@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-events@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-extensions@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-flowcontrol@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-networking@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-metrics@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-policy@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-scheduling@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-storageclass@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-model-node@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-model-core@6.4.1?type=jar",
+        "pkg:maven/io.fabric8/kubernetes-model-common@6.4.1?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?type=jar"
       ]
     },
     {
@@ -9682,6 +11426,41 @@
         "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.15.2?type=jar",
         "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.15.2?type=jar"
       ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/kubernetes-httpclient-okhttp@6.4.1?type=jar",
+      "dependsOn" : [
+        "pkg:maven/io.fabric8/kubernetes-client-api@6.4.1?type=jar",
+        "pkg:maven/com.squareup.okhttp3/okhttp@3.12.12?type=jar",
+        "pkg:maven/com.squareup.okhttp3/logging-interceptor@3.12.12?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/com.squareup.okhttp3/okhttp@3.12.12?type=jar",
+      "dependsOn" : [
+        "pkg:maven/com.squareup.okio/okio@1.15.0?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/com.squareup.okio/okio@1.15.0?type=jar",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "pkg:maven/com.squareup.okhttp3/logging-interceptor@3.12.12?type=jar",
+      "dependsOn" : [
+        "pkg:maven/com.squareup.okhttp3/okhttp@3.12.12?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/zjsonpatch@0.3.0?type=jar",
+      "dependsOn" : [
+        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.15.2?type=jar",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.15.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/io.fabric8/generator-annotations@6.4.1?type=jar",
+      "dependsOn" : [ ]
     },
     {
       "ref" : "pkg:maven/io.github.classgraph/classgraph@4.8.157?type=jar",
