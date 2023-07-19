@@ -18,6 +18,12 @@ The commmand to create the infra is:
 ansible-playbook -v ansible/aws-sqs.yaml --extra-vars queue_name=<queue_name> --extra-vars region=<region>
 ```
 
+Once completed do:
+
+```bash
+ansible-playbook -v ansible/aws-sqs-removal.yaml --extra-vars queue_name=<queue_name> --extra-vars region=<region>
+```
+
 ## Terraform
 
 The commmand to create the infra is:
