@@ -12,10 +12,16 @@ This will create an S3 Bucket with basic functionalities.
 
 ## Ansible
 
-The commmand to create the infra is:
+The command to create the infra is:
 
 ```bash
 $ ansible-playbook -v ansible/aws-s3.yaml --extra-vars bucket_name=<bucket-name>
+```
+
+Once completed do:
+
+```bash
+$ ansible-playbook -v ansible/aws-s3-removal.yaml --extra-vars bucket_name=<bucket-name>
 ```
 
 ## Terraform
