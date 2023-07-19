@@ -1,0 +1,10 @@
+---
+- name: Remove AWS SQS Queue
+  hosts: localhost
+  tasks:
+    - name: Remove SQS Queue
+      community.aws.sqs_queue:
+        name: "{{ queue_name }}"
+        state: absent
+        region: "{{ region }}"
+      register: removed_queue
