@@ -11,6 +11,21 @@
 - Release Camel Kamelets 4.0.0-RC1 [\#1525](https://github.com/apache/camel-kamelets/issues/1525)
 - ElasicSearchSink-TrustCertificates [\#1246](https://github.com/apache/camel-kamelets/issues/1246)
 
+**Merged pull requests:**
+
+- Generated sources regen for SBOM [\#1548](https://github.com/apache/camel-kamelets/pull/1548) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen for SBOM [\#1547](https://github.com/apache/camel-kamelets/pull/1547) ([github-actions[bot]](https://github.com/apps/github-actions))
+- AWS SQS Removal in infra: Added Ansible removal for SQS Queue [\#1545](https://github.com/apache/camel-kamelets/pull/1545) ([oscerd](https://github.com/oscerd))
+- Ansible AWS S3 Removal: Added instruction to README [\#1544](https://github.com/apache/camel-kamelets/pull/1544) ([oscerd](https://github.com/oscerd))
+- AWS S3 Removal in infra: Added Ansible removal for S3 Bucket [\#1543](https://github.com/apache/camel-kamelets/pull/1543) ([oscerd](https://github.com/oscerd))
+- Upgrade Tag to 4.0.0-RC1 [\#1542](https://github.com/apache/camel-kamelets/pull/1542) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1541](https://github.com/apache/camel-kamelets/pull/1541) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Switch from Fabric8 Camel K Extension to Camel K CRDS [\#1540](https://github.com/apache/camel-kamelets/pull/1540) ([oscerd](https://github.com/oscerd))
+- Added an extract field tests for horizontal tab escaping [\#1538](https://github.com/apache/camel-kamelets/pull/1538) ([oscerd](https://github.com/oscerd))
+- Provide some infrastructure as code configuration files for Terraform/Ansible/Cloudformation - AWS SQS [\#1535](https://github.com/apache/camel-kamelets/pull/1535) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1534](https://github.com/apache/camel-kamelets/pull/1534) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Support personal token authentication to jira [\#1530](https://github.com/apache/camel-kamelets/pull/1530) ([claudio4j](https://github.com/claudio4j))
+
 ## [v4.0.0-RC1](https://github.com/apache/camel-kamelets/tree/v4.0.0-RC1) (2023-07-05)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v3.21.0...v4.0.0-RC1)
