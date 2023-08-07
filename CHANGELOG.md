@@ -13,6 +13,7 @@
 
 **Merged pull requests:**
 
+- Generated sources regen for SBOM [\#1550](https://github.com/apache/camel-kamelets/pull/1550) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Generated sources regen for SBOM [\#1548](https://github.com/apache/camel-kamelets/pull/1548) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Generated sources regen for SBOM [\#1547](https://github.com/apache/camel-kamelets/pull/1547) ([github-actions[bot]](https://github.com/apps/github-actions))
 - AWS SQS Removal in infra: Added Ansible removal for SQS Queue [\#1545](https://github.com/apache/camel-kamelets/pull/1545) ([oscerd](https://github.com/oscerd))
