@@ -183,8 +183,8 @@ public class KameletsCatalogTest {
         verifyHeaders("http-secured-sink", 14);
         verifyHeaders("infinispan-source", 6);
         verifyHeaders("infinispan-sink", 14);
-        verifyHeaders("jira-add-comment-sink", 16);
-        verifyHeaders("jira-add-issue-sink", 16);
+        verifyHeaders("jira-add-comment-sink", 17);
+        verifyHeaders("jira-add-issue-sink", 17);
         verifyHeaders("jira-source", 3);
         verifyHeaders("jira-oauth-source", 3);
         verifyHeaders("jms-amqp-10-source", 14);
