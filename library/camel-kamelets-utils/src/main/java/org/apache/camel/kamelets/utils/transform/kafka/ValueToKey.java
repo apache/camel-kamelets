@@ -43,7 +43,7 @@ public class ValueToKey {
             splittedFields = Arrays.stream(fields.split(",")).collect(Collectors.toList());
         }
         Map<Object, Object> key = new HashMap<>();
-        for (Map.Entry entry:
+        for (Map.Entry<Object, Object> entry:
              body.entrySet()) {
             final String fieldName = (String) entry.getKey();
             if (filterNames(fieldName, splittedFields)) {

@@ -70,7 +70,7 @@ class MaskFieldTest {
 
     @Test
     void shouldMaskFieldList() throws Exception {
-        Map<String, List> names = new HashMap<>();
+        Map<String, List<String>> names = new HashMap<>();
         Exchange exchange = new DefaultExchange(camelContext);
         List<String> els = new ArrayList<>();
         els.add("Sheldon");

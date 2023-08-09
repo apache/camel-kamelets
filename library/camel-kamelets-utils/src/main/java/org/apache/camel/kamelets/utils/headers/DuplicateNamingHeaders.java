@@ -69,8 +69,8 @@ public class DuplicateNamingHeaders implements Processor {
 			} else {
 					if (selectedHeaders != null && mode.equalsIgnoreCase("filtering")) {
 						List<String> headerList = Arrays.asList(selectedHeaders.split(","));
-						for (Iterator iterator = headerList.iterator(); iterator.hasNext();) {
-							String header = (String) iterator.next();
+						for (Iterator<String> iterator = headerList.iterator(); iterator.hasNext();) {
+							String header = iterator.next();
 							if (key.equalsIgnoreCase(header)) {
 								String newKey = key.replaceFirst(prefix, renamingPrefix);
 								String subKey = newKey.substring(renamingPrefix.length());
