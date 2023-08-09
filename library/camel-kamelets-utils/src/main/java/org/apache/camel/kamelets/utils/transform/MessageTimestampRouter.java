@@ -26,7 +26,6 @@ import org.apache.camel.util.ObjectHelper;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
