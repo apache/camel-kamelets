@@ -13,6 +13,8 @@
 
 **Merged pull requests:**
 
+- Fix indentation in pom.xml \(tab used instead of spaces\) [\#1555](https://github.com/apache/camel-kamelets/pull/1555) ([apupier](https://github.com/apupier))
+- Upgrade Camel K CRD from 1.12 to 2.0.0 [\#1551](https://github.com/apache/camel-kamelets/pull/1551) ([apupier](https://github.com/apupier))
 - Generated sources regen for SBOM [\#1550](https://github.com/apache/camel-kamelets/pull/1550) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Generated sources regen for SBOM [\#1548](https://github.com/apache/camel-kamelets/pull/1548) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Generated sources regen for SBOM [\#1547](https://github.com/apache/camel-kamelets/pull/1547) ([github-actions[bot]](https://github.com/apps/github-actions))
