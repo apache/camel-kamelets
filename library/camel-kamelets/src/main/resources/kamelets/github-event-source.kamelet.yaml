@@ -29,9 +29,9 @@ metadata:
     camel.apache.org/kamelet.type: "source"
 spec:
   definition:
-    title: "Github Event Source"
+    title: "GitHub Event Source"
     description: |-
-      Receive Events From a Github Repository.
+      Receive Events From a GitHub Repository.
     required:
       - repoName
       - repoOwner
@@ -40,7 +40,7 @@ spec:
     properties:
       repoName:
         title: Repository Name
-        description: The Github Repository name
+        description: The GitHub Repository name
         type: string
       repoOwner:
         title: Repository Owner
@@ -48,7 +48,7 @@ spec:
         type: string
       oauthToken:
         title: OAuth Token
-        description: Oauth token
+        description: OAuth token
         type: string
         format: password
         x-descriptors:
