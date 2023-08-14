@@ -20,7 +20,6 @@ package org.apache.camel.kamelets.utils.format;
 import java.util.Optional;
 
 import org.apache.camel.CamelContext;
-import org.apache.camel.ExtendedCamelContext;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
 import org.apache.camel.kamelets.utils.format.spi.DataTypeConverterResolver;
 import org.apache.camel.util.ObjectHelper;
