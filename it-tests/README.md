@@ -5,7 +5,7 @@ This folder contains a suite of it-tests for Camel-Kamelets
 You'll need:
 - Terraform installed
 - AWS CLI
-- Camel-Jbang
+- Camel-JBang
 
 Once everything is set you'll just need to run
 
