@@ -16,7 +16,6 @@
  */
 package org.apache.camel.kamelets.utils.transform;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.kafka.KafkaConstants;
 import org.apache.camel.impl.DefaultCamelContext;
@@ -28,8 +27,6 @@ import org.junit.jupiter.api.Test;
 class RegexRouterTest {
 
     private DefaultCamelContext camelContext;
-
-    private final ObjectMapper mapper = new ObjectMapper();
 
     private RegexRouter processor;
 
