@@ -75,7 +75,7 @@ public class MaskField {
         }
 
         Map<Object, Object> updatedBody = new HashMap<>();
-        for (Map.Entry entry:
+        for (Map.Entry<Object, Object> entry:
                 body.entrySet()) {
             final String fieldName = (String) entry.getKey();
             final Object origFieldValue = entry.getValue();

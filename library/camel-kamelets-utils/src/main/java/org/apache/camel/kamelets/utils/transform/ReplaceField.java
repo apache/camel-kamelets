@@ -54,7 +54,7 @@ public class ReplaceField {
         if (ObjectHelper.isNotEmpty(renameFields)) {
             Map<String, String> renamingMap = parseNames(renameFields);
 
-            for (Map.Entry entry :
+            for (Map.Entry<Object, Object> entry :
                     body.entrySet()) {
                 final String fieldName = (String) entry.getKey();
                 if (filterNames(fieldName, enabledFields, disabledFields)) {

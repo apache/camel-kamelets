@@ -71,8 +71,8 @@ public class DeDuplicateNamingHeaders implements Processor {
 			} else {
 				if (selectedHeaders != null && mode.equalsIgnoreCase("filtering")) {
 					List<String> headerList = Arrays.asList(selectedHeaders.split(","));
-					for (Iterator iteratorHeader = headerList.iterator(); iteratorHeader.hasNext();) {
-						String header = (String) iteratorHeader.next();
+					for (Iterator<String> iteratorHeader = headerList.iterator(); iteratorHeader.hasNext();) {
+						String header = iteratorHeader.next();
 						if (key.equalsIgnoreCase(header)) {
 							String newKey = key.replaceFirst(prefix, renamingPrefix);
 							String subKey = newKey.substring(renamingPrefix.length());
