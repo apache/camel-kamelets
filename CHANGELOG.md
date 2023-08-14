@@ -13,6 +13,7 @@
 
 **Merged pull requests:**
 
+- Generated sources regen for SBOM [\#1571](https://github.com/apache/camel-kamelets/pull/1571) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Generated sources regen [\#1567](https://github.com/apache/camel-kamelets/pull/1567) ([github-actions[bot]](https://github.com/apps/github-actions))
 - CAMEL-19561 - align Artemis version with Camel 4.0.0 [\#1563](https://github.com/apache/camel-kamelets/pull/1563) ([apupier](https://github.com/apupier))
 - Fix indentation in pom.xml \(tab used instead of spaces\) [\#1555](https://github.com/apache/camel-kamelets/pull/1555) ([apupier](https://github.com/apupier))
