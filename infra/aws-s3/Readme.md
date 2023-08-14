@@ -26,7 +26,7 @@ $ ansible-playbook -v ansible/aws-s3-removal.yaml --extra-vars bucket_name=<buck
 
 ## Terraform
 
-The commmand to create the infra is:
+The command to create the infra is:
 
 ```bash
 $ cd terraform/
@@ -43,7 +43,7 @@ $ terraform destroy
 
 ## Cloudformation
 
-The commmand to create the infra is:
+The command to create the infra is:
 
 ```bash
 $ aws cloudformation deploy --template-file cloudformation/aws-s3.yaml --stack-name my-new-stack --parameter-overrides BucketName=<bucket-name>
