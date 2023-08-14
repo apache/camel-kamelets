@@ -180,7 +180,7 @@ export CAMEL_KAMELET_VERSION=x.y.z
 ./mvnw clean install -DreleaseVersion=$CAMEL_KAMELET_VERSION
 ```
 
-Stage the commits in SVN:
+Stage the commits in the Source Version Control:
 
 ```
 git commit -am "Update Kamelets for release $CAMEL_KAMELET_VERSION"
