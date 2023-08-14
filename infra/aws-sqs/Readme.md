@@ -12,7 +12,7 @@ This will create an SQS Queue with basic functionalities.
 
 ## Ansible
 
-The commmand to create the infra is:
+The command to create the infra is:
 
 ```bash
 ansible-playbook -v ansible/aws-sqs.yaml --extra-vars queue_name=<queue_name> --extra-vars region=<region>
@@ -26,7 +26,7 @@ ansible-playbook -v ansible/aws-sqs-removal.yaml --extra-vars queue_name=<queue_
 
 ## Terraform
 
-The commmand to create the infra is:
+The command to create the infra is:
 
 ```bash
 $ cd terraform/
@@ -43,7 +43,7 @@ $ terraform destroy
 
 ## Cloudformation
 
-The commmand to create the infra is:
+The command to create the infra is:
 
 ```bash
 $ aws cloudformation deploy --template-file cloudformation/aws-sqs.yaml --stack-name my-new-stack --parameter-overrides QueueName=<queue-name>
