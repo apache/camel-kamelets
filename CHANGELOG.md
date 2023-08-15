@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Remove forbidden parameter names list in validator [\#1577](https://github.com/apache/camel-kamelets/issues/1577)
 - Switch from Fabric 8 Camel K Extension to Camel K CRDS in Catalog [\#1539](https://github.com/apache/camel-kamelets/issues/1539)
 - Support personal token authentication in jira kamelet [\#1529](https://github.com/apache/camel-kamelets/issues/1529)
 - Release Camel Kamelets 4.0.0-RC1 [\#1525](https://github.com/apache/camel-kamelets/issues/1525)
@@ -13,10 +14,28 @@
 
 **Merged pull requests:**
 
+- Generated sources regen [\#1580](https://github.com/apache/camel-kamelets/pull/1580) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Remove no more needed check on reserved keyword for kamelet [\#1578](https://github.com/apache/camel-kamelets/pull/1578) ([apupier](https://github.com/apupier))
+- Update GitHub Action version [\#1575](https://github.com/apache/camel-kamelets/pull/1575) ([apupier](https://github.com/apupier))
+- Fix typo on Jbang --\> JBang [\#1574](https://github.com/apache/camel-kamelets/pull/1574) ([apupier](https://github.com/apupier))
+- Fix typos in readme of infra [\#1573](https://github.com/apache/camel-kamelets/pull/1573) ([apupier](https://github.com/apupier))
+- Remove mention to SVN in readme [\#1572](https://github.com/apache/camel-kamelets/pull/1572) ([apupier](https://github.com/apupier))
 - Generated sources regen for SBOM [\#1571](https://github.com/apache/camel-kamelets/pull/1571) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Fix typo Ceritificate [\#1570](https://github.com/apache/camel-kamelets/pull/1570) ([apupier](https://github.com/apupier))
+- Fix typos in GitHub kamelets [\#1569](https://github.com/apache/camel-kamelets/pull/1569) ([apupier](https://github.com/apupier))
+- Remove Nicola Ferraro from assignees of PR automatically created for [\#1568](https://github.com/apache/camel-kamelets/pull/1568) ([apupier](https://github.com/apupier))
 - Generated sources regen [\#1567](https://github.com/apache/camel-kamelets/pull/1567) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Use https instead of http for maven metadata information of the [\#1564](https://github.com/apache/camel-kamelets/pull/1564) ([apupier](https://github.com/apupier))
 - CAMEL-19561 - align Artemis version with Camel 4.0.0 [\#1563](https://github.com/apache/camel-kamelets/pull/1563) ([apupier](https://github.com/apupier))
+- Fix typo in doc [\#1561](https://github.com/apache/camel-kamelets/pull/1561) ([apupier](https://github.com/apupier))
+- Remove unused attribute in camel-kamelet-utils [\#1560](https://github.com/apache/camel-kamelets/pull/1560) ([apupier](https://github.com/apupier))
+- Use generics in camel-kamelet-utils [\#1559](https://github.com/apache/camel-kamelets/pull/1559) ([apupier](https://github.com/apupier))
+- Remove unused imports in camel-kamelet-utils [\#1558](https://github.com/apache/camel-kamelets/pull/1558) ([apupier](https://github.com/apupier))
+- Upgrade maven-rat-plugin from 0.14 to 0.15 [\#1557](https://github.com/apache/camel-kamelets/pull/1557) ([apupier](https://github.com/apupier))
+- Upgrade maven-assembly-plugin from 3.4.2 to 3.6.0 [\#1556](https://github.com/apache/camel-kamelets/pull/1556) ([apupier](https://github.com/apupier))
 - Fix indentation in pom.xml \(tab used instead of spaces\) [\#1555](https://github.com/apache/camel-kamelets/pull/1555) ([apupier](https://github.com/apupier))
+- Upgrade maven-javadoc-plugin from 3.4.0 to 3.5.0 [\#1554](https://github.com/apache/camel-kamelets/pull/1554) ([apupier](https://github.com/apupier))
+- Upgrade maven-surefire-plugin from 3.0.0-M7 to 3.1.2 [\#1553](https://github.com/apache/camel-kamelets/pull/1553) ([apupier](https://github.com/apupier))
 - Upgrade Camel K CRD from 1.12 to 2.0.0 [\#1551](https://github.com/apache/camel-kamelets/pull/1551) ([apupier](https://github.com/apupier))
 - Generated sources regen for SBOM [\#1550](https://github.com/apache/camel-kamelets/pull/1550) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Generated sources regen for SBOM [\#1548](https://github.com/apache/camel-kamelets/pull/1548) ([github-actions[bot]](https://github.com/apps/github-actions))
