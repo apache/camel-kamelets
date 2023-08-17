@@ -14,6 +14,7 @@
 
 **Merged pull requests:**
 
+- Camel-Kamelets : Adding jenkinsfile for ppc64le [\#1581](https://github.com/apache/camel-kamelets/pull/1581) ([shreyakajbaje](https://github.com/shreyakajbaje))
 - Generated sources regen [\#1580](https://github.com/apache/camel-kamelets/pull/1580) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Remove no more needed check on reserved keyword for kamelet [\#1578](https://github.com/apache/camel-kamelets/pull/1578) ([apupier](https://github.com/apupier))
 - Update GitHub Action version [\#1575](https://github.com/apache/camel-kamelets/pull/1575) ([apupier](https://github.com/apupier))
