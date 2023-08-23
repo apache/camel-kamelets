@@ -24,14 +24,14 @@ config:
         value: false
       - name: YAKS_KUBERNETES_AUTO_REMOVE_RESOURCES
         value: false
+      - name: YAKS_JBANG_CAMEL_DUMP_INTEGRATION_OUTPUT
+        value: true
     settings:
       loggers:
         - name: INTEGRATION_STATUS
           level: INFO
         - name: INTEGRATION_LOGS
           level: INFO
-        - name: YAKS_JBANG_CAMEL_DUMP_INTEGRATION_OUTPUT
-          value: true
     resources:
       - insert-field-action-binding.yaml
   dump:
