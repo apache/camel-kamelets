@@ -44,12 +44,6 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: 1.16.x
-      - name: Cache Maven Repository
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
       - name: Build catalog 1st Run
         run: ./mvnw clean install -DskipTests
       - name: Build catalog 2nd Run
