@@ -6,7 +6,9 @@
 
 **Closed issues:**
 
+- CI enablement for PPC64LE   [\#1582](https://github.com/apache/camel-kamelets/issues/1582)
 - Remove forbidden parameter names list in validator [\#1577](https://github.com/apache/camel-kamelets/issues/1577)
+- CI enablement on PPC64le for Camel-kamelets [\#1549](https://github.com/apache/camel-kamelets/issues/1549)
 - Switch from Fabric 8 Camel K Extension to Camel K CRDS in Catalog [\#1539](https://github.com/apache/camel-kamelets/issues/1539)
 - Support personal token authentication in jira kamelet [\#1529](https://github.com/apache/camel-kamelets/issues/1529)
 - Release Camel Kamelets 4.0.0-RC1 [\#1525](https://github.com/apache/camel-kamelets/issues/1525)
@@ -14,6 +16,7 @@
 
 **Merged pull requests:**
 
+- Rename Jenkinsfile [\#1584](https://github.com/apache/camel-kamelets/pull/1584) ([oscerd](https://github.com/oscerd))
 - Generated sources regen for SBOM [\#1583](https://github.com/apache/camel-kamelets/pull/1583) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Camel-Kamelets : Adding jenkinsfile for ppc64le [\#1581](https://github.com/apache/camel-kamelets/pull/1581) ([shreyakajbaje](https://github.com/shreyakajbaje))
 - Generated sources regen [\#1580](https://github.com/apache/camel-kamelets/pull/1580) ([github-actions[bot]](https://github.com/apps/github-actions))
