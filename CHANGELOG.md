@@ -4,9 +4,15 @@
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.0.0-RC1...HEAD)
 
+**Fixed bugs:**
+
+- Yaks test job is reported in success despite test failure [\#1576](https://github.com/apache/camel-kamelets/issues/1576)
+
 **Closed issues:**
 
+- Warning during build due to peter-evans/create-pull-request@v3 using node12 [\#1588](https://github.com/apache/camel-kamelets/issues/1588)
 - CI enablement for PPC64LE   [\#1582](https://github.com/apache/camel-kamelets/issues/1582)
+- Fix yaks test failing on main branch [\#1579](https://github.com/apache/camel-kamelets/issues/1579)
 - Remove forbidden parameter names list in validator [\#1577](https://github.com/apache/camel-kamelets/issues/1577)
 - CI enablement on PPC64le for Camel-kamelets [\#1549](https://github.com/apache/camel-kamelets/issues/1549)
 - Switch from Fabric 8 Camel K Extension to Camel K CRDS in Catalog [\#1539](https://github.com/apache/camel-kamelets/issues/1539)
@@ -16,6 +22,9 @@
 
 **Merged pull requests:**
 
+- chore\(doc\) : Add examples for simple-filter-action kamelet [\#1589](https://github.com/apache/camel-kamelets/pull/1589) ([gansheer](https://github.com/gansheer))
+- Remove no more needed GitHub actions/cache [\#1587](https://github.com/apache/camel-kamelets/pull/1587) ([apupier](https://github.com/apupier))
+- chore\(test\): Fix YAKS tests [\#1586](https://github.com/apache/camel-kamelets/pull/1586) ([christophd](https://github.com/christophd))
 - Rename Jenkinsfile [\#1584](https://github.com/apache/camel-kamelets/pull/1584) ([oscerd](https://github.com/oscerd))
 - Generated sources regen for SBOM [\#1583](https://github.com/apache/camel-kamelets/pull/1583) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Camel-Kamelets : Adding jenkinsfile for ppc64le [\#1581](https://github.com/apache/camel-kamelets/pull/1581) ([shreyakajbaje](https://github.com/shreyakajbaje))
@@ -41,6 +50,7 @@
 - Fix indentation in pom.xml \(tab used instead of spaces\) [\#1555](https://github.com/apache/camel-kamelets/pull/1555) ([apupier](https://github.com/apupier))
 - Upgrade maven-javadoc-plugin from 3.4.0 to 3.5.0 [\#1554](https://github.com/apache/camel-kamelets/pull/1554) ([apupier](https://github.com/apupier))
 - Upgrade maven-surefire-plugin from 3.0.0-M7 to 3.1.2 [\#1553](https://github.com/apache/camel-kamelets/pull/1553) ([apupier](https://github.com/apupier))
+- Upgrade Camel from 4.0.0-RC1 to 4.0.0 [\#1552](https://github.com/apache/camel-kamelets/pull/1552) ([apupier](https://github.com/apupier))
 - Upgrade Camel K CRD from 1.12 to 2.0.0 [\#1551](https://github.com/apache/camel-kamelets/pull/1551) ([apupier](https://github.com/apupier))
 - Generated sources regen for SBOM [\#1550](https://github.com/apache/camel-kamelets/pull/1550) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Generated sources regen for SBOM [\#1548](https://github.com/apache/camel-kamelets/pull/1548) ([github-actions[bot]](https://github.com/apps/github-actions))
