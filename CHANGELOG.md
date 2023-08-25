@@ -10,18 +10,19 @@
 
 **Closed issues:**
 
-- Warning during build due to peter-evans/create-pull-request@v3 using node12 [\#1588](https://github.com/apache/camel-kamelets/issues/1588)
 - CI enablement for PPC64LE   [\#1582](https://github.com/apache/camel-kamelets/issues/1582)
 - Fix yaks test failing on main branch [\#1579](https://github.com/apache/camel-kamelets/issues/1579)
 - Remove forbidden parameter names list in validator [\#1577](https://github.com/apache/camel-kamelets/issues/1577)
 - CI enablement on PPC64le for Camel-kamelets [\#1549](https://github.com/apache/camel-kamelets/issues/1549)
 - Switch from Fabric 8 Camel K Extension to Camel K CRDS in Catalog [\#1539](https://github.com/apache/camel-kamelets/issues/1539)
+- Create an Opensearch Index sink Kamelet [\#1536](https://github.com/apache/camel-kamelets/issues/1536)
 - Support personal token authentication in jira kamelet [\#1529](https://github.com/apache/camel-kamelets/issues/1529)
 - Release Camel Kamelets 4.0.0-RC1 [\#1525](https://github.com/apache/camel-kamelets/issues/1525)
 - ElasicSearchSink-TrustCertificates [\#1246](https://github.com/apache/camel-kamelets/issues/1246)
 
 **Merged pull requests:**
 
+- Added Opensearch Sink Kamelet [\#1592](https://github.com/apache/camel-kamelets/pull/1592) ([oscerd](https://github.com/oscerd))
 - chore\(doc\) : Add examples for simple-filter-action kamelet [\#1589](https://github.com/apache/camel-kamelets/pull/1589) ([gansheer](https://github.com/gansheer))
 - Remove no more needed GitHub actions/cache [\#1587](https://github.com/apache/camel-kamelets/pull/1587) ([apupier](https://github.com/apupier))
 - chore\(test\): Fix YAKS tests [\#1586](https://github.com/apache/camel-kamelets/pull/1586) ([christophd](https://github.com/christophd))
