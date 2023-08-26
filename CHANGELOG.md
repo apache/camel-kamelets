@@ -15,6 +15,7 @@
 - Remove forbidden parameter names list in validator [\#1577](https://github.com/apache/camel-kamelets/issues/1577)
 - CI enablement on PPC64le for Camel-kamelets [\#1549](https://github.com/apache/camel-kamelets/issues/1549)
 - Switch from Fabric 8 Camel K Extension to Camel K CRDS in Catalog [\#1539](https://github.com/apache/camel-kamelets/issues/1539)
+- Create an Opensearch Search Source Kamelet [\#1537](https://github.com/apache/camel-kamelets/issues/1537)
 - Create an Opensearch Index sink Kamelet [\#1536](https://github.com/apache/camel-kamelets/issues/1536)
 - Support personal token authentication in jira kamelet [\#1529](https://github.com/apache/camel-kamelets/issues/1529)
 - Release Camel Kamelets 4.0.0-RC1 [\#1525](https://github.com/apache/camel-kamelets/issues/1525)
@@ -22,6 +23,7 @@
 
 **Merged pull requests:**
 
+- Added Opensearch Search Source Kamelet [\#1594](https://github.com/apache/camel-kamelets/pull/1594) ([oscerd](https://github.com/oscerd))
 - Added Opensearch Sink Kamelet [\#1592](https://github.com/apache/camel-kamelets/pull/1592) ([oscerd](https://github.com/oscerd))
 - chore\(doc\) : Add examples for simple-filter-action kamelet [\#1589](https://github.com/apache/camel-kamelets/pull/1589) ([gansheer](https://github.com/gansheer))
 - Remove no more needed GitHub actions/cache [\#1587](https://github.com/apache/camel-kamelets/pull/1587) ([apupier](https://github.com/apupier))
