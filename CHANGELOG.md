@@ -23,6 +23,7 @@
 
 **Merged pull requests:**
 
+- Generated sources regen for SBOM [\#1595](https://github.com/apache/camel-kamelets/pull/1595) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Added Opensearch Search Source Kamelet [\#1594](https://github.com/apache/camel-kamelets/pull/1594) ([oscerd](https://github.com/oscerd))
 - Added Opensearch Sink Kamelet [\#1592](https://github.com/apache/camel-kamelets/pull/1592) ([oscerd](https://github.com/oscerd))
 - chore\(doc\) : Add examples for simple-filter-action kamelet [\#1589](https://github.com/apache/camel-kamelets/pull/1589) ([gansheer](https://github.com/gansheer))
