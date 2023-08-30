@@ -10,6 +10,7 @@
 
 **Closed issues:**
 
+- Azure Datalake still uses camel-kamelets-utils from github notation [\#1597](https://github.com/apache/camel-kamelets/issues/1597)
 - CI enablement for PPC64LE   [\#1582](https://github.com/apache/camel-kamelets/issues/1582)
 - Fix yaks test failing on main branch [\#1579](https://github.com/apache/camel-kamelets/issues/1579)
 - Remove forbidden parameter names list in validator [\#1577](https://github.com/apache/camel-kamelets/issues/1577)
@@ -23,6 +24,7 @@
 
 **Merged pull requests:**
 
+- Azure Datalake still uses camel-kamelets-utils from github notation [\#1598](https://github.com/apache/camel-kamelets/pull/1598) ([oscerd](https://github.com/oscerd))
 - Generated sources regen for SBOM [\#1595](https://github.com/apache/camel-kamelets/pull/1595) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Added Opensearch Search Source Kamelet [\#1594](https://github.com/apache/camel-kamelets/pull/1594) ([oscerd](https://github.com/oscerd))
 - Added Opensearch Sink Kamelet [\#1592](https://github.com/apache/camel-kamelets/pull/1592) ([oscerd](https://github.com/oscerd))
