@@ -75,6 +75,10 @@ spec:
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+      keyName:
+        title: Key Name
+        description: The key name for saving an element in the bucket.
+        type: string
   dependencies:
     - "camel:core"
     - "camel:minio"
@@ -84,22 +88,27 @@ spec:
       uri: "kamelet:source"
       steps:
       - choice:
+          precondition: true
           when:
-          - simple: "${header[file]}"
-            steps:
-            - set-header:
-                name: CamelMinioObjectName
-                simple: "${header[file]}"
-          - simple: "${header[ce-file]}"
-            steps:
-            - set-header:
-                name: CamelMinioObjectName
-                simple: "${header[ce-file]}"
-          otherwise:
-            steps:
-            - set-header:
-                name: CamelMinioObjectName
-                simple: "${exchangeId}"
+            - simple: '${propertiesExist:!keyName}'
+              steps:
+                - choice:   
+                    when:
+                      - simple: "${header[file]}"
+                        steps:
+                          - set-header:
+                              name: CamelMinioObjectName
+                              simple: "${header[file]}"
+                      - simple: "${header[ce-file]}"
+                        steps:
+                          - set-header:
+                              name: CamelMinioObjectName
+                              simple: "${header[ce-file]}"
+                    otherwise:
+                      steps:
+                        - set-header:
+                            name: CamelMinioObjectName
+                            simple: "${exchangeId}"
       - to:
           uri: "minio:{{bucketName}}"
           parameters:
@@ -107,3 +116,4 @@ spec:
             secretKey: "{{secretKey}}"
             accessKey: "{{accessKey}}"
             endpoint: "{{endpoint}}"
+            keyName: "{{?keyName}}"
