@@ -18,17 +18,16 @@
 package org.apache.camel.kamelets.utils.format.converter.aws2.ddb;
 
 import java.util.Map;
-import java.util.Optional;
 
-import org.apache.camel.CamelContextAware;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.aws2.ddb.Ddb2Constants;
 import org.apache.camel.component.aws2.ddb.Ddb2Operations;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.apache.camel.kamelets.utils.format.DefaultDataTypeRegistry;
+import org.apache.camel.impl.engine.TransformerKey;
 import org.apache.camel.kamelets.utils.format.converter.json.Json;
-import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
+import org.apache.camel.spi.DataType;
+import org.apache.camel.spi.Transformer;
 import org.apache.camel.support.DefaultExchange;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +39,7 @@ import software.amazon.awssdk.services.dynamodb.model.ReturnValue;
 
 public class Ddb2JsonInputTypeTest {
 
+    public static final String AWS_2_DDB_APPLICATION_JSON_TRANSFORMER = "aws2-ddb:application-json";
     private DefaultCamelContext camelContext;
 
     private final Ddb2JsonInputType inputType = new Ddb2JsonInputType();
@@ -69,7 +69,7 @@ public class Ddb2JsonInputTypeTest {
 
         exchange.getMessage().setBody(Json.MAPPER.readTree(itemJson));
         exchange.setProperty("operation", Ddb2Operations.PutItem.name());
-        inputType.convert(exchange);
+        inputType.transform(exchange.getMessage(), DataType.ANY, new DataType(AWS_2_DDB_APPLICATION_JSON_TRANSFORMER));
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
         Assertions.assertEquals(Ddb2Operations.PutItem, exchange.getMessage().getHeader(Ddb2Constants.OPERATION));
@@ -86,7 +86,7 @@ public class Ddb2JsonInputTypeTest {
         exchange.getMessage().setBody(Json.MAPPER.readTree("{\"operation\": \"" + Ddb2Operations.UpdateItem.name() + "\", \"key\": "
                 + keyJson + ", \"item\": " + itemJson + "}"));
 
-        inputType.convert(exchange);
+        inputType.transform(exchange.getMessage(), DataType.ANY, new DataType(AWS_2_DDB_APPLICATION_JSON_TRANSFORMER));
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
         Assertions.assertEquals(Ddb2Operations.UpdateItem, exchange.getMessage().getHeader(Ddb2Constants.OPERATION));
@@ -107,7 +107,7 @@ public class Ddb2JsonInputTypeTest {
         exchange.getMessage().setBody(Json.MAPPER.readTree("{\"key\": " + keyJson + "}"));
         exchange.setProperty("operation", Ddb2Operations.DeleteItem.name());
 
-        inputType.convert(exchange);
+        inputType.transform(exchange.getMessage(), DataType.ANY, new DataType(AWS_2_DDB_APPLICATION_JSON_TRANSFORMER));
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
         Assertions.assertEquals(Ddb2Operations.DeleteItem, exchange.getMessage().getHeader(Ddb2Constants.OPERATION));
@@ -125,7 +125,7 @@ public class Ddb2JsonInputTypeTest {
 
         exchange.getMessage().setBody(Json.MAPPER.readTree("{\"user\":" + itemJson + "}"));
         exchange.setProperty("operation", Ddb2Operations.PutItem.name());
-        inputType.convert(exchange);
+        inputType.transform(exchange.getMessage(), DataType.ANY, new DataType(AWS_2_DDB_APPLICATION_JSON_TRANSFORMER));
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
         Assertions.assertEquals(Ddb2Operations.PutItem, exchange.getMessage().getHeader(Ddb2Constants.OPERATION));
@@ -151,7 +151,7 @@ public class Ddb2JsonInputTypeTest {
         exchange.getMessage().setBody("{}");
         exchange.getMessage().setHeader(Ddb2Constants.OPERATION, Ddb2Operations.PutItem.name());
 
-        inputType.convert(exchange);
+        inputType.transform(exchange.getMessage(), DataType.ANY, new DataType(AWS_2_DDB_APPLICATION_JSON_TRANSFORMER));
 
         Assertions.assertTrue(exchange.getMessage().hasHeaders());
         Assertions.assertEquals(Ddb2Operations.PutItem, exchange.getMessage().getHeader(Ddb2Constants.OPERATION));
@@ -167,7 +167,7 @@ public class Ddb2JsonInputTypeTest {
 
         exchange.getMessage().setBody("Hello");
 
-        Assertions.assertThrows(CamelExecutionException.class, () -> inputType.convert(exchange));
+        Assertions.assertThrows(CamelExecutionException.class, () -> inputType.transform(exchange.getMessage(), DataType.ANY, new DataType(AWS_2_DDB_APPLICATION_JSON_TRANSFORMER)));
     }
 
     @Test
@@ -177,15 +177,13 @@ public class Ddb2JsonInputTypeTest {
         exchange.getMessage().setBody(Json.MAPPER.readTree("{}"));
         exchange.setProperty("operation", Ddb2Operations.BatchGetItems.name());
 
-        Assertions.assertThrows(UnsupportedOperationException.class, () -> inputType.convert(exchange));
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> inputType.transform(exchange.getMessage(), DataType.ANY, new DataType(AWS_2_DDB_APPLICATION_JSON_TRANSFORMER)));
     }
 
     @Test
     public void shouldLookupDataType() throws Exception {
-        DefaultDataTypeRegistry dataTypeRegistry = new DefaultDataTypeRegistry();
-        CamelContextAware.trySetCamelContext(dataTypeRegistry, camelContext);
-        Optional<DataTypeConverter> converter = dataTypeRegistry.lookup("aws2-ddb", "application-json");
-        Assertions.assertTrue(converter.isPresent());
+        Transformer transformer = camelContext.getTransformerRegistry().resolveTransformer(new TransformerKey(DataType.ANY, new DataType(AWS_2_DDB_APPLICATION_JSON_TRANSFORMER)));
+        Assertions.assertNotNull(transformer);
     }
 
     private void assertAttributeValueMap(Map<String, AttributeValue> attributeValueMap) {

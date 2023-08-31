@@ -26,54 +26,56 @@ import com.fasterxml.jackson.dataformat.avro.AvroSchema;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.InvalidPayloadException;
+import org.apache.camel.Message;
 import org.apache.camel.kamelets.utils.format.MimeType;
 import org.apache.camel.kamelets.utils.format.converter.utils.SchemaHelper;
-import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
-import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
+import org.apache.camel.spi.DataType;
+import org.apache.camel.spi.DataTypeTransformer;
+import org.apache.camel.spi.Transformer;
 
 /**
  * Data type uses Jackson Avro data format to marshal given JsonNode in Exchange body to a binary (byte array) representation.
  * Uses given Avro schema from the Exchange properties when marshalling the payload (usually already resolved via schema
  * resolver Kamelet action).
  */
-@DataType(name = "avro-binary", mediaType = "avro/binary")
-public class AvroBinaryDataType implements DataTypeConverter {
+@DataTypeTransformer(name = "avro-binary")
+public class AvroBinaryDataType extends Transformer {
 
     @Override
-    public void convert(Exchange exchange) {
-        AvroSchema schema = exchange.getProperty(SchemaHelper.CONTENT_SCHEMA, AvroSchema.class);
+    public void transform(Message message, DataType fromType, DataType toType) {
+        AvroSchema schema = message.getExchange().getProperty(SchemaHelper.CONTENT_SCHEMA, AvroSchema.class);
 
         if (schema == null) {
-            throw new CamelExecutionException("Missing proper avro schema for data type processing", exchange);
+            throw new CamelExecutionException("Missing proper avro schema for data type processing", message.getExchange());
         }
 
         try {
             byte[] marshalled = Avro.MAPPER.writer().forType(JsonNode.class).with(schema)
-                    .writeValueAsBytes(getBodyAsJsonNode(exchange, schema));
-            exchange.getMessage().setBody(marshalled);
+                    .writeValueAsBytes(getBodyAsJsonNode(message, schema));
+            message.setBody(marshalled);
 
-            exchange.getMessage().setHeader(Exchange.CONTENT_TYPE, MimeType.AVRO_BINARY.type());
-            exchange.getMessage().setHeader(SchemaHelper.CONTENT_SCHEMA,
-                    exchange.getProperty(SchemaHelper.CONTENT_SCHEMA, "", String.class));
+            message.setHeader(Exchange.CONTENT_TYPE, MimeType.AVRO_BINARY.type());
+            message.setHeader(SchemaHelper.CONTENT_SCHEMA,
+                    message.getExchange().getProperty(SchemaHelper.CONTENT_SCHEMA, "", String.class));
         } catch (InvalidPayloadException | IOException e) {
-            throw new CamelExecutionException("Failed to apply Avro binary data type on exchange", exchange, e);
+            throw new CamelExecutionException("Failed to apply Avro binary data type on exchange", message.getExchange(), e);
         }
     }
 
-    private JsonNode getBodyAsJsonNode(Exchange exchange, AvroSchema schema) throws InvalidPayloadException, IOException {
-        if (exchange.getMessage().getBody() instanceof  JsonNode) {
-            return (JsonNode) exchange.getMessage().getBody();
+    private JsonNode getBodyAsJsonNode(Message message, AvroSchema schema) throws InvalidPayloadException, IOException {
+        if (message.getBody() instanceof  JsonNode) {
+            return (JsonNode) message.getBody();
         }
 
         return Avro.MAPPER.reader().forType(JsonNode.class).with(schema)
-                .readValue(getBodyAsStream(exchange));
+                .readValue(getBodyAsStream(message));
     }
 
-    private InputStream getBodyAsStream(Exchange exchange) throws InvalidPayloadException {
-        InputStream bodyStream = exchange.getMessage().getBody(InputStream.class);
+    private InputStream getBodyAsStream(Message message) throws InvalidPayloadException {
+        InputStream bodyStream = message.getBody(InputStream.class);
 
         if (bodyStream == null) {
-            bodyStream = new ByteArrayInputStream(exchange.getMessage().getMandatoryBody(byte[].class));
+            bodyStream = new ByteArrayInputStream(message.getMandatoryBody(byte[].class));
         }
 
         return bodyStream;

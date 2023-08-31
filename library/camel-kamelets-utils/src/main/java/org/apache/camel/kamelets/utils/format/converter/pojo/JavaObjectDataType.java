@@ -27,13 +27,15 @@ import org.apache.camel.CamelContextAware;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.InvalidPayloadException;
+import org.apache.camel.Message;
 import org.apache.camel.kamelets.utils.format.MimeType;
 import org.apache.camel.kamelets.utils.format.SchemaType;
 import org.apache.camel.kamelets.utils.format.converter.avro.Avro;
 import org.apache.camel.kamelets.utils.format.converter.json.Json;
 import org.apache.camel.kamelets.utils.format.converter.utils.SchemaHelper;
-import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
-import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
+import org.apache.camel.spi.DataType;
+import org.apache.camel.spi.DataTypeTransformer;
+import org.apache.camel.spi.Transformer;
 import org.apache.camel.util.ObjectHelper;
 
 /**
@@ -42,53 +44,53 @@ import org.apache.camel.util.ObjectHelper;
  * Requires proper setting of content schema, class and schema type in Exchange properties
  * (usually resolved via Avro or Json schema resolver Kamelet action).
  */
-@DataType(name = "application-x-java-object", mediaType = "application/x-java-object")
-public class JavaObjectDataType implements DataTypeConverter, CamelContextAware {
+@DataTypeTransformer(name = "application-x-java-object")
+public class JavaObjectDataType extends Transformer implements CamelContextAware {
 
     private CamelContext camelContext;
 
     @Override
-    public void convert(Exchange exchange) {
+    public void transform(Message message, DataType fromType, DataType toType) {
         ObjectHelper.notNull(camelContext, "camelContext");
 
-        FormatSchema schema = exchange.getProperty(SchemaHelper.CONTENT_SCHEMA, FormatSchema.class);
+        FormatSchema schema = message.getExchange().getProperty(SchemaHelper.CONTENT_SCHEMA, FormatSchema.class);
         if (schema == null) {
-            throw new CamelExecutionException("Missing proper schema for Java object data type processing", exchange);
+            throw new CamelExecutionException("Missing proper schema for Java object data type processing", message.getExchange());
         }
 
-        String contentClass = SchemaHelper.resolveContentClass(exchange, null);
+        String contentClass = SchemaHelper.resolveContentClass(message.getExchange(), null);
         if (contentClass == null) {
             throw new CamelExecutionException("Missing content class information for Java object data type processing",
-                    exchange);
+                    message.getExchange());
         }
 
-        SchemaType schemaType = SchemaType.of(exchange.getProperty(SchemaHelper.CONTENT_SCHEMA_TYPE, SchemaType.JSON.type(), String.class));
+        SchemaType schemaType = SchemaType.of(message.getExchange().getProperty(SchemaHelper.CONTENT_SCHEMA_TYPE, SchemaType.JSON.type(), String.class));
 
         try {
             Class<?> contentType = camelContext.getClassResolver().resolveMandatoryClass(contentClass);
             Object unmarshalled;
 
             if (schemaType == SchemaType.AVRO) {
-                unmarshalled = Avro.MAPPER.reader().forType(contentType).with(schema).readValue(getBodyAsStream(exchange));
+                unmarshalled = Avro.MAPPER.reader().forType(contentType).with(schema).readValue(getBodyAsStream(message));
             } else if (schemaType == SchemaType.JSON) {
-                unmarshalled = Json.MAPPER.reader().forType(contentType).with(schema).readValue(getBodyAsStream(exchange));
+                unmarshalled = Json.MAPPER.reader().forType(contentType).with(schema).readValue(getBodyAsStream(message));
             } else {
-                throw new CamelExecutionException(String.format("Unsupported schema type '%s'", schemaType), exchange);
+                throw new CamelExecutionException(String.format("Unsupported schema type '%s'", schemaType), message.getExchange());
             }
 
-            exchange.getMessage().setBody(unmarshalled);
+            message.setBody(unmarshalled);
 
-            exchange.getMessage().setHeader(Exchange.CONTENT_TYPE, MimeType.STRUCT.type());
+            message.setHeader(Exchange.CONTENT_TYPE, MimeType.STRUCT.type());
         } catch (InvalidPayloadException | IOException | ClassNotFoundException e) {
-            throw new CamelExecutionException("Failed to apply Java object data type on exchange", exchange, e);
+            throw new CamelExecutionException("Failed to apply Java object data type on exchange", message.getExchange(), e);
         }
     }
 
-    private InputStream getBodyAsStream(Exchange exchange) throws InvalidPayloadException {
-        InputStream bodyStream = exchange.getMessage().getBody(InputStream.class);
+    private InputStream getBodyAsStream(Message message) throws InvalidPayloadException {
+        InputStream bodyStream = message.getBody(InputStream.class);
 
         if (bodyStream == null) {
-            bodyStream = new ByteArrayInputStream(exchange.getMessage().getMandatoryBody(byte[].class));
+            bodyStream = new ByteArrayInputStream(message.getMandatoryBody(byte[].class));
         }
 
         return bodyStream;
