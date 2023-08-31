@@ -4,13 +4,20 @@
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.0.0-RC1...HEAD)
 
+**Implemented enhancements:**
+
+- aws-ec2 kamelets proposed improvement [\#516](https://github.com/apache/camel-kamelets/issues/516)
+
 **Fixed bugs:**
 
 - Yaks test job is reported in success despite test failure [\#1576](https://github.com/apache/camel-kamelets/issues/1576)
 
 **Closed issues:**
 
+- Mongodb kamelets lack kamelets-utils dependency [\#1602](https://github.com/apache/camel-kamelets/issues/1602)
+- Minio Sink Kamelet: Like we do in S3 add the ability to specify objectName instead of using header [\#1599](https://github.com/apache/camel-kamelets/issues/1599)
 - Azure Datalake still uses camel-kamelets-utils from github notation [\#1597](https://github.com/apache/camel-kamelets/issues/1597)
+- Warning during build due to peter-evans/create-pull-request@v3 using node12 [\#1588](https://github.com/apache/camel-kamelets/issues/1588)
 - CI enablement for PPC64LE   [\#1582](https://github.com/apache/camel-kamelets/issues/1582)
 - Fix yaks test failing on main branch [\#1579](https://github.com/apache/camel-kamelets/issues/1579)
 - Remove forbidden parameter names list in validator [\#1577](https://github.com/apache/camel-kamelets/issues/1577)
@@ -21,9 +28,13 @@
 - Support personal token authentication in jira kamelet [\#1529](https://github.com/apache/camel-kamelets/issues/1529)
 - Release Camel Kamelets 4.0.0-RC1 [\#1525](https://github.com/apache/camel-kamelets/issues/1525)
 - ElasicSearchSink-TrustCertificates [\#1246](https://github.com/apache/camel-kamelets/issues/1246)
+- Add an Header From Kamelet Action [\#707](https://github.com/apache/camel-kamelets/issues/707)
 
 **Merged pull requests:**
 
+- Mongodb kamelets lack kamelets-utils dependency [\#1603](https://github.com/apache/camel-kamelets/pull/1603) ([oscerd](https://github.com/oscerd))
+- Minio Sink Kamelet: Like we do in S3 add the ability to specify objec… [\#1601](https://github.com/apache/camel-kamelets/pull/1601) ([oscerd](https://github.com/oscerd))
+- Warning during build due to peter-evans/create-pull-request@v3 using … [\#1600](https://github.com/apache/camel-kamelets/pull/1600) ([oscerd](https://github.com/oscerd))
 - Azure Datalake still uses camel-kamelets-utils from github notation [\#1598](https://github.com/apache/camel-kamelets/pull/1598) ([oscerd](https://github.com/oscerd))
 - Generated sources regen for SBOM [\#1595](https://github.com/apache/camel-kamelets/pull/1595) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Added Opensearch Search Source Kamelet [\#1594](https://github.com/apache/camel-kamelets/pull/1594) ([oscerd](https://github.com/oscerd))
