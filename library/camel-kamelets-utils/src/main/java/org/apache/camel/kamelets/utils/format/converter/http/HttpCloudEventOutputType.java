@@ -20,9 +20,11 @@ package org.apache.camel.kamelets.utils.format.converter.http;
 import java.util.Map;
 
 import org.apache.camel.Exchange;
+import org.apache.camel.Message;
 import org.apache.camel.kamelets.utils.format.converter.utils.CloudEvents;
-import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
-import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
+import org.apache.camel.spi.DataType;
+import org.apache.camel.spi.DataTypeTransformer;
+import org.apache.camel.spi.Transformer;
 
 /**
  * Output data type represents the CloudEvent V1 Http binding. The data type reads Camel specific
@@ -30,14 +32,14 @@ import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
  *
  * By default, sets the Http content type header to application/json when not set explicitly.
  */
-@DataType(scheme = "http", name = "application-cloudevents", mediaType = "application/json")
-public class HttpCloudEventOutputType implements DataTypeConverter {
+@DataTypeTransformer(name = "http:application-cloudevents")
+public class HttpCloudEventOutputType extends Transformer {
 
     @Override
-    public void convert(Exchange exchange) {
-        final Map<String, Object> headers = exchange.getMessage().getHeaders();
+    public void transform(Message message, DataType fromType, DataType toType) {
+        final Map<String, Object> headers = message.getHeaders();
 
-        headers.put("ce-id", exchange.getExchangeId());
+        headers.put("ce-id", message.getExchange().getExchangeId());
         headers.put("ce-specversion", headers.getOrDefault(CloudEvents.CAMEL_CLOUD_EVENT_VERSION, "1.0"));
         headers.put("ce-type", headers.getOrDefault(CloudEvents.CAMEL_CLOUD_EVENT_TYPE, "org.apache.camel.event"));
         headers.put("ce-source", headers.getOrDefault(CloudEvents.CAMEL_CLOUD_EVENT_SOURCE, "org.apache.camel"));
@@ -46,7 +48,7 @@ public class HttpCloudEventOutputType implements DataTypeConverter {
             headers.put("ce-subject", headers.get(CloudEvents.CAMEL_CLOUD_EVENT_SUBJECT));
         }
 
-        headers.put("ce-time", headers.getOrDefault(CloudEvents.CAMEL_CLOUD_EVENT_TIME, CloudEvents.getEventTime(exchange)));
+        headers.put("ce-time", headers.getOrDefault(CloudEvents.CAMEL_CLOUD_EVENT_TIME, CloudEvents.getEventTime(message.getExchange())));
         headers.put(Exchange.CONTENT_TYPE, headers.getOrDefault(CloudEvents.CAMEL_CLOUD_EVENT_CONTENT_TYPE, "application/json"));
     }
 }

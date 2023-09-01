@@ -28,13 +28,14 @@ import java.util.stream.Stream;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.camel.CamelExecutionException;
-import org.apache.camel.Exchange;
+import org.apache.camel.Message;
 import org.apache.camel.component.aws2.ddb.Ddb2Constants;
 import org.apache.camel.component.aws2.ddb.Ddb2Operations;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.kamelets.utils.format.converter.json.Json;
-import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
-import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
+import org.apache.camel.spi.DataType;
+import org.apache.camel.spi.DataTypeTransformer;
+import org.apache.camel.spi.Transformer;
 import software.amazon.awssdk.services.dynamodb.model.AttributeAction;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValueUpdate;
@@ -77,28 +78,28 @@ import software.amazon.awssdk.services.dynamodb.model.ReturnValue;
  * In case key and item attribute value maps are identical you can omit the special top level properties completely. The
  * converter will map the whole Json body as is then and use it as source for the attribute value map.
  */
-@DataType(scheme = "aws2-ddb", name = "application-json", mediaType = "application/json")
-public class Ddb2JsonInputType implements DataTypeConverter {
+@DataTypeTransformer(name = "aws2-ddb:application-json")
+public class Ddb2JsonInputType extends Transformer {
 
     private final JacksonDataFormat dataFormat = new JacksonDataFormat(Json.MAPPER, JsonNode.class);
 
     @Override
-    public void convert(Exchange exchange) {
-        if (exchange.getMessage().getHeaders().containsKey(Ddb2Constants.ITEM) ||
-                exchange.getMessage().getHeaders().containsKey(Ddb2Constants.KEY)) {
+    public void transform(Message message, DataType fromType, DataType toType) {
+        if (message.getHeaders().containsKey(Ddb2Constants.ITEM) ||
+                message.getHeaders().containsKey(Ddb2Constants.KEY)) {
             return;
         }
 
-        JsonNode jsonBody = getBodyAsJsonNode(exchange);
+        JsonNode jsonBody = getBodyAsJsonNode(message);
 
         String operation
                 = Optional.ofNullable(jsonBody.get("operation")).map(JsonNode::asText).orElse(Ddb2Operations.PutItem.name());
-        if (exchange.hasProperties() && exchange.getProperty("operation", String.class) != null) {
-            operation = exchange.getProperty("operation", String.class);
+        if (message.getExchange().hasProperties() && message.getExchange().getProperty("operation", String.class) != null) {
+            operation = message.getExchange().getProperty("operation", String.class);
         }
 
-        if (exchange.getIn().getHeaders().containsKey(Ddb2Constants.OPERATION)) {
-            operation = exchange.getIn().getHeader(Ddb2Constants.OPERATION, Ddb2Operations.class).name();
+        if (message.getHeaders().containsKey(Ddb2Constants.OPERATION)) {
+            operation = message.getHeader(Ddb2Constants.OPERATION, Ddb2Operations.class).name();
         }
 
         JsonNode key = jsonBody.get("key");
@@ -106,16 +107,16 @@ public class Ddb2JsonInputType implements DataTypeConverter {
 
         Map<String, Object> keyProps;
         if (key != null) {
-            keyProps = dataFormat.getObjectMapper().convertValue(key, new TypeReference<Map<String, Object>>() {
+            keyProps = dataFormat.getObjectMapper().convertValue(key, new TypeReference<>() {
             });
         } else {
-            keyProps = dataFormat.getObjectMapper().convertValue(jsonBody, new TypeReference<Map<String, Object>>() {
+            keyProps = dataFormat.getObjectMapper().convertValue(jsonBody, new TypeReference<>() {
             });
         }
 
         Map<String, Object> itemProps;
         if (item != null) {
-            itemProps = dataFormat.getObjectMapper().convertValue(item, new TypeReference<Map<String, Object>>() {
+            itemProps = dataFormat.getObjectMapper().convertValue(item, new TypeReference<>() {
             });
         } else {
             itemProps = keyProps;
@@ -125,40 +126,40 @@ public class Ddb2JsonInputType implements DataTypeConverter {
 
         switch (Ddb2Operations.valueOf(operation)) {
             case PutItem:
-                exchange.getMessage().setHeader(Ddb2Constants.OPERATION, Ddb2Operations.PutItem);
-                exchange.getMessage().setHeader(Ddb2Constants.ITEM, getAttributeValueMap(itemProps));
-                setHeaderIfNotPresent(Ddb2Constants.RETURN_VALUES, ReturnValue.ALL_OLD.toString(), exchange);
+                message.setHeader(Ddb2Constants.OPERATION, Ddb2Operations.PutItem);
+                message.setHeader(Ddb2Constants.ITEM, getAttributeValueMap(itemProps));
+                setHeaderIfNotPresent(Ddb2Constants.RETURN_VALUES, ReturnValue.ALL_OLD.toString(), message);
                 break;
             case UpdateItem:
-                exchange.getMessage().setHeader(Ddb2Constants.OPERATION, Ddb2Operations.UpdateItem);
-                exchange.getMessage().setHeader(Ddb2Constants.KEY, keyMap);
-                exchange.getMessage().setHeader(Ddb2Constants.UPDATE_VALUES, getAttributeValueUpdateMap(itemProps));
-                setHeaderIfNotPresent(Ddb2Constants.RETURN_VALUES, ReturnValue.ALL_NEW.toString(), exchange);
+                message.setHeader(Ddb2Constants.OPERATION, Ddb2Operations.UpdateItem);
+                message.setHeader(Ddb2Constants.KEY, keyMap);
+                message.setHeader(Ddb2Constants.UPDATE_VALUES, getAttributeValueUpdateMap(itemProps));
+                setHeaderIfNotPresent(Ddb2Constants.RETURN_VALUES, ReturnValue.ALL_NEW.toString(), message);
                 break;
             case DeleteItem:
-                exchange.getMessage().setHeader(Ddb2Constants.OPERATION, Ddb2Operations.DeleteItem);
-                exchange.getMessage().setHeader(Ddb2Constants.KEY, keyMap);
-                setHeaderIfNotPresent(Ddb2Constants.RETURN_VALUES, ReturnValue.ALL_OLD.toString(), exchange);
+                message.setHeader(Ddb2Constants.OPERATION, Ddb2Operations.DeleteItem);
+                message.setHeader(Ddb2Constants.KEY, keyMap);
+                setHeaderIfNotPresent(Ddb2Constants.RETURN_VALUES, ReturnValue.ALL_OLD.toString(), message);
                 break;
             default:
                 throw new UnsupportedOperationException(String.format("Unsupported operation '%s'", operation));
         }
     }
 
-    private JsonNode getBodyAsJsonNode(Exchange exchange) {
+    private JsonNode getBodyAsJsonNode(Message message) {
         try {
-            if (exchange.getMessage().getBody() instanceof JsonNode) {
-                return exchange.getMessage().getMandatoryBody(JsonNode.class);
+            if (message.getBody() instanceof JsonNode) {
+                return message.getMandatoryBody(JsonNode.class);
             }
 
-            return (JsonNode) dataFormat.unmarshal(exchange, exchange.getMessage().getMandatoryBody(InputStream.class));
+            return (JsonNode) dataFormat.unmarshal(message.getExchange(), message.getMandatoryBody(InputStream.class));
         } catch (Exception e) {
-            throw new CamelExecutionException("Failed to get mandatory Json node from message body", exchange, e);
+            throw new CamelExecutionException("Failed to get mandatory Json node from message body", message.getExchange(), e);
         }
     }
 
-    private void setHeaderIfNotPresent(String headerName, Object value, Exchange exchange) {
-        exchange.getMessage().setHeader(headerName, value);
+    private void setHeaderIfNotPresent(String headerName, Object value, Message message) {
+        message.setHeader(headerName, value);
     }
 
     private Map<String, AttributeValue> getAttributeValueMap(Map<String, Object> body) {

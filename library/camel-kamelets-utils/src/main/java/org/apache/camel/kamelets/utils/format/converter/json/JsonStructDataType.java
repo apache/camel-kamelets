@@ -25,33 +25,35 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.InvalidPayloadException;
+import org.apache.camel.Message;
 import org.apache.camel.kamelets.utils.format.MimeType;
-import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
-import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
+import org.apache.camel.spi.DataType;
+import org.apache.camel.spi.DataTypeTransformer;
+import org.apache.camel.spi.Transformer;
 
 /**
  * Data type uses Jackson data format to unmarshal Exchange body to generic JsonNode representation.
  */
-@DataType(name = "application-x-struct", mediaType = "application/x-struct")
-public class JsonStructDataType implements DataTypeConverter {
+@DataTypeTransformer(name = "application-x-struct")
+public class JsonStructDataType extends Transformer {
 
     @Override
-    public void convert(Exchange exchange) {
+    public void transform(Message message, DataType fromType, DataType toType) {
         try {
-            Object unmarshalled = Json.MAPPER.reader().forType(JsonNode.class).readValue(getBodyAsStream(exchange));
-            exchange.getMessage().setBody(unmarshalled);
+            Object unmarshalled = Json.MAPPER.reader().forType(JsonNode.class).readValue(getBodyAsStream(message));
+            message.setBody(unmarshalled);
 
-            exchange.getMessage().setHeader(Exchange.CONTENT_TYPE, MimeType.STRUCT.type());
+            message.setHeader(Exchange.CONTENT_TYPE, MimeType.STRUCT.type());
         } catch (InvalidPayloadException | IOException e) {
-            throw new CamelExecutionException("Failed to apply Json input data type on exchange", exchange, e);
+            throw new CamelExecutionException("Failed to apply Json input data type on exchange", message.getExchange(), e);
         }
     }
 
-    private InputStream getBodyAsStream(Exchange exchange) throws InvalidPayloadException {
-        InputStream bodyStream = exchange.getMessage().getBody(InputStream.class);
+    private InputStream getBodyAsStream(Message message) throws InvalidPayloadException {
+        InputStream bodyStream = message.getBody(InputStream.class);
 
         if (bodyStream == null) {
-            bodyStream = new ByteArrayInputStream(exchange.getMessage().getMandatoryBody(byte[].class));
+            bodyStream = new ByteArrayInputStream(message.getMandatoryBody(byte[].class));
         }
 
         return bodyStream;

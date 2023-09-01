@@ -21,29 +21,31 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
+import org.apache.camel.Message;
 import org.apache.camel.kamelets.utils.format.MimeType;
 import org.apache.camel.kamelets.utils.format.converter.utils.SchemaHelper;
-import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
-import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
+import org.apache.camel.spi.DataType;
+import org.apache.camel.spi.DataTypeTransformer;
+import org.apache.camel.spi.Transformer;
 
 /**
  * Data type uses Jackson data format to marshal given Exchange payload to a Json (binary byte array representation).
  * Requires Exchange payload as JsonNode representation.
  */
-@DataType(name = "application-json", mediaType = "application/json")
-public class JsonDataType implements DataTypeConverter {
+@DataTypeTransformer(name = "application-json")
+public class JsonDataType extends Transformer {
 
     @Override
-    public void convert(Exchange exchange) {
+    public void transform(Message message, DataType fromType, DataType toType) {
         try {
-            byte[] marshalled = Json.MAPPER.writer().forType(JsonNode.class).writeValueAsBytes(exchange.getMessage().getBody());
-            exchange.getMessage().setBody(marshalled);
+            byte[] marshalled = Json.MAPPER.writer().forType(JsonNode.class).writeValueAsBytes(message.getBody());
+            message.setBody(marshalled);
 
-            exchange.getMessage().setHeader(Exchange.CONTENT_TYPE, MimeType.JSON.type());
-            exchange.getMessage().setHeader(SchemaHelper.CONTENT_SCHEMA,
-                    exchange.getProperty(SchemaHelper.CONTENT_SCHEMA, "", String.class));
+            message.setHeader(Exchange.CONTENT_TYPE, MimeType.JSON.type());
+            message.setHeader(SchemaHelper.CONTENT_SCHEMA,
+                    message.getExchange().getProperty(SchemaHelper.CONTENT_SCHEMA, "", String.class));
         } catch (JsonProcessingException e) {
-            throw new CamelExecutionException("Failed to apply Json output data type on exchange", exchange, e);
+            throw new CamelExecutionException("Failed to apply Json output data type on exchange", message.getExchange(), e);
         }
     }
 }

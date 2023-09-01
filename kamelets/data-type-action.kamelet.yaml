@@ -40,11 +40,9 @@ spec:
         title: Component Scheme
         description: The data type component scheme enables users to apply Camel component specific data type conversions.
         type: string
-        default: "camel"
-        example: "camel"
       format:
         title: Data Type Format
-        description: Defines the data type that will be applied by this action. The Kamelet catalog supports different data types and performs automatic message conversion according to the given type.
+        description: Defines the data type that will be applied by this action. Apache Camel and the Kamelet catalog support different data types and performs automatic message conversion according to the given type.
         type: string
   dependencies:
     - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.0.0-SNAPSHOT"
@@ -52,16 +50,23 @@ spec:
     - "camel:core"
   template:
     beans:
-      - name: dataTypeRegistry
-        type: "#class:org.apache.camel.kamelets.utils.format.DefaultDataTypeRegistry"
       - name: dataTypeProcessor
-        type: "#class:org.apache.camel.kamelets.utils.format.DataTypeProcessor"
-        properties:
-          scheme: '{{scheme}}'
-          format: '{{format}}'
-          registry: '#bean:{{dataTypeRegistry}}'
+        type: "#class:org.apache.camel.processor.transformer.DataTypeProcessor"
     from:
       uri: "kamelet:source"
       steps:
-      - process:
+      - choice:
+          when:
+          - simple: "'{{?scheme}}' != ''"
+            steps:
+            - set-property:
+                name: CamelDataType
+                simple: "{{?scheme}}:{{format}}"
+          otherwise:
+            steps:
+            - set-property:
+                name: CamelDataType
+                simple: "{{format}}"
+      - bean:
           ref: "{{dataTypeProcessor}}"
+          method: process

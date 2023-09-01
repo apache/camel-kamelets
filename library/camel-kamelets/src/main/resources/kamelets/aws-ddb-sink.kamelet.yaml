@@ -114,23 +114,14 @@ spec:
   - "camel:aws2-ddb"
   - "camel:kamelet"
   template:
-    beans:
-      - name: dataTypeRegistry
-        type: "#class:org.apache.camel.kamelets.utils.format.DefaultDataTypeRegistry"
-      - name: dataTypeProcessor
-        type: "#class:org.apache.camel.kamelets.utils.format.DataTypeProcessor"
-        properties:
-          scheme: 'aws2-ddb'
-          format: 'application-json'
-          registry: '#bean:{{dataTypeRegistry}}'
     from:
       uri: "kamelet:source"
       steps:
       - set-property:
           name: operation
           constant: "{{operation}}"
-      - process:
-          ref: "{{dataTypeProcessor}}"
+      - transform:
+          to-type: "aws2-ddb:application-json"
       - to:
           uri: "aws2-ddb:{{table}}"
           parameters:

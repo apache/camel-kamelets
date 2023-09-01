@@ -26,43 +26,45 @@ import com.fasterxml.jackson.dataformat.avro.AvroSchema;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.InvalidPayloadException;
+import org.apache.camel.Message;
 import org.apache.camel.kamelets.utils.format.MimeType;
 import org.apache.camel.kamelets.utils.format.converter.utils.SchemaHelper;
-import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
-import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
+import org.apache.camel.spi.DataType;
+import org.apache.camel.spi.DataTypeTransformer;
+import org.apache.camel.spi.Transformer;
 
 /**
  * Data type uses Avro Jackson data format to unmarshal Exchange body to generic JsonNode.
  * Uses given Avro schema from the Exchange properties when unmarshalling the payload (usually already resolved via schema
  * resolver Kamelet action).
  */
-@DataType(name = "avro-x-struct", mediaType = "application/x-struct")
-public class AvroStructDataType implements DataTypeConverter {
+@DataTypeTransformer(name = "avro-x-struct")
+public class AvroStructDataType extends Transformer {
 
     @Override
-    public void convert(Exchange exchange) {
-        AvroSchema schema = exchange.getProperty(SchemaHelper.CONTENT_SCHEMA, AvroSchema.class);
+    public void transform(Message message, DataType fromType, DataType toType) {
+        AvroSchema schema = message.getExchange().getProperty(SchemaHelper.CONTENT_SCHEMA, AvroSchema.class);
 
         if (schema == null) {
-            throw new CamelExecutionException("Missing proper avro schema for data type processing", exchange);
+            throw new CamelExecutionException("Missing proper avro schema for data type processing", message.getExchange());
         }
 
         try {
             Object unmarshalled = Avro.MAPPER.reader().forType(JsonNode.class).with(schema)
-                    .readValue(getBodyAsStream(exchange));
-            exchange.getMessage().setBody(unmarshalled);
+                    .readValue(getBodyAsStream(message));
+            message.setBody(unmarshalled);
 
-            exchange.getMessage().setHeader(Exchange.CONTENT_TYPE, MimeType.STRUCT.type());
+            message.setHeader(Exchange.CONTENT_TYPE, MimeType.STRUCT.type());
         } catch (InvalidPayloadException | IOException e) {
-            throw new CamelExecutionException("Failed to apply Avro x-struct data type on exchange", exchange, e);
+            throw new CamelExecutionException("Failed to apply Avro x-struct data type on exchange", message.getExchange(), e);
         }
     }
 
-    private InputStream getBodyAsStream(Exchange exchange) throws InvalidPayloadException {
-        InputStream bodyStream = exchange.getMessage().getBody(InputStream.class);
+    private InputStream getBodyAsStream(Message message) throws InvalidPayloadException {
+        InputStream bodyStream = message.getBody(InputStream.class);
 
         if (bodyStream == null) {
-            bodyStream = new ByteArrayInputStream(exchange.getMessage().getMandatoryBody(byte[].class));
+            bodyStream = new ByteArrayInputStream(message.getMandatoryBody(byte[].class));
         }
 
         return bodyStream;

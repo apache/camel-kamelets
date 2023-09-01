@@ -19,27 +19,28 @@ package org.apache.camel.kamelets.utils.format.converter.aws2.s3;
 
 import java.util.Map;
 
-import org.apache.camel.Exchange;
+import org.apache.camel.Message;
 import org.apache.camel.component.aws2.s3.AWS2S3Constants;
 import org.apache.camel.kamelets.utils.format.converter.utils.CloudEvents;
-import org.apache.camel.kamelets.utils.format.spi.DataTypeConverter;
-import org.apache.camel.kamelets.utils.format.spi.annotations.DataType;
+import org.apache.camel.spi.DataType;
+import org.apache.camel.spi.DataTypeTransformer;
+import org.apache.camel.spi.Transformer;
 
 /**
  * Output data type represents AWS S3 get object response as CloudEvent V1. The data type sets Camel specific
  * CloudEvent headers on the exchange.
  */
-@DataType(scheme = "aws2-s3", name = "application-cloudevents", mediaType = "application/octet-stream")
-public class AWS2S3CloudEventOutputType implements DataTypeConverter {
+@DataTypeTransformer(name = "aws2-s3:application-cloudevents")
+public class AWS2S3CloudEventOutputType extends Transformer {
 
     @Override
-    public void convert(Exchange exchange) {
-        final Map<String, Object> headers = exchange.getMessage().getHeaders();
+    public void transform(Message message, DataType fromType, DataType toType) {
+        final Map<String, Object> headers = message.getHeaders();
 
-        headers.put(CloudEvents.CAMEL_CLOUD_EVENT_ID, exchange.getExchangeId());
+        headers.put(CloudEvents.CAMEL_CLOUD_EVENT_ID, message.getExchange().getExchangeId());
         headers.put(CloudEvents.CAMEL_CLOUD_EVENT_TYPE, "org.apache.camel.event.aws.s3.getObject");
-        headers.put(CloudEvents.CAMEL_CLOUD_EVENT_SOURCE, "aws.s3.bucket." + exchange.getMessage().getHeader(AWS2S3Constants.BUCKET_NAME, String.class));
-        headers.put(CloudEvents.CAMEL_CLOUD_EVENT_SUBJECT, exchange.getMessage().getHeader(AWS2S3Constants.KEY, String.class));
-        headers.put(CloudEvents.CAMEL_CLOUD_EVENT_TIME, CloudEvents.getEventTime(exchange));
+        headers.put(CloudEvents.CAMEL_CLOUD_EVENT_SOURCE, "aws.s3.bucket." + message.getHeader(AWS2S3Constants.BUCKET_NAME, String.class));
+        headers.put(CloudEvents.CAMEL_CLOUD_EVENT_SUBJECT, message.getHeader(AWS2S3Constants.KEY, String.class));
+        headers.put(CloudEvents.CAMEL_CLOUD_EVENT_TIME, CloudEvents.getEventTime(message.getExchange()));
     }
 }
