@@ -28,10 +28,12 @@
 - Support personal token authentication in jira kamelet [\#1529](https://github.com/apache/camel-kamelets/issues/1529)
 - Release Camel Kamelets 4.0.0-RC1 [\#1525](https://github.com/apache/camel-kamelets/issues/1525)
 - ElasicSearchSink-TrustCertificates [\#1246](https://github.com/apache/camel-kamelets/issues/1246)
+- Salesforce Sink Kamelet: Provide a general sink [\#875](https://github.com/apache/camel-kamelets/issues/875)
 - Add an Header From Kamelet Action [\#707](https://github.com/apache/camel-kamelets/issues/707)
 
 **Merged pull requests:**
 
+- Use Data Type Transformer API provided by Camel 4.0 [\#1607](https://github.com/apache/camel-kamelets/pull/1607) ([christophd](https://github.com/christophd))
 - Mongodb kamelets lack kamelets-utils dependency [\#1603](https://github.com/apache/camel-kamelets/pull/1603) ([oscerd](https://github.com/oscerd))
 - Minio Sink Kamelet: Like we do in S3 add the ability to specify objec… [\#1601](https://github.com/apache/camel-kamelets/pull/1601) ([oscerd](https://github.com/oscerd))
 - Warning during build due to peter-evans/create-pull-request@v3 using … [\#1600](https://github.com/apache/camel-kamelets/pull/1600) ([oscerd](https://github.com/oscerd))
