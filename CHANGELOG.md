@@ -33,6 +33,7 @@
 
 **Merged pull requests:**
 
+- Generated sources regen for SBOM [\#1608](https://github.com/apache/camel-kamelets/pull/1608) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Use Data Type Transformer API provided by Camel 4.0 [\#1607](https://github.com/apache/camel-kamelets/pull/1607) ([christophd](https://github.com/christophd))
 - Mongodb kamelets lack kamelets-utils dependency [\#1603](https://github.com/apache/camel-kamelets/pull/1603) ([oscerd](https://github.com/oscerd))
 - Minio Sink Kamelet: Like we do in S3 add the ability to specify objec… [\#1601](https://github.com/apache/camel-kamelets/pull/1601) ([oscerd](https://github.com/oscerd))
