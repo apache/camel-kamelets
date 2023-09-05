@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/apache/camel-k/v2/pkg/metadata"
+	"github.com/apache/camel-k/v2/pkg/util/camel"
+	"github.com/apache/camel-k/v2/pkg/util/dsl"
 	"io/ioutil"
 	"os"
 	"path"
@@ -10,11 +13,7 @@ import (
 	"sort"
 	"strings"
 
-	camelapiv1 "github.com/apache/camel-k/pkg/apis/camel/v1"
-	camelapi "github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
-	"github.com/apache/camel-k/pkg/metadata"
-	"github.com/apache/camel-k/pkg/util/camel"
-	"github.com/apache/camel-k/pkg/util/dsl"
+	camelapiv1 "github.com/apache/camel-k/v2/pkg/apis/camel/v1"
 	"github.com/bbalet/stopwords"
 	perrors "github.com/pkg/errors"
 	yamlv3 "gopkg.in/yaml.v3"
@@ -90,14 +89,16 @@ func verifyMissingDependencies(kamelets []KameletInfo) (errors []error) {
 		}
 
 		catalog, _ := camel.DefaultCatalog()
-		meta := metadata.Extract(catalog, code)
+		meta, _ := metadata.Extract(catalog, code)
 
-		meta.Dependencies.Each(func(extractedDep string) bool {
-			if !containsDependency(kamelet, extractedDep) {
-				errors = append(errors, fmt.Errorf("kamelet %q need dependency %q", kamelet.Name, extractedDep))
-			}
-			return true
-		})
+		if meta.Metadata.Dependencies != nil {
+			meta.Metadata.Dependencies.Each(func(extractedDep string) bool {
+				if !containsDependency(kamelet, extractedDep) {
+					errors = append(errors, fmt.Errorf("kamelet %q need dependency %q", kamelet.Name, extractedDep))
+				}
+				return true
+			})
+		}
 	}
 
 	return errors
@@ -166,7 +167,7 @@ func verifyDescriptors(kamelets []KameletInfo) (errors []error) {
 	return errors
 }
 
-func hasXDescriptor(p camelapi.JSONSchemaProp, desc string) bool {
+func hasXDescriptor(p camelapiv1.JSONSchemaProp, desc string) bool {
 	for _, d := range p.XDescriptors {
 		if d == desc {
 			return true
@@ -175,7 +176,7 @@ func hasXDescriptor(p camelapi.JSONSchemaProp, desc string) bool {
 	return false
 }
 
-func hasXDescriptorPrefix(p camelapi.JSONSchemaProp, prefix string) bool {
+func hasXDescriptorPrefix(p camelapiv1.JSONSchemaProp, prefix string) bool {
 	for _, d := range p.XDescriptors {
 		if strings.HasPrefix(d, prefix) {
 			return true
@@ -232,10 +233,6 @@ func verifyParameters(kamelets []KameletInfo) (errors []error) {
 	for _, kamelet := range kamelets {
 		if kamelet.Spec.Definition == nil {
 			errors = append(errors, fmt.Errorf("kamelet %q does not contain the JSON schema definition", kamelet.Name))
-			continue
-		}
-		if kamelet.Spec.Flow != nil {
-			errors = append(errors, fmt.Errorf("kamelet %q contain the deprecated Flow specification. Must use Template instead.", kamelet.Name))
 			continue
 		}
 		if kamelet.Spec.Template == nil {
@@ -358,11 +355,11 @@ func verifyFileNames(kamelets []KameletInfo) (errors []error) {
 
 func listKamelets(dir string) []KameletInfo {
 	scheme := runtime.NewScheme()
-	err := camelapi.AddToScheme(scheme)
+	err := camelapiv1.AddToScheme(scheme)
 	handleGeneralError("cannot to add camel APIs to scheme", err)
 
 	codecs := serializer.NewCodecFactory(scheme)
-	gv := camelapi.SchemeGroupVersion
+	gv := camelapiv1.SchemeGroupVersion
 	gvk := schema.GroupVersionKind{
 		Group:   gv.Group,
 		Version: gv.Version,
@@ -388,7 +385,7 @@ func listKamelets(dir string) []KameletInfo {
 		json, err := yaml.ToJSON(content)
 		handleGeneralError(fmt.Sprintf("cannot convert file %q to JSON", fileName), err)
 
-		kamelet := camelapi.Kamelet{}
+		kamelet := camelapiv1.Kamelet{}
 		_, _, err = decoder.Decode(json, &gvk, &kamelet)
 		handleGeneralError(fmt.Sprintf("cannot unmarshal file %q into Kamelet", fileName), err)
 		kameletInfo := KameletInfo{
@@ -402,25 +399,25 @@ func listKamelets(dir string) []KameletInfo {
 
 func verifyUsedParams(kamelets []KameletInfo) (errors []error) {
 	for _, k := range kamelets {
-	        if (k.FileName != "../../kamelets/azure-storage-blob-source.kamelet.yaml" && k.FileName != "../../kamelets/aws-s3-cdc-source.kamelet.yaml"  && k.FileName != "../../kamelets/set-kafka-key-action.kamelet.yaml"  && k.FileName != "../../kamelets/azure-storage-blob-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/google-storage-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/elasticsearch-search-source.kamelet.yaml" && k.FileName != "../../kamelets/opensearch-search-source.kamelet.yaml") {
-		used := getUsedParams(k.Kamelet)
-		declared := getDeclaredParams(k.Kamelet)
-		for p := range used {
-			if _, ok := declared[p]; !ok {
-				errors = append(errors, fmt.Errorf("parameter %q is not declared in the definition of kamelet %q", p, k.Kamelet.Name))
+		if k.FileName != "../../kamelets/azure-storage-blob-source.kamelet.yaml" && k.FileName != "../../kamelets/aws-s3-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/set-kafka-key-action.kamelet.yaml" && k.FileName != "../../kamelets/azure-storage-blob-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/google-storage-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/elasticsearch-search-source.kamelet.yaml" && k.FileName != "../../kamelets/opensearch-search-source.kamelet.yaml" {
+			used := getUsedParams(k.Kamelet)
+			declared := getDeclaredParams(k.Kamelet)
+			for p := range used {
+				if _, ok := declared[p]; !ok {
+					errors = append(errors, fmt.Errorf("parameter %q is not declared in the definition of kamelet %q", p, k.Kamelet.Name))
+				}
 			}
-		}
-		for p := range declared {
-			if _, ok := used[p]; !ok {
-				errors = append(errors, fmt.Errorf("parameter %q is declared in kamelet %q but never used", p, k.Kamelet.Name))
+			for p := range declared {
+				if _, ok := used[p]; !ok {
+					errors = append(errors, fmt.Errorf("parameter %q is declared in kamelet %q but never used", p, k.Kamelet.Name))
+				}
 			}
-		}
 		}
 	}
 	return errors
 }
 
-func getDeclaredParams(k camelapi.Kamelet) map[string]bool {
+func getDeclaredParams(k camelapiv1.Kamelet) map[string]bool {
 	res := make(map[string]bool)
 	if k.Spec.Definition != nil {
 		for p := range k.Spec.Definition.Properties {
@@ -448,7 +445,7 @@ func getDeclaredParams(k camelapi.Kamelet) map[string]bool {
 	return res
 }
 
-func getUsedParams(k camelapi.Kamelet) map[string]bool {
+func getUsedParams(k camelapiv1.Kamelet) map[string]bool {
 	if k.Spec.Template != nil {
 		var templateData interface{}
 		if err := json.Unmarshal(k.Spec.Template.RawMessage, &templateData); err != nil {
@@ -492,7 +489,7 @@ func inspectTemplateParams(v interface{}, params map[string]bool) {
 }
 
 type KameletInfo struct {
-	camelapi.Kamelet
+	camelapiv1.Kamelet
 	FileName string
 }
 

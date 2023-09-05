@@ -23,7 +23,7 @@ spec:
   source:
     ref:
       kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
+      apiVersion: camel.apache.org/v1
       name: timer-source
     properties:
       period: 60000
@@ -31,7 +31,7 @@ spec:
   steps:
     - ref:
         kind: Kamelet
-        apiVersion: camel.apache.org/v1alpha1
+        apiVersion: camel.apache.org/v1
         name: insert-header-action
       properties:
         name: petId
@@ -39,7 +39,7 @@ spec:
   sink:
     ref:
       kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
+      apiVersion: camel.apache.org/v1
       name: rest-openapi-sink
     properties:
       specification: yaks:resolveURL('test-service')/petstore/openapi.json

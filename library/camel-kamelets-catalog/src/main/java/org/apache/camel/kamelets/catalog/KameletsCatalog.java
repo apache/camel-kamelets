@@ -40,9 +40,9 @@ import org.apache.camel.kamelets.catalog.model.KameletPrefixSchemeEnum;
 import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
 import org.apache.camel.tooling.model.ComponentModel;
 import org.apache.camel.util.ObjectHelper;
-import org.apache.camel.v1alpha1.Kamelet;
-import org.apache.camel.v1alpha1.kameletspec.Definition;
-import org.apache.camel.v1alpha1.kameletspec.Template;
+import org.apache.camel.v1.Kamelet;
+import org.apache.camel.v1.kameletspec.Definition;
+import org.apache.camel.v1.kameletspec.Template;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
