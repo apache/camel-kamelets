@@ -33,6 +33,7 @@
 
 **Merged pull requests:**
 
+- Validate should use 1.20.x golang [\#1611](https://github.com/apache/camel-kamelets/pull/1611) ([oscerd](https://github.com/oscerd))
 - Generated sources regen for SBOM [\#1608](https://github.com/apache/camel-kamelets/pull/1608) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Use Data Type Transformer API provided by Camel 4.0 [\#1607](https://github.com/apache/camel-kamelets/pull/1607) ([christophd](https://github.com/christophd))
 - Mongodb kamelets lack kamelets-utils dependency [\#1603](https://github.com/apache/camel-kamelets/pull/1603) ([oscerd](https://github.com/oscerd))
