@@ -62,6 +62,12 @@ spec:
         title: Subscription Name
         description: Sets the name of the subscription in the topic to listen to. This parameter is mandatory in case of topic.
         type: string
+      serviceBusType:
+        title: Servicebus Type
+        description: The service bus type of connection to execute. Queue is for typical queue option and topic for subscription based model.
+        type: string
+        default: queue
+        enum: ["queue", "topic"]
   types:
     out:
       mediaType: application/octet-stream
@@ -76,6 +82,7 @@ spec:
         connectionString: "{{connectionString}}"
         serviceBusReceiveMode: "{{serviceBusReceiveMode}}"
         subscriptionName: "{{?subscriptionName}}"
+        serviceBusType: "{{serviceBusType}}"
       steps:
       - set-body:
           simple: "${body.toBytes()}"
