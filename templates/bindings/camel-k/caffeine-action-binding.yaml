@@ -7,7 +7,7 @@ spec:
   source:
     ref:
       kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
+      apiVersion: camel.apache.org/v1
       name: timer-source
     properties:
       message: '{"foo":"bar"}'
@@ -15,53 +15,53 @@ spec:
   steps:
   - ref:
       kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
+      apiVersion: camel.apache.org/v1
       name: json-deserialize-action
   - ref:
       kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
+      apiVersion: camel.apache.org/v1
       name: log-sink
   - ref:
       kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
+      apiVersion: camel.apache.org/v1
       name: insert-header-action
     properties:
       name: "caffeine-key"
       value: "my-key"
   - ref:
       kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
+      apiVersion: camel.apache.org/v1
       name: insert-header-action
     properties:
       name: "caffeine-operation"
       value: "PUT"
   - ref:
       kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
+      apiVersion: camel.apache.org/v1
       name: caffeine-action
     properties:
       cacheName: "my-cache"
   # extract the foo field from the body, cleaning the body
   - ref:
       kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
+      apiVersion: camel.apache.org/v1
       name: extract-field-action
     properties:
       field: '{"foo"}'
   - ref:
       kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
+      apiVersion: camel.apache.org/v1
       name: log-sink
   - ref:
       kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
+      apiVersion: camel.apache.org/v1
       name: insert-header-action
     properties:
       name: "caffeine-key"
       value: "my-key"
   - ref:
       kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
+      apiVersion: camel.apache.org/v1
       name: insert-header-action
     properties:
       name: "caffeine-operation"
@@ -69,7 +69,7 @@ spec:
   # retrieve the json payload from the cache and put into the body
   - ref:
       kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
+      apiVersion: camel.apache.org/v1
       name: caffeine-action
     properties:
       cacheName: "my-cache"

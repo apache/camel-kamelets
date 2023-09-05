@@ -2,17 +2,16 @@ package main
 
 import (
 	"fmt"
+	camelapiv1 "github.com/apache/camel-k/v2/pkg/apis/camel/v1"
 	"io/ioutil"
-	"os"
-	"path/filepath"
-	"sort"
-	"strings"
-
-	camel "github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
 	"k8s.io/apimachinery/pkg/util/yaml"
+	"os"
+	"path/filepath"
+	"sort"
+	"strings"
 )
 
 func main() {
@@ -34,7 +33,7 @@ func main() {
 	saveNav(links, docBaseDir)
 }
 
-func updateImageLink(k camel.Kamelet, links []string) []string {
+func updateImageLink(k camelapiv1.Kamelet, links []string) []string {
 	return append(links, fmt.Sprintf("* xref:%s.adoc[]", k.Name))
 }
 
@@ -54,13 +53,13 @@ func saveNav(links []string, out string) {
 	fmt.Printf("%q written\n", dest)
 }
 
-func listKamelets(dir string) []camel.Kamelet {
+func listKamelets(dir string) []camelapiv1.Kamelet {
 	scheme := runtime.NewScheme()
-	err := camel.AddToScheme(scheme)
+	err := camelapiv1.AddToScheme(scheme)
 	handleGeneralError("cannot to add camel APIs to scheme", err)
 
 	codecs := serializer.NewCodecFactory(scheme)
-	gv := camel.SchemeGroupVersion
+	gv := camelapiv1.SchemeGroupVersion
 	gvk := schema.GroupVersionKind{
 		Group:   gv.Group,
 		Version: gv.Version,
@@ -68,7 +67,7 @@ func listKamelets(dir string) []camel.Kamelet {
 	}
 	decoder := codecs.UniversalDecoder(gv)
 
-	kamelets := make([]camel.Kamelet, 0)
+	kamelets := make([]camelapiv1.Kamelet, 0)
 	files, err := ioutil.ReadDir(dir)
 	filesSorted := make([]string, 0)
 	handleGeneralError(fmt.Sprintf("cannot list dir %q", dir), err)
@@ -86,7 +85,7 @@ func listKamelets(dir string) []camel.Kamelet {
 		json, err := yaml.ToJSON(content)
 		handleGeneralError(fmt.Sprintf("cannot convert file %q to JSON", fileName), err)
 
-		kamelet := camel.Kamelet{}
+		kamelet := camelapiv1.Kamelet{}
 		_, _, err = decoder.Decode(json, &gvk, &kamelet)
 		handleGeneralError(fmt.Sprintf("cannot unmarshal file %q into Kamelet", fileName), err)
 		kamelets = append(kamelets, kamelet)

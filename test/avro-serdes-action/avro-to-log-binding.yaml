@@ -23,14 +23,14 @@ spec:
   source:
     ref:
       kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
+      apiVersion: camel.apache.org/v1
       name: webhook-source
     properties:
       subpath: user
   steps:
     - ref:
         kind: Kamelet
-        apiVersion: camel.apache.org/v1alpha1
+        apiVersion: camel.apache.org/v1
         name: avro-deserialize-action
       properties:
         schema: >
@@ -38,7 +38,7 @@ spec:
   sink:
     ref:
       kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
+      apiVersion: camel.apache.org/v1
       name: log-action
     properties:
       showHeaders: true

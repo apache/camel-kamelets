@@ -1,14 +1,30 @@
 module github.com/apache/camel-kamelets/docs/generator
 
-go 1.16
+go 1.20
 
 require (
-	github.com/apache/camel-k/pkg/apis/camel v1.9.2
-	github.com/docker/spdystream v0.0.0-20160310174837-449fdfce4d96 // indirect
-	github.com/ghodss/yaml v0.0.0-20150909031657-73d445a93680 // indirect
-	github.com/go-openapi/spec v0.0.0-20160808142527-6aced65f8501 // indirect
-	github.com/golang/groupcache v0.0.0-20191227052852-215e87163ea7 // indirect
-	github.com/hashicorp/golang-lru v0.5.1 // indirect
-	github.com/iancoleman/strcase v0.1.3
-	k8s.io/apimachinery v0.22.5
+	k8s.io/apimachinery v0.25.6
+	github.com/apache/camel-k/v2 v2.0.1
+)
+
+require (
+	github.com/go-logr/logr v1.2.4 // indirect
+	github.com/gogo/protobuf v1.3.2 // indirect
+	github.com/google/go-cmp v0.5.9 // indirect
+	github.com/google/gofuzz v1.2.0 // indirect
+	github.com/imdario/mergo v0.3.13 // indirect
+	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
+	github.com/modern-go/reflect2 v1.0.2 // indirect
+	github.com/stretchr/testify v1.8.4 // indirect
+	golang.org/x/net v0.12.0 // indirect
+	golang.org/x/text v0.11.0 // indirect
+	gopkg.in/inf.v0 v0.9.1 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
+	k8s.io/api v0.25.6 // indirect
+	k8s.io/klog/v2 v2.100.1 // indirect
+	k8s.io/utils v0.0.0-20221108210102-8e77b1f39fe2 // indirect
+	sigs.k8s.io/json v0.0.0-20220713155537-f223a00ba0e2 // indirect
+	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
+	sigs.k8s.io/yaml v1.3.0 // indirect
 )

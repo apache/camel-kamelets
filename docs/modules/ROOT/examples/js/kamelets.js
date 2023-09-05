@@ -189,7 +189,7 @@ const kameletBindings = {
         source: {
           ref: {
             kind: 'Kamelet',
-            apiVersion: 'camel.apache.org/v1alpha1',
+            apiVersion: 'camel.apache.org/v1',
             name: 'kafka-source',
             properties: {
               bootstrapServers: 'localhost:9092',
