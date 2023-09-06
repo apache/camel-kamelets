@@ -24,7 +24,7 @@ Feature: AWS S3 Kamelet - Http sink
     When load KameletBinding aws-s3-to-http.yaml
     And KameletBinding aws-s3-to-http is available
     And Camel K integration aws-s3-to-http is running
-    Then Camel K integration aws-s3-to-http should print Started aws-s3-to-http
+    Then Camel K integration aws-s3-to-http should print (aws-s3-to-http) started
     # Verify Kamelet source
     Given Camel exchange message header CamelAwsS3Key="${aws.s3.key}"
     Given send Camel exchange to("aws2-s3://${aws.s3.bucketNameOrArn}?amazonS3Client=#amazonS3Client") with body: ${aws.s3.message}
