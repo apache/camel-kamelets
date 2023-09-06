@@ -2,7 +2,7 @@
 
 This repository contains the default Kamelet catalog used by Apache Camel and its sub-projects.
 
-Kamelets in this repository can be used natively in Camel K, Camel, Camel-Quarkus and Camel-spring-boot integrations, without additional configuration steps. Users just need to reference the Kamelets by name in the URI (e.g. `kamelet:timer-source?message=Hello`), or use them in a `KameletBinding`, for Camel K, in particular.
+Kamelets in this repository can be used natively in Camel K, Camel, Camel-Quarkus and Camel-spring-boot integrations, without additional configuration steps. Users just need to reference the Kamelets by name in the URI (e.g. `kamelet:timer-source?message=Hello`), or use them in a `Pipe`, for Camel K, in particular.
 
 **NOTE**: Camel K (and other sub-projects) will only use a specific version of this Kamelet catalog. Refer to the release notes of the sub-project for more information.
 
@@ -162,11 +162,11 @@ Kamelets submitted with tests that verify their correctness **MUST** be labeled 
 
 **NOTE**: there's no way at the moment to inject credentials for external systems into the CI in order to write more advanced tests, but we can expect we'll find an usable strategy in the long run
 
-### Kamelet Binding Examples
+### Kamelet Pipe Examples
 
-Binding examples are highly encouraged to be added under `templates/bindings/camel-k` directory for Kamelet Binding and `templates/bindings/core` for the YAML routes.
+Pipe examples are highly encouraged to be added under `templates/pipes/camel-k` directory for Kamelet Pipe and `templates/pipes/core` for the YAML routes.
 
-When the Kamelet Catalog documentation is generated, the examples in each Kamelet documentation page are automatically generated, but the generator code is not wise enough and it may generate a Kamelet Binding that doesn't work, requiring additional steps. In this case, the binding example should be added to the above mentioned directories, and add the comment marker at the first line `"# example_for_kamelet_doc"` only in the Camel K Kamelet Binding example (in `templates/bindings/camel-k`). When the documentation mechanism runs, it will source this binding example into the kamelet documentation page as example.
+When the Kamelet Catalog documentation is generated, the examples in each Kamelet documentation page are automatically generated, but the generator code is not wise enough and it may generate a Kamelet Pipe that doesn't work, requiring additional steps. In this case, the pipe example should be added to the above mentioned directories, and add the comment marker at the first line `"# example_for_kamelet_doc"` only in the Camel K Kamelet Pipe example (in `templates/pipes/camel-k`). When the documentation mechanism runs, it will source this pipe example into the kamelet documentation page as example.
 
 ## Releasing
 

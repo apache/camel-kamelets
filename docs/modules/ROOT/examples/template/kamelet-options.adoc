@@ -81,10 +81,10 @@ endif::[]
 :ref-kind: Channel
 :ref-name: mychannel
 
-.{name}-binding.yaml
+.{name}-pipe.yaml
 [source,yaml,subs='+attributes,macros']
 ----
-jsonpathExpression::example$yaml/${basename}.kamelet.yaml[query='$', format='kamelets.binding("{type}", apiVersion, kind, metadata, spec, "{ref-kind}", "{ref-api-version}", "{ref-name}")', outputFormat=yml, requires={requires}]
+jsonpathExpression::example$yaml/${basename}.kamelet.yaml[query='$', format='kamelets.pipe("{type}", apiVersion, kind, metadata, spec, "{ref-kind}", "{ref-api-version}", "{ref-name}")', outputFormat=yml, requires={requires}]
 ----
 
 ==== *Prerequisite*
@@ -93,13 +93,13 @@ You have xref:{camel-k-docs-version}@camel-k::installation/installation.adoc[Cam
 
 ==== *Procedure for using the cluster CLI*
 
-. Save the \`{name}-binding.yaml\` file to your local drive, and then edit it as needed for your configuration.
+. Save the \`{name}-pipe.yaml\` file to your local drive, and then edit it as needed for your configuration.
 
 . Run the {type} by using the following command:
 +
 [source,shell,subs=+attributes]
 ----
-kubectl apply -f {name}-binding.yaml
+kubectl apply -f {name}-pipe.yaml
 ----
 
 ==== *Procedure for using the Kamel CLI*
@@ -108,10 +108,10 @@ Configure and run the {type} by using the following command:
 
 [source,shell,subs='+attributes,macros']
 ----
-jsonpathExpression:example$yaml/${basename}.kamelet.yaml[query='$.spec', format='kamelets.bindingCommand("{type}", "{name}", definition, "channel:mychannel")', requires={requires}]
+jsonpathExpression:example$yaml/${basename}.kamelet.yaml[query='$.spec', format='kamelets.pipeCommand("{type}", "{name}", definition, "channel:mychannel")', requires={requires}]
 ----
 
-This command creates the KameletBinding in the current namespace on the cluster.
+This command creates the Kamelet Pipe in the current namespace on the cluster.
 
 === Kafka {type}
 
@@ -126,10 +126,10 @@ endif::[]
 :ref-kind: KafkaTopic
 :ref-name: my-topic
 
-.{name}-binding.yaml
+.{name}-pipe.yaml
 [source,yaml,subs='+attributes,macros']
 ----
-jsonpathExpression::example$yaml/${basename}.kamelet.yaml[query='$', format='kamelets.binding("{type}", apiVersion, kind, metadata, spec, "{ref-kind}", "{ref-api-version}", "{ref-name}")', outputFormat=yml, requires={requires}]
+jsonpathExpression::example$yaml/${basename}.kamelet.yaml[query='$', format='kamelets.pipe("{type}", apiVersion, kind, metadata, spec, "{ref-kind}", "{ref-api-version}", "{ref-name}")', outputFormat=yml, requires={requires}]
 ----
 
 ==== *Prerequisites*
@@ -140,13 +140,13 @@ jsonpathExpression::example$yaml/${basename}.kamelet.yaml[query='$', format='kam
 
 ==== *Procedure for using the cluster CLI*
 
-. Save the \`{name}-binding.yaml\` file to your local drive, and then edit it as needed for your configuration.
+. Save the \`{name}-pipe.yaml\` file to your local drive, and then edit it as needed for your configuration.
 
 . Run the {type} by using the following command:
 +
 [source,shell,subs=+attributes]
 ----
-kubectl apply -f {name}-binding.yaml
+kubectl apply -f {name}-pipe.yaml
 ----
 
 ==== *Procedure for using the Kamel CLI*
@@ -155,10 +155,10 @@ Configure and run the {type} by using the following command:
 
 [source,shell,subs='+attributes,macros']
 ----
-jsonpathExpression::example$yaml/${basename}.kamelet.yaml[query='$.spec', format='kamelets.bindingCommand("{type}", "{name}", definition, "kafka.strimzi.io/v1beta1:KafkaTopic:my-topic")', requires={requires}]
+jsonpathExpression::example$yaml/${basename}.kamelet.yaml[query='$.spec', format='kamelets.pipeCommand("{type}", "{name}", definition, "kafka.strimzi.io/v1beta1:KafkaTopic:my-topic")', requires={requires}]
 ----
 
-This command creates the KameletBinding in the current namespace on the cluster.
+This command creates the Kamelet Pipe in the current namespace on the cluster.
 
 == Kamelet source file
 

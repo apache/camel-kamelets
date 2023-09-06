@@ -37,9 +37,9 @@ config:
           level: INFO
     secret:  salesforce-credentials
     resources:
-      - timer-to-salesforce-binding.yaml
-      - direct-to-salesforce-update-binding.yaml
-      - direct-to-salesforce-delete-binding.yaml
+      - timer-to-salesforce-pipe.yaml
+      - direct-to-salesforce-update-pipe.yaml
+      - direct-to-salesforce-delete-pipe.yaml
       - salesforce-credentials.properties
   dump:
     enabled: true

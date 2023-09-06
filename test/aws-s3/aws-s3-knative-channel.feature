@@ -21,10 +21,10 @@ Feature: AWS S3 Kamelet - binding to Knative channel
 
   Scenario: Verify AWS-S3 Kamelet to InMemoryChannel binding
     # Create binding
-    Given load KameletBinding aws-s3-to-knative-channel.yaml
-    Given load KameletBinding knative-channel-to-log.yaml
-    Then KameletBinding aws-s3-to-knative-channel should be available
-    And KameletBinding knative-channel-to-log should be available
+    Given load Pipe aws-s3-to-knative-channel.yaml
+    Given load Pipe knative-channel-to-log.yaml
+    Then Pipe aws-s3-to-knative-channel should be available
+    And Pipe knative-channel-to-log should be available
     And Camel K integration aws-s3-to-knative-channel is running
     And Camel K integration knative-channel-to-log is running
     And Camel K integration aws-s3-to-knative-channel should print Started aws-s3-to-knative-channel
@@ -37,8 +37,8 @@ Feature: AWS S3 Kamelet - binding to Knative channel
 
   Scenario: Remove resources
     # Remove Camel K resources
-    Given delete KameletBinding aws-s3-to-knative-channel
-    Given delete KameletBinding knative-channel-to-log
+    Given delete Pipe aws-s3-to-knative-channel
+    Given delete Pipe knative-channel-to-log
     # Remove Knative resources
     Given delete Knative broker default
     Given delete Knative channel messages

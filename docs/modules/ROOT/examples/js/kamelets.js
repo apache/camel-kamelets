@@ -28,8 +28,8 @@ const QUOTE_REPLACEMENTS = {
   '\\': '\\\\',
 }
 
-// marker added to the first line of kamelet binding files in templates/bindings/camel-k
-// generator will not generate a kamelet binding example and will source this kamelet binding file into the generated doc
+// marker added to the first line of kamelet pipe files in templates/pipes/camel-k
+// generator will not generate a kamelet pipe example and will source this kamelet pipe file into the generated doc
 const EXAMPLE_KAMELET_DOC_MARKER = "example_for_kamelet_doc"
 
 // regex to replace the sink type
@@ -38,11 +38,11 @@ const regex = new RegExp(`(  sink:\\n\\s*ref:\\n)(\\s*kind:)(.*)(\\n\\s*apiVersi
 const svgb64Prefix = 'data:image/svg+xml;base64,'
 
 module.exports = {
-  binding: (binding, apiVersion, kind, metadata_, spec_, refKind, refApiVersion, refName) => {
+  pipe: (pipe, apiVersion, kind, metadata_, spec_, refKind, refApiVersion, refName) => {
       const name = metadata_.name
-      const metadata = {name: `${name}-binding`}
+      const metadata = {name: `${name}-pipe`}
 
-      genExample = shouldGenerateKameletBindingExample(metadata.name)
+      genExample = shouldGenerateKameletPipeExample(metadata.name)
       if (genExample) {
         const kamelet = {
           ref: {
@@ -61,19 +61,19 @@ module.exports = {
         }
         const base = {
           apiVersion,
-          kind: 'KameletBinding',
+          kind: 'Pipe',
           metadata,
         }
-        const fn = kameletBindings[binding] || (() => `unrecognized binding ${binding}`)
+        const fn = kameletPipes[pipe] || (() => `unrecognized pipe ${pipe}`)
         return fn(base, kamelet, platform)
       } else {
-        content = readKameletBindingExample(metadata.name, refApiVersion, refKind, refName)
+        content = readKameletPipeExample(metadata.name, refApiVersion, refKind, refName)
         return content
       }
   },
 
-  bindingCommand: (binding, name, definition, topic) => {
-    const namePrefix = { action: 'step-0', sink: 'sink', source: 'source' }[binding]
+  pipeCommand: (pipe, name, definition, topic) => {
+    const namePrefix = { action: 'step-0', sink: 'sink', source: 'source' }[pipe]
     const quote = (string) => (typeof string === 'String')
       ? string.replace(QUOTED_CHARS, (m) => QUOTE_REPLACEMENTS[m])
       : string
@@ -144,25 +144,25 @@ function kameletPropertyList (definition) {
   )
 }
 
-// verify if the existing kamelet binding example should be automatically generated
+// verify if the existing kamelet pipe example should be automatically generated
 // by checking if there is a comment marker in the first line
-function shouldGenerateKameletBindingExample(file) {
-  f = "../camel-kamelets/templates/bindings/camel-k/" + file + ".yaml"
+function shouldGenerateKameletPipeExample(file) {
+  f = "../camel-kamelets/templates/pipes/camel-k/" + file + ".yaml"
   try {
     bufContent = fs.readFileSync(f)
     content = bufContent.toString()
     line = content.split(/\r?\n/)[0]
     return line.indexOf(EXAMPLE_KAMELET_DOC_MARKER) < 0
   } catch (err) {
-    // in case there is no kamelet binding example file, assume the example should be generated
+    // in case there is no kamelet pipe example file, assume the example should be generated
     return true
   }
 }
 
-// source the kamelet binding example from the example file
+// source the kamelet pipe example from the example file
 // skip the first line and replace the sink kind when the kind is a knative channel
-function readKameletBindingExample(file, apiVersion, kind, name) {
-  f = "../camel-kamelets/templates/bindings/camel-k/" + file + ".yaml"
+function readKameletPipeExample(file, apiVersion, kind, name) {
+  f = "../camel-kamelets/templates/pipes/camel-k/" + file + ".yaml"
   try {
     bufContent = fs.readFileSync(f)
     content = bufContent.toString()
@@ -177,13 +177,13 @@ function readKameletBindingExample(file, apiVersion, kind, name) {
     yamlDoc = yaml.load(klbContent);
     return yamlDoc
   } catch (err) {
-    console.log("Error reading kamelet binding example file " + file + ": " +  err)
+    console.log("Error reading kamelet pipe example file " + file + ": " +  err)
     return err
   }
 }
 
 
-const kameletBindings = {
+const kameletPipes = {
   action: (base, kamelet, platform) => Object.assign(base, {
       spec: {
         source: {

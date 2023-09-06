@@ -28,7 +28,7 @@ Feature: REST OpenAPI Kamelet sink
 
   Scenario: Create Kamelet binding for addPet
     Given variable operation is "addPet"
-    Then load KameletBinding rest-openapi-sink-binding.yaml
+    Then load Pipe rest-openapi-sink-pipe.yaml
 
   Scenario: Provide OpenAPI specification to Camel K integration
     Given load variable openapi from openapi.json
@@ -43,11 +43,11 @@ Feature: REST OpenAPI Kamelet sink
     And send HTTP 201 CREATED
 
   Scenario: Remove resources
-    Given delete KameletBinding rest-openapi-sink-binding
+    Given delete Pipe rest-openapi-sink-pipe
 
   Scenario: Create Kamelet binding for deletePet
     Given variable operation is "deletePet"
-    When load KameletBinding rest-openapi-sink-binding.yaml
+    When load Pipe rest-openapi-sink-pipe.yaml
 
   Scenario: Provide OpenAPI specification to Camel K integration
     Given load variable openapi from openapi.json
@@ -61,5 +61,5 @@ Feature: REST OpenAPI Kamelet sink
     And send HTTP 204 NO_CONTENT
 
   Scenario: Remove resources
-    Given delete KameletBinding rest-openapi-sink-binding
+    Given delete Pipe rest-openapi-sink-pipe
     And delete Kubernetes service test-service

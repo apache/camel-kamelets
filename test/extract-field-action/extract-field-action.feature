@@ -30,9 +30,9 @@ Feature: Extract field Kamelet action
     """
     { "id": "citrus:randomUUID()", "${field}": "Camel K rocks!" }
     """
-    When load KameletBinding extract-field-action-binding.yaml
-    Then Camel K integration extract-field-action-binding should be running
-    And Camel K integration extract-field-action-binding should print Routes startup
+    When load Pipe extract-field-action-pipe.yaml
+    Then Camel K integration extract-field-action-pipe should be running
+    And Camel K integration extract-field-action-pipe should print Routes startup
 
   Scenario: Verify output message sent
     Given expect HTTP request body: "Camel K rocks!"
@@ -40,5 +40,5 @@ Feature: Extract field Kamelet action
     Then send HTTP 200 OK
 
   Scenario: Remove resources
-    Given delete KameletBinding extract-field-action-binding
+    Given delete Pipe extract-field-action-pipe
     And delete Kubernetes service test-service

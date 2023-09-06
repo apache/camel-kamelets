@@ -36,7 +36,7 @@ Feature: Mail Sink
     Given load endpoint mail-server.groovy
 
   Scenario: Create Camel K resources
-    Given load KameletBinding timer-to-mail.yaml
+    Given load Pipe timer-to-mail.yaml
     And Camel K integration timer-to-mail should be running
     And Camel K integration timer-to-mail should print Routes startup
 
@@ -59,5 +59,5 @@ Feature: Mail Sink
     """
 
   Scenario: Remove Camel K resources
-    Given delete KameletBinding timer-to-mail
+    Given delete Pipe timer-to-mail
     And delete Kubernetes service mail-server
