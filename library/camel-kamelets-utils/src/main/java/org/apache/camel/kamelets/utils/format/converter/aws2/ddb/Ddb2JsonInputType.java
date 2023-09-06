@@ -59,8 +59,8 @@ import software.amazon.awssdk.services.dynamodb.model.ReturnValue;
  * For UpdateItem operation the Json body defines both key attributes to identify the item to be updated and all item
  * attributes tht get updated on the item.
  *
- * The given Json body can use "operation", "key" and "item" as top level properties. Both define a Json object that
- * will be mapped to respective attribute value maps:
+ * The given Json body can use "operation", "key" and "item" as top level properties that will be mapped to respective
+ * attribute value maps:
  *
  * <pre>
  * {@code
@@ -72,11 +72,11 @@ import software.amazon.awssdk.services.dynamodb.model.ReturnValue;
  * }
  * </pre>
  *
- * The converter will extract the objects and set respective attribute value maps as header entries. This is a
+ * The transformer will extract the objects and set respective attribute value maps as header entries. This is a
  * comfortable way to define different key and item attribute value maps e.g. on UpdateItem operation.
  *
  * In case key and item attribute value maps are identical you can omit the special top level properties completely. The
- * converter will map the whole Json body as is then and use it as source for the attribute value map.
+ * transformer will map the whole Json body as is then and use it as source for the attribute value map.
  */
 @DataTypeTransformer(name = "aws2-ddb:application-json")
 public class Ddb2JsonInputType extends Transformer {

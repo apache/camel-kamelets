@@ -44,10 +44,11 @@ spec:
       For DeleteItem operation the Json body defines only the primary key attributes that identify the item to delete.
       For UpdateItem operation the Json body defines both key attributes to identify the item to be updated and all item attributes tht get updated on the item.
       
-      The given Json body can use "key" and "item" as top level properties. Both define a Json object that will be mapped to respective attribute value maps
+      The given Json body can use "operation", "key" and "item" as top level properties that will be mapped to respective attribute value maps.
       {
-          "key": {},
-          "item": {}
+        "operation": "PutItem"
+        "key": {},
+        "item": {}
       }
     required:
       - table
@@ -104,9 +105,44 @@ spec:
         x-descriptors:
           - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
-  types:
+  dataTypes:
     in:
-      mediaType: application/json
+      default: json
+      types:
+        json:
+          format: "aws2-ddb:application-json"
+          description: |-
+            Json representation of a DDB operation. The input type supports the operations: PutItem, UpdateItem, DeleteItem
+            
+            For PutItem operation the Json body defines all item attributes.
+            For DeleteItem operation the Json body defines only the primary key attributes that identify the item to delete.
+            For UpdateItem operation the Json body defines both key attributes to identify the item to be updated and all item attributes tht get updated on the item.
+  
+            The given Json body can use "operation", "key" and "item" as top level properties that will be mapped to respective attribute value maps.
+          headers:
+            CamelAwsDdbOperation:
+              title: Operation
+              description: The operation to perform. Overwrites the operation given in the Json body. One of PutItem, UpdateItem, DeleteItem.
+              default: PutItem
+              type: string
+            CamelAwsDdbReturnValues:
+              title: Return Values
+              description: Use this parameter if you want to get the attribute name-value pairs before or after they are modified. Possible values are NONE, ALL_OLD, UPDATED_OLD, ALL_NEW, UPDATED_NEW.
+              type: string
+          mediaType: application/json
+          schema:
+            type: object
+            required: [ "key" ]
+            properties:
+              operation:
+                type: string
+                description: The operator to perform. One of PutItem, UpdateItem, DeleteItem
+              key:
+                type: object
+                description: The primary key specifies the selection criteria for the query.
+              item:
+                type: object
+                description: Attribute value map specifies all attributes to change with the given operation.
   dependencies:
   - mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.1.0-SNAPSHOT
   - "camel:core"

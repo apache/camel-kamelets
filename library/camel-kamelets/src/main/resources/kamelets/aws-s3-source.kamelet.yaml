@@ -101,6 +101,61 @@ spec:
         description: The number of milliseconds before the next poll of the selected bucket.
         type: integer
         default: 500
+  dataTypes:
+    out:
+      default: binary
+      headers:
+        CamelAwsS3BucketName:
+          title: S3 Bucket Name
+          description: The bucket name which has been used to retrieve objects
+          type: string
+        CamelAwsS3Key:
+          title: S3 Key
+          description: The key under which the retrieved object is stored
+          type: string
+        CamelAwsS3ContentType:
+          title: Content Type
+          description: The content type of the retrieved object.
+          default: application/octet-stream
+          type: string
+        CamelAwsS3ETag:
+          title: ETag Value
+          description: |-
+            The hex encoded 128-bit MD5 digest of the associated object according to RFC 1864. 
+            This data is used as an integrity check to verify that the data received by the caller is the same data that was sent by Amazon S3.
+          type: string
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: Default binary representation of the S3 object retrieved from the bucket.
+          mediaType: application/octet-stream
+        cloudevents:
+          format: "aws2-s3:application-cloudevents"
+          description: |-
+            Output data type represents AWS S3 get object response as CloudEvent V1. The data type sets Camel specific CloudEvent headers on the exchange with
+            respective data from the S3 bucket and its derived object.
+          headers:
+            CamelCloudEventID:
+              title: CloudEvent ID
+              description: The Camel exchange id set as event id
+              type: string
+            CamelCloudEventType:
+              title: CloudEvent Type
+              description: The event type
+              default: "org.apache.camel.event.aws.s3.getObject"
+              type: string
+            CamelCloudEventSource:
+              title: CloudEvent Source
+              description: The event source. By default, the S3 bucket name with prefix "aws.s3.bucket.".
+              type: string
+            CamelCloudEventSubject:
+              title: CloudEvent Subject
+              description: The event subject. Usually the S3 key.
+              type: string
+            CamelCloudEventTime:
+              title: CloudEvent Time
+              description: The exchange creation timestamp as event time.
+              type: string
   dependencies:
     - "camel:core"
     - "camel:aws2-s3"
