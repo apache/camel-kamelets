@@ -42,7 +42,6 @@ concurrency:
 
 env:
   YAKS_VERSION: 0.16.0
-  YAKS_RUN_OPTIONS: "--timeout=15m --local -e YAKS_CAMELK_MAX_ATTEMPTS=10 -e YAKS_JBANG_CAMEL_VERSION=4.0.0 -e YAKS_JBANG_KAMELETS_VERSION=4.1.0-SNAPSHOT -e YAKS_JBANG_KAMELETS_LOCAL_DIR=../../../kamelets -e YAKS_KAMELET_API_VERSION=v1alpha1"
 
 jobs:
   test:
@@ -88,22 +87,8 @@ jobs:
         
         echo "Running YAKS tests for Kamelets"
         
-        yaks run test/aws-ddb-sink $YAKS_RUN_OPTIONS
-        yaks run test/aws-s3 $YAKS_RUN_OPTIONS
-        
-        yaks run test/avro-data-type $YAKS_RUN_OPTIONS
-        yaks run test/avro-serdes-action $YAKS_RUN_OPTIONS
-        
-        yaks run test/extract-field-action $YAKS_RUN_OPTIONS
-        yaks run test/insert-field-action $YAKS_RUN_OPTIONS
-        
-        yaks run test/mail-sink $YAKS_RUN_OPTIONS
-        yaks run test/timer-source $YAKS_RUN_OPTIONS
-        yaks run test/timer-to-http $YAKS_RUN_OPTIONS
-        yaks run test/data-type-action $YAKS_RUN_OPTIONS
-        yaks run test/earthquake-source $YAKS_RUN_OPTIONS
-        yaks run test/rest-openapi-sink $YAKS_RUN_OPTIONS
-        yaks run test/kafka $YAKS_RUN_OPTIONS
+        cd test 
+        make yaks
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
