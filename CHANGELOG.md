@@ -17,6 +17,8 @@
 - Mongodb kamelets lack kamelets-utils dependency [\#1602](https://github.com/apache/camel-kamelets/issues/1602)
 - Minio Sink Kamelet: Like we do in S3 add the ability to specify objectName instead of using header [\#1599](https://github.com/apache/camel-kamelets/issues/1599)
 - Azure Datalake still uses camel-kamelets-utils from github notation [\#1597](https://github.com/apache/camel-kamelets/issues/1597)
+- Add Support for Topic in Servicebus Kamelets [\#1596](https://github.com/apache/camel-kamelets/issues/1596)
+- NoSuchEndpointException while using TOD uri in kamelets/salesforce-update-sink.kamelet.yaml  [\#1590](https://github.com/apache/camel-kamelets/issues/1590)
 - Warning during build due to peter-evans/create-pull-request@v3 using node12 [\#1588](https://github.com/apache/camel-kamelets/issues/1588)
 - CI enablement for PPC64LE   [\#1582](https://github.com/apache/camel-kamelets/issues/1582)
 - Fix yaks test failing on main branch [\#1579](https://github.com/apache/camel-kamelets/issues/1579)
@@ -33,6 +35,11 @@
 
 **Merged pull requests:**
 
+- Upgrade Camel K CRDs to 2.0.1 [\#1617](https://github.com/apache/camel-kamelets/pull/1617) ([apupier](https://github.com/apupier))
+- Generated sources regen [\#1616](https://github.com/apache/camel-kamelets/pull/1616) ([github-actions[bot]](https://github.com/apps/github-actions))
+- fix\(ci\): remove example breaking site [\#1614](https://github.com/apache/camel-kamelets/pull/1614) ([squakez](https://github.com/squakez))
+- Generated sources regen [\#1613](https://github.com/apache/camel-kamelets/pull/1613) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Create salesforce-composite-upsert-sink.kamelet.yaml [\#1612](https://github.com/apache/camel-kamelets/pull/1612) ([Ziauddin135](https://github.com/Ziauddin135))
 - Validate should use 1.20.x golang [\#1611](https://github.com/apache/camel-kamelets/pull/1611) ([oscerd](https://github.com/oscerd))
 - Generated sources regen for SBOM [\#1608](https://github.com/apache/camel-kamelets/pull/1608) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Use Data Type Transformer API provided by Camel 4.0 [\#1607](https://github.com/apache/camel-kamelets/pull/1607) ([christophd](https://github.com/christophd))
