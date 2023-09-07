@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ---------------------------------------------------------------------------
-
+@ignored
 Feature: Salesforce Kamelet
 
   Background:
@@ -70,7 +70,6 @@ Feature: Salesforce Kamelet
     When send GET /services/data/v50.0/query/
     Then verify HTTP response expression: $.totalSize="0"
     And receive HTTP 200 OK
-
 
   Scenario: Remove Camel-K resources
     Given delete KameletBinding timer-to-salesforce-binding

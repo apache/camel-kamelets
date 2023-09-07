@@ -20,10 +20,6 @@ config:
     temporary: false
   runtime:
     env:
-      - name: YAKS_JBANG_KAMELETS_LOCAL_DIR
-        value: "../../../kamelets"
-      - name: YAKS_CAMELK_KAMELET_API_VERSION
-        value: v1
       - name: YAKS_CAMELK_AUTO_REMOVE_RESOURCES
         value: false
       - name: YAKS_KUBERNETES_AUTO_REMOVE_RESOURCES

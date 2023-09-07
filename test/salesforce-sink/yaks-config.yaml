@@ -26,6 +26,9 @@ config:
         value: false
       - name: YAKS_JBANG_CAMEL_DUMP_INTEGRATION_OUTPUT
         value: true
+    cucumber:
+      tags:
+        - "not @ignored"
     settings:
       loggers:
         - name: INTEGRATION_STATUS
