@@ -2,7 +2,15 @@
 
 ## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.0.0-RC1...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.0.0...HEAD)
+
+**Merged pull requests:**
+
+- Expose Kamelet data type information [\#1626](https://github.com/apache/camel-kamelets/pull/1626) ([christophd](https://github.com/christophd))
+
+## [v4.0.0](https://github.com/apache/camel-kamelets/tree/v4.0.0) (2023-09-06)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.0.0-RC1...v4.0.0)
 
 **Implemented enhancements:**
 
@@ -35,6 +43,8 @@
 
 **Merged pull requests:**
 
+- Upgrade Commons-DBCP2 to version 2.10.0 [\#1624](https://github.com/apache/camel-kamelets/pull/1624) ([oscerd](https://github.com/oscerd))
+- Upgrade Redshift-jdbc42 to version 2.1.0.18 [\#1623](https://github.com/apache/camel-kamelets/pull/1623) ([oscerd](https://github.com/oscerd))
 - Upgrade Camel K CRDs to 2.0.1 [\#1617](https://github.com/apache/camel-kamelets/pull/1617) ([apupier](https://github.com/apupier))
 - Generated sources regen [\#1616](https://github.com/apache/camel-kamelets/pull/1616) ([github-actions[bot]](https://github.com/apps/github-actions))
 - fix\(ci\): remove example breaking site [\#1614](https://github.com/apache/camel-kamelets/pull/1614) ([squakez](https://github.com/squakez))
