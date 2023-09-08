@@ -4,9 +4,19 @@
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.0.0...HEAD)
 
+**Closed issues:**
+
+- Upgrade CycloneDX Maven Plugin to version 2.7.9 [\#1632](https://github.com/apache/camel-kamelets/issues/1632)
+- Provide SBOM as released artifacts when releasing [\#1630](https://github.com/apache/camel-kamelets/issues/1630)
+- AWS2-SQS Source: Add CloudEvents Data Type Transformer [\#1627](https://github.com/apache/camel-kamelets/issues/1627)
+
 **Merged pull requests:**
 
+- Upgrade CycloneDX Maven Plugin to version 2.7.9 [\#1633](https://github.com/apache/camel-kamelets/pull/1633) ([oscerd](https://github.com/oscerd))
+- Provide SBOM as released artifacts when releasing [\#1631](https://github.com/apache/camel-kamelets/pull/1631) ([oscerd](https://github.com/oscerd))
+- AWS2-SQS Source: Add CloudEvents Data Type Transformer [\#1628](https://github.com/apache/camel-kamelets/pull/1628) ([oscerd](https://github.com/oscerd))
 - Expose Kamelet data type information [\#1626](https://github.com/apache/camel-kamelets/pull/1626) ([christophd](https://github.com/christophd))
+- Add Makefile to run YAKS tests [\#1625](https://github.com/apache/camel-kamelets/pull/1625) ([christophd](https://github.com/christophd))
 
 ## [v4.0.0](https://github.com/apache/camel-kamelets/tree/v4.0.0) (2023-09-06)
 
