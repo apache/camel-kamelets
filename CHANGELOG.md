@@ -12,6 +12,7 @@
 
 **Merged pull requests:**
 
+- Generated sources regen for SBOM [\#1634](https://github.com/apache/camel-kamelets/pull/1634) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Upgrade CycloneDX Maven Plugin to version 2.7.9 [\#1633](https://github.com/apache/camel-kamelets/pull/1633) ([oscerd](https://github.com/oscerd))
 - Provide SBOM as released artifacts when releasing [\#1631](https://github.com/apache/camel-kamelets/pull/1631) ([oscerd](https://github.com/oscerd))
 - AWS2-SQS Source: Add CloudEvents Data Type Transformer [\#1628](https://github.com/apache/camel-kamelets/pull/1628) ([oscerd](https://github.com/oscerd))
