@@ -20,6 +20,7 @@ package org.apache.camel.kamelets.utils.format.converter.json;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.camel.CamelExecutionException;
@@ -50,6 +51,10 @@ public class JsonStructDataType extends Transformer {
     }
 
     private InputStream getBodyAsStream(Message message) throws InvalidPayloadException {
+        if (message.getBody() == null) {
+            return new ByteArrayInputStream("{}".getBytes(StandardCharsets.UTF_8));
+        }
+
         InputStream bodyStream = message.getBody(InputStream.class);
 
         if (bodyStream == null) {
