@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.camel.Exchange;
 import org.apache.camel.InvalidPayloadException;
 import org.apache.camel.Processor;
+import org.apache.camel.support.LanguageSupport;
 
 public class InsertField implements Processor {
 
@@ -51,15 +52,22 @@ public class InsertField implements Processor {
             throw new InvalidPayloadException(ex, JsonNode.class);
         }
 
+        String resolvedValue;
+        if (LanguageSupport.hasSimpleFunction(value)) {
+            resolvedValue = ex.getContext().resolveLanguage("simple").createExpression(value).evaluate(ex, String.class);
+        } else {
+            resolvedValue = value;
+        }
+
         switch (body.getNodeType()) {
             case ARRAY:
-                ((ArrayNode) body).add(value);
+                ((ArrayNode) body).add(resolvedValue);
                 break;
             case OBJECT:
-                ((ObjectNode) body).put(field, value);
+                ((ObjectNode) body).put(field, resolvedValue);
                 break;
             default:
-                ((ObjectNode) body).put(field, value);
+                ((ObjectNode) body).put(field, resolvedValue);
                 break;
         }
 
