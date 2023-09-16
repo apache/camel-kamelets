@@ -9,6 +9,7 @@
 - Upgrade CycloneDX Maven Plugin to version 2.7.9 [\#1632](https://github.com/apache/camel-kamelets/issues/1632)
 - Provide SBOM as released artifacts when releasing [\#1630](https://github.com/apache/camel-kamelets/issues/1630)
 - AWS2-SQS Source: Add CloudEvents Data Type Transformer [\#1627](https://github.com/apache/camel-kamelets/issues/1627)
+- Release 4.0.0 [\#1618](https://github.com/apache/camel-kamelets/issues/1618)
 
 **Merged pull requests:**
 
