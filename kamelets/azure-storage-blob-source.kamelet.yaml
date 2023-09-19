@@ -76,6 +76,76 @@ spec:
         type: string
         enum: ["SHARED_ACCOUNT_KEY", "AZURE_IDENTITY"]
         default: "SHARED_ACCOUNT_KEY"
+  dataTypes:
+    out:
+      default: binary
+      headers:
+        CamelAzureStorageBlobBlobName:
+          title: Azure Storage Blob Name
+          description: The name of the blob retrieved
+          type: string
+        CamelAzureStorageBlobBlobType:
+          title: The Azure Storage Blob Type
+          description: The Blob type, one of blockblob, appendblob or pageblob
+          type: string
+        CamelAzureStorageBlobContentType:
+          title: Content Type
+          description: The content type of the retrieved object.
+          default: application/octet-stream
+          type: string
+        CamelAzureStorageBlobETag:
+          title: ETag Value
+          description: |-
+            The E tag of the blob
+          type: string
+        CamelAzureStorageBlobCreationTime:
+          title: Creation time
+          description: The Creation time of the blob
+          type: string
+        CamelAzureStorageBlobLastModified:
+          title: Last modification time
+          description: The Last modification time of the blob
+          type: string
+        CamelAzureStorageBlobLeaseStatus:
+          title: Lease status
+          description: Status of the lease on the blob, one of locked or unlocked
+          type: string
+        CamelAzureStorageBlobMetadata:
+          title: Blob Metadata
+          description: Additional Metadata of the blob of type Map<String,Object>
+          type: object
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: Default binary representation of the Blob object retrieved from the container.
+          mediaType: application/octet-stream
+        cloudevents:
+          format: "azure-storage-blob:application-cloudevents"
+          description: |-
+            Output data type represents Azure Storage Blob get blob response as CloudEvent V1. The data type sets Camel specific CloudEvent headers on the exchange with
+            respective data from the Azure container and its derived object.
+          headers:
+            CamelCloudEventID:
+              title: CloudEvent ID
+              description: The Camel exchange id set as event id
+              type: string
+            CamelCloudEventType:
+              title: CloudEvent Type
+              description: The event type
+              default: "org.apache.camel.event.azure.storage.blob.getBlob"
+              type: string
+            CamelCloudEventSource:
+              title: CloudEvent Source
+              description: The event source. By default, the E Tag name of the blob with prefix "azure.storage.blob.".
+              type: string
+            CamelCloudEventSubject:
+              title: CloudEvent Subject
+              description: The event subject. Usually the Azure Storage Blob name.
+              type: string
+            CamelCloudEventTime:
+              title: CloudEvent Time
+              description: The exchange creation timestamp as event time.
+              type: string
   dependencies:
     - "camel:azure-storage-blob"
     - "camel:kamelet"
