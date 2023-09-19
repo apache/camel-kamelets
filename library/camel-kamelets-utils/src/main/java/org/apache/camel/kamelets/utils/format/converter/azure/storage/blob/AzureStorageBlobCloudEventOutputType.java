@@ -40,7 +40,7 @@ public class AzureStorageBlobCloudEventOutputType extends Transformer {
 
         headers.put(CloudEvents.CAMEL_CLOUD_EVENT_ID, message.getExchange().getExchangeId());
         headers.put(CloudEvents.CAMEL_CLOUD_EVENT_TYPE, "org.apache.camel.event.azure.storage.blob.getBlob");
-        headers.put(CloudEvents.CAMEL_CLOUD_EVENT_SOURCE, "azure.storage.blob." + message.getHeader(BlobConstants.BLOB_NAME, String.class));
+        headers.put(CloudEvents.CAMEL_CLOUD_EVENT_SOURCE, "azure.storage.blob." + message.getHeader(BlobConstants.E_TAG, String.class));
         headers.put(CloudEvents.CAMEL_CLOUD_EVENT_SUBJECT, message.getHeader(BlobConstants.BLOB_NAME, String.class));
         headers.put(CloudEvents.CAMEL_CLOUD_EVENT_TIME, CloudEvents.getEventTime(message.getExchange()));
     }
