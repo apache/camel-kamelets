@@ -6,13 +6,22 @@
 
 **Closed issues:**
 
+- Azure Storage Blob Source: Add CloudEvents Data Type Transformer [\#1641](https://github.com/apache/camel-kamelets/issues/1641)
+- Add set-body-action Kamelet [\#1636](https://github.com/apache/camel-kamelets/issues/1636)
 - Upgrade CycloneDX Maven Plugin to version 2.7.9 [\#1632](https://github.com/apache/camel-kamelets/issues/1632)
 - Provide SBOM as released artifacts when releasing [\#1630](https://github.com/apache/camel-kamelets/issues/1630)
+- AWS2-SQS: Expose Kamelet data type information [\#1629](https://github.com/apache/camel-kamelets/issues/1629)
 - AWS2-SQS Source: Add CloudEvents Data Type Transformer [\#1627](https://github.com/apache/camel-kamelets/issues/1627)
 - Release 4.0.0 [\#1618](https://github.com/apache/camel-kamelets/issues/1618)
 
 **Merged pull requests:**
 
+- Azure Storage Blob Source: Add CloudEvents Data Type Transformer [\#1644](https://github.com/apache/camel-kamelets/pull/1644) ([oscerd](https://github.com/oscerd))
+- AWS2-SQS: Expose Kamelet data type information [\#1640](https://github.com/apache/camel-kamelets/pull/1640) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#1639](https://github.com/apache/camel-kamelets/pull/1639) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Enhance application-x-struct data type [\#1638](https://github.com/apache/camel-kamelets/pull/1638) ([christophd](https://github.com/christophd))
+- fix\(\#1636\): Add set-body-action Kamelet [\#1637](https://github.com/apache/camel-kamelets/pull/1637) ([christophd](https://github.com/christophd))
+- Enhance insert-field-action.kamelet [\#1635](https://github.com/apache/camel-kamelets/pull/1635) ([christophd](https://github.com/christophd))
 - Generated sources regen for SBOM [\#1634](https://github.com/apache/camel-kamelets/pull/1634) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Upgrade CycloneDX Maven Plugin to version 2.7.9 [\#1633](https://github.com/apache/camel-kamelets/pull/1633) ([oscerd](https://github.com/oscerd))
 - Provide SBOM as released artifacts when releasing [\#1631](https://github.com/apache/camel-kamelets/pull/1631) ([oscerd](https://github.com/oscerd))
