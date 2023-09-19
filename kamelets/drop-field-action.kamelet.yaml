@@ -17,7 +17,7 @@
 apiVersion: camel.apache.org/v1
 kind: Kamelet
 metadata:
-  name: extract-field-action
+  name: drop-field-action
   labels:
     camel.apache.org/kamelet.type: "action"
   annotations:
@@ -29,71 +29,32 @@ metadata:
     camel.apache.org/kamelet.namespace: "Transformation"
 spec:
   definition:
-    title: "Extract Field Action"
+    title: "Drop Field Action"
     description: |-
-      Extract a field from the message body.
+      Removes a custom field by given name from the message in transit.
 
-      The extract field action expects an application/json content type.
+      The drop field action expects an application/json content type.
 
-      The field parameter allows you to specify which field of the json the user wants to extract. By default the message body will be overriden with the extracted field.
-
-      The optional parameter headerOutput allows the user to specify wheter the extracted field should be stored in a message header named 'CamelKameletsExtractFieldName', leaving the message body untouched.
-
-      The optional parameter headerOutputName allows the user to specify a custom header name instead of the default 'CamelKameletsExtractFieldName'. This parameter must be used in conjunction with headerOutput.
-      If no headerOutputName parameter will be provided, the default 'CamelKameletsExtractFieldName' will be used.
-
-      The optional parameter strictHeaderCheck allows to user to enable a strict header name check. If enabled the action will check if the header output name (custom or default) has been used already in the     exchange. If so, the extracted field will be stored in the message body, if not, the extracted field will be stored in the selected header (custom or default).
-
-      The headerOutput/headerOutputName/strictHeaderCheck parameters are particulary useful in case you would like to reuse an extracted field as parameter for another header, for example.
+      If for example you have an object like '{ "foo":"John", "bar":30, "element":"hello" }' and your action has been configured with field as 'element', you'll get '{ "foo":"John", "bar":30 }' as a result because the field 'element' has been removed.
     required:
       - field
     properties:
       field:
         title: Field
-        description: The name of the field to extract
+        description: The name of the field to be removed
         type: string
-      headerOutput:
-        title: Header Output
-        description: If enable the action will store the extracted field in an header named CamelKameletsExtractFieldName
-        type: boolean
-        default: false
-        x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
-      headerOutputName:
-        title: Header Output Name
-        description: A custom name for the header containing the extracted field
-        default: "none"
-        type: string
-      strictHeaderCheck:
-        title: Strict Header Check
-        description: If enabled the action will check if the header output name (custom or default) has been used already in the exchange. If so, the extracted field will be stored in the message body, if not, the extracted field will be stored in the selected header (custom or default).
-        type: boolean
-        default: false
-        x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
-      trimField:
-        title: Trim Field
-        description: If enabled we return the Raw extracted field
-        type: boolean
-        default: false
-        x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
     type: object
   dependencies:
   - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.1.0-SNAPSHOT"
-  - "camel:kamelet"
   - "camel:core"
   - "camel:jackson"
+  - "camel:kamelet"
   template:
     beans:
-      - name: extractField
-        type: "#class:org.apache.camel.kamelets.utils.transform.ExtractField"
+      - name: dropField
+        type: "#class:org.apache.camel.kamelets.utils.transform.DropField"
         properties:
           field: '{{field}}'
-          headerOutput: '{{headerOutput}}'
-          headerOutputName: '{{headerOutputName}}'
-          strictHeaderCheck: '{{strictHeaderCheck}}'
-          trimField: '{{trimField}}'
     from:
       uri: kamelet:source
       steps:
@@ -109,19 +70,15 @@ spec:
                   library: Jackson
                   unmarshalType: com.fasterxml.jackson.databind.JsonNode
       - process:
-          ref: "{{extractField}}"
+          ref: "{{dropField}}"
       - choice:
           when:
-          - simple: "${exchangeProperty[trimField]} == 'false'"
+          - simple: "${exchangeProperty[deserialized]} == 'true'"
             steps:
-            - choice:
-                when:
-                - simple: "${exchangeProperty[deserialized]} == 'true'"
-                  steps:
-                  - marshal:
-                      json:
-                        library: Jackson
-                        unmarshalType: com.fasterxml.jackson.databind.JsonNode
-                  - set-header:
-                      name: "Content-Type"
-                      constant: "application/json"
+            - marshal:
+                json:
+                  library: Jackson
+                  unmarshalType: com.fasterxml.jackson.databind.JsonNode
+            - set-header:
+                name: "Content-Type"
+                constant: "application/json"
