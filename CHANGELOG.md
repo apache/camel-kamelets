@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Azure Storage Blob Source: Expose Kamelet data type information [\#1642](https://github.com/apache/camel-kamelets/issues/1642)
 - Azure Storage Blob Source: Add CloudEvents Data Type Transformer [\#1641](https://github.com/apache/camel-kamelets/issues/1641)
 - Add set-body-action Kamelet [\#1636](https://github.com/apache/camel-kamelets/issues/1636)
 - Upgrade CycloneDX Maven Plugin to version 2.7.9 [\#1632](https://github.com/apache/camel-kamelets/issues/1632)
@@ -16,6 +17,12 @@
 
 **Merged pull requests:**
 
+- Generated sources regen [\#1652](https://github.com/apache/camel-kamelets/pull/1652) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Adding drop-field-action Kamelet [\#1651](https://github.com/apache/camel-kamelets/pull/1651) ([christophd](https://github.com/christophd))
+- Google Storage Source: Add CloudEvents Data Type Transformer [\#1650](https://github.com/apache/camel-kamelets/pull/1650) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#1649](https://github.com/apache/camel-kamelets/pull/1649) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Azure Storage Blob Source: Expose Kamelet data type information [\#1648](https://github.com/apache/camel-kamelets/pull/1648) ([oscerd](https://github.com/oscerd))
+- Azure Storage Blob Source Cloud Events Data type: Use E\_TAG [\#1647](https://github.com/apache/camel-kamelets/pull/1647) ([oscerd](https://github.com/oscerd))
 - Azure Storage Blob Source: Add CloudEvents Data Type Transformer [\#1644](https://github.com/apache/camel-kamelets/pull/1644) ([oscerd](https://github.com/oscerd))
 - AWS2-SQS: Expose Kamelet data type information [\#1640](https://github.com/apache/camel-kamelets/pull/1640) ([oscerd](https://github.com/oscerd))
 - Generated sources regen [\#1639](https://github.com/apache/camel-kamelets/pull/1639) ([github-actions[bot]](https://github.com/apps/github-actions))
