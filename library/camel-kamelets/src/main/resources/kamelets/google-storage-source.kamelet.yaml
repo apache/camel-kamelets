@@ -62,6 +62,61 @@ spec:
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+  dataTypes:
+    out:
+      default: binary
+      headers:
+        CamelGoogleCloudStorageBucketName:
+          title: Google Cloud Storage Bucket Name
+          description: The bucket name which has been used to retrieve objects
+          type: string
+        CamelGoogleCloudStorageObjectName:
+          title: Google Cloud Storage Object Name
+          description: The object name under which the retrieved object is stored
+          type: string
+        CamelGoogleCloudStorageContentType:
+          title: Content Type
+          description: The content type of the retrieved object.
+          default: application/octet-stream
+          type: string
+        CamelGoogleCloudStorageETag:
+          title: ETag Value
+          description: |-
+            The hex encoded 128-bit MD5 digest of the associated object according to RFC 1864. 
+            Is the generation number of the object for which you are retrieving information.
+          type: string
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: Default binary representation of the Google Storage Cloud object retrieved from the bucket.
+          mediaType: application/octet-stream
+        cloudevents:
+          format: "aws2-s3:application-cloudevents"
+          description: |-
+            Output data type represents Google Storage download to response as CloudEvent V1. The data type sets Camel specific CloudEvent headers on the exchange with
+            respective data from the S3 bucket and its derived object.
+          headers:
+            CamelCloudEventID:
+              title: CloudEvent ID
+              description: The Camel exchange id set as event id
+              type: string
+            CamelCloudEventType:
+              title: CloudEvent Type
+              description: The event type
+              default: "org.apache.camel.event.google.storage.downloadTo"
+              type: string
+            CamelCloudEventSource:
+              title: CloudEvent Source
+              description: The event source. By default, the Google Cloud Storage bucket name with prefix "google.storage.bucket.".
+              type: string
+            CamelCloudEventSubject:
+              title: CloudEvent Subject
+              description: The event subject. Usually the Google Cloud Storage object name.
+              type: string
+            CamelCloudEventTime:
+              title: CloudEvent Time
+              description: The exchange creation timestamp as event time.
+              type: string
   dependencies:
     - "camel:kamelet"
     - "camel:google-storage"
