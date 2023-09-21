@@ -6,6 +6,9 @@
 
 **Closed issues:**
 
+- Add Google Sheets sink Kamelet [\#1653](https://github.com/apache/camel-kamelets/issues/1653)
+- Google Storage Source: Expose Kamelet data type information [\#1646](https://github.com/apache/camel-kamelets/issues/1646)
+- Google Storage Source: Add CloudEvents Data Type Transformer [\#1645](https://github.com/apache/camel-kamelets/issues/1645)
 - Azure Storage Blob Source: Expose Kamelet data type information [\#1642](https://github.com/apache/camel-kamelets/issues/1642)
 - Azure Storage Blob Source: Add CloudEvents Data Type Transformer [\#1641](https://github.com/apache/camel-kamelets/issues/1641)
 - Add set-body-action Kamelet [\#1636](https://github.com/apache/camel-kamelets/issues/1636)
@@ -17,6 +20,9 @@
 
 **Merged pull requests:**
 
+- Google Storage Source: Expose Kamelet data type information [\#1656](https://github.com/apache/camel-kamelets/pull/1656) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#1655](https://github.com/apache/camel-kamelets/pull/1655) ([github-actions[bot]](https://github.com/apps/github-actions))
+- fix\(\#1653\): Add Google Sheets Sink Kamelet [\#1654](https://github.com/apache/camel-kamelets/pull/1654) ([christophd](https://github.com/christophd))
 - Generated sources regen [\#1652](https://github.com/apache/camel-kamelets/pull/1652) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Adding drop-field-action Kamelet [\#1651](https://github.com/apache/camel-kamelets/pull/1651) ([christophd](https://github.com/christophd))
 - Google Storage Source: Add CloudEvents Data Type Transformer [\#1650](https://github.com/apache/camel-kamelets/pull/1650) ([oscerd](https://github.com/oscerd))
