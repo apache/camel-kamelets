@@ -20,6 +20,7 @@
 
 **Merged pull requests:**
 
+- Generated sources regen for SBOM [\#1657](https://github.com/apache/camel-kamelets/pull/1657) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Google Storage Source: Expose Kamelet data type information [\#1656](https://github.com/apache/camel-kamelets/pull/1656) ([oscerd](https://github.com/oscerd))
 - Generated sources regen [\#1655](https://github.com/apache/camel-kamelets/pull/1655) ([github-actions[bot]](https://github.com/apps/github-actions))
 - fix\(\#1653\): Add Google Sheets Sink Kamelet [\#1654](https://github.com/apache/camel-kamelets/pull/1654) ([christophd](https://github.com/christophd))
