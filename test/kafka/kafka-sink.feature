@@ -31,8 +31,8 @@ Feature: Kafka Kamelet sink
     Given start Redpanda container
 
   Scenario: Create Kamelet binding
-    When load KameletBinding kafka-sink-binding.yaml
-    Then Camel K integration kafka-sink-binding should be running
+    When load Pipe kafka-sink-pipe.yaml
+    Then Camel K integration kafka-sink-pipe should be running
 
   Scenario: Verify Kafka sink output
     Given Kafka connection
@@ -40,5 +40,5 @@ Feature: Kafka Kamelet sink
     Then receive Kafka message with body: ${message}
 
   Scenario: Remove resources
-    Given delete KameletBinding kafka-sink-binding
+    Given delete Pipe kafka-sink-pipe
     And stop Redpanda container

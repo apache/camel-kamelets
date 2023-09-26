@@ -13,9 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-camel-version := 4.0.0
+camel-version := 4.0.1
 camel-kamelets-version := 4.1.0-SNAPSHOT
-kamelet-api-version := v1alpha1
 kamelets-local-dir := ../../../kamelets
 test := .
 

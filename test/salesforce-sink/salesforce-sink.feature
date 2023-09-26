@@ -33,9 +33,9 @@ Feature: Salesforce Kamelet
     And receive HTTP 200 OK
 
   Scenario: Interact with SalesForce
-    Given load KameletBinding timer-to-salesforce-binding.yaml
-    Then Camel K integration timer-to-salesforce-binding should be running
-    And Camel K integration timer-to-salesforce-binding should print Routes startup
+    Given load Pipe timer-to-salesforce-pipe.yaml
+    Then Camel K integration timer-to-salesforce-pipe should be running
+    And Camel K integration timer-to-salesforce-pipe should print Routes startup
 
     Given URL: ${instance_url}
     Then HTTP request header Authorization="Bearer ${access_token}"
@@ -45,9 +45,9 @@ Feature: Salesforce Kamelet
     Then verify HTTP response expression: $.records[0].Id="@variable(id)@"
     And receive HTTP 200 OK
 
-    And load KameletBinding direct-to-salesforce-update-binding.yaml
-    Then Camel K integration direct-to-salesforce-update-binding should be running
-    And Camel K integration direct-to-salesforce-update-binding should print Routes startup
+    And load Pipe direct-to-salesforce-update-pipe.yaml
+    Then Camel K integration direct-to-salesforce-update-pipe should be running
+    And Camel K integration direct-to-salesforce-update-pipe should print Routes startup
     Then sleep 5000 ms
     Given URL: ${instance_url}
     Then HTTP request header Authorization="Bearer ${access_token}"
@@ -58,9 +58,9 @@ Feature: Salesforce Kamelet
     Then verify HTTP response expression: $.records[0].Phone="1234567890"
     And receive HTTP 200 OK
 
-    When load KameletBinding direct-to-salesforce-delete-binding.yaml
-    Then Camel K integration direct-to-salesforce-delete-binding should be running
-    And Camel K integration direct-to-salesforce-delete-binding should print Routes startup
+    When load Pipe direct-to-salesforce-delete-pipe.yaml
+    Then Camel K integration direct-to-salesforce-delete-pipe should be running
+    And Camel K integration direct-to-salesforce-delete-pipe should print Routes startup
     Then sleep 5000 ms
 
     Given URL: ${instance_url}
@@ -72,6 +72,6 @@ Feature: Salesforce Kamelet
     And receive HTTP 200 OK
 
   Scenario: Remove Camel-K resources
-    Given delete KameletBinding timer-to-salesforce-binding
-    And delete KameletBinding direct-to-salesforce-update-binding
-    And delete KameletBinding direct-to-salesforce-delete-binding
+    Given delete Pipe timer-to-salesforce-pipe
+    And delete Pipe direct-to-salesforce-update-pipe
+    And delete Pipe direct-to-salesforce-delete-pipe

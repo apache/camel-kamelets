@@ -36,9 +36,9 @@ Feature: Kafka Kamelet source
     Given create Kubernetes service test-service with target port 8080
 
   Scenario: Create Kamelet binding
-    When load KameletBinding kafka-source-binding.yaml
-    Then Camel K integration kafka-source-binding should be running
-    And Camel K integration kafka-source-binding should print Subscribing ${topic}-Thread 0 to topic ${topic}
+    When load Pipe kafka-source-pipe.yaml
+    Then Camel K integration kafka-source-pipe should be running
+    And Camel K integration kafka-source-pipe should print Subscribing ${topic}-Thread 0 to topic ${topic}
     And sleep 10sec
 
   Scenario: Send message to Kafka topic and verify sink output
@@ -58,6 +58,6 @@ Feature: Kafka Kamelet source
     And send HTTP 200 OK
 
   Scenario: Remove resources
-    Given delete KameletBinding kafka-source-binding
+    Given delete Pipe kafka-source-pipe
     And delete Kubernetes service test-service
     And stop Redpanda container

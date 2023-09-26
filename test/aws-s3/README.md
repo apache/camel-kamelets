@@ -64,7 +64,7 @@ $ yaks test aws-s3-source-property-conf.feature
 To run tests with URI binding:
 
 ```shell script
-$ yaks test aws-s3-uri-binding.feature
+$ yaks test aws-s3-uri-pipe.feature
 ```
 
 To run tests with binding to Knative channel:

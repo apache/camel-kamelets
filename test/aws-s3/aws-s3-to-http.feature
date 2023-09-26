@@ -21,8 +21,8 @@ Feature: AWS S3 Kamelet - Http sink
 
   Scenario: Verify AWS-S3 Kamelet to Http
     # Create binding
-    When load KameletBinding aws-s3-to-http.yaml
-    And KameletBinding aws-s3-to-http is available
+    When load Pipe aws-s3-to-http.yaml
+    And Pipe aws-s3-to-http is available
     And Camel K integration aws-s3-to-http is running
     Then Camel K integration aws-s3-to-http should print (aws-s3-to-http) started
     # Verify Kamelet source
@@ -43,7 +43,7 @@ Feature: AWS S3 Kamelet - Http sink
 
   Scenario: Remove resources
     # Remove Camel K resources
-    Given delete KameletBinding aws-s3-to-http
+    Given delete Pipe aws-s3-to-http
     Given delete Kubernetes service test-service
     # Stop LocalStack container
     Given stop LocalStack container

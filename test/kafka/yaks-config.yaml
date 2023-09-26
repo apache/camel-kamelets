@@ -37,8 +37,8 @@ config:
         - name: INTEGRATION_LOGS
           level: INFO
     resources:
-      - kafka-source-binding.yaml
-      - kafka-sink-binding.yaml
+      - kafka-source-pipe.yaml
+      - kafka-sink-pipe.yaml
   dump:
     enabled: true
     failedOnly: true
