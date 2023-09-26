@@ -9,6 +9,7 @@
 - Add Google Sheets sink Kamelet [\#1653](https://github.com/apache/camel-kamelets/issues/1653)
 - Google Storage Source: Expose Kamelet data type information [\#1646](https://github.com/apache/camel-kamelets/issues/1646)
 - Google Storage Source: Add CloudEvents Data Type Transformer [\#1645](https://github.com/apache/camel-kamelets/issues/1645)
+- Using static methods to create beans in yaml dsl [\#1643](https://github.com/apache/camel-kamelets/issues/1643)
 - Azure Storage Blob Source: Expose Kamelet data type information [\#1642](https://github.com/apache/camel-kamelets/issues/1642)
 - Azure Storage Blob Source: Add CloudEvents Data Type Transformer [\#1641](https://github.com/apache/camel-kamelets/issues/1641)
 - Add set-body-action Kamelet [\#1636](https://github.com/apache/camel-kamelets/issues/1636)
