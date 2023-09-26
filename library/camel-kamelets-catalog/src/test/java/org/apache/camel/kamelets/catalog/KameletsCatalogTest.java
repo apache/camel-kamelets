@@ -154,8 +154,8 @@ public class KameletsCatalogTest {
         verifyHeaders("couchbase-sink", 2);
         verifyHeaders("dropbox-source", 0);
         verifyHeaders("dropbox-source", 0);
-        verifyHeaders("elasticsearch-index-sink", 9);
-        verifyHeaders("elasticsearch-search-source", 9);
+        verifyHeaders("elasticsearch-index-sink", 10);
+        verifyHeaders("elasticsearch-search-source", 10);
         verifyHeaders("exec-sink", 0);
         verifyHeaders("fhir-source", 0);
         verifyHeaders("file-watch-source", 10);
