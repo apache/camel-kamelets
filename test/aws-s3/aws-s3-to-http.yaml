@@ -20,6 +20,9 @@ kind: Pipe
 metadata:
   name: aws-s3-to-http
 spec:
+  integration:
+    dependencies:
+    - "camel:cloudevents"
   source:
     ref:
       kind: Kamelet
