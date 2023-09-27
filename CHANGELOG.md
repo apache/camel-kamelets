@@ -2,25 +2,17 @@
 
 ## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.0.0...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.0.1...HEAD)
 
 **Closed issues:**
 
-- Add Google Sheets sink Kamelet [\#1653](https://github.com/apache/camel-kamelets/issues/1653)
-- Google Storage Source: Expose Kamelet data type information [\#1646](https://github.com/apache/camel-kamelets/issues/1646)
-- Google Storage Source: Add CloudEvents Data Type Transformer [\#1645](https://github.com/apache/camel-kamelets/issues/1645)
-- Using static methods to create beans in yaml dsl [\#1643](https://github.com/apache/camel-kamelets/issues/1643)
-- Azure Storage Blob Source: Expose Kamelet data type information [\#1642](https://github.com/apache/camel-kamelets/issues/1642)
-- Azure Storage Blob Source: Add CloudEvents Data Type Transformer [\#1641](https://github.com/apache/camel-kamelets/issues/1641)
-- Add set-body-action Kamelet [\#1636](https://github.com/apache/camel-kamelets/issues/1636)
-- Upgrade CycloneDX Maven Plugin to version 2.7.9 [\#1632](https://github.com/apache/camel-kamelets/issues/1632)
-- Provide SBOM as released artifacts when releasing [\#1630](https://github.com/apache/camel-kamelets/issues/1630)
-- AWS2-SQS: Expose Kamelet data type information [\#1629](https://github.com/apache/camel-kamelets/issues/1629)
-- AWS2-SQS Source: Add CloudEvents Data Type Transformer [\#1627](https://github.com/apache/camel-kamelets/issues/1627)
-- Release 4.0.0 [\#1618](https://github.com/apache/camel-kamelets/issues/1618)
+- Splunk-source kamelet - initEarliestTime is required parameter [\#1663](https://github.com/apache/camel-kamelets/issues/1663)
 
 **Merged pull requests:**
 
+- Splunk-source kamelet - initEarliestTime is required parameter [\#1664](https://github.com/apache/camel-kamelets/pull/1664) ([oscerd](https://github.com/oscerd))
+- Upgrade Artemis to version 2.31.0 [\#1662](https://github.com/apache/camel-kamelets/pull/1662) ([oscerd](https://github.com/oscerd))
+- Upgrade Redshift JDBC 42 to version 2.1.0.19 [\#1661](https://github.com/apache/camel-kamelets/pull/1661) ([oscerd](https://github.com/oscerd))
 - Generated sources regen for SBOM [\#1657](https://github.com/apache/camel-kamelets/pull/1657) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Google Storage Source: Expose Kamelet data type information [\#1656](https://github.com/apache/camel-kamelets/pull/1656) ([oscerd](https://github.com/oscerd))
 - Generated sources regen [\#1655](https://github.com/apache/camel-kamelets/pull/1655) ([github-actions[bot]](https://github.com/apps/github-actions))
@@ -43,6 +35,28 @@
 - AWS2-SQS Source: Add CloudEvents Data Type Transformer [\#1628](https://github.com/apache/camel-kamelets/pull/1628) ([oscerd](https://github.com/oscerd))
 - Expose Kamelet data type information [\#1626](https://github.com/apache/camel-kamelets/pull/1626) ([christophd](https://github.com/christophd))
 - Add Makefile to run YAKS tests [\#1625](https://github.com/apache/camel-kamelets/pull/1625) ([christophd](https://github.com/christophd))
+- Migrate to apiVersion v1 from v1aplha1 [\#1566](https://github.com/apache/camel-kamelets/pull/1566) ([apupier](https://github.com/apupier))
+
+## [v4.0.1](https://github.com/apache/camel-kamelets/tree/v4.0.1) (2023-09-26)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.0.0...v4.0.1)
+
+**Closed issues:**
+
+- Upgrade to Camel 4.0.1 [\#1658](https://github.com/apache/camel-kamelets/issues/1658)
+- Add Google Sheets sink Kamelet [\#1653](https://github.com/apache/camel-kamelets/issues/1653)
+- Google Storage Source: Expose Kamelet data type information [\#1646](https://github.com/apache/camel-kamelets/issues/1646)
+- Google Storage Source: Add CloudEvents Data Type Transformer [\#1645](https://github.com/apache/camel-kamelets/issues/1645)
+- Using static methods to create beans in yaml dsl [\#1643](https://github.com/apache/camel-kamelets/issues/1643)
+- Azure Storage Blob Source: Expose Kamelet data type information [\#1642](https://github.com/apache/camel-kamelets/issues/1642)
+- Azure Storage Blob Source: Add CloudEvents Data Type Transformer [\#1641](https://github.com/apache/camel-kamelets/issues/1641)
+- Add set-body-action Kamelet [\#1636](https://github.com/apache/camel-kamelets/issues/1636)
+- Upgrade CycloneDX Maven Plugin to version 2.7.9 [\#1632](https://github.com/apache/camel-kamelets/issues/1632)
+- Provide SBOM as released artifacts when releasing [\#1630](https://github.com/apache/camel-kamelets/issues/1630)
+- AWS2-SQS: Expose Kamelet data type information [\#1629](https://github.com/apache/camel-kamelets/issues/1629)
+- AWS2-SQS Source: Add CloudEvents Data Type Transformer [\#1627](https://github.com/apache/camel-kamelets/issues/1627)
+- Release 4.0.0 [\#1618](https://github.com/apache/camel-kamelets/issues/1618)
+- Update apiVersion in kamelets to v1 [\#1562](https://github.com/apache/camel-kamelets/issues/1562)
 
 ## [v4.0.0](https://github.com/apache/camel-kamelets/tree/v4.0.0) (2023-09-06)
 
