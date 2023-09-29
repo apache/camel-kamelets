@@ -10,6 +10,7 @@
 
 **Merged pull requests:**
 
+- chore: Fix JitPack build for main branch [\#1669](https://github.com/apache/camel-kamelets/pull/1669) ([christophd](https://github.com/christophd))
 - Splunk-source kamelet - initEarliestTime is required parameter [\#1664](https://github.com/apache/camel-kamelets/pull/1664) ([oscerd](https://github.com/oscerd))
 - Upgrade Artemis to version 2.31.0 [\#1662](https://github.com/apache/camel-kamelets/pull/1662) ([oscerd](https://github.com/oscerd))
 - Upgrade Redshift JDBC 42 to version 2.1.0.19 [\#1661](https://github.com/apache/camel-kamelets/pull/1661) ([oscerd](https://github.com/oscerd))
