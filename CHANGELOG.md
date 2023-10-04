@@ -7,6 +7,7 @@
 **Closed issues:**
 
 - Splunk-source kamelet - initEarliestTime is required parameter [\#1663](https://github.com/apache/camel-kamelets/issues/1663)
+- Release Camel-Kamelets 4.0.1 [\#1659](https://github.com/apache/camel-kamelets/issues/1659)
 
 **Merged pull requests:**
 
