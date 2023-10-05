@@ -147,6 +147,8 @@ public class KameletsCatalogTest {
         verifyHeaders("azure-storage-blob-source", 34);
         verifyHeaders("azure-storage-blob-sink", 33);
         verifyHeaders("azure-storage-blob-changefeed-source", 34);
+        verifyHeaders("azure-storage-datalake-source", 0);
+        verifyHeaders("azure-storage-datalake-sink", 0);
         verifyHeaders("azure-storage-queue-source", 6);
         verifyHeaders("azure-storage-queue-sink", 16);
         verifyHeaders("cassandra-sink", 1);
