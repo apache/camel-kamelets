@@ -147,6 +147,8 @@ public class KameletsCatalogTest {
         verifyHeaders("azure-storage-blob-source", 34);
         verifyHeaders("azure-storage-blob-sink", 33);
         verifyHeaders("azure-storage-blob-changefeed-source", 34);
+        verifyHeaders("azure-storage-datalake-source", 0);
+        verifyHeaders("azure-storage-datalake-sink", 0);
         verifyHeaders("azure-storage-queue-source", 6);
         verifyHeaders("azure-storage-queue-sink", 16);
         verifyHeaders("cassandra-sink", 1);
@@ -232,6 +234,7 @@ public class KameletsCatalogTest {
         verifyHeaders("salesforce-create-sink", 1);
         verifyHeaders("salesforce-delete-sink", 1);
         verifyHeaders("salesforce-update-sink", 1);
+        verifyHeaders("salesforce-composite-upsert-sink", 1);
         verifyHeaders("salesforce-source", 19);
         verifyHeaders("scp-sink", 0);
         verifyHeaders("sftp-sink", 8);
