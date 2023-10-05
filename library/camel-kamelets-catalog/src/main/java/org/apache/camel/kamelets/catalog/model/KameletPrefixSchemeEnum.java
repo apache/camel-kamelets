@@ -101,6 +101,7 @@ public enum KameletPrefixSchemeEnum {
     salesforce_create("salesforce-create", "salesforce"),
     salesforce_delete("salesforce-delete", "salesforce"),
     salesforce_update("salesforce-update", "salesforce"),
+    salesforce_composite_upsert("salesforce-composite-upsert", "salesforce"),
     salesforce("salesforce", "salesforce"),
     scp("scp", "scp"),
     sftp("sftp", "sftp"),
