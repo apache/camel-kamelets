@@ -49,24 +49,22 @@ spec:
         description: The Azure Storage Blob account name.
         type: string
         x-descriptors:
-        - urn:camel:group:credentials
+          - urn:camel:group:credentials
       accessKey:
         title: Access Key
         description: The Azure Storage Blob access Key.
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
-        - urn:camel:group:credentials
+          - urn:alm:descriptor:com.tectonic.ui:password
+          - urn:camel:group:credentials
   dependencies:
     - "camel:azure-storage-blob"
     - "camel:kamelet"
     - "camel:core"
-    - 'camel:jackson'
+    - "camel:jackson"
     - "camel:jsonpath"
     - "camel:timer"
-    - "mvn:com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4"
-    - "mvn:com.azure:azure-storage-blob-changefeed:12.0.0-beta.17"
   template:
     from:
       uri: "timer:azure-storage-blob-stream"
@@ -85,7 +83,6 @@ spec:
         - marshal:
             json:
               library: Jackson
-              module-class-names: com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
               unmarshalType: com.fasterxml.jackson.databind.JsonNode
         - set-header:
             name: "azure-storage-blob-changefeed-topic"
@@ -130,4 +127,3 @@ spec:
               library: Jackson
               module-class-names: com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
         - to: "kamelet:sink"
-
