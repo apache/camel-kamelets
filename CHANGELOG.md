@@ -6,12 +6,14 @@
 
 **Closed issues:**
 
+- Azure Storage Blob Changefeed : remove dependencies not required anymore [\#1674](https://github.com/apache/camel-kamelets/issues/1674)
 - Splunk-source kamelet - initEarliestTime is required parameter [\#1663](https://github.com/apache/camel-kamelets/issues/1663)
 - Release Camel-Kamelets 4.0.1 [\#1659](https://github.com/apache/camel-kamelets/issues/1659)
 - Create a Salesforce Upsert Sink Kamelet [\#1527](https://github.com/apache/camel-kamelets/issues/1527)
 
 **Merged pull requests:**
 
+- Azure Storage Blob Changefeed : remove dependencies not required anymore [\#1675](https://github.com/apache/camel-kamelets/pull/1675) ([lburgazzoli](https://github.com/lburgazzoli))
 - Kamelet Prefix Enum: Added missing entries [\#1673](https://github.com/apache/camel-kamelets/pull/1673) ([oscerd](https://github.com/oscerd))
 - chore: Fix JitPack build for main branch [\#1669](https://github.com/apache/camel-kamelets/pull/1669) ([christophd](https://github.com/christophd))
 - Splunk-source kamelet - initEarliestTime is required parameter [\#1664](https://github.com/apache/camel-kamelets/pull/1664) ([oscerd](https://github.com/oscerd))
