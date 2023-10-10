@@ -13,6 +13,9 @@
 
 **Merged pull requests:**
 
+- chuck-norris-source should not include unwanted HTTP headers [\#1679](https://github.com/apache/camel-kamelets/pull/1679) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#1678](https://github.com/apache/camel-kamelets/pull/1678) ([github-actions[bot]](https://github.com/apps/github-actions))
+- beer-source should not include unwanted HTTP headers [\#1676](https://github.com/apache/camel-kamelets/pull/1676) ([davsclaus](https://github.com/davsclaus))
 - Azure Storage Blob Changefeed : remove dependencies not required anymore [\#1675](https://github.com/apache/camel-kamelets/pull/1675) ([lburgazzoli](https://github.com/lburgazzoli))
 - Kamelet Prefix Enum: Added missing entries [\#1673](https://github.com/apache/camel-kamelets/pull/1673) ([oscerd](https://github.com/oscerd))
 - chore: Fix JitPack build for main branch [\#1669](https://github.com/apache/camel-kamelets/pull/1669) ([christophd](https://github.com/christophd))
