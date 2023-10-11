@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Create a Specialized Kamelet starting from Kafka Source using Apicurio Registry [\#1681](https://github.com/apache/camel-kamelets/issues/1681)
 - Azure Storage Blob Changefeed : remove dependencies not required anymore [\#1674](https://github.com/apache/camel-kamelets/issues/1674)
 - Splunk-source kamelet - initEarliestTime is required parameter [\#1663](https://github.com/apache/camel-kamelets/issues/1663)
 - Release Camel-Kamelets 4.0.1 [\#1659](https://github.com/apache/camel-kamelets/issues/1659)
@@ -13,6 +14,7 @@
 
 **Merged pull requests:**
 
+- Create a Specialized Kamelet starting from Kafka Source using Apicurio Registry [\#1682](https://github.com/apache/camel-kamelets/pull/1682) ([oscerd](https://github.com/oscerd))
 - chuck-norris-source should not include unwanted HTTP headers [\#1679](https://github.com/apache/camel-kamelets/pull/1679) ([oscerd](https://github.com/oscerd))
 - Generated sources regen [\#1678](https://github.com/apache/camel-kamelets/pull/1678) ([github-actions[bot]](https://github.com/apps/github-actions))
 - beer-source should not include unwanted HTTP headers [\#1676](https://github.com/apache/camel-kamelets/pull/1676) ([davsclaus](https://github.com/davsclaus))
