@@ -14,6 +14,8 @@
 
 **Merged pull requests:**
 
+- Bump golang.org/x/net from 0.12.0 to 0.17.0 in /script/validator [\#1686](https://github.com/apache/camel-kamelets/pull/1686) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump golang.org/x/net from 0.12.0 to 0.17.0 in /script/generator [\#1685](https://github.com/apache/camel-kamelets/pull/1685) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Create a Specialized Kamelet starting from Kafka Source using Apicurio Registry [\#1682](https://github.com/apache/camel-kamelets/pull/1682) ([oscerd](https://github.com/oscerd))
 - chuck-norris-source should not include unwanted HTTP headers [\#1679](https://github.com/apache/camel-kamelets/pull/1679) ([oscerd](https://github.com/oscerd))
 - Generated sources regen [\#1678](https://github.com/apache/camel-kamelets/pull/1678) ([github-actions[bot]](https://github.com/apps/github-actions))
