@@ -36,4 +36,6 @@ spec:
         period: "{{period}}"
       steps:
       - to: https://random-data-api.com/api/beer/random_beer
+      - removeHeaders:
+        pattern: '*'
       - to: "kamelet:sink"
