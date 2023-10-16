@@ -101,6 +101,11 @@ spec:
         description: The number of milliseconds before the next poll of the selected bucket.
         type: integer
         default: 500
+      maxMessagesPerPoll:
+        title: Max Messages Per Poll
+        description: Gets the maximum number of messages as a limit to poll at each polling. Gets the maximum number of messages as a limit to poll at each polling. The default value is 10. Use 0 or a negative number to set it as unlimited.
+        type: integer
+        default: 10
   dataTypes:
     out:
       default: binary
@@ -184,6 +189,7 @@ spec:
         uriEndpointOverride: "{{?uriEndpointOverride}}"
         overrideEndpoint: "{{overrideEndpoint}}"
         delay: "{{delay}}"
+        maxMessagesPerPoll: "{{maxMessagesPerPoll}}"
       steps:
       - process:
           ref: "{{renameHeaders}}"
