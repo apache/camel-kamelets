@@ -6,6 +6,8 @@
 
 **Closed issues:**
 
+- Expose maxMessagesPerPoll in AWS S3 Source Kamelet [\#1690](https://github.com/apache/camel-kamelets/issues/1690)
+- Update to Camel 4.1.0 [\#1687](https://github.com/apache/camel-kamelets/issues/1687)
 - Create a Specialized Kamelet starting from Kafka Source using Apicurio Registry [\#1681](https://github.com/apache/camel-kamelets/issues/1681)
 - Azure Storage Blob Changefeed : remove dependencies not required anymore [\#1674](https://github.com/apache/camel-kamelets/issues/1674)
 - Splunk-source kamelet - initEarliestTime is required parameter [\#1663](https://github.com/apache/camel-kamelets/issues/1663)
@@ -14,6 +16,8 @@
 
 **Merged pull requests:**
 
+- Upgrade to Camel 4.1.0 [\#1694](https://github.com/apache/camel-kamelets/pull/1694) ([oscerd](https://github.com/oscerd))
+- Expose maxMessagesPerPoll in AWS S3 Source Kamelet [\#1692](https://github.com/apache/camel-kamelets/pull/1692) ([oscerd](https://github.com/oscerd))
 - Bump golang.org/x/net from 0.12.0 to 0.17.0 in /script/validator [\#1686](https://github.com/apache/camel-kamelets/pull/1686) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump golang.org/x/net from 0.12.0 to 0.17.0 in /script/generator [\#1685](https://github.com/apache/camel-kamelets/pull/1685) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Create a Specialized Kamelet starting from Kafka Source using Apicurio Registry [\#1682](https://github.com/apache/camel-kamelets/pull/1682) ([oscerd](https://github.com/oscerd))
