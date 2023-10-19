@@ -32,11 +32,12 @@ spec:
   definition:
     title: "Azure Kafka through Eventhubs with Azure Schema Registry Source"
     description: |-
-      Receive data from Kafka topics on Azure Eventhubs on combined with Azure Schema Registry.
+      Receive data from Kafka topics on Azure Eventhubs combined with Azure Schema Registry.
     required:
       - topic
       - bootstrapServers
-      - apicurioRegistryUrl
+      - azureSchemaRegistryUrl
+      - password
     type: object
     properties:
       topic:
@@ -120,7 +121,7 @@ spec:
         type: string
         default: "com.microsoft.azure.schemaregistry.kafka.avro.KafkaAvroDeserializer"
       azureRegistryUrl:
-        title: Apicurio Registry URL
+        title: Azure Schema Registry URL
         description: The Apicurio Schema Registry URL
         type: string
         x-descriptors:
