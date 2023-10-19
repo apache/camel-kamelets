@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- Upgrade tests and doc to Camel 4.1.0 [\#1695](https://github.com/apache/camel-kamelets/pull/1695) ([apupier](https://github.com/apupier))
 - Upgrade to Camel 4.1.0 [\#1694](https://github.com/apache/camel-kamelets/pull/1694) ([oscerd](https://github.com/oscerd))
 - Expose maxMessagesPerPoll in AWS S3 Source Kamelet [\#1692](https://github.com/apache/camel-kamelets/pull/1692) ([oscerd](https://github.com/oscerd))
 - Bump golang.org/x/net from 0.12.0 to 0.17.0 in /script/validator [\#1686](https://github.com/apache/camel-kamelets/pull/1686) ([dependabot[bot]](https://github.com/apps/dependabot))
