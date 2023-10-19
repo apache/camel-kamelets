@@ -399,7 +399,7 @@ func listKamelets(dir string) []KameletInfo {
 
 func verifyUsedParams(kamelets []KameletInfo) (errors []error) {
 	for _, k := range kamelets {
-		if k.FileName != "../../kamelets/azure-storage-blob-source.kamelet.yaml" && k.FileName != "../../kamelets/aws-s3-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/set-kafka-key-action.kamelet.yaml" && k.FileName != "../../kamelets/azure-storage-blob-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/google-storage-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/elasticsearch-search-source.kamelet.yaml" && k.FileName != "../../kamelets/opensearch-search-source.kamelet.yaml" {
+		if k.FileName != "../../kamelets/azure-storage-blob-source.kamelet.yaml" && k.FileName != "../../kamelets/aws-s3-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/set-kafka-key-action.kamelet.yaml" && k.FileName != "../../kamelets/azure-storage-blob-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/google-storage-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/elasticsearch-search-source.kamelet.yaml" && k.FileName != "../../kamelets/opensearch-search-source.kamelet.yaml" && k.FileName != "../../kamelets/kafka-azure-schema-registry-source.kamelet.yaml"{
 			used := getUsedParams(k.Kamelet)
 			declared := getDeclaredParams(k.Kamelet)
 			for p := range used {
