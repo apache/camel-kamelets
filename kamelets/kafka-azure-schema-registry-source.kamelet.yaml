@@ -154,7 +154,7 @@ spec:
         brokers: "{{bootstrapServers}}"
         securityProtocol: "{{securityProtocol}}"
         saslMechanism: "{{saslMechanism}}"
-        saslJaasConfig: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password={{connectionstring}};'
+        saslJaasConfig: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password={{password}};'
         autoCommitEnable: "{{autoCommitEnable}}"
         allowManualCommit: "{{allowManualCommit}}"
         pollOnError: "{{pollOnError}}"
