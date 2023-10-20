@@ -7,6 +7,7 @@
 **Closed issues:**
 
 - Expose maxMessagesPerPoll in AWS S3 Source Kamelet [\#1690](https://github.com/apache/camel-kamelets/issues/1690)
+- Create a Specialized Kamelet starting from Kafka Source using Azure Schema Registry [\#1689](https://github.com/apache/camel-kamelets/issues/1689)
 - Update to Camel 4.1.0 [\#1687](https://github.com/apache/camel-kamelets/issues/1687)
 - Create a Specialized Kamelet starting from Kafka Source using Apicurio Registry [\#1681](https://github.com/apache/camel-kamelets/issues/1681)
 - Azure Storage Blob Changefeed : remove dependencies not required anymore [\#1674](https://github.com/apache/camel-kamelets/issues/1674)
@@ -16,6 +17,7 @@
 
 **Merged pull requests:**
 
+- Create a Specialized Kamelet starting from Kafka Source using Azure Schema Registry - Added Kamelet [\#1696](https://github.com/apache/camel-kamelets/pull/1696) ([oscerd](https://github.com/oscerd))
 - Upgrade tests and doc to Camel 4.1.0 [\#1695](https://github.com/apache/camel-kamelets/pull/1695) ([apupier](https://github.com/apupier))
 - Upgrade to Camel 4.1.0 [\#1694](https://github.com/apache/camel-kamelets/pull/1694) ([oscerd](https://github.com/oscerd))
 - Expose maxMessagesPerPoll in AWS S3 Source Kamelet [\#1692](https://github.com/apache/camel-kamelets/pull/1692) ([oscerd](https://github.com/oscerd))
