@@ -18,6 +18,7 @@
 
 **Merged pull requests:**
 
+- Generated sources regen for SBOM [\#1701](https://github.com/apache/camel-kamelets/pull/1701) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Added Kafka Apicurio Registry Sink Kamelet [\#1697](https://github.com/apache/camel-kamelets/pull/1697) ([oscerd](https://github.com/oscerd))
 - Create a Specialized Kamelet starting from Kafka Source using Azure Schema Registry - Added Kamelet [\#1696](https://github.com/apache/camel-kamelets/pull/1696) ([oscerd](https://github.com/oscerd))
 - Upgrade tests and doc to Camel 4.1.0 [\#1695](https://github.com/apache/camel-kamelets/pull/1695) ([apupier](https://github.com/apupier))
