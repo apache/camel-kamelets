@@ -2,7 +2,15 @@
 
 ## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.0.1...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.1.0...HEAD)
+
+**Merged pull requests:**
+
+- Fix empty line in kamelet description [\#1704](https://github.com/apache/camel-kamelets/pull/1704) ([davsclaus](https://github.com/davsclaus))
+
+## [v4.1.0](https://github.com/apache/camel-kamelets/tree/v4.1.0) (2023-10-23)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.0.1...v4.1.0)
 
 **Closed issues:**
 
