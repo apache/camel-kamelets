@@ -6,6 +6,7 @@
 
 **Merged pull requests:**
 
+- Generated sources regen for SBOM [\#1707](https://github.com/apache/camel-kamelets/pull/1707) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Fix empty line in kamelet description [\#1704](https://github.com/apache/camel-kamelets/pull/1704) ([davsclaus](https://github.com/davsclaus))
 
 ## [v4.1.0](https://github.com/apache/camel-kamelets/tree/v4.1.0) (2023-10-23)
