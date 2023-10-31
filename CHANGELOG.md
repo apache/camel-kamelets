@@ -6,6 +6,7 @@
 
 **Merged pull requests:**
 
+- Upgrade grpc to version 1.56.3 [\#1708](https://github.com/apache/camel-kamelets/pull/1708) ([oscerd](https://github.com/oscerd))
 - Generated sources regen for SBOM [\#1707](https://github.com/apache/camel-kamelets/pull/1707) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Fix empty line in kamelet description [\#1704](https://github.com/apache/camel-kamelets/pull/1704) ([davsclaus](https://github.com/davsclaus))
 
