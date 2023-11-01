@@ -55,7 +55,7 @@ spec:
       steps:
         - to: "https://api.chucknorris.io/jokes/random"
         - removeHeaders:
-          pattern: '*'
+            pattern: '*'
         - set-body:
             jsonpath: "$.value"
         - to: "kamelet:sink"
