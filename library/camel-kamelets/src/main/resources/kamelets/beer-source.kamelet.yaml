@@ -37,5 +37,5 @@ spec:
       steps:
       - to: https://random-data-api.com/api/beer/random_beer
       - removeHeaders:
-        pattern: '*'
+          pattern: '*'
       - to: "kamelet:sink"
