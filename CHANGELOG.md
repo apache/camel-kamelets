@@ -6,6 +6,7 @@
 
 **Merged pull requests:**
 
+- Generated sources regen [\#1710](https://github.com/apache/camel-kamelets/pull/1710) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Upgrade CycloneDX Maven Plugin to version 2.7.10 [\#1709](https://github.com/apache/camel-kamelets/pull/1709) ([oscerd](https://github.com/oscerd))
 - Upgrade grpc to version 1.56.3 [\#1708](https://github.com/apache/camel-kamelets/pull/1708) ([oscerd](https://github.com/oscerd))
 - Generated sources regen for SBOM [\#1707](https://github.com/apache/camel-kamelets/pull/1707) ([github-actions[bot]](https://github.com/apps/github-actions))
