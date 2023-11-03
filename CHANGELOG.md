@@ -4,8 +4,14 @@
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.1.0...HEAD)
 
+**Closed issues:**
+
+- Enhance the kamelet azure-storage-blob-sink for append operation and rotate daily [\#1691](https://github.com/apache/camel-kamelets/issues/1691)
+- Release camel-kamelets 4.1.0 [\#1688](https://github.com/apache/camel-kamelets/issues/1688)
+
 **Merged pull requests:**
 
+- Enhance the kamelet azure-storage-blob-sink for append operation and rotate daily [\#1711](https://github.com/apache/camel-kamelets/pull/1711) ([oscerd](https://github.com/oscerd))
 - Generated sources regen [\#1710](https://github.com/apache/camel-kamelets/pull/1710) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Upgrade CycloneDX Maven Plugin to version 2.7.10 [\#1709](https://github.com/apache/camel-kamelets/pull/1709) ([oscerd](https://github.com/oscerd))
 - Upgrade grpc to version 1.56.3 [\#1708](https://github.com/apache/camel-kamelets/pull/1708) ([oscerd](https://github.com/oscerd))
