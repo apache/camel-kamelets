@@ -5,16 +5,16 @@
       <tool>
         <vendor>OWASP Foundation</vendor>
         <name>CycloneDX Maven plugin</name>
-        <version>2.7.9</version>
+        <version>2.7.10</version>
         <hashes>
-          <hash alg="MD5">8e595cdb67f17e4b41e046456970591d</hash>
-          <hash alg="SHA-1">69e8ca804520d09ce4657e7235bae84d01cbffa6</hash>
-          <hash alg="SHA-256">aa09074fe5aa403c008cd4fc7ef8ce41cd244489337f16b3e91a3914158a4db8</hash>
-          <hash alg="SHA-512">1488a8112da8e675813d7585f57c5efb178aed32901118186ee12d0e4ae3d19c53774c7f860bf70d17d70f050119b69443a2637cf641675b4b5d9cdcdd69b89b</hash>
-          <hash alg="SHA-384">b097295dfbf10887abc6eec58d4d0822cde5a73d1f5c1cf183a57bf569016ad5ced9d34efae3e574d82bb62837540c6c</hash>
-          <hash alg="SHA3-384">289f9520bd73a2031276248a6ef8f0891c691062c2d1ea86a2bc9ea8db2c52377d92a53be9957179e71aee3deda26a8c</hash>
-          <hash alg="SHA3-256">32b50a7efe5d491a4039c0017eca3cf49d98b55fc66d06b3dd06209487323474</hash>
-          <hash alg="SHA3-512">1daf813da53e5d5cda4d0302ff3a5e388aa45d96ebe6dcbe240f35d33f14b1e6390f6bbe7f21f3ed8cf96ebd9f5516a08b18487b7339715109c81cebfc1563df</hash>
+          <hash alg="MD5">1cc7f6a0382f8bb2f758d6a6ea401d1b</hash>
+          <hash alg="SHA-1">a4297947a1f2d7d453105db542651614bbd37f38</hash>
+          <hash alg="SHA-256">bd0fdd8f2f2116eee5e715aeac1580f19eb7a10ec2b6f805b53567067658e872</hash>
+          <hash alg="SHA-512">9cde8352a427e10b96cae01348fc7cfe5d4aa9cd0a5e5dd93b414ce3bb7d112993c3b3004e53af52567fbfa16de0704ec59a5556a635ad70571fd124ae389f39</hash>
+          <hash alg="SHA-384">93d7bf5b5c735347edfbfbd66810273ca840f9a322b816d22d44c3d8e8255c09e86570bb23712aeb0cade0f478be5aeb</hash>
+          <hash alg="SHA3-384">4467f16e9ca32190a6e49c65339eb28ee5e8c78f4e918fcf95128a4b7648898de56ccb43eacfad0c9391ef8cdb7d629a</hash>
+          <hash alg="SHA3-256">ed2996c99b483e969221d5e9a40f562ea2ab85442d361d72a90e85266a3ed781</hash>
+          <hash alg="SHA3-512">c8e6ea9ddc38edc77e284b3bf541663e84752bdc59ed1935799847a48a14ea2fa531b61008fefcba37d732a56702a11ac112437b9b80d18f4ecc8ef0ecfb32cf</hash>
         </hashes>
       </tool>
     </tools>
@@ -36,7 +36,7 @@
     <properties>
       <property name="maven.goal">makeAggregateBom</property>
       <property name="maven.scopes">compile,provided,runtime,system</property>
-      <property name="maven.reproducible">enabled</property>
+      <property name="cdx:reproducible">enabled</property>
     </properties>
   </metadata>
   <components>
