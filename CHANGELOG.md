@@ -11,6 +11,7 @@
 
 **Merged pull requests:**
 
+- Generated sources regen for SBOM [\#1712](https://github.com/apache/camel-kamelets/pull/1712) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Enhance the kamelet azure-storage-blob-sink for append operation and rotate daily [\#1711](https://github.com/apache/camel-kamelets/pull/1711) ([oscerd](https://github.com/oscerd))
 - Generated sources regen [\#1710](https://github.com/apache/camel-kamelets/pull/1710) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Upgrade CycloneDX Maven Plugin to version 2.7.10 [\#1709](https://github.com/apache/camel-kamelets/pull/1709) ([oscerd](https://github.com/oscerd))
