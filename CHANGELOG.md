@@ -6,11 +6,13 @@
 
 **Closed issues:**
 
+- Kafka Azure Schema Registry Sink Kamelet [\#1714](https://github.com/apache/camel-kamelets/issues/1714)
 - Enhance the kamelet azure-storage-blob-sink for append operation and rotate daily [\#1691](https://github.com/apache/camel-kamelets/issues/1691)
 - Release camel-kamelets 4.1.0 [\#1688](https://github.com/apache/camel-kamelets/issues/1688)
 
 **Merged pull requests:**
 
+- Kafka Azure Schema Registry Sink Kamelet [\#1715](https://github.com/apache/camel-kamelets/pull/1715) ([oscerd](https://github.com/oscerd))
 - Generated sources regen for SBOM [\#1712](https://github.com/apache/camel-kamelets/pull/1712) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Enhance the kamelet azure-storage-blob-sink for append operation and rotate daily [\#1711](https://github.com/apache/camel-kamelets/pull/1711) ([oscerd](https://github.com/oscerd))
 - Generated sources regen [\#1710](https://github.com/apache/camel-kamelets/pull/1710) ([github-actions[bot]](https://github.com/apps/github-actions))
