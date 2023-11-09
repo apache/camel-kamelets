@@ -28,6 +28,7 @@ spec:
     properties:
       bucketNameOrArn: ${aws.s3.bucketNameOrArn}
       overrideEndpoint: true
+      forcePathStyle: true
       uriEndpointOverride: ${YAKS_TESTCONTAINERS_LOCALSTACK_S3_URL}
       accessKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}
       secretKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}

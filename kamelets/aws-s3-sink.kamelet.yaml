@@ -96,6 +96,13 @@ spec:
         x-descriptors:
           - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+      forcePathStyle:
+        title: Force Path Style
+        description: Forces path style when accessing AWS S3 buckets.
+        type: boolean
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
       keyName:
         title: Key Name
         description: The key name for saving an element in the bucket.
@@ -113,7 +120,7 @@ spec:
           when:
             - simple: '${propertiesExist:!keyName}'
               steps:
-                - choice:   
+                - choice:
                     when:
                       - simple: "${header[file]}"
                         steps:
@@ -140,4 +147,5 @@ spec:
             useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
             uriEndpointOverride: "{{?uriEndpointOverride}}"
             overrideEndpoint: "{{overrideEndpoint}}"
+            forcePathStyle: "{{forcePathStyle}}"
             keyName: "{{?keyName}}"

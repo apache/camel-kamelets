@@ -99,7 +99,7 @@ spec:
         description: The naming strategy to use in streaming upload mode. There are 2 enums and the value can be one of progressive, random
         type: string
         default: "progressive"
-      keyName: 
+      keyName:
         title: Key Name
         description: Setting the key name for an element in the bucket through endpoint parameter. In Streaming Upload, with the default configuration, this will be the base for the progressive creation of files.
         type: string
@@ -117,6 +117,13 @@ spec:
       overrideEndpoint:
         title: Endpoint Overwrite
         description: Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option.
+        type: boolean
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
+      forcePathStyle:
+        title: Force Path Style
+        description: Forces path style when accessing AWS S3 buckets.
         type: boolean
         x-descriptors:
           - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
@@ -145,3 +152,4 @@ spec:
             useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
             uriEndpointOverride: "{{?uriEndpointOverride}}"
             overrideEndpoint: "{{overrideEndpoint}}"
+            forcePathStyle: "{{forcePathStyle}}"
