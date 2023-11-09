@@ -55,34 +55,34 @@ spec:
           when:
           - simple: "${header[domain-name]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: dns.name
                 simple: "${header[domain-name]}"
           - simple: "${header[ce-domainname]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: dns.name
                 simple: "${header[ce-domainname]}"
           otherwise:
             steps:
-            - set-header:
+            - setHeader:
                 name: dns.name
                 simple: "${body}"
       - choice:
           when:
           - simple: "${header[dns-type]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: dns.type
                 simple: "${header[dns-type]}"
           - simple: "${header[ce-dnstype]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: dns.type
                 simple: "${header[ce-dnstype]}"
           otherwise:
             steps:
-            - set-header:
+            - setHeader:
                 name: dns.type
                 constant: "A"
       - to:

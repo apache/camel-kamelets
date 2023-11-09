@@ -59,12 +59,12 @@ spec:
           when:
           - simple: "'{{?scheme}}' != ''"
             steps:
-            - set-property:
+            - setProperty:
                 name: CamelDataType
                 simple: "{{?scheme}}:{{format}}"
           otherwise:
             steps:
-            - set-property:
+            - setProperty:
                 name: CamelDataType
                 simple: "{{format}}"
       - bean:

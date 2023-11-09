@@ -51,17 +51,17 @@ spec:
           when:
           - simple: "${header[domain]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: dns.domain
                 simple: "${header[domain]}"
           - simple: "${header[ce-domain]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: dns.domain
                 simple: "${header[ce-domain]}"
           otherwise:
             steps:
-            - set-header:
+            - setHeader:
                 name: dns.domain
                 simple: "${body}"
       - to:
