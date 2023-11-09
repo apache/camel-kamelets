@@ -97,17 +97,17 @@ spec:
           when:
           - simple: "${header[file]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsS3Key
                 simple: "${header[file]}"
           - simple: "${header[ce-file]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsS3Key
                 simple: "${header[ce-file]}"
           - simple: "'{{?keyName}}' == ''"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsS3Key
                 simple: "${exchangeId}"
       - to:
