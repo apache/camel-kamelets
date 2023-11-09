@@ -89,12 +89,12 @@ spec:
                     when:
                       - simple: "${header[itemPartitionKey]}"
                         steps:
-                          - set-header:
+                          - setHeader:
                               name: CamelAzureCosmosDbItemPartitionKey
                               simple: "${header[itemPartitionKey]}"
                       - simple: "${header[ce-itemPartitionKey]}"
                         steps:
-                          - set-header:
+                          - setHeader:
                               name: CamelAzureCosmosDbItemPartitionKey
                               simple: "${header[ce-itemPartitionKey]}"
       - unmarshal:

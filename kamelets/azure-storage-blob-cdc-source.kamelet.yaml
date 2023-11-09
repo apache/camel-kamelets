@@ -123,19 +123,19 @@ spec:
             when:
               - simple: '${properties:getBlob:true}'
                 steps:
-                  - set-body:
+                  - setBody:
                       simple: ${body.toString()}
                   - unmarshal:
                       json:
                         library: Jackson
                         unmarshalType: com.fasterxml.jackson.databind.JsonNode
-                  - set-property:
+                  - setProperty:
                       name: azure-storage-blob-event-type
                       jsonpath: $.eventType
-                  - set-property:
+                  - setProperty:
                       name: azure-storage-blob-subject
                       jsonpath: $.subject
-                  - set-property:
+                  - setProperty:
                       name: azure-storage-blob-blob-name
                       simple: '${exchangeProperty.azure-storage-blob-subject.substring(${exchangeProperty.azure-storage-blob-subject.lastIndexOf("/")}++)}'
                   - log: "${exchangeProperty.azure-storage-blob-event-type} - ${exchangeProperty.azure-storage-blob-subject} - ${exchangeProperty.azure-storage-blob-blob-name}"
