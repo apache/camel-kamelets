@@ -78,12 +78,12 @@ spec:
           when:
           - simple: "${header[partition-id]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAzureEventHubsPartitionId
                 simple: "${header[partition-id]}"
           - simple: "${header[ce-partition-id]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAzureEventHubsPartitionId
                 simple: "${header[ce-partition-id]}"
       - to:

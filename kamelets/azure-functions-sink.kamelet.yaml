@@ -63,9 +63,9 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - remove-header:
+      - removeHeader:
           name: CamelHttpUri
-      - set-header:
+      - setHeader:
           name: CamelHttpMethod
           constant: "{{method}}"
       - to: "vertx-http:{{url}}?code={{?key}}"

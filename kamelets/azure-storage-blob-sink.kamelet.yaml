@@ -76,17 +76,17 @@ spec:
           when:
           - simple: "${header[file]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAzureStorageBlobBlobName
                 simple: "${header[file]}"
           - simple: "${header[ce-file]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAzureStorageBlobBlobName
                 simple: "${header[ce-file]}"
           otherwise:
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAzureStorageBlobBlobName
                 simple: "${exchangeId}"
       - to:
