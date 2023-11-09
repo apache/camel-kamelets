@@ -6,12 +6,18 @@
 
 **Closed issues:**
 
+- Manage Azure Schema Registry Dependencies like we are doing with Groovy Maven Plugin [\#1718](https://github.com/apache/camel-kamelets/issues/1718)
+- Manage Apicurio Dependencies like we are doing with Groovy Maven Plugin [\#1717](https://github.com/apache/camel-kamelets/issues/1717)
 - Kafka Azure Schema Registry Sink Kamelet [\#1714](https://github.com/apache/camel-kamelets/issues/1714)
 - Enhance the kamelet azure-storage-blob-sink for append operation and rotate daily [\#1691](https://github.com/apache/camel-kamelets/issues/1691)
 - Release camel-kamelets 4.1.0 [\#1688](https://github.com/apache/camel-kamelets/issues/1688)
 
 **Merged pull requests:**
 
+- Upgrade Azure identity to version 1.10.4, azure-data-schemaregistry-a… [\#1722](https://github.com/apache/camel-kamelets/pull/1722) ([oscerd](https://github.com/oscerd))
+- Upgrade Apicurio deps to version 2.4.14.Final [\#1721](https://github.com/apache/camel-kamelets/pull/1721) ([oscerd](https://github.com/oscerd))
+- Manage Azure Schema Registry Dependencies like we are doing with Groovy Maven Plugin [\#1720](https://github.com/apache/camel-kamelets/pull/1720) ([oscerd](https://github.com/oscerd))
+- Manage Apicurio Dependencies like we are doing with Groovy Maven Plugin [\#1719](https://github.com/apache/camel-kamelets/pull/1719) ([oscerd](https://github.com/oscerd))
 - Kafka Azure Schema Registry Sink Kamelet [\#1715](https://github.com/apache/camel-kamelets/pull/1715) ([oscerd](https://github.com/oscerd))
 - Generated sources regen for SBOM [\#1712](https://github.com/apache/camel-kamelets/pull/1712) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Enhance the kamelet azure-storage-blob-sink for append operation and rotate daily [\#1711](https://github.com/apache/camel-kamelets/pull/1711) ([oscerd](https://github.com/oscerd))
