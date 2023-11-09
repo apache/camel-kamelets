@@ -71,12 +71,12 @@ spec:
           when:
           - simple: "${header[expiration]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAzureStorageQueueTimeToLive
                 simple: "${header[expiration]}"
           - simple: "${header[ce-expiration]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAzureStorageQueueTimeToLive
                 simple: "${header[ce-expiration]}"
       - to:
