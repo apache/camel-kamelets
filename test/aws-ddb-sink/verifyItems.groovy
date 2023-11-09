@@ -17,13 +17,13 @@
 
 $(repeatOnError()
     .until('i > ${maxRetryAttempts}')
-    .actions(new com.consol.citrus.TestAction() {
+    .actions(new org.citrusframework.TestAction() {
         @Override
-        void execute(com.consol.citrus.context.TestContext context) {
+        void execute(org.citrusframework.context.TestContext context) {
             try {
                 assert context.getVariable('aws.ddb.items').equals(amazonDDBClient.scan(b -> b.tableName(context.getVariable('aws.ddb.tableName')))?.items()?.toListString())
             } catch (AssertionError e) {
-                throw new com.consol.citrus.exceptions.CitrusRuntimeException("AWS DDB item verification failed", e)
+                throw new org.citrusframework.exceptions.CitrusRuntimeException("AWS DDB item verification failed", e)
             }
         }
     })

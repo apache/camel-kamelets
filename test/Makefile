@@ -14,7 +14,7 @@
 # limitations under the License.
 
 camel-version := 4.1.0
-camel-kamelets-version := 4.1.0-SNAPSHOT
+camel-kamelets-version := 4.2.0-SNAPSHOT
 kamelets-local-dir := ../../../kamelets
 test := .
 
