@@ -107,29 +107,29 @@ spec:
           when:
           - simple: "${header[partition]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsKinesisPartitionKey
                 simple: "${header[partition]}"
           - simple: "${header[ce-partition]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsKinesisPartitionKey
                 simple: "${header[ce-partition]}"
           otherwise:
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsKinesisPartitionKey
                 simple: "${exchangeId}"
       - choice:
           when:
           - simple: "${header[sequence-number]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsKinesisSequenceNumber
                 simple: "${header[sequence-number]}"
           - simple: "${header[ce-sequencenumber]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsKinesisSequenceNumber
                 simple: "${header[ce-sequencenumber]}"
       - to:

@@ -115,12 +115,12 @@ spec:
           when:
           - simple: "${header[subject]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsSnsSubject
                 simple: "${header[subject]}"
           - simple: "${header[ce-subject]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsSnsSubject
                 simple: "${header[ce-subject]}"
       - set-property:
@@ -130,17 +130,17 @@ spec:
           when:
           - simple: "${header[group]}"
             steps:
-            - set-property:
+            - setProperty:
                 name: CamelAwsSnsMessageGroupId
                 simple: "${header[group]}"
           - simple: "${header[ce-group]}"
             steps:
-            - set-property:
+            - setProperty:
                 name: CamelAwsSnsMessageGroupId
                 simple: "${header[ce-group]}"
           otherwise:
             steps:
-            - set-property:
+            - setProperty:
                 name: CamelAwsSnsMessageGroupId
                 simple: "${exchangeId}"
       - choice:

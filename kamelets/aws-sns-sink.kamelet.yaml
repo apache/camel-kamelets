@@ -106,12 +106,12 @@ spec:
           when:
           - simple: "${header[subject]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsSnsSubject
                 simple: "${header[subject]}"
           - simple: "${header[ce-subject]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsSnsSubject
                 simple: "${header[ce-subject]}"
       - to:

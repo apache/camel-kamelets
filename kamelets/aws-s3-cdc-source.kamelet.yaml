@@ -201,17 +201,17 @@ spec:
                       json:
                         library: Jackson
                         unmarshalType: com.fasterxml.jackson.databind.JsonNode
-                  - set-property:
+                  - setProperty:
                       name: s3-event-name
                       jsonpath: $.detail.reason
                   - choice:
                       when:
                         - simple: '${exchangeProperty.s3-event-name} == "PutObject"'
                           steps:
-                            - set-property:
+                            - setProperty:
                                 name: aws-s3-name
                                 jsonpath: $.detail.object.key
-                            - set-property:
+                            - setProperty:
                                 name: aws-s3-bucket
                                 jsonpath: $.detail.bucket.name
                             - toD: >-
