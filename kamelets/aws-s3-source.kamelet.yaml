@@ -96,6 +96,13 @@ spec:
         x-descriptors:
           - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
+      forcePathStyle:
+        title: Force Path Style
+        description: Forces path style when accessing AWS S3 buckets.
+        type: boolean
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
+        default: false
       delay:
         title: Delay
         description: The number of milliseconds before the next poll of the selected bucket.
@@ -188,6 +195,7 @@ spec:
         useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
         uriEndpointOverride: "{{?uriEndpointOverride}}"
         overrideEndpoint: "{{overrideEndpoint}}"
+        forcePathStyle: "{{forcePathStyle}}"
         delay: "{{delay}}"
         maxMessagesPerPoll: "{{maxMessagesPerPoll}}"
       steps:
