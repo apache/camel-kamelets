@@ -89,7 +89,7 @@ spec:
       - split:
           jsonpath: "$.*"
           steps:
-          - set-property:
+          - setProperty:
               name: dropboxFileName
               simple: ${body.metadata.pathDisplay}
           - toD: "dropbox:get?accessToken={{accessToken}}&clientIdentifier={{clientIdentifier}}&remotePath=${exchangeProperty.dropboxFileName}"

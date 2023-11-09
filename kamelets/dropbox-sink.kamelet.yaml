@@ -80,12 +80,12 @@ spec:
           when:
           - simple: "${header[file]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelDropboxPutFileName
                 simple: "${header[file]}"
           - simple: "${header[ce-file]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelDropboxPutFileName
                 simple: "${header[ce-file]}"
       - to:
