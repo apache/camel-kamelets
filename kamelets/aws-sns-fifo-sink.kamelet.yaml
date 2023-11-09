@@ -123,7 +123,7 @@ spec:
             - setHeader:
                 name: CamelAwsSnsSubject
                 simple: "${header[ce-subject]}"
-      - set-property:
+      - setProperty:
           name: contentBasedDeduplication
           constant: "{{contentBasedDeduplication}}"
       - choice:
