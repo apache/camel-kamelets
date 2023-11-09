@@ -63,34 +63,34 @@ spec:
           when:
           - simple: "${header[caffeine-key]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelCaffeineKey
                 simple: "${header[caffeine-key]}"
           - simple: "${header[ce-caffeinekey]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelCaffeineKey
                 simple: "${header[ce-caffeinekey]}"
           otherwise:
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelCaffeineKey
                 simple: "${body}"
       - choice:
           when:
           - simple: "${header[caffeine-operation]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelCaffeineAction
                 simple: "${header[caffeine-operation]}"
           - simple: "${header[ce-caffeineoperation]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelCaffeineAction
                 simple: "${header[ce-caffeineoperation]}"
           otherwise:
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelCaffeineAction
                 constant: "GET"
       - to:
