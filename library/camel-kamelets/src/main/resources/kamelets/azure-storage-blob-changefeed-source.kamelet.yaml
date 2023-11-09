@@ -84,42 +84,42 @@ spec:
             json:
               library: Jackson
               unmarshalType: com.fasterxml.jackson.databind.JsonNode
-        - set-header:
+        - setHeader:
             name: "azure-storage-blob-changefeed-topic"
             jsonpath:
-              suppress-exceptions: true
+              suppressExceptions: true
               expression: $.topic
-        - set-header:
+        - setHeader:
             name: "azure-storage-blob-changefeed-subject"
             jsonpath:
-              suppress-exceptions: true
+              suppressExceptions: true
               expression: $.subject
-        - set-header:
+        - setHeader:
             name: "azure-storage-blob-changefeed-eventType"
             jsonpath:
-              suppress-exceptions: true
+              suppressExceptions: true
               expression: $.eventType
-        - set-header:
+        - setHeader:
             name: "azure-storage-blob-changefeed-eventTime"
             jsonpath:
-              suppress-exceptions: true
+              suppressExceptions: true
               expression: $.eventTime
-        - set-header:
+        - setHeader:
             name: "azure-storage-blob-changefeed-id"
             jsonpath:
-              suppress-exceptions: true
+              suppressExceptions: true
               expression: $.id
-        - set-header:
+        - setHeader:
             name: "azure-storage-blob-changefeed-dataVersion"
             jsonpath:
-              suppress-exceptions: true
+              suppressExceptions: true
               expression: $.dataVersion
-        - set-header:
+        - setHeader:
             name: "azure-storage-blob-changefeed-metadataVersion"
             jsonpath:
-              suppress-exceptions: true
+              suppressExceptions: true
               expression: $.metadataVersion
-        - set-body:
+        - setBody:
             jsonpath:
               expression: $.data
         - marshal:
