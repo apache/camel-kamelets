@@ -105,36 +105,36 @@ spec:
           when:
           - simple: "${header[resources-arn]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsEventbridgeResourcesArn
                 simple: "${header[resources-arn]}"
           - simple: "${header[ce-resources-arn]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsEventbridgeResourcesArn
                 simple: "${header[ce-resources-arn]}"
       - choice:
           when:
           - simple: "${header[detail-type]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsEventbridgeDetailType
                 simple: "${header[detail-type]}"
           - simple: "${header[ce-detail-type]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsEventbridgeDetailType
                 simple: "${header[ce-detail-type]}"
       - choice:
           when:
           - simple: "${header[event-source]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsEventbridgeSource
                 simple: "${header[event-source]}"
           - simple: "${header[ce-event-source]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsEventbridgeSource
                 simple: "${header[ce-event-source]}"            
       - to:

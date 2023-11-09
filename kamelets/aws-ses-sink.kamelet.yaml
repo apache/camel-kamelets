@@ -96,41 +96,41 @@ spec:
           when:
           - simple: "${header[subject]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsSesSubject
                 simple: "${header[subject]}"
           - simple: "${header[ce-subject]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsSesSubject
                 simple: "${header[ce-subject]}"
           otherwise:
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsSesSubject
                 simple: "${exchangeId}"
       - choice:
           when:
           - simple: "${header[to]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsSesTo
                 simple: "${header[to]}"
           - simple: "${header[ce-to]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsSesTo
                 simple: "${header[ce-to]}"
       - choice:
           when:
           - simple: "${header[reply-to-addresses]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsSesReplyToAddresses
                 simple: "${header[reply-to-addresses]}"
           - simple: "${header[ce-reply-to-addresses]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsSesReplyToAddresses
                 simple: "${header[ce-reply-to-addresses]}"
       - to:

@@ -118,24 +118,24 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - set-property:
+      - setProperty:
           name: contentBasedDeduplication
           constant: "{{contentBasedDeduplication}}"
       - choice:
           when:
           - simple: "${header[group]}"
             steps:
-            - set-property:
+            - setProperty:
                 name: CamelAwsMessageGroupId
                 simple: "${header[group]}"
           - simple: "${header[ce-group]}"
             steps:
-            - set-property:
+            - setProperty:
                 name: CamelAwsMessageGroupId
                 simple: "${header[ce-group]}"
           otherwise:
             steps:
-            - set-property:
+            - setProperty:
                 name: CamelAwsMessageGroupId
                 simple: "${exchangeId}"
       - choice:

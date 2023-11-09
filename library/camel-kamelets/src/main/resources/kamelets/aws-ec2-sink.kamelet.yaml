@@ -96,12 +96,12 @@ spec:
           when:
           - simple: "${header[instanceIds]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsEC2InstancesIds
                 simple: "${header[instanceIds]}"
           - simple: "${header[ce-instanceids]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelAwsEC2InstancesIds
                 simple: "${header[ce-instanceids]}"
       - to:
