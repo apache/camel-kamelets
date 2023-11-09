@@ -23,8 +23,8 @@ Feature: Mail Sink
       | port      | yaks:env('MAIL_SERVICE_PORT','22222') |
       | username  | test |
       | password  | secret |
-      | from      | user@demo.yaks |
-      | to        | announcements@demo.yaks |
+      | email     | user@demo.org |
+      | to        | announcements@demo.org |
       | subject   | Kamelet workshop |
       | message   | Camel K rocks |
 
@@ -44,7 +44,7 @@ Feature: Mail Sink
     Then endpoint mail-server should receive body
     """
     {
-      "from": "${from}",
+      "from": "${email}",
       "to": "${to}",
       "cc": "",
       "bcc": "",
