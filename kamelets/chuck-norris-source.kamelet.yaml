@@ -56,6 +56,6 @@ spec:
         - to: "https://api.chucknorris.io/jokes/random"
         - removeHeaders:
             pattern: '*'
-        - set-body:
+        - setBody:
             jsonpath: "$.value"
         - to: "kamelet:sink"
