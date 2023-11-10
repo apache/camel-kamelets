@@ -125,12 +125,12 @@ spec:
         autoCreate: "{{autoCreate}}"
         delete: "{{delete}}"
       steps:
-      - set-header:
+      - setHeader:
           name: file
           simple: "${header[CamelFileName]}"
-      - set-header:
+      - setHeader:
           name: ce-file
           simple: "${header[CamelFileName]}"
-      - convert-body-to:
+      - convertBodyTo:
           type: "java.io.InputStream"
       - to: "kamelet:sink"
