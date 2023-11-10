@@ -62,7 +62,7 @@ spec:
       parameters:
         period: "{{period}}"
       steps:
-      - set-header:
+      - setHeader:
           name: CamelCaffeineAction
           constant: GET
       - toD: "caffeine-cache:cache-${routeId}?key=lastUpdate"
@@ -70,37 +70,37 @@ spec:
           when:
           - simple: "${header.CamelCaffeineActionHasResult}"
             steps:
-            - set-property:
+            - setProperty:
                 name: lastUpdate
                 simple: "${body}"
           otherwise:
             steps:
-            - set-property:
+            - setProperty:
                 name: lastUpdate
                 simple: "${date-with-timezone:now-{{lookAhead}}m:UTC:yyyy-MM-dd'T'HH:mm:ss.SSS}"
-      - set-header:
+      - setHeader:
           name: CamelHttpMethod
           constant: GET
       - toD: "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&updatedafter=${exchangeProperty.lastUpdate}&orderby=time-asc"
-      - remove-header:
+      - removeHeader:
           name: CamelHttpMethod
       - unmarshal:
           json: {}
-      - set-property:
+      - setProperty:
           name: generated
           simple: "${body[metadata][generated]}"
-      - set-property:
+      - setProperty:
           name: lastUpdate
           simple: "${date-with-timezone:exchangeProperty.generated:UTC:yyyy-MM-dd'T'HH:mm:ss.SSS}"
-      - claim-check:
+      - claimCheck:
           operation: Push
-      - set-body:
+      - setBody:
           exchange-property: lastUpdate
-      - set-header:
+      - setHeader:
           name: CamelCaffeineAction
           constant: PUT
       - toD: "caffeine-cache:cache-${routeId}?key=lastUpdate"
-      - claim-check:
+      - claimCheck:
           operation: Pop
       - split:
           jsonpath: "$.features[*]"
