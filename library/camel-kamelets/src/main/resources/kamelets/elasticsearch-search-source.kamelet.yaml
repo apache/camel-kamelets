@@ -110,7 +110,7 @@ spec:
       parameters:
         period: "{{period}}"
       steps:
-        - set-body:
+        - setBody:
             constant: "{{query?nested=false}}"
         - to:
             uri: "{{local-es}}:{{clusterName}}"
