@@ -159,23 +159,23 @@ spec:
     from:
       uri: "kamelet:source"
       steps:
-        - set-header:
+        - setHeader:
             name: CamelGoogleSheets.spreadsheetId
             simple: "{{spreadsheetId}}"
-        - set-header:
+        - setHeader:
             name: CamelGoogleSheets.range
             simple: "{{?range}}"
-        - set-header:
+        - setHeader:
             name: CamelGoogleSheets.majorDimension
             simple: "{{?majorDimension}}"
-        - set-header:
+        - setHeader:
             name: CamelGoogleSheets.columnNames
             simple: "{{?columnNames}}"
-        - set-header:
+        - setHeader:
             name: CamelGoogleSheets.valueInputOption
             simple: "{{?valueInputOption}}"
         - transform:
-            to-type: "google-sheets:application-x-struct"
+            toType: "google-sheets:application-x-struct"
         - to:
             uri: "google-sheets:data/{{operation}}"
             parameters:
