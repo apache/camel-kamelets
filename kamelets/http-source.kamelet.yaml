@@ -63,7 +63,7 @@ spec:
       parameters:
         period: "{{period}}"
       steps:
-      - set-header:
+      - setHeader:
           name: "Accept"
           constant: "{{contentType}}"
       - to: "{{url}}"
