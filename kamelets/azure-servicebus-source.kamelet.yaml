@@ -84,7 +84,7 @@ spec:
         subscriptionName: "{{?subscriptionName}}"
         serviceBusType: "{{serviceBusType}}"
       steps:
-      - set-body:
+      - setBody:
           simple: "${body.toBytes()}"
       - to: "kamelet:sink"
 
