@@ -178,19 +178,19 @@ spec:
       steps:
       - marshal:
           json: {}
-      - set-header:
+      - setHeader:
           name: CamelGoogleSheets.spreadsheetId
           simple: "{{spreadsheetId}}"
-      - set-header:
+      - setHeader:
           name: CamelGoogleSheets.range
           simple: "{{?range}}"
-      - set-header:
+      - setHeader:
           name: CamelGoogleSheets.majorDimension
           simple: "{{?majorDimension}}"
-      - set-header:
+      - setHeader:
           name: CamelGoogleSheets.columnNames
           simple: "{{?columnNames}}"
-      - set-header:
+      - setHeader:
           name: CamelGoogleSheets.splitResults
           simple: "{{?splitResults}}"
       - to: "kamelet:sink"
