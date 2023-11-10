@@ -58,15 +58,15 @@ spec:
           when:
           - simple: "${header[args]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelExecCommandArgs
                 simple: "${header[args]}"
           - simple: "${header[ce-args]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelExecCommandArgs
                 simple: "${header[ce-args]}"
       - to:
           uri: "exec:{{executable}}"
-      - set-body:
+      - setBody:
           simple: "${body.stdout}"

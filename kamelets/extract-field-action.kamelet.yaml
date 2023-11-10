@@ -101,7 +101,7 @@ spec:
           when:
           - simple: "${header[Content-Type]} == 'application/json'"
             steps:
-            - set-property:
+            - setProperty:
                 name: deserialized
                 constant: "true"
             - unmarshal:
