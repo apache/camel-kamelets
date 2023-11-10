@@ -125,14 +125,14 @@ spec:
               steps:
                 - unmarshal:
                     fhirJson:
-                      fhir-version: "{{fhirVersion}}"
-                      pretty-print: "{{prettyPrint}}"                     
+                      fhirVersion: "{{fhirVersion}}"
+                      prettyPrint: "{{prettyPrint}}"                     
             - simple: "${properties:encoding} =~ 'XML'"
               steps:
                 - unmarshal:
                     fhirXml:
-                      fhir-version: "{{fhirVersion}}"
-                      pretty-print: "{{prettyPrint}}"            
+                      fhirVersion: "{{fhirVersion}}"
+                      prettyPrint: "{{prettyPrint}}"            
       - to: 
           uri: "fhir://{{apiName}}/{{methodName}}"
           parameters: 
