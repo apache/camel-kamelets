@@ -109,13 +109,13 @@ spec:
             when:
               - simple: '${properties:getObject:true}'
                 steps:
-                  - set-property:
+                  - setProperty:
                       name: google-storage-event-type
                       simple: "${headers.CamelGooglePubsubAttributes[eventType]}"
-                  - set-property:
+                  - setProperty:
                       name: google-storage-object-id
                       simple: "${headers.CamelGooglePubsubAttributes[objectId]}"
-                  - set-property:
+                  - setProperty:
                       name: google-storage-bucket-id
                       simple: "${headers.CamelGooglePubsubAttributes[bucketId]}"
                   - choice:
