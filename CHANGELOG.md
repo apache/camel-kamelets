@@ -14,6 +14,8 @@
 
 **Merged pull requests:**
 
+- Use only camelCase in kamelets yaml - First Batch [\#1724](https://github.com/apache/camel-kamelets/pull/1724) ([oscerd](https://github.com/oscerd))
+- chore: Fix YAKS tests for 4.2.0-SNAPSHOT [\#1723](https://github.com/apache/camel-kamelets/pull/1723) ([christophd](https://github.com/christophd))
 - Upgrade Azure identity to version 1.10.4, azure-data-schemaregistry-a… [\#1722](https://github.com/apache/camel-kamelets/pull/1722) ([oscerd](https://github.com/oscerd))
 - Upgrade Apicurio deps to version 2.4.14.Final [\#1721](https://github.com/apache/camel-kamelets/pull/1721) ([oscerd](https://github.com/oscerd))
 - Manage Azure Schema Registry Dependencies like we are doing with Groovy Maven Plugin [\#1720](https://github.com/apache/camel-kamelets/pull/1720) ([oscerd](https://github.com/oscerd))
