@@ -14,6 +14,7 @@
 
 **Merged pull requests:**
 
+- Kebab case second batch [\#1725](https://github.com/apache/camel-kamelets/pull/1725) ([oscerd](https://github.com/oscerd))
 - Use only camelCase in kamelets yaml - First Batch [\#1724](https://github.com/apache/camel-kamelets/pull/1724) ([oscerd](https://github.com/oscerd))
 - chore: Fix YAKS tests for 4.2.0-SNAPSHOT [\#1723](https://github.com/apache/camel-kamelets/pull/1723) ([christophd](https://github.com/christophd))
 - Upgrade Azure identity to version 1.10.4, azure-data-schemaregistry-a… [\#1722](https://github.com/apache/camel-kamelets/pull/1722) ([oscerd](https://github.com/oscerd))
