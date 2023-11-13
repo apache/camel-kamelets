@@ -109,6 +109,6 @@ spec:
       - setHeader:
           name: "ce-cc"
           simple: "${header.Cc}"
-      - convert-body-to:
+      - convertBodyTo:
           type: "java.lang.String"
       - to: "kamelet:sink"
