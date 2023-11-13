@@ -89,7 +89,7 @@ spec:
           when:
           - simple: "${header[Content-Type]} == null || ${header[Content-Type]} == 'text/plain'"
             steps:
-            - convert-body-to:
+            - convertBodyTo:
                 type: "java.lang.String"
             - transform:
                 simple: "${bean:type:java.util.Map?method=of('query', ${body})}"
@@ -103,39 +103,39 @@ spec:
           when:
           - simple: "${body.has('model')} == false"
             steps:
-            - set-property:
+            - setProperty:
                 name: "field"
                 constant: "model"
-            - set-property:
+            - setProperty:
                 name: "value"
                 constant: "{{engine}}"
             - bean: "org.apache.camel.kamelets.utils.transform.InsertField"
-      - set-property:
+      - setProperty:
           name: "file"
           constant: "{{file:}}"
       - choice:
           when:
           - simple: "${body.has('file')} == false && ${exchangeProperty.file} != null"
             steps:
-            - set-property:
+            - setProperty:
                 name: "field"
                 constant: "file"
-            - set-property:
+            - setProperty:
                 name: "value"
                 simple: "${exchangeProperty.file}"
             - bean: "org.apache.camel.kamelets.utils.transform.InsertField"
       - marshal:
           json: {}
-      - set-header:
+      - setHeader:
           name: "Authorization"
           simple: "Bearer {{authorizationToken}}"
-      - set-header:
+      - setHeader:
           name: "Content-Type"
           constant: "application/json"
       - to: "https://api.openai.com/v1/classifications"
-      - remove-header:
+      - removeHeader:
           name: "Authorization"
-      - set-property:
+      - setProperty:
           name: format
           constant: "{{format}}"
       - choice:
@@ -144,6 +144,6 @@ spec:
             steps:
             - transform:
                 jsonpath: "$.label"
-            - set-header:
+            - setHeader:
                 name: "Content-Type"
                 constant: "text/plain"
