@@ -162,12 +162,12 @@ spec:
         autoCreate: "{{autoCreate}}"
         delete: "{{delete}}"
       steps:
-      - set-body:
+      - setBody:
           simple: "${body.getBody()}"
-      - set-header:
+      - setHeader:
           name: file
           simple: "${header[CamelFileName]}"
-      - set-header:
+      - setHeader:
           name: ce-file
           simple: "${header[CamelFileName]}"
       - to: "kamelet:sink"

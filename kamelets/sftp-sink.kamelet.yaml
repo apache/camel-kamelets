@@ -133,12 +133,12 @@ spec:
           when:
           - simple: "${header[file]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelFileName
                 simple: "${header[file]}"
           - simple: "${header[ce-file]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelFileName
                 simple: "${header[ce-file]}"
       - to:
