@@ -52,10 +52,10 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - set-property:
+      - setProperty:
           name: "regex"
           constant: "{{regex}}"
-      - set-property:
+      - setProperty:
           name: "replacement"
           constant: "{{replacement}}"
       - bean: "org.apache.camel.kamelets.utils.transform.RegexRouter"
