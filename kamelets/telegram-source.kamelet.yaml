@@ -65,10 +65,10 @@ spec:
       parameters:
         authorizationToken: "{{authorizationToken}}"
       steps:
-      - set-header:
+      - setHeader:
           name: chat-id
           simple: "${header[CamelTelegramChatId]}"
-      - set-header:
+      - setHeader:
           name: ce-chatid
           simple: "${header[CamelTelegramChatId]}"
       - marshal:
