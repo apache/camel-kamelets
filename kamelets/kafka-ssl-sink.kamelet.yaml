@@ -141,24 +141,24 @@ spec:
             when:
               - simple: ${header[key]}
                 steps:
-                  - set-header:
+                  - setHeader:
                       name: kafka.KEY
                       simple: ${header[key]}
               - simple: ${header[ce-key]}
                 steps:
-                  - set-header:
+                  - setHeader:
                       name: kafka.KEY
                       simple: ${header[ce-key]}
         - choice:
             when:
               - simple: ${header[partition-key]}
                 steps:
-                  - set-header:
+                  - setHeader:
                       name: kafka.PARTITION_KEY
                       simple: ${header[partition-key]}
               - simple: ${header[ce-partitionkey]}
                 steps:
-                  - set-header:
+                  - setHeader:
                       name: kafka.PARTITION_KEY
                       simple: ${header[ce-partitionkey]}
         - to:
