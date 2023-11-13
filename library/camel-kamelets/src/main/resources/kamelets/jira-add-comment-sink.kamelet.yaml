@@ -87,7 +87,7 @@ spec:
           when:
           - simple: "${header[ce-issueKey]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: issueKey
                 simple: "${header[ce-issueKey]}"
       - to:
@@ -96,4 +96,4 @@ spec:
             jiraUrl: "{{jiraUrl}}"
             username: "{{?username}}"
             password: "{{?password}}"
-            access-token: "{{?personal-token}}"
+            accessToken: "{{?personal-token}}"
