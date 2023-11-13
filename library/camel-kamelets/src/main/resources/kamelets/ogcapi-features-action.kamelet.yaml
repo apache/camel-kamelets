@@ -91,21 +91,21 @@ spec:
     from:
       uri: "kamelet:source"
       steps:
-      - set-header:
+      - setHeader:
           name: "Accept"
           constant: "application/geo+json"
-      - set-header:
+      - setHeader:
           name: "CamelHttpQuery"
           simple: "limit={{limit}}&bbox={{bbox}}&{{?query}}&${body}"
-      - set-body:
+      - setBody:
           simple: ""
       - to: 
           uri: "{{url}}/collections/{{collection}}/items"
-      - remove-header:
+      - removeHeader:
           name: "Accept"
-      - remove-header:
+      - removeHeader:
           name: "CamelHttpQuery"
-      - convert-body-to:
+      - convertBodyTo:
           type: "java.lang.String"
       - choice:
           when:
