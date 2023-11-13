@@ -44,13 +44,7 @@ spec:
         description: Logging level to use
         type: string
         default: "INFO"
-        x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:select:TRACE'
-        - 'urn:alm:descriptor:com.tectonic.ui:select:DEBUG'
-        - 'urn:alm:descriptor:com.tectonic.ui:select:INFO'
-        - 'urn:alm:descriptor:com.tectonic.ui:select:WARN'
-        - 'urn:alm:descriptor:com.tectonic.ui:select:ERROR'
-        - 'urn:alm:descriptor:com.tectonic.ui:select:OFF'
+        enum: ["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "OFF"]
       logMask:
         title: Log Mask
         description: Mask sensitive information like password or passphrase in the log
