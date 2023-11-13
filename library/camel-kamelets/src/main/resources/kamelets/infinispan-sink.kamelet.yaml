@@ -104,20 +104,20 @@ spec:
           when:
           - simple: "${header[key]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelInfinispanKey
                 simple: "${header[key]}"
           - simple: "${header[ce-key]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelInfinispanKey
                 simple: "${header[ce-key]}"
           otherwise:
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelInfinispanKey
                 simple: "${exchangeId}"
-      - set-header:
+      - setHeader:
           name: CamelInfinispanValue
           simple: "${body}"
       - to:
