@@ -81,22 +81,22 @@ spec:
           when:
           - simple: "${header[Content-Type]} == null || ${header[Content-Type]} == 'text/plain'"
             steps:
-            - convert-body-to:
+            - convertBodyTo:
                 type: "java.lang.String"
             - transform:
                 simple: "${bean:type:java.util.Map?method=of('prompt', ${body})}"
             - marshal:
                 json: {}
-      - set-header:
+      - setHeader:
           name: "Authorization"
           simple: "Bearer {{authorizationToken}}"
-      - set-header:
+      - setHeader:
           name: "Content-Type"
           constant: "application/json"
       - to: "https://api.openai.com/v1/engines/{{engine}}/completions"
-      - remove-header:
+      - removeHeader:
           name: "Authorization"
-      - set-property:
+      - setProperty:
           name: format
           constant: "{{format}}"
       - choice:
@@ -105,6 +105,6 @@ spec:
             steps:
             - transform:
                 jsonpath: "$.choices[0].text"
-            - set-header:
+            - setHeader:
                 name: "Content-Type"
                 constant: "text/plain"
