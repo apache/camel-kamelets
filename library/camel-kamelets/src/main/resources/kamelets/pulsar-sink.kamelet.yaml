@@ -102,13 +102,7 @@ spec:
         description: "Compression type to use."
         type: string
         default: "NONE"
-        x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:select:NONE'
-          - 'urn:alm:descriptor:com.tectonic.ui:select:LZ4'
-          - 'urn:alm:descriptor:com.tectonic.ui:select:ZLIB'
-          - 'urn:alm:descriptor:com.tectonic.ui:select:ZSTD'
-          - 'urn:alm:descriptor:com.tectonic.ui:select:SNAPPY'
-        enum: ["ONE", "LZ4", "ZLIB", "ZSTD", "SNAPPY"]
+        enum: ["NONE", "LZ4", "ZLIB", "ZSTD", "SNAPPY"]
       initialSequenceId:
         title: Initial SequenceId
         description: "The first message published will have a sequence Id of initialSequenceId 1."
