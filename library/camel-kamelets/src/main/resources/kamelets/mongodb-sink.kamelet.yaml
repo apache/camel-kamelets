@@ -122,12 +122,12 @@ spec:
           when:
           - simple: "${header[db-upsert]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelMongoDbUpsert
                 simple: "${header[db-upsert]}"
           - simple: "${header[ce-dbupsert]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelMongoDbUpsert
                 simple: "${header[ce-dbupsert]}"
       - to: 
