@@ -103,10 +103,10 @@ spec:
     from:
       uri: kamelet:source
       steps:
-        - set-property:
+        - setProperty:
             name: sObjectId
             jsonpath: "$['sObjectId']"
-        - set-property:
+        - setProperty:
             name: sObjectName
             jsonpath: "$['sObjectName']"
         - transform:

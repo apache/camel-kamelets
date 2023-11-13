@@ -104,17 +104,17 @@ spec:
     from:
       uri: kamelet:source
       steps:
-        - set-header:
+        - setHeader:
             name: sObjectId
             jsonpath: "$['sObjectId']"
-        - set-header:
+        - setHeader:
             name: sObjectName
             jsonpath: "$['sObjectName']"
         - setBody:
             simple: "${null}"
         - to:
             uri: "{{local-delete-salesforce}}:deleteSObject"
-        - remove-header:
+        - removeHeader:
             name: sObjectId
-        - remove-header:
+        - removeHeader:
             name: sObjectName
