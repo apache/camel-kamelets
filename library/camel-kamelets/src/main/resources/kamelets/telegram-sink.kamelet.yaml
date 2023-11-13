@@ -80,44 +80,44 @@ spec:
           when:
           - simple: "${header[Content-Type]} == 'image/png'"
             steps:
-            - convert-body-to:
+            - convertBodyTo:
                 type: "byte[]"
-            - set-header:
+            - setHeader:
                 name: CamelTelegramMediaType
                 constant: PHOTO_PNG
           - simple: "${header[Content-Type]} == 'image/jpeg'"
             steps:
-            - convert-body-to:
+            - convertBodyTo:
                 type: "byte[]"
-            - set-header:
+            - setHeader:
                 name: CamelTelegramMediaType
                 constant: PHOTO_JPG
           otherwise:
             steps:
-            - convert-body-to:
+            - convertBodyTo:
                 type: "java.lang.String"
       - choice:
           when:
           - simple: "${header[text]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelTelegramMediaTitleCaption
                 simple: "${header[text]}"
           - simple: "${header[ce-text]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelTelegramMediaTitleCaption
                 simple: "${header[ce-text]}"
       - choice:
           when:
           - simple: "${header[chat-id]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelTelegramChatId
                 simple: "${header[chat-id]}"
           - simple: "${header[ce-chatid]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: CamelTelegramChatId
                 simple: "${header[ce-chatid]}"
       - to:
