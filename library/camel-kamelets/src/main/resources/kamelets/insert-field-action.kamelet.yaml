@@ -68,7 +68,7 @@ spec:
           when:
           - simple: "${header[Content-Type]} == 'application/json'"
             steps:
-            - set-property:
+            - setProperty:
                 name: deserialized
                 constant: "true"
             - unmarshal:
@@ -85,6 +85,6 @@ spec:
                 json:
                   library: Jackson
                   unmarshalType: com.fasterxml.jackson.databind.JsonNode
-            - set-header:
+            - setHeader:
                 name: "Content-Type"
                 constant: "application/json"
