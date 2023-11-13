@@ -58,6 +58,6 @@ spec:
             library: Jackson
             unmarshalType: com.fasterxml.jackson.databind.JsonNode
             schemaResolver: "#bean:{{schemaResolver}}"
-      - set-header:
+      - setHeader:
           name: "Content-Type"
           constant: "application/protobuf"
