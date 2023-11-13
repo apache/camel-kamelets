@@ -89,14 +89,14 @@ spec:
           when:
           - simple: "${header[ce-issueKey]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: issueKey
                 simple: "${header[ce-issueKey]}"
       - choice:
           when:
           - simple: "${header[ce-issueTransitionId]}"
             steps:
-            - set-header:
+            - setHeader:
                 name: issueTransitionId
                 simple: "${header[ce-issueTransitionId]}"
       - to:
@@ -105,4 +105,4 @@ spec:
             jiraUrl: "{{jiraUrl}}"
             username: "{{?username}}"
             password: "{{?password}}"
-            access-token: "{{?personal-token}}"
+            accessToken: "{{?personal-token}}"
