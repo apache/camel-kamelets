@@ -56,7 +56,7 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - set-header:
+      - setHeader:
           name: kafka.KEY
           simple: "${header.{{headerName}}}"
       - choice:
@@ -64,5 +64,5 @@ spec:
           when:
             - simple: '${properties:forceHeaderDeletion:true}'
               steps:
-              - remove-header:
+              - removeHeader:
                   name: "{{headerName}}" 
