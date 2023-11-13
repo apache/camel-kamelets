@@ -97,16 +97,16 @@ spec:
         fetchSize: "{{fetchSize}}"
         delay: "{{delay}}"
       steps:
-      - set-header:
+      - setHeader:
           name: "ce-subject"
           simple: "${header.Subject}"
-      - set-header:
+      - setHeader:
           name: "ce-from"
           simple: "${header.From}"
-      - set-header:
+      - setHeader:
           name: "ce-to"
           simple: "${header.To}"
-      - set-header:
+      - setHeader:
           name: "ce-cc"
           simple: "${header.Cc}"
       - convert-body-to:

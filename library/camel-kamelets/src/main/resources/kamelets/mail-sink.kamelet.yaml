@@ -85,31 +85,31 @@ spec:
             when:
             - simple: "${header[ce-subject]}"
               steps:
-                - set-header:
+                - setHeader:
                     name: Subject
                     simple: "${header[ce-subject]}"
         - choice:
             when:
             - simple: "${header[ce-from]}"
               steps:
-                - set-header:
+                - setHeader:
                     name: From
                     simple: "${header[ce-from]}"
         - choice:
             when:
             - simple: "${header[ce-to]}"
               steps:
-                - set-header:
+                - setHeader:
                     name: To
                     simple: "${header[ce-to]}"
         - choice:
             when:
             - simple: "${header[ce-cc]}"
               steps:
-                - set-header:
+                - setHeader:
                     name: Cc
                     simple: "${header[ce-cc]}"
-        - remove-headers:
+        - removeHeaders:
             pattern: "ce-*"
         - to:
             uri: "smtp:{{connectionHost}}:{{connectionPort}}"
