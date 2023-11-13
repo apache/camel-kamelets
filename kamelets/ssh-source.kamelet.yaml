@@ -85,6 +85,6 @@ spec:
         delay: "{{delay}}"
         pollCommand: "{{pollCommand}}"
       steps:
-      - convert-body-to:
+      - convertBodyTo:
           type: "java.lang.String"
       - to: "kamelet:sink"
