@@ -97,7 +97,7 @@ spec:
     from:
       uri: "kamelet:source"
       steps:
-      - set-header:
+      - setHeader:
           name: CamelGeoCoderAddress
           simple: "${body}"
       - to: 
