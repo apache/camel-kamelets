@@ -20,6 +20,9 @@ kind: Pipe
 metadata:
   name: avro-to-log-pipe
 spec:
+  integration:
+    dependencies:
+    - "camel:jackson-avro"
   source:
     ref:
       kind: Kamelet
@@ -28,6 +31,12 @@ spec:
     properties:
       subpath: user
   steps:
+    - ref:
+        kind: Kamelet
+        apiVersion: camel.apache.org/v1
+        name: data-type-action
+      properties:
+        format: "application-octet-stream"
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1

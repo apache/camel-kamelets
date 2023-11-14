@@ -20,6 +20,9 @@ kind: Pipe
 metadata:
   name: json-to-avro-pipe
 spec:
+  integration:
+    dependencies:
+    - "camel:jackson-avro"
   source:
     ref:
       kind: Kamelet

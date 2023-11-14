@@ -47,14 +47,13 @@ spec:
         x-descriptors:
         - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
   dependencies:
-  - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.2.0-SNAPSHOT"
   - "camel:kamelet"
   - "camel:core"
   - "camel:jackson-avro"
   template:
     beans:
       - name: schemaResolver
-        type: "#class:org.apache.camel.kamelets.utils.format.converter.avro.AvroSchemaResolver"
+        type: "#class:org.apache.camel.component.jackson.avro.transform.AvroSchemaResolver"
         property:
           - key: validate
             value: '{{validate}}'
