@@ -33,6 +33,7 @@ public enum KameletPrefixSchemeEnum {
     aws_sqs("aws-sqs","aws2-sqs"),
     aws_sqs_batch("aws-sqs-batch","aws2-sqs"),
     aws_sqs_fifo("aws-sqs-fifo","aws2-sqs"),
+    azure_cosmosdb("azure-cosmosdb","azure-cosmosdb"),
     azure_eventhubs("azure-eventhubs","azure-eventhubs"),
     azure_functions("azure-functions","vertx-http"),
     azure_servicebus("azure-servicebus","azure-servicebus"),
