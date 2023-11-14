@@ -97,6 +97,7 @@ public enum KameletPrefixSchemeEnum {
     mongodb("mongodb", "mongodb"),
     mqtt("mqtt", "paho"),
     mqtt5("mqtt5", "paho-mqtt5"),
+    ms_exchange("ms-exchange", "imaps"),
     mysql("mysql", "sql"),
     nats("nats", "nats"),
     oracle_database("oracle-database", "sql"),
