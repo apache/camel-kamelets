@@ -100,6 +100,7 @@ public enum KameletPrefixSchemeEnum {
     ms_exchange("ms-exchange", "imaps"),
     mysql("mysql", "sql"),
     nats("nats", "nats"),
+    opensearch("opensearch", "opensearch"),
     oracle_database("oracle-database", "sql"),
     postgresql("postgresql", "sql"),
     pulsar("pulsar", "pulsar"),
