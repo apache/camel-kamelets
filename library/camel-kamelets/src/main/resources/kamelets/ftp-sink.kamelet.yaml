@@ -65,7 +65,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       directoryName:
         title: Directory Name
@@ -77,7 +76,6 @@ spec:
         type: boolean
         default: false
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       fileExist:
         title: File Existence
         description: How to behave in case of file already existent.
@@ -90,14 +88,12 @@ spec:
         type: boolean
         default: false
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       autoCreate:
         title: Autocreate Missing Directories
         description: Automatically create the directory the files should be written to.
         type: boolean
         default: true
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
   dependencies:
     - "camel:ftp"
     - "camel:core"

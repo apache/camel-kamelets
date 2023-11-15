@@ -72,14 +72,12 @@ spec:
         description: The Authentication Parameters to be used while creating the client from URI.
         type: string
         x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:text'
       batchingEnabled:
         title: Enable Batching
         description: Control whether automatic batching of messages is enabled for the producer.
         type: boolean
         default: true
         x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       batchingMaxMessages:
         title: Batching Maximum Messages
         description: "The maximum size to batch messages."
@@ -96,7 +94,6 @@ spec:
         type: boolean
         default: false
         x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       compressionType:
         title: Compression Type
         description: "Compression type to use."
@@ -114,7 +111,6 @@ spec:
         type: boolean
         default: false
         x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       maxPendingMessages:
         title: Maximum Pending Messages
         description: "Size of the pending massages queue. When the queue is full, by default, any further sends will fail unless blockIfQueueFull=true."
@@ -131,9 +127,6 @@ spec:
         type: string
         default: "RoundRobinPartition"
         x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:select:SinglePartition'
-          - 'urn:alm:descriptor:com.tectonic.ui:select:RoundRobinPartition'
-          - 'urn:alm:descriptor:com.tectonic.ui:select:CustomPartition'
         enum: ["SinglePartition", "RoundRobinPartition", "CustomPartition"]
       producerName:
         title: Producer Name

@@ -49,7 +49,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       hostPayload:
         title: Host of the Event
@@ -60,14 +59,12 @@ spec:
         description: Send to Splunk only data contained in the body.
         type: boolean
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:checkbox
         default: false
       headersOnly:
         title: Headers Only
         description: Send to Splunk only data contained in the headers.
         type: boolean
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:checkbox
         default: false
       index:
         title: Index
@@ -86,14 +83,12 @@ spec:
         description: Skip TLS verification.
         type: boolean
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:checkbox
         default: false
       https:
         title: Secure
         description: Use a secure HTTPS connection.
         type: boolean
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:checkbox
         default: true
       time:
         title: Time

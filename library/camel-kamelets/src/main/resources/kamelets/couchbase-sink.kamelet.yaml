@@ -67,7 +67,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       startingId:
         title: Starting Id
@@ -80,7 +79,6 @@ spec:
         type: boolean
         default: true
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:checkbox
   dependencies:
     - "camel:couchbase"
     - "camel:kamelet"

@@ -58,7 +58,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       username:
         title: MongoDB Username
@@ -72,14 +71,12 @@ spec:
         type: boolean
         default: true
         x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       sslValidationEnabled:
         title: Enables Ssl Certificates Validation and Host name checks.
         description: IMPORTANT this should be disabled only in test environment since can pose security issues.
         type: boolean
         default: true
         x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       database:
         title: MongoDB Database
         description: The name of the MongoDB database.
@@ -89,7 +86,6 @@ spec:
         description: Specifies to enable persistent tail tracking, which is a mechanism to keep track of the last consumed data across system restarts. The next time the system is up, the endpoint recovers the cursor from the point where it last stopped consuimg data. This option will only work on capped collections.
         type: boolean
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
       tailTrackIncreasingField:
         title: MongoDB Tail Track Increasing Field

@@ -51,7 +51,6 @@ spec:
         description: Specifies to delete objects after consuming them.
         type: boolean
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: true
       accessKey:
         title: Access Key
@@ -59,7 +58,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       secretKey:
         title: Secret Key
@@ -67,7 +65,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       zoneGroup:
         title: Bucket Zone Group
@@ -78,14 +75,12 @@ spec:
         description: Specifies to automatically create the bucket.
         type: boolean
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
       includeBody:
         title: Include Body
         description: If true, the exchange is consumed and put into the body and closed. If false, the Object stream is put raw into the body and the headers are set with the object metadata.
         type: boolean
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: true
       prefix:
         title: Prefix
@@ -97,7 +92,6 @@ spec:
         description: If true, the Object body is ignored. Setting this to true overrides any behavior defined by the `includeBody` option. If false, the object is put in the body.
         type: boolean
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
       cephUrl:
         title: Ceph Url Address

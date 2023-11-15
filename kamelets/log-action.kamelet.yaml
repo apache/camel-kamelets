@@ -51,7 +51,6 @@ spec:
         type: boolean
         default: false
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       marker:
         title: Marker
         description: An optional Marker name to use
@@ -62,63 +61,54 @@ spec:
         type: boolean
         default: false
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       showAllProperties:
         title: Show All Properties
         description: Show all of the exchange properties (both internal and custom)
         type: boolean
         default: false
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       showBody:
         title: Show Body
         description: Show the message body
         type: boolean
         default: true
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       showBodyType:
         title: Show Body Type
         description: Show the body Java type
         type: boolean
         default: true
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       showExchangePattern:
         title: Show Exchange Pattern
         description: Shows the Message Exchange Pattern (or MEP for short)
         type: boolean
         default: true
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       showHeaders:
         title: Show Headers
         description: Show the headers received
         type: boolean
         default: false
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       showProperties:
         title: Show Properties
         description: Show the exchange properties (only custom). Use showAllProperties to show both internal and custom properties.
         type: boolean
         default: false
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       showStreams:
         title: Show Streams
         description: Show the stream bodies (they may not be available in following steps)
         type: boolean
         default: false
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       showCachedStreams:
         title: Show Cached Streams
         description: Whether Camel should show cached stream bodies or not.
         type: boolean
         default: true
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
   dependencies:
   - "camel:kamelet"
   - "camel:log"

@@ -68,7 +68,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       consistencyLevel:
         title: Consistency Level
@@ -82,7 +81,6 @@ spec:
         type: boolean
         default: true
         x-descriptors:
-          - urn:alm:descriptor:com.tectonic.ui:checkbox
       query:
         title: Query
         description: The query to execute against the Cassandra cluster table.
