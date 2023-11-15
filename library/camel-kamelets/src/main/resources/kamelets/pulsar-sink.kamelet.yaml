@@ -71,13 +71,11 @@ spec:
         title: Authentication Params
         description: The Authentication Parameters to be used while creating the client from URI.
         type: string
-        x-descriptors:
       batchingEnabled:
         title: Enable Batching
         description: Control whether automatic batching of messages is enabled for the producer.
         type: boolean
         default: true
-        x-descriptors:
       batchingMaxMessages:
         title: Batching Maximum Messages
         description: "The maximum size to batch messages."
@@ -93,7 +91,6 @@ spec:
         description: "Whether to block the producing thread if pending messages queue is full or to throw a ProducerQueueIsFullError."
         type: boolean
         default: false
-        x-descriptors:
       compressionType:
         title: Compression Type
         description: "Compression type to use."
@@ -110,7 +107,6 @@ spec:
         description: "Whether the producer should be started lazy (on the first message). By starting lazy you can use this to allow CamelContext and routes to startup in situations where a producer may otherwise fail during starting and cause the route to fail being started. By deferring this startup to be lazy then the startup failure can be handled during routing messages via Camel’s routing error handlers. Beware that when the first message is processed then creating and starting the producer may take a little time and prolong the total processing time of the processing."
         type: boolean
         default: false
-        x-descriptors:
       maxPendingMessages:
         title: Maximum Pending Messages
         description: "Size of the pending massages queue. When the queue is full, by default, any further sends will fail unless blockIfQueueFull=true."
@@ -126,7 +122,6 @@ spec:
         description: "Message Routing Mode to use."
         type: string
         default: "RoundRobinPartition"
-        x-descriptors:
         enum: ["SinglePartition", "RoundRobinPartition", "CustomPartition"]
       producerName:
         title: Producer Name

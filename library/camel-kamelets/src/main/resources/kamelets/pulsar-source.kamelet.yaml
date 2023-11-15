@@ -99,7 +99,6 @@ spec:
         description: "Whether to use the messageListener interface, or to receive messages using a separate thread pool."
         type: boolean
         default: true
-        x-descriptors:
       numberOfConsumers:
         title: Number Of Consumers
         description: "Number of consumers."
@@ -115,7 +114,6 @@ spec:
         description: "Enable compacted topic reading."
         type: boolean
         default: false
-        x-descriptors:
       subscriptionInitialPosition:
         title: Subscription Initial Position
         description: "Control the initial position in the topic of a newly created subscription. Default is latest message."
@@ -144,7 +142,6 @@ spec:
         description: "Whether the topic is a pattern (regular expression) that allows the consumer to subscribe to all matching topics in the namespace."
         type: boolean
         default: false
-        x-descriptors:
     type: object
   template:
     from:

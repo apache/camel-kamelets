@@ -57,7 +57,6 @@ spec:
         description: If enable the action will store the extracted field in an header named CamelKameletsExtractFieldName
         type: boolean
         default: false
-        x-descriptors:
       headerOutputName:
         title: Header Output Name
         description: A custom name for the header containing the extracted field
@@ -68,13 +67,11 @@ spec:
         description: If enabled the action will check if the header output name (custom or default) has been used already in the exchange. If so, the extracted field will be stored in the message body, if not, the extracted field will be stored in the selected header (custom or default).
         type: boolean
         default: false
-        x-descriptors:
       trimField:
         title: Trim Field
         description: If enabled we return the Raw extracted field
         type: boolean
         default: false
-        x-descriptors:
     type: object
   dependencies:
   - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.2.0-SNAPSHOT"
