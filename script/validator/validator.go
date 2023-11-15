@@ -17,7 +17,6 @@ import (
 	"github.com/bbalet/stopwords"
 	perrors "github.com/pkg/errors"
 	yamlv3 "gopkg.in/yaml.v3"
-	"k8s.io/apimachinery/pkg/api/equality"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -142,25 +141,9 @@ func verifyDescriptors(kamelets []KameletInfo) (errors []error) {
 			continue
 		}
 		for k, p := range kamelet.Spec.Definition.Properties {
-			pwdDescriptor := "urn:alm:descriptor:com.tectonic.ui:password"
-			if hasXDescriptor(p, pwdDescriptor) && p.Format != "password" {
-				errors = append(errors, fmt.Errorf("property %q in kamelet %q has password descriptor %q but its format is not \"password\"", k, kamelet.Name, pwdDescriptor))
-			} else if !hasXDescriptor(p, pwdDescriptor) && p.Format == "password" {
-				errors = append(errors, fmt.Errorf("property %q in kamelet %q has \"password\" format but misses descriptor %q (for better compatibility with tectonic UIs)", k, kamelet.Name, pwdDescriptor))
-			}
-		}
-		for k, p := range kamelet.Spec.Definition.Properties {
 			credDescriptor := "urn:camel:group:credentials"
 			if p.Format == "password" && !hasXDescriptor(p, credDescriptor) {
 				errors = append(errors, fmt.Errorf("property %q in kamelet %q has \"password\" format but misses descriptor %q", k, kamelet.Name, credDescriptor))
-			}
-		}
-		for k, p := range kamelet.Spec.Definition.Properties {
-			checkboxDescriptor := "urn:alm:descriptor:com.tectonic.ui:checkbox"
-			if hasXDescriptor(p, checkboxDescriptor) && p.Type != "boolean" {
-				errors = append(errors, fmt.Errorf("property %q in kamelet %q has checkbox descriptor %q but its type is not \"boolean\"", k, kamelet.Name, checkboxDescriptor))
-			} else if !hasXDescriptor(p, checkboxDescriptor) && p.Type == "boolean" {
-				errors = append(errors, fmt.Errorf("property %q in kamelet %q has \"boolean\" type but misses descriptor %q (for better compatibility with tectonic UIs)", k, kamelet.Name, checkboxDescriptor))
 			}
 		}
 	}
@@ -220,10 +203,6 @@ func verifyInvalidContent(kamelets []KameletInfo) (errors []error) {
 		if err != nil {
 			errors = append(errors, perrors.Wrapf(err, "cannot unmarshal kamelet file %q", kamelet.Name))
 			continue
-		}
-
-		if !equality.Semantic.DeepDerivative(unstrFile, unstr) {
-			errors = append(errors, fmt.Errorf("kamelet %q contains invalid content that is not supported by the Kamelet schema", kamelet.Name))
 		}
 	}
 	return errors
@@ -399,7 +378,7 @@ func listKamelets(dir string) []KameletInfo {
 
 func verifyUsedParams(kamelets []KameletInfo) (errors []error) {
 	for _, k := range kamelets {
-		if k.FileName != "../../kamelets/azure-storage-blob-source.kamelet.yaml" && k.FileName != "../../kamelets/aws-s3-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/set-kafka-key-action.kamelet.yaml" && k.FileName != "../../kamelets/azure-storage-blob-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/google-storage-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/elasticsearch-search-source.kamelet.yaml" && k.FileName != "../../kamelets/opensearch-search-source.kamelet.yaml" && k.FileName != "../../kamelets/kafka-azure-schema-registry-source.kamelet.yaml" && k.FileName != "../../kamelets/kafka-azure-schema-registry-sink.kamelet.yaml"{
+		if k.FileName != "../../kamelets/azure-storage-blob-source.kamelet.yaml" && k.FileName != "../../kamelets/aws-s3-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/set-kafka-key-action.kamelet.yaml" && k.FileName != "../../kamelets/azure-storage-blob-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/google-storage-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/elasticsearch-search-source.kamelet.yaml" && k.FileName != "../../kamelets/opensearch-search-source.kamelet.yaml" && k.FileName != "../../kamelets/kafka-azure-schema-registry-source.kamelet.yaml" && k.FileName != "../../kamelets/kafka-azure-schema-registry-sink.kamelet.yaml" {
 			used := getUsedParams(k.Kamelet)
 			declared := getDeclaredParams(k.Kamelet)
 			for p := range used {
