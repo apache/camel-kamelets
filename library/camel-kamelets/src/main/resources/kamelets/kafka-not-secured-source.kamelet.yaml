@@ -57,13 +57,11 @@ spec:
         description: If true, periodically commit to ZooKeeper the offset of messages already fetched by the consumer
         type: boolean
         default: true
-        x-descriptors:
       allowManualCommit:
         title: Allow Manual Commit
         description: Whether to allow doing manual commits
         type: boolean
         default: false
-        x-descriptors:
       pollOnError:
         title: Poll On Error Behavior
         description: What to do if kafka threw an exception while polling for new messages. There are 5 enums and the value can be one of DISCARD, ERROR_HANDLER, RECONNECT, RETRY, STOP
@@ -88,7 +86,6 @@ spec:
         title: Automatically Deserialize Headers
         description: When enabled the Kamelet source will deserialize all message headers to String representation.
         type: boolean
-        x-descriptors:
         default: true
   dependencies:
     - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.2.0-SNAPSHOT"

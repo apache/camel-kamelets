@@ -49,8 +49,7 @@ spec:
         title: Log Mask
         description: Mask sensitive information like password or passphrase in the log
         type: boolean
-        default: false
-        x-descriptors:
+        default: false        
       marker:
         title: Marker
         description: An optional Marker name to use
@@ -59,56 +58,47 @@ spec:
         title: Multiline
         description: If enabled then each information is outputted on a newline
         type: boolean
-        default: false
-        x-descriptors:
+        default: false     
       showAllProperties:
         title: Show All Properties
         description: Show all of the exchange properties (both internal and custom)
         type: boolean
-        default: false
-        x-descriptors:
+        default: false       
       showBody:
         title: Show Body
         description: Show the message body
         type: boolean
-        default: true
-        x-descriptors:
+        default: true       
       showBodyType:
         title: Show Body Type
         description: Show the body Java type
         type: boolean
-        default: true
-        x-descriptors:
+        default: true       
       showExchangePattern:
         title: Show Exchange Pattern
         description: Shows the Message Exchange Pattern (or MEP for short)
         type: boolean
-        default: true
-        x-descriptors:
+        default: true       
       showHeaders:
         title: Show Headers
         description: Show the headers received
         type: boolean
-        default: false
-        x-descriptors:
+        default: false       
       showProperties:
         title: Show Properties
         description: Show the exchange properties (only custom). Use showAllProperties to show both internal and custom properties.
         type: boolean
-        default: false
-        x-descriptors:
+        default: false       
       showStreams:
         title: Show Streams
         description: Show the stream bodies (they may not be available in following steps)
         type: boolean
-        default: false
-        x-descriptors:
+        default: false      
       showCachedStreams:
         title: Show Cached Streams
         description: Whether Camel should show cached stream bodies or not.
         type: boolean
-        default: true
-        x-descriptors:
+        default: true       
   dependencies:
   - "camel:kamelet"
   - "camel:log"
