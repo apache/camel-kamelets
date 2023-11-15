@@ -51,13 +51,13 @@ config:
       dependencies:
         - groupId: org.apache.camel
           artifactId: camel-aws2-ddb
-          version: "4.1.0"
+          version: "@camel.version@"
         - groupId: software.amazon.awssdk
           artifactId: dynamodb
-          version: "2.21.2"
+          version: "@aws-java-sdk2.version@"
         - groupId: org.apache.camel
           artifactId: camel-jackson
-          version: "4.1.0"
+          version: "@camel.version@"
   dump:
     enabled: true
     failedOnly: true
