@@ -53,7 +53,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       secretKey:
         title: Secret Key
@@ -61,7 +60,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       endpoint:
         title: Endpoint
@@ -73,7 +71,6 @@ spec:
         description: Specify to automatically create the MinIO bucket. 
         type: boolean
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
       keyName:
         title: Key Name

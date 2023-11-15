@@ -58,7 +58,6 @@ spec:
         type: boolean
         default: false
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       headerOutputName:
         title: Header Output Name
         description: A custom name for the header containing the extracted field
@@ -70,14 +69,12 @@ spec:
         type: boolean
         default: false
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       trimField:
         title: Trim Field
         description: If enabled we return the Raw extracted field
         type: boolean
         default: false
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
     type: object
   dependencies:
   - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.2.0-SNAPSHOT"

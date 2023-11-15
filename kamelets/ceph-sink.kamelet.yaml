@@ -55,7 +55,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       secretKey:
         title: Secret Key
@@ -63,7 +62,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       zoneGroup:
         title: Bucket Zone Group
@@ -74,7 +72,6 @@ spec:
         description: Specifies to automatically create the bucket.
         type: boolean
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
       cephUrl:
         title: Ceph Url Address

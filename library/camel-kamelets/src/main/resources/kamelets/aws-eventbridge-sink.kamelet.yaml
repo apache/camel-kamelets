@@ -60,7 +60,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       secretKey:
         title: Secret Key
@@ -68,7 +67,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       region:
         title: AWS Region
@@ -80,7 +78,6 @@ spec:
         description: If true, the Eventbridge client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
         type: boolean
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
       uriEndpointOverride:
         title: Overwrite Endpoint URI
@@ -91,7 +88,6 @@ spec:
         description: Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option.
         type: boolean
         x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
   dependencies:
     - "camel:core"

@@ -48,7 +48,6 @@ spec:
         description: Delete objects after consuming them.
         type: boolean
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: true
       accessKey:
         title: Access Key
@@ -56,7 +55,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       secretKey:
         title: Secret Key
@@ -64,7 +62,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       endpoint:
         title: Endpoint
@@ -76,7 +73,6 @@ spec:
         description: Specifies to automatically create the MinIO bucket. 
         type: boolean
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
   dependencies:
   - "camel:minio"

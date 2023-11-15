@@ -56,7 +56,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       clientSecret:
         title: Client Secret
@@ -64,7 +63,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       accessToken:
         title: Access Token
@@ -72,7 +70,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       refreshToken:
         title: Refresh Token
@@ -80,7 +77,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       delay:
         title: Delay
@@ -96,14 +92,12 @@ spec:
         description: Specifies to sync events for incremental synchronization.
         type: boolean
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
       consumeFromNow:
         title: Consume from now
         description: Specfies to consume events in the calendar from now on.
         type: boolean
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: true
   types:
     out:

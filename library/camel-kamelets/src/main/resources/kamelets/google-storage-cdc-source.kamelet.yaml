@@ -64,7 +64,6 @@ spec:
         description: Specifies to synchronously pull batches of messages.
         type: boolean
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
       maxMessagesPerPoll:
         title: Max Messages Per Poll
@@ -87,7 +86,6 @@ spec:
           get and returned as body, if not only the event will be returned as body.
         type: boolean
         x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false        
   dependencies:
     - "camel:kamelet"

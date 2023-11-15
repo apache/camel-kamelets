@@ -58,14 +58,12 @@ spec:
         type: boolean
         default: true
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       allowManualCommit:
         title: Allow Manual Commit
         description: Whether to allow doing manual commits
         type: boolean
         default: false
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       pollOnError:
         title: Poll On Error Behavior
         description: What to do if kafka threw an exception while polling for new messages. There are 5 enums and the value can be one of DISCARD, ERROR_HANDLER, RECONNECT, RETRY, STOP
@@ -91,7 +89,6 @@ spec:
         description: When enabled the Kamelet source will deserialize all message headers to String representation.
         type: boolean
         x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: true
   dependencies:
     - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.2.0-SNAPSHOT"

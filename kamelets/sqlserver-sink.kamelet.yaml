@@ -74,7 +74,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       query:
         title: Query
@@ -90,14 +89,12 @@ spec:
         description: Encrypt the connection to SQL Server.
         type: boolean
         x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
       trustServerCertificate:
         title: Trust Server Certificate
         description: Trust Server Certificate
         type: boolean
         x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: true
   types:
     in:

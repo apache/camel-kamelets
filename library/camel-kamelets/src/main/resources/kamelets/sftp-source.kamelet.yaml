@@ -59,7 +59,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       directoryName:
         title: Directory Name
@@ -71,35 +70,30 @@ spec:
         type: boolean
         default: false
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       recursive:
         title: Recursive
         description: If a directory, look for files in all sub-directories as well.
         type: boolean
         default: false
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       idempotent:
         title: Idempotency
         description: Skip already-processed files.
         type: boolean
         default: true
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       ignoreFileNotFoundOrPermissionError:
         title: Ignore File Not Found Or Permission Error
         description: Whether to ignore when (trying to list files in directories or when downloading a file), which does not exist or due to permission error. By default when a directory or file does not exists or insufficient permission, then an exception is thrown. Setting this option to true allows to ignore that instead.
         type: boolean
         default: false
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       binary:
         title: Binary
         description: Specifies the file transfer mode, BINARY or ASCII. Default is ASCII (false).
         type: boolean
         default: false
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       privateKeyFile:
         title: Private Key File
         description: Set the private key file so that the SFTP endpoint can do private key verification.
@@ -124,21 +118,18 @@ spec:
         type: boolean
         default: true
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       autoCreate:
         title: Autocreate Missing Directories
         description: Automatically create starting directory.
         type: boolean
         default: true
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
       delete:
         title: Delete
         description: If true, the file will be deleted after it is processed successfully.
         type: boolean
         default: false
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
   dependencies:
     - "camel:ftp"
     - "camel:core"

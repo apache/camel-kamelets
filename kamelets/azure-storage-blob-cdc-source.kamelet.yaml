@@ -55,7 +55,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       serviceBusReceiveMode:
         title: Servicebus Receive Mode
@@ -83,7 +82,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
       credentialType:
         title: Credential Type
@@ -98,7 +96,6 @@ spec:
           get and returned as body, if not only the event will be returned as body.
         type: boolean
         x-descriptors:
-          - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
   types:
     out:

@@ -62,7 +62,6 @@ spec:
         description: If this option is true, camel-http sends preemptive basic authentication to the server.
         type: boolean
         x-descriptors:
-        - 'urn:alm:descriptor:com.tectonic.ui:checkbox'
         default: false
       authUsername:
         title: Authentication Username
@@ -76,7 +75,6 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:alm:descriptor:com.tectonic.ui:password
         - urn:camel:group:credentials
   dependencies:
     - "camel:http"
