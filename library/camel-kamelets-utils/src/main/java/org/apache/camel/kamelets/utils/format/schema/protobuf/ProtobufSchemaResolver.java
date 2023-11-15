@@ -15,41 +15,40 @@
  * limitations under the License.
  */
 
-package org.apache.camel.kamelets.utils.format.converter.json;
+package org.apache.camel.kamelets.utils.format.schema.protobuf;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import com.fasterxml.jackson.core.FormatSchema;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.dataformat.protobuf.schema.ProtobufSchema;
+import com.fasterxml.jackson.dataformat.protobuf.schema.ProtobufSchemaLoader;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.apache.camel.RuntimeCamelException;
+import org.apache.camel.component.jackson.SchemaHelper;
 import org.apache.camel.component.jackson.SchemaResolver;
 import org.apache.camel.kamelets.utils.format.SchemaType;
-import org.apache.camel.kamelets.utils.format.converter.utils.SchemaHelper;
 import org.apache.camel.spi.Resource;
 import org.apache.camel.support.PluginHelper;
 import org.apache.camel.util.ObjectHelper;
 
-public class JsonSchemaResolver implements SchemaResolver, Processor {
-    private final ConcurrentMap<String, JsonNode> schemes;
+public class ProtobufSchemaResolver implements SchemaResolver, Processor {
+    private final ConcurrentMap<String, ProtobufSchema> schemes;
 
-    private JsonNode schema;
+    private ProtobufSchema schema;
     private String contentClass;
 
-    public JsonSchemaResolver() {
+    public ProtobufSchemaResolver() {
         this.schemes = new ConcurrentHashMap<>();
     }
 
     public String getSchema() {
         if (this.schema != null) {
-            try {
-                return Json.MAPPER.writeValueAsString(this.schema);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
+            return this.schema.getSource().toString();
         }
 
         return null;
@@ -58,9 +57,9 @@ public class JsonSchemaResolver implements SchemaResolver, Processor {
     public void setSchema(String schema) {
         if (ObjectHelper.isNotEmpty(schema)) {
             try {
-                this.schema = Json.MAPPER.readTree(schema);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
+                this.schema = ProtobufSchemaLoader.std.parse(schema);
+            } catch (IOException e) {
+                throw new RuntimeCamelException("Cannot parse protobuf schema", e);
             }
         } else {
             this.schema = null;
@@ -86,28 +85,38 @@ public class JsonSchemaResolver implements SchemaResolver, Processor {
             return;
         }
 
-        JsonNode answer = computeIfAbsent(exchange);
+        ProtobufSchema answer = computeIfAbsent(exchange);
 
         if (answer != null) {
             exchange.setProperty(SchemaHelper.CONTENT_SCHEMA, answer);
-            exchange.setProperty(SchemaHelper.CONTENT_SCHEMA_TYPE, SchemaType.JSON.type());
+            exchange.setProperty(SchemaHelper.CONTENT_SCHEMA_TYPE, SchemaType.PROTOBUF.type());
             exchange.setProperty(SchemaHelper.CONTENT_CLASS, SchemaHelper.resolveContentClass(exchange, this.contentClass));
         }
     }
 
-    private JsonNode computeIfAbsent(Exchange exchange) {
-        if (this.schema != null) {
-            return this.schema;
+    @Override
+    public FormatSchema resolve(Exchange exchange) {
+        ProtobufSchema answer = exchange.getProperty(SchemaHelper.CONTENT_SCHEMA, ProtobufSchema.class);
+        if (answer == null) {
+            answer = computeIfAbsent(exchange);
         }
 
-        JsonNode answer = exchange.getProperty(SchemaHelper.CONTENT_SCHEMA, JsonNode.class);
+        return answer;
+    }
+
+    private ProtobufSchema computeIfAbsent(Exchange exchange) {
+         if (this.schema != null) {
+            return this.schema;
+         }
+
+        ProtobufSchema answer = exchange.getProperty(SchemaHelper.CONTENT_SCHEMA, ProtobufSchema.class);
 
         if (answer == null && exchange.getProperties().containsKey(SchemaHelper.SCHEMA)) {
             String schemaJson = exchange.getProperty(SchemaHelper.SCHEMA, String.class);
             try {
-                answer = Json.MAPPER.readTree(schemaJson);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException("Unable to load Json schema", e);
+                answer = ProtobufSchemaLoader.std.parse(schemaJson);
+            } catch (IOException e) {
+                throw new RuntimeException("Unable to parse Protobuf schema", e);
             }
         }
 
@@ -116,22 +125,27 @@ public class JsonSchemaResolver implements SchemaResolver, Processor {
             if (contentClass != null) {
                 answer = this.schemes.computeIfAbsent(contentClass, t -> {
                     Resource res = PluginHelper.getResourceLoader(exchange.getContext())
-                            .resolveResource("classpath:schemas/" + SchemaType.JSON.type() + "/" + t + "." + SchemaType.JSON.type());
+                            .resolveResource("classpath:schemas/" + SchemaType.AVRO.type() + "/" + t + "." + SchemaType.AVRO.type());
 
                     try {
                         if (res.exists()) {
                             try (InputStream is = res.getInputStream()) {
                                 if (is != null) {
-                                    return Json.MAPPER.readTree(is);
+                                    return Protobuf.MAPPER.schemaLoader().load(is);
                                 }
                             }
                         }
                     } catch (Exception e) {
                         throw new RuntimeException(
-                                "Unable to load Json schema for type: " + t + ", resource: " + res.getLocation(), e);
+                                "Unable to load Protobuf schema for type: " + t + ", resource: " + res.getLocation(), e);
                     }
 
-                    return null;
+                    try {
+                        return Protobuf.MAPPER.generateSchemaFor(Class.forName(contentClass));
+                    } catch (JsonMappingException | ClassNotFoundException e) {
+                        throw new RuntimeException(
+                                "Unable to compute Protobuf schema for type: " + t, e);
+                    }
                 });
             }
         }
@@ -141,15 +155,5 @@ public class JsonSchemaResolver implements SchemaResolver, Processor {
         }
 
         return answer;
-    }
-
-    @Override
-    public FormatSchema resolve(Exchange exchange) {
-        JsonNode answer = exchange.getProperty(SchemaHelper.CONTENT_SCHEMA, JsonNode.class);
-        if (answer == null) {
-            answer = computeIfAbsent(exchange);
-        }
-
-        return new JsonFormatSchema(answer);
     }
 }

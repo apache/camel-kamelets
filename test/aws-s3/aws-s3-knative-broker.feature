@@ -5,7 +5,7 @@ Feature: AWS S3 Kamelet - Knative broker binding
     Given Knative event consumer timeout is 20000 ms
     Given variables
       | aws.s3.scheme | camel |
-      | aws.s3.format | plain-text |
+      | aws.s3.format | text-plain |
       | aws.s3.bucketNameOrArn | mybucket |
       | aws.s3.message | Hello from S3 Kamelet |
       | aws.s3.key | hello.txt |

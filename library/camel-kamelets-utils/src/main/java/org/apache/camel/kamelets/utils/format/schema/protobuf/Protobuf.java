@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.camel.kamelets.utils.format.converter.protobuf;
+package org.apache.camel.kamelets.utils.format.schema.protobuf;
 
 import com.fasterxml.jackson.dataformat.protobuf.ProtobufMapper;
 

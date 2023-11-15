@@ -20,6 +20,9 @@ kind: Pipe
 metadata:
   name: data-type-action-pipe
 spec:
+  integration:
+    dependencies:
+    - "camel:cloudevents"
   source:
     ref:
       kind: Kamelet

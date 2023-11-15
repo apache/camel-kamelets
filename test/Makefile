@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-camel-version := 4.1.0
+camel-version := 4.2.0
 camel-kamelets-version := 4.2.0-SNAPSHOT
 kamelets-local-dir := ../../../kamelets
 test := .
