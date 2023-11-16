@@ -90,17 +90,17 @@ spec:
         type: string
         example: "com.example.Order"
   dependencies:
-    - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.2.0-SNAPSHOT"
     - "camel:core"
     - "camel:kafka"
     - "camel:kamelet"
+    - "camel:azure-schema-registry"
     - "mvn:com.microsoft.azure:azure-schemaregistry-kafka-avro:1.1.1"
     - "mvn:com.azure:azure-data-schemaregistry-apacheavro:1.1.11"
     - "mvn:com.azure:azure-identity:1.10.4"
   template:
     beans:
       - name: defaultAzureCredential
-        type: "#class:org.apache.camel.kamelets.utils.kafka.registry.DefaultAzureCredentialWrapper"
+        type: "#class:org.apache.camel.component.azure.schema.registry.DefaultAzureCredentialWrapper"
     from:
       uri: "kamelet:source"
       steps:
