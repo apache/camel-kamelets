@@ -6,9 +6,12 @@
 
 **Closed issues:**
 
+- Upgrade to Camel 4.2.0 [\#1726](https://github.com/apache/camel-kamelets/issues/1726)
 - Manage Azure Schema Registry Dependencies like we are doing with Groovy Maven Plugin [\#1718](https://github.com/apache/camel-kamelets/issues/1718)
 - Manage Apicurio Dependencies like we are doing with Groovy Maven Plugin [\#1717](https://github.com/apache/camel-kamelets/issues/1717)
+- Remove DataTypes from camel-kamelets [\#1716](https://github.com/apache/camel-kamelets/issues/1716)
 - Kafka Azure Schema Registry Sink Kamelet [\#1714](https://github.com/apache/camel-kamelets/issues/1714)
+- Can we remove the tectonic.ui crap [\#1700](https://github.com/apache/camel-kamelets/issues/1700)
 - Use enum instead of x-descriptors [\#1699](https://github.com/apache/camel-kamelets/issues/1699)
 - Use only camelCase in kamelets yaml [\#1698](https://github.com/apache/camel-kamelets/issues/1698)
 - Enhance the kamelet azure-storage-blob-sink for append operation and rotate daily [\#1691](https://github.com/apache/camel-kamelets/issues/1691)
