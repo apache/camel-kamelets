@@ -112,7 +112,7 @@ public class ValidateKameletsMojo extends AbstractMojo {
                         StringBuilder availableParams = new StringBuilder();
                         ceInternal.forEach(_param -> availableParams.append(_param).append(" "));
                         for (Map.Entry<String, Object> entry : p.entrySet()) {
-                            if (!entry.getKey().equals("period") && (!name.equals("set-kafka-key-action") && !name.equals("sftp-source") && !name.equals("kafka-ssl-source") && !name.equals("timer-source") && !name.equals("cron-source") && !name.equals("fhir-source") && !name.equals("beer-source") && !name.equals("cassandra-source") && !name.equals("cassandra-sink"))) {
+                            if (!entry.getKey().equals("period") && (!name.equals("set-kafka-key-action") && !name.equals("sftp-source") && !name.equals("kafka-ssl-source") && !name.equals("timer-source") && !name.equals("cron-source") && !name.equals("fhir-source") && !name.equals("beer-source") && !name.equals("cassandra-source") && !name.equals("cassandra-sink") && !name.equals("kafka-azure-schema-registry-source" ) && !name.equals("kafka-azure-schema-registy-sink"))) {
                                 if (!ceInternal.contains(entry.getKey())) {
                                     getLog().error("Kamelet Name: " + name);
                                     getLog().error("Scheme Name: " + cleanName);
