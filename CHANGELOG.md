@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v4.2.0](https://github.com/apache/camel-kamelets/tree/v4.2.0) (2023-11-16)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.1.0...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.1.0...v4.2.0)
 
 **Closed issues:**
 
@@ -11,11 +11,40 @@
 - Manage Apicurio Dependencies like we are doing with Groovy Maven Plugin [\#1717](https://github.com/apache/camel-kamelets/issues/1717)
 - Remove DataTypes from camel-kamelets [\#1716](https://github.com/apache/camel-kamelets/issues/1716)
 - Kafka Azure Schema Registry Sink Kamelet [\#1714](https://github.com/apache/camel-kamelets/issues/1714)
+- Remove Azure Schema Registry DefaultCredentialWrapper from library [\#1713](https://github.com/apache/camel-kamelets/issues/1713)
 - Can we remove the tectonic.ui crap [\#1700](https://github.com/apache/camel-kamelets/issues/1700)
 - Use enum instead of x-descriptors [\#1699](https://github.com/apache/camel-kamelets/issues/1699)
 - Use only camelCase in kamelets yaml [\#1698](https://github.com/apache/camel-kamelets/issues/1698)
 - Enhance the kamelet azure-storage-blob-sink for append operation and rotate daily [\#1691](https://github.com/apache/camel-kamelets/issues/1691)
 - Release camel-kamelets 4.1.0 [\#1688](https://github.com/apache/camel-kamelets/issues/1688)
+
+**Merged pull requests:**
+
+- Remove Azure Schema Registry DefaultCredentialWrapper from library [\#1738](https://github.com/apache/camel-kamelets/pull/1738) ([oscerd](https://github.com/oscerd))
+- Remove tectonic ui metadata [\#1736](https://github.com/apache/camel-kamelets/pull/1736) ([oscerd](https://github.com/oscerd))
+- chore: Update to YAKS 0.17.1 [\#1734](https://github.com/apache/camel-kamelets/pull/1734) ([christophd](https://github.com/christophd))
+- Bump Camel-Dependencies to version 4.2.0 [\#1733](https://github.com/apache/camel-kamelets/pull/1733) ([oscerd](https://github.com/oscerd))
+- fix\(\#1716\): Remove obsolete data type transformer implementations [\#1732](https://github.com/apache/camel-kamelets/pull/1732) ([christophd](https://github.com/christophd))
+- SSLAwareMongoClient: Use the TLSv1.2 as default for SSL Context [\#1731](https://github.com/apache/camel-kamelets/pull/1731) ([oscerd](https://github.com/oscerd))
+- Kamelet Prefix Enum Scheme: Added missing Entries [\#1730](https://github.com/apache/camel-kamelets/pull/1730) ([oscerd](https://github.com/oscerd))
+- Use enum instead of x-descriptors [\#1729](https://github.com/apache/camel-kamelets/pull/1729) ([oscerd](https://github.com/oscerd))
+- Kebab case fourth batch [\#1728](https://github.com/apache/camel-kamelets/pull/1728) ([oscerd](https://github.com/oscerd))
+- Kebab case third batch [\#1727](https://github.com/apache/camel-kamelets/pull/1727) ([oscerd](https://github.com/oscerd))
+- Kebab case second batch [\#1725](https://github.com/apache/camel-kamelets/pull/1725) ([oscerd](https://github.com/oscerd))
+- Use only camelCase in kamelets yaml - First Batch [\#1724](https://github.com/apache/camel-kamelets/pull/1724) ([oscerd](https://github.com/oscerd))
+- chore: Fix YAKS tests for 4.2.0-SNAPSHOT [\#1723](https://github.com/apache/camel-kamelets/pull/1723) ([christophd](https://github.com/christophd))
+- Upgrade Azure identity to version 1.10.4, azure-data-schemaregistry-a… [\#1722](https://github.com/apache/camel-kamelets/pull/1722) ([oscerd](https://github.com/oscerd))
+- Upgrade Apicurio deps to version 2.4.14.Final [\#1721](https://github.com/apache/camel-kamelets/pull/1721) ([oscerd](https://github.com/oscerd))
+- Manage Azure Schema Registry Dependencies like we are doing with Groovy Maven Plugin [\#1720](https://github.com/apache/camel-kamelets/pull/1720) ([oscerd](https://github.com/oscerd))
+- Manage Apicurio Dependencies like we are doing with Groovy Maven Plugin [\#1719](https://github.com/apache/camel-kamelets/pull/1719) ([oscerd](https://github.com/oscerd))
+- Kafka Azure Schema Registry Sink Kamelet [\#1715](https://github.com/apache/camel-kamelets/pull/1715) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1712](https://github.com/apache/camel-kamelets/pull/1712) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Enhance the kamelet azure-storage-blob-sink for append operation and rotate daily [\#1711](https://github.com/apache/camel-kamelets/pull/1711) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#1710](https://github.com/apache/camel-kamelets/pull/1710) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Upgrade CycloneDX Maven Plugin to version 2.7.10 [\#1709](https://github.com/apache/camel-kamelets/pull/1709) ([oscerd](https://github.com/oscerd))
+- Upgrade grpc to version 1.56.3 [\#1708](https://github.com/apache/camel-kamelets/pull/1708) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1707](https://github.com/apache/camel-kamelets/pull/1707) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Fix empty line in kamelet description [\#1704](https://github.com/apache/camel-kamelets/pull/1704) ([davsclaus](https://github.com/davsclaus))
 
 ## [v4.1.0](https://github.com/apache/camel-kamelets/tree/v4.1.0) (2023-10-23)
 
