@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.2.0...HEAD)
+
+**Closed issues:**
+
+- Create Kamelets for AWS Timestream [\#1743](https://github.com/apache/camel-kamelets/issues/1743)
+- Release 4.2.0 [\#1737](https://github.com/apache/camel-kamelets/issues/1737)
+
 ## [v4.2.0](https://github.com/apache/camel-kamelets/tree/v4.2.0) (2023-11-16)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.1.0...v4.2.0)
