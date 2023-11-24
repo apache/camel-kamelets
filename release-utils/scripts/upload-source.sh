@@ -29,8 +29,8 @@ mkdir $1/
 cd $1/
 
 wget https://github.com/apache/camel-kamelets/archive/refs/tags/v$1.tar.gz -O camel-kamelets-sources-$1.tar.gz
-cp ./target/camel-kamelets-parent-$1-cyclonedx.json camel-kamelets-$1-sbom.json
-cp ./target/camel-kamelets-parent-$1-cyclonedx.xml camel-kamelets-$1-sbom.xml
+cp ../../../target/camel-kamelets-$1.json camel-kamelets-$1-sbom.json
+cp ../../../target/camel-kamelets-$1.xml camel-kamelets-$1-sbom.xml
 cd ../
 ./sign.sh $1/
 svn import $1/ https://dist.apache.org/repos/dist/dev/camel/camel-kamelets/$2/ -m "Import camel-kamelets release"
