@@ -6,7 +6,10 @@
 
 **Closed issues:**
 
+- Rename Camel-Kamelets SBOM to Camel-Kamelets instead of Camel-Kamelets-Parent [\#1749](https://github.com/apache/camel-kamelets/issues/1749)
+- Publish SBOM in dist/release  [\#1747](https://github.com/apache/camel-kamelets/issues/1747)
 - Create Kamelets for AWS Timestream [\#1743](https://github.com/apache/camel-kamelets/issues/1743)
+- Custom Component json to kamelet yaml [\#1741](https://github.com/apache/camel-kamelets/issues/1741)
 - Release 4.2.0 [\#1737](https://github.com/apache/camel-kamelets/issues/1737)
 
 ## [v4.2.0](https://github.com/apache/camel-kamelets/tree/v4.2.0) (2023-11-16)
