@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Add Dependabot [\#1754](https://github.com/apache/camel-kamelets/issues/1754)
 - Rename Camel-Kamelets SBOM to Camel-Kamelets instead of Camel-Kamelets-Parent [\#1749](https://github.com/apache/camel-kamelets/issues/1749)
 - Publish SBOM in dist/release  [\#1747](https://github.com/apache/camel-kamelets/issues/1747)
 - Create Kamelets for AWS Timestream [\#1743](https://github.com/apache/camel-kamelets/issues/1743)
