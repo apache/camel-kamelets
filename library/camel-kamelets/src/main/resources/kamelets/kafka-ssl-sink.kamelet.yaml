@@ -99,6 +99,11 @@ spec:
         format: password
         x-descriptors:
           - urn:camel:group:credentials
+      sslEndpointAlgorithm:
+        description: The endpoint identification algorithm to validate server hostname using server certificate. Use none or false to disable server hostname verification.
+        title: SSL Endpoint Algorithm
+        type: string
+        default: https
       topic:
         description: Comma separated list of Kafka topic names
         title: Topic Names
@@ -130,7 +135,8 @@ spec:
           sslTruststoreLocation: '{{sslTruststoreLocation}}'
           sslProtocol: '{{sslProtocol}}'
           sslEnabledProtocols: '{{sslEnabledProtocols}}'
-          saslMechanism: '{{saslMechanism}}' 
+          sslEnabledProtocols: '{{sslEnabledProtocols}}'
+          sslEndpointAlgorithm: '{{sslEndpointAlgorithm}}' 
         type: '#class:org.apache.camel.component.kafka.KafkaConfiguration'
     from:
       uri: "kamelet:source"
