@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- YAKS tests are failing [\#1775](https://github.com/apache/camel-kamelets/issues/1775)
 - Support SSL Endpoint Algorithm in Kafka SSL Kamelets [\#1762](https://github.com/apache/camel-kamelets/issues/1762)
 - Add Dependabot [\#1754](https://github.com/apache/camel-kamelets/issues/1754)
 - Rename Camel-Kamelets SBOM to Camel-Kamelets instead of Camel-Kamelets-Parent [\#1749](https://github.com/apache/camel-kamelets/issues/1749)
