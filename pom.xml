@@ -39,6 +39,7 @@
         <module>library/kamelets-maven-plugin</module>
         <module>library/camel-kamelets-utils</module>
         <module>library/camel-kamelets-bom</module>
+        <module>tests/camel-kamelets-itest</module>
     </modules>
 
     <properties>
@@ -50,6 +51,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
         <maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
+        <maven-failsafe-plugin.version>3.2.2</maven-failsafe-plugin.version>
         <maven-surefire-plugin.version>3.2.2</maven-surefire-plugin.version>
         <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
@@ -62,6 +64,10 @@
 
         <camel.version>4.2.0</camel.version>
         <camel.k.crds.version>2.0.1</camel.k.crds.version>
+
+        <citrus.version>4.0.2</citrus.version>
+        <cucumber.version>7.14.0</cucumber.version>
+        <yaks.version>0.17.1</yaks.version>
 
         <!-- Versions used inside Kamelets (add them also to the dependencyManagement section and the groovy script below) -->
         <!-- These properties must keep this same format "version.<groupId>.<artifactId>" -->
@@ -253,6 +259,27 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
+                    <configuration>
+                        <failIfNoTests>false</failIfNoTests>
+                        <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${maven-failsafe-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>integration-tests</id>
+                            <goals>
+                                <goal>integration-test</goal>
+                                <goal>verify</goal>
+                            </goals>
+                            <configuration>
+                                <failIfNoTests>false</failIfNoTests>
+                            </configuration>
+                        </execution>
+                    </executions>
                     <configuration>
                         <failIfNoTests>false</failIfNoTests>
                         <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>

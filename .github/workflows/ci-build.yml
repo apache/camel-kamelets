@@ -84,6 +84,6 @@ jobs:
         distribution: 'temurin'
         java-version: 17
     - name: Deploy to ASF Snapshots Repository
-      # Deploy both artifacts and sources (may be required by Camel K)
+      # Deploy both artifacts and sources (maybe required by Camel K)
       run: |
         ./mvnw ${MAVEN_ARGS} clean deploy -DskipTests -DskipITs --settings .github/asf-deploy-settings.xml
