@@ -14,6 +14,7 @@
 - Create Kamelets for AWS Timestream [\#1743](https://github.com/apache/camel-kamelets/issues/1743)
 - Custom Component json to kamelet yaml [\#1741](https://github.com/apache/camel-kamelets/issues/1741)
 - Release 4.2.0 [\#1737](https://github.com/apache/camel-kamelets/issues/1737)
+- Azure Storage Queue Source: Add CloudEvents Data Type Transformer [\#1671](https://github.com/apache/camel-kamelets/issues/1671)
 
 ## [v4.2.0](https://github.com/apache/camel-kamelets/tree/v4.2.0) (2023-11-16)
 
