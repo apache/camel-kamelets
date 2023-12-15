@@ -63,7 +63,7 @@ jobs:
       shell: bash
       run: tar -czf maven-repo-${{ github.run_id }}-${{ github.run_number }}.tgz -C ~ .m2/repository
     - name: Persist Maven Repo
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: maven-repo-${{ github.run_id }}-${{ github.run_number }}
         path: maven-repo-${{ github.run_id }}-${{ github.run_number }}.tgz
