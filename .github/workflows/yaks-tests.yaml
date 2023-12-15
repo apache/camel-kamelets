@@ -74,7 +74,7 @@ jobs:
         echo "Running YAKS tests for Kamelets"
         
         ./mvnw clean verify -pl :camel-kamelets-itest -Denable.yaks.tests
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: dumps
