@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Kafka Apicurio Registry: Use the Quarkus extension as dependency so the Kamelets will work well in Camel K too [\#1798](https://github.com/apache/camel-kamelets/issues/1798)
 - YAKS tests are failing [\#1775](https://github.com/apache/camel-kamelets/issues/1775)
 - Support SSL Endpoint Algorithm in Kafka SSL Kamelets [\#1762](https://github.com/apache/camel-kamelets/issues/1762)
 - Add Dependabot [\#1754](https://github.com/apache/camel-kamelets/issues/1754)
