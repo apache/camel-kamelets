@@ -75,7 +75,6 @@ spec:
         description: If knownHostFile has not been explicit configured then use the host file from System.getProperty(user.home)/.ssh/known_hosts.
         type: boolean
         default: true
-        x-descriptors:
   dependencies:
     - "camel:core"
     - "camel:jsch"
@@ -92,4 +91,4 @@ spec:
             privateKeyFile: "{{?privateKeyFile}}"
             privateKeyPassphrase: "{{?privateKeyPassphrase}}"
             strictHostKeyChecking: "{{?strictHostKeyChecking}}"
-            useUserKnownHostsFile: "{{?useUserKnownHostsFile}}"   
+            useUserKnownHostsFile: "{{?useUserKnownHostsFile}}"

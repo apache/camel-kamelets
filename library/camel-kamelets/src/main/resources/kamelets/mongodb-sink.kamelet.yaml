@@ -56,7 +56,7 @@ spec:
         type: string
         format: password
         x-descriptors:
-        - urn:camel:group:credentials  
+        - urn:camel:group:credentials
       username:
         title: MongoDB Username
         description: A username for accessing MongoDB.
@@ -68,13 +68,11 @@ spec:
         description: whether to enable ssl connection to mongodb
         type: boolean
         default: true
-        x-descriptors:
       sslValidationEnabled:
         title: Enables Ssl Certificates Validation and Host name checks.
         description: IMPORTANT this should be disabled only in test environment since can pose security issues.
         type: boolean
         default: true
-        x-descriptors:
       database:
         title: MongoDB Database
         description: The name of the MongoDB database.
@@ -89,7 +87,6 @@ spec:
         description: Create a collection during initialization if it doesn't exist.
         type: boolean
         default: false
-        x-descriptors:
   types:
     in:
       mediaType: application/json
@@ -126,7 +123,7 @@ spec:
             - setHeader:
                 name: CamelMongoDbUpsert
                 simple: "${header[ce-dbupsert]}"
-      - to: 
+      - to:
           uri: "{{local-mongodb}}:test"
           parameters:
             createCollection: "{{?createCollection}}"

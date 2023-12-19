@@ -73,7 +73,6 @@ spec:
         description: Specifies to use passive mode connection.
         type: boolean
         default: false
-        x-descriptors:
       fileExist:
         title: File Existence
         description: How to behave in case of file already existent.
@@ -85,7 +84,6 @@ spec:
         description: Specifies the file transfer mode, BINARY or ASCII. Default is ASCII (false).
         type: boolean
         default: false
-        x-descriptors:
       privateKeyFile:
         title: Private Key File
         description: Set the private key file so that the SFTP endpoint can do private key verification.
@@ -109,13 +107,11 @@ spec:
         description: If knownHostFile has not been explicit configured then use the host file from System.getProperty(user.home)/.ssh/known_hosts.
         type: boolean
         default: true
-        x-descriptors:
       autoCreate:
         title: Autocreate Missing Directories
         description: Automatically create the directory the files should be written to.
         type: boolean
         default: true
-        x-descriptors:
   dependencies:
     - "camel:ftp"
     - "camel:core"
@@ -145,7 +141,7 @@ spec:
             privateKeyPassphrase: "{{?privateKeyPassphrase}}"
             privateKeyUri: "{{?privateKeyUri}}"
             strictHostKeyChecking: "{{?strictHostKeyChecking}}"
-            useUserKnownHostsFile: "{{?useUserKnownHostsFile}}"            
+            useUserKnownHostsFile: "{{?useUserKnownHostsFile}}"
             passiveMode: "{{passiveMode}}"
             fileExist: "{{fileExist}}"
             binary: "{{binary}}"

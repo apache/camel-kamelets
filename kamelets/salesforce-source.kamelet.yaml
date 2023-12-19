@@ -26,7 +26,7 @@ metadata:
     camel.apache.org/kamelet.group: "Salesforce"
     camel.apache.org/kamelet.namespace: "Salesforce"
   labels:
-    camel.apache.org/kamelet.type: "source"    
+    camel.apache.org/kamelet.type: "source"
 spec:
   definition:
     title: "Salesforce Source"
@@ -92,25 +92,21 @@ spec:
         title: Notify Operation Create
         description: Notify for create operation.
         type: boolean
-        x-descriptors:
         default: true
       notifyForOperationUpdate:
         title: Notify Operation Update
         description: Notify for update operation.
         type: boolean
-        x-descriptors:
         default: false
       notifyForOperationDelete:
         title: Notify Operation Delete
         description: Notify for delete operation.
         type: boolean
-        x-descriptors:
         default: false
       notifyForOperationUndelete:
         title: Notify Operation Undelete
         description: Notify for undelete operation.
         type: boolean
-        x-descriptors:
         default: false
       operation:
         title: Operation
