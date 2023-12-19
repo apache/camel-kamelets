@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.2.0...HEAD)
 
+**Fixed bugs:**
+
+- Kamelets spec errors in v4.2.0 [\#1808](https://github.com/apache/camel-kamelets/issues/1808)
+
 **Closed issues:**
 
 - Kafka Apicurio Registry: Use the Quarkus extension as dependency so the Kamelets will work well in Camel K too [\#1798](https://github.com/apache/camel-kamelets/issues/1798)
