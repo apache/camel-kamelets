@@ -88,13 +88,11 @@ spec:
         title: Encrypt Connection
         description: Encrypt the connection to SQL Server.
         type: boolean
-        x-descriptors:
         default: false
       trustServerCertificate:
         title: Trust Server Certificate
         description: Trust Server Certificate
         type: boolean
-        x-descriptors:
         default: true
   types:
     in:
@@ -117,9 +115,9 @@ spec:
       uri: "kamelet:source"
       steps:
       - unmarshal:
-          json: 
+          json:
             library: Jackson
-      - to: 
+      - to:
           uri: "sql:{{query}}"
           parameters:
             dataSource: "#bean:{{dsBean}}"

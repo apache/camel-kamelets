@@ -47,7 +47,6 @@ spec:
         title: Auto-delete Objects
         description: Delete objects after consuming them.
         type: boolean
-        x-descriptors:
         default: true
       accessKey:
         title: Access Key
@@ -70,9 +69,8 @@ spec:
         example: http://localhost:9000
       autoCreateBucket:
         title: Autocreate Bucket
-        description: Specifies to automatically create the MinIO bucket. 
+        description: Specifies to automatically create the MinIO bucket.
         type: boolean
-        x-descriptors:
         default: false
   dependencies:
   - "camel:minio"

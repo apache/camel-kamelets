@@ -56,7 +56,6 @@ spec:
         title: Authentication Preemptive
         description: If this option is true, camel-http sends preemptive basic authentication to the server.
         type: boolean
-        x-descriptors:
         default: false
       authUsername:
         title: Authentication Username
@@ -86,7 +85,7 @@ spec:
           constant: "{{method}}"
       - to:
           uri: "{{url}}"
-          parameters: 
+          parameters:
             authMethod: "{{authMethod}}"
             authUsername: "{{authUsername}}"
             authPassword: "{{authPassword}}"

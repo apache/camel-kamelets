@@ -70,13 +70,11 @@ spec:
         description: whether to enable ssl connection to mongodb
         type: boolean
         default: true
-        x-descriptors:
       sslValidationEnabled:
         title: Enables Ssl Certificates Validation and Host name checks.
         description: IMPORTANT this should be disabled only in test environment since can pose security issues.
         type: boolean
         default: true
-        x-descriptors:
       database:
         title: MongoDB Database
         description: The name of the MongoDB database.
@@ -85,11 +83,10 @@ spec:
         title: MongoDB Persistent Tail Tracking
         description: Specifies to enable persistent tail tracking, which is a mechanism to keep track of the last consumed data across system restarts. The next time the system is up, the endpoint recovers the cursor from the point where it last stopped consuimg data. This option will only work on capped collections.
         type: boolean
-        x-descriptors:
         default: false
       tailTrackIncreasingField:
         title: MongoDB Tail Track Increasing Field
-        description: The correlation field in the incoming data which is of increasing nature and is used to position the tailing cursor every time it is generated. 
+        description: The correlation field in the incoming data which is of increasing nature and is used to position the tailing cursor every time it is generated.
         type: string
   dependencies:
     - "camel:kamelet"

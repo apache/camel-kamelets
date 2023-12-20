@@ -36,7 +36,7 @@ spec:
       Service account key is the basic method for authenticating to the Google Pubsub and Google Storage.
 
       To use this Kamelet you'll need to set up Events notification for your Google Storage Bucket.
-      
+
       You must encode the `serviceAccountKey` property before you pass it as a parameter.
     required:
       - projectId
@@ -63,7 +63,6 @@ spec:
         title: Synchronous Pull
         description: Specifies to synchronously pull batches of messages.
         type: boolean
-        x-descriptors:
         default: false
       maxMessagesPerPoll:
         title: Max Messages Per Poll
@@ -85,8 +84,7 @@ spec:
           If getObject is enabled, then the file created in the Bucket will be
           get and returned as body, if not only the event will be returned as body.
         type: boolean
-        x-descriptors:
-        default: false        
+        default: false
   dependencies:
     - "camel:kamelet"
     - "camel:google-pubsub"

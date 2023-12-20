@@ -32,7 +32,7 @@ spec:
     title: "Google Pubsub Source"
     description: |-
       Consume messages from Google Cloud Pub/Sub.
-      
+
       If you specify the `serviceAccountKey` property, you must base64 encode it before you pass it as a parameter.
     required:
       - projectId
@@ -57,7 +57,6 @@ spec:
         title: Synchronous Pull
         description: Specifies to synchronously pull batches of messages.
         type: boolean
-        x-descriptors:
         default: false
       maxMessagesPerPoll:
         title: Max Messages Per Poll
@@ -68,7 +67,7 @@ spec:
         title: Concurrent Consumers
         description: The number of parallel streams to consume from the subscription.
         type: integer
-        default: 1        
+        default: 1
   dependencies:
     - "camel:kamelet"
     - "camel:google-pubsub"

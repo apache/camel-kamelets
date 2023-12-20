@@ -89,7 +89,6 @@ spec:
         title: Split Results
         description: True if value range result should be split into rows or columns to process each of them individually.
         type: boolean
-        x-descriptors:
         default: true
       range:
         title: Cells Range
@@ -141,7 +140,7 @@ spec:
         json:
           format: "application-json"
           description: |-
-            Json representation of a GoogleSheets ValueRange object that holds all values for the given cell range. 
+            Json representation of a GoogleSheets ValueRange object that holds all values for the given cell range.
             Or Json array of values for a single row/column in the range when 'splitResults' mode is enabled.
           mediaType: application/json
         json-struct:

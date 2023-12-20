@@ -69,31 +69,26 @@ spec:
         description: Sets the passive mode connection.
         type: boolean
         default: false
-        x-descriptors:
       recursive:
         title: Recursive
         description: If a directory, look for files in all sub-directories as well.
         type: boolean
         default: false
-        x-descriptors:
       idempotent:
         title: Idempotency
         description: Skip already-processed files.
         type: boolean
         default: true
-        x-descriptors:
       ignoreFileNotFoundOrPermissionError:
         title: Ignore File Not Found Or Permission Error
         description: Whether to ignore when (trying to list files in directories or when downloading a file), which does not exist or due to permission error. By default when a directory or file does not exists or insufficient permission, then an exception is thrown. Setting this option to true allows to ignore that instead.
         type: boolean
         default: false
-        x-descriptors:
       binary:
         title: Binary
         description: Specifies the file transfer mode, BINARY or ASCII. Default is ASCII (false).
         type: boolean
         default: false
-        x-descriptors:
       privateKeyFile:
         title: Private Key File
         description: Set the private key file so that the SFTP endpoint can do private key verification.
@@ -117,19 +112,16 @@ spec:
         description: If knownHostFile has not been explicit configured then use the host file from System.getProperty(user.home)/.ssh/known_hosts.
         type: boolean
         default: true
-        x-descriptors:
       autoCreate:
         title: Autocreate Missing Directories
         description: Automatically create starting directory.
         type: boolean
         default: true
-        x-descriptors:
       delete:
         title: Delete
         description: If true, the file will be deleted after it is processed successfully.
         type: boolean
         default: false
-        x-descriptors:
   dependencies:
     - "camel:ftp"
     - "camel:core"
@@ -144,7 +136,7 @@ spec:
         privateKeyPassphrase: "{{?privateKeyPassphrase}}"
         privateKeyUri: "{{?privateKeyUri}}"
         strictHostKeyChecking: "{{?strictHostKeyChecking}}"
-        useUserKnownHostsFile: "{{?useUserKnownHostsFile}}"   
+        useUserKnownHostsFile: "{{?useUserKnownHostsFile}}"
         passiveMode: "{{passiveMode}}"
         recursive: "{{recursive}}"
         idempotent: "{{idempotent}}"
