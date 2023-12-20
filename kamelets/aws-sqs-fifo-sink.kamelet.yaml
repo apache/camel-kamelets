@@ -70,12 +70,10 @@ spec:
         description: Use content-based deduplication (should be enabled in the SQS FIFO queue first)
         type: boolean
         default: false
-        x-descriptors:
       autoCreateQueue:
         title: Autocreate Queue
         description: Setting the autocreation of the SQS queue. 
         type: boolean
-        x-descriptors:
         default: false
       amazonAWSHost:
         title: AWS Host
@@ -92,7 +90,6 @@ spec:
         title: Default Credentials Provider
         description: Set whether the SQS client should expect to load credentials through a default credentials provider or to expect static credentials to be passed in.
         type: boolean
-        x-descriptors:
         default: false
       uriEndpointOverride:
         title: Overwrite Endpoint URI
@@ -102,7 +99,6 @@ spec:
         title: Endpoint Overwrite
         description: Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option.
         type: boolean
-        x-descriptors:
         default: false   
   dependencies:
   - "camel:aws2-sqs"

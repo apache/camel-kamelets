@@ -45,13 +45,11 @@ spec:
         title: Log
         description: "Will log every requests and responses."
         type: boolean
-        x-descriptors:
         default: false
       prettyPrint:
         title: Pretty Print
         description: "Pretty print all request."
         type: boolean
-        x-descriptors:
         default: false
       serverUrl:
         title: Server URL
@@ -61,7 +59,6 @@ spec:
         title: Lazy Start Producer
         description: "Whether the producer should be started lazy (on the first message). By starting lazy you can use this to allow CamelContext and routes to startup in situations where a producer may otherwise fail during starting and cause the route to fail being started. By deferring this startup to be lazy then the startup failure can be handled during routing messages via Camel’s routing error handlers. Beware that when the first message is processed then creating and starting the producer may take a little time and prolong the total processing time of the processing."
         type: boolean
-        x-descriptors:
         default: false
       proxyHost:
         title: Proxy Host
