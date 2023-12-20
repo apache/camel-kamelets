@@ -1,12 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v4.3.0](https://github.com/apache/camel-kamelets/tree/v4.3.0) (2023-12-19)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.2.0...HEAD)
-
-**Fixed bugs:**
-
-- Kamelets spec errors in v4.2.0 [\#1808](https://github.com/apache/camel-kamelets/issues/1808)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.2.0...v4.3.0)
 
 **Closed issues:**
 
@@ -16,10 +12,68 @@
 - Add Dependabot [\#1754](https://github.com/apache/camel-kamelets/issues/1754)
 - Rename Camel-Kamelets SBOM to Camel-Kamelets instead of Camel-Kamelets-Parent [\#1749](https://github.com/apache/camel-kamelets/issues/1749)
 - Publish SBOM in dist/release  [\#1747](https://github.com/apache/camel-kamelets/issues/1747)
+- Support SetHeaders EIP introduced in Camel 4.3.0 [\#1746](https://github.com/apache/camel-kamelets/issues/1746)
 - Create Kamelets for AWS Timestream [\#1743](https://github.com/apache/camel-kamelets/issues/1743)
 - Custom Component json to kamelet yaml [\#1741](https://github.com/apache/camel-kamelets/issues/1741)
 - Release 4.2.0 [\#1737](https://github.com/apache/camel-kamelets/issues/1737)
 - Azure Storage Queue Source: Add CloudEvents Data Type Transformer [\#1671](https://github.com/apache/camel-kamelets/issues/1671)
+
+**Merged pull requests:**
+
+- Bump org.apache.camel:camel-dependencies from 4.2.0 to 4.3.0 [\#1811](https://github.com/apache/camel-kamelets/pull/1811) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump camel.version from 4.2.0 to 4.3.0 [\#1810](https://github.com/apache/camel-kamelets/pull/1810) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Kamelets spec errors in v4.2.0 [\#1809](https://github.com/apache/camel-kamelets/pull/1809) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1807](https://github.com/apache/camel-kamelets/pull/1807) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Kafka Apicurio Registry: Use the Quarkus extension as dependency so the Kamelets will work well in Camel K too [\#1806](https://github.com/apache/camel-kamelets/pull/1806) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#1804](https://github.com/apache/camel-kamelets/pull/1804) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump com.amazon.redshift:redshift-jdbc42 from 2.1.0.23 to 2.1.0.24 [\#1803](https://github.com/apache/camel-kamelets/pull/1803) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/upload-artifact from 3 to 4 [\#1802](https://github.com/apache/camel-kamelets/pull/1802) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugins:maven-failsafe-plugin from 3.2.2 to 3.2.3 [\#1801](https://github.com/apache/camel-kamelets/pull/1801) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugins:maven-surefire-plugin from 3.2.2 to 3.2.3 [\#1800](https://github.com/apache/camel-kamelets/pull/1800) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump cucumber.version from 7.14.1 to 7.15.0 [\#1799](https://github.com/apache/camel-kamelets/pull/1799) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump cucumber.version from 7.14.0 to 7.14.1 [\#1797](https://github.com/apache/camel-kamelets/pull/1797) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#1796](https://github.com/apache/camel-kamelets/pull/1796) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen [\#1795](https://github.com/apache/camel-kamelets/pull/1795) ([github-actions[bot]](https://github.com/apps/github-actions))
+- chore: Add coffee source Kamelet [\#1794](https://github.com/apache/camel-kamelets/pull/1794) ([christophd](https://github.com/christophd))
+- chore: Introduce Maven module for YAKS tests [\#1793](https://github.com/apache/camel-kamelets/pull/1793) ([christophd](https://github.com/christophd))
+- Bump org.apache.maven.plugins:maven-resources-plugin from 3.1.0 to 3.3.1 [\#1792](https://github.com/apache/camel-kamelets/pull/1792) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugins:maven-source-plugin from 3.2.1 to 3.3.0 [\#1791](https://github.com/apache/camel-kamelets/pull/1791) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugins:maven-deploy-plugin from 3.0.0 to 3.1.1 [\#1790](https://github.com/apache/camel-kamelets/pull/1790) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven:maven-artifact from 3.8.5 to 3.9.6 [\#1789](https://github.com/apache/camel-kamelets/pull/1789) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.camel.k:camel-k-crds from 2.0.1 to 2.1.0 [\#1788](https://github.com/apache/camel-kamelets/pull/1788) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore: Fix YAKS tests [\#1787](https://github.com/apache/camel-kamelets/pull/1787) ([christophd](https://github.com/christophd))
+- Generated sources regen [\#1784](https://github.com/apache/camel-kamelets/pull/1784) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump org.apache.maven:maven-plugin-api from 3.8.5 to 3.9.6 [\#1783](https://github.com/apache/camel-kamelets/pull/1783) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.codehaus.plexus:plexus-utils from 3.4.1 to 4.0.0 [\#1782](https://github.com/apache/camel-kamelets/pull/1782) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven:maven-core from 3.8.5 to 3.9.6 [\#1781](https://github.com/apache/camel-kamelets/pull/1781) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump commons-io:commons-io from 2.11.0 to 2.15.1 [\#1780](https://github.com/apache/camel-kamelets/pull/1780) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.postgresql:postgresql from 42.7.0 to 42.7.1 [\#1779](https://github.com/apache/camel-kamelets/pull/1779) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/setup-go from 4 to 5 [\#1778](https://github.com/apache/camel-kamelets/pull/1778) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Support SSL Endpoint Algorithm in Kafka SSL Kamelets [\#1776](https://github.com/apache/camel-kamelets/pull/1776) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#1773](https://github.com/apache/camel-kamelets/pull/1773) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump org.apache.maven.plugins:maven-surefire-plugin from 3.1.2 to 3.2.2 [\#1772](https://github.com/apache/camel-kamelets/pull/1772) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.resolver:maven-resolver-api from 1.8.0 to 1.9.18 [\#1771](https://github.com/apache/camel-kamelets/pull/1771) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugins:maven-javadoc-plugin from 3.5.0 to 3.6.3 [\#1770](https://github.com/apache/camel-kamelets/pull/1770) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.activemq:artemis-jms-client-all from 2.31.0 to 2.31.2 [\#1769](https://github.com/apache/camel-kamelets/pull/1769) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen [\#1768](https://github.com/apache/camel-kamelets/pull/1768) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump org.apache.maven:maven-compat from 3.8.5 to 3.9.6 [\#1767](https://github.com/apache/camel-kamelets/pull/1767) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugins:maven-plugin-plugin from 3.6.4 to 3.10.2 [\#1766](https://github.com/apache/camel-kamelets/pull/1766) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugins:maven-gpg-plugin from 3.0.1 to 3.1.0 [\#1765](https://github.com/apache/camel-kamelets/pull/1765) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugin-tools:maven-plugin-annotations from 3.6.4 to 3.10.2 [\#1764](https://github.com/apache/camel-kamelets/pull/1764) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.commons:commons-dbcp2 from 2.10.0 to 2.11.0 [\#1763](https://github.com/apache/camel-kamelets/pull/1763) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/setup-java from 3 to 4 [\#1761](https://github.com/apache/camel-kamelets/pull/1761) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen [\#1760](https://github.com/apache/camel-kamelets/pull/1760) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump actions/checkout from 3 to 4 [\#1759](https://github.com/apache/camel-kamelets/pull/1759) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/upload-artifact from 1 to 3 [\#1758](https://github.com/apache/camel-kamelets/pull/1758) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump com.amazon.redshift:redshift-jdbc42 from 2.1.0.19 to 2.1.0.23 [\#1757](https://github.com/apache/camel-kamelets/pull/1757) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.postgresql:postgresql from 42.6.0 to 42.7.0 [\#1756](https://github.com/apache/camel-kamelets/pull/1756) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Added Dependabot [\#1755](https://github.com/apache/camel-kamelets/pull/1755) ([oscerd](https://github.com/oscerd))
+- Publish SBOM in dist/release - Align to naming conventions for dist.a… [\#1752](https://github.com/apache/camel-kamelets/pull/1752) ([oscerd](https://github.com/oscerd))
+- Publish SBOM in dist/release - Align to naming conventions for dist.a… [\#1751](https://github.com/apache/camel-kamelets/pull/1751) ([oscerd](https://github.com/oscerd))
+- Rename Camel-Kamelets SBOM to Camel-Kamelets instead of Camel-Kamelet… [\#1750](https://github.com/apache/camel-kamelets/pull/1750) ([oscerd](https://github.com/oscerd))
+- Publish SBOM in dist/release [\#1748](https://github.com/apache/camel-kamelets/pull/1748) ([oscerd](https://github.com/oscerd))
+- Create Kamelets for AWS Timestream [\#1745](https://github.com/apache/camel-kamelets/pull/1745) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#1744](https://github.com/apache/camel-kamelets/pull/1744) ([github-actions[bot]](https://github.com/apps/github-actions))
 
 ## [v4.2.0](https://github.com/apache/camel-kamelets/tree/v4.2.0) (2023-11-16)
 
