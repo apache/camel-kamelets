@@ -71,37 +71,31 @@ spec:
         description: Specifes to use passive mode connection.
         type: boolean
         default: false
-        x-descriptors:
       recursive:
         title: Recursive
         description: If a directory, look for files in all the sub-directories as well.
         type: boolean
         default: false
-        x-descriptors:
       idempotent:
         title: Idempotency
         description: Skip already-processed files.
         type: boolean
         default: true
-        x-descriptors:
       binary:
         title: Binary
         description: Specifies the file transfer mode, BINARY or ASCII. Default is ASCII (false).
         type: boolean
         default: false
-        x-descriptors:
       autoCreate:
         title: Autocreate Missing Directories
         description: Automatically create starting directory.
         type: boolean
         default: true
-        x-descriptors:
       delete:
         title: Delete
         description: If true, the file will be deleted after it is processed successfully.
         type: boolean
         default: false
-        x-descriptors:
   dependencies:
     - "camel:ftp"
     - "camel:core"

@@ -40,7 +40,6 @@ spec:
         title: Auto-delete Messages
         description: Delete messages after consuming them
         type: boolean
-        x-descriptors:
         default: true
       accessKey:
         title: Access Key
@@ -107,7 +106,6 @@ spec:
         title: Autocreate Queue
         description: Setting the autocreation of the SQS queue.
         type: boolean
-        x-descriptors:
         default: false
       amazonAWSHost:
         title: AWS Host
@@ -139,7 +137,6 @@ spec:
           Select this option to override the endpoint URI. To use this option,
           you must also provide a URI for the `uriEndpointOverride` option.
         type: boolean
-        x-descriptors:
         default: false
       delay:
         title: Delay
@@ -152,7 +149,6 @@ spec:
           If greedy is enabled, then the polling will happen immediately again,
           if the previous run polled 1 or more messages.
         type: boolean
-        x-descriptors:
         default: false
       getObject:
         title: Greedy Object in Bucket
@@ -160,7 +156,6 @@ spec:
           If getObject is enabled, then the file created in the bucket will be
           get and returned as body, if not only the event will returned as body.
         type: boolean
-        x-descriptors:
         default: false
   dependencies:
     - 'camel:core'

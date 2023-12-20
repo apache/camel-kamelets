@@ -73,13 +73,11 @@ spec:
         title: Autocreate Bucket
         description: Specifies to automatically create the S3 bucket.
         type: boolean
-        x-descriptors:
         default: false
       useDefaultCredentialsProvider:
         title: Default Credentials Provider
         description: If true, the S3 client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
         type: boolean
-        x-descriptors:
         default: false
       uriEndpointOverride:
         title: Overwrite Endpoint URI
@@ -89,13 +87,11 @@ spec:
         title: Endpoint Overwrite
         description: Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option.
         type: boolean
-        x-descriptors:
         default: false
       forcePathStyle:
         title: Force Path Style
         description: Forces path style when accessing AWS S3 buckets.
         type: boolean
-        x-descriptors:
         default: false
       keyName:
         title: Key Name

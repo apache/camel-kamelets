@@ -77,7 +77,6 @@ spec:
         title: Default Credentials Provider
         description: If true, the Eventbridge client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
         type: boolean
-        x-descriptors:
         default: false
       uriEndpointOverride:
         title: Overwrite Endpoint URI
@@ -87,7 +86,6 @@ spec:
         title: Endpoint Overwrite
         description: Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option.
         type: boolean
-        x-descriptors:
         default: false
   dependencies:
     - "camel:core"

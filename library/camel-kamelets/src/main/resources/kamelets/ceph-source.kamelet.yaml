@@ -50,7 +50,6 @@ spec:
         title: Auto-delete Objects
         description: Specifies to delete objects after consuming them.
         type: boolean
-        x-descriptors:
         default: true
       accessKey:
         title: Access Key
@@ -74,13 +73,11 @@ spec:
         title: Autocreate Bucket
         description: Specifies to automatically create the bucket.
         type: boolean
-        x-descriptors:
         default: false
       includeBody:
         title: Include Body
         description: If true, the exchange is consumed and put into the body and closed. If false, the Object stream is put raw into the body and the headers are set with the object metadata.
         type: boolean
-        x-descriptors:
         default: true
       prefix:
         title: Prefix
@@ -91,7 +88,6 @@ spec:
         title: Ignore Body
         description: If true, the Object body is ignored. Setting this to true overrides any behavior defined by the `includeBody` option. If false, the object is put in the body.
         type: boolean
-        x-descriptors:
         default: false
       cephUrl:
         title: Ceph Url Address
