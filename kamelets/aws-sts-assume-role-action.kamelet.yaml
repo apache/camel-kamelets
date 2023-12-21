@@ -72,7 +72,8 @@ spec:
   dependencies:
     - "camel:dns"
     - "camel:kamelet"
-    - "camel:aws2-translate"
+    - "camel:core"
+    - "camel:aws2-sts"
   template:
     from:
       uri: "kamelet:source"
