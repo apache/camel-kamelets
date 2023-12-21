@@ -1,0 +1,111 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: aws-sts-assume-role-action
+  annotations:
+    camel.apache.org/kamelet.support.level: "Stable"
+    camel.apache.org/catalog.version: "4.4.0-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjQ5MCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQiIHZpZXdCb3g9IjAgMCAyNTYgNDkwIiB3aWR0aD0iMjU2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxnIGZpbGw9IiMzYzQ5MjkiPjxwYXRoIGQ9Im0yMSAxNjUuNzUtMjEgNi44NTYgMjEuNzUgMi41MTl6Ii8+PHBhdGggZD0ibTE5Ljk1NSAyMDYuODA2IDEwOC4wNDUgNi45MDggMTA4LjA0NS02LjkwOC0xMDguMDQ1LTIxLjA1NnoiLz48cGF0aCBkPSJtMjM0LjUgMTc1LjEyNSAyMS41LTIuNTE5LTIxLjUtNS43MzF6Ii8+PC9nPjxwYXRoIGQ9Im0xNTcuMzg3IDM1Mi45MjkgNTYuNjA2IDEzLjM5Ni01Ni43NTYgMTcuMTE2eiIgZmlsbD0iI2I3Y2E5ZCIvPjxwYXRoIGQ9Im0xOS45NTUgOTIuMjIxdi0zOC4yMDJsMTA4LjA0NS01NC4wMTkuNDgyLjQwNS0uMjQ4IDQ4LjQ5Ni0uMjM0LjEwMi0uNDA1IDEuMTE3LTU5LjA5OCAyMy44NTYtLjU0MiA4NC4wMzcgMzEuNDUyLTUuMjkgMjguNTkzLTUuNzIxdjM0My4wMjhsLTMyLjM2OS0xNi4xNzd2LTQ1Ljc3MWwtMjguMzU0LTExLjMzOHYtMjE0LjY3NWwtNDcuMzIyIDQuNzM3di0zOC4xOTVsLTE5Ljk1NSAzLjk5NXYtNzIuNDA4eiIgZmlsbD0iIzRiNjEyYyIvPjxwYXRoIGQ9Im05OS40MDggMTUyLjcyNy0zMi4xMzEgNi40MjR2LTg1Ljg3MWwzMi4xMzEgMTAuMDE4eiIgZmlsbD0iIzc1OWMzZSIvPjxwYXRoIGQ9Im0xODMuOTI1IDI3Ljk1OSA1Mi4xMDYgMjYuMDZ2MzguMjAybDE5Ljk2OSA3Ljk3N3Y3Mi40MDJsLTE5Ljk2OS0zLjk4OXYzOC4xOTVsLTI1LjQ0MS0yLjUzOC0yMS44ODEtMi4xOTl2NDIuOTM5aDQ3LjMzNnYzOS4yODRsLTIxLjk5NyAxLjk3NHYzOS42MTFsLTUzLjY5MiAxMC42NzJ2NDUuNzdsNTMuNTctMTUuODk5LjEyMiA0MC4zOC01My42OTIgMjEuMjgydjQ1Ljc3MWwtMzIuMzU2IDE2LjE3N3YtMzQzLjAyOGwyOC41NzIgNS43MSAzMC41ODMgNC4wMzh2LTgyLjc4NGwtNTguMzM4LTIyLjQ5OC0uODE3LTIuNDY1di00OS4wMDN6IiBmaWxsPSIjNzU5YzNlIi8+PHBhdGggZD0ibTE2MC4zNTYgNjEuOTQxLTMyLjM1Ni0xMi45MzEtNjAuNzIzIDI0LjI3IDMyLjEzMSAxMC4wMTh6IiBmaWxsPSIjM2M0OTI5Ii8+PHBhdGggZD0ibTY3LjI3NyA3My4yOCA2MC43MjMtMjQuMjcgMTIuNzc1IDUuMTA0IDE5LjU4MSA3LjgyNyAyOC4zNTMgMTEuMzUzLTEuNTE1IDEuNTQxLTI4Ljg3NiA4Ljk5MS0xLjc0LS41MjgtMjguNTc4LTEwLjAxOC0yOC41OTIgMTAuMDE4eiIgZmlsbD0iIzNjNDkyOSIvPjxwYXRoIGQ9Im0xNTYuNTc4IDgzLjI5OCAzMi4xMzEtMTAuMDA0djg1Ljg2NGwtMzIuMTMxLTYuNDQ2eiIgZmlsbD0iIzRiNjEyYyIvPjwvc3ZnPg=="
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "AWS STS"
+    camel.apache.org/kamelet.namespace: "AWS"
+  labels:
+    camel.apache.org/kamelet.type: "action"
+spec:
+  definition:
+    title: "AWS STS Assume Role Action"
+    description: |-
+      Assume a role through STS
+
+      Access Key/Secret Key are the basic method for authenticating to the AWS STS Service. These parameters are optional because the Kamelet provides the 'useDefaultCredentialsProvider'.
+      
+      When using a default Credentials Provider the Translate client will load the credentials through this provider and won't use the static credential. This is reason for not having the access key and secret key as mandatory parameter for this Kamelet.
+      
+      In the headers, you have to specify the `role-arn` / `ce-role-arn` property to specify the role ARN you want to assume.
+
+      In the headers, you have to specify the `role-session-name` / `ce-role-session-name` property to specify the role Session name you want to use.
+    required:
+      - region
+    type: object
+    properties:
+      accessKey:
+        title: Access Key
+        description: The access key obtained from AWS.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      secretKey:
+        title: Secret Key
+        description: The secret key obtained from AWS.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      region:
+        title: AWS Region
+        description: The AWS region to access.
+        type: string
+        enum: ["ap-south-1", "eu-south-1", "us-gov-east-1", "me-central-1", "ca-central-1", "eu-central-1", "us-iso-west-1", "us-west-1", "us-west-2", "af-south-1", "eu-north-1", "eu-west-3", "eu-west-2", "eu-west-1", "ap-northeast-3", "ap-northeast-2", "ap-northeast-1", "me-south-1", "sa-east-1", "ap-east-1", "cn-north-1", "us-gov-west-1", "ap-southeast-1", "ap-southeast-2", "us-iso-east-1", "ap-southeast-3", "us-east-1", "us-east-2", "cn-northwest-1", "us-isob-east-1", "aws-global", "aws-cn-global", "aws-us-gov-global", "aws-iso-global", "aws-iso-b-global"]
+      useDefaultCredentialsProvider:
+        title: Default Credentials Provider
+        description: Set whether the STS client should expect to load credentials through a default credentials provider or to expect static credentials to be passed in.
+        type: boolean
+        default: false
+  dependencies:
+    - "camel:dns"
+    - "camel:kamelet"
+    - "camel:aws2-translate"
+  template:
+    from:
+      uri: "kamelet:source"
+      steps:
+      - choice:
+          when:
+          - simple: "${header[role-arn]}"
+            steps:
+            - setHeader:
+                name: CamelAwsStsRoleArn
+                simple: "${header[role-arn]}"
+          - simple: "${header[ce-role-arn]}"
+            steps:
+            - setHeader:
+                name: CamelAwsStsRoleArn
+                simple: "${header[ce-role-arn]}"
+      - choice:
+          when:
+          - simple: "${header[role-session-name]}"
+            steps:
+            - setHeader:
+                name: CamelAwsStsRoleSessionName
+                simple: "${header[role-session-name]}"
+          - simple: "${header[ce-role-session-name]}"
+            steps:
+            - setHeader:
+                name: CamelAwsStsRoleSessionName
+                simple: "${header[ce-role-session-name]}"
+      - to:
+          uri: "aws2-sts://default"
+          parameters:
+            secretKey: "{{?secretKey}}"
+            accessKey: "{{?accessKey}}"
+            region: "{{region}}"
+            operation: "assumeRole"
+            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
