@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.3.0...HEAD)
+
+**Fixed bugs:**
+
+- Kamelets spec errors in v4.2.0 [\#1808](https://github.com/apache/camel-kamelets/issues/1808)
+
 ## [v4.3.0](https://github.com/apache/camel-kamelets/tree/v4.3.0) (2023-12-19)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.2.0...v4.3.0)
