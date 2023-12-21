@@ -103,7 +103,7 @@ public class KameletsCatalogTest {
     void testGetKameletsByNamespace() throws Exception {
         List<Kamelet> c = catalog.getKameletsByNamespace("AWS");
         assertFalse(c.isEmpty());
-        assertEquals(26, c.size());
+        assertEquals(27, c.size());
         c = catalog.getKameletsByGroups("Not-existing-group");
         assertTrue(c.isEmpty());
     }
