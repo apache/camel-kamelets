@@ -8,6 +8,10 @@
 
 - Kamelets spec errors in v4.2.0 [\#1808](https://github.com/apache/camel-kamelets/issues/1808)
 
+**Closed issues:**
+
+- Add an AWS STS Assume Role Action Kamelet [\#1816](https://github.com/apache/camel-kamelets/issues/1816)
+
 ## [v4.3.0](https://github.com/apache/camel-kamelets/tree/v4.3.0) (2023-12-19)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.2.0...v4.3.0)
