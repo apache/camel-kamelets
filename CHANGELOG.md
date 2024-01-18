@@ -2,7 +2,16 @@
 
 ## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.3.0...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.0.3...HEAD)
+
+**Closed issues:**
+
+- Artemis JMS kamelet should use artemis dependency [\#1836](https://github.com/apache/camel-kamelets/issues/1836)
+- Upgrade 4.0.x to Camel 4.0.3 [\#1831](https://github.com/apache/camel-kamelets/issues/1831)
+
+## [v4.0.3](https://github.com/apache/camel-kamelets/tree/v4.0.3) (2024-01-17)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.3.0...v4.0.3)
 
 **Fixed bugs:**
 
