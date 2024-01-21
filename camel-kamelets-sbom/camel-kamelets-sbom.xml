@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bom version="1" xmlns="http://cyclonedx.org/schema/bom/1.4">
+<bom serialNumber="urn:uuid:51ad0b27-453c-3988-9881-13d000c068cf" version="1" xmlns="http://cyclonedx.org/schema/bom/1.4">
   <metadata>
     <tools>
       <tool>
         <vendor>OWASP Foundation</vendor>
         <name>CycloneDX Maven plugin</name>
-        <version>2.7.10</version>
+        <version>2.7.11</version>
         <hashes>
-          <hash alg="MD5">1cc7f6a0382f8bb2f758d6a6ea401d1b</hash>
-          <hash alg="SHA-1">a4297947a1f2d7d453105db542651614bbd37f38</hash>
-          <hash alg="SHA-256">bd0fdd8f2f2116eee5e715aeac1580f19eb7a10ec2b6f805b53567067658e872</hash>
-          <hash alg="SHA-512">9cde8352a427e10b96cae01348fc7cfe5d4aa9cd0a5e5dd93b414ce3bb7d112993c3b3004e53af52567fbfa16de0704ec59a5556a635ad70571fd124ae389f39</hash>
-          <hash alg="SHA-384">93d7bf5b5c735347edfbfbd66810273ca840f9a322b816d22d44c3d8e8255c09e86570bb23712aeb0cade0f478be5aeb</hash>
-          <hash alg="SHA3-384">4467f16e9ca32190a6e49c65339eb28ee5e8c78f4e918fcf95128a4b7648898de56ccb43eacfad0c9391ef8cdb7d629a</hash>
-          <hash alg="SHA3-256">ed2996c99b483e969221d5e9a40f562ea2ab85442d361d72a90e85266a3ed781</hash>
-          <hash alg="SHA3-512">c8e6ea9ddc38edc77e284b3bf541663e84752bdc59ed1935799847a48a14ea2fa531b61008fefcba37d732a56702a11ac112437b9b80d18f4ecc8ef0ecfb32cf</hash>
+          <hash alg="MD5">a70e8b649ab4a2bb7922d360173c8237</hash>
+          <hash alg="SHA-1">4c3c0878c15561639076e5be7a48ffcd6111c5ee</hash>
+          <hash alg="SHA-256">70997d52dbffd4e797c467b2062c6ba9b8b5a7380ff2884779f2743b6172ebb5</hash>
+          <hash alg="SHA-512">bc1ce91190c642f68fd3571939d7668def3b879ec8e5a87a213a9710a106e0290f60f9e0414593d19cca958c4fcb5d4450bd2793bcd609948419c8a2a6a7f5c8</hash>
+          <hash alg="SHA-384">3c8421bdafd1754fb424f16dccc83bfe0827648c1cadfffc98bdf1c7da65475dfe48d2f4b16d233bb8819e155ba6a4f3</hash>
+          <hash alg="SHA3-384">ad88cf6a0e0a5d51df49a4dab5530a28de9df7eec8460c045dff3e1f9316b82a244a125d52b937fe9d4ee72e44f5d01a</hash>
+          <hash alg="SHA3-256">b4d9c3ef07c34517fd9f33178ba95ffc9618eb84a3671e71b0c82991ec3717e5</hash>
+          <hash alg="SHA3-512">935b43aba8999dc7d95d93288a251c97b6b32852841b7bef31516c27c8d65c8de7f8411f1829f765ee760f25930c766db6a49df68e5994e18721c0a71f606f1e</hash>
         </hashes>
       </tool>
     </tools>
@@ -1275,10 +1275,19 @@
       <externalReferences><reference type="website"><url>https://github.com/jakartaee/jaf-api</url></reference><reference type="distribution"><url>https://jakarta.oss.sonatype.org/service/local/staging/deploy/maven2/</url></reference><reference type="issue-tracker"><url>https://github.com/jakartaee/jaf-api/issues/</url></reference><reference type="mailing-list"><url>https://dev.eclipse.org/mhonarc/lists/jakarta.ee-community/</url></reference><reference type="vcs"><url>https://github.com/jakartaee/jaf-api</url></reference></externalReferences>
     </component>
     <component type="library" bom-ref="pkg:maven/org.apache.camel.kamelets/kamelets-maven-plugin@4.4.0-SNAPSHOT?type=maven-plugin">
+      <publisher>The Apache Software Foundation</publisher>
       <group>org.apache.camel.kamelets</group>
       <name>kamelets-maven-plugin</name>
       <version>4.4.0-SNAPSHOT</version>
+      <description>Camel Kamelets Maven Plugin</description>
+      <licenses>
+        <license>
+          <id>Apache-2.0</id>
+          <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+      </licenses>
       <purl>pkg:maven/org.apache.camel.kamelets/kamelets-maven-plugin@4.4.0-SNAPSHOT?type=maven-plugin</purl>
+      <externalReferences><reference type="website"><url>https://camel.apache.org/camel-kamelets-parent/library/kamelets-maven-plugin</url></reference><reference type="distribution"><url>https://repository.apache.org/service/local/staging/deploy/maven2</url></reference><reference type="issue-tracker"><url>https://github.com/apache/camel-kamelets/issues</url></reference><reference type="mailing-list"><url>dev-subscribe@camel.apache.org</url></reference><reference type="vcs"><url>https://gitbox.apache.org/repos/asf?p=camel-kamelets.git;a=summary/library/kamelets-maven-plugin</url></reference></externalReferences>
     </component>
     <component type="library" bom-ref="pkg:maven/org.slf4j/slf4j-api@2.0.9?type=jar">
       <publisher>QOS.ch</publisher>
@@ -4595,10 +4604,19 @@ SAX2 and Stax2 APIs</description>
       <externalReferences><reference type="website"><url>https://bsonspec.org</url></reference><reference type="vcs"><url>https://github.com/mongodb/mongo-java-driver</url></reference></externalReferences>
     </component>
     <component type="library" bom-ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-bom@4.4.0-SNAPSHOT?type=pom">
+      <publisher>The Apache Software Foundation</publisher>
       <group>org.apache.camel.kamelets</group>
       <name>camel-kamelets-bom</name>
       <version>4.4.0-SNAPSHOT</version>
+      <description>Camel Kamelets BOM</description>
+      <licenses>
+        <license>
+          <id>Apache-2.0</id>
+          <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+      </licenses>
       <purl>pkg:maven/org.apache.camel.kamelets/camel-kamelets-bom@4.4.0-SNAPSHOT?type=pom</purl>
+      <externalReferences><reference type="website"><url>https://camel.apache.org/camel-kamelets-parent/library/camel-kamelets-bom</url></reference><reference type="distribution"><url>https://repository.apache.org/service/local/staging/deploy/maven2</url></reference><reference type="issue-tracker"><url>https://github.com/apache/camel-kamelets/issues</url></reference><reference type="mailing-list"><url>dev-subscribe@camel.apache.org</url></reference><reference type="vcs"><url>https://gitbox.apache.org/repos/asf?p=camel-kamelets.git;a=summary/library/camel-kamelets-bom</url></reference></externalReferences>
     </component>
     <component type="library" bom-ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-itest@4.4.0-SNAPSHOT?type=jar">
       <publisher>The Apache Software Foundation</publisher>
