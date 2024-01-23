@@ -123,6 +123,11 @@ spec:
         description: The operation to use
         type: string
         default: subscribe
+      rawPayload:
+        title: Raw Payload
+        description: Use raw payload String for request and response (either JSON or XML depending on format), instead of DTOs, false by default.
+        type: boolean
+        default: false
   types:
     out:
       mediaType: application/json
@@ -150,6 +155,7 @@ spec:
         notifyForOperationDelete: "{{notifyForOperationDelete}}"
         notifyForOperationUndelete: "{{notifyForOperationUndelete}}"
         sObjectQuery: "{{query}}"
+        rawPayload: "{{rawPayload}}"
       steps:
       - marshal:
           json: {}
