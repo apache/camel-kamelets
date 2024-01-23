@@ -48,4 +48,4 @@ spec:
       uri: kamelet:source
       steps:
       - throttle:
-          constant: "{{messages}}"
+          constant: "{{maxConcurrentRequests}}"
