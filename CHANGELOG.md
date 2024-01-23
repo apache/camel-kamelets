@@ -8,6 +8,7 @@
 
 - Artemis JMS kamelet should use artemis dependency [\#1836](https://github.com/apache/camel-kamelets/issues/1836)
 - Upgrade 4.0.x to Camel 4.0.3 [\#1831](https://github.com/apache/camel-kamelets/issues/1831)
+- Release 4.0.3 [\#1830](https://github.com/apache/camel-kamelets/issues/1830)
 - Kamelet with id aws-s3-source not found in locations: file:/etc/camel/kamelets/kamelets-bundle-aws-s3-source-pipe-001,classpath:/kamelets [\#1785](https://github.com/apache/camel-kamelets/issues/1785)
 - Missing data type transformer from null to type camel:azure-storage-blob:application-cloudevents on the exchange [\#1777](https://github.com/apache/camel-kamelets/issues/1777)
 
