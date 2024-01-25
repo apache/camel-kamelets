@@ -67,7 +67,7 @@ public class SslAwareMongoClient implements MongoClient {
         public MongoClient get() {
             String credentials = username == null ? "" : username;
 
-            if (!credentials.equals("")) {
+            if (!credentials.isEmpty()) {
                 credentials += password == null ? "@" : ":" + password + "@";
             }
 
