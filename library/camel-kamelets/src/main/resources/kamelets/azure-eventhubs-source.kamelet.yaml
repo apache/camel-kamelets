@@ -33,11 +33,13 @@ spec:
     title: "Azure Eventhubs Source"
     description: |-
       Receive events from Azure Event Hubs.
+      
+      There are two different mechanism of authentication `CONNECTION_STRING` and `AZURE_IDENTITY`, you could specify with credentialType property. If you're using `CONNECTION_STRING` sharedAccessName and sharedAccessKey properties will be needed.
+      
+      In case of `AZURE_IDENTITY` selection, the DefaultAzureCredential will attempt to authenticate via the following mechanisms in the following order enviroment, Workload Identity, Managed Identity, Azure Developer CLI, IntelliJ, Azure CLI and Azure Powershell. 
     required:
       - namespaceName
       - eventhubName
-      - sharedAccessName
-      - sharedAccessKey
       - blobAccountName
       - blobAccessKey
       - blobContainerName
@@ -79,6 +81,12 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      credentialType:
+        title: Credential Type
+        description: Determines the credential strategy to adopt.
+        type: string
+        enum: ["CONNECTION_STRING", "AZURE_IDENTITY"]
+        default: "CONNECTION_STRING"
   types:
     out:
       mediaType: application/octet-stream
@@ -90,10 +98,11 @@ spec:
     from:
       uri: 'azure-eventhubs://{{namespaceName}}/{{eventhubName}}'
       parameters:
-        sharedAccessName: "{{sharedAccessName}}"
-        sharedAccessKey: "{{sharedAccessKey}}"
+        sharedAccessName: "{{?sharedAccessName}}"
+        sharedAccessKey: "{{?sharedAccessKey}}"
         blobAccountName: "{{blobAccountName}}"
         blobAccessKey: "{{blobAccessKey}}"
         blobContainerName: "{{blobContainerName}}"
+        credentialType: "{{credentialType}}"
       steps:
       - to: "kamelet:sink"
