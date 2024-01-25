@@ -111,7 +111,7 @@ spec:
       - to:
           uri: "azure-cosmosdb:{{databaseName}}/{{containerName}}"
           parameters:
-            accountKey: "{{accountKey}}"
+            accountKey: "{{?accountKey}}"
             databaseEndpoint: "{{databaseEndpoint}}"
             itemPartitionKey: "{{?itemPartitionKey}}"
             operation: createItem
