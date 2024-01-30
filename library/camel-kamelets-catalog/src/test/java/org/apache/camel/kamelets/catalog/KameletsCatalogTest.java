@@ -189,12 +189,12 @@ public class KameletsCatalogTest {
         verifyHeaders("jira-add-issue-sink", 17);
         verifyHeaders("jira-source", 3);
         verifyHeaders("jira-oauth-source", 3);
-        verifyHeaders("jms-amqp-10-source", 14);
-        verifyHeaders("jms-amqp-10-sink", 17);
-        verifyHeaders("jms-apache-artemis-source", 14);
-        verifyHeaders("jms-apache-artemis-sink", 17);
-        verifyHeaders("jms-ibm-mq-source", 14);
-        verifyHeaders("jms-ibm-mq-sink", 17);
+        verifyHeaders("jms-amqp-10-source", 15);
+        verifyHeaders("jms-amqp-10-sink", 18);
+        verifyHeaders("jms-apache-artemis-source", 15);
+        verifyHeaders("jms-apache-artemis-sink", 18);
+        verifyHeaders("jms-ibm-mq-source", 15);
+        verifyHeaders("jms-ibm-mq-sink", 18);
         verifyHeaders("kafka-source", 9);
         verifyHeaders("kafka-sink", 5);
         verifyHeaders("kafka-ssl-source", 9);
