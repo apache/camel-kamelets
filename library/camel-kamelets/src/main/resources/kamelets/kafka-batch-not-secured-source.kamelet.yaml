@@ -32,7 +32,7 @@ spec:
   definition:
     title: "Kafka Batch Not Secured Source"
     description: |-
-      Receive data from Kafka topics in batch on an insecure broker.
+      Receive data from Kafka topics in batch on an insecure broker and commit them manually through KafkaManualCommit.
     required:
       - topic
       - bootstrapServers
@@ -95,7 +95,7 @@ spec:
       pollTimeout:
         title: The poll timeout interval
         description: The timeout used when polling the KafkaConsumer
-        type: long
+        type: int
         default: 5000
   dependencies:
     - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.4.0-SNAPSHOT"
@@ -122,7 +122,6 @@ spec:
         maxPollRecords: "{{batchSize}}"
         pollTimeoutMs: "{{pollTimeout}}"
         batching: true
-        synchronous: true
         kafkaManualCommitFactory: "#bean:{{manualCommitFactory}}"
       steps:
         - process:
