@@ -17,7 +17,7 @@
 apiVersion: camel.apache.org/v1
 kind: Kamelet
 metadata:
-  name: kafka-source
+  name: kafka-batch-source
   annotations:
     camel.apache.org/kamelet.support.level: "Stable"
     camel.apache.org/catalog.version: "4.4.0-SNAPSHOT"
@@ -32,7 +32,7 @@ metadata:
     camel.apache.org/kamelet.type: "source"
 spec:
   definition:
-    title: "Kafka Source"
+    title: "Kafka Batch Source"
     description: |-
       Receive data from Kafka topics in batch through Plain Login Module and commit them manually through KafkaManualCommit..
     required:
