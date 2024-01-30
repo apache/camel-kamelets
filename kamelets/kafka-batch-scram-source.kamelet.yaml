@@ -17,7 +17,7 @@
 apiVersion: camel.apache.org/v1
 kind: Kamelet
 metadata:
-  name: kafka-scram-source
+  name: kafka-batch-scram-source
   annotations:
     camel.apache.org/kamelet.support.level: "Preview"
     camel.apache.org/catalog.version: "4.4.0-SNAPSHOT"
@@ -32,9 +32,9 @@ metadata:
     camel.apache.org/kamelet.type: "source"
 spec:
   definition:
-    title: "Kafka Scram Source"
+    title: "Kafka Batch Scram Source"
     description: |-
-      Receive data from Kafka topics through SCRAM login module.
+      Receive data from Kafka topics in batch through SCRAM login module and commit them manually through KafkaManualCommit..
     required:
       - topic
       - bootstrapServers
