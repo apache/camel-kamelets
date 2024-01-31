@@ -28,10 +28,10 @@ Feature: Timer Source Kamelet
   Scenario: Create Kamelet binding
     And variables
       | message  | Hello World |
-    Given load Pipe timer-to-http.yaml
-    Then Pipe timer-to-http should be available
-    Then Camel K integration timer-to-http should be running
-    And Camel K integration timer-to-http should print Routes startup
+    Given load Pipe timer-to-http-pipe.yaml
+    Then Pipe timer-to-http-pipe should be available
+    Then Camel K integration timer-to-http-pipe should be running
+    And Camel K integration timer-to-http-pipe should print Routes startup
 
   Scenario: Verify binding
     Given expect HTTP request body: Hello World
@@ -39,5 +39,5 @@ Feature: Timer Source Kamelet
     Then send HTTP 200 OK
 
   Scenario: Remove Camel K resources
-    Given delete Pipe timer-to-http
+    Given delete Pipe timer-to-http-pipe
     And delete Kubernetes service test-service

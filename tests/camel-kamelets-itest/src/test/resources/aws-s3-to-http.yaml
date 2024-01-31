@@ -54,6 +54,13 @@ spec:
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1
+        name: data-type-action
+      properties:
+        scheme: "text"
+        format: "plain"
+    - ref:
+        kind: Kamelet
+        apiVersion: camel.apache.org/v1
         name: drop-headers-action
       properties:
         pattern: "Camel*"

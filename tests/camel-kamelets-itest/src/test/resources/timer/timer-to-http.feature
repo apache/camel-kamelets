@@ -27,3 +27,4 @@ Feature: Verify Camel K integrations
 
   Scenario: Remove Camel K resources
     Given delete Camel K integration timer-to-http
+    And delete Kubernetes service test-service

@@ -18,7 +18,7 @@
 apiVersion: camel.apache.org/v1
 kind: Pipe
 metadata:
-  name: timer-to-http
+  name: timer-to-http-pipe
 spec:
   source:
     ref:
@@ -26,6 +26,7 @@ spec:
       apiVersion: camel.apache.org/v1
       name: timer-source
     properties:
+      period: 10000
       message: "${message}"
   sink:
     uri: yaks:resolveURL('test-service')/events
