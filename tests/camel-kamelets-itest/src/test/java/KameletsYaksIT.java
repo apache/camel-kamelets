@@ -17,13 +17,8 @@
 
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
-import io.cucumber.spring.CucumberContextConfiguration;
-import org.citrusframework.config.CitrusSpringConfig;
 import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
 
-@CucumberContextConfiguration
-@ContextConfiguration(classes = CitrusSpringConfig.class)
 @RunWith(Cucumber.class)
 @CucumberOptions(
         extraGlue = "org.citrusframework.yaks",

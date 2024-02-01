@@ -18,7 +18,7 @@
 
 // camel-k: language=groovy
 
-from('timer:tick?period=5000')
+from('timer:tick?period=10000')
     .setHeader("CamelHttpMethod", constant("PUT"))
     .setBody().constant('{{message}}')
     .to('yaks:resolveURL(test-service)/messages')

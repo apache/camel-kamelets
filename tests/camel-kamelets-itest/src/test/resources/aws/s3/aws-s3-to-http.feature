@@ -38,7 +38,7 @@ Feature: AWS S3 Source - Http sink
       | ce-source      | aws.s3.bucket.${aws.s3.bucketNameOrArn} |
       | ce-type        | org.apache.camel.event.aws.s3.getObject |
       | ce-time        | @notEmpty()@ |
-      | Content-Type   | application/json;charset=UTF-8 |
+      | Content-Type   | text/plain; charset=UTF-8 |
     When receive POST /incoming
     Then send HTTP 201 CREATED
 
