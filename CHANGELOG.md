@@ -9,6 +9,7 @@
 - Add rawPayload option to Salesforce source connector [\#1843](https://github.com/apache/camel-kamelets/issues/1843)
 - Review Throttle Action [\#1842](https://github.com/apache/camel-kamelets/issues/1842)
 - Review OperationName parameter for Salesforce Source Kamelet [\#1841](https://github.com/apache/camel-kamelets/issues/1841)
+- Support Kafka Batch as Kamelet source [\#1839](https://github.com/apache/camel-kamelets/issues/1839)
 - Artemis JMS kamelet should use artemis dependency [\#1836](https://github.com/apache/camel-kamelets/issues/1836)
 - Upgrade 4.0.x to Camel 4.0.3 [\#1831](https://github.com/apache/camel-kamelets/issues/1831)
 - Release 4.0.3 [\#1830](https://github.com/apache/camel-kamelets/issues/1830)
