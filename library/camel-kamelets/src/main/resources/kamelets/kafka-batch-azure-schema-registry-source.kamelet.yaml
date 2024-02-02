@@ -135,6 +135,10 @@ spec:
         description: The timeout used when polling the KafkaConsumer
         type: int
         default: 5000
+      maxPollIntervalMs:
+        title: Max Poll Interval
+        description: The maximum delay between invocations of poll() when using consumer group management
+        type: int
   dependencies:
     - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.4.0-SNAPSHOT"
     - "camel:kafka"
@@ -169,6 +173,7 @@ spec:
         valueDeserializer: "{{valueDeserializer}}"
         maxPollRecords: "{{batchSize}}"
         pollTimeoutMs: "{{pollTimeout}}"
+        maxPollIntervalMs: "{{?maxPollIntervalMs}}"
         batching: true
         kafkaManualCommitFactory: "#bean:{{manualCommitFactory}}"
         additionalProperties.schema.registry.url: "{{azureRegistryUrl}}"
