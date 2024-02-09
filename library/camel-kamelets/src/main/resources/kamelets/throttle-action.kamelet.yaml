@@ -34,11 +34,16 @@ spec:
     required:
       - messages
     properties:
-      maxConcurrentRequests:
-        title: Max Concurrent Requests
-        description: The number of concurrent requests
+      messages:
+        title: Messages Number
+        description: The number of messages to send in the time period set
         type: integer
         example: 10
+      timePeriod:
+        title: Time Period
+        description: Sets the time period during which the maximum request count is valid for, in milliseconds
+        type: string
+        default: "1000"
     type: object
   dependencies:
     - "camel:core"
@@ -49,3 +54,4 @@ spec:
       steps:
       - throttle:
           constant: "{{messages}}"
+          timePeriodMillis: "{{timePeriod}}"
