@@ -74,6 +74,12 @@ spec:
         type: string
         x-descriptors:
         - urn:camel:group:credentials
+      credentialType:
+        title: Credential Type
+        description: Determines the credential strategy to adopt.
+        type: string
+        enum: ["CLIENT_SECRET", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY", "AZURE_SAS", "SERVICE_CLIENT_INSTANCE"]
+        default: "CLIENT_SECRET"
   dependencies:
     - "camel:azure-storage-datalake"
     - "camel:kamelet"
@@ -108,3 +114,4 @@ spec:
             clientSecret: "{{clientSecret}}"
             tenantId: "{{tenantId}}"
             operation: "upload"
+            credentialType: "{{credentialType}}"
