@@ -58,6 +58,12 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      credentialType:
+        title: Credential Type
+        description: Determines the credential strategy to adopt.
+        type: string
+        enum: ["SHARED_ACCOUNT_KEY", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY"]
+        default: "SHARED_ACCOUNT_KEY"
   dependencies:
     - "camel:core"
     - "camel:azure-storage-queue"
@@ -82,3 +88,4 @@ spec:
           uri: "azure-storage-queue://{{accountName}}/{{queueName}}"
           parameters:
             accessKey: "{{accessKey}}"
+            credentialType: "{{credentialType}}"
