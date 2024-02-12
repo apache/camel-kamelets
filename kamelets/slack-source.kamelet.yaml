@@ -55,6 +55,11 @@ spec:
         type: string
         default: "60000"
         example: "60s or 6000 or 1m"
+      naturalOrder:
+        title: Natural Order
+        description: Create exchanges in natural order (oldest to newest) or not.
+        type: boolean
+        default: false
   types:
     out:
       mediaType: application/json
@@ -68,6 +73,7 @@ spec:
       parameters:
         token: "{{token}}"
         delay: "{{delay}}"
+        naturalOrder: "{{naturalOrder}}"
       steps:
       - marshal:
           json:
