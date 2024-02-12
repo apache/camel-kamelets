@@ -63,6 +63,12 @@ spec:
         description: The maximum number of messages to get. You can specify a value between 1 and 32. The default is 1 (one message). If there are fewer than the maximum number of messages in the queue, then all the messages are returned.
         type: integer
         default: 1
+      credentialType:
+        title: Credential Type
+        description: Determines the credential strategy to adopt.
+        type: string
+        enum: ["SHARED_ACCOUNT_KEY", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY"]
+        default: "SHARED_ACCOUNT_KEY"
   dependencies:
     - "camel:azure-storage-queue"
     - "camel:kamelet"
@@ -82,6 +88,7 @@ spec:
       parameters:
         accessKey: "{{accessKey}}"
         maxMessages: "{{maxMessages}}"
+        credentialType: "{{credentialType}}"
       steps:
       - process:
           ref: "{{renameHeaders}}"
