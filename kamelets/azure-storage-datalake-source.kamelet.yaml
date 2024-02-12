@@ -79,6 +79,12 @@ spec:
         description: The number of milliseconds before the next poll of the selected blob.
         type: integer
         default: 500
+      credentialType:
+        title: Credential Type
+        description: Determines the credential strategy to adopt.
+        type: string
+        enum: ["CLIENT_SECRET", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY", "AZURE_SAS", "SERVICE_CLIENT_INSTANCE"]
+        default: "CLIENT_SECRET"
   dependencies:
     - "camel:azure-storage-datalake"
     - "camel:kamelet"
@@ -93,5 +99,6 @@ spec:
         clientSecret: "{{clientSecret}}"
         tenantId: "{{tenantId}}"
         delay: "{{delay}}"
+        credentialType: "{{credentialType}}"
       steps:
         - to: "kamelet:sink"
