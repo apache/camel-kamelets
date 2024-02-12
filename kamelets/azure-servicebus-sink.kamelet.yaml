@@ -55,6 +55,12 @@ spec:
         type: string
         default: queue
         enum: ["queue", "topic"]
+      credentialType:
+        title: Credential Type
+        description: Determines the credential strategy to adopt.
+        type: string
+        enum: ["AZURE_IDENTITY", "CONNECTION_STRING", "TOKEN_CREDENTIAL"]
+        default: "CONNECTION_STRING"
   types:
     in:
       mediaType: application/octet-stream
@@ -72,3 +78,4 @@ spec:
             connectionString: "{{connectionString}}"
             serviceBusType: "{{serviceBusType}}"
             producerOperation: "sendMessages"
+            credentialType: "{{credentialType}}"
