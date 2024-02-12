@@ -48,8 +48,8 @@ spec:
         title: Share Name
         description: The Azure Storage File Share share name.
         type: string
-      accessKey:
-        title: Access Key
+      sharedKey:
+        title: Shared Access Key
         description: The Azure Storage Blob access key.
         type: string
         format: password
@@ -90,7 +90,7 @@ spec:
     from:
       uri: "azure-files:{{accountName}}/{{shareName}}/{{directoryName}}"
       parameters:
-        sharedKey: "{{?accessKey}}"
+        sharedKey: "{{?sharedKey}}"
         credentialType: "{{credentialType}}"
         delay: "{{delay}}"
         delete: "{{deleteAfterRead}}"
