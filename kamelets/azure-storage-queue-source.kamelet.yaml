@@ -69,6 +69,67 @@ spec:
         type: string
         enum: ["SHARED_ACCOUNT_KEY", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY"]
         default: "SHARED_ACCOUNT_KEY"
+  dataTypes:
+    out:
+      default: text
+      headers:
+        CamelAzureStorageQueueMessageId:
+          title: Azure Storage Queue Message Id
+          description: The id of the message
+          type: string
+        CamelAzureStorageQueueInsertionTime:
+          title: Azure Storage Queue Message Insertion Time
+          description: The time the Message was inserted into the Queue.
+          type: OffsetDateTime
+        CamelAzureStorageQueueExpirationTime:
+          title: Azure Storage Queue Message Expiration Time
+          description: The time that the Message will expire and be automatically deleted.
+          type: OffsetDateTime
+        CamelAzureStorageQueuePopReceipt:
+          title: Pop Receipt
+          description: |-
+            Unique identifier that must match for the message to be deleted or updated. If deletion fails using this pop receipt then the message has been dequeued by another client.
+          type: string
+        CamelAzureStorageQueueTimeNextVisible:
+          title: Azure Storage Queue Message Time Next Visible
+          description: The time that the message will again become visible in the Queue.
+          type: OffsetDateTime
+        CamelAzureStorageQueueDequeueCount:
+          title: Dequeue Count
+          description: The number of times the message has been dequeued
+          type: long
+      types:
+        binary:
+          format: "text-plain"
+          description: Default text representation of the Message dequeued from the queue.
+          mediaType: text/plain
+        cloudevents:
+          format: "azure-storage-queue:application-cloudevents"
+          description: |-
+            Output data type represents Azure Storage Queue receive messages operation as CloudEvent V1. The data type sets Camel
+            specific CloudEvent headers on the exchange.
+          headers:
+            CamelCloudEventID:
+              title: CloudEvent ID
+              description: The Camel exchange id set as event id
+              type: string
+            CamelCloudEventType:
+              title: CloudEvent Type
+              description: The event type
+              default: "org.apache.camel.event.azure.storage.queue.receiveMessages"
+              type: string
+            CamelCloudEventSource:
+              title: CloudEvent Source
+              description: The event source. By default, the Message Id of the message received with prefix "azure.storage.queue.".
+              type: string
+            CamelCloudEventSubject:
+              title: CloudEvent Subject
+              description: The event subject. Usually the Pop receipt of the message dequeued.
+              type: string
+            CamelCloudEventTime:
+              title: CloudEvent Time
+              description: The exchange creation timestamp as event time.
+              type: string
   dependencies:
     - "camel:azure-storage-queue"
     - "camel:kamelet"
