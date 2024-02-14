@@ -37,7 +37,6 @@ spec:
       - username
       - password
       - query
-      - databaseName
     type: object
     properties:
       instanceUrl:
@@ -94,7 +93,7 @@ spec:
           user: '{{username}}'
           password: '{{password}}'
           url: 'jdbc:snowflake://{{instanceUrl}}'
-          databaseName: '{{databaseName}}'
+          databaseName: '{{?databaseName}}'
     from:
       uri: "sql:{{query}}"
       parameters:
