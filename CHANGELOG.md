@@ -18,6 +18,8 @@
 - Azure Kamelets: Reflect changes coming from CAMEL-18590 [\#1805](https://github.com/apache/camel-kamelets/issues/1805)
 - Kamelet with id aws-s3-source not found in locations: file:/etc/camel/kamelets/kamelets-bundle-aws-s3-source-pipe-001,classpath:/kamelets [\#1785](https://github.com/apache/camel-kamelets/issues/1785)
 - Missing data type transformer from null to type camel:azure-storage-blob:application-cloudevents on the exchange [\#1777](https://github.com/apache/camel-kamelets/issues/1777)
+- Azure Storage Queue Source: Expose Kamelet data type information [\#1672](https://github.com/apache/camel-kamelets/issues/1672)
+- Request for RabbitMQ Sink Kamelet [\#1228](https://github.com/apache/camel-kamelets/issues/1228)
 - Slack source should be in natural order [\#949](https://github.com/apache/camel-kamelets/issues/949)
 
 ## [v4.0.3](https://github.com/apache/camel-kamelets/tree/v4.0.3) (2024-01-17)
