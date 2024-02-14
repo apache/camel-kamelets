@@ -96,7 +96,7 @@ spec:
       parameters:
         connectionFactory: "#bean:{{connectionFactory}}"
         routingKey: "{{?routingKey}}"
-        queues: "{{?queue}}"
+        queues: "{{?queues}}"
         autoDeclare: "{{autoDeclare}}"
       steps:
       - to: "kamelet:sink"
