@@ -33,7 +33,7 @@ spec:
     description: |-
       Query data from a Snowflake Database.
     required:
-      - serverName
+      - instanceUrl
       - username
       - password
       - query
@@ -41,8 +41,8 @@ spec:
     type: object
     properties:
       instanceUrl:
-        title: The instance URL
-        description: The instance url
+        title: Instance URL
+        description: The Instance url
         type: string
         example: instance.snowflakecomputing.com
       username:
