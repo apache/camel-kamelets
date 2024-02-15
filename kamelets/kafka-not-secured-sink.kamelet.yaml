@@ -61,19 +61,9 @@ spec:
     - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.4.0-SNAPSHOT"
     - "camel:kamelet"
   template:
-    beans:
-      - name: deDuplicateHeaders
-        type: "#class:org.apache.camel.kamelets.utils.headers.DeDuplicateNamingHeaders"
-        properties:
-          prefix: 'kafka.'
-          renamingPrefix: 'kafka.'
-          mode: 'filtering'
-          selectedHeaders: 'kafka.key,kafka.topic,kafka.override_topic'
     from:
       uri: "kamelet:source"
       steps:
-      - process:
-          ref: "{{deDuplicateHeaders}}"
       - choice:
           when:
           - simple: "${header[key]}"

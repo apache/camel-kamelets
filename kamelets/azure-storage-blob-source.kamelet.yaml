@@ -151,14 +151,6 @@ spec:
     - "camel:timer"
     - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.4.0-SNAPSHOT"
   template:
-    beans:
-      - name: duplicateHeaders
-        type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
-        properties:
-          prefix: 'CamelAzureStorageBlob'
-          renamingPrefix: 'azure.storage.blob.'
-          mode: 'filtering'
-          selectedHeaders: 'CamelAzureStorageBlobETag,CamelAzureStorageBlobBlobSize'
     from:
       uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
       parameters:
@@ -166,8 +158,6 @@ spec:
         credentialType: "{{credentialType}}"
         delay: "{{delay}}"
       steps:
-        - process:
-            ref: "{{duplicateHeaders}}"
         - to: "kamelet:sink"
         - choice:
             precondition: true

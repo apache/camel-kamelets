@@ -136,14 +136,6 @@ spec:
     - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.4.0-SNAPSHOT"
     - "camel:core"
   template:
-    beans:
-      - name: renameHeaders
-        type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
-        properties:
-          prefix: 'CamelAzureStorageQueue'
-          renamingPrefix: 'azure.storage.queue.'
-          mode: 'filtering'
-          selectedHeaders: 'CamelAzureStorageQueueMessageId'
     from:
       uri: "azure-storage-queue://{{accountName}}/{{queueName}}"
       parameters:
@@ -151,6 +143,4 @@ spec:
         maxMessages: "{{maxMessages}}"
         credentialType: "{{credentialType}}"
       steps:
-      - process:
-          ref: "{{renameHeaders}}"
       - to: "kamelet:sink"
