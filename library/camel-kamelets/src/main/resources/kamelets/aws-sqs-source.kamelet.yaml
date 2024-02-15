@@ -192,14 +192,6 @@ spec:
     - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.4.0-SNAPSHOT"
     - "camel:kamelet"
   template:
-    beans:
-      - name: renameHeaders
-        type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
-        properties:
-          prefix: 'CamelAwsSqs'
-          renamingPrefix: 'aws.sqs.'
-          mode: 'filtering'
-          selectedHeaders: 'CamelAwsSqsReceiptHandle,CamelAwsSqsMessageId'
     from:
       uri: "aws2-sqs:{{queueNameOrArn}}"
       parameters:
@@ -216,6 +208,4 @@ spec:
         delay: "{{delay}}"
         greedy: "{{greedy}}"
       steps:
-      - process:
-          ref: "{{renameHeaders}}"
       - to: "kamelet:sink"

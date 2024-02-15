@@ -160,14 +160,6 @@ spec:
     - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.4.0-SNAPSHOT"
     - "camel:kamelet"
   template:
-    beans:
-      - name: renameHeaders
-        type: "#class:org.apache.camel.kamelets.utils.headers.DuplicateNamingHeaders"
-        properties:
-          prefix: 'CamelAwsS3'
-          renamingPrefix: 'aws.s3.'
-          mode: 'filtering'
-          selectedHeaders: 'CamelAwsS3Key,CamelAwsS3BucketName'
     from:
       uri: "aws2-s3:{{bucketNameOrArn}}"
       parameters:
@@ -185,6 +177,4 @@ spec:
         delay: "{{delay}}"
         maxMessagesPerPoll: "{{maxMessagesPerPoll}}"
       steps:
-      - process:
-          ref: "{{renameHeaders}}"
       - to: "kamelet:sink"
