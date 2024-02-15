@@ -6,6 +6,9 @@
 
 **Closed issues:**
 
+- Add Snowflake Sink Kamelet [\#1891](https://github.com/apache/camel-kamelets/issues/1891)
+- Add Snowflake Source Kamelet [\#1890](https://github.com/apache/camel-kamelets/issues/1890)
+- Add Spring Rabbitmq Sink Kamelet [\#1889](https://github.com/apache/camel-kamelets/issues/1889)
 - Azure Files Sink Kamelets [\#1881](https://github.com/apache/camel-kamelets/issues/1881)
 - Azure Files Source Kamelet [\#1880](https://github.com/apache/camel-kamelets/issues/1880)
 - Add rawPayload option to Salesforce source connector [\#1843](https://github.com/apache/camel-kamelets/issues/1843)
@@ -21,6 +24,9 @@
 - Azure Storage Queue Source: Expose Kamelet data type information [\#1672](https://github.com/apache/camel-kamelets/issues/1672)
 - Request for RabbitMQ Sink Kamelet [\#1228](https://github.com/apache/camel-kamelets/issues/1228)
 - Slack source should be in natural order [\#949](https://github.com/apache/camel-kamelets/issues/949)
+- Support HDFS Sink Kamelet [\#540](https://github.com/apache/camel-kamelets/issues/540)
+- Support HDFS Source Kamelet [\#539](https://github.com/apache/camel-kamelets/issues/539)
+- Add Spring RabbitMQ source kamelet [\#45](https://github.com/apache/camel-kamelets/issues/45)
 
 ## [v4.0.3](https://github.com/apache/camel-kamelets/tree/v4.0.3) (2024-01-17)
 
