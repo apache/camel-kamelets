@@ -6,11 +6,13 @@
 
 **Closed issues:**
 
+- Remove DuplicateNamingHeaders and DeDuplicateNamingHeaders from utils [\#1898](https://github.com/apache/camel-kamelets/issues/1898)
 - Add Snowflake Sink Kamelet [\#1891](https://github.com/apache/camel-kamelets/issues/1891)
 - Add Snowflake Source Kamelet [\#1890](https://github.com/apache/camel-kamelets/issues/1890)
 - Add Spring Rabbitmq Sink Kamelet [\#1889](https://github.com/apache/camel-kamelets/issues/1889)
 - Azure Files Sink Kamelets [\#1881](https://github.com/apache/camel-kamelets/issues/1881)
 - Azure Files Source Kamelet [\#1880](https://github.com/apache/camel-kamelets/issues/1880)
+- Support Variable EIPs and language [\#1865](https://github.com/apache/camel-kamelets/issues/1865)
 - Add rawPayload option to Salesforce source connector [\#1843](https://github.com/apache/camel-kamelets/issues/1843)
 - Review Throttle Action [\#1842](https://github.com/apache/camel-kamelets/issues/1842)
 - Review OperationName parameter for Salesforce Source Kamelet [\#1841](https://github.com/apache/camel-kamelets/issues/1841)
