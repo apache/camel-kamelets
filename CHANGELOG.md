@@ -6,7 +6,11 @@
 
 **Closed issues:**
 
+- Kafka Apicurio Secured Sink Kamelet [\#1916](https://github.com/apache/camel-kamelets/issues/1916)
+- Kafka Apicurio Secured Source Kamelet [\#1915](https://github.com/apache/camel-kamelets/issues/1915)
 - Release Camel-Kamelets 4.4.0 [\#1902](https://github.com/apache/camel-kamelets/issues/1902)
+- Kafka Schema Registries: Support HTTPS of Apicurio Registry [\#1786](https://github.com/apache/camel-kamelets/issues/1786)
+- Kafka Schema Registries: Support authentication mechanisms for Apicurio Registry [\#1684](https://github.com/apache/camel-kamelets/issues/1684)
 
 ## [v4.4.0](https://github.com/apache/camel-kamelets/tree/v4.4.0) (2024-02-19)
 
