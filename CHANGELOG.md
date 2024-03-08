@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- CDC Storage Source Kamelets, rename to -event-based instead of cdc [\#1930](https://github.com/apache/camel-kamelets/issues/1930)
 - Add Kafka Batch with Apicurio with keycloak support [\#1922](https://github.com/apache/camel-kamelets/issues/1922)
 - Kafka Apicurio Secured Sink Kamelet [\#1916](https://github.com/apache/camel-kamelets/issues/1916)
 - Kafka Apicurio Secured Source Kamelet [\#1915](https://github.com/apache/camel-kamelets/issues/1915)
