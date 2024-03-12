@@ -132,6 +132,11 @@ spec:
         title: Max Poll Interval
         description: The maximum delay between invocations of poll() when using consumer group management
         type: int
+      topicIsPattern:
+        title: Topic Is Pattern
+        description: Whether the topic is a pattern (regular expression). This can be used to subscribe to dynamic number of topics matching the pattern.
+        type: boolean
+        default: false
   dependencies:
     - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.5.0-SNAPSHOT"
     - "camel:core"
@@ -162,6 +167,7 @@ spec:
         maxPollIntervalMs: "{{?maxPollIntervalMs}}"
         batching: true
         kafkaManualCommitFactory: "#bean:{{manualCommitFactory}}"
+        topicIsPattern: "{{topicIsPattern}}"
       steps:
         - process:
             ref: "{{kafkaHeaderDeserializer}}"
