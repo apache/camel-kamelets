@@ -146,6 +146,11 @@ spec:
         - urn:camel:group:credentials
         - urn:keda:authentication:password
         - urn:keda:required
+      topicIsPattern:
+        title: Topic Is Pattern
+        description: Whether the topic is a pattern (regular expression). This can be used to subscribe to dynamic number of topics matching the pattern.
+        type: boolean
+        default: false
   dependencies:
     - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.5.0-SNAPSHOT"
     - "camel:kafka"
@@ -168,6 +173,7 @@ spec:
         autoOffsetReset: "{{autoOffsetReset}}"
         groupId: "{{?consumerGroup}}"
         valueDeserializer: "{{valueDeserializer}}"
+        topicIsPattern: "{{topicIsPattern}}"
         additionalProperties.apicurio.registry.url: "{{apicurioRegistryUrl}}"
         additionalProperties.apicurio.registry.avro-datum-provider: "{{avroDatumProvider}}"
         additionalProperties.apicurio.auth.service.url: "{{apicurioAuthServiceUrl}}"
