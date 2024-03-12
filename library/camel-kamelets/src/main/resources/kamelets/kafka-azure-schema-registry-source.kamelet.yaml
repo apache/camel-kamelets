@@ -125,6 +125,11 @@ spec:
         description: The Specific Type Avro will have to deal with
         type: string
         example: "com.example.Order"
+      topicIsPattern:
+        title: Topic Is Pattern
+        description: Whether the topic is a pattern (regular expression). This can be used to subscribe to dynamic number of topics matching the pattern.
+        type: boolean
+        default: false
   dependencies:
     - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.5.0-SNAPSHOT"
     - "camel:kafka"
@@ -155,6 +160,7 @@ spec:
         autoOffsetReset: "{{autoOffsetReset}}"
         groupId: "{{?consumerGroup}}"
         valueDeserializer: "{{valueDeserializer}}"
+        topicIsPattern: "{{topicIsPattern}}"
         additionalProperties.schema.registry.url: "{{azureRegistryUrl}}"
         additionalProperties.schema.group: avro
         additionalProperties.schema.registry.credential: '#bean:defaultAzureCredential'
