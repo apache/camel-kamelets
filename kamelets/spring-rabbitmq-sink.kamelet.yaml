@@ -74,6 +74,11 @@ spec:
         title: Queue name
         description: The queue to receive messages from
         type: string
+      autoDeclareProducer:
+        title: Auto Declare Producer
+        description: Specifies whether the producer should auto declare binding between exchange, queue and routing key when starting
+        type: boolean
+        default: false
   dependencies:
     - "camel:spring-rabbitmq"
     - "camel:kamelet"
@@ -95,3 +100,4 @@ spec:
             connectionFactory: "#bean:{{connectionFactory}}"
             routingKey: "{{?routingKey}}"
             queues: "{{?queues}}"
+            autoDeclareProducer: "{{autoDeclareProducer}}"
