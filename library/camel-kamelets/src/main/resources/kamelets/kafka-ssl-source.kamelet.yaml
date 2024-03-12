@@ -142,6 +142,11 @@ spec:
         description: Java Authentication and Authorization Service (JAAS) for Simple Authentication and Security Layer (SASL) configuration.
         title: JAAS Configuration
         type: string
+      topicIsPattern:
+        title: Topic Is Pattern
+        description: Whether the topic is a pattern (regular expression). This can be used to subscribe to dynamic number of topics matching the pattern.
+        type: boolean
+        default: false
   dependencies:
     - "mvn:org.apache.camel.kamelets:camel-kamelets-utils:4.5.0-SNAPSHOT"
     - "camel:core"
@@ -169,6 +174,7 @@ spec:
           allowManualCommit: '{{allowManualCommit}}'
           autoCommitEnable: '{{autoCommitEnable}}'
           saslJaasConfig: '{{?saslJaasConfig}}'
+          topicIsPattern: '{{topicIsPattern}}'
         type: '#class:org.apache.camel.component.kafka.KafkaConfiguration'
       - name: kafkaHeaderDeserializer
         type: "#class:org.apache.camel.kamelets.utils.serialization.kafka.KafkaHeaderDeserializer"
