@@ -6,6 +6,8 @@
 
 **Closed issues:**
 
+- Spring RabbitMQ Sink Kamelet: Support autoDeclareProducer as parameter [\#1943](https://github.com/apache/camel-kamelets/issues/1943)
+- Support topicIsPattern as Kafka Source Kamelets parameter [\#1939](https://github.com/apache/camel-kamelets/issues/1939)
 - CDC Storage Source Kamelets, rename to -event-based instead of cdc [\#1930](https://github.com/apache/camel-kamelets/issues/1930)
 - Add Kafka Batch with Apicurio with keycloak support [\#1922](https://github.com/apache/camel-kamelets/issues/1922)
 - Kafka Apicurio Secured Sink Kamelet [\#1916](https://github.com/apache/camel-kamelets/issues/1916)
