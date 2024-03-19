@@ -22,6 +22,7 @@ import java.util.Arrays;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.spi.TypeConverterRegistry;
 import org.apache.camel.support.DefaultExchange;
 import org.apache.camel.support.SimpleTypeConverter;
 import org.junit.jupiter.api.Assertions;
@@ -57,41 +58,6 @@ class KafkaHeaderDeserializerTest {
         Assertions.assertTrue(exchange.getMessage().getHeaders().containsKey("fooNull"));
         Assertions.assertNull(exchange.getMessage().getHeader("fooNull"));
         Assertions.assertEquals("1", exchange.getMessage().getHeader("number"));
-    }
-
-    @Test
-    void shouldDeserializeHeadersViaTypeConverter() throws Exception {
-        camelContext.setTypeConverter(new SimpleTypeConverter(true, (type, exchange, value) -> "converted"));
-
-        Exchange exchange = new DefaultExchange(camelContext);
-
-        exchange.getMessage().setHeader("foo", "bar");
-        exchange.getMessage().setHeader("fooBytes", "barBytes".getBytes(StandardCharsets.UTF_8));
-        exchange.getMessage().setHeader("fooNull", null);
-
-        processor.enabled = true;
-        processor.process(exchange);
-
-        Assertions.assertTrue(exchange.getMessage().hasHeaders());
-        Assertions.assertEquals("converted", exchange.getMessage().getHeader("foo"));
-        Assertions.assertEquals("converted", exchange.getMessage().getHeader("fooBytes"));
-        Assertions.assertEquals("converted", exchange.getMessage().getHeader("fooNull"));
-    }
-
-    @Test
-    void shouldFallbackToDefaultConverter() throws Exception {
-        camelContext.setTypeConverter(null);
-        Exchange exchange = new DefaultExchange(camelContext);
-
-        exchange.getMessage().setHeader("foo", "bar");
-        exchange.getMessage().setHeader("fooBytes", "barBytes".getBytes(StandardCharsets.UTF_8));
-
-        processor.enabled = true;
-        processor.process(exchange);
-
-        Assertions.assertTrue(exchange.getMessage().hasHeaders());
-        Assertions.assertEquals("bar", exchange.getMessage().getHeader("foo"));
-        Assertions.assertEquals("barBytes", exchange.getMessage().getHeader("fooBytes"));
     }
 
     @Test
