@@ -143,7 +143,7 @@ public class KameletsCatalogTest {
         verifyHeaders("aws-not-exists", 0);
         verifyHeaders("azure-eventhubs-sink", 2);
         verifyHeaders("azure-functions-sink", 8);
-        verifyHeaders("azure-servicebus-source", 22);
+        verifyHeaders("azure-servicebus-source", 21);
         verifyHeaders("azure-storage-blob-source", 34);
         verifyHeaders("azure-storage-blob-sink", 33);
         verifyHeaders("azure-storage-blob-changefeed-source", 34);
