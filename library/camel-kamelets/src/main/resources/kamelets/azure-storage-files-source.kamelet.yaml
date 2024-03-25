@@ -80,7 +80,96 @@ spec:
         title: Recursive Mode 
         description: If a directory, the consumer will look for files in all the sub-directories as well.
         type: boolean
-        default: false        
+        default: false
+  dataTypes:
+    out:
+      default: binary
+      headers:
+        CamelFileLength:
+          title: Azure Storage Files File Length
+          description: A long value containing the file size
+          type: long
+        CamelFileLastModified:
+          title: Azure Storage Files File Last Modified Date
+          description: A Long value containing the last modified timestamp of the file.
+          type: long
+        CamelFileNameOnly:
+          title: Azure Storage Files File Name Only
+          description: Only the file name (the name with no leading paths).
+          type: string
+        CamelFileName:
+          title: Azure Storage Files File Name 
+          description: |-
+            Name of the consumed file as a relative file path with offset from the starting directory configured on the endpoint.
+          type: string
+        CamelFileNameConsumed:
+          title: Azure Storage Files Consumed File Name
+          description: The name of the file that has been consumed.
+          type: string
+        CamelFileAbsolute:
+          title: Azure Storage Files Consumed Absolute Format
+          description: |- 
+            A boolean option specifying whether the consumed file denotes an absolute path or not. 
+            Should normally be false for relative paths. Absolute paths should normally not be used but we added to the move option to allow moving files to absolute paths. 
+            But can be used elsewhere as well.
+          type: boolean
+        CamelFileAbsolutePath:
+          title: Azure Storage Files Consumed Absolute Path
+          description: The absolute path to the file. For relative files this path holds the relative path instead.
+          type: string
+        CamelFileExtendedAttributes:
+          title: Azure Storage Files Extended Attributes
+          description: Additional Metadata of the file of type Map<String,Object>
+          type: object
+        CamelFileContentType:
+          title: Content Type
+          description: The content type of the retrieved object.
+          default: application/octet-stream
+          type: string
+        CamelFilePath:
+          title: Azure Storage Files File Path
+          description: The file path. For relative files this is the starting directory the relative filename. For absolute files this is the absolute path.
+          type: string
+        CamelFileRelativePath:
+          title: Azure Storage Files File Relative Path
+          description: The relative path.
+          type: string
+        CamelFileParent:
+          title: Azure Storage Files File Relative Path
+          description: The parent path.
+          type: string
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: Default binary representation of the File retrieved from Azure Storage Files.
+          mediaType: application/octet-stream
+        cloudevents:
+          format: "azure-files:application-cloudevents"
+          description: |-
+            Data type transformer converts Azure Storage Files poll response to CloudEvent v1_0 data format. The data type sets
+            Camel specific CloudEvent headers with values extracted from Azure Storage Files poll response.
+          headers:
+            CamelCloudEventID:
+              title: CloudEvent ID
+              description: The Camel exchange id set as event id
+              type: string
+            CamelCloudEventType:
+              title: CloudEvent Type
+              description: The event type
+              default: "org.apache.camel.event.azure.storage.files.poll"
+              type: string
+            CamelCloudEventSource:
+              title: CloudEvent Source
+              description: The event source. By default, the Host name of the share with prefix "azure.storage.files.".
+              type: string
+            CamelCloudEventSubject:
+              title: CloudEvent Subject
+              description: The event subject. Usually the Azure Storage Files file name.
+              type: string
+            CamelCloudEventTime:
+              title: CloudEvent Time
+              description: The exchange creation timestamp as event time.
+              type: string       
   dependencies:
     - "camel:azure-files"
     - "camel:kamelet"
