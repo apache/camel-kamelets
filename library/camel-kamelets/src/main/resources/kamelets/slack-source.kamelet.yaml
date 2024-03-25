@@ -60,6 +60,42 @@ spec:
         description: Create exchanges in natural order (oldest to newest) or not.
         type: boolean
         default: false
+  dataTypes:
+    out:
+      default: json
+      headers:
+      types:
+        json:
+          format: "application-json"
+          description: Json mapping of a Slack API Message
+          mediaType: application/json
+        cloudevents:
+          format: "slack:application-cloudevents"
+          description: |-
+            Output data type represents Azure Storage Blob get blob response as CloudEvent V1. The data type sets Camel specific CloudEvent headers on the exchange with
+            respective data from the Azure container and its derived object.
+          headers:
+            CamelCloudEventID:
+              title: CloudEvent ID
+              description: The Camel exchange id set as event id
+              type: string
+            CamelCloudEventType:
+              title: CloudEvent Type
+              description: The event type
+              default: "org.apache.camel.event.slack.consume"
+              type: string
+            CamelCloudEventSource:
+              title: CloudEvent Source
+              description: The event source. By default, the Slack App Id with prefix "slack.".
+              type: string
+            CamelCloudEventSubject:
+              title: CloudEvent Subject
+              description: The event subject. The Slack Channel name.
+              type: string
+            CamelCloudEventTime:
+              title: CloudEvent Time
+              description: The exchange creation timestamp as event time.
+              type: string
   types:
     out:
       mediaType: application/json
