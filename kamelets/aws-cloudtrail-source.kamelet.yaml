@@ -65,6 +65,58 @@ spec:
         description: Specify an event source to select events.
         type: string
         example: secretsmanager.amazonaws.com
+  dataTypes:
+    out:
+      default: text
+      headers:
+        CamelAwsCloudTrailEventId:
+          title: Cloudtrail Event Id
+          description: The event ID of the cloud trail event consumed
+          type: string
+        CamelAwsCloudTrailEventName:
+          title: Cloudtrail Event Name
+          description: The event Name of the cloud trail event consumed
+          type: string
+        CamelAwsCloudTrailEventSource:
+          title: Cloudtrail Event Source
+          description: The event Source of the cloud trail event consumed
+          type: string
+        CamelAwsCloudTrailEventUsername:
+          title: Cloudtrail Event Username
+          description: The associated username of the event of the cloud trail event consumed
+          type: string
+      types:
+        text:
+          format: "text-plain"
+          description: Default text representation of the Cloudtrail Event
+          mediaType: text/plain
+        cloudevents:
+          format: "aws-cloudtrail:application-cloudevents"
+          description: |-
+            Data type transformer converts AWS Cloudtrail lookup events response to CloudEvent v1_0 data format. The data type
+            sets Camel specific CloudEvent headers with values extracted from AWS Cloudtrail lookup events response.
+          headers:
+            CamelCloudEventID:
+              title: CloudEvent ID
+              description: The Camel exchange id set as event id
+              type: string
+            CamelCloudEventType:
+              title: CloudEvent Type
+              description: The event type
+              default: "org.apache.camel.event.aws.cloudtrail.lookupEvents"
+              type: string
+            CamelCloudEventSource:
+              title: CloudEvent Source
+              description: The event source. By default, the Cloudtrail event source name with prefix "aws.cloudtrail.event.source.".
+              type: string
+            CamelCloudEventSubject:
+              title: CloudEvent Subject
+              description: The event subject. The Cloudtrail Event Id.
+              type: string
+            CamelCloudEventTime:
+              title: CloudEvent Time
+              description: The exchange creation timestamp as event time.
+              type: string
   dependencies:
     - "camel:core"
     - "camel:aws-cloudtrail"
