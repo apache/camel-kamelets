@@ -7,6 +7,9 @@
 **Closed issues:**
 
 - Update Camel to 4.4.1 [\#1948](https://github.com/apache/camel-kamelets/issues/1948)
+- Slack Source: Expose Kamelet data type information [\#1945](https://github.com/apache/camel-kamelets/issues/1945)
+- Azure Storage Files Source: Expose Kamelet data type information [\#1914](https://github.com/apache/camel-kamelets/issues/1914)
+- AWS Cloudtrail Source: Expose Kamelet data type information [\#1887](https://github.com/apache/camel-kamelets/issues/1887)
 
 ## [v4.4.1](https://github.com/apache/camel-kamelets/tree/v4.4.1) (2024-03-22)
 
