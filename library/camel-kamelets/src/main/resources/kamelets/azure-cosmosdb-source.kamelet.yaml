@@ -86,9 +86,44 @@ spec:
         type: string
         enum: ["SHARED_ACCOUNT_KEY", "AZURE_IDENTITY"]
         default: "SHARED_ACCOUNT_KEY"
-  types:
+  dataTypes:
     out:
-      mediaType: application/json
+      default: json
+      headers:
+      types:
+        json:
+          format: "application-json"
+          description: Json mapping of Change Feed records
+          mediaType: application/json
+        cloudevents:
+          format: "azure-cosmosdb:application-cloudevents"
+          description: |-
+            Data type transformer converts Azure CosmosDB Change Feed processor response to CloudEvent v1_0 data format. The data
+            type sets Camel specific CloudEvent headers with values extracted from Azure CosmosDB Change Feed processor response.
+          headers:
+            CamelCloudEventID:
+              title: CloudEvent ID
+              description: The Camel exchange id set as event id
+              type: string
+            CamelCloudEventType:
+              title: CloudEvent Type
+              description: The event type
+              default: "org.apache.camel.event.azure.cosmosdb.changes"
+              type: string
+            CamelCloudEventSource:
+              title: CloudEvent Source
+              description: The event source.
+              type: string
+              default: "org.apache.camel.event.azure.cosmosdb.changefeed"
+            CamelCloudEventSubject:
+              title: CloudEvent Subject
+              description: The event subject. 
+              type: string
+              default: "org.apache.camel.event.azure.cosmosdb.changefeed"
+            CamelCloudEventTime:
+              title: CloudEvent Time
+              description: The exchange creation timestamp as event time.
+              type: string
   dependencies:
     - "camel:azure-cosmosdb"
     - "camel:kamelet"
