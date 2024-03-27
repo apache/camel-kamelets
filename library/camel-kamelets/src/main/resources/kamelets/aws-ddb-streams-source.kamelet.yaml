@@ -89,9 +89,50 @@ spec:
         description: The number of milliseconds before the next poll from the database.
         type: integer
         default: 500
-  types:
+  dataTypes:
     out:
-      mediaType: application/json
+      default: json
+      headers:
+        CamelAwsDdbStreamEventSource:
+          title: The DDB Stream Event Source
+          description: The Amazon Web Services service from which the stream record originated. For DynamoDB Streams, this is aws:dynamodb.
+          type: string
+        CamelAwsDdbStreamEventId:
+          title: The DDB Stream Event Id
+          description: A globally unique identifier for the event that was recorded in this stream record.
+          type: string
+      types:
+        json:
+          format: "application-json"
+          description: Default Json representation of a DDB Stream Event.
+          mediaType: application/json
+        cloudevents:
+          format: "aws2-sqs:application-cloudevents"
+          description: |-
+            Data type transformer converts AWS Dynamo DB Streams get records response to CloudEvent v1_0 data format. The data
+            type sets Camel specific CloudEvent headers with values extracted from AWS Dynamo DB Streams get records.
+          headers:
+            CamelCloudEventID:
+              title: CloudEvent ID
+              description: The Camel exchange id set as event id
+              type: string
+            CamelCloudEventType:
+              title: CloudEvent Type
+              description: The event type
+              default: "org.apache.camel.event.aws.ddbstream.getRecords"
+              type: string
+            CamelCloudEventSource:
+              title: CloudEvent Source
+              description: The event source. By default, the DDB Stream Event source receipt handle with prefix "aws.ddbstream.".
+              type: string
+            CamelCloudEventSubject:
+              title: CloudEvent Subject
+              description: The event subject. The DDB Stream Event Id.
+              type: string
+            CamelCloudEventTime:
+              title: CloudEvent Time
+              description: The exchange creation timestamp as event time.
+              type: string
   dependencies:
   - "camel:gson"
   - "camel:aws2-ddb"
