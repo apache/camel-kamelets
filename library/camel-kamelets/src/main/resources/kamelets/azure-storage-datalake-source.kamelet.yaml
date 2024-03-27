@@ -85,6 +85,147 @@ spec:
         type: string
         enum: ["CLIENT_SECRET", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY", "AZURE_SAS", "SERVICE_CLIENT_INSTANCE"]
         default: "CLIENT_SECRET"
+  dataTypes:
+    out:
+      default: binary
+      headers:
+        CamelAzureStorageDataLakeFileName:
+          title: Azure Storage Datalake File Name
+          description: The name of the file retrieved
+          type: string
+        CamelAzureStorageDataLakeRawHttpHeaders:
+          title: Azure Storage Data Lake Raw Http Headers
+          description: Non parsed http headers that can be used by the user.
+          type: object
+        CamelAzureStorageDataLakeAccessTier:
+          title: Azure Storage Data Lake File Access Tier
+          description: Access tier of file.
+          type: object
+        CamelAzureStorageDataLakeAccessTierChangeTime:
+          title: Azure Storage Data Lake Access Tier Change Time.
+          description: |-
+            Datetime when the access tier of the blob last changed.
+          type: object
+        CamelAzureStorageDataLakeArchiveStatus:
+          title: Azure Storage Data Lake Archive Status
+          description: Archive status of file
+          type: object
+        CamelAzureStorageDataLakeCacheControl:
+          title: Azure Storage Data Lake File Cache Control
+          description: Cache control specified for the file.
+          type: string
+        CamelAzureStorageDataLakeContentDisposition:
+          title: Azure Storage Data Lake File Content Disposition
+          description: Content disposition specified for the file.
+          type: string
+        CamelAzureStorageDataLakeContentEncoding:
+          title: Azure Storage Data Lake File Content Encoding
+          description: Content encoding specified for the file.
+          type: string
+        CamelAzureStorageDataLakeContentLanguage:
+          title: Azure Storage Data Lake File Content Language
+          description: Content language specified for the file.
+          type: string
+        CamelAzureStorageDataLakeContentType:
+          title: Azure Storage Data Lake File Content Type
+          description: Content Type specified for the file.
+          type: string
+        CamelAzureStorageDataLakeCopyCompletionTime:
+          title: Azure Storage Data Lake File Copy Completion time
+          description: Conclusion time of the last attempted Copy Blob operation where this file was the destination file.
+          type: object
+        CamelAzureStorageDataLakeCopyId:
+          title: Azure Storage Data Lake File Copy Id
+          description: String identifier for this copy operation.
+          type: string
+        amelAzureStorageDataLakeCopyProgress:
+          title: Azure Storage Data Lake File Copy Progress
+          description: Contains the number of bytes copied and the total bytes in the source in the last attempted Copy Blob operation where this file was the destination file.
+          type: string
+        CamelAzureStorageDataLakeCopySource:
+          title: Azure Storage Data Lake File Copy Source
+          description: URL up to 2 KB in length that specifies the source file or file used in the last attempted Copy Blob operation where this file was the destination file.
+          type: string
+        CamelAzureStorageDataLakeCopyStatus:
+          title: Azure Storage Data Lake File Copy Status
+          description: Status of the last copy operation performed on the file.
+          type: object
+        CamelAzureStorageDataLakeCopyStatusDescription:
+          title: Azure Storage Data Lake File Copy Status Description
+          description: The description of the copy’s status.
+          type: string
+        CamelAzureStorageDataLakeCreationTime:
+          title: Azure Storage Data Lake File Creation Time.
+          description: Creation time of the file.
+          type: object
+        CamelAzureStorageDataLakeEncryptionKeySha256:
+          title: Azure Storage Data Lake File SHA-256 Hash
+          description: The SHA-256 hash of the encryption key used to encrypt the file.
+          type: string
+        CamelAzureStorageDataLakeETag:
+          title: Azure Storage Data Lake File E Tag
+          description: The E Tag of the file.
+          type: string
+        CamelAzureStorageDataLakeFileSize:
+          title: Azure Storage Data Lake File Size
+          description: The File Size
+          type: long
+        CamelAzureStorageDataLakeLastModified:
+          title: Azure Storage Data Lake File Last Modified Date
+          description: Datetime when the file was last modified.
+          type: object
+        CamelAzureStorageDataLakeLeaseDuration:
+          title: Azure Storage Data Lake File Lease Duration
+          description: Type of lease on the file.
+          type: object
+        CamelAzureStorageDataLakeLeaseState:
+          title: Azure Storage Data Lake File Lease State
+          description: State of the lease on the file.
+          type: object
+        CamelAzureStorageDataLakeLeaseStatus:
+          title: Azure Storage Data Lake File Lease Status
+          description: Status of the lease on the file.
+          type: object
+        CamelAzureStorageDataLakeServerEncrypted:
+          title: Azure Storage Data Lake File Content Encrypted
+          description: Flag indicating if the file’s content is encrypted on the server.
+          type: boolean
+        CamelAzureStorageDataLakeDownloadLink:
+          title: Azure Storage Data Lake File Download Link
+          description: The link that can be used to download the file from data lake.
+          type: string
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: Default binary representation of the object retrieved from the Azure Data Lake.
+          mediaType: application/octet-stream
+        cloudevents:
+          format: "azure-storage-datalake:application-cloudevents"
+          description: |-
+            Data type transformer converts Azure Data Lake consumer response to CloudEvent v1_0 data format. The data type sets
+            Camel specific CloudEvent headers with values extracted from Azure Data Lake consumer response.
+          headers:
+            CamelCloudEventID:
+              title: CloudEvent ID
+              description: The Camel exchange id set as event id
+              type: string
+            CamelCloudEventType:
+              title: CloudEvent Type
+              description: The event type
+              default: "org.apache.camel.event.azure.storage.datalake.consume"
+              type: string
+            CamelCloudEventSource:
+              title: CloudEvent Source
+              description: The event source. By default, the Archive Status of the file with prefix "azure.storage.datalake.".
+              type: string
+            CamelCloudEventSubject:
+              title: CloudEvent Subject
+              description: The event subject. Usually the Azure Storage Datalake E Tag of file.
+              type: string
+            CamelCloudEventTime:
+              title: CloudEvent Time
+              description: The exchange creation timestamp as event time.
+              type: string
   dependencies:
     - "camel:azure-storage-datalake"
     - "camel:kamelet"
