@@ -87,9 +87,71 @@ spec:
         type: string
         enum: ["CONNECTION_STRING", "AZURE_IDENTITY"]
         default: "CONNECTION_STRING"
-  types:
+  dataTypes:
     out:
-      mediaType: application/octet-stream
+      default: binary
+      headers:
+        CamelAzureEventHubsPartitionId:
+          title: Azure Storage Event Hubs Partiton Id
+          description: It sets the partition id of the Event Hub.
+          type: string
+        CamelAzureEventHubsOffset :
+          title: Azure Storage Event Hubs Event Offset
+          description: It sets the offset of the event when it was received from the associated Event Hub partition. This is only present on a received EventData.
+          type: string
+        CamelAzureEventHubsEnqueuedTime:
+          title: Azure Event Hubs Event Enqueued Time
+          description: It sets the instant, in UTC, of when the event was enqueued in the Event Hub partition. This is only present on a received EventData.
+          type: java.time.Instant
+        CamelAzureEventHubsSequenceNumber:
+          title: Azure Event Hubs Event Sequence Number
+          description: |-
+            It sets the sequence number assigned to the event when it was enqueued in the associated Event Hub partition. This is unique for every message received in the Event Hub partition. This is only present on a received EventData.
+          type: long
+        CamelAzureEventHubsMetadata:
+          title: Azure Event Hubs Event Metadata
+          description: The set of free-form event properties which may be used for passing metadata associated with the event with the event body during Event Hubs operations.
+          type: object
+        CamelMessageTimestamp:
+          title: Azure Event Hubs Message Timestamp
+          description: The timestamp of the message.
+          type: long
+        CamelAzureEventHubsCheckpointUpdatedBy:
+          title: Azure Event Hubs Checkpoint Updated By
+          description: It sets the reason for the checkpoint to have been updated. This is only present on a received EventData.
+          type: string
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: Default binary representation of the Azure Event Hubs Event retrieved.
+          mediaType: application/octet-stream
+        cloudevents:
+          format: "azure-eventhubs:application-cloudevents"
+          description: |-
+            Data type transformer converts Azure Eventhubs consumer response to CloudEvent v1_0 data format. The data type sets
+            Camel specific CloudEvent headers with values extracted from Azure Eventhubs consumer response.
+          headers:
+            CamelCloudEventID:
+              title: CloudEvent ID
+              description: The Camel exchange id set as event id
+              type: string
+            CamelCloudEventType:
+              title: CloudEvent Type
+              description: The event type
+              default: "org.apache.camel.event.azure.eventhubs.consume"
+              type: string
+            CamelCloudEventSource:
+              title: CloudEvent Source
+              description: The event source. By default, the Partition Id with prefix "azure.eventhubs.".
+              type: string
+            CamelCloudEventSubject:
+              title: CloudEvent Subject
+              description: The event subject. The Azure Event Hubs Event Sequence Number.
+              type: string
+            CamelCloudEventTime:
+              title: CloudEvent Time
+              description: The exchange creation timestamp as event time.
+              type: string
   dependencies:
   - "camel:azure-eventhubs"
   - "camel:kamelet"
