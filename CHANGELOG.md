@@ -7,8 +7,13 @@
 **Closed issues:**
 
 - Update Camel to 4.4.1 [\#1948](https://github.com/apache/camel-kamelets/issues/1948)
+- Release 4.4.1 [\#1947](https://github.com/apache/camel-kamelets/issues/1947)
 - Slack Source: Expose Kamelet data type information [\#1945](https://github.com/apache/camel-kamelets/issues/1945)
+- Azure Storage Datalake Source: Expose Kamelet data type information [\#1927](https://github.com/apache/camel-kamelets/issues/1927)
+- Azure Eventhubs Source: Expose Kamelet data type information [\#1925](https://github.com/apache/camel-kamelets/issues/1925)
+- Azure CosmosDB Source: Expose Kamelet data type information [\#1924](https://github.com/apache/camel-kamelets/issues/1924)
 - Azure Storage Files Source: Expose Kamelet data type information [\#1914](https://github.com/apache/camel-kamelets/issues/1914)
+- AWS DDB Stream Source: Expose Kamelet data type information [\#1909](https://github.com/apache/camel-kamelets/issues/1909)
 - AWS Cloudtrail Source: Expose Kamelet data type information [\#1887](https://github.com/apache/camel-kamelets/issues/1887)
 
 ## [v4.4.1](https://github.com/apache/camel-kamelets/tree/v4.4.1) (2024-03-22)
