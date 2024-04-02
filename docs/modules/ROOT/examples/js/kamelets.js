@@ -80,7 +80,7 @@ module.exports = {
     const properties = Object.entries(kameletPropertyList(definition) || {})
       .map(([name, value]) => `-p "${namePrefix}.${name}=${quote(value)}"`)
       .join(' ')
-    return `kamel bind ${name} ${properties} ${topic}`
+    return `kamel bind ${topic} ${properties} ${name}`
   },
 
   sort: function (list) {
