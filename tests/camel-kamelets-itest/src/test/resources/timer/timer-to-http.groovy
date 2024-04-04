@@ -15,16 +15,12 @@
  * limitations under the License.
  */
 
+package timer
+
 // camel-k: language=groovy
 
-def parameters = 'bucketNameOrArn=${aws.s3.bucketNameOrArn}&'+
-                 'overrideEndpoint=true&' +
-                 'forcePathStyle=true&' +
-                 'uriEndpointOverride=${YAKS_TESTCONTAINERS_LOCALSTACK_S3_URL}&' +
-                 'accessKey=${YAKS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}&' +
-                 'secretKey=${YAKS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}&'+
-                 'region=${YAKS_TESTCONTAINERS_LOCALSTACK_REGION}&'+
-                 'deleteAfterRead=true'
-
-from("kamelet:aws-s3-source?$parameters")
-  .to("log:info")
+from('timer:tick?period=10000')
+    .setHeader("CamelHttpMethod", constant("PUT"))
+    .setBody().constant('{{message}}')
+    .to('yaks:resolveURL(test-service)/messages')
+    .to('log:info?showStreams=true')

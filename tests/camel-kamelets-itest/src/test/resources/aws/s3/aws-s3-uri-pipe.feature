@@ -12,14 +12,14 @@ Feature: AWS S3 Source - binding to URI
     Given start LocalStack container
 
   Scenario: Verify AWS-S3 Kamelet to log binding
+    # Create AWS-S3 client
+    Given New Camel context
+    Given load to Camel registry amazonS3Client.groovy
     # Create binding
     When load Pipe aws-s3-uri-pipe.yaml
     And Pipe aws-s3-uri-pipe is available
     And Camel K integration aws-s3-uri-pipe is running
     Then Camel K integration aws-s3-uri-pipe should print Started aws-s3-uri-pipe
-    # Create AWS-S3 client
-    Given New Camel context
-    Given load to Camel registry amazonS3Client.groovy
     # Verify Kamelet source
     Given Camel exchange message header CamelAwsS3Key="${aws.s3.key}"
     Given send Camel exchange to("aws2-s3://${aws.s3.bucketNameOrArn}?amazonS3Client=#amazonS3Client") with body: ${aws.s3.message}

@@ -1,3 +1,4 @@
+package aws.s3
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
@@ -15,16 +16,16 @@
  * limitations under the License.
  */
 
-$(repeatOnError()
-    .until('i > ${maxRetryAttempts}')
-    .actions(new org.citrusframework.TestAction() {
-        @Override
-        void execute(org.citrusframework.context.TestContext context) {
-            try {
-                assert context.getVariable('aws.ddb.items').equals(amazonDDBClient.scan(b -> b.tableName(context.getVariable('aws.ddb.tableName')))?.items()?.toListString())
-            } catch (AssertionError e) {
-                throw new org.citrusframework.exceptions.CitrusRuntimeException("AWS DDB item verification failed", e)
-            }
-        }
-    })
-)
+// camel-k: language=groovy
+
+def parameters = 'bucketNameOrArn=${aws.s3.bucketNameOrArn}&'+
+                 'overrideEndpoint=true&' +
+                 'forcePathStyle=true&' +
+                 'uriEndpointOverride=${YAKS_TESTCONTAINERS_LOCALSTACK_S3_URL}&' +
+                 'accessKey=${YAKS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}&' +
+                 'secretKey=${YAKS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}&'+
+                 'region=${YAKS_TESTCONTAINERS_LOCALSTACK_REGION}&'+
+                 'deleteAfterRead=true'
+
+from("kamelet:aws-s3-source?$parameters")
+  .to("log:info")

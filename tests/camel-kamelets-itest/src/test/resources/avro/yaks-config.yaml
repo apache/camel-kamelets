@@ -33,11 +33,11 @@ config:
         - name: INTEGRATION_LOGS
           level: INFO
     resources:
-      - ../avro-serialize-pipe.yaml
-      - ../avro-deserialize-pipe.yaml
-      - ../avro-binary-source-pipe.yaml
-      - ../avro-x-struct-sink-pipe.yaml
-      - ../User.avsc
+      - avro-serialize-pipe.yaml
+      - avro-deserialize-pipe.yaml
+      - avro-binary-source-pipe.yaml
+      - avro-x-struct-sink-pipe.yaml
+      - User.avsc
   dump:
     enabled: true
     failedOnly: true
