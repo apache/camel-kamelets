@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.5.0...HEAD)
+
+**Closed issues:**
+
+- Support Camel AWS Bedrock Agent Runtime as Sink [\#1935](https://github.com/apache/camel-kamelets/issues/1935)
+- DataTypes: Initial list of Kamelets to enrich [\#1343](https://github.com/apache/camel-kamelets/issues/1343)
+
 ## [v4.5.0](https://github.com/apache/camel-kamelets/tree/v4.5.0) (2024-04-02)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.4.1...v4.5.0)
