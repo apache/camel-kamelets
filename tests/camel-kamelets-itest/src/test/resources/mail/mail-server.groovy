@@ -15,16 +15,12 @@
  * limitations under the License.
  */
 
-import software.amazon.awssdk.services.dynamodb.model.AttributeValue
-import software.amazon.awssdk.services.dynamodb.model.ReturnValue
+package mail
 
-Map<String, AttributeValue> item = new HashMap<>()
-item.put("id", AttributeValue.builder().n("${aws.ddb.item.id}").build())
-item.put("year", AttributeValue.builder().n("${aws.ddb.item.year}").build())
-item.put("title", AttributeValue.builder().s("${aws.ddb.item.title}").build())
+System.properties['citrus.mail.marshaller.type'] = "JSON"
 
-amazonDDBClient.putItem(b -> {
-    b.tableName("${aws.ddb.tableName}")
-    b.item(item)
-    b.returnValues(ReturnValue.ALL_OLD)
-})
+mail()
+  .server('mail-server')
+  .port(22222)
+  .knownUsers(['${email}:${username}:${password}'])
+  .autoStart(true)

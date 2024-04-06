@@ -46,6 +46,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.citrusframework.yaks</groupId>
+                <artifactId>yaks-bom</artifactId>
+                <version>${yaks.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -126,61 +133,51 @@
         <dependency>
             <groupId>org.citrusframework.yaks</groupId>
             <artifactId>yaks-standard</artifactId>
-            <version>${yaks.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.citrusframework.yaks</groupId>
             <artifactId>yaks-http</artifactId>
-            <version>${yaks.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.citrusframework.yaks</groupId>
             <artifactId>yaks-kubernetes</artifactId>
-            <version>${yaks.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.citrusframework.yaks</groupId>
             <artifactId>yaks-knative</artifactId>
-            <version>${yaks.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.citrusframework.yaks</groupId>
             <artifactId>yaks-kafka</artifactId>
-            <version>${yaks.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.citrusframework.yaks</groupId>
             <artifactId>yaks-groovy</artifactId>
-            <version>${yaks.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.citrusframework.yaks</groupId>
             <artifactId>yaks-camel</artifactId>
-            <version>${yaks.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.citrusframework.yaks</groupId>
             <artifactId>yaks-camel-k</artifactId>
-            <version>${yaks.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.citrusframework.yaks</groupId>
             <artifactId>yaks-testcontainers</artifactId>
-            <version>${yaks.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.citrusframework.yaks</groupId>
             <artifactId>yaks-jdbc</artifactId>
-            <version>${yaks.version}</version>
             <scope>test</scope>
         </dependency>
 

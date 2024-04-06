@@ -46,8 +46,8 @@ Feature: Mail Sink
     {
       "from": "${email}",
       "to": "${to}",
-      "cc": "",
-      "bcc": "",
+      "cc": null,
+      "bcc": null,
       "replyTo": "@ignore@",
       "subject": "${subject}",
       "body": {
