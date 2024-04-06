@@ -19,14 +19,14 @@ Feature: AWS S3 Source - Knative broker binding
     And Knative broker default is running
 
   Scenario: Verify AWS-S3 Kamelet to Knative binding
+    # Create AWS-S3 client
+    Given New Camel context
+    Given load to Camel registry amazonS3Client.groovy
     # Create binding
     When load Pipe aws-s3-to-knative-broker.yaml
     And Pipe aws-s3-to-knative-broker is available
     And Camel K integration aws-s3-to-knative-broker is running
     Then Camel K integration aws-s3-to-knative-broker should print Started aws-s3-to-knative-broker
-    # Create AWS-S3 client
-    Given New Camel context
-    Given load to Camel registry amazonS3Client.groovy
     # Verify Kamelet source
     Given create Knative event consumer service event-consumer-service
     Given create Knative trigger event-service-trigger on service event-consumer-service with filter on attributes

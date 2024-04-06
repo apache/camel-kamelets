@@ -35,10 +35,10 @@ config:
       - name: CITRUS_TYPE_CONVERTER
         value: camel
     resources:
-      - ../../putItem.groovy
-      - ../../verifyItems.groovy
-      - ../../amazonDDBClient.groovy
-      - ../../aws-ddb-sink-pipe.yaml
+      - putItem.groovy
+      - verifyItems.groovy
+      - amazonDDBClient.groovy
+      - aws-ddb-sink-pipe.yaml
     cucumber:
       tags:
         - "not @ignored"

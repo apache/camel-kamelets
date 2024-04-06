@@ -10,22 +10,22 @@ Feature: AWS S3 Source - Http sink
       | aws.s3.key | hello.txt |
 
   Scenario: Create infrastructure
-    # Create Http server
-    Given create Kubernetes service test-service
-    Given purge endpoint test-service
     # Start LocalStack container
     Given Enable service S3
     Given start LocalStack container
 
   Scenario: Verify AWS-S3 Kamelet to Http
+    # Create Http server
+    Given create Kubernetes service test-service
+    Given purge endpoint test-service
+    # Create AWS-S3 client
+    Given New Camel context
+    Given load to Camel registry amazonS3Client.groovy
     # Create binding
     When load Pipe aws-s3-to-http.yaml
     And Pipe aws-s3-to-http is available
     And Camel K integration aws-s3-to-http is running
     Then Camel K integration aws-s3-to-http should print (aws-s3-to-http) started
-    # Create AWS-S3 client
-    Given New Camel context
-    Given load to Camel registry amazonS3Client.groovy
     # Verify Kamelet source
     Given Camel exchange message header CamelAwsS3Key="${aws.s3.key}"
     Given send Camel exchange to("aws2-s3://${aws.s3.bucketNameOrArn}?amazonS3Client=#amazonS3Client") with body: ${aws.s3.message}

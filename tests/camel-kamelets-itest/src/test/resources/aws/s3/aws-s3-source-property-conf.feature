@@ -12,6 +12,9 @@ Feature: AWS S3 Source - property based config
     Given start LocalStack container
 
   Scenario: Verify AWS-S3 Kamelet to log binding
+    # Create AWS-S3 client
+    Given New Camel context
+    Given load to Camel registry amazonS3Client.groovy
     # Create binding
     Given Camel K integration property file aws-s3-credentials.properties
     Given create Camel K integration aws-s3-to-log-prop-based.groovy
@@ -20,9 +23,6 @@ Feature: AWS S3 Source - property based config
       .to("log:info")
     """
     Then Camel K integration aws-s3-to-log-prop-based should be running
-    # Create AWS-S3 client
-    Given New Camel context
-    Given load to Camel registry amazonS3Client.groovy
     # Verify Kamelet source
     Given Camel exchange message header CamelAwsS3Key="${aws.s3.key}"
     Given send Camel exchange to("aws2-s3://${aws.s3.bucketNameOrArn}?amazonS3Client=#amazonS3Client") with body: ${aws.s3.message}
