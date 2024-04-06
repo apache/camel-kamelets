@@ -17,6 +17,9 @@ Feature: AWS S3 Source - binding to Knative channel
     And create Knative channel messages
 
   Scenario: Verify AWS-S3 Kamelet to InMemoryChannel binding
+    # Create AWS-S3 client
+    Given New Camel context
+    Given load to Camel registry amazonS3Client.groovy
     # Create binding
     Given load Pipe aws-s3-to-knative-channel.yaml
     Given load Pipe knative-channel-to-log.yaml
@@ -27,9 +30,6 @@ Feature: AWS S3 Source - binding to Knative channel
     And Camel K integration aws-s3-to-knative-channel should print Started aws-s3-to-knative-channel
     And Camel K integration knative-channel-to-log should print Installed features
     Then sleep 10000 ms
-    # Create AWS-S3 client
-    Given New Camel context
-    Given load to Camel registry amazonS3Client.groovy
     # Verify Kamelet source
     Given Camel exchange message header CamelAwsS3Key="${aws.s3.key}"
     Given send Camel exchange to("aws2-s3://${aws.s3.bucketNameOrArn}?amazonS3Client=#amazonS3Client") with body: ${aws.s3.message}

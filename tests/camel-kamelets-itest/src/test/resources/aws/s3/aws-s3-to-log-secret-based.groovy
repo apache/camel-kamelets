@@ -1,4 +1,4 @@
-
+package aws.s3
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
@@ -18,8 +18,5 @@
 
 // camel-k: language=groovy
 
-from('timer:tick?period=10000')
-    .setHeader("CamelHttpMethod", constant("PUT"))
-    .setBody().constant('{{message}}')
-    .to('yaks:resolveURL(test-service)/messages')
-    .to('log:info?showStreams=true')
+from("kamelet:aws-s3-source/aws-s3-credentials")
+  .to("log:info")
