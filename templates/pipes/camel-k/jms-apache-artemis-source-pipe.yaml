@@ -9,7 +9,7 @@ spec:
       apiVersion: camel.apache.org/v1
       name: jms-apache-artemis-source
     properties:
-      brokerURL: "tcp://k3s-node-master.usersys.redhat.com:31616"
+      brokerURL: "tcp://my-host:61616"
       destinationName: "The Destination Name"
   sink:
     ref:

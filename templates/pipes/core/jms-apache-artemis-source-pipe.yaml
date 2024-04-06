@@ -2,7 +2,7 @@
     from:
       uri: "kamelet:jms-apache-artemis-source"
       parameters:
-        brokerURL: "tcp://k3s-node-master.usersys.redhat.com:31616"
+        brokerURL: "tcp://my-host:61616"
         destinationName: "The Destination Name"
       steps:
         - to:
