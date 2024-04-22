@@ -24,6 +24,7 @@ import io.github.classgraph.ClassGraph;
 import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
 import org.apache.camel.tooling.model.ComponentModel;
 import org.apache.camel.v1.Kamelet;
+import org.apache.camel.v1.kameletspec.DataTypes;
 import org.apache.camel.v1.kameletspec.Definition;
 import org.apache.camel.v1.kameletspec.Template;
 import org.junit.jupiter.api.BeforeAll;
@@ -268,5 +269,21 @@ public class KameletsCatalogTest {
         assertEquals("aws2-s3", catalog.getKameletScheme("aws-s3"));
         assertEquals("aws2-sqs", catalog.getKameletScheme("aws-sqs"));
         assertNull(catalog.getKameletScheme("not-known"));
+    }
+
+    @Test
+    void testHasDataTypes() throws Exception {
+        assertTrue(catalog.hasDataTypes("aws-s3-source"));
+        assertFalse(catalog.hasDataTypes("splunk-hec-source"));
+    }
+
+    @Test
+    void testGetDataTypes() throws Exception {
+        Map<String, DataTypes> dataTypes = catalog.getDataTypes("aws-s3-source");
+        assertTrue(dataTypes.size() == 1);
+        assertNotNull(dataTypes.get("out").getTypes().get("binary"));
+        assertNotNull(dataTypes.get("out").getTypes().get("cloudevents"));
+        dataTypes = catalog.getDataTypes("splunk-hec-sink");
+        assertNull(dataTypes);
     }
 }
