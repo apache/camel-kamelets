@@ -41,6 +41,7 @@ import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
 import org.apache.camel.tooling.model.ComponentModel;
 import org.apache.camel.util.ObjectHelper;
 import org.apache.camel.v1.Kamelet;
+import org.apache.camel.v1.kameletspec.DataTypes;
 import org.apache.camel.v1.kameletspec.Definition;
 import org.apache.camel.v1.kameletspec.Template;
 import org.slf4j.Logger;
@@ -170,6 +171,28 @@ public class KameletsCatalog {
         Kamelet kamelet = kameletModels.get(name);
         if (kamelet != null) {
             return kamelet.getSpec().getDependencies();
+        } else {
+            return null;
+        }
+    }
+
+    public boolean hasDataTypes(String name) {
+        Kamelet kamelet = kameletModels.get(name);
+        if (kamelet != null) {
+            if (!kamelet.getSpec().getDataTypes().isEmpty()) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public Map<String, DataTypes> getDataTypes(String name) {
+        Kamelet kamelet = kameletModels.get(name);
+        if (kamelet != null) {
+            return kamelet.getSpec().getDataTypes();
         } else {
             return null;
         }
