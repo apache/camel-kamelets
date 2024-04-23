@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Kamelet Catalog: Provide a method in the catalog API to get DataType information for a Kamelet [\#1984](https://github.com/apache/camel-kamelets/issues/1984)
 - Support Camel AWS Bedrock Agent Runtime as Sink [\#1935](https://github.com/apache/camel-kamelets/issues/1935)
 - DataTypes: Initial list of Kamelets to enrich [\#1343](https://github.com/apache/camel-kamelets/issues/1343)
 
