@@ -36,7 +36,7 @@ spec:
       
       In your Pipe file, you must explicitly declare the IBM MQ Server driver dependency in spec->integration->dependencies
 
-      - "mvn:com.ibm.mq:com.ibm.mq.allclient:<version>"
+      - "mvn:com.ibm.mq:com.ibm.mq.jakarta.client:<version>"
       
     required:
       - serverName
@@ -99,7 +99,7 @@ spec:
   template:
     beans:
       - name: wmqConnectionFactory
-        type: "#class:com.ibm.mq.jms.MQConnectionFactory"
+        type: "#class:com.ibm.mq.jakarta.jms.MQConnectionFactory"
         properties:
           XMSC_WMQ_HOST_NAME: '{{serverName}}'
           XMSC_WMQ_PORT: '{{serverPort}}'
