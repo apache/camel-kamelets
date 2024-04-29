@@ -20,6 +20,7 @@ Feature: AWS DDB Sink - DeleteItem
   Background:
     Given variables
       | timer.source.period  | 10000 |
+      | aws.ddb.streams      | false |
       | aws.ddb.operation    | DeleteItem |
       | aws.ddb.tableName    | movies |
       | aws.ddb.item.id      | 1 |

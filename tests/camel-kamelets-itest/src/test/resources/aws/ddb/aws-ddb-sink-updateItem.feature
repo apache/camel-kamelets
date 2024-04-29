@@ -20,6 +20,7 @@ Feature: AWS DDB Sink - UpdateItem
   Background:
     Given variables
       | timer.source.period    | 10000 |
+      | aws.ddb.streams        | false |
       | aws.ddb.operation      | UpdateItem |
       | aws.ddb.tableName      | movies |
       | aws.ddb.item.id        | 1 |

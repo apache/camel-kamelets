@@ -25,6 +25,8 @@ import software.amazon.awssdk.services.dynamodb.model.KeySchemaElement
 import software.amazon.awssdk.services.dynamodb.model.KeyType
 import software.amazon.awssdk.services.dynamodb.model.ProvisionedThroughput
 import software.amazon.awssdk.services.dynamodb.model.ScalarAttributeType
+import software.amazon.awssdk.services.dynamodb.model.StreamSpecification
+import software.amazon.awssdk.services.dynamodb.model.StreamViewType
 
 DynamoDbClient amazonDDBClient = DynamoDbClient
         .builder()
@@ -45,6 +47,13 @@ amazonDDBClient.createTable(b -> {
         b.attributeDefinitions(
                 AttributeDefinition.builder().attributeName("id").attributeType(ScalarAttributeType.N).build(),
         )
+
+        if (${aws.ddb.streams}) {
+            b.streamSpecification(StreamSpecification.builder()
+                .streamEnabled(true)
+                .streamViewType(StreamViewType.NEW_AND_OLD_IMAGES).build())
+        }
+
         b.provisionedThroughput(
                 ProvisionedThroughput.builder()
                         .readCapacityUnits(1L)
