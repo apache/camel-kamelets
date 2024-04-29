@@ -18,25 +18,39 @@
 apiVersion: camel.apache.org/v1
 kind: Pipe
 metadata:
-  name: aws-ddb-source-pipe
+  name: aws-kinesis-sink-pipe
 spec:
   source:
     ref:
       kind: Kamelet
       apiVersion: camel.apache.org/v1
-      name: aws-ddb-streams-source
+      name: timer-source
     properties:
-      table: ${aws.ddb.tableName}
-      streamIteratorType: FROM_START
-      overrideEndpoint: true
-      uriEndpointOverride: ${YAKS_TESTCONTAINERS_LOCALSTACK_DYNAMODB_LOCAL_URL}
-      accessKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}
-      secretKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}
-      region: ${YAKS_TESTCONTAINERS_LOCALSTACK_REGION}
+      period: '${timer.source.period}'
+      message: '${aws.kinesis.json.data}'
+  steps:
+    - ref:
+        kind: Kamelet
+        apiVersion: camel.apache.org/v1
+        name: insert-header-action
+      properties:
+        name: "partition"
+        value: '${aws.kinesis.partitionKey}'
+    - ref:
+        kind: Kamelet
+        apiVersion: camel.apache.org/v1
+        name: log-action
+      properties:
+        showHeaders: true
   sink:
     ref:
       kind: Kamelet
       apiVersion: camel.apache.org/v1
-      name: log-sink
+      name: aws-kinesis-sink
     properties:
-      showHeaders: true
+      stream: '${aws.kinesis.streamName}'
+      overrideEndpoint: true
+      uriEndpointOverride: ${YAKS_TESTCONTAINERS_LOCALSTACK_KINESIS_LOCAL_URL}
+      accessKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}
+      secretKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}
+      region: ${YAKS_TESTCONTAINERS_LOCALSTACK_REGION}

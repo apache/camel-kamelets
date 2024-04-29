@@ -15,38 +15,44 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-Feature: AWS DDB Source - GetItem
+Feature: AWS Kinesis - Sink
 
   Background:
     Given variables
-      | maxRetryAttempts     | 20 |
-      | timer.source.period  | 10000 |
-      | aws.ddb.streams      | true |
-      | aws.ddb.tableName    | movies |
-      | aws.ddb.item.id      | 1 |
-      | aws.ddb.item.year    | 1977 |
-      | aws.ddb.item.title   | Star Wars IV |
+      | timer.source.period      | 10000 |
+      | aws.kinesis.streamName   | mystream |
+      | aws.kinesis.partitionKey | partition-1 |
+      | aws.kinesis.message      | Camel rocks! |
+      | aws.kinesis.json.data    | { "message":"${aws.kinesis.message}" } |
 
   Scenario: Create infrastructure
     # Start LocalStack container
-    Given Enable service DYNAMODB
+    Given Enable service KINESIS
     Given start LocalStack container
 
-  Scenario: Verify AWS-DDB Kamelet source binding
-    # Create AWS-DDB client
-    Given load to Camel registry amazonDDBClient.groovy
+  Scenario: Verify Kinesis events
+    # Create AWS-KINESIS client
+    Given load to Camel registry amazonKinesisClient.groovy
     # Create binding
-    When load Pipe aws-ddb-source-pipe.yaml
-    And Pipe aws-ddb-source-pipe is available
-    And Camel K integration aws-ddb-source-pipe is running
-    And Camel K integration aws-ddb-source-pipe should print Started aws-ddb-source-pipe
-    # Create item on AWS-DDB
-    Given run script putItem.groovy
+    When load Pipe aws-kinesis-sink-pipe.yaml
+    And Pipe aws-kinesis-sink-pipe is available
+    And Camel K integration aws-kinesis-sink-pipe is running
+    And Camel K integration aws-kinesis-sink-pipe should print Started aws-kinesis-sink-pipe
+    # Create vent listener
+    Given Camel route eventListener.groovy
+    """
+    from("aws2-kinesis://${aws.kinesis.streamName}?amazonKinesisClient=#amazonKinesisClient")
+       .convertBodyTo(String.class)
+       .to("seda:result")
+    """
     # Verify event
-    And Camel K integration aws-ddb-source-pipe should print Star Wars IV
+    Given Camel exchange message header CamelAwsKinesisPartitionKey="${aws.kinesis.partitionKey}"
+    Then receive Camel exchange from("seda:result") with body: ${aws.kinesis.json.data}
 
   Scenario: Remove resources
     # Remove Camel K binding
-    Given delete Pipe aws-ddb-source-pipe
+    Given delete Pipe aws-kinesis-sink-pipe
+    # Stop event listener
+    Given stop Camel route kinesisEventListener
     # Stop LocalStack container
     Given stop LocalStack container

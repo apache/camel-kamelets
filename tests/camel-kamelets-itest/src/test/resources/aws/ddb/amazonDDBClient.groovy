@@ -1,4 +1,3 @@
-package aws.ddb
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
@@ -15,6 +14,8 @@ package aws.ddb
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package aws.ddb
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
