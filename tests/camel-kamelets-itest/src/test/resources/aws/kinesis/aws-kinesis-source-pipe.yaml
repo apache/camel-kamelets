@@ -18,18 +18,17 @@
 apiVersion: camel.apache.org/v1
 kind: Pipe
 metadata:
-  name: aws-ddb-source-pipe
+  name: aws-kinesis-source-pipe
 spec:
   source:
     ref:
       kind: Kamelet
       apiVersion: camel.apache.org/v1
-      name: aws-ddb-streams-source
+      name: aws-kinesis-source
     properties:
-      table: ${aws.ddb.tableName}
-      streamIteratorType: FROM_START
+      stream: ${aws.kinesis.streamName}
       overrideEndpoint: true
-      uriEndpointOverride: ${YAKS_TESTCONTAINERS_LOCALSTACK_DYNAMODB_LOCAL_URL}
+      uriEndpointOverride: ${YAKS_TESTCONTAINERS_LOCALSTACK_KINESIS_LOCAL_URL}
       accessKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}
       secretKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}
       region: ${YAKS_TESTCONTAINERS_LOCALSTACK_REGION}
@@ -38,5 +37,5 @@ spec:
       kind: Kamelet
       apiVersion: camel.apache.org/v1
       name: log-sink
-    properties:
-      showHeaders: true
+      properties:
+        showHeaders: true
