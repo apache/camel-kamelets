@@ -26,7 +26,7 @@ concurrency:
 on:
   push:
     branches:
-      - main
+      - 4.4.x
     paths-ignore:
       - '**.adoc'
       - 'KEYS'
@@ -35,8 +35,7 @@ on:
       - 'Jenkinsfile'
   pull_request:
     branches:
-      - main
-      - "release-*"
+      - 4.4.x
     paths-ignore:
       - '**.adoc'
       - 'KEYS'
