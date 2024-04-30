@@ -44,6 +44,23 @@ jbang app install camel@apache/camel
 
 Supposing you have a file named route.yaml with this content:
 
+ifeval::['{type}' == 'source']
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:\`{name}\`"
+      parameters:
+        .
+        .
+        .
+      steps:
+        - to: 
+            uri: "kamelet:log-sink"
+----
+endif::[]
+
+ifeval::['{type}' == 'sink']
 [source,yaml,subs='+attributes,macros']
 ----
 - route:
@@ -54,8 +71,9 @@ Supposing you have a file named route.yaml with this content:
         message: 'test'
       steps:
         - to: 
-            uri: "kamelet:log-sink"
+            uri: "kamelet:\`{name}\`"
 ----
+endif::[]
 
 You can now run it directly through the following command
 
@@ -63,102 +81,6 @@ You can now run it directly through the following command
 ----
 camel run route.yaml
 ----
-
-== Camel K Environment Usage
-
-This section describes how you can use the \`{name}\`.
-
-=== Knative {type}
-
-ifeval::['{type}' == 'action']
-You can use the \`{name}\` Kamelet as an intermediate step in a Knative binding.
-endif::[]
-ifeval::['{type}' != 'action']
-You can use the \`{name}\` Kamelet as a Knative {type} by binding it to a Knative object.
-endif::[]
-
-:ref-api-version: messaging.knative.dev/v1
-:ref-kind: Channel
-:ref-name: mychannel
-
-.{name}-pipe.yaml
-[source,yaml,subs='+attributes,macros']
-----
-jsonpathExpression::example$yaml/${basename}.kamelet.yaml[query='$', format='kamelets.pipe("{type}", apiVersion, kind, metadata, spec, "{ref-kind}", "{ref-api-version}", "{ref-name}")', outputFormat=yml, requires={requires}]
-----
-
-==== *Prerequisite*
-
-You have xref:{camel-k-docs-version}@camel-k::installation/installation.adoc[Camel K installed] on the cluster.
-
-==== *Procedure for using the cluster CLI*
-
-. Save the \`{name}-pipe.yaml\` file to your local drive, and then edit it as needed for your configuration.
-
-. Run the {type} by using the following command:
-+
-[source,shell,subs=+attributes]
-----
-kubectl apply -f {name}-pipe.yaml
-----
-
-==== *Procedure for using the Kamel CLI*
-
-Configure and run the {type} by using the following command:
-
-[source,shell,subs='+attributes,macros']
-----
-jsonpathExpression:example$yaml/${basename}.kamelet.yaml[query='$.spec', format='kamelets.pipeCommand("{type}", "{name}", definition, "channel:mychannel")', requires={requires}]
-----
-
-This command creates the Kamelet Pipe in the current namespace on the cluster.
-
-=== Kafka {type}
-
-ifeval::['{type}' == 'action']
-You can use the \`{name}\` Kamelet as an intermediate step in a Kafka binding.
-endif::[]
-ifeval::['{type}' != 'action']
-You can use the \`{name}\` Kamelet as a Kafka {type} by binding it to a Kafka topic.
-endif::[]
-
-:ref-api-version: kafka.strimzi.io/v1beta1
-:ref-kind: KafkaTopic
-:ref-name: my-topic
-
-.{name}-pipe.yaml
-[source,yaml,subs='+attributes,macros']
-----
-jsonpathExpression::example$yaml/${basename}.kamelet.yaml[query='$', format='kamelets.pipe("{type}", apiVersion, kind, metadata, spec, "{ref-kind}", "{ref-api-version}", "{ref-name}")', outputFormat=yml, requires={requires}]
-----
-
-==== *Prerequisites*
-
-* You've installed https://strimzi.io/[Strimzi].
-* You've created a topic named \`my-topic\` in the current namespace.
-* You have xref:{camel-k-docs-version}@camel-k::installation/installation.adoc[Camel K installed] on the cluster.
-
-==== *Procedure for using the cluster CLI*
-
-. Save the \`{name}-pipe.yaml\` file to your local drive, and then edit it as needed for your configuration.
-
-. Run the {type} by using the following command:
-+
-[source,shell,subs=+attributes]
-----
-kubectl apply -f {name}-pipe.yaml
-----
-
-==== *Procedure for using the Kamel CLI*
-
-Configure and run the {type} by using the following command:
-
-[source,shell,subs='+attributes,macros']
-----
-jsonpathExpression::example$yaml/${basename}.kamelet.yaml[query='$.spec', format='kamelets.pipeCommand("{type}", "{name}", definition, "kafka.strimzi.io/v1beta1:KafkaTopic:my-topic")', requires={requires}]
-----
-
-This command creates the Kamelet Pipe in the current namespace on the cluster.
 
 == Kamelet source file
 
