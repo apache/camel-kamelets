@@ -49,7 +49,7 @@ ifeval::['{type}' == 'source']
 ----
 - route:
     from:
-      uri: "kamelet:\`{name}\`"
+      uri: "kamelet:\{name}\"
       parameters:
         .
         .
@@ -71,7 +71,28 @@ ifeval::['{type}' == 'sink']
         message: 'test'
       steps:
         - to: 
-            uri: "kamelet:\`{name}\`"
+            uri: "kamelet:\{name}\"
+----
+endif::[]
+
+ifeval::['{type}' == 'action']
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 10000
+        message: 'test'
+      steps:
+        - to:
+            uri: "kamelet:\{name}\"
+            parameters:
+            .
+            .
+            .
+        - to: 
+            uri: "kamelet:log-sink"
 ----
 endif::[]
 
