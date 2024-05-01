@@ -1,11 +1,12 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v4.4.2](https://github.com/apache/camel-kamelets/tree/v4.4.2) (2024-04-30)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.5.0...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.5.0...v4.4.2)
 
 **Closed issues:**
 
+- Upgrade 4.4.x to Camel 4.4.2 [\#2016](https://github.com/apache/camel-kamelets/issues/2016)
 - Kamelet Catalog: Provide a method in the catalog API to get DataType information for a Kamelet [\#1984](https://github.com/apache/camel-kamelets/issues/1984)
 - Support Camel AWS Bedrock Agent Runtime as Sink [\#1935](https://github.com/apache/camel-kamelets/issues/1935)
 - DataTypes: Initial list of Kamelets to enrich [\#1343](https://github.com/apache/camel-kamelets/issues/1343)
