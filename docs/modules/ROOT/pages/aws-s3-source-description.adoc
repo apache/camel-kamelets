@@ -1,0 +1,65 @@
+== AWS S3 Source Kamelet Description
+
+=== Authentication methods
+
+In this Kamelet you have the possibility of avoiding the usage of explicit static credentials by specifying the useDefaultCredentialsProvider option and set it to true.
+
+The order of evaluation for Default Credentials Provider is the following:
+
+ - Java system properties - `aws.accessKeyId` and `aws.secretKey`.
+ - Environment variables - `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+ - Web Identity Token from AWS STS.
+ - The shared credentials and config files.
+ - Amazon ECS container credentials - loaded from the Amazon ECS if the environment variable `AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` is set.
+ - Amazon EC2 Instance profile credentials. 
+ 
+You have also the possibility of using Profile Credentials Provider, by specifying the useProfileCredentialsProvider option to true and profileCredentialsName to the profile name.
+
+Only one of access key/secret key or default credentials provider could be used
+
+For more information about this you can look at https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials.html[AWS credentials documentation]
+
+=== Usage examples
+
+You could consume the bucket content and directly delete the object once consumed
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:aws-s3-source"
+      parameters:
+        useDefaultCredentialsProvider: true
+        region: "eu-west-1"
+        bucketNameOrArn: "kamelets"
+      steps:
+        - to: 
+            uri: "kamelet:log-sink"
+----
+
+This kind of approach will ensure the object will be consumed just one time and after the consumption it will be deleted from the S3 bucket.
+
+The `deleteAfterRead` property is true by default.
+
+If you set the property to false you'll consume the same set of objects multiple times and you'll have to deal with managing the situation.
+
+The `ignoreBody` option is set to false by default, but you have the possibility to enable it. With that option set you're going to ignore the file payload and just consume the object metadata.
+
+You could also define a `prefix` parameter. With that set you're going to consume only files starting with that prefix. As an example you could have:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:aws-s3-source"
+      parameters:
+        useDefaultCredentialsProvider: true
+        region: "eu-west-1"
+        bucketNameOrArn: "kamelets"
+        prefix: "foo/"
+      steps:
+        - to: 
+            uri: "kamelet:log-sink"
+----
+
+By using the prefix `foo/` the files consumed will only come from the folder named `foo`.
