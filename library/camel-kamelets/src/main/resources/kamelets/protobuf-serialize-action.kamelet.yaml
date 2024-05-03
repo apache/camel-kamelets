@@ -46,7 +46,7 @@ spec:
   template:
     beans:
       - name: schemaResolver
-        type: "#class:org.apache.camel.kamelets.utils.format.schema.protobuf.ProtobufSchemaResolver"
+        type: "#class:org.apache.camel.component.jackson.protobuf.transform.ProtobufSchemaResolver"
         property:
           - key: schema
             value: '{{schema:}}'

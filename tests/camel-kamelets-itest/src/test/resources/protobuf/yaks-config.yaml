@@ -15,29 +15,31 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-Feature: Earthquake source
-
-  Background:
-    Given HTTP server timeout is 150000 ms
-    Given HTTP server "test-service"
-    Given start HTTP server
-
-  Scenario: Create Http server
-    Given create Kubernetes service test-service with target port 8080
-    Given purge endpoint test-service
-
-  Scenario: Create Kamelet binding
-    Given load Pipe earthquake-to-http.yaml
-    Then Pipe earthquake-to-http should be available
-    Then Camel K integration earthquake-to-http should be running
-    And Camel K integration earthquake-to-http should print Routes startup
-
-  Scenario: Verify binding
-    Given expect HTTP request header: Content-Type="application/json;charset=UTF-8"
-    When receive POST /test
-    Then send HTTP 200 OK
-
-  Scenario: Remove Camel K resources
-    Given delete Pipe earthquake-to-http
-    And delete Kubernetes service test-service
-    And stop HTTP server
+config:
+  namespace:
+    temporary: false
+  runtime:
+    env:
+      - name: YAKS_CAMELK_AUTO_REMOVE_RESOURCES
+        value: false
+      - name: YAKS_KUBERNETES_AUTO_REMOVE_RESOURCES
+        value: false
+      - name: YAKS_JBANG_CAMEL_DUMP_INTEGRATION_OUTPUT
+        value: true
+    settings:
+      loggers:
+        - name: INTEGRATION_STATUS
+          level: INFO
+        - name: INTEGRATION_LOGS
+          level: INFO
+    resources:
+      - protobuf-serialize-pipe.yaml
+      - protobuf-deserialize-pipe.yaml
+      - protobuf-binary-source-pipe.yaml
+      - protobuf-x-struct-sink-pipe.yaml
+      - User.proto
+  dump:
+    enabled: true
+    failedOnly: true
+    includes:
+      - app=camel-k

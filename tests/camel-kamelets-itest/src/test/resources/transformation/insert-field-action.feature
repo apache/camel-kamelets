@@ -20,6 +20,7 @@ Feature: Insert field Kamelet action
   Background:
     Given HTTP server timeout is 5000 ms
     Given HTTP server "test-service"
+    Given start HTTP server
     Given variables
       | field | subject |
       | value | Camel K rocks! |
@@ -49,3 +50,4 @@ Feature: Insert field Kamelet action
   Scenario: Remove resources
     Given delete Pipe insert-field-action-pipe
     And delete Kubernetes service test-service
+    And stop HTTP server

@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
+        //features = "src/test/resources/openapi",
         extraGlue = "org.citrusframework.yaks",
         plugin = { "pretty", "org.citrusframework.yaks.report.TestReporter" }
 )

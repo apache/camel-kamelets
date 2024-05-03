@@ -20,6 +20,7 @@ Feature: REST OpenAPI Kamelet sink
   Background:
     Given HTTP server timeout is 60000 ms
     Given HTTP server "test-service"
+    Given start HTTP server
     Given variable petId is "1000"
     Given load variable pet.json
 
@@ -64,3 +65,4 @@ Feature: REST OpenAPI Kamelet sink
   Scenario: Remove resources
     Given delete Pipe rest-openapi-sink-pipe
     And delete Kubernetes service test-service
+    And stop HTTP server
