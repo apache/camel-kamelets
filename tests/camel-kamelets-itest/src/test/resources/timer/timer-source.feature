@@ -20,6 +20,7 @@ Feature: Timer Source Kamelet
   Background:
     Given HTTP server timeout is 5000 ms
     Given HTTP server "test-service"
+    Given start HTTP server
 
   Scenario: Create Http server
     Given create Kubernetes service test-service with target port 8080
@@ -41,3 +42,4 @@ Feature: Timer Source Kamelet
   Scenario: Remove Camel K resources
     Given delete Pipe timer-to-http-pipe
     And delete Kubernetes service test-service
+    And stop HTTP server

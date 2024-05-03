@@ -4,6 +4,7 @@ Feature: AWS S3 Source - Http sink
     Given Kubernetes timeout is 60000 ms
     Given HTTP server timeout is 60000 ms
     Given HTTP server "test-service"
+    Given start HTTP server
     Given variables
       | aws.s3.bucketNameOrArn | mybucket |
       | aws.s3.message | Hello from S3 Kamelet |
@@ -48,3 +49,4 @@ Feature: AWS S3 Source - Http sink
     Given delete Kubernetes service test-service
     # Stop LocalStack container
     Given stop LocalStack container
+    And stop HTTP server

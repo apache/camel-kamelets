@@ -20,6 +20,7 @@ Feature: Extract field Kamelet action
   Background:
     Given HTTP server timeout is 15000 ms
     Given HTTP server "test-service"
+    Given start HTTP server
     Given variable field = "subject"
 
   Scenario: Create Http server
@@ -43,3 +44,4 @@ Feature: Extract field Kamelet action
   Scenario: Remove resources
     Given delete Pipe extract-field-action-pipe
     And delete Kubernetes service test-service
+    And stop HTTP server

@@ -20,9 +20,9 @@ package org.apache.camel.kamelets.utils.format.schema;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.component.jackson.avro.transform.AvroSchemaResolver;
+import org.apache.camel.component.jackson.protobuf.transform.ProtobufSchemaResolver;
 import org.apache.camel.component.jackson.transform.JsonSchemaResolver;
 import org.apache.camel.kamelets.utils.format.MimeType;
-import org.apache.camel.kamelets.utils.format.schema.protobuf.ProtobufSchemaResolver;
 import org.apache.camel.util.ObjectHelper;
 
 /**
@@ -63,6 +63,8 @@ public class DelegatingSchemaResolver implements Processor {
     private Processor fromMimeType(MimeType mimeType) {
         switch (mimeType) {
             case PROTOBUF:
+            case PROTOBUF_BINARY:
+            case PROTOBUF_STRUCT:
                 ProtobufSchemaResolver protobufSchemaResolver = new ProtobufSchemaResolver();
                 protobufSchemaResolver.setSchema(this.schema);
                 protobufSchemaResolver.setContentClass(this.contentClass);

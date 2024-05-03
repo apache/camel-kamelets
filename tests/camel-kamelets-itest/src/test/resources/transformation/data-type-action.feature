@@ -3,6 +3,7 @@ Feature: Data type action
   Background:
     Given HTTP server timeout is 15000 ms
     Given HTTP server "test-service"
+    Given start HTTP server
 
   Scenario: Create Http server
     Given create Kubernetes service test-service with target port 8080
@@ -32,3 +33,4 @@ Feature: Data type action
   Scenario: Remove resources
     Given delete Pipe data-type-action-pipe
     And delete Kubernetes service test-service
+    And stop HTTP server

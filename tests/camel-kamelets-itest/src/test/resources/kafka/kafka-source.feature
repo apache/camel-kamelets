@@ -62,3 +62,4 @@ Feature: Kafka Kamelet source
     Given delete Pipe kafka-source-pipe
     And delete Kubernetes service test-service
     And stop Redpanda container
+    And stop HTTP server

@@ -61,3 +61,4 @@ Feature: Mail Sink
   Scenario: Remove Camel K resources
     Given delete Pipe timer-to-mail
     And delete Kubernetes service mail-server
+    And stop server component mail-server

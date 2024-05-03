@@ -4,6 +4,7 @@ Feature: Verify Camel K integrations
     Given HTTP server "test-service"
     Given HTTP server listening on port 8080
     Given HTTP request timeout is 6000 ms
+    Given start HTTP server
     Given Kubernetes timeout is 60000 ms
 
   Scenario: Verify timer-to-http integration
@@ -28,3 +29,4 @@ Feature: Verify Camel K integrations
   Scenario: Remove Camel K resources
     Given delete Camel K integration timer-to-http
     And delete Kubernetes service test-service
+    And stop HTTP server
