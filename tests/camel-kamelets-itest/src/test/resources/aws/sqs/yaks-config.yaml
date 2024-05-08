@@ -39,14 +39,12 @@ config:
       - name: CITRUS_TYPE_CONVERTER
         value: camel
     resources:
-      - amazonS3Client.groovy
-      - aws-s3-credentials.properties
-      - aws-s3-to-log-uri-based.groovy
-      - aws-s3-to-log-secret-based.groovy
-      - aws-s3-uri-pipe.yaml
-      - aws-s3-to-http.yaml
-      - aws-s3-to-knative-channel.yaml
-      - aws-s3-to-knative-broker.yaml
+      - amazonSQSClient.groovy
+      - aws-sqs-to-log-uri-based.groovy
+      - aws-sqs-to-log-secret-based.groovy
+      - aws-sqs-credentials.properties
+      - aws-sqs-uri-pipe.yaml
+      - aws-sqs-to-knative-channel.yaml
       - knative-channel-to-log.yaml
     cucumber:
       tags:
@@ -60,10 +58,10 @@ config:
           level: INFO
       dependencies:
         - groupId: org.apache.camel
-          artifactId: camel-aws2-s3
+          artifactId: camel-aws2-sqs
           version: "@camel.version@"
         - groupId: software.amazon.awssdk
-          artifactId: s3
+          artifactId: sqs
           version: "@aws-java-sdk2.version@"
         - groupId: org.apache.camel
           artifactId: camel-jackson

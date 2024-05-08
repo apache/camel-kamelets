@@ -18,18 +18,17 @@
 apiVersion: camel.apache.org/v1
 kind: Pipe
 metadata:
-  name: aws-s3-to-knative-channel
+  name: aws-sqs-to-knative-channel
 spec:
   source:
     ref:
       kind: Kamelet
       apiVersion: camel.apache.org/v1
-      name: aws-s3-source
+      name: aws-sqs-source
     properties:
-      bucketNameOrArn: ${aws.s3.bucketNameOrArn}
+      queueNameOrArn: ${aws.sqs.queueName}
       overrideEndpoint: true
-      forcePathStyle: true
-      uriEndpointOverride: ${YAKS_TESTCONTAINERS_LOCALSTACK_S3_URL}
+      uriEndpointOverride: ${YAKS_TESTCONTAINERS_LOCALSTACK_SQS_URL}
       accessKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}
       secretKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}
       region: ${YAKS_TESTCONTAINERS_LOCALSTACK_REGION}
