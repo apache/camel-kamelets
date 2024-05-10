@@ -15,25 +15,24 @@
  * limitations under the License.
  */
 
-package aws.s3
+package aws.sqs
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
 import software.amazon.awssdk.regions.Region
-import software.amazon.awssdk.services.s3.S3Client
+import software.amazon.awssdk.services.sqs.SqsClient
 
-S3Client s3 = S3Client
+SqsClient sqsClient = SqsClient
         .builder()
-        .endpointOverride(URI.create("${YAKS_TESTCONTAINERS_LOCALSTACK_S3_URL}"))
+        .endpointOverride(URI.create("${YAKS_TESTCONTAINERS_LOCALSTACK_SQS_LOCAL_URL}"))
         .credentialsProvider(StaticCredentialsProvider.create(
                 AwsBasicCredentials.create(
                         "${YAKS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}",
                         "${YAKS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}")
         ))
-        .forcePathStyle(true)
         .region(Region.of("${YAKS_TESTCONTAINERS_LOCALSTACK_REGION}"))
         .build()
 
-s3.createBucket(b -> b.bucket("${aws.s3.bucketNameOrArn}"))
+sqsClient.createQueue(s -> s.queueName("${aws.sqs.queueName}"))
 
-return s3
+return sqsClient

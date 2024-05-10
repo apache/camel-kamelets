@@ -36,10 +36,11 @@ Feature: AWS Kinesis - Sink
     And Camel K integration aws-kinesis-source-pipe is running
     And Camel K integration aws-kinesis-source-pipe should print Started aws-kinesis-source-pipe
     # Publish event
+    Given variable aws.kinesis.streamData is "Camel rocks!"
     Given Camel exchange message header CamelAwsKinesisPartitionKey="${aws.kinesis.partitionKey}"
-    Given send Camel exchange to("aws2-kinesis://${aws.kinesis.streamName}?amazonKinesisClient=#amazonKinesisClient") with body: Camel rocks!
+    Given send Camel exchange to("aws2-kinesis://${aws.kinesis.streamName}?amazonKinesisClient=#amazonKinesisClient") with body: ${aws.kinesis.streamData}
     # Verify event
-    And Camel K integration aws-kinesis-source-pipe should print Camel rocks!
+    Then Camel K integration aws-kinesis-source-pipe should print ${aws.kinesis.streamData}
 
   Scenario: Remove resources
     # Remove Camel K binding
