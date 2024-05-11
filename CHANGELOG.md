@@ -6,6 +6,8 @@
 
 **Closed issues:**
 
+- Upgrade to Camel 4.6.0 [\#2028](https://github.com/apache/camel-kamelets/issues/2028)
+- Use properties for kamelets [\#2024](https://github.com/apache/camel-kamelets/issues/2024)
 - Release 4.4.2 [\#2017](https://github.com/apache/camel-kamelets/issues/2017)
 
 ## [v4.4.2](https://github.com/apache/camel-kamelets/tree/v4.4.2) (2024-04-30)
