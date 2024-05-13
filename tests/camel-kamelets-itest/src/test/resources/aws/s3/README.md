@@ -46,31 +46,31 @@ You can review the installation steps for the operators in the documentation:
 To run tests with URI based configuration: 
 
 ```shell script
-$ yaks test aws-s3-source-uri-conf.feature
+$ yaks run --local src/test/resources/aws-s3-source-uri-conf.feature
 ```
 
 To run tests with secret based configuration:
 
 ```shell script
-$ yaks test aws-s3-source-secret-conf.feature
+$ yaks run --local src/test/resources/aws/s3/aws-s3-source-secret-conf.feature
 ```
 
 To run tests with property based configuration:
 
 ```shell script
-$ yaks test aws-s3-source-property-conf.feature
+$ yaks run --local src/test/resources/aws/s3/aws-s3-source-property-conf.feature
 ```
 
 To run tests with URI binding:
 
 ```shell script
-$ yaks test aws-s3-uri-pipe.feature
+$ yaks run --local src/test/resources/aws/s3/aws-s3-uri-pipe.feature
 ```
 
 To run tests with binding to Knative channel:
 
 ```shell script
-$ yaks test aws-s3-knative-channel.feature
+$ yaks run --local src/test/resources/aws/s3/aws-s3-knative-channel.feature
 ```
 
 You will be provided with the test log output and the test results.

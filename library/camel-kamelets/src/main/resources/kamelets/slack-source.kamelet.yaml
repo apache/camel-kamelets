@@ -37,6 +37,12 @@ spec:
       - token
     type: object
     properties:
+      serverUrl:
+        title: Server URL
+        description: The Slack API server endpoint URL.
+        type: string
+        default: "https://slack.com"
+        example: "https://slack.com"
       channel:
         title: Channel
         description: The Slack channel to receive messages from.
@@ -51,7 +57,7 @@ spec:
         - urn:camel:group:credentials
       delay:
         title: Delay
-        description: The delay between polls. If no unit provided, miliseconds is the default.
+        description: The delay between polls. If no unit provided, milliseconds is the default.
         type: string
         default: "60000"
         example: "60s or 6000 or 1m"
@@ -107,6 +113,7 @@ spec:
     from:
       uri: "slack:{{channel}}"
       parameters:
+        serverUrl: "{{serverUrl}}"
         token: "{{token}}"
         delay: "{{delay}}"
         naturalOrder: "{{naturalOrder}}"

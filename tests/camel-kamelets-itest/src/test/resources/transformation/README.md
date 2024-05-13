@@ -36,7 +36,7 @@ You can review the installation steps for the tooling in the documentation:
 To run tests with URI based configuration: 
 
 ```shell script
-$ yaks run --local test/avro-data-type/avro-serdes-action.feature
+$ yaks run --local src/test/resources/transformation/data-type-action.feature
 ```
 
 You will be provided with the test log output and the test results.
