@@ -39,7 +39,7 @@ Feature: Kafka Kamelet source
   Scenario: Create Kamelet binding
     When load Pipe kafka-source-pipe.yaml
     Then Camel K integration kafka-source-pipe should be running
-    And Camel K integration kafka-source-pipe should print Subscribing ${topic}-Thread 0 to topic ${topic}
+    And Camel K integration kafka-source-pipe should print Subscribed to topic(s): ${topic}
     And sleep 10sec
 
   Scenario: Send message to Kafka topic and verify sink output
