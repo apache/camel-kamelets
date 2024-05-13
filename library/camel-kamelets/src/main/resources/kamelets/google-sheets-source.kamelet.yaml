@@ -150,6 +150,33 @@ spec:
             Custom column names are supported in order to use custom property names instead of generic row (A-Z) or column (1-n) coordinates.
             The produced Json struct is ready to be transformed back into a proper Google Sheets ValueRange object that can be used in an update/append values operation.
           mediaType: application/json
+        cloudevents:
+          format: "google-sheets-stream:application-cloudevents"
+          description: |-
+            Output data type represents Google Sheets Stream response as CloudEvent V1. The data type sets Camel specific CloudEvent headers on the exchange with
+            respective data from the Spreasheet and its derived object.
+          headers:
+            CamelCloudEventID:
+              title: CloudEvent ID
+              description: The Camel exchange id set as event id
+              type: string
+            CamelCloudEventType:
+              title: CloudEvent Type
+              description: The event type
+              default: "org.apache.camel.event.google.sheets.stream.consume"
+              type: string
+            CamelCloudEventSource:
+              title: CloudEvent Source
+              description: The event source. By default, the Spreadsheet Id with prefix "google.sheets.stream.".
+              type: string
+            CamelCloudEventSubject:
+              title: CloudEvent Subject
+              description: The event subject. Usually the Spreadsheet URL.
+              type: string
+            CamelCloudEventTime:
+              title: CloudEvent Time
+              description: The exchange creation timestamp as event time.
+              type: string
   dependencies:
   - "camel:core"
   - "camel:jackson"
