@@ -52,25 +52,25 @@ $ yaks test aws-sqs-source-uri-conf.feature
 To run tests with secret based configuration:
 
 ```shell script
-$ yaks test aws-sqs-source-secret-conf.feature
+$ yaks run --local src/test/resources/aws/sqs/aws-sqs-source-secret-conf.feature
 ```
 
 To run tests with property based configuration:
 
 ```shell script
-$ yaks test aws-sqs-source-property-conf.feature
+$ yaks run --local src/test/resources/aws/sqs/aws-sqs-source-property-conf.feature
 ```
 
 To run tests with URI binding:
 
 ```shell script
-$ yaks test aws-sqs-uri-pipe.feature
+$ yaks run --local src/test/resources/aws/sqs/aws-sqs-uri-pipe.feature
 ```
 
 To run tests with binding to Knative channel:
 
 ```shell script
-$ yaks test aws-sqs-knative-channel.feature
+$ yaks run --local src/test/resources/aws/sqs/aws-sqs-knative-channel.feature
 ```
 
 You will be provided with the test log output and the test results.
