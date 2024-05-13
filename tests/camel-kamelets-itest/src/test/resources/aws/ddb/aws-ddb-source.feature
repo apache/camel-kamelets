@@ -15,7 +15,7 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-Feature: AWS DDB Source - GetItem
+Feature: AWS DDB Source
 
   Background:
     Given variables
