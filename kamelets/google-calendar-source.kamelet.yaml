@@ -97,9 +97,47 @@ spec:
         description: Specfies to consume events in the calendar from now on.
         type: boolean
         default: true
-  types:
+  dataTypes:
     out:
-      mediaType: application/json
+      default: json
+      headers:
+        CamelGoogleCalendarEventId:
+          title: Camel Google Calendar Event Id
+          description: The calendar event id
+          type: string
+      types:
+        json:
+          format: "application-json"
+          description: |-
+            Json representation of a Google Calendar event object.
+          mediaType: application/json
+        cloudevents:
+          format: "google-calendar-stream:application-cloudevents"
+          description: |-
+            Output data type represents Google Calendar Stream response as CloudEvent V1. The data type sets Camel specific CloudEvent headers on the exchange with
+            respective data from the Calendar Events and its derived object.
+          headers:
+            CamelCloudEventID:
+              title: CloudEvent ID
+              description: The Camel exchange id set as event id
+              type: string
+            CamelCloudEventType:
+              title: CloudEvent Type
+              description: The event type
+              default: "org.apache.camel.event.google.calendar.stream.consume"
+              type: string
+            CamelCloudEventSource:
+              title: CloudEvent Source
+              description: The event source. By default, the Calendar Event Id with prefix "google.calendar.stream.".
+              type: string
+            CamelCloudEventSubject:
+              title: CloudEvent Subject
+              description: The event subject. The Calendar event type.
+              type: string
+            CamelCloudEventTime:
+              title: CloudEvent Time
+              description: The exchange creation timestamp as event time.
+              type: string
   dependencies:
   - "camel:jackson"
   - "camel:google-calendar"
