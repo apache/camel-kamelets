@@ -17,7 +17,7 @@
 apiVersion: camel.apache.org/v1
 kind: Kamelet
 metadata:
-  name: kafka-apicurio-registry-not-secured-source
+  name: kafka-not-secured-apicurio-registry-json-source
   annotations:
     camel.apache.org/kamelet.support.level: "Preview"
     camel.apache.org/catalog.version: "4.7.0-SNAPSHOT"
@@ -30,13 +30,19 @@ metadata:
     camel.apache.org/kamelet.type: "source"
 spec:
   definition:
-    title: "Kafka Not Secured with Apicurio Registry Source"
+    title: "Kafka not secured with Apicurio Registry secured with Keycloak Source for JSON schema support"
     description: |-
-      Receive data from Kafka topics on an insecure broker combined with Apicurio Registry.
+      Receive data from Kafka topics on an insecure broker combined with Apicurio Registry secured with Keycloak.
     required:
       - topic
       - bootstrapServers
       - apicurioRegistryUrl
+      - apicurioAuthServiceUrl
+      - apicurioAuthRealm
+      - apicurioAuthClientId
+      - apicurioAuthClientSecret
+      - apicurioAuthUsername
+      - apicurioAuthPassword
     type: object
     properties:
       topic:
@@ -100,6 +106,41 @@ spec:
         x-descriptors:
         - urn:keda:metadata:bootstrapServers
         - urn:keda:required
+      apicurioAuthServiceUrl:
+        title: Apicurio Registry Auth Service URL
+        description: The URL for Keycloak instance securing the Apicurio Registry
+        type: string
+        example: "http://my-keycloak.com:8080/"
+      apicurioAuthRealm:
+        title: Apicurio Registry Auth Realm
+        description: The Realm in Keycloak instance securing the Apicurio Registry
+        type: string
+      apicurioAuthClientId:
+        title: Apicurio Registry Auth Client ID
+        description: The Client ID in Keycloak instance securing the Apicurio Registry
+        type: string
+      apicurioAuthClientSecret:
+        title: Apicurio Registry Auth Client Secret
+        description: The Client Secret in Keycloak instance securing the Apicurio Registry
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+        - urn:keda:authentication:password
+        - urn:keda:required
+      apicurioAuthUsername:
+        title: Apicurio Registry Auth Username
+        description: The Username in Keycloak instance securing the Apicurio Registry
+        type: string
+      apicurioAuthPassword:
+        title: Apicurio Registry Auth Password
+        description: The Password in Keycloak instance securing the Apicurio Registry
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+        - urn:keda:authentication:password
+        - urn:keda:required
       topicIsPattern:
         title: Topic Is Pattern
         description: Whether the topic is a pattern (regular expression). This can be used to subscribe to dynamic number of topics matching the pattern.
@@ -110,7 +151,7 @@ spec:
     - "camel:kafka"
     - "camel:core"
     - "camel:kamelet"
-    - "mvn:io.quarkus:io.quarkus:quarkus-apicurio-registry-json-schema:3.6.3"
+    - "mvn:io.apicurio:apicurio-registry-serdes-jsonschema-serde:2.5.11.Final"
   template:
     beans:
       - name: kafkaHeaderDeserializer
@@ -129,6 +170,12 @@ spec:
         valueDeserializer: "{{valueDeserializer}}"
         topicIsPattern: "{{topicIsPattern}}"
         additionalProperties.apicurio.registry.url: "{{apicurioRegistryUrl}}"
+        additionalProperties.apicurio.auth.service.url: "{{apicurioAuthServiceUrl}}"
+        additionalProperties.apicurio.auth.realm: "{{apicurioAuthRealm}}"
+        additionalProperties.apicurio.auth.client.id: "{{apicurioAuthClientId}}"
+        additionalProperties.apicurio.auth.client.secret: "{{apicurioAuthClientSecret}}"
+        additionalProperties.apicurio.auth.username: "{{apicurioAuthUsername}}"
+        additionalProperties.apicurio.auth.password: "{{apicurioAuthPassword}}"
       steps:
         - process:
             ref: "{{kafkaHeaderDeserializer}}"
