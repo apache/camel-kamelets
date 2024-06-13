@@ -16,14 +16,6 @@
  */
 package org.apache.camel.kamelets.utils.transform;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.camel.Exchange;
-import org.apache.camel.ExchangeProperty;
-import org.apache.camel.component.kafka.KafkaConstants;
-import org.apache.camel.util.ObjectHelper;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,6 +27,14 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.camel.Exchange;
+import org.apache.camel.ExchangeProperty;
+import org.apache.camel.component.kafka.KafkaConstants;
+import org.apache.camel.util.ObjectHelper;
 
 public class MessageTimestampRouter {
 
@@ -63,13 +63,13 @@ public class MessageTimestampRouter {
                break;
              }
         }
-        long timestamp;
+        Long timestamp = null;
         if (ObjectHelper.isNotEmpty(timestampKeyFormat) && ObjectHelper.isNotEmpty(rawTimestamp) && !timestampKeyFormat.equalsIgnoreCase("timestamp")) {
             final SimpleDateFormat timestampKeyFmt = new SimpleDateFormat(timestampKeyFormat);
             timestampKeyFmt.setTimeZone(TimeZone.getTimeZone("UTC"));
             timestamp = timestampKeyFmt.parse((String) rawTimestamp).getTime();
-        } else {
-            timestamp = Long.valueOf((String) rawTimestamp);
+        } else if (ObjectHelper.isNotEmpty(rawTimestamp)) {
+            timestamp = Long.parseLong(rawTimestamp.toString());
         }
         if (ObjectHelper.isNotEmpty(timestamp)) {
             final String formattedTimestamp = fmt.format(new Date(timestamp));
