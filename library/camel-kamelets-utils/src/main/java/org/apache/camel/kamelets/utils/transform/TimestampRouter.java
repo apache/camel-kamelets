@@ -16,17 +16,17 @@
  */
 package org.apache.camel.kamelets.utils.transform;
 
-import org.apache.camel.Exchange;
-import org.apache.camel.ExchangeProperty;
-import org.apache.camel.component.kafka.KafkaConstants;
-import org.apache.camel.util.ObjectHelper;
-
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.camel.Exchange;
+import org.apache.camel.ExchangeProperty;
+import org.apache.camel.component.kafka.KafkaConstants;
+import org.apache.camel.util.ObjectHelper;
 
 public class TimestampRouter {
 
@@ -38,15 +38,15 @@ public class TimestampRouter {
         final SimpleDateFormat fmt = new SimpleDateFormat(timestampFormat);
         fmt.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        long timestamp;
+        Long timestamp = null;
         String topicName = ex.getMessage().getHeader(KafkaConstants.TOPIC, String.class);
         Object rawTimestamp = ex.getMessage().getHeader(timestampHeaderName);
         if (rawTimestamp instanceof Long) {
             timestamp = (Long) rawTimestamp;
         } else if (rawTimestamp instanceof Instant) {
             timestamp = ((Instant) rawTimestamp).toEpochMilli();
-        } else {
-            timestamp = (Long) rawTimestamp;
+        } else if (ObjectHelper.isNotEmpty(rawTimestamp)) {
+            timestamp = Long.parseLong(rawTimestamp.toString());
         }
         if (ObjectHelper.isNotEmpty(timestamp)) {
             final String formattedTimestamp = fmt.format(new Date(timestamp));
