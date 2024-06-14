@@ -31,16 +31,16 @@ spec:
   definition:
     title: "Salesforce Update Sink"
     description: |-
-      Update an object in Salesforce. 
-      
-      The body received must contain a JSON key-value pair for each property to update inside the payload attribute, for example: 
-      
+      Update an object in Salesforce.
+
+      The body received must contain a JSON key-value pair for each property to update inside the payload attribute, for example:
+
       `{ "payload": { "Phone": "1234567890", "Name": "Antonia" } }`
-      
+
       The body received must include the `sObjectName` and `sObjectId` properties, for example:
 
       `{ "payload": { "Phone": "1234567890", "Name": "Antonia" }, "sObjectId": "sObjectId", "sObjectName": "sObjectName" }`
-     
+
     required:
       - clientId
       - clientSecret
@@ -101,14 +101,21 @@ spec:
     from:
       uri: kamelet:source
       steps:
-        - setProperty:
+        - setHeader:
             name: sObjectId
-            jsonpath: "$['sObjectId']"
-        - setProperty:
+            jsonpath: "$.sObjectId"
+        - setHeader:
             name: sObjectName
-            jsonpath: "$['sObjectName']"
+            jsonpath: "$.sObjectName"
         - transform:
-            jsonpath: "$['payload']"
+            jsonpath: "$.payload"
         - marshal:
             json: {}
-        - toD: "{{local-salesforce}}:updateSObject?sObjectId=${exchangeProperty.sObjectId}&sObjectName=${exchangeProperty.sObjectName}&rawPayload=true"
+        - to:
+            uri: "{{local-salesforce}}:updateSObject"
+            parameters:
+              rawPayload: "true"
+        - removeHeader:
+            name: sObjectId
+        - removeHeader:
+            name: sObjectName
