@@ -86,6 +86,16 @@ spec:
         description: The number of milliseconds before the next poll of the selected stream.
         type: integer
         default: 500
+      asyncClient:
+        title: Async Client
+        description: If we want to a KinesisAsyncClient instance set it to true.
+        type: boolean
+        default: false
+      useKclConsumers:
+        title: KCL Consumer
+        description: If we want to a KCL Consumer set it to true
+        type: boolean
+        default: false
   types:
     out:
       mediaType: application/octet-stream
@@ -105,5 +115,7 @@ spec:
         uriEndpointOverride: "{{?uriEndpointOverride}}"
         overrideEndpoint: "{{overrideEndpoint}}"
         delay: "{{delay}}"
+        useKclConsumers: "{{useKclConsumers}}"
+        asyncClient: "{{asyncClient}}"
       steps:
       - to: "kamelet:sink"
