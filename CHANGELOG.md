@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Add Support for Kinesis KCL Consumers to Kinesis Source Kamelet [\#2089](https://github.com/apache/camel-kamelets/issues/2089)
 - Release Camel Kamelets 4.6.0 [\#2029](https://github.com/apache/camel-kamelets/issues/2029)
 
 ## [v4.6.0](https://github.com/apache/camel-kamelets/tree/v4.6.0) (2024-05-13)
