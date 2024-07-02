@@ -2,7 +2,15 @@
 
 ## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.6.0...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.4.3...HEAD)
+
+**Closed issues:**
+
+- Upgrade to Camel 4.4.3 [\#2091](https://github.com/apache/camel-kamelets/issues/2091)
+
+## [v4.4.3](https://github.com/apache/camel-kamelets/tree/v4.4.3) (2024-07-01)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.6.0...v4.4.3)
 
 **Closed issues:**
 
