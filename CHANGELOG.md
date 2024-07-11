@@ -8,6 +8,7 @@
 
 - Release Camel-Kamelets 4.4.3 [\#2092](https://github.com/apache/camel-kamelets/issues/2092)
 - Upgrade to Camel 4.4.3 [\#2091](https://github.com/apache/camel-kamelets/issues/2091)
+- JMS Kamelets: Support connection pooling [\#1936](https://github.com/apache/camel-kamelets/issues/1936)
 
 ## [v4.4.3](https://github.com/apache/camel-kamelets/tree/v4.4.3) (2024-07-01)
 
