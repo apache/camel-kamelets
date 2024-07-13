@@ -6,9 +6,14 @@
 
 **Closed issues:**
 
+- Remove OpenAI related Kamelets since outdated [\#2102](https://github.com/apache/camel-kamelets/issues/2102)
 - Release Camel-Kamelets 4.4.3 [\#2092](https://github.com/apache/camel-kamelets/issues/2092)
 - Upgrade to Camel 4.4.3 [\#2091](https://github.com/apache/camel-kamelets/issues/2091)
+- OpenAI completion kamelet gives me 404  [\#2074](https://github.com/apache/camel-kamelets/issues/2074)
+- Create a Milvus sink Kamelet [\#1995](https://github.com/apache/camel-kamelets/issues/1995)
 - JMS Kamelets: Support connection pooling [\#1936](https://github.com/apache/camel-kamelets/issues/1936)
+- Deduplicate some of the headers when using the duplicateHeaders [\#1074](https://github.com/apache/camel-kamelets/issues/1074)
+- Duplicate some of headers with a different name [\#1071](https://github.com/apache/camel-kamelets/issues/1071)
 
 ## [v4.4.3](https://github.com/apache/camel-kamelets/tree/v4.4.3) (2024-07-01)
 
