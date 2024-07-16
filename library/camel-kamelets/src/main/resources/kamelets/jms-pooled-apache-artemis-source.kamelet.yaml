@@ -66,7 +66,22 @@ spec:
         x-descriptors:
         - urn:camel:group:credentials
         - urn:keda:authentication:password
-        - urn:keda:required        
+        - urn:keda:required
+      maxSessionsPerConnection:
+        title: "Max Session Per Connection"
+        description: "The maximum number of pooled sessions per connection in the pool"
+        type: int
+        default: 500
+      maxIdleSessionsPerConnection:
+        title: "Max Idle Sessions Per Connection"
+        description: "The number of idle sessions allowed per connection before they are closed."
+        type: int
+        default: 500
+      connectionIdleTimeout:
+        title: "Connection Idle Timeout"
+        description: "The maximum time a pooled Connection can sit unused before it is eligible for removal (in milliseconds)"
+        type: int
+        default: 30000       
   dependencies:
   - "camel:jms"
   - "camel:kamelet"
@@ -83,7 +98,10 @@ spec:
       - name: pooledFactoryBean
         type: "#class:org.messaginghub.pooled.jms.JmsPoolConnectionFactory"
         properties:
-          connectionFactory: '#bean:{{connectionFactoryBean}}'        
+          connectionFactory: '#bean:{{connectionFactoryBean}}'
+          maxSessionsPerConnection: "{{maxSessionsPerConnection}}"
+          maxIdleSessionsPerConnection: "{{maxIdleSessionsPerConnection}}"
+          connectionIdleTimeout: "{{connectionIdleTimeout}}"        
     from:
       uri: "jms:{{destinationType}}:{{destinationName}}"
       parameters:
