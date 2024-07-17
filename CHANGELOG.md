@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.7.0...HEAD)
+
+**Closed issues:**
+
+- Bitcoin Source fails with  [\#2112](https://github.com/apache/camel-kamelets/issues/2112)
+- JMS Kamelets: Expose Connection Pool parameters to make it customizable [\#2051](https://github.com/apache/camel-kamelets/issues/2051)
+
 ## [v4.7.0](https://github.com/apache/camel-kamelets/tree/v4.7.0) (2024-07-15)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.4.3...v4.7.0)
