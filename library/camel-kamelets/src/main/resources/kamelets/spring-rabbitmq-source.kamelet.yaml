@@ -79,6 +79,11 @@ spec:
         description: The routing key to use when binding a consumer queue to the exchange
         type: boolean
         default: false
+      vhost:
+        title: Virtual Host
+        description: The virtual host
+        type: string
+        default: "/"
   dependencies:
     - "camel:spring-rabbitmq"
     - "camel:kamelet"
@@ -91,6 +96,7 @@ spec:
           password: '{{?password}}'
           host: '{{host}}'
           port: '{{port}}'
+          virtualHost: "{{vhost}}"
     from:
       uri: "spring-rabbitmq://{{exchangeName}}"
       parameters:
