@@ -79,6 +79,11 @@ spec:
         description: Specifies whether the producer should auto declare binding between exchange, queue and routing key when starting
         type: boolean
         default: false
+      vhost:
+        title: Virtual Host
+        description: The virtual host
+        type: string
+        default: "/"
   dependencies:
     - "camel:spring-rabbitmq"
     - "camel:kamelet"
@@ -91,6 +96,7 @@ spec:
           password: '{{?password}}'
           host: '{{host}}'
           port: '{{port}}'
+          virtualHost: "{{vhost}}"
     from:
       uri: "kamelet:source"
       steps:
