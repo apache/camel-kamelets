@@ -6,7 +6,9 @@
 
 **Closed issues:**
 
+- Add parameter for vhost in RabbitMQ Spring Source/Sink [\#2114](https://github.com/apache/camel-kamelets/issues/2114)
 - Bitcoin Source fails with  [\#2112](https://github.com/apache/camel-kamelets/issues/2112)
+- Release 4.7.0 [\#2105](https://github.com/apache/camel-kamelets/issues/2105)
 - JMS Kamelets: Expose Connection Pool parameters to make it customizable [\#2051](https://github.com/apache/camel-kamelets/issues/2051)
 
 ## [v4.7.0](https://github.com/apache/camel-kamelets/tree/v4.7.0) (2024-07-15)
