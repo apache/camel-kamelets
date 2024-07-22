@@ -55,8 +55,24 @@ public class KameletsCatalogTest {
     @Test
     void testGetKameletsDefinition() throws Exception {
         Definition props = catalog.getKameletDefinition("aws-sqs-source");
-        assertEquals(14, props.getProperties().keySet().size());
+        assertEquals(17, props.getProperties().keySet().size());
         assertTrue(props.getProperties().containsKey("queueNameOrArn"));
+        assertTrue(props.getProperties().containsKey("deleteAfterRead"));
+        assertTrue(props.getProperties().containsKey("accessKey"));
+        assertTrue(props.getProperties().containsKey("secretKey"));
+        assertTrue(props.getProperties().containsKey("region"));
+        assertTrue(props.getProperties().containsKey("autoCreateQueue"));
+        assertTrue(props.getProperties().containsKey("amazonAWSHost"));
+        assertTrue(props.getProperties().containsKey("protocol"));
+        assertTrue(props.getProperties().containsKey("queueURL"));
+        assertTrue(props.getProperties().containsKey("useDefaultCredentialsProvider"));
+        assertTrue(props.getProperties().containsKey("uriEndpointOverride"));
+        assertTrue(props.getProperties().containsKey("overrideEndpoint"));
+        assertTrue(props.getProperties().containsKey("delay"));
+        assertTrue(props.getProperties().containsKey("greedy"));
+        assertTrue(props.getProperties().containsKey("maxMessagesPerPoll"));
+        assertTrue(props.getProperties().containsKey("waitTimeSeconds"));
+        assertTrue(props.getProperties().containsKey("visibilityTimeout"));
     }
 
     @Test
@@ -64,6 +80,7 @@ public class KameletsCatalogTest {
         List<String> props = catalog.getKameletRequiredProperties("aws-sqs-source");
         assertEquals(2, props.size());
         assertTrue(props.contains("queueNameOrArn"));
+        assertTrue(props.contains("region"));
     }
 
     @Test
