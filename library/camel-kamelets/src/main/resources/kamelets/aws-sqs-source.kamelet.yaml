@@ -128,19 +128,19 @@ spec:
         type: boolean
         default: false
       maxMessagesPerPoll:
-        title: Max messager per poll
-        description: The maximum number of messages to return. Amazon SQS never returns more messages than this value (however, fewer messages might be returned). Valid values: 1 to 10. Default: 1.
+        title: Max Messages Per Poll
+        description: The maximum number of messages to return. Amazon SQS never returns more messages than this value (however, fewer messages might be returned). Valid values 1 to 10. Default 1.
         type: integer
         minimum: 1
         maximum: 10
         default: 1
       waitTimeSeconds:
-        title: Wait time seconds
+        title: Wait Time Seconds
         description: The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. If a message is available, the call returns sooner than WaitTimeSeconds. If no messages are available and the wait time expires, the call does not return a message list.
         type: integer
         minimum: 0
       visibilityTimeout:
-        title: Visibility timeout
+        title: Visibility Timeout
         description: The duration (in seconds) that the received messages are hidden from subsequent retrieve requests after being retrieved by a ReceiveMessage request.
         type: integer
         minimum: 0
