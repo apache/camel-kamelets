@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Add parameter to configure maxMessagesPerPoll for in aws-sqs-source Kemelet [\#2118](https://github.com/apache/camel-kamelets/issues/2118)
 - Add parameter for vhost in RabbitMQ Spring Source/Sink [\#2114](https://github.com/apache/camel-kamelets/issues/2114)
 - Bitcoin Source fails with  [\#2112](https://github.com/apache/camel-kamelets/issues/2112)
 - Release 4.7.0 [\#2105](https://github.com/apache/camel-kamelets/issues/2105)
