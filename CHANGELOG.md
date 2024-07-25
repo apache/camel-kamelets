@@ -11,6 +11,14 @@
 - Bitcoin Source fails with  [\#2112](https://github.com/apache/camel-kamelets/issues/2112)
 - Release 4.7.0 [\#2105](https://github.com/apache/camel-kamelets/issues/2105)
 - JMS Kamelets: Expose Connection Pool parameters to make it customizable [\#2051](https://github.com/apache/camel-kamelets/issues/2051)
+- Tidy up kamelets docs and remove knative binding [\#1705](https://github.com/apache/camel-kamelets/issues/1705)
+- CouchBase source kamelet [\#1331](https://github.com/apache/camel-kamelets/issues/1331)
+- Add Javadoc to Camel-Kamelets-Catalog  [\#759](https://github.com/apache/camel-kamelets/issues/759)
+- Kamelet Action: Add a separated section in docs on how to use them [\#709](https://github.com/apache/camel-kamelets/issues/709)
+- Improve descriptions of Kamelet Actions [\#699](https://github.com/apache/camel-kamelets/issues/699)
+- Multi version catalog [\#320](https://github.com/apache/camel-kamelets/issues/320)
+- Allow serialization/deserialization of key [\#317](https://github.com/apache/camel-kamelets/issues/317)
+- Add kn CLI instructions to sources [\#152](https://github.com/apache/camel-kamelets/issues/152)
 
 ## [v4.7.0](https://github.com/apache/camel-kamelets/tree/v4.7.0) (2024-07-15)
 
