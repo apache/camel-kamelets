@@ -84,6 +84,27 @@ spec:
         description: Set whether the SNS client should expect to load credentials through a default credentials provider or to expect static credentials to be passed in.
         type: boolean
         default: false
+      useProfileCredentialsProvider:
+        title: Profile Credentials Provider
+        description: Set whether the SNS client should expect to load credentials through a profile credentials provider.
+        type: boolean
+        default: false
+      useSessionCredentials:
+        title: Session Credentials
+        description: Set whether the SNS client should expect to use Session Credentials. This is useful in situation in which the user needs to assume a IAM role for doing operations in SNS.
+        type: boolean
+        default: false
+      profileCredentialsName:
+        title: Profile Credentials Name
+        description: If using a profile credentials provider this parameter will set the profile name.
+        type: string
+      sessionToken:
+        title: Session Token
+        description: Amazon AWS Session Token used when the user needs to assume a IAM role.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
       uriEndpointOverride:
         title: Overwrite Endpoint URI
         description: The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option.
@@ -145,8 +166,12 @@ spec:
                   secretKey: "{{?secretKey}}"
                   region: "{{region}}"
                   useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+                  useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
+                  useSessionCredentials: "{{useSessionCredentials}}"
                   messageGroupIdStrategy: "usePropertyValue"
                   messageDeduplicationIdStrategy: "useContentBasedDeduplication"
+                  profileCredentialsName: "{{?profileCredentialsName}}"
+                  sessionToken: "{{?sessionToken}}"
                   uriEndpointOverride: "{{?uriEndpointOverride}}"
                   overrideEndpoint: "{{overrideEndpoint}}"
           otherwise:
@@ -159,7 +184,11 @@ spec:
                   secretKey: "{{?secretKey}}"
                   region: "{{region}}"
                   useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+                  useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
+                  useSessionCredentials: "{{useSessionCredentials}}"
                   messageGroupIdStrategy: "usePropertyValue"
                   messageDeduplicationIdStrategy: "useExchangeId"
+                  profileCredentialsName: "{{?profileCredentialsName}}"
+                  sessionToken: "{{?sessionToken}}"
                   uriEndpointOverride: "{{?uriEndpointOverride}}"
                   overrideEndpoint: "{{overrideEndpoint}}"
