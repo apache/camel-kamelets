@@ -27,7 +27,7 @@ concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
-permissions:  # added using https://github.com/step-security/secure-repo
+permissions:  
   contents: read
 
 jobs:
