@@ -4,7 +4,8 @@ This repository contains the default Kamelet catalog used by Apache Camel and it
 
 Kamelets in this repository can be used natively in Camel K, Camel, Camel-Quarkus and Camel-spring-boot integrations, without additional configuration steps. Users just need to reference the Kamelets by name in the URI (e.g. `kamelet:timer-source?message=Hello`), or use them in a `Pipe`, for Camel K, in particular.
 
-**NOTE**: Camel K (and other sub-projects) will only use a specific version of this Kamelet catalog. Refer to the release notes of the sub-project for more information.
+> [!NOTE]
+> Camel K (and other sub-projects) will only use a specific version of this Kamelet catalog. Refer to the release notes of the sub-project for more information.
 
 Documents and guides about Kamelets can be found in the [Kamelets User and Developer Guides](https://camel.apache.org/camel-k/latest/kamelets/kamelets.html).
 
@@ -22,17 +23,18 @@ Building the project:
 $ ./mvnw clean install
 ```
 
-**IMPORTANT:** After adding or modifying a kamelet remember to generate:
-```bash
-$ cd script/generator
-$ go run . ../../kamelets/ ../../docs/modules/ROOT/
-```
-and validate:
-```bash
-$ cd script/validator
-$ go run . ../../kamelets/
-```
-be sure that there aren't reported ERRORS.
+> [!IMPORTANT]
+> After adding or modifying a kamelet remember to generate:
+> ```bash
+> $ cd script/generator
+> $ go run . ../../kamelets/ ../../docs/modules/ROOT/
+> ```
+> and validate:
+> ```bash
+> $ cd script/validator
+> $ go run . ../../kamelets/
+> ```
+> be sure that there aren't reported ERRORS.
 
 ### General Format
 
@@ -160,7 +162,8 @@ Test code must be submitted in the `test/<kamelet-name>/` directory in the root 
 
 Kamelets submitted with tests that verify their correctness **MUST** be labeled with `camel.apache.org/kamelet.verified=true`.
 
-**NOTE**: there's no way at the moment to inject credentials for external systems into the CI in order to write more advanced tests, but we can expect we'll find an usable strategy in the long run
+> [!NOTE]
+> There's no way at the moment to inject credentials for external systems into the CI in order to write more advanced tests, but we can expect we'll find an usable strategy in the long run.
 
 ### Kamelet Pipe Examples
 
@@ -174,7 +177,7 @@ This project is released as standard Apache Camel module.
 
 To release it, first set the next release version in the kamelets:
 
-```
+```bash
 export CAMEL_KAMELET_VERSION=x.y.z
 
 ./mvnw clean install -DreleaseVersion=$CAMEL_KAMELET_VERSION
@@ -182,7 +185,7 @@ export CAMEL_KAMELET_VERSION=x.y.z
 
 Stage the commits in the Source Version Control:
 
-```
+```bash
 git commit -am "Update Kamelets for release $CAMEL_KAMELET_VERSION"
 
 git push upstream main
@@ -190,7 +193,7 @@ git push upstream main
 
 Check that everything is alright with a dryRun:
 
-```
+```bash
 ./mvnw release:prepare -Prelease \
   -DdryRun \
   -DreleaseVersion=$CAMEL_KAMELET_VERSION \
@@ -200,7 +203,7 @@ Check that everything is alright with a dryRun:
 
 Check the signatures of the files, then clean and prepare the actual release:
 
-```
+```bash
 ./mvnw release:clean -Prelease
 ./mvnw release:prepare -Prelease \
   -DreleaseVersion=$CAMEL_KAMELET_VERSION \
@@ -210,7 +213,7 @@ Check the signatures of the files, then clean and prepare the actual release:
 
 Then perform the release:
 
-```
+```bash
 ./mvnw release:perform -Prelease
 ```
 
@@ -220,7 +223,7 @@ A URL will be generated for the repository, like: https://repository.apache.org/
 
 Now run:
 
-```
+```bash
 cd release-utils/scripts/
 ./upload-source.sh $CAMEL_KAMELET_VERSION $CAMEL_KAMELET_VERSION
 ```
@@ -233,13 +236,13 @@ https://dist.apache.org/repos/dist/dev/camel/camel-kamelets/<$CAMEL_KAMELET_VERS
 
 Restore Kamelets:
 
-```
+```bash
 ./mvnw clean install
 ```
 
 Update remote git:
 
-```
+```bash
 git commit -am "Restore Kamelets for development"
 
 git push upstream main
@@ -261,7 +264,7 @@ There is an handy script for this:
 
 Now run:
 
-```
+```bash
 cd release-utils/scripts/
 ./promote-release.sh $CAMEL_KAMELET_VERSION 
 ```
@@ -270,7 +273,7 @@ cd release-utils/scripts/
 
 If we are talking about a minor release, it will be enough to edit the 'docs/antora.yml' file like this:
 
-```
+```yaml
 name: camel-kamelets
 title: Kamelet Catalog
 version: 0.9.x
