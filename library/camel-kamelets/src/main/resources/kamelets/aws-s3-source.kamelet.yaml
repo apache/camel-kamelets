@@ -53,6 +53,23 @@ spec:
         description: Specifies to delete objects after consuming them.
         type: boolean
         default: true
+      moveAfterRead:
+        title: Move Objects After Delete
+        description: Move objects from S3 bucket to a different bucket after they have been retrieved.
+        type: boolean
+        default: false
+      destinationBucket:
+        title: Destination Bucket
+        description: Define the destination bucket where an object must be moved when moveAfterRead is set to true.
+        type: string
+      destinationBucketPrefix:
+        title: Destination Bucket Prefix
+        description: Define the destination bucket prefix to use when an object must be moved, and moveAfterRead is set to true.
+        type: string
+      destinationBucketSuffix:
+        title: Destination Bucket Suffix
+        description: Define the destination bucket suffix to use when an object must be moved, and moveAfterRead is set to true.
+        type: string
       accessKey:
         title: Access Key
         description: The access key obtained from AWS.
@@ -207,6 +224,10 @@ spec:
         region: "{{region}}"
         ignoreBody: "{{ignoreBody}}"
         deleteAfterRead: "{{deleteAfterRead}}"
+        deleteAfterRead: "{{moveAfterRead}}"
+        destinationBucket: "{{?destinationBucket}}"
+        destinationBucketPrefix: "{{?destinationBucketPrefix}}"
+        destinationBucketSuffix: "{{?destinationBucketSuffix}}"
         prefix: "{{?prefix}}"
         useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
         useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
