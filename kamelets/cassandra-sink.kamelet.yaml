@@ -89,6 +89,11 @@ spec:
         description: To use a specific comma separated list of Extra Type codecs. 
         type: string
         enum: ["BLOB_TO_ARRAY", "BOOLEAN_LIST_TO_ARRAY", "BYTE_LIST_TO_ARRAY", "SHORT_LIST_TO_ARRAY", "INT_LIST_TO_ARRAY", "LONG_LIST_TO_ARRAY", "FLOAT_LIST_TO_ARRAY", "DOUBLE_LIST_TO_ARRAY", "TIMESTAMP_UTC", "TIMESTAMP_MILLIS_SYSTEM", "TIMESTAMP_MILLIS_UTC", "ZONED_TIMESTAMP_SYSTEM", "ZONED_TIMESTAMP_UTC", "ZONED_TIMESTAMP_PERSISTED", "LOCAL_TIMESTAMP_SYSTEM", "LOCAL_TIMESTAMP_UTC"]
+      jsonPayload:
+        title: JSON Payload
+        description: If we want to transform the payload in json or not
+        type: boolean
+        default: true
   types:
     in:
       mediaType: application/json
@@ -96,14 +101,20 @@ spec:
   - "camel:jackson"
   - "camel:kamelet"
   - "camel:cassandraql"
+  - "camel:core"
   template:
     from:
       uri: "kamelet:source"
       steps:
-      - unmarshal:
-          json: 
-            library: Jackson
-            useList: true
+      - choice:
+          precondition: true
+          when:
+            - simple: '${properties:jsonPayload:true}'
+              steps:
+                - unmarshal:
+                    json: 
+                      library: Jackson
+                      useList: true
       - to: 
           uri: "cql://{{connectionHost}}:{{connectionPort}}/{{keyspace}}"
           parameters:
