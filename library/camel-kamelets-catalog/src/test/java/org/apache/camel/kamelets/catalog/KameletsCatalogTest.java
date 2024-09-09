@@ -131,7 +131,7 @@ public class KameletsCatalogTest {
         List<String> deps = catalog.getKameletDependencies("aws-sqs-source");
         assertEquals(4, deps.size());
         deps = catalog.getKameletDependencies("cassandra-sink");
-        assertEquals(3, deps.size());
+        assertEquals(4, deps.size());
         assertEquals("camel:jackson", deps.get(0));
     }
 
