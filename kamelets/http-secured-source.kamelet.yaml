@@ -56,7 +56,6 @@ spec:
         title: Authentication Method
         description: Authentication methods allowed to use as a comma separated list of values Basic, Digest or NTLM.
         type: string
-        default: "Basic"
       authenticationPreemptive:
         title: Authentication Preemptive
         description: If this option is true, camel-http sends preemptive basic authentication to the server.
@@ -73,6 +72,32 @@ spec:
         description: Authentication password
         type: string
         format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      oauth2ClientId:
+        title: Oauth2 Client Id
+        description: Oauth2 Client Id
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      oauth2ClientSecret:
+        title: Oauth2 Client Secret
+        description: Oauth2 Client Secret
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      oauth2TokenEndpoint:
+        title: Oauth2 Token Endpoint
+        description: Oauth2 Token Endpoint
+        type: string
+        x-descriptors:
+        - urn:camel:group:credentials
+      oauth2Scope:
+        title: Oauth2 Scope
+        description: Oauth2 Scope
+        type: string
         x-descriptors:
         - urn:camel:group:credentials
   dependencies:
@@ -92,8 +117,12 @@ spec:
       - to:
           uri: "{{url}}"
           parameters: 
-            authMethod: "{{authMethod}}"
-            authUsername: "{{authUsername}}"
-            authPassword: "{{authPassword}}"
+            authMethod: "{{?authMethod}}"
+            authUsername: "{{?authUsername}}"
+            authPassword: "{{?authPassword}}"
+            oauth2ClientId: "{{?oauth2ClientId}}"
+            oauth2ClientSecret: "{{?oauth2ClientSecret}}"
+            oauth2Scope: "{{?oauth2Scope}}"
+            oauth2TokenEndpoint: "{{?oauth2TokenEndpoint}}"
             authenticationPreemptive: "{{authenticationPreemptive}}"
       - to: "kamelet:sink"
