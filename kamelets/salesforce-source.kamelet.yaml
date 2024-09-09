@@ -118,6 +118,10 @@ spec:
         description: Use raw payload String for request and response (either JSON or XML depending on format), instead of DTOs, false by default.
         type: boolean
         default: false
+      replayId:
+        title: Replay Id
+        description: The replayId value to use when subscribing to the Streaming API.
+        type: long
   types:
     out:
       mediaType: application/json
@@ -146,6 +150,7 @@ spec:
         notifyForOperationUndelete: "{{notifyForOperationUndelete}}"
         sObjectQuery: "{{query}}"
         rawPayload: "{{rawPayload}}"
+        replayId: "{{?replayId}}"
       steps:
       - marshal:
           json: {}
