@@ -27,6 +27,7 @@
 
 **Merged pull requests:**
 
+- Bump actions/setup-java from 4.2.2 to 4.3.0 [\#2188](https://github.com/apache/camel-kamelets/pull/2188) ([dependabot[bot]](https://github.com/apps/dependabot))
 - AWS S3 Source Kamelets: Support moveAfterRead parameter [\#2187](https://github.com/apache/camel-kamelets/pull/2187) ([oscerd](https://github.com/oscerd))
 - Cassandra Sink: Make the Json unmarshalling step optional [\#2186](https://github.com/apache/camel-kamelets/pull/2186) ([oscerd](https://github.com/oscerd))
 - Salesforce Source Kamelet: Add ReplayId as parameter [\#2185](https://github.com/apache/camel-kamelets/pull/2185) ([oscerd](https://github.com/oscerd))
