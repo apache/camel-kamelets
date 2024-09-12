@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Create a counter source kamelet [\#2189](https://github.com/apache/camel-kamelets/issues/2189)
 - Salesforce Source Kamelet: Add ReplayId as parameter [\#2184](https://github.com/apache/camel-kamelets/issues/2184)
 - Cassandra Sink: Make the Json unmarshalling step optional [\#2183](https://github.com/apache/camel-kamelets/issues/2183)
 - AWS S3 Source Kamelets: Support moveAfterRead parameter [\#2162](https://github.com/apache/camel-kamelets/issues/2162)
@@ -27,6 +28,8 @@
 
 **Merged pull requests:**
 
+- Generated sources regen [\#2191](https://github.com/apache/camel-kamelets/pull/2191) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Add counter kamelet [\#2190](https://github.com/apache/camel-kamelets/pull/2190) ([davsclaus](https://github.com/davsclaus))
 - Bump actions/setup-java from 4.2.2 to 4.3.0 [\#2188](https://github.com/apache/camel-kamelets/pull/2188) ([dependabot[bot]](https://github.com/apps/dependabot))
 - AWS S3 Source Kamelets: Support moveAfterRead parameter [\#2187](https://github.com/apache/camel-kamelets/pull/2187) ([oscerd](https://github.com/oscerd))
 - Cassandra Sink: Make the Json unmarshalling step optional [\#2186](https://github.com/apache/camel-kamelets/pull/2186) ([oscerd](https://github.com/oscerd))
