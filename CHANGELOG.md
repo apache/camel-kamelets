@@ -28,6 +28,7 @@
 
 **Merged pull requests:**
 
+- Bump peter-evans/create-pull-request from 7.0.1 to 7.0.2 [\#2193](https://github.com/apache/camel-kamelets/pull/2193) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen [\#2191](https://github.com/apache/camel-kamelets/pull/2191) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Add counter kamelet [\#2190](https://github.com/apache/camel-kamelets/pull/2190) ([davsclaus](https://github.com/davsclaus))
 - Bump actions/setup-java from 4.2.2 to 4.3.0 [\#2188](https://github.com/apache/camel-kamelets/pull/2188) ([dependabot[bot]](https://github.com/apps/dependabot))
