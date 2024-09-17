@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v4.8.0](https://github.com/apache/camel-kamelets/tree/v4.8.0) (2024-09-16)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.7.0...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.7.0...v4.8.0)
 
 **Closed issues:**
 
@@ -28,6 +28,9 @@
 
 **Merged pull requests:**
 
+- Bump org.apache.camel:camel-dependencies from 4.8.0-SNAPSHOT to 4.8.0 [\#2196](https://github.com/apache/camel-kamelets/pull/2196) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugins:maven-gpg-plugin from 3.2.5 to 3.2.6 [\#2195](https://github.com/apache/camel-kamelets/pull/2195) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump camel.version from 4.8.0-SNAPSHOT to 4.8.0 [\#2194](https://github.com/apache/camel-kamelets/pull/2194) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump peter-evans/create-pull-request from 7.0.1 to 7.0.2 [\#2193](https://github.com/apache/camel-kamelets/pull/2193) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen [\#2191](https://github.com/apache/camel-kamelets/pull/2191) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Add counter kamelet [\#2190](https://github.com/apache/camel-kamelets/pull/2190) ([davsclaus](https://github.com/davsclaus))
