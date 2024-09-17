@@ -27,6 +27,7 @@ on:
   push:
     branches:
       - main
+      - 4.8.x
     paths-ignore:
       - '**.adoc'
       - 'KEYS'
@@ -36,6 +37,7 @@ on:
   pull_request:
     branches:
       - main
+      - 4.8.x
       - "release-*"
     paths-ignore:
       - '**.adoc'
