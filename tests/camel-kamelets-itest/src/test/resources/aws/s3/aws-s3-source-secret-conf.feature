@@ -11,6 +11,7 @@ Feature: AWS S3 Source - secret based config
     # Start LocalStack container
     Given Enable service S3
     Given start LocalStack container
+    Then verify actions waitForLocalStack.groovy
     # Create Kubernetes secret
     Given create Kubernetes secret aws-s3-source-credentials
       | aws-s3-credentials.properties | citrus:encodeBase64(citrus:readFile(aws-s3-credentials.properties)) |

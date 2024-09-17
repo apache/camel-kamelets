@@ -9,6 +9,7 @@ Feature: AWS SQS Kamelet - secret based config
     # Start LocalStack container
     Given Enable service SQS
     Given start LocalStack container
+    Then verify actions waitForLocalStack.groovy
     # Create Kubernetes secret
     Given create Kubernetes secret aws-sqs-source-credentials
       | aws-sqs-credentials.properties | citrus:encodeBase64(citrus:readFile(aws-sqs-credentials.properties)) |

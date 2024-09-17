@@ -39,6 +39,9 @@ config:
     resources:
       - slack-source-pipe.yaml
       - slack-sink-pipe.yaml
+      - slack-auth-test.json
+      - slack-conversations-list.json
+      - slack-conversations-history.json
     cucumber:
       tags:
         - "not @ignored"
