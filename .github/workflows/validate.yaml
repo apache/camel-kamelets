@@ -21,6 +21,7 @@ on:
   pull_request:
     branches:
       - main
+      - 4.8.x
     paths-ignore:
       - '**.adoc'
       - 'KEYS'
@@ -29,6 +30,7 @@ on:
   push:
     branches:
       - main
+      - 4.8.x
     paths-ignore:
       - '**.adoc'
       - 'KEYS'
@@ -40,7 +42,7 @@ concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
-permissions:  
+permissions:
   contents: read
 
 jobs:
