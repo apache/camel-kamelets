@@ -28,6 +28,7 @@ Feature: AWS DDB Sink
     # Start LocalStack container
     Given Enable service DYNAMODB
     Given start LocalStack container
+    Then verify actions waitForLocalStack.groovy
 
   Scenario: Create AWS DDB client
     # Create AWS-DDB client

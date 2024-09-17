@@ -37,6 +37,7 @@ config:
     resources:
       - amazonKinesisClient.groovy
       - aws-kinesis-source-pipe.yaml
+      - waitForLocalStack.yaml
     cucumber:
       tags:
         - "not @ignored"

@@ -18,14 +18,14 @@
 Feature: Kafka Kamelet source
 
   Background:
-    Given variable user is ""
-    Given variable password is ""
     Given variables
       | securityProtocol   | PLAINTEXT |
       | deserializeHeaders | true |
       | topic              | my-topic |
       | source             | Kafka Kamelet source |
       | message            | Camel K rocks! |
+      | user               | redpanda |
+      | password           | admin |
     Given Kafka topic: ${topic}
     Given Kafka topic partition: 0
     Given HTTP server timeout is 15000 ms

@@ -8,6 +8,7 @@ Feature: AWS SQS Kamelet - property based config
     # Start LocalStack container
     Given Enable service SQS
     Given start LocalStack container
+    Then verify actions waitForLocalStack.groovy
 
   Scenario: Verify AWS-SQS events
     # Create AWS-SQS client

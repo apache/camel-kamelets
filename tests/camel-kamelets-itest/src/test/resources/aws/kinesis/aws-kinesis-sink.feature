@@ -29,6 +29,7 @@ Feature: AWS Kinesis - Sink
     # Start LocalStack container
     Given Enable service KINESIS
     Given start LocalStack container
+    Then verify actions waitForLocalStack.groovy
 
   Scenario: Verify Kinesis events
     # Create AWS-KINESIS client
