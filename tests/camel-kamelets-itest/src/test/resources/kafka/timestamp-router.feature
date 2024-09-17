@@ -18,14 +18,14 @@
 Feature: Kafka Timestamp Router
 
   Background:
-    Given variable user is ""
-    Given variable password is ""
     Given variables
-      | securityProtocol          | PLAINTEXT |
-      | topicName                 | my-topic |
-      | timestamp                 | yaks:unixTimestamp()000 |
-      | topic                     | ${topicName}_yaks:currentDate('YYYY-MM-dd') |
-      | message                   | Camel K rocks! |
+      | securityProtocol | PLAINTEXT |
+      | topicName        | my-topic |
+      | timestamp        | yaks:unixTimestamp()000 |
+      | topic            | ${topicName}_yaks:currentDate('YYYY-MM-dd') |
+      | message          | Camel K rocks! |
+      | user             | redpanda |
+      | password         | admin |
     Given Kafka topic: ${topic}
     Given Kafka topic partition: 0
 

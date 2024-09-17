@@ -9,6 +9,7 @@ Feature: AWS SQS Kamelet - binding to InMemoryChannel
     # Start LocalStack container
     Given Enable service SQS
     Given start LocalStack container
+    Then verify actions waitForLocalStack.groovy
     # Create Knative broker and channel
     Given create Knative broker default
     And Knative broker default is running

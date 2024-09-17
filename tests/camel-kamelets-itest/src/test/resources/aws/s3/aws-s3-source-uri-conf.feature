@@ -10,6 +10,7 @@ Feature: AWS S3 Source - URI based config
     # Start LocalStack container
     Given Enable service S3
     Given start LocalStack container
+    Then verify actions waitForLocalStack.groovy
 
   Scenario: Verify AWS-S3 Kamelet to log binding
     # Create AWS-S3 client

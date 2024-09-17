@@ -14,6 +14,7 @@ Feature: AWS S3 Source - Http sink
     # Start LocalStack container
     Given Enable service S3
     Given start LocalStack container
+    Then verify actions waitForLocalStack.groovy
 
   Scenario: Verify AWS-S3 Kamelet to Http
     # Create Http server

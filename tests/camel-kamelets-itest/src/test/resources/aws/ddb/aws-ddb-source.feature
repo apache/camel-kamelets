@@ -31,6 +31,7 @@ Feature: AWS DDB Source
     # Start LocalStack container
     Given Enable service DYNAMODB
     Given start LocalStack container
+    Then verify actions waitForLocalStack.groovy
 
   Scenario: Verify AWS-DDB Kamelet source binding
     # Create AWS-DDB client
