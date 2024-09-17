@@ -14,6 +14,7 @@ Feature: AWS S3 Source - Knative broker binding
     # Start LocalStack container
     Given Enable service S3
     Given start LocalStack container
+    Then verify actions waitForLocalStack.groovy
     # Create Knative broker
     Given create Knative broker default
     And Knative broker default is running
