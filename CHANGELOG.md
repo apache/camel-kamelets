@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.0...HEAD)
+
+**Merged pull requests:**
+
+- chore: Fix YAKS tests [\#2200](https://github.com/apache/camel-kamelets/pull/2200) ([christophd](https://github.com/christophd))
+- Bump peter-evans/create-pull-request from 7.0.2 to 7.0.3 [\#2199](https://github.com/apache/camel-kamelets/pull/2199) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v4.8.0](https://github.com/apache/camel-kamelets/tree/v4.8.0) (2024-09-16)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.7.0...v4.8.0)
