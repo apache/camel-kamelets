@@ -26,10 +26,18 @@ ifndef::prerelease[This release will not be updated, but rather replaced by a ne
 endif::[]
 --
 
+== Kamelet specification
+
+Kamelets were originally born for Kubernetes and they have eventually moved to be used as Camel core resources. Its specification is a Kubernetes CRD specification. You can use it in your project by using Maven dependency `org.apache.camel.kamelets:camel-kamelets-crds`.
+
+== Development guide
+
+Kamelets are extensible components. Look at the guide and learn xref:development.adoc[how to develop a new Kamelet].
+
 == Compatibility Matrix
 
 [caption=]
-.Compatibility between Camel-K and related subprojects
+.Compatibility between Kamelets catalog and related subprojects
 [width="100%",cols="4,2,2,2,1,3",options="header"]
 |===
 |Camel-Kamelets Version
