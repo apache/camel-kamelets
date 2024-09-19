@@ -6,6 +6,8 @@
 
 **Merged pull requests:**
 
+- Generated sources regen [\#2204](https://github.com/apache/camel-kamelets/pull/2204) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Introduce Truststore password configuration [\#2202](https://github.com/apache/camel-kamelets/pull/2202) ([XLAQO](https://github.com/XLAQO))
 - chore: Fix YAKS tests [\#2200](https://github.com/apache/camel-kamelets/pull/2200) ([christophd](https://github.com/christophd))
 - Bump peter-evans/create-pull-request from 7.0.2 to 7.0.3 [\#2199](https://github.com/apache/camel-kamelets/pull/2199) ([dependabot[bot]](https://github.com/apps/dependabot))
 
