@@ -6,7 +6,11 @@
 
 **Merged pull requests:**
 
+- chore: docs update to include development guides [\#2207](https://github.com/apache/camel-kamelets/pull/2207) ([squakez](https://github.com/squakez))
+- Bump commons-io:commons-io from 2.16.1 to 2.17.0 [\#2206](https://github.com/apache/camel-kamelets/pull/2206) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump peter-evans/create-pull-request from 7.0.3 to 7.0.5 [\#2205](https://github.com/apache/camel-kamelets/pull/2205) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen [\#2204](https://github.com/apache/camel-kamelets/pull/2204) ([github-actions[bot]](https://github.com/apps/github-actions))
+- feat\(api\): CRD generation [\#2203](https://github.com/apache/camel-kamelets/pull/2203) ([squakez](https://github.com/squakez))
 - Introduce Truststore password configuration [\#2202](https://github.com/apache/camel-kamelets/pull/2202) ([XLAQO](https://github.com/XLAQO))
 - chore: Fix YAKS tests [\#2200](https://github.com/apache/camel-kamelets/pull/2200) ([christophd](https://github.com/christophd))
 - Bump peter-evans/create-pull-request from 7.0.2 to 7.0.3 [\#2199](https://github.com/apache/camel-kamelets/pull/2199) ([dependabot[bot]](https://github.com/apps/dependabot))
