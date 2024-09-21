@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.0...HEAD)
 
+**Closed issues:**
+
+- Release 4.8.0 [\#2197](https://github.com/apache/camel-kamelets/issues/2197)
+
 **Merged pull requests:**
 
 - chore: docs update to include development guides [\#2207](https://github.com/apache/camel-kamelets/pull/2207) ([squakez](https://github.com/squakez))
