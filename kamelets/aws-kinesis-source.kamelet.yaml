@@ -117,6 +117,11 @@ spec:
         description: If we want to a KCL Consumer set it to true
         type: boolean
         default: false
+      kclDisableCloudwatchMetricsExport:
+        title: KCL Disable Cloudwatch Metrics Export
+        description: Define if we want to use a KCL Consumer and disable the CloudWatch Metrics Export
+        type: boolean
+        default: false
   types:
     out:
       mediaType: application/octet-stream
@@ -142,5 +147,6 @@ spec:
         delay: "{{delay}}"
         useKclConsumers: "{{useKclConsumers}}"
         asyncClient: "{{asyncClient}}"
+        kclDisableCloudwatchMetricsExport: "{{kclDisableCloudwatchMetricsExport}}"
       steps:
       - to: "kamelet:sink"
