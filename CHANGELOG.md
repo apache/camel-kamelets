@@ -6,10 +6,12 @@
 
 **Closed issues:**
 
+- Add option for KCL Consumers to make the ConfigsBuilder for metrics of the Scheduler enable/disable [\#2212](https://github.com/apache/camel-kamelets/issues/2212)
 - Release 4.8.0 [\#2197](https://github.com/apache/camel-kamelets/issues/2197)
 
 **Merged pull requests:**
 
+- Add option for KCL Consumers to make the ConfigsBuilder for metrics of the Scheduler enable/disable [\#2213](https://github.com/apache/camel-kamelets/pull/2213) ([oscerd](https://github.com/oscerd))
 - Generated sources regen for SBOM [\#2211](https://github.com/apache/camel-kamelets/pull/2211) ([github-actions[bot]](https://github.com/apps/github-actions))
 - chore: docs update to include development guides [\#2207](https://github.com/apache/camel-kamelets/pull/2207) ([squakez](https://github.com/squakez))
 - Bump commons-io:commons-io from 2.16.1 to 2.17.0 [\#2206](https://github.com/apache/camel-kamelets/pull/2206) ([dependabot[bot]](https://github.com/apps/dependabot))
