@@ -11,6 +11,8 @@
 
 **Merged pull requests:**
 
+- Bump actions/setup-java from 4.3.0 to 4.4.0 [\#2215](https://github.com/apache/camel-kamelets/pull/2215) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.codehaus.plexus:plexus-utils from 4.0.1 to 4.0.2 [\#2214](https://github.com/apache/camel-kamelets/pull/2214) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Add option for KCL Consumers to make the ConfigsBuilder for metrics of the Scheduler enable/disable [\#2213](https://github.com/apache/camel-kamelets/pull/2213) ([oscerd](https://github.com/oscerd))
 - Generated sources regen for SBOM [\#2211](https://github.com/apache/camel-kamelets/pull/2211) ([github-actions[bot]](https://github.com/apps/github-actions))
 - chore: docs update to include development guides [\#2207](https://github.com/apache/camel-kamelets/pull/2207) ([squakez](https://github.com/squakez))
