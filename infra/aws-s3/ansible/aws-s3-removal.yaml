@@ -1,9 +1,0 @@
----
-- name: Remove AWS S3 Bucket
-  hosts: localhost
-  tasks:
-    - name: Remove bucket
-      amazon.aws.s3_bucket:
-        name: "{{ bucket_name }}"
-        state: absent
-      register: removed_bucket
