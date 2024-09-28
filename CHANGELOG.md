@@ -8,9 +8,13 @@
 
 - Add option for KCL Consumers to make the ConfigsBuilder for metrics of the Scheduler enable/disable [\#2212](https://github.com/apache/camel-kamelets/issues/2212)
 - Release 4.8.0 [\#2197](https://github.com/apache/camel-kamelets/issues/2197)
+- Provide some infrastructure as code configuration files for Terraform/Ansible/Cloudformation [\#1504](https://github.com/apache/camel-kamelets/issues/1504)
 
 **Merged pull requests:**
 
+- Removed it-tests folder and related infra [\#2218](https://github.com/apache/camel-kamelets/pull/2218) ([oscerd](https://github.com/oscerd))
+- Bump org.cyclonedx:cyclonedx-maven-plugin from 2.8.1 to 2.8.2 [\#2217](https://github.com/apache/camel-kamelets/pull/2217) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump fabric8-version from 6.13.3 to 6.13.4 [\#2216](https://github.com/apache/camel-kamelets/pull/2216) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump actions/setup-java from 4.3.0 to 4.4.0 [\#2215](https://github.com/apache/camel-kamelets/pull/2215) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump org.codehaus.plexus:plexus-utils from 4.0.1 to 4.0.2 [\#2214](https://github.com/apache/camel-kamelets/pull/2214) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Add option for KCL Consumers to make the ConfigsBuilder for metrics of the Scheduler enable/disable [\#2213](https://github.com/apache/camel-kamelets/pull/2213) ([oscerd](https://github.com/oscerd))
