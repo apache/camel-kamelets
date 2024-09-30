@@ -6,12 +6,14 @@
 
 **Closed issues:**
 
+- Http/https Sink Kamelet: Expose okStatusCodeRange [\#2219](https://github.com/apache/camel-kamelets/issues/2219)
 - Add option for KCL Consumers to make the ConfigsBuilder for metrics of the Scheduler enable/disable [\#2212](https://github.com/apache/camel-kamelets/issues/2212)
 - Release 4.8.0 [\#2197](https://github.com/apache/camel-kamelets/issues/2197)
 - Provide some infrastructure as code configuration files for Terraform/Ansible/Cloudformation [\#1504](https://github.com/apache/camel-kamelets/issues/1504)
 
 **Merged pull requests:**
 
+- Generated sources regen for SBOM [\#2220](https://github.com/apache/camel-kamelets/pull/2220) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Removed it-tests folder and related infra [\#2218](https://github.com/apache/camel-kamelets/pull/2218) ([oscerd](https://github.com/oscerd))
 - Bump org.cyclonedx:cyclonedx-maven-plugin from 2.8.1 to 2.8.2 [\#2217](https://github.com/apache/camel-kamelets/pull/2217) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump fabric8-version from 6.13.3 to 6.13.4 [\#2216](https://github.com/apache/camel-kamelets/pull/2216) ([dependabot[bot]](https://github.com/apps/dependabot))
