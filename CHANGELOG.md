@@ -13,6 +13,7 @@
 
 **Merged pull requests:**
 
+- Bump org.apache.maven.plugins:maven-gpg-plugin from 3.2.6 to 3.2.7 [\#2221](https://github.com/apache/camel-kamelets/pull/2221) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen for SBOM [\#2220](https://github.com/apache/camel-kamelets/pull/2220) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Removed it-tests folder and related infra [\#2218](https://github.com/apache/camel-kamelets/pull/2218) ([oscerd](https://github.com/oscerd))
 - Bump org.cyclonedx:cyclonedx-maven-plugin from 2.8.1 to 2.8.2 [\#2217](https://github.com/apache/camel-kamelets/pull/2217) ([dependabot[bot]](https://github.com/apps/dependabot))
