@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.0...HEAD)
 
+**Fixed bugs:**
+
+- Wrong version in kafka-apicurio-registry-not-secured-source.kamelet.yaml 4.8.0 version [\#2222](https://github.com/apache/camel-kamelets/issues/2222)
+
 **Closed issues:**
 
 - Http/https Sink Kamelet: Expose okStatusCodeRange [\#2219](https://github.com/apache/camel-kamelets/issues/2219)
@@ -13,6 +17,8 @@
 
 **Merged pull requests:**
 
+- Generated sources regen [\#2225](https://github.com/apache/camel-kamelets/pull/2225) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Wrong version in kafka-apicurio-registry-not-secured-source.kamelet.yaml [\#2223](https://github.com/apache/camel-kamelets/pull/2223) ([oscerd](https://github.com/oscerd))
 - Bump org.apache.maven.plugins:maven-gpg-plugin from 3.2.6 to 3.2.7 [\#2221](https://github.com/apache/camel-kamelets/pull/2221) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen for SBOM [\#2220](https://github.com/apache/camel-kamelets/pull/2220) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Removed it-tests folder and related infra [\#2218](https://github.com/apache/camel-kamelets/pull/2218) ([oscerd](https://github.com/oscerd))
