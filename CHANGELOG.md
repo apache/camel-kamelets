@@ -17,6 +17,7 @@
 
 **Merged pull requests:**
 
+- Bump org.apache.maven.plugins:maven-javadoc-plugin from 3.10.0 to 3.10.1 [\#2226](https://github.com/apache/camel-kamelets/pull/2226) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen [\#2225](https://github.com/apache/camel-kamelets/pull/2225) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Wrong version in kafka-apicurio-registry-not-secured-source.kamelet.yaml [\#2223](https://github.com/apache/camel-kamelets/pull/2223) ([oscerd](https://github.com/oscerd))
 - Bump org.apache.maven.plugins:maven-gpg-plugin from 3.2.6 to 3.2.7 [\#2221](https://github.com/apache/camel-kamelets/pull/2221) ([dependabot[bot]](https://github.com/apps/dependabot))
