@@ -17,6 +17,9 @@
 
 **Merged pull requests:**
 
+- Bump org.cyclonedx:cyclonedx-maven-plugin from 2.8.2 to 2.9.0 [\#2233](https://github.com/apache/camel-kamelets/pull/2233) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/upload-artifact from 4.4.0 to 4.4.2 [\#2232](https://github.com/apache/camel-kamelets/pull/2232) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugins:maven-surefire-plugin from 3.5.0 to 3.5.1 [\#2229](https://github.com/apache/camel-kamelets/pull/2229) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump org.apache.maven.plugins:maven-javadoc-plugin from 3.10.0 to 3.10.1 [\#2226](https://github.com/apache/camel-kamelets/pull/2226) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen [\#2225](https://github.com/apache/camel-kamelets/pull/2225) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Wrong version in kafka-apicurio-registry-not-secured-source.kamelet.yaml [\#2223](https://github.com/apache/camel-kamelets/pull/2223) ([oscerd](https://github.com/oscerd))
