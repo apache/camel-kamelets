@@ -29,11 +29,6 @@
                 <include name="*.kamelet.yaml"/>
             </fileset>
         </replaceregexp>
-        <replaceregexp match="mvn:org.apache.camel.kamelets:camel-kamelets-utils:[A-Za-z0-9-.]+" replace="" byline="true">
-            <fileset dir="kamelets/">
-                <include name="*.kamelet.yaml"/>
-            </fileset>
-        </replaceregexp>
     </target>
 
     <target name="update.kamelets" depends="replace.release" />
