@@ -82,7 +82,7 @@ spec:
       - setProperty:
           name: "timestampKeyFormat"
           constant: "{{timestampKeyFormat}}"
-      - bean: "org.apache.camel.kamelets.utils.transform.MessageTimestampRouter"
+      - bean: "org.apache.camel.component.kamelet.utils.transform.MessageTimestampRouter"
       - marshal:
           json: 
             library: Jackson
