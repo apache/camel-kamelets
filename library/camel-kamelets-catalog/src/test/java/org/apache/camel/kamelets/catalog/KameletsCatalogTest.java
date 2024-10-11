@@ -154,8 +154,8 @@ public class KameletsCatalogTest {
 
     @Test
     void testSupportedHeaders() throws Exception {
-        verifyHeaders("aws-s3-source", 20);
-        verifyHeaders("aws-s3-sink", 29);
+        verifyHeaders("aws-s3-source", 24);
+        verifyHeaders("aws-s3-sink", 33);
         verifyHeaders("aws-cloudtrail-source", 4);
         verifyHeaders("aws-redshift-source", 0);
         verifyHeaders("aws-not-exists", 0);
@@ -196,7 +196,7 @@ public class KameletsCatalogTest {
         verifyHeaders("google-pubsub-source", 5);
         verifyHeaders("google-sheets-source", 6);
         verifyHeaders("google-storage-source", 20);
-        verifyHeaders("google-storage-sink", 13);
+        verifyHeaders("google-storage-sink", 14);
         verifyHeaders("http-source", 5);
         verifyHeaders("http-sink", 14);
         verifyHeaders("http-secured-source", 5);
