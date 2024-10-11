@@ -78,12 +78,14 @@ public class ValidateKameletsMojo extends AbstractMojo {
             List<String> deps = catalog.getKameletDependencies(name).stream()
                     .filter(Predicate.not(bannedDepsList::contains))
                     .collect(Collectors.toList());
-            String cleanName;
+            String cleanName = "";
             if (!deps.isEmpty()) {
+                if (deps.get(0) != null) {
                 if (deps.get(0).equals("camel:jackson") && deps.size() > 1) {
                     cleanName = deps.get(1).replace("camel:", "");
                 } else {
                     cleanName = deps.get(0).replace("camel:", "");
+                }
                 }
                 if (cleanName.equalsIgnoreCase("cassandraql")) {
                     cleanName = "cql";
@@ -112,7 +114,7 @@ public class ValidateKameletsMojo extends AbstractMojo {
                         StringBuilder availableParams = new StringBuilder();
                         ceInternal.forEach(_param -> availableParams.append(_param).append(" "));
                         for (Map.Entry<String, Object> entry : p.entrySet()) {
-                            if (!entry.getKey().equals("period") && (!name.equals("set-kafka-key-action") && !name.equals("sftp-source") && !name.equals("kafka-ssl-source") && !name.equals("timer-source") && !name.equals("cron-source") && !name.equals("fhir-source") && !name.equals("beer-source") && !name.equals("cassandra-source") && !name.equals("cassandra-sink") && !name.equals("kafka-azure-schema-registry-source" ) && !name.equals("kafka-azure-schema-registy-sink") && !name.equals("aws-kinesis-source"))) {
+                            if (!entry.getKey().equals("period") && (!name.equals("set-kafka-key-action") && !name.equals("sftp-source") && !name.equals("kafka-ssl-source") && !name.equals("timer-source") && !name.equals("cron-source") && !name.equals("fhir-source") && !name.equals("beer-source") && !name.equals("cassandra-source") && !name.equals("cassandra-sink") && !name.equals("kafka-azure-schema-registry-source" ) && !name.equals("kafka-azure-schema-registy-sink") && !name.equals("aws-kinesis-source") && !name.equals("kafka-apicurio-registry-not-secured-source") && !name.equals("kafka-batch-apicurio-registry-not-secured-source") && !name.equals("kafka-batch-azure-schema-registry-source") && !name.equals("kafka-batch-apicurio-registry-source") && !name.equals("kafka-batch-ssl-source") && !name.equals("kafka-not-secured-apicurio-registry-json-source") && !name.equals("kafka-not-secured-apicurio-registry-source"))) {
                                 if (!ceInternal.contains(entry.getKey())) {
                                     getLog().error("Kamelet Name: " + name);
                                     getLog().error("Scheme Name: " + cleanName);
