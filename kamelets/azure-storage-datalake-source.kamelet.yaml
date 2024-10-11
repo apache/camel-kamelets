@@ -231,7 +231,6 @@ spec:
     - "camel:kamelet"
     - "camel:core"
     - "camel:timer"
-    - ""
   template:
     from:
       uri: "azure-storage-datalake:{{accountName}}/{{fileSystemName}}"
