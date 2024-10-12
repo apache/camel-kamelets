@@ -10,6 +10,8 @@
 
 **Closed issues:**
 
+- Move main to 4.9.0-SNAPSHOT [\#2240](https://github.com/apache/camel-kamelets/issues/2240)
+- Remove Camel-Kamelets-utils since it is now in core [\#2239](https://github.com/apache/camel-kamelets/issues/2239)
 - Wrong artifact id in kafka-apicurio-registry-not-secured-source.kamelet.yaml dependencies [\#2236](https://github.com/apache/camel-kamelets/issues/2236)
 - Http/https Sink Kamelet: Expose okStatusCodeRange [\#2219](https://github.com/apache/camel-kamelets/issues/2219)
 - Add option for KCL Consumers to make the ConfigsBuilder for metrics of the Scheduler enable/disable [\#2212](https://github.com/apache/camel-kamelets/issues/2212)
@@ -18,6 +20,9 @@
 
 **Merged pull requests:**
 
+- Generated sources regen [\#2243](https://github.com/apache/camel-kamelets/pull/2243) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Remove Camel-Kamelets-utils since it is now in core [\#2242](https://github.com/apache/camel-kamelets/pull/2242) ([oscerd](https://github.com/oscerd))
+- Move main to 4.9.0-SNAPSHOT [\#2241](https://github.com/apache/camel-kamelets/pull/2241) ([oscerd](https://github.com/oscerd))
 - Generated sources regen [\#2238](https://github.com/apache/camel-kamelets/pull/2238) ([github-actions[bot]](https://github.com/apps/github-actions))
 - fix \#2236: Wrong artifact id in kafka-apicurio-registry-not-secured-source.kamelet.yaml dependencies [\#2237](https://github.com/apache/camel-kamelets/pull/2237) ([valdar](https://github.com/valdar))
 - Bump actions/upload-artifact from 4.4.2 to 4.4.3 [\#2235](https://github.com/apache/camel-kamelets/pull/2235) ([dependabot[bot]](https://github.com/apps/dependabot))
