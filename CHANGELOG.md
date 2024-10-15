@@ -20,6 +20,9 @@
 
 **Merged pull requests:**
 
+- Generated sources regen [\#2246](https://github.com/apache/camel-kamelets/pull/2246) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump org.messaginghub:pooled-jms from 3.1.6 to 3.1.7 [\#2245](https://github.com/apache/camel-kamelets/pull/2245) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2244](https://github.com/apache/camel-kamelets/pull/2244) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Generated sources regen [\#2243](https://github.com/apache/camel-kamelets/pull/2243) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Remove Camel-Kamelets-utils since it is now in core [\#2242](https://github.com/apache/camel-kamelets/pull/2242) ([oscerd](https://github.com/oscerd))
 - Move main to 4.9.0-SNAPSHOT [\#2241](https://github.com/apache/camel-kamelets/pull/2241) ([oscerd](https://github.com/oscerd))
