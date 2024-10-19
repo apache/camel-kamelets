@@ -20,6 +20,7 @@
 
 **Merged pull requests:**
 
+- Bump org.apache.maven.resolver:maven-resolver-api from 2.0.1 to 2.0.2 [\#2250](https://github.com/apache/camel-kamelets/pull/2250) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen [\#2246](https://github.com/apache/camel-kamelets/pull/2246) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Bump org.messaginghub:pooled-jms from 3.1.6 to 3.1.7 [\#2245](https://github.com/apache/camel-kamelets/pull/2245) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen for SBOM [\#2244](https://github.com/apache/camel-kamelets/pull/2244) ([github-actions[bot]](https://github.com/apps/github-actions))
