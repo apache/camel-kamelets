@@ -20,6 +20,7 @@
 
 **Merged pull requests:**
 
+- Bump actions/setup-go from 5.0.2 to 5.1.0 [\#2254](https://github.com/apache/camel-kamelets/pull/2254) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen for SBOM [\#2251](https://github.com/apache/camel-kamelets/pull/2251) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Bump org.apache.maven.resolver:maven-resolver-api from 2.0.1 to 2.0.2 [\#2250](https://github.com/apache/camel-kamelets/pull/2250) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen [\#2246](https://github.com/apache/camel-kamelets/pull/2246) ([github-actions[bot]](https://github.com/apps/github-actions))
