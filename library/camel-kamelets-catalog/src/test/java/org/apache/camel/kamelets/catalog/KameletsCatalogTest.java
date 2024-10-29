@@ -154,8 +154,8 @@ public class KameletsCatalogTest {
 
     @Test
     void testSupportedHeaders() throws Exception {
-        verifyHeaders("aws-s3-source", 24);
-        verifyHeaders("aws-s3-sink", 33);
+        verifyHeaders("aws-s3-source", 25);
+        verifyHeaders("aws-s3-sink", 34);
         verifyHeaders("aws-cloudtrail-source", 4);
         verifyHeaders("aws-redshift-source", 0);
         verifyHeaders("aws-not-exists", 0);
@@ -278,7 +278,7 @@ public class KameletsCatalogTest {
 
     void verifyHeaders(String name, int expected) {
         List<ComponentModel.EndpointHeaderModel> headers = catalog.getKameletSupportedHeaders(name);
-        assertEquals(expected, headers.size());
+        assertEquals(expected, headers.size(), "Failure checking " + name);
     }
 
     @Test
