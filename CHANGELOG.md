@@ -10,6 +10,7 @@
 
 **Closed issues:**
 
+- Test failure [\#2261](https://github.com/apache/camel-kamelets/issues/2261)
 - Move main to 4.9.0-SNAPSHOT [\#2240](https://github.com/apache/camel-kamelets/issues/2240)
 - Remove Camel-Kamelets-utils since it is now in core [\#2239](https://github.com/apache/camel-kamelets/issues/2239)
 - Wrong artifact id in kafka-apicurio-registry-not-secured-source.kamelet.yaml dependencies [\#2236](https://github.com/apache/camel-kamelets/issues/2236)
@@ -20,6 +21,7 @@
 
 **Merged pull requests:**
 
+- chore\(ci\): use internal CRDs spec [\#2262](https://github.com/apache/camel-kamelets/pull/2262) ([squakez](https://github.com/squakez))
 - Generated sources regen for SBOM [\#2256](https://github.com/apache/camel-kamelets/pull/2256) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Bump actions/setup-go from 5.0.2 to 5.1.0 [\#2254](https://github.com/apache/camel-kamelets/pull/2254) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen for SBOM [\#2251](https://github.com/apache/camel-kamelets/pull/2251) ([github-actions[bot]](https://github.com/apps/github-actions))
