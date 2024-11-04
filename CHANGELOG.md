@@ -21,6 +21,7 @@
 
 **Merged pull requests:**
 
+- Generated sources regen for SBOM [\#2264](https://github.com/apache/camel-kamelets/pull/2264) ([github-actions[bot]](https://github.com/apps/github-actions))
 - chore\(ci\): use internal CRDs spec [\#2262](https://github.com/apache/camel-kamelets/pull/2262) ([squakez](https://github.com/squakez))
 - Generated sources regen for SBOM [\#2256](https://github.com/apache/camel-kamelets/pull/2256) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Bump actions/setup-go from 5.0.2 to 5.1.0 [\#2254](https://github.com/apache/camel-kamelets/pull/2254) ([dependabot[bot]](https://github.com/apps/dependabot))
