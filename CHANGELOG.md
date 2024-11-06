@@ -2,28 +2,18 @@
 
 ## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.0...HEAD)
-
-**Fixed bugs:**
-
-- Wrong version in kafka-apicurio-registry-not-secured-source.kamelet.yaml 4.8.0 version [\#2222](https://github.com/apache/camel-kamelets/issues/2222)
-
-**Closed issues:**
-
-- Test failure [\#2261](https://github.com/apache/camel-kamelets/issues/2261)
-- Move main to 4.9.0-SNAPSHOT [\#2240](https://github.com/apache/camel-kamelets/issues/2240)
-- Remove Camel-Kamelets-utils since it is now in core [\#2239](https://github.com/apache/camel-kamelets/issues/2239)
-- Wrong artifact id in kafka-apicurio-registry-not-secured-source.kamelet.yaml dependencies [\#2236](https://github.com/apache/camel-kamelets/issues/2236)
-- Http/https Sink Kamelet: Expose okStatusCodeRange [\#2219](https://github.com/apache/camel-kamelets/issues/2219)
-- Add option for KCL Consumers to make the ConfigsBuilder for metrics of the Scheduler enable/disable [\#2212](https://github.com/apache/camel-kamelets/issues/2212)
-- Release 4.8.0 [\#2197](https://github.com/apache/camel-kamelets/issues/2197)
-- Provide some infrastructure as code configuration files for Terraform/Ansible/Cloudformation [\#1504](https://github.com/apache/camel-kamelets/issues/1504)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.1...HEAD)
 
 **Merged pull requests:**
 
+- Generated sources regen [\#2266](https://github.com/apache/camel-kamelets/pull/2266) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Generated sources regen for SBOM [\#2264](https://github.com/apache/camel-kamelets/pull/2264) ([github-actions[bot]](https://github.com/apps/github-actions))
 - chore\(ci\): use internal CRDs spec [\#2262](https://github.com/apache/camel-kamelets/pull/2262) ([squakez](https://github.com/squakez))
+- Bump org.apache.maven.plugin-tools:maven-plugin-annotations from 3.15.0 to 3.15.1 [\#2259](https://github.com/apache/camel-kamelets/pull/2259) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugins:maven-plugin-plugin from 3.15.0 to 3.15.1 [\#2258](https://github.com/apache/camel-kamelets/pull/2258) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.activemq:artemis-jakarta-client-all from 2.37.0 to 2.38.0 [\#2257](https://github.com/apache/camel-kamelets/pull/2257) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen for SBOM [\#2256](https://github.com/apache/camel-kamelets/pull/2256) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump actions/setup-java from 4.4.0 to 4.5.0 [\#2255](https://github.com/apache/camel-kamelets/pull/2255) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump actions/setup-go from 5.0.2 to 5.1.0 [\#2254](https://github.com/apache/camel-kamelets/pull/2254) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen for SBOM [\#2251](https://github.com/apache/camel-kamelets/pull/2251) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Bump org.apache.maven.resolver:maven-resolver-api from 2.0.1 to 2.0.2 [\#2250](https://github.com/apache/camel-kamelets/pull/2250) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -60,6 +50,26 @@
 - Introduce Truststore password configuration [\#2202](https://github.com/apache/camel-kamelets/pull/2202) ([XLAQO](https://github.com/XLAQO))
 - chore: Fix YAKS tests [\#2200](https://github.com/apache/camel-kamelets/pull/2200) ([christophd](https://github.com/christophd))
 - Bump peter-evans/create-pull-request from 7.0.2 to 7.0.3 [\#2199](https://github.com/apache/camel-kamelets/pull/2199) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [v4.8.1](https://github.com/apache/camel-kamelets/tree/v4.8.1) (2024-11-05)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.0...v4.8.1)
+
+**Fixed bugs:**
+
+- Wrong version in kafka-apicurio-registry-not-secured-source.kamelet.yaml 4.8.0 version [\#2222](https://github.com/apache/camel-kamelets/issues/2222)
+
+**Closed issues:**
+
+- Test failure [\#2261](https://github.com/apache/camel-kamelets/issues/2261)
+- Upgrade to Camel 4.8.1 [\#2252](https://github.com/apache/camel-kamelets/issues/2252)
+- Move main to 4.9.0-SNAPSHOT [\#2240](https://github.com/apache/camel-kamelets/issues/2240)
+- Remove Camel-Kamelets-utils since it is now in core [\#2239](https://github.com/apache/camel-kamelets/issues/2239)
+- Wrong artifact id in kafka-apicurio-registry-not-secured-source.kamelet.yaml dependencies [\#2236](https://github.com/apache/camel-kamelets/issues/2236)
+- Http/https Sink Kamelet: Expose okStatusCodeRange [\#2219](https://github.com/apache/camel-kamelets/issues/2219)
+- Add option for KCL Consumers to make the ConfigsBuilder for metrics of the Scheduler enable/disable [\#2212](https://github.com/apache/camel-kamelets/issues/2212)
+- Release 4.8.0 [\#2197](https://github.com/apache/camel-kamelets/issues/2197)
+- Provide some infrastructure as code configuration files for Terraform/Ansible/Cloudformation [\#1504](https://github.com/apache/camel-kamelets/issues/1504)
 
 ## [v4.8.0](https://github.com/apache/camel-kamelets/tree/v4.8.0) (2024-09-16)
 
