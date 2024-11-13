@@ -6,6 +6,7 @@
 
 **Merged pull requests:**
 
+- Bump org.apache.maven.plugins:maven-surefire-plugin from 3.5.1 to 3.5.2 [\#2271](https://github.com/apache/camel-kamelets/pull/2271) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen for SBOM [\#2270](https://github.com/apache/camel-kamelets/pull/2270) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Bump org.apache.maven.plugins:maven-javadoc-plugin from 3.10.1 to 3.11.1 [\#2269](https://github.com/apache/camel-kamelets/pull/2269) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump org.apache.maven.resolver:maven-resolver-api from 2.0.2 to 2.0.3 [\#2268](https://github.com/apache/camel-kamelets/pull/2268) ([dependabot[bot]](https://github.com/apps/dependabot))
