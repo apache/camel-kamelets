@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.1...HEAD)
 
+**Closed issues:**
+
+- Release 4.8.1 [\#2253](https://github.com/apache/camel-kamelets/issues/2253)
+
 **Merged pull requests:**
 
 - Bump org.apache.maven.plugins:maven-surefire-plugin from 3.5.1 to 3.5.2 [\#2271](https://github.com/apache/camel-kamelets/pull/2271) ([dependabot[bot]](https://github.com/apps/dependabot))
