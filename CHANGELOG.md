@@ -10,7 +10,10 @@
 
 **Merged pull requests:**
 
+- Generated sources regen [\#2276](https://github.com/apache/camel-kamelets/pull/2276) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump com.amazon.redshift:redshift-jdbc42 from 2.1.0.30 to 2.1.0.31 [\#2275](https://github.com/apache/camel-kamelets/pull/2275) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump commons-io:commons-io from 2.17.0 to 2.18.0 [\#2274](https://github.com/apache/camel-kamelets/pull/2274) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.resolver:maven-resolver-api from 2.0.3 to 2.0.4 [\#2273](https://github.com/apache/camel-kamelets/pull/2273) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump org.apache.maven.plugins:maven-surefire-plugin from 3.5.1 to 3.5.2 [\#2271](https://github.com/apache/camel-kamelets/pull/2271) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen for SBOM [\#2270](https://github.com/apache/camel-kamelets/pull/2270) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Bump org.apache.maven.plugins:maven-javadoc-plugin from 3.10.1 to 3.11.1 [\#2269](https://github.com/apache/camel-kamelets/pull/2269) ([dependabot[bot]](https://github.com/apps/dependabot))
