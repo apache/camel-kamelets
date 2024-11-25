@@ -93,6 +93,10 @@ spec:
   - "mvn:org.apache.commons:commons-dbcp2:2.12.0"
   template:
     beans:
+      - name: local-sql-redshift-source
+        type: "#class:org.apache.camel.component.sql.SqlComponent"
+        properties:
+          autowiredEnabled: "false"
       - name: dsBean
         type: "#class:org.apache.commons.dbcp2.BasicDataSource"
         properties:
@@ -101,7 +105,7 @@ spec:
           url: 'jdbc:redshift://{{serverName}}:{{serverPort}}/{{databaseName}}'
           driverClassName: 'com.amazon.redshift.jdbc.Driver'
     from:
-      uri: "sql:{{query}}"
+      uri: "{{local-sql-redshift-source}}:{{query}}"
       parameters:
         dataSource: "#bean:{{dsBean}}"
         onConsume: "{{?consumedQuery}}"
