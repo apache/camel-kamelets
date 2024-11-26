@@ -6,10 +6,19 @@
 
 **Closed issues:**
 
+- SQL Kamelets: Disable autowiring by default [\#2278](https://github.com/apache/camel-kamelets/issues/2278)
 - Release 4.8.1 [\#2253](https://github.com/apache/camel-kamelets/issues/2253)
 
 **Merged pull requests:**
 
+- Cassandra Kamelets: Disable autowiring by default - CQL [\#2293](https://github.com/apache/camel-kamelets/pull/2293) ([oscerd](https://github.com/oscerd))
+- SQL Kamelets: Disable autowiring by default - Snowflake [\#2291](https://github.com/apache/camel-kamelets/pull/2291) ([oscerd](https://github.com/oscerd))
+- SQL Kamelets: Disable autowiring by default - AWS Redshift [\#2289](https://github.com/apache/camel-kamelets/pull/2289) ([oscerd](https://github.com/oscerd))
+- SQL Kamelets: Disable autowiring by default - Oracle  [\#2287](https://github.com/apache/camel-kamelets/pull/2287) ([oscerd](https://github.com/oscerd))
+- SQL Kamelets: Disable autowiring by default - MySQL [\#2285](https://github.com/apache/camel-kamelets/pull/2285) ([oscerd](https://github.com/oscerd))
+- SQL Kamelets: Disable autowiring by default - MariaDB [\#2283](https://github.com/apache/camel-kamelets/pull/2283) ([oscerd](https://github.com/oscerd))
+- SQL Kamelets: Disable autowiring by default - SQLServer [\#2281](https://github.com/apache/camel-kamelets/pull/2281) ([oscerd](https://github.com/oscerd))
+- SQL Kamelets: Disable autowiring by default - Postgres Source and Sink [\#2279](https://github.com/apache/camel-kamelets/pull/2279) ([oscerd](https://github.com/oscerd))
 - Generated sources regen for SBOM [\#2277](https://github.com/apache/camel-kamelets/pull/2277) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Generated sources regen [\#2276](https://github.com/apache/camel-kamelets/pull/2276) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Bump com.amazon.redshift:redshift-jdbc42 from 2.1.0.30 to 2.1.0.31 [\#2275](https://github.com/apache/camel-kamelets/pull/2275) ([dependabot[bot]](https://github.com/apps/dependabot))
