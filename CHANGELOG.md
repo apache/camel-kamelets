@@ -11,6 +11,7 @@
 
 **Merged pull requests:**
 
+- Bump org.cyclonedx:cyclonedx-maven-plugin from 2.9.0 to 2.9.1 [\#2295](https://github.com/apache/camel-kamelets/pull/2295) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Cassandra Kamelets: Disable autowiring by default - CQL [\#2293](https://github.com/apache/camel-kamelets/pull/2293) ([oscerd](https://github.com/oscerd))
 - SQL Kamelets: Disable autowiring by default - Snowflake [\#2291](https://github.com/apache/camel-kamelets/pull/2291) ([oscerd](https://github.com/oscerd))
 - SQL Kamelets: Disable autowiring by default - AWS Redshift [\#2289](https://github.com/apache/camel-kamelets/pull/2289) ([oscerd](https://github.com/oscerd))
