@@ -8,9 +8,11 @@
 
 - SQL Kamelets: Disable autowiring by default [\#2278](https://github.com/apache/camel-kamelets/issues/2278)
 - Release 4.8.1 [\#2253](https://github.com/apache/camel-kamelets/issues/2253)
+- camel-kamelets-utils - Reduce dependencies in use [\#1146](https://github.com/apache/camel-kamelets/issues/1146)
 
 **Merged pull requests:**
 
+- Generated sources regen for SBOM [\#2297](https://github.com/apache/camel-kamelets/pull/2297) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Bump org.cyclonedx:cyclonedx-maven-plugin from 2.9.0 to 2.9.1 [\#2295](https://github.com/apache/camel-kamelets/pull/2295) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Cassandra Kamelets: Disable autowiring by default - CQL [\#2293](https://github.com/apache/camel-kamelets/pull/2293) ([oscerd](https://github.com/oscerd))
 - SQL Kamelets: Disable autowiring by default - Snowflake [\#2291](https://github.com/apache/camel-kamelets/pull/2291) ([oscerd](https://github.com/oscerd))
