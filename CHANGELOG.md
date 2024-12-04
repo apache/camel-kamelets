@@ -12,6 +12,8 @@
 
 **Merged pull requests:**
 
+- Generated sources regen [\#2304](https://github.com/apache/camel-kamelets/pull/2304) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump org.apache.commons:commons-dbcp2 from 2.12.0 to 2.13.0 [\#2302](https://github.com/apache/camel-kamelets/pull/2302) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen for SBOM [\#2297](https://github.com/apache/camel-kamelets/pull/2297) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Bump org.cyclonedx:cyclonedx-maven-plugin from 2.9.0 to 2.9.1 [\#2295](https://github.com/apache/camel-kamelets/pull/2295) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Cassandra Kamelets: Disable autowiring by default - CQL [\#2293](https://github.com/apache/camel-kamelets/pull/2293) ([oscerd](https://github.com/oscerd))
