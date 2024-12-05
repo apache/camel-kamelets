@@ -2,16 +2,31 @@
 
 ## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.1...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.9.0...HEAD)
+
+**Merged pull requests:**
+
+- Generated sources regen [\#2310](https://github.com/apache/camel-kamelets/pull/2310) ([github-actions[bot]](https://github.com/apps/github-actions))
+
+## [v4.9.0](https://github.com/apache/camel-kamelets/tree/v4.9.0) (2024-12-04)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.1...v4.9.0)
 
 **Closed issues:**
 
+- Upgrade to Camel 4.9.0 [\#2299](https://github.com/apache/camel-kamelets/issues/2299)
+- Add Prefix and Filter parameters to Google Cloud Storage Source Kamelet [\#2296](https://github.com/apache/camel-kamelets/issues/2296)
 - SQL Kamelets: Disable autowiring by default [\#2278](https://github.com/apache/camel-kamelets/issues/2278)
 - Release 4.8.1 [\#2253](https://github.com/apache/camel-kamelets/issues/2253)
 - camel-kamelets-utils - Reduce dependencies in use [\#1146](https://github.com/apache/camel-kamelets/issues/1146)
 
 **Merged pull requests:**
 
+- Revert "Bump fabric8-version from 6.13.4 to 7.0.0" [\#2309](https://github.com/apache/camel-kamelets/pull/2309) ([oscerd](https://github.com/oscerd))
+- Align Azure dependencies to Azure SDK BOM 1.2.29 like Camel 4.9.0 [\#2308](https://github.com/apache/camel-kamelets/pull/2308) ([oscerd](https://github.com/oscerd))
+- Add Prefix and Filter parameters to Google Cloud Storage Source Kamelet [\#2307](https://github.com/apache/camel-kamelets/pull/2307) ([oscerd](https://github.com/oscerd))
+- Upgrade to Camel 4.9.0 [\#2306](https://github.com/apache/camel-kamelets/pull/2306) ([oscerd](https://github.com/oscerd))
+- Bump fabric8-version from 6.13.4 to 7.0.0 [\#2305](https://github.com/apache/camel-kamelets/pull/2305) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen [\#2304](https://github.com/apache/camel-kamelets/pull/2304) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Bump org.apache.commons:commons-dbcp2 from 2.12.0 to 2.13.0 [\#2302](https://github.com/apache/camel-kamelets/pull/2302) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen for SBOM [\#2297](https://github.com/apache/camel-kamelets/pull/2297) ([github-actions[bot]](https://github.com/apps/github-actions))
