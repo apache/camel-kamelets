@@ -6,6 +6,7 @@
 
 **Merged pull requests:**
 
+- Generated sources regen for SBOM [\#2312](https://github.com/apache/camel-kamelets/pull/2312) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Generated sources regen [\#2310](https://github.com/apache/camel-kamelets/pull/2310) ([github-actions[bot]](https://github.com/apps/github-actions))
 
 ## [v4.9.0](https://github.com/apache/camel-kamelets/tree/v4.9.0) (2024-12-04)
