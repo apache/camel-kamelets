@@ -2,12 +2,21 @@
 
 ## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.9.0...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.2...HEAD)
 
 **Merged pull requests:**
 
+- Bump org.apache.maven.plugins:maven-javadoc-plugin from 3.11.1 to 3.11.2 [\#2313](https://github.com/apache/camel-kamelets/pull/2313) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen for SBOM [\#2312](https://github.com/apache/camel-kamelets/pull/2312) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Generated sources regen [\#2310](https://github.com/apache/camel-kamelets/pull/2310) ([github-actions[bot]](https://github.com/apps/github-actions))
+
+## [v4.8.2](https://github.com/apache/camel-kamelets/tree/v4.8.2) (2024-12-09)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.9.0...v4.8.2)
+
+**Closed issues:**
+
+- Release 4.9.0 [\#2298](https://github.com/apache/camel-kamelets/issues/2298)
 
 ## [v4.9.0](https://github.com/apache/camel-kamelets/tree/v4.9.0) (2024-12-04)
 
