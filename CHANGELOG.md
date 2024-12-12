@@ -6,6 +6,7 @@
 
 **Merged pull requests:**
 
+- Bump actions/setup-go from 5.1.0 to 5.2.0 [\#2315](https://github.com/apache/camel-kamelets/pull/2315) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump org.apache.maven.plugins:maven-javadoc-plugin from 3.11.1 to 3.11.2 [\#2313](https://github.com/apache/camel-kamelets/pull/2313) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen for SBOM [\#2312](https://github.com/apache/camel-kamelets/pull/2312) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Generated sources regen [\#2310](https://github.com/apache/camel-kamelets/pull/2310) ([github-actions[bot]](https://github.com/apps/github-actions))
