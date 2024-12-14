@@ -4,6 +4,13 @@
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.2...HEAD)
 
+**Closed issues:**
+
+- Upgrade to Camel 4.8.2 [\#2301](https://github.com/apache/camel-kamelets/issues/2301)
+- Release 4.8.2 [\#2300](https://github.com/apache/camel-kamelets/issues/2300)
+- Create Kamelets for AWS Step Functions [\#1742](https://github.com/apache/camel-kamelets/issues/1742)
+- Add a `id_str` field to Twitter related Kamelets for the generated CloudEvents [\#925](https://github.com/apache/camel-kamelets/issues/925)
+
 **Merged pull requests:**
 
 - Bump actions/setup-go from 5.1.0 to 5.2.0 [\#2315](https://github.com/apache/camel-kamelets/pull/2315) ([dependabot[bot]](https://github.com/apps/dependabot))
