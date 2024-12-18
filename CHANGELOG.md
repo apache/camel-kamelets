@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Camel Splunk Hec: Token is not part of the URI, it's an endpoint parameter [\#2318](https://github.com/apache/camel-kamelets/issues/2318)
 - Upgrade to Camel 4.8.2 [\#2301](https://github.com/apache/camel-kamelets/issues/2301)
 - Release 4.8.2 [\#2300](https://github.com/apache/camel-kamelets/issues/2300)
 - Create Kamelets for AWS Step Functions [\#1742](https://github.com/apache/camel-kamelets/issues/1742)
@@ -13,6 +14,8 @@
 
 **Merged pull requests:**
 
+- Camel Splunk Hec: Token is not part of the URI, it's an endpoint para… [\#2319](https://github.com/apache/camel-kamelets/pull/2319) ([oscerd](https://github.com/oscerd))
+- Bump org.apache.maven.resolver:maven-resolver-api from 2.0.4 to 2.0.5 [\#2317](https://github.com/apache/camel-kamelets/pull/2317) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump actions/setup-go from 5.1.0 to 5.2.0 [\#2315](https://github.com/apache/camel-kamelets/pull/2315) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump org.apache.maven.plugins:maven-javadoc-plugin from 3.11.1 to 3.11.2 [\#2313](https://github.com/apache/camel-kamelets/pull/2313) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen for SBOM [\#2312](https://github.com/apache/camel-kamelets/pull/2312) ([github-actions[bot]](https://github.com/apps/github-actions))
