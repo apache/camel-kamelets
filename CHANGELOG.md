@@ -14,6 +14,10 @@
 
 **Merged pull requests:**
 
+- Generated sources regen [\#2327](https://github.com/apache/camel-kamelets/pull/2327) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump org.apache.activemq:artemis-jakarta-client-all from 2.38.0 to 2.39.0 [\#2326](https://github.com/apache/camel-kamelets/pull/2326) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/upload-artifact from 4.4.3 to 4.5.0 [\#2322](https://github.com/apache/camel-kamelets/pull/2322) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/setup-java from 4.5.0 to 4.6.0 [\#2321](https://github.com/apache/camel-kamelets/pull/2321) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Camel Splunk Hec: Token is not part of the URI, it's an endpoint para… [\#2319](https://github.com/apache/camel-kamelets/pull/2319) ([oscerd](https://github.com/oscerd))
 - Bump org.apache.maven.resolver:maven-resolver-api from 2.0.4 to 2.0.5 [\#2317](https://github.com/apache/camel-kamelets/pull/2317) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump actions/setup-go from 5.1.0 to 5.2.0 [\#2315](https://github.com/apache/camel-kamelets/pull/2315) ([dependabot[bot]](https://github.com/apps/dependabot))
