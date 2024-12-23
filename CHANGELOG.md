@@ -14,6 +14,7 @@
 
 **Merged pull requests:**
 
+- Generated sources regen for SBOM [\#2328](https://github.com/apache/camel-kamelets/pull/2328) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Generated sources regen [\#2327](https://github.com/apache/camel-kamelets/pull/2327) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Bump org.apache.activemq:artemis-jakarta-client-all from 2.38.0 to 2.39.0 [\#2326](https://github.com/apache/camel-kamelets/pull/2326) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump actions/upload-artifact from 4.4.3 to 4.5.0 [\#2322](https://github.com/apache/camel-kamelets/pull/2322) ([dependabot[bot]](https://github.com/apps/dependabot))
