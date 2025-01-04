@@ -14,6 +14,7 @@
 
 **Merged pull requests:**
 
+- include missing sslTruststorePassword [\#2332](https://github.com/apache/camel-kamelets/pull/2332) ([jorgembfigueira](https://github.com/jorgembfigueira))
 - Generated sources regen [\#2330](https://github.com/apache/camel-kamelets/pull/2330) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Bump com.amazon.redshift:redshift-jdbc42 from 2.1.0.31 to 2.1.0.32 [\#2329](https://github.com/apache/camel-kamelets/pull/2329) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen for SBOM [\#2328](https://github.com/apache/camel-kamelets/pull/2328) ([github-actions[bot]](https://github.com/apps/github-actions))
