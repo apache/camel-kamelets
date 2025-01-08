@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- The Kamelet "aws-sqs-source" is invalid [\#2334](https://github.com/apache/camel-kamelets/issues/2334)
 - Camel Splunk Hec: Token is not part of the URI, it's an endpoint parameter [\#2318](https://github.com/apache/camel-kamelets/issues/2318)
 - Upgrade to Camel 4.8.2 [\#2301](https://github.com/apache/camel-kamelets/issues/2301)
 - Release 4.8.2 [\#2300](https://github.com/apache/camel-kamelets/issues/2300)
@@ -14,8 +15,10 @@
 
 **Merged pull requests:**
 
+- The Kamelet "aws-sqs-source" is invalid [\#2336](https://github.com/apache/camel-kamelets/pull/2336) ([oscerd](https://github.com/oscerd))
 - Generated sources regen [\#2333](https://github.com/apache/camel-kamelets/pull/2333) ([github-actions[bot]](https://github.com/apps/github-actions))
 - include missing sslTruststorePassword [\#2332](https://github.com/apache/camel-kamelets/pull/2332) ([jorgembfigueira](https://github.com/jorgembfigueira))
+- Bump peter-evans/create-pull-request from 7.0.5 to 7.0.6 [\#2331](https://github.com/apache/camel-kamelets/pull/2331) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen [\#2330](https://github.com/apache/camel-kamelets/pull/2330) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Bump com.amazon.redshift:redshift-jdbc42 from 2.1.0.31 to 2.1.0.32 [\#2329](https://github.com/apache/camel-kamelets/pull/2329) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen for SBOM [\#2328](https://github.com/apache/camel-kamelets/pull/2328) ([github-actions[bot]](https://github.com/apps/github-actions))
