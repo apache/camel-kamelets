@@ -133,13 +133,6 @@ spec:
         description: The location of the trust store file.
         title: SSL Truststore Location
         type: string
-      sslTruststorePassword:
-        description: The store password for the trust store file.
-        title: SSL Truststore Password
-        type: string
-        format: password
-        x-descriptors:
-          - urn:camel:group:credentials
       sslEnabledProtocols:
         description:   The list of protocols enabled for SSL connections. TLSv1.2, TLSv1.1 and TLSv1 are enabled by default.
         title: SSL Enabled Protocols
@@ -170,7 +163,6 @@ spec:
           sslKeyPassword: '{{sslKeyPassword}}'
           sslKeystorePassword: '{{sslKeystorePassword}}'
           sslTruststoreLocation: '{{sslTruststoreLocation}}'
-          sslTruststorePassword: '{{sslTruststorePassword}}'
           sslProtocol: '{{sslProtocol}}'
           sslEnabledProtocols: '{{sslEnabledProtocols}}'
           sslEndpointAlgorithm: '{{sslEndpointAlgorithm}}'
