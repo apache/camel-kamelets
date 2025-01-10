@@ -15,6 +15,10 @@
 
 **Merged pull requests:**
 
+- Generated sources regen [\#2341](https://github.com/apache/camel-kamelets/pull/2341) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Revert "Kafka SSL Source Kamelet - include missing sslTruststorePassword" [\#2340](https://github.com/apache/camel-kamelets/pull/2340) ([oscerd](https://github.com/oscerd))
+- Kafka SSL Source Kamelet - include missing sslTruststorePassword [\#2339](https://github.com/apache/camel-kamelets/pull/2339) ([oscerd](https://github.com/oscerd))
+- Update kafka-ssl-source.kamelet.yaml [\#2338](https://github.com/apache/camel-kamelets/pull/2338) ([jorgembfigueira](https://github.com/jorgembfigueira))
 - The Kamelet "aws-sqs-source" is invalid [\#2336](https://github.com/apache/camel-kamelets/pull/2336) ([oscerd](https://github.com/oscerd))
 - Generated sources regen [\#2333](https://github.com/apache/camel-kamelets/pull/2333) ([github-actions[bot]](https://github.com/apps/github-actions))
 - include missing sslTruststorePassword [\#2332](https://github.com/apache/camel-kamelets/pull/2332) ([jorgembfigueira](https://github.com/jorgembfigueira))
