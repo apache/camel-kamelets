@@ -10,11 +10,14 @@
 - Camel Splunk Hec: Token is not part of the URI, it's an endpoint parameter [\#2318](https://github.com/apache/camel-kamelets/issues/2318)
 - Upgrade to Camel 4.8.2 [\#2301](https://github.com/apache/camel-kamelets/issues/2301)
 - Release 4.8.2 [\#2300](https://github.com/apache/camel-kamelets/issues/2300)
+- mqtt5-source: Issue with wildcard topic. Character encoding issue? The same topic works with the paho-mqtt5 component [\#2248](https://github.com/apache/camel-kamelets/issues/2248)
 - Create Kamelets for AWS Step Functions [\#1742](https://github.com/apache/camel-kamelets/issues/1742)
 - Add a `id_str` field to Twitter related Kamelets for the generated CloudEvents [\#925](https://github.com/apache/camel-kamelets/issues/925)
 
 **Merged pull requests:**
 
+- Kafka SSL Source Kamelet - SSLTruststorePassword is required [\#2343](https://github.com/apache/camel-kamelets/pull/2343) ([oscerd](https://github.com/oscerd))
+- Bump actions/upload-artifact from 4.5.0 to 4.6.0 [\#2342](https://github.com/apache/camel-kamelets/pull/2342) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen [\#2341](https://github.com/apache/camel-kamelets/pull/2341) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Revert "Kafka SSL Source Kamelet - include missing sslTruststorePassword" [\#2340](https://github.com/apache/camel-kamelets/pull/2340) ([oscerd](https://github.com/oscerd))
 - Kafka SSL Source Kamelet - include missing sslTruststorePassword [\#2339](https://github.com/apache/camel-kamelets/pull/2339) ([oscerd](https://github.com/oscerd))
