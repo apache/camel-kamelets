@@ -17,4 +17,4 @@
 
 package aws.ddb
 
-$(waitFor().seconds(15.0).http().url("${YAKS_TESTCONTAINERS_LOCALSTACK_DYNAMODB_LOCAL_URL}"))
+$(waitFor().seconds(15.0).http().url("${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"))

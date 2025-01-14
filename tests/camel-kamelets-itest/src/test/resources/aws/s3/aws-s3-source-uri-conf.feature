@@ -17,7 +17,7 @@ Feature: AWS S3 Source - URI based config
     Given New Camel context
     Given load to Camel registry amazonS3Client.groovy
     # Create binding
-    Given load Camel K integration aws-s3-to-log-uri-based.groovy
+    Given load Camel K integration aws-s3-to-log-uri-based.yaml
     Then Camel K integration aws-s3-to-log-uri-based should be running
     # Verify Kamelet source
     Given Camel exchange message header CamelAwsS3Key="${aws.s3.key}"

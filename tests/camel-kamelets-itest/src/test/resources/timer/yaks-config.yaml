@@ -20,11 +20,11 @@ config:
     temporary: false
   runtime:
     env:
-      - name: YAKS_CAMELK_AUTO_REMOVE_RESOURCES
+      - name: CITRUS_CAMELK_AUTO_REMOVE_RESOURCES
         value: false
-      - name: YAKS_KUBERNETES_AUTO_REMOVE_RESOURCES
+      - name: CITRUS_KUBERNETES_AUTO_REMOVE_RESOURCES
         value: false
-      - name: YAKS_JBANG_CAMEL_DUMP_INTEGRATION_OUTPUT
+      - name: CITRUS_JBANG_CAMEL_DUMP_INTEGRATION_OUTPUT
         value: true
     settings:
       loggers:
@@ -34,7 +34,7 @@ config:
           level: INFO
     resources:
       - timer-to-http-pipe.yaml
-      - timer-to-http.groovy
+      - timer-to-http.yaml
       - timer-to-http.properties
   dump:
     enabled: true

@@ -14,7 +14,7 @@ Feature: AWS SQS Kamelet - URI based config
     # Create AWS-SQS client
     Given load to Camel registry amazonSQSClient.groovy
     # Create binding
-    Given load Camel K integration aws-sqs-to-log-uri-based.groovy
+    Given load Camel K integration aws-sqs-to-log-uri-based.yaml
     Then Camel K integration aws-sqs-to-log-uri-based should be running
     # Verify Kamelet source
     Given variable aws.sqs.message is "Hello from SQS Kamelet"

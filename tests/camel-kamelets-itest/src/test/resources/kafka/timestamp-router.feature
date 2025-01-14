@@ -39,7 +39,7 @@ Feature: Kafka Timestamp Router
 
   Scenario: Receive message on Kafka topic and verify sink output
     Given new Kafka connection
-      | url           | ${YAKS_TESTCONTAINERS_REDPANDA_LOCAL_BOOTSTRAP_SERVERS} |
+      | url           | ${CITRUS_TESTCONTAINERS_REDPANDA_LOCAL_BOOTSTRAP_SERVERS} |
       | consumerGroup | consumer-1                                              |
     Given URL: yaks:resolveURL('timestamp-router-pipe',8080)
     Given HTTP request query parameter kafka.TOPIC="${topicName}"

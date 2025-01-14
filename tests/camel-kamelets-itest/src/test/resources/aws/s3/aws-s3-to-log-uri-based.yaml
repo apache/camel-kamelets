@@ -15,29 +15,18 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-config:
-  namespace:
-    temporary: false
-  runtime:
-    env:
-      - name: CITRUS_CAMELK_AUTO_REMOVE_RESOURCES
-        value: false
-      - name: CITRUS_KUBERNETES_AUTO_REMOVE_RESOURCES
-        value: false
-      - name: CITRUS_JBANG_CAMEL_DUMP_INTEGRATION_OUTPUT
-        value: true
-    settings:
-      loggers:
-        - name: INTEGRATION_STATUS
-          level: INFO
-        - name: INTEGRATION_LOGS
-          level: INFO
-    resources:
-      - pet.json
-      - openapi.json
-      - rest-openapi-sink-pipe.yaml
-  dump:
-    enabled: true
-    failedOnly: true
-    includes:
-      - app=camel-k
+- route:
+    from:
+      uri: "kamelet:aws-s3-source"
+      parameters:
+        bucketNameOrArn: '${aws.s3.bucketNameOrArn}'
+        overrideEndpoint: 'true'
+        forcePathStyle: 'true'
+        uriEndpointOverride: '${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}'
+        accessKey: '${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}'
+        secretKey: '${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}'
+        region: '${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}'
+        deleteAfterRead: 'true'
+      steps:
+      - to:
+          uri: "log:info"

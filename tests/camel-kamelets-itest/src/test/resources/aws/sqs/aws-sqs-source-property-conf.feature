@@ -15,10 +15,14 @@ Feature: AWS SQS Kamelet - property based config
     Given load to Camel registry amazonSQSClient.groovy
     # Create binding
     Given Camel K integration property file aws-sqs-credentials.properties
-    Given create Camel K integration aws-sqs-to-log-prop-based.groovy
+    Given create Camel K integration aws-sqs-to-log-prop-based.yaml
     """
-    from("kamelet:aws-sqs-source/aws-sqs-credentials")
-      .to("log:info")
+    - route:
+        from:
+          uri: "kamelet:aws-sqs-source/aws-sqs-credentials"
+          steps:
+          - to:
+              uri: "log:info"
     """
     Then Camel K integration aws-sqs-to-log-prop-based should be running
     # Verify Kamelet source

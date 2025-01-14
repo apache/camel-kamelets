@@ -1,0 +1,19 @@
+- route:
+    from:
+      uri: 'timer:tick'
+      parameters:
+        period: 10000
+      steps:
+      - setHeader:
+          name: "CamelHttpMethod"
+          expression:
+            constant: "PUT"
+      - setBody:
+          expression:
+            constant: '{{message}}'
+      - to:
+          uri: 'yaks:resolveURL(test-service)/messages'
+      - to:
+          uri: 'log:info'
+          parameters:
+            showStreams: true

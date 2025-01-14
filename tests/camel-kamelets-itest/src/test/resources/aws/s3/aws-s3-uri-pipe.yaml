@@ -29,10 +29,10 @@ spec:
       bucketNameOrArn: ${aws.s3.bucketNameOrArn}
       overrideEndpoint: true
       forcePathStyle: true
-      uriEndpointOverride: ${YAKS_TESTCONTAINERS_LOCALSTACK_S3_URL}
-      accessKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}
-      secretKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}
-      region: ${YAKS_TESTCONTAINERS_LOCALSTACK_REGION}
+      uriEndpointOverride: ${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}
+      accessKey: ${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}
+      secretKey: ${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}
+      region: ${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}
   sink:
     ref:
       kind: Kamelet

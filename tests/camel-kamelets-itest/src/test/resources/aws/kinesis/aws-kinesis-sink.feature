@@ -40,7 +40,7 @@ Feature: AWS Kinesis - Sink
     And Camel K integration aws-kinesis-sink-pipe is running
     And Camel K integration aws-kinesis-sink-pipe should print Started aws-kinesis-sink-pipe
     # Create vent listener
-    Given Camel route eventListener.groovy
+    Given Camel route kinesisEventListener.groovy
     """
     from("aws2-kinesis://${aws.kinesis.streamName}?amazonKinesisClient=#amazonKinesisClient")
        .convertBodyTo(String.class)
@@ -49,11 +49,11 @@ Feature: AWS Kinesis - Sink
     # Verify event
     Given Camel exchange message header CamelAwsKinesisPartitionKey="${aws.kinesis.partitionKey}"
     Then receive Camel exchange from("seda:result") with body: ${aws.kinesis.json.data}
+    # Stop event listener
+    Then stop Camel route kinesisEventListener
 
   Scenario: Remove resources
     # Remove Camel K binding
     Given delete Pipe aws-kinesis-sink-pipe
-    # Stop event listener
-    Given stop Camel route kinesisEventListener
     # Stop LocalStack container
     Given stop LocalStack container

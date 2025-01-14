@@ -1445,7 +1445,7 @@ Feature: Kamelet earthquake-source works
 
   Scenario: Bind Kamelet to service
     Given create Kubernetes service test-service with target port 8080
-    And bind Kamelet earthquake-source to uri http://test-service.${YAKS_NAMESPACE}.svc.cluster.local/test
+    And bind Kamelet earthquake-source to uri http://test-service.${CITRUS_NAMESPACE}.svc.cluster.local/test
     When create Pipe earthquake-source-uri
     Then Pipe earthquake-source-uri should be available
     And Camel K integration earthquake-source-uri should be running
@@ -1543,7 +1543,7 @@ Feature: Kamelet telegram-sink works
 
 
   Scenario: Send a message to the Telegram Chat
-    Given URL: http://webhook-to-telegram.${YAKS_NAMESPACE}.svc.cluster.local
+    Given URL: http://webhook-to-telegram.${CITRUS_NAMESPACE}.svc.cluster.local
     And HTTP request timeout is 60000 milliseconds
     And wait for GET on path / to return 404
     Given HTTP request headers

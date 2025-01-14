@@ -14,7 +14,7 @@ Feature: Verify Camel K integrations
 
     # Run Camel K integration
     Given Camel K integration property file timer-to-http.properties
-    When load Camel K integration timer-to-http.groovy
+    When load Camel K integration timer-to-http.yaml
     Then Camel K integration timer-to-http should be running
 
     # Verify Http request and send response

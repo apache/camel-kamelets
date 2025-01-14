@@ -45,7 +45,7 @@ Feature: Kafka Kamelet source
   Scenario: Send message to Kafka topic and verify sink output
     Given variable key is "citrus:randomNumber(4)"
     Given Kafka connection
-      | url | ${YAKS_TESTCONTAINERS_REDPANDA_LOCAL_BOOTSTRAP_SERVERS} |
+      | url | ${CITRUS_TESTCONTAINERS_REDPANDA_LOCAL_BOOTSTRAP_SERVERS} |
     Given Kafka message key: ${key}
     When send Kafka message with body and headers: ${message}
       | event-source | ${source} |

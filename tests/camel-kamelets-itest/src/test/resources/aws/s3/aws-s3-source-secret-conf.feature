@@ -24,7 +24,7 @@ Feature: AWS S3 Source - secret based config
     Given New Camel context
     Given load to Camel registry amazonS3Client.groovy
     # Create binding
-    Given load Camel K integration aws-s3-to-log-secret-based.groovy
+    Given load Camel K integration aws-s3-to-log-secret-based.yaml
     Then Camel K integration aws-s3-to-log-secret-based should be running
     # Verify Kamelet source
     Given Camel exchange message header CamelAwsS3Key="${aws.s3.key}"

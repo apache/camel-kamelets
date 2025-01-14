@@ -26,7 +26,7 @@ spec:
       apiVersion: camel.apache.org/v1
       name: kafka-source
     properties:
-      bootstrapServers: ${YAKS_TESTCONTAINERS_REDPANDA_LOCAL_BOOTSTRAP_SERVERS}
+      bootstrapServers: ${CITRUS_TESTCONTAINERS_REDPANDA_LOCAL_BOOTSTRAP_SERVERS}
       user: ${user}
       password: ${password}
       topic: ${topic}
