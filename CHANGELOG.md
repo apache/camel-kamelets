@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Release Camel Kamelets 4.8.3 [\#2348](https://github.com/apache/camel-kamelets/issues/2348)
 - The Kamelet "aws-sqs-source" is invalid [\#2334](https://github.com/apache/camel-kamelets/issues/2334)
 - Camel Splunk Hec: Token is not part of the URI, it's an endpoint parameter [\#2318](https://github.com/apache/camel-kamelets/issues/2318)
 - Upgrade to Camel 4.8.2 [\#2301](https://github.com/apache/camel-kamelets/issues/2301)
@@ -16,6 +17,9 @@
 
 **Merged pull requests:**
 
+- Kamelets Catalog - Make the description a one liner  [\#2351](https://github.com/apache/camel-kamelets/pull/2351) ([oscerd](https://github.com/oscerd))
+- Kamelets Catalog - Make the description a one liner  [\#2347](https://github.com/apache/camel-kamelets/pull/2347) ([oscerd](https://github.com/oscerd))
+- Kamelets Catalog - Make the description a one liner  [\#2346](https://github.com/apache/camel-kamelets/pull/2346) ([oscerd](https://github.com/oscerd))
 - Kafka SSL Source Kamelet - SSLTruststorePassword is required [\#2343](https://github.com/apache/camel-kamelets/pull/2343) ([oscerd](https://github.com/oscerd))
 - Bump actions/upload-artifact from 4.5.0 to 4.6.0 [\#2342](https://github.com/apache/camel-kamelets/pull/2342) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen [\#2341](https://github.com/apache/camel-kamelets/pull/2341) ([github-actions[bot]](https://github.com/apps/github-actions))
