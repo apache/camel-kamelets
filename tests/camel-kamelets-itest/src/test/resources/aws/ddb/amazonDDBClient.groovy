@@ -31,13 +31,13 @@ import software.amazon.awssdk.services.dynamodb.model.StreamViewType
 
 DynamoDbClient amazonDDBClient = DynamoDbClient
         .builder()
-        .endpointOverride(URI.create("${YAKS_TESTCONTAINERS_LOCALSTACK_DYNAMODB_LOCAL_URL}"))
+        .endpointOverride(URI.create("${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"))
         .credentialsProvider(StaticCredentialsProvider.create(
                 AwsBasicCredentials.create(
-                        "${YAKS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}",
-                        "${YAKS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}")
+                        "${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}",
+                        "${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}")
         ))
-        .region(Region.of("${YAKS_TESTCONTAINERS_LOCALSTACK_REGION}"))
+        .region(Region.of("${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"))
         .build()
 
 amazonDDBClient.createTable(b -> {

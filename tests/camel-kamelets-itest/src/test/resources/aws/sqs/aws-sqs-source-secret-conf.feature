@@ -21,7 +21,7 @@ Feature: AWS SQS Kamelet - secret based config
     # Create AWS-SQS client
     Given load to Camel registry amazonSQSClient.groovy
     # Create binding
-    Given load Camel K integration aws-sqs-to-log-secret-based.groovy
+    Given load Camel K integration aws-sqs-to-log-secret-based.yaml
     Then Camel K integration aws-sqs-to-log-secret-based should be running
     # Verify Kamelet source
     Given variable aws.sqs.message is "Hello from SQS Kamelet"

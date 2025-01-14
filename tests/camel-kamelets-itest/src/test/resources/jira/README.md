@@ -40,6 +40,6 @@ $ yaks run --local src/test/resources/jira/jira-source.feature
 $ yaks run --local src/test/resources/jira/jira-add-issue-sink.feature
 ```
 
-You can increase number of attempts to run the test by adding: "-e YAKS_CAMELK_MAX_ATTEMPTS=1000"
+You can increase number of attempts to run the test by adding: "-e CITRUS_CAMELK_MAX_ATTEMPTS=1000"
 
 You will be provided with the test log output and the test results.

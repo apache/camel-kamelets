@@ -16,6 +16,6 @@
 # limitations under the License.
 
 # create secret from properties file
-oc create secret generic salesforce-credentials --from-file=salesforce-credentials.properties -n ${YAKS_NAMESPACE}
+oc create secret generic salesforce-credentials --from-file=salesforce-credentials.properties -n ${CITRUS_NAMESPACE}
 # bind secret to test by name
-oc label secret salesforce-credentials yaks.citrusframework.org/test=salesforce-sink -n ${YAKS_NAMESPACE}
+oc label secret salesforce-credentials yaks.citrusframework.org/test=salesforce-sink -n ${CITRUS_NAMESPACE}

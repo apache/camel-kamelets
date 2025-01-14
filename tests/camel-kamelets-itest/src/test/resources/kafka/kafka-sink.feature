@@ -36,7 +36,7 @@ Feature: Kafka Kamelet sink
 
   Scenario: Verify Kafka sink output
     Given Kafka connection
-      | url | ${YAKS_TESTCONTAINERS_REDPANDA_LOCAL_BOOTSTRAP_SERVERS} |
+      | url | ${CITRUS_TESTCONTAINERS_REDPANDA_LOCAL_BOOTSTRAP_SERVERS} |
     Then receive Kafka message with body: ${message}
 
   Scenario: Remove resources

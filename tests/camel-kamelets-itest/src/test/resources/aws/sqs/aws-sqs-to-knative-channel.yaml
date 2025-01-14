@@ -28,10 +28,10 @@ spec:
     properties:
       queueNameOrArn: ${aws.sqs.queueName}
       overrideEndpoint: true
-      uriEndpointOverride: ${YAKS_TESTCONTAINERS_LOCALSTACK_SQS_URL}
-      accessKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}
-      secretKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}
-      region: ${YAKS_TESTCONTAINERS_LOCALSTACK_REGION}
+      uriEndpointOverride: ${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}
+      accessKey: ${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}
+      secretKey: ${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}
+      region: ${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}
   steps:
     - ref:
         kind: Kamelet

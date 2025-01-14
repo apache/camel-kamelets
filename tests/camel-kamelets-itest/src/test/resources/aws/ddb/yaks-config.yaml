@@ -22,15 +22,15 @@ config:
     testcontainers:
       enabled: true
     env:
-      - name: YAKS_CAMEL_AUTO_REMOVE_RESOURCES
+      - name: CITRUS_CAMEL_AUTO_REMOVE_RESOURCES
         value: false
-      - name: YAKS_CAMELK_AUTO_REMOVE_RESOURCES
+      - name: CITRUS_CAMELK_AUTO_REMOVE_RESOURCES
         value: false
-      - name: YAKS_KAMELETS_AUTO_REMOVE_RESOURCES
+      - name: CITRUS_KAMELETS_AUTO_REMOVE_RESOURCES
         value: false
-      - name: YAKS_JBANG_CAMEL_DUMP_INTEGRATION_OUTPUT
+      - name: CITRUS_JBANG_CAMEL_DUMP_INTEGRATION_OUTPUT
         value: true
-      - name: YAKS_TESTCONTAINERS_AUTO_REMOVE_RESOURCES
+      - name: CITRUS_TESTCONTAINERS_AUTO_REMOVE_RESOURCES
         value: false
       - name: CITRUS_TYPE_CONVERTER
         value: camel

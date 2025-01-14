@@ -18,10 +18,14 @@ Feature: AWS S3 Source - property based config
     Given load to Camel registry amazonS3Client.groovy
     # Create binding
     Given Camel K integration property file aws-s3-credentials.properties
-    Given create Camel K integration aws-s3-to-log-prop-based.groovy
+    Given create Camel K integration aws-s3-to-log-prop-based.yaml
     """
-    from("kamelet:aws-s3-source/aws-s3-credentials")
-      .to("log:info")
+    - route:
+        from:
+          uri: "kamelet:aws-s3-source/aws-s3-credentials"
+          steps:
+          - to:
+              uri: "log:info"
     """
     Then Camel K integration aws-s3-to-log-prop-based should be running
     # Verify Kamelet source

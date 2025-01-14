@@ -16,13 +16,13 @@
 # limitations under the License.
 
 # Install Kafka
-kubectl create -f https://strimzi.io/install/latest?namespace=$YAKS_NAMESPACE
+kubectl create -f https://strimzi.io/install/latest?namespace=$CITRUS_NAMESPACE
 
 # Apply the `Kafka` Cluster CR file
-kubectl apply -f https://strimzi.io/examples/latest/kafka/kafka-ephemeral-single.yaml -n $YAKS_NAMESPACE
+kubectl apply -f https://strimzi.io/examples/latest/kafka/kafka-ephemeral-single.yaml -n $CITRUS_NAMESPACE
 
 # wait for everything to start
-kubectl wait kafka/my-cluster --for=condition=Ready --timeout=300s -n $YAKS_NAMESPACE
+kubectl wait kafka/my-cluster --for=condition=Ready --timeout=300s -n $CITRUS_NAMESPACE
 
 # create default topic
-kubectl apply -f https://strimzi.io/examples/latest/topic/kafka-topic.yaml -n $YAKS_NAMESPACE
+kubectl apply -f https://strimzi.io/examples/latest/topic/kafka-topic.yaml -n $CITRUS_NAMESPACE

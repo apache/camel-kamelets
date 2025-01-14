@@ -16,4 +16,4 @@
 # limitations under the License.
 
 # delete secret
-oc delete secret salesforce-credentials -n ${YAKS_NAMESPACE}
+oc delete secret salesforce-credentials -n ${CITRUS_NAMESPACE}

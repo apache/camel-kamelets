@@ -47,7 +47,7 @@ Feature: AWS DDB Sink
       | aws.ddb.json.data  | {"id": ${aws.ddb.item.id}} |
     Given run script putItem.groovy
     Given variables
-      | aws.ddb.items    | [[year:AttributeValue(N=${aws.ddb.item.year}), id:AttributeValue(N=${aws.ddb.item.id}), title:AttributeValue(S=${aws.ddb.item.title})]] |
+      | aws.ddb.items    | [[title:AttributeValue(S=${aws.ddb.item.title}), year:AttributeValue(N=${aws.ddb.item.year}), id:AttributeValue(N=${aws.ddb.item.id})]] |
     # Create item on AWS-DDB
     Then apply actions verifyItems.groovy
     # Create binding
@@ -75,7 +75,7 @@ Feature: AWS DDB Sink
     And Camel K integration aws-ddb-sink-pipe should print Started aws-ddb-sink-pipe
     # Verify Kamelet sink
     Given variables
-      | aws.ddb.item | [year:AttributeValue(N=${aws.ddb.item.year}), id:AttributeValue(N=${aws.ddb.item.id}), title:AttributeValue(S=${aws.ddb.item.title})] |
+      | aws.ddb.item | [title:AttributeValue(S=${aws.ddb.item.title}), year:AttributeValue(N=${aws.ddb.item.year}), id:AttributeValue(N=${aws.ddb.item.id})] |
     Then apply actions getItem.groovy
     # Remove Camel K binding
     Given delete Pipe aws-ddb-sink-pipe
@@ -91,7 +91,7 @@ Feature: AWS DDB Sink
       | aws.ddb.json.data      | { "key": {"id": ${aws.ddb.item.id}}, "item": {"title": "${aws.ddb.item.title.new}", "year": ${aws.ddb.item.year}, "directors": ${aws.ddb.item.directors}} } |
     Given run script putItem.groovy
     Given variables
-      | aws.ddb.item | [year:AttributeValue(N=${aws.ddb.item.year}), id:AttributeValue(N=${aws.ddb.item.id}), title:AttributeValue(S=${aws.ddb.item.title})] |
+      | aws.ddb.item | [title:AttributeValue(S=${aws.ddb.item.title}), year:AttributeValue(N=${aws.ddb.item.year}), id:AttributeValue(N=${aws.ddb.item.id})] |
     Then apply actions getItem.groovy
     # Create binding
     When load Pipe aws-ddb-sink-pipe.yaml
@@ -100,9 +100,9 @@ Feature: AWS DDB Sink
     And Camel K integration aws-ddb-sink-pipe should print Started aws-ddb-sink-pipe
     # Verify Kamelet sink
     Given variables
-      | maxRetryAttempts       | 200 |
+      | maxRetryAttempts       | 20 |
       | aws.ddb.item.directors | [Ernest B. Schoedsack, Merian C. Cooper] |
-      | aws.ddb.item           | [year:AttributeValue(N=${aws.ddb.item.year}), directors:AttributeValue(SS=${aws.ddb.item.directors}), id:AttributeValue(N=${aws.ddb.item.id}), title:AttributeValue(S=${aws.ddb.item.title.new})] |
+      | aws.ddb.item           | [id:AttributeValue(N=${aws.ddb.item.id}), title:AttributeValue(S=${aws.ddb.item.title.new}), year:AttributeValue(N=${aws.ddb.item.year}), directors:AttributeValue(SS=${aws.ddb.item.directors})] |
     Then apply actions getItem.groovy
     # Remove Camel K resources
     Given delete Pipe aws-ddb-sink-pipe

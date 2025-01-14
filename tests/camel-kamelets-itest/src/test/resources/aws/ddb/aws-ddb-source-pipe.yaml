@@ -29,10 +29,10 @@ spec:
       table: ${aws.ddb.tableName}
       streamIteratorType: FROM_START
       overrideEndpoint: true
-      uriEndpointOverride: ${YAKS_TESTCONTAINERS_LOCALSTACK_DYNAMODB_LOCAL_URL}
-      accessKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}
-      secretKey: ${YAKS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}
-      region: ${YAKS_TESTCONTAINERS_LOCALSTACK_REGION}
+      uriEndpointOverride: ${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}
+      accessKey: ${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}
+      secretKey: ${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}
+      region: ${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}
   sink:
     ref:
       kind: Kamelet

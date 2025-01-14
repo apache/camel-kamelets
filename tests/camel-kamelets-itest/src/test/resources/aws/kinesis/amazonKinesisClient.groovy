@@ -24,13 +24,13 @@ import software.amazon.awssdk.services.kinesis.KinesisClient
 
 KinesisClient kinesisClient = KinesisClient
         .builder()
-        .endpointOverride(URI.create("${YAKS_TESTCONTAINERS_LOCALSTACK_KINESIS_LOCAL_URL}"))
+        .endpointOverride(URI.create("${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"))
         .credentialsProvider(StaticCredentialsProvider.create(
                 AwsBasicCredentials.create(
-                        "${YAKS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}",
-                        "${YAKS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}")
+                        "${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}",
+                        "${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}")
         ))
-        .region(Region.of("${YAKS_TESTCONTAINERS_LOCALSTACK_REGION}"))
+        .region(Region.of("${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"))
         .build()
 
 kinesisClient.createStream(s -> s.streamName("${aws.kinesis.streamName}").shardCount(1))

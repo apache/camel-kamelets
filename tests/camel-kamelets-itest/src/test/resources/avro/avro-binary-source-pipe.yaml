@@ -20,9 +20,6 @@ kind: Pipe
 metadata:
   name: avro-binary-source-pipe
 spec:
-  integration:
-    dependencies:
-    - "camel:jackson-avro"
   source:
     ref:
       kind: Kamelet
