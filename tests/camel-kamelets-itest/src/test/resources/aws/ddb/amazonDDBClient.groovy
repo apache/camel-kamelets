@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-package aws.ddb
-
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
 import software.amazon.awssdk.regions.Region
@@ -31,17 +29,17 @@ import software.amazon.awssdk.services.dynamodb.model.StreamViewType
 
 DynamoDbClient amazonDDBClient = DynamoDbClient
         .builder()
-        .endpointOverride(URI.create("${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"))
+        .endpointOverride(URI.create('${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}'))
         .credentialsProvider(StaticCredentialsProvider.create(
                 AwsBasicCredentials.create(
-                        "${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}",
-                        "${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}")
+                        '${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}',
+                        '${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}')
         ))
-        .region(Region.of("${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"))
+        .region(Region.of('${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}'))
         .build()
 
 amazonDDBClient.createTable(b -> {
-        b.tableName("${aws.ddb.tableName}")
+        b.tableName('${aws.ddb.tableName}')
         b.keySchema(
                 KeySchemaElement.builder().attributeName("id").keyType(KeyType.HASH).build(),
         )
@@ -61,4 +59,4 @@ amazonDDBClient.createTable(b -> {
                         .writeCapacityUnits(1L).build())
 })
 
-return amazonDDBClient
+context.getReferenceResolver().bind("amazonDDBClient", amazonDDBClient)

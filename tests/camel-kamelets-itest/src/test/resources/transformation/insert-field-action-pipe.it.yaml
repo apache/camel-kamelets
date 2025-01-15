@@ -1,0 +1,71 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: insert-field-action-pipe-test
+variables:
+  - name: "server.url"
+    value: "http://localhost:8081"
+  - name: "id"
+    value: "citrus:randomUUID()"
+  - name: "field.value"
+    value: "Camel rocks!"
+  - name: "field.name"
+    value: "subject"
+actions:
+  # Purge Http service
+  - purge:
+      endpoints:
+        - name: "httpServer"
+
+  # Create Camel JBang integration
+  - camel:
+      jbang:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "transformation/insert-field-action-pipe.yaml"
+            systemProperties:
+              properties:
+                - name: "server.url"
+                  value: "${server.url}"
+                - name: "field.name"
+                  value: "${field.name}"
+                - name: "field.value"
+                  value: "${field.value}"
+                - name: "input"
+                  value: |
+                    { \"id\": \"${id}\" }
+
+  # Verify Http request
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          body:
+            data: |
+              { "id": "${id}", "${field.name}": "${field.value}" }
+
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          body:
+            data: "Thank You!"

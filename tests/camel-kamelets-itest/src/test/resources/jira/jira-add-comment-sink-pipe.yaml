@@ -26,8 +26,8 @@ spec:
       apiVersion: camel.apache.org/v1
       name: timer-source
     properties:
-      period: ${timer.source.period}
-      message: '${jira.issue.comment}'
+      period: "{{timer.source.period}}"
+      message: "{{jira.issue.comment}}"
   steps:
     - ref:
         kind: Kamelet
@@ -35,7 +35,7 @@ spec:
         name: insert-header-action
       properties:
         name: issueKey
-        value: ${jira.issue.key}
+        value: "{{jira.issue.key}}"
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1
@@ -48,6 +48,6 @@ spec:
       apiVersion: camel.apache.org/v1
       name: jira-add-comment-sink
     properties:
-      jiraUrl: yaks:resolveURL('jira-service')
-      username: ${jira.username}
-      password: ${jira.password}
+      jiraUrl: "{{jira.url}}"
+      username: "{{jira.username}}"
+      password: "{{jira.password}}"

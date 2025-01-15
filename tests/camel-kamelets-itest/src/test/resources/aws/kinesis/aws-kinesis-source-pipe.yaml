@@ -26,12 +26,12 @@ spec:
       apiVersion: camel.apache.org/v1
       name: aws-kinesis-source
     properties:
-      stream: ${aws.kinesis.streamName}
-      overrideEndpoint: true
-      uriEndpointOverride: ${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}
-      accessKey: ${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}
-      secretKey: ${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}
-      region: ${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}
+      stream: '{{aws.kinesis.streamName}}'
+      overrideEndpoint: '{{aws.kinesis.overrideEndpoint}}'
+      uriEndpointOverride: '{{aws.kinesis.uriEndpointOverride}}'
+      accessKey: '{{aws.kinesis.accessKey}}'
+      secretKey: '{{aws.kinesis.secretKey}}'
+      region: '{{aws.kinesis.region}}'
   sink:
     ref:
       kind: Kamelet

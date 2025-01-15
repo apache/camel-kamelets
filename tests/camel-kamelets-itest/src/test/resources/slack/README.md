@@ -25,19 +25,18 @@ The test performs the following high level steps:
 
 ## Installation
 
-The test assumes that you have access to a Kubernetes cluster and that the Camel K operator as well as the YAKS operator is installed
-and running.
+The test assumes that you have [JBang](https://www.jbang.dev/) installed and the Citrus CLI setup locally.
 
-You can review the installation steps for the operators in the documentation:
+You can review the installation steps for the tooling in the documentation:
 
 - [Install Camel K operator](https://camel.apache.org/camel-k/latest/installation/installation.html)
-- [Install YAKS operator](https://github.com/citrusframework/yaks#installation)
+- [Install Citrus JBang App](https://citrusframework.org/citrus/reference/html/index.html#runtime-jbang-install)
 
 ## Run the test
 
 ```shell script
-$ yaks run --local src/test/resources/slack/slack-source.feature
-$ yaks run --local src/test/resources/slack/slack-sink.feature
+$ citrus run src/test/resources/slack/slack-source.it.yaml
+$ citrus run src/test/resources/slack/slack-sink.it.yaml
 ```
 
 You will be provided with the test log output and the test results.

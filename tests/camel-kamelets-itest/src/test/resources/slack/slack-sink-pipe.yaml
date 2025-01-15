@@ -26,8 +26,8 @@ spec:
       apiVersion: camel.apache.org/v1
       name: timer-source
     properties:
-      period: ${timer.source.period}
-      message: '${slack.message}'
+      period: "{{timer.source.period}}"
+      message: "{{slack.message}}"
   steps:
     - ref:
         kind: Kamelet
@@ -41,6 +41,6 @@ spec:
       apiVersion: camel.apache.org/v1
       name: slack-sink
     properties:
-      webhookUrl: yaks:resolveURL('slack-service')
-      channel: ${slack.channel}
-      token: ${slack.token}
+      webhookUrl: "{{slack.server.url}}"
+      channel: "{{slack.channel}}"
+      token: "{{slack.token}}"

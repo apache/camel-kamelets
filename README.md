@@ -154,16 +154,16 @@ Kamelets **MAY** choose not to declare a `mediaType` when it varies depending on
 
 ### Testing
 
-Kamelets **SHOULD** be accompanied with testing code that verifies their correct behavior.
+Kamelets **SHOULD** be accompanied by tests that verify their correct behavior.
 
-[Yaks](https://github.com/citrusframework/yaks) is the testing framework of choice for Kamelets and the one implemented in the CI.
+[Citrus](https://github.com/citrusframework/citrus) is the testing framework of choice for Kamelets and the one implemented in the CI.
 
-Test code must be submitted in the `test/<kamelet-name>/` directory in the root of this repository.
+Test code must be submitted in the `tests/camel-kamelets-itests/src/test/resources/<kamelet-name>/` directory in the root of this repository.
 
 Kamelets submitted with tests that verify their correctness **MUST** be labeled with `camel.apache.org/kamelet.verified=true`.
 
 > [!NOTE]
-> There's no way at the moment to inject credentials for external systems into the CI in order to write more advanced tests, but we can expect we'll find an usable strategy in the long run.
+> There's no way at the moment to inject credentials for external systems into the CI in order to write more advanced tests, but we can expect we'll find a usable strategy in the long run.
 
 ### Kamelet Pipe Examples
 

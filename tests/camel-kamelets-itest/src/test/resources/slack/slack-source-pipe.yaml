@@ -26,9 +26,9 @@ spec:
       apiVersion: camel.apache.org/v1
       name: slack-source
     properties:
-      serverUrl: yaks:resolveURL('slack-service')
-      channel: ${slack.channel}
-      token: ${slack.token}
+      serverUrl: "{{slack.server.url}}"
+      channel: "{{slack.channel}}"
+      token: "{{slack.token}}"
   sink:
     ref:
       kind: Kamelet

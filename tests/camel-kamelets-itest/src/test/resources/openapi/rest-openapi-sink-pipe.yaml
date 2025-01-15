@@ -26,8 +26,8 @@ spec:
       apiVersion: camel.apache.org/v1
       name: timer-source
     properties:
-      period: 60000
-      message: '${pet}'
+      period: 10000
+      message: "{{pet}}"
   steps:
     - ref:
         kind: Kamelet
@@ -35,12 +35,12 @@ spec:
         name: insert-header-action
       properties:
         name: petId
-        value: ${petId}
+        value: "{{petId}}"
   sink:
     ref:
       kind: Kamelet
       apiVersion: camel.apache.org/v1
       name: rest-openapi-sink
     properties:
-      specification: yaks:resolveURL('test-service')/petstore/openapi.json
-      operation: ${operation}
+      specification: http://localhost:8081/petstore/openapi.json
+      operation: "{{spec.operation}}"

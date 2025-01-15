@@ -1,0 +1,75 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: data-type-action-pipe-test
+variables:
+  - name: "server.url"
+    value: "http://localhost:8081"
+  - name: "uuid"
+    value: "citrus:randomUUID()"
+actions:
+  # Purge Http service
+  - purge:
+      endpoints:
+        - name: "httpServer"
+
+  # Create Camel JBang integration
+  - camel:
+      jbang:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "transformation/data-type-action-pipe.yaml"
+            systemProperties:
+              properties:
+                - name: "server.url"
+                  value: "${server.url}"
+                - name: "input"
+                  value: |
+                    { \"id\": \"${uuid}\" }
+
+  # Verify Http request
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          contentType: "application/json;charset=UTF-8"
+          headers:
+            - name: ce-specversion
+              value: "1.0"
+            - name: ce-id
+              value: "@notEmpty()@"
+            - name: ce-source
+              value: "org.apache.camel"
+            - name: ce-type
+              value: "org.apache.camel.event"
+            - name: ce-time
+              value: "@notEmpty()@"
+          body:
+            data: |
+              { "id": "${uuid}" }
+
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          body:
+            data: "Thank You!"

@@ -32,7 +32,7 @@ spec:
       period: 10000
       contentType: application/json
       message: >
-        ${input}
+        {{input}}
   steps:
     - ref:
         kind: Kamelet
@@ -48,4 +48,4 @@ spec:
       properties:
         showHeaders: true
   sink:
-    uri: yaks:resolveURL('test-service')/result
+    uri: "{{server.url}}/result"

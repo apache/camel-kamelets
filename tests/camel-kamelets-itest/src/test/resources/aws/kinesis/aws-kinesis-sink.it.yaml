@@ -1,0 +1,79 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: aws-kinesis-sink-test
+variables:
+  - name: "maxRetryAttempts"
+    value: "20"
+  - name: "aws.kinesis.streamName"
+    value: "mystream2"
+  - name: "aws.kinesis.partitionKey"
+    value: "partition-1"
+  - name: "aws.kinesis.message"
+    value: "Camel rocks!"
+  - name: "aws.kinesis.json.data"
+    value: |
+      { \"message\": \"${aws.kinesis.message}\" }
+  - name: "timer.source.period"
+    value: "10000"
+actions:
+  # Create LocalStack infrastructure
+  - testcontainers:
+      start:
+        localstack:
+          services:
+            - "KINESIS"
+  - waitFor:
+      http:
+        url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+
+  # Create AWS-KINESIS client
+  - camel:
+      createComponent:
+        name: amazonKinesisClient
+        file: "aws/kinesis/amazonKinesisClient.groovy"
+
+  # Create Camel JBang integration
+  - camel:
+      jbang:
+        run:
+          integration:
+            file: "aws/kinesis/aws-kinesis-sink-pipe.yaml"
+            systemProperties:
+              properties:
+                - name: "timer.source.period"
+                  value: "${timer.source.period}"
+                - name: "aws.kinesis.json.data"
+                  value: "${aws.kinesis.json.data}"
+              file: "aws/kinesis/application.properties"
+
+  # Create event listener
+  - camel:
+      jbang:
+        run:
+          integration:
+            file: "aws/kinesis/aws-kinesis-event-listener.yaml"
+            systemProperties:
+              file: "aws/kinesis/application.properties"
+
+  # Verify event received
+  - camel:
+      jbang:
+        verify:
+          integration: "aws-kinesis-event-listener"
+          logMessage: |
+            { "message": "${aws.kinesis.message}" }

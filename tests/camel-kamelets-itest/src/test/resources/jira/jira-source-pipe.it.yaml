@@ -1,0 +1,183 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: jira-source-pipe-test
+variables:
+  - name: "jira.url"
+    value: "http://localhost:8081"
+  - name: "jira.project.id"
+    value: "10001"
+  - name: "jira.issue.id"
+    value: "10001"
+  - name: "jira.issue.key"
+    value: "CAMEL-1"
+  - name: "jira.issue.summary"
+    value: "New bug, citrus:randomString(10)"
+  - name: "jira.username"
+    value: "citrus  "
+  - name: "jira.password"
+    value: "secr3t"
+  - name: "jira.jql"
+    value: "assignee=citrus"
+actions:
+  # Purge Http service
+  - purge:
+      endpoints:
+        - name: "httpServer"
+
+  # Create Camel JBang integration
+  - camel:
+      jbang:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "jira/jira-source-pipe.yaml"
+            systemProperties:
+              properties:
+                - name: "jira.url"
+                  value: "${jira.url}"
+                - name: "jira.username"
+                  value: "${jira.username}"
+                - name: "jira.password"
+                  value: "${jira.password}"
+                - name: "jira.jql"
+                  value: "${jira.jql}"
+
+  # Verify latest issue request
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        GET:
+          path: "/rest/api/latest/search"
+          parameters:
+            - name: jql
+              value: "citrus:urlEncode(${jira.jql})+ORDER+BY+key+desc"
+            - name: maxResults
+              value: "1"
+          headers:
+            - name: Authorization
+              value: "Basic citrus:encodeBase64(${jira.username}:${jira.password})"
+
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              {
+                  "expand": "",
+                  "startAt": 0,
+                  "maxResults": 1,
+                  "total": 1,
+                  "issues": [
+                      {
+                          "expand": "",
+                          "id": "${jira.issue.id}",
+                          "key": "${jira.issue.key}",
+                          "self": "${jira.url}/rest/api/latest/issue/${jira.issue.id}",
+                          "transitions": "${jira.url}/rest/api/latest/issue/${jira.issue.key}/transitions"
+                      }
+                  ]
+              }
+
+  # Verify search request
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        GET:
+          path: "/rest/api/latest/search"
+          parameters:
+            - name: jql
+              value: "citrus:urlEncode(${jira.jql})+ORDER+BY+key+desc"
+            - name: maxResults
+              value: "50"
+            - name: expand
+              value: "schema%2Cnames"
+          headers:
+            - name: Authorization
+              value: "Basic citrus:encodeBase64(${jira.username}:${jira.password})"
+
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              {
+                "expand": "schema,names",
+                "startAt": 0,
+                "maxResults": 50,
+                "total": 1,
+                "names": {
+                  "custom": "${jira.issue.key}"
+                },
+                "schema": {
+                  "custom": {
+                    "type": "string"
+                  }
+                },
+                "issues": [
+                  {
+                    "expand": "",
+                    "id": "${jira.issue.id}",
+                    "key": "${jira.issue.key}",
+                    "self": "${jira.url}/rest/api/latest/issue/${jira.issue.id}",
+                    "transitions": "${jira.url}/rest/api/latest/issue/${jira.issue.key}/transitions",
+                    "fields": {
+                      "project": {
+                        "self": "${jira.url}/rest/api/latest/project/${jira.project.id}",
+                        "id": "${jira.project.id}",
+                        "key": "CAMEL"
+                      },
+                      "summary": "${jira.issue.summary}",
+                      "custom": "${jira.issue.key}",
+                      "issuetype": {
+                        "self": "${jira.url}/rest/api/latest/issuetype/3",
+                        "id": "3",
+                        "description": "A task that needs to be done.",
+                        "iconUrl": "${jira.url}/images/icons/task.gif",
+                        "name": "Task",
+                        "subtask": false
+                      },
+                      "created": "citrus:currentDate(yyyy-MM-dd'T'HH:mm:ss.SZ)",
+                      "updated": "citrus:currentDate(yyyy-MM-dd'T'HH:mm:ss.SZ)",
+                      "status": {
+                        "self": "${jira.url}/rest/api/latest/status/1",
+                        "id": 1,
+                        "description": "Open task.",
+                        "iconUrl": "${jira.url}/images/icons/status_1.gif",
+                        "name": "Open"
+                      }
+                    }
+                  }
+                ]
+              }
+
+  # Verify JIRA source
+  - camel:
+      jbang:
+        verify:
+          integration: "jira-source-pipe"
+          logMessage: "${jira.issue.summary}"

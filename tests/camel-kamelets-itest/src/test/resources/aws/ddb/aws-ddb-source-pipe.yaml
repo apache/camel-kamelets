@@ -26,13 +26,13 @@ spec:
       apiVersion: camel.apache.org/v1
       name: aws-ddb-streams-source
     properties:
-      table: ${aws.ddb.tableName}
       streamIteratorType: FROM_START
-      overrideEndpoint: true
-      uriEndpointOverride: ${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}
-      accessKey: ${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}
-      secretKey: ${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}
-      region: ${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}
+      table: "{{aws.ddb.tableName}}"
+      overrideEndpoint: "{{aws.ddb.overrideEndpoint}}"
+      uriEndpointOverride: "{{aws.ddb.uriEndpointOverride}}"
+      accessKey: "{{aws.ddb.accessKey}}"
+      secretKey: "{{aws.ddb.secretKey}}"
+      region: "{{aws.ddb.region}}"
   sink:
     ref:
       kind: Kamelet

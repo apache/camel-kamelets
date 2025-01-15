@@ -26,9 +26,9 @@ spec:
       apiVersion: camel.apache.org/v1
       name: jira-source
     properties:
-      jiraUrl: yaks:resolveURL('jira-service')
-      username: ${jira.username}
-      password: ${jira.password}
-      jql: ${jira.jql}
+      jiraUrl: "{{jira.url}}"
+      username: "{{jira.username}}"
+      password: "{{jira.password}}"
+      jql: "{{jira.jql}}"
   sink:
     uri: log:info

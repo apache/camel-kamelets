@@ -12,7 +12,7 @@ The binary Avro data is then sent to a Http webhook sink that references a Http 
 
 The test starts both Pipes and is able to verify the proper log output as an expected outcome.
 
-### YAKS Test
+### Citrus Test
 
 The test performs the following high level steps:
 
@@ -24,19 +24,19 @@ The test performs the following high level steps:
 
 ## Installation
 
-The test assumes that you have [JBang](https://www.jbang.dev/) installed and the YAKS CLI setup locally.
+The test assumes that you have [JBang](https://www.jbang.dev/) installed and the Citrus CLI setup locally.
 
 You can review the installation steps for the tooling in the documentation:
 
 - [JBang](https://www.jbang.dev/documentation/guide/latest/installation.html)
-- [Install YAKS CLI](https://github.com/citrusframework/yaks#installation)
+- [Install Citrus JBang App](https://citrusframework.org/citrus/reference/html/index.html#runtime-jbang-install)
 
 ## Run the tests with JBang
 
 To run tests with URI based configuration: 
 
 ```shell script
-$ yaks run --local src/test/resources/avro/avro-serdes-action.feature
+$ citrus run src/test/resources/avro/avro-serdes-action.it.yaml
 ```
 
 You will be provided with the test log output and the test results.

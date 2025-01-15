@@ -26,12 +26,12 @@ spec:
       apiVersion: camel.apache.org/v1
       name: kafka-source
     properties:
-      bootstrapServers: ${CITRUS_TESTCONTAINERS_REDPANDA_LOCAL_BOOTSTRAP_SERVERS}
-      user: ${user}
-      password: ${password}
-      topic: ${topic}
-      securityProtocol: ${securityProtocol}
-      deserializeHeaders: ${deserializeHeaders}
+      bootstrapServers: '{{kafka.bootstrapServers}}'
+      user: '{{kafka.user}}'
+      password: '{{kafka.password}}'
+      topic: '{{kafka.topic}}'
+      securityProtocol: '{{kafka.securityProtocol}}'
+      deserializeHeaders: '{{kafka.deserializeHeaders}}'
   sink:
-    uri: yaks:resolveURL('test-service')/result
+    uri: http://localhost:8081/result
 
