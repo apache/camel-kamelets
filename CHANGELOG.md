@@ -2,21 +2,13 @@
 
 ## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.2...HEAD)
-
-**Closed issues:**
-
-- Release Camel Kamelets 4.8.3 [\#2348](https://github.com/apache/camel-kamelets/issues/2348)
-- The Kamelet "aws-sqs-source" is invalid [\#2334](https://github.com/apache/camel-kamelets/issues/2334)
-- Camel Splunk Hec: Token is not part of the URI, it's an endpoint parameter [\#2318](https://github.com/apache/camel-kamelets/issues/2318)
-- Upgrade to Camel 4.8.2 [\#2301](https://github.com/apache/camel-kamelets/issues/2301)
-- Release 4.8.2 [\#2300](https://github.com/apache/camel-kamelets/issues/2300)
-- mqtt5-source: Issue with wildcard topic. Character encoding issue? The same topic works with the paho-mqtt5 component [\#2248](https://github.com/apache/camel-kamelets/issues/2248)
-- Create Kamelets for AWS Step Functions [\#1742](https://github.com/apache/camel-kamelets/issues/1742)
-- Add a `id_str` field to Twitter related Kamelets for the generated CloudEvents [\#925](https://github.com/apache/camel-kamelets/issues/925)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.3...HEAD)
 
 **Merged pull requests:**
 
+- Kamelets Catalog - Make the description a one liner  [\#2355](https://github.com/apache/camel-kamelets/pull/2355) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#2354](https://github.com/apache/camel-kamelets/pull/2354) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Kamelets Catalog - Make the description a one liner [\#2353](https://github.com/apache/camel-kamelets/pull/2353) ([oscerd](https://github.com/oscerd))
 - Kamelets Catalog - Make the description a one liner  [\#2351](https://github.com/apache/camel-kamelets/pull/2351) ([oscerd](https://github.com/oscerd))
 - Kamelets Catalog - Make the description a one liner  [\#2347](https://github.com/apache/camel-kamelets/pull/2347) ([oscerd](https://github.com/oscerd))
 - Kamelets Catalog - Make the description a one liner  [\#2346](https://github.com/apache/camel-kamelets/pull/2346) ([oscerd](https://github.com/oscerd))
@@ -43,6 +35,22 @@
 - Bump org.apache.maven.plugins:maven-javadoc-plugin from 3.11.1 to 3.11.2 [\#2313](https://github.com/apache/camel-kamelets/pull/2313) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Generated sources regen for SBOM [\#2312](https://github.com/apache/camel-kamelets/pull/2312) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Generated sources regen [\#2310](https://github.com/apache/camel-kamelets/pull/2310) ([github-actions[bot]](https://github.com/apps/github-actions))
+
+## [v4.8.3](https://github.com/apache/camel-kamelets/tree/v4.8.3) (2025-01-14)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.2...v4.8.3)
+
+**Closed issues:**
+
+- Upgrade to Camel 4.8.3 [\#2350](https://github.com/apache/camel-kamelets/issues/2350)
+- Release Camel Kamelets 4.8.3 [\#2348](https://github.com/apache/camel-kamelets/issues/2348)
+- The Kamelet "aws-sqs-source" is invalid [\#2334](https://github.com/apache/camel-kamelets/issues/2334)
+- Camel Splunk Hec: Token is not part of the URI, it's an endpoint parameter [\#2318](https://github.com/apache/camel-kamelets/issues/2318)
+- Upgrade to Camel 4.8.2 [\#2301](https://github.com/apache/camel-kamelets/issues/2301)
+- Release 4.8.2 [\#2300](https://github.com/apache/camel-kamelets/issues/2300)
+- mqtt5-source: Issue with wildcard topic. Character encoding issue? The same topic works with the paho-mqtt5 component [\#2248](https://github.com/apache/camel-kamelets/issues/2248)
+- Create Kamelets for AWS Step Functions [\#1742](https://github.com/apache/camel-kamelets/issues/1742)
+- Add a `id_str` field to Twitter related Kamelets for the generated CloudEvents [\#925](https://github.com/apache/camel-kamelets/issues/925)
 
 ## [v4.8.2](https://github.com/apache/camel-kamelets/tree/v4.8.2) (2024-12-09)
 
