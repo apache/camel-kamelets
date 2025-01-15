@@ -15,19 +15,14 @@
  * limitations under the License.
  */
 
-package aws.ddb
+import org.citrusframework.exceptions.CitrusRuntimeException
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue
 
-$(repeatOnError()
-    .until('i > ${maxRetryAttempts}')
-    .actions(new org.citrusframework.TestAction() {
-        @Override
-        void execute(org.citrusframework.context.TestContext context) {
-            try {
-                assert context.getVariable('aws.ddb.item').equals(amazonDDBClient.getItem(b -> b.tableName(context.getVariable('aws.ddb.tableName'))
-                        .key(Collections.singletonMap("id", software.amazon.awssdk.services.dynamodb.model.AttributeValue.builder().n(context.getVariable('aws.ddb.item.id')).build())))?.item()?.toString())
-            } catch (AssertionError e) {
-                throw new org.citrusframework.exceptions.CitrusRuntimeException("AWS DDB item verification failed", e)
-            }
-        }
-    })
-)
+var amazonDDBClient = context.getReferenceResolver().resolve("amazonDDBClient")
+
+try {
+    assert '${aws.ddb.item}' == amazonDDBClient.getItem(b -> b.tableName('${aws.ddb.tableName}')
+            .key(Collections.singletonMap("id", AttributeValue.builder().n('${aws.ddb.item.id}').build())))?.item()?.toString()
+} catch (AssertionError e) {
+    throw new CitrusRuntimeException("AWS DDB item verification failed", e)
+}

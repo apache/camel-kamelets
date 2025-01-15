@@ -29,14 +29,14 @@ spec:
       period: 10000
       contentType: application/json
       message: >
-        ${input}
+        {{input}}
   steps:
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1
         name: insert-field-action
       properties:
-        field: ${field}
-        value: ${value}
+        field: "{{field.name}}"
+        value: "{{field.value}}"
   sink:
-    uri: yaks:resolveURL('test-service')/result
+    uri: "{{server.url}}/result"

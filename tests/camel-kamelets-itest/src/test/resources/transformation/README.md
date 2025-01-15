@@ -1,18 +1,14 @@
-# Avro data type
+# Transformations
 
-This test verifies the Avro data type serialization/deserialization
+The tests verify different transformations performed as part of a Pipe.
 
 ## Objectives
 
-The test verifies the proper serialization and deserialization of Avro data types `avro/binary` and `avro/x-struct`.
-
-The test uses two Pipes that interact with each other. The first binding `json-to-avro` periodically creates a test data event as Json and applies the `avro/binary` data type using the schema in [User.avsc](User.avsc). 
-
-The binary Avro data is then sent to a Http webhook sink that references an Http endpoint that is provided by the 2nd binding `avro-to-log`. The `avro-to-log` binding provides the Http service and deserializes the binary Avro data using the same User schema. The deserialized data is printed to the log output.
+The test verifies the proper data transformations provided by action Kamelets and data types.
 
 The test starts both Pipes and is able to verify the proper log output as an expected outcome.
 
-### YAKS Test
+### Citrus Test
 
 The test performs the following high level steps:
 
@@ -24,19 +20,19 @@ The test performs the following high level steps:
 
 ## Installation
 
-The test assumes that you have [JBang](https://www.jbang.dev/) installed and the YAKS CLI setup locally.
+The test assumes that you have [JBang](https://www.jbang.dev/) installed and the Citrus CLI setup locally.
 
 You can review the installation steps for the tooling in the documentation:
 
 - [JBang](https://www.jbang.dev/documentation/guide/latest/installation.html)
-- [Install YAKS CLI](https://github.com/citrusframework/yaks#installation)
+- [Install Citrus JBang App](https://citrusframework.org/citrus/reference/html/index.html#runtime-jbang-install)
 
 ## Run the tests with JBang
 
 To run tests with URI based configuration: 
 
 ```shell script
-$ yaks run --local src/test/resources/transformation/data-type-action.feature
+$ citrus run src/test/resources/transformation/data-type-action.it.yaml
 ```
 
 You will be provided with the test log output and the test results.

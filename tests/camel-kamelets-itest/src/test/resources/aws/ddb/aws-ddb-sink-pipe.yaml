@@ -26,8 +26,8 @@ spec:
       apiVersion: camel.apache.org/v1
       name: timer-source
     properties:
-      period: ${timer.source.period}
-      message: '${aws.ddb.json.data}'
+      period: "{{timer.source.period}}"
+      message: "{{aws.ddb.json.data}}"
   steps:
     - ref:
         kind: Kamelet
@@ -41,10 +41,10 @@ spec:
       apiVersion: camel.apache.org/v1
       name: aws-ddb-sink
     properties:
-      table: ${aws.ddb.tableName}
-      operation: ${aws.ddb.operation}
-      overrideEndpoint: true
-      uriEndpointOverride: ${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}
-      accessKey: ${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}
-      secretKey: ${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}
-      region: ${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}
+      table: "{{aws.ddb.tableName}}"
+      operation: "{{aws.ddb.operation}}"
+      overrideEndpoint: "{{aws.ddb.overrideEndpoint}}"
+      uriEndpointOverride: "{{aws.ddb.uriEndpointOverride}}"
+      accessKey: "{{aws.ddb.accessKey}}"
+      secretKey: "{{aws.ddb.secretKey}}"
+      region: "{{aws.ddb.region}}"

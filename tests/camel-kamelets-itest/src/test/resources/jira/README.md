@@ -25,19 +25,18 @@ The test performs the following high level steps:
 
 ## Installation
 
-The test assumes that you have access to a Kubernetes cluster and that the Camel K operator as well as the YAKS operator is installed
-and running.
+The test assumes that you have [JBang](https://www.jbang.dev/) installed and the Citrus CLI setup locally.
 
-You can review the installation steps for the operators in the documentation:
+You can review the installation steps for the tooling in the documentation:
 
-- [Install Camel K operator](https://camel.apache.org/camel-k/latest/installation/installation.html)
-- [Install YAKS operator](https://github.com/citrusframework/yaks#installation)
+- [JBang](https://www.jbang.dev/documentation/guide/latest/installation.html)
+- [Install Citrus JBang App](https://citrusframework.org/citrus/reference/html/index.html#runtime-jbang-install)
 
 ## Run the test
 
 ```shell script
-$ yaks run --local src/test/resources/jira/jira-source.feature
-$ yaks run --local src/test/resources/jira/jira-add-issue-sink.feature
+$ citrus run src/test/resources/jira/jira-source.it.yaml
+$ citrus run src/test/resources/jira/jira-add-issue-sink.it.yaml
 ```
 
 You can increase number of attempts to run the test by adding: "-e CITRUS_CAMELK_MAX_ATTEMPTS=1000"

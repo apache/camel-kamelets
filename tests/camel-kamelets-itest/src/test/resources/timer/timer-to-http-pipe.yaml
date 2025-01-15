@@ -27,6 +27,6 @@ spec:
       name: timer-source
     properties:
       period: 10000
-      message: "${message}"
+      message: "{{timer.message}}"
   sink:
-    uri: yaks:resolveURL('test-service')/events
+    uri: "{{server.url}}/events"

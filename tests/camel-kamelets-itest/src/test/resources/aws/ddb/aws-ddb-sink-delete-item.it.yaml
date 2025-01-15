@@ -1,0 +1,110 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: aws-ddb-sink-delete-item-test
+variables:
+  - name: "maxRetryAttempts"
+    value: "20"
+  - name: "aws.ddb.streams"
+    value: "false"
+  - name: "aws.ddb.tableName"
+    value: "movies"
+  - name: "timer.source.period"
+    value: "10000"
+actions:
+  # Create LocalStack infrastructure
+  - testcontainers:
+      start:
+        localstack:
+          services:
+            - "DYNAMODB"
+  - waitFor:
+      http:
+        url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+
+  # Create AWS-DDB client
+  - groovy:
+      script:
+        file: "aws/ddb/amazonDDBClient.groovy"
+
+  # Verify empty AWS-DDB
+  - createVariables:
+      variables:
+        - name: "aws.ddb.items"
+          value: "[]"
+  - repeatOnError:
+      until: "i > ${maxRetryAttempts}"
+      actions:
+        - groovy:
+            script:
+              file: "aws/ddb/verifyItems.groovy"
+
+  # Create item on AWS-DDB
+  - createVariables:
+      variables:
+        - name: "aws.ddb.operation"
+          value: "DeleteItem"
+        - name: "aws.ddb.item.id"
+          value: "citrus:randomNumber(4)"
+        - name: "aws.ddb.item.year"
+          value: "1985"
+        - name: "aws.ddb.item.title"
+          value: "Back to the future"
+        - name: "aws.ddb.json.data"
+          value: |
+            {"id": ${aws.ddb.item.id}}
+  - groovy:
+      script:
+        file: "aws/ddb/putItem.groovy"
+  - createVariables:
+      variables:
+        - name: "aws.ddb.items"
+          value: "[[title:AttributeValue(S=${aws.ddb.item.title}), year:AttributeValue(N=${aws.ddb.item.year}), id:AttributeValue(N=${aws.ddb.item.id})]]"
+  - repeatOnError:
+      until: "i > ${maxRetryAttempts}"
+      actions:
+        - groovy:
+            script:
+              file: "aws/ddb/verifyItems.groovy"
+
+  # Create Camel JBang integration
+  - camel:
+      jbang:
+        run:
+          integration:
+            file: "aws/ddb/aws-ddb-sink-pipe.yaml"
+            systemProperties:
+              properties:
+                - name: "timer.source.period"
+                  value: "${timer.source.period}"
+                - name: "aws.ddb.operation"
+                  value: "${aws.ddb.operation}"
+                - name: "aws.ddb.json.data"
+                  value: "${aws.ddb.json.data}"
+              file: "aws/ddb/application.properties"
+
+  # Verify Kamelet sink
+  - createVariables:
+      variables:
+        - name: "aws.ddb.items"
+          value: "[[title:AttributeValue(S=${aws.ddb.item.title}), year:AttributeValue(N=${aws.ddb.item.year}), id:AttributeValue(N=${aws.ddb.item.id})]]"
+  - repeatOnError:
+      until: "i > ${maxRetryAttempts}"
+      actions:
+        - groovy:
+            script:
+              file: "aws/ddb/verifyItems.groovy"

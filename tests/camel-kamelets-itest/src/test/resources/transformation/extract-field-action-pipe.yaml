@@ -29,13 +29,13 @@ spec:
       period: 10000
       contentType: application/json
       message: >
-        ${input}
+        {{input}}
   steps:
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1
         name: extract-field-action
       properties:
-        field: ${field}
+        field: "{{field.name}}"
   sink:
-    uri: yaks:resolveURL('test-service')/result
+    uri: "{{server.url}}/result"

@@ -19,13 +19,12 @@
     from:
       uri: "kamelet:aws-sqs-source"
       parameters:
-        queueNameOrArn: '${aws.sqs.queueName}'
-        overrideEndpoint: 'true'
-        forcePathStyle: 'true'
-        uriEndpointOverride: '${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}'
-        accessKey: '${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}'
-        secretKey: '${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}'
-        region: '${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}'
+        queueNameOrArn: "{{aws.sqs.queueName}}"
+        uriEndpointOverride: "{{aws.sqs.uriEndpointOverride}}"
+        overrideEndpoint: "{{aws.sqs.overrideEndpoint}}"
+        accessKey: "{{aws.sqs.accessKey}}"
+        secretKey: "{{aws.sqs.secretKey}}"
+        region: "{{aws.sqs.region}}"
         deleteAfterRead: 'true'
       steps:
       - to:

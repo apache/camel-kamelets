@@ -33,44 +33,37 @@ The test performs the following high level steps for configs - URI, secret and p
 
 ## Installation
 
-The test assumes that you have access to a Kubernetes cluster and that the Camel K operator as well as the YAKS operator is installed
-and running.
+The test assumes that you have [JBang](https://www.jbang.dev/) installed and the Citrus CLI setup locally.
 
-You can review the installation steps for the operators in the documentation:
+You can review the installation steps for the tooling in the documentation:
 
-- [Install Camel K operator](https://camel.apache.org/camel-k/latest/installation/installation.html)
-- [Install YAKS operator](https://github.com/citrusframework/yaks#installation)
+- [JBang](https://www.jbang.dev/documentation/guide/latest/installation.html)
+- [Install Citrus JBang App](https://citrusframework.org/citrus/reference/html/index.html#runtime-jbang-install)
 
 ## Run the tests
 
 To run tests with URI based configuration: 
 
 ```shell script
-$ yaks run --local src/test/resources/aws-s3-source-uri-conf.feature
+$ citrus run src/test/resources/aws-s3-source-uri-conf.it.yaml
 ```
 
 To run tests with secret based configuration:
 
 ```shell script
-$ yaks run --local src/test/resources/aws/s3/aws-s3-source-secret-conf.feature
+$ citrus run src/test/resources/aws/s3/aws-s3-source-secret-conf.it.yaml
 ```
 
 To run tests with property based configuration:
 
 ```shell script
-$ yaks run --local src/test/resources/aws/s3/aws-s3-source-property-conf.feature
+$ citrus run src/test/resources/aws/s3/aws-s3-source-property-conf.it.yaml
 ```
 
 To run tests with URI binding:
 
 ```shell script
-$ yaks run --local src/test/resources/aws/s3/aws-s3-uri-pipe.feature
-```
-
-To run tests with binding to Knative channel:
-
-```shell script
-$ yaks run --local src/test/resources/aws/s3/aws-s3-knative-channel.feature
+$ citrus run src/test/resources/aws/s3/aws-s3-uri-pipe.it.yaml
 ```
 
 You will be provided with the test log output and the test results.

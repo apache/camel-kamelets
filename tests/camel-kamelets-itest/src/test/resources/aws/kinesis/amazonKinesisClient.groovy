@@ -15,24 +15,29 @@
  * limitations under the License.
  */
 
-package aws.kinesis
 
+import org.apache.camel.CamelContext
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.kinesis.KinesisClient
 
+if (context.getReferenceResolver().isResolvable(CamelContext.class)) {
+    println "Destroying former KINESIS client instance"
+    context.getReferenceResolver().resolve(CamelContext.class).getRegistry().unbind("amazonKinesisClient")
+}
+
 KinesisClient kinesisClient = KinesisClient
         .builder()
-        .endpointOverride(URI.create("${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"))
+        .endpointOverride(URI.create('${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}'))
         .credentialsProvider(StaticCredentialsProvider.create(
                 AwsBasicCredentials.create(
-                        "${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}",
-                        "${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}")
+                        '${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}',
+                        '${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}')
         ))
-        .region(Region.of("${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"))
+        .region(Region.of('${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}'))
         .build()
 
-kinesisClient.createStream(s -> s.streamName("${aws.kinesis.streamName}").shardCount(1))
+kinesisClient.createStream(s -> s.streamName('${aws.kinesis.streamName}').shardCount(1))
 
 return kinesisClient

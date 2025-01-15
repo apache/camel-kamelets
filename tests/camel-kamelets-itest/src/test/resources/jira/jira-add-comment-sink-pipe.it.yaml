@@ -1,0 +1,222 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: jira-add-comment-sink-pipe-test
+variables:
+  - name: "timer.source.period"
+    value: "10000"
+  - name: "jira.url"
+    value: "http://localhost:8081"
+  - name: "jira.project.key"
+    value: "CAMEL"
+  - name: "jira.issue.assignee"
+    value: "Superman"
+  - name: "jira.issue.type"
+    value: "Bug"
+  - name: "jira.issue.description"
+    value: "Sample bug"
+  - name: "jira.project.id"
+    value: "10001"
+  - name: "jira.issue.id"
+    value: "10001"
+  - name: "jira.issue.key"
+    value: "CAMEL-10001"
+  - name: "jira.issue.summary"
+    value: "New bug, citrus:randomString(10)"
+  - name: "jira.issue.comment"
+    value: "New comment, citrus:randomString(10)"
+  - name: "jira.issue.comment.id"
+    value: "10001"
+  - name: "jira.username"
+    value: "citrus  "
+  - name: "jira.password"
+    value: "secr3t"
+actions:
+  # Purge Http service
+  - purge:
+      endpoints:
+        - name: "httpServer"
+
+  # Create Camel JBang integration
+  - camel:
+      jbang:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "jira/jira-add-comment-sink-pipe.yaml"
+            systemProperties:
+              properties:
+                - name: "timer.source.period"
+                  value: "${timer.source.period}"
+                - name: "jira.url"
+                  value: "${jira.url}"
+                - name: "jira.issue.key"
+                  value: "${jira.issue.key}"
+                - name: "jira.issue.comment"
+                  value: "${jira.issue.comment}"
+                - name: "jira.username"
+                  value: "${jira.username}"
+                - name: "jira.password"
+                  value: "${jira.password}"
+
+  # Verify get issue request
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        GET:
+          path: "/rest/api/latest/issue/${jira.issue.key}"
+          headers:
+            - name: Authorization
+              value: "Basic citrus:encodeBase64(${jira.username}:${jira.password})"
+
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              {
+                "expand": "schema,names",
+                "id": "${jira.issue.id}",
+                "key": "${jira.issue.key}",
+                "self": "${jira.url}/rest/api/latest/issue/${jira.issue.key}",
+                "transitions": "${jira.url}/rest/api/latest/issue/${jira.issue.key}/transitions",
+                "names": {},
+                "schema": {},
+                "fields": {
+                  "project": {
+                    "self": "${jira.url}/rest/api/latest/project/${jira.project.id}",
+                    "id": "${jira.project.id}",
+                    "key": "CAMEL"
+                  },
+                  "summary": "${jira.issue.summary}",
+                  "custom": "${jira.issue.key}",
+                  "issuetype": {
+                    "self": "${jira.url}/rest/api/latest/issuetype/3",
+                    "id": "3",
+                    "description": "A task that needs to be done.",
+                    "iconUrl": "${jira.url}/images/icons/task.gif",
+                    "name": "Task",
+                    "subtask": false
+                  },
+                  "created": "citrus:currentDate(yyyy-MM-dd'T'HH:mm:ss.SZ)",
+                  "updated": "citrus:currentDate(yyyy-MM-dd'T'HH:mm:ss.SZ)",
+                  "status": {
+                    "self": "${jira.url}/rest/api/latest/status/1",
+                    "id": 1,
+                    "description": "Open task.",
+                    "iconUrl": "${jira.url}/images/icons/status_1.gif",
+                    "name": "Open"
+                  }
+                }
+              }
+
+  # Verify server info request
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        GET:
+          path: "/rest/api/latest/serverInfo"
+          headers:
+            - name: Authorization
+              value: "Basic citrus:encodeBase64(${jira.username}:${jira.password})"
+
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              {
+                "baseUrl": "${jira.url}",
+                "version": "5.0.0",
+                "versionNumbers": [
+                  5,
+                  0,
+                  0
+                ],
+                "buildNumber": 581,
+                "buildDate": "citrus:currentDate(yyyy-MM-dd'T'HH:mm:ss.SZ)",
+                "serverTime": "citrus:currentDate(yyyy-MM-dd'T'HH:mm:ss.SZ)",
+                "scmInfo": "citrus:randomString(40, LOWERCASE)",
+                "buildPartnerName": "Citrus Co.",
+                "serverTitle": "Test Jira Server"
+              }
+
+  # Verify add comment request
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/rest/api/latest/issue/${jira.issue.key}/comment"
+          headers:
+            - name: Authorization
+              value: "Basic citrus:encodeBase64(${jira.username}:${jira.password})"
+          body:
+            data: |
+              {
+                "body": "${jira.issue.comment}"
+              }
+
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              {
+                "self": "${jira.url}/rest/api/latest/issue/${jira.issue.id}/comment/${jira.issue.comment.id}",
+                "id": "${jira.issue.comment.id}",
+                "author": {
+                  "self": "${jira.url}/rest/api/latest/user?username=citrus",
+                  "name": "citrus",
+                  "displayName": "Citrus User",
+                  "active": false
+                },
+                "body": "${jira.issue.comment}",
+                "updateAuthor": {
+                  "self": "${jira.url}/rest/api/latest/user?username=citrus",
+                  "name": "citrus",
+                  "displayName": "Citrus User",
+                  "active": false
+                },
+                "created": "citrus:currentDate(yyyy-MM-dd'T'HH:mm:ss.SZ)",
+                "updated": "citrus:currentDate(yyyy-MM-dd'T'HH:mm:ss.SZ)",
+                "visibility": {
+                  "type": "role",
+                  "value": "Users"
+                }
+              }
+
+  # Verify JIRA source
+  - camel:
+      jbang:
+        verify:
+          integration: "jira-add-comment-sink-pipe"
+          logMessage: "${jira.issue.comment}"

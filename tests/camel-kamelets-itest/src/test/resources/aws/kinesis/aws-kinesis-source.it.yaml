@@ -1,0 +1,67 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: aws-kinesis-source-test
+variables:
+  - name: "aws.kinesis.streamName"
+    value: "mystream1"
+  - name: "aws.kinesis.partitionKey"
+    value: "partition-1"
+  - name: "aws.kinesis.streamData"
+    value: "Camel rocks!"
+actions:
+  # Create LocalStack infrastructure
+  - testcontainers:
+      start:
+        localstack:
+          services:
+            - "KINESIS"
+  - waitFor:
+      http:
+        url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+
+  # Create AWS-KINESIS client
+  - camel:
+      createComponent:
+        name: amazonKinesisClient
+        file: "aws/kinesis/amazonKinesisClient.groovy"
+
+  # Create Camel JBang integration
+  - camel:
+      jbang:
+        run:
+          integration:
+            file: "aws/kinesis/aws-kinesis-source-pipe.yaml"
+            systemProperties:
+              file: "aws/kinesis/application.properties"
+
+  # Publish event
+  - send:
+      endpoint: camel:aws2-kinesis://${aws.kinesis.streamName}?amazonKinesisClient=#amazonKinesisClient
+      message:
+        headers:
+          - name: CamelAwsKinesisPartitionKey
+            value: "${aws.kinesis.partitionKey}"
+        body:
+          data: "${aws.kinesis.streamData}"
+
+  # Verify AWS-KINESIS source
+  - camel:
+      jbang:
+        verify:
+          integration: "aws-kinesis-source-pipe"
+          logMessage: "${aws.kinesis.streamData}"

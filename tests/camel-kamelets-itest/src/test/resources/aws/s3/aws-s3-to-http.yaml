@@ -29,13 +29,13 @@ spec:
       apiVersion: camel.apache.org/v1
       name: aws-s3-source
     properties:
-      bucketNameOrArn: ${aws.s3.bucketNameOrArn}
-      overrideEndpoint: true
-      forcePathStyle: true
-      uriEndpointOverride: ${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}
-      accessKey: ${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}
-      secretKey: ${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}
-      region: ${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}
+      bucketNameOrArn: "{{aws.s3.bucketNameOrArn}}"
+      uriEndpointOverride: "{{aws.s3.uriEndpointOverride}}"
+      overrideEndpoint: "{{aws.s3.overrideEndpoint}}"
+      forcePathStyle: "{{aws.s3.forcePathStyle}}"
+      accessKey: "{{aws.s3.accessKey}}"
+      secretKey: "{{aws.s3.secretKey}}"
+      region: "{{aws.s3.region}}"
   steps:
     - ref:
         kind: Kamelet
@@ -76,4 +76,4 @@ spec:
       apiVersion: camel.apache.org/v1
       name: http-sink
     properties:
-      url: yaks:resolveURL('test-service')/incoming
+      url: http://localhost:8081/incoming

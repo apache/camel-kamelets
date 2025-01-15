@@ -19,13 +19,13 @@
     from:
       uri: "kamelet:aws-s3-source"
       parameters:
-        bucketNameOrArn: '${aws.s3.bucketNameOrArn}'
-        overrideEndpoint: 'true'
-        forcePathStyle: 'true'
-        uriEndpointOverride: '${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}'
-        accessKey: '${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}'
-        secretKey: '${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}'
-        region: '${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}'
+        bucketNameOrArn: "{{aws.s3.bucketNameOrArn}}"
+        uriEndpointOverride: "{{aws.s3.uriEndpointOverride}}"
+        overrideEndpoint: "{{aws.s3.overrideEndpoint}}"
+        forcePathStyle: "{{aws.s3.forcePathStyle}}"
+        accessKey: "{{aws.s3.accessKey}}"
+        secretKey: "{{aws.s3.secretKey}}"
+        region: "{{aws.s3.region}}"
         deleteAfterRead: 'true'
       steps:
       - to:

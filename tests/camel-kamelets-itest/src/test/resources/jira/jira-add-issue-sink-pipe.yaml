@@ -26,8 +26,8 @@ spec:
       apiVersion: camel.apache.org/v1
       name: timer-source
     properties:
-      period: ${timer.source.period}
-      message: '${jira.issue.description}'
+      period: "{{timer.source.period}}"
+      message: "{{jira.issue.description}}"
   steps:
     - ref:
         kind: Kamelet
@@ -35,28 +35,28 @@ spec:
         name: insert-header-action
       properties:
         name: projectKey
-        value: ${jira.project.key}
+        value: "{{jira.project.key}}"
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1
         name: insert-header-action
       properties:
         name: issueTypeName
-        value: ${jira.issue.type}
+        value: "{{jira.issue.type}}"
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1
         name: insert-header-action
       properties:
         name: issueSummary
-        value: ${jira.issue.summary}
+        value: "{{jira.issue.summary}}"
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1
         name: insert-header-action
       properties:
         name: issueAssignee
-        value: ${jira.issue.assignee}
+        value: "{{jira.issue.assignee}}"
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1
@@ -69,6 +69,6 @@ spec:
       apiVersion: camel.apache.org/v1
       name: jira-add-issue-sink
     properties:
-      jiraUrl: yaks:resolveURL('jira-service')
-      username: ${jira.username}
-      password: ${jira.password}
+      jiraUrl: "{{jira.url}}"
+      username: "{{jira.username}}"
+      password: "{{jira.password}}"

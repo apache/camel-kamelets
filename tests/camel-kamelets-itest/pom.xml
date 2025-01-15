@@ -34,7 +34,7 @@
     <description>Camel Kamelets Integration Tests</description>
 
     <properties>
-        <enable.yaks.tests>*YaksIT</enable.yaks.tests>
+        <enable.integration.tests>*KameletsIT</enable.integration.tests>
     </properties>
 
     <dependencyManagement>
@@ -46,31 +46,10 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>org.citrusframework.yaks</groupId>
-                <artifactId>yaks-bom</artifactId>
-                <version>${yaks.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
-        <!-- Test scoped dependencies -->
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-junit</artifactId>
-            <version>${cucumber.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-java</artifactId>
-            <version>${cucumber.version}</version>
-            <scope>test</scope>
-        </dependency>
-
         <!-- Apache Camel -->
         <dependency>
             <groupId>org.apache.camel</groupId>
@@ -117,12 +96,37 @@
         </dependency>
         <dependency>
             <groupId>org.citrusframework</groupId>
-            <artifactId>citrus-spring</artifactId>
+            <artifactId>citrus-junit5</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.citrusframework</groupId>
-            <artifactId>citrus-junit</artifactId>
+            <artifactId>citrus-jbang-connector</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.citrusframework</groupId>
+            <artifactId>citrus-testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.citrusframework</groupId>
+            <artifactId>citrus-yaml</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.citrusframework</groupId>
+            <artifactId>citrus-groovy</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.citrusframework</groupId>
+            <artifactId>citrus-camel</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.citrusframework</groupId>
+            <artifactId>citrus-kafka</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -138,58 +142,6 @@
         <dependency>
             <groupId>org.citrusframework</groupId>
             <artifactId>citrus-validation-json</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- YAKS -->
-        <dependency>
-            <groupId>org.citrusframework.yaks</groupId>
-            <artifactId>yaks-standard</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.citrusframework.yaks</groupId>
-            <artifactId>yaks-http</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.citrusframework.yaks</groupId>
-            <artifactId>yaks-kubernetes</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.citrusframework.yaks</groupId>
-            <artifactId>yaks-knative</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.citrusframework.yaks</groupId>
-            <artifactId>yaks-kafka</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.citrusframework.yaks</groupId>
-            <artifactId>yaks-groovy</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.citrusframework.yaks</groupId>
-            <artifactId>yaks-camel</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.citrusframework.yaks</groupId>
-            <artifactId>yaks-camel-k</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.citrusframework.yaks</groupId>
-            <artifactId>yaks-testcontainers</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.citrusframework.yaks</groupId>
-            <artifactId>yaks-jdbc</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -223,7 +175,7 @@
                 <version>${maven-failsafe-plugin.version}</version>
                 <configuration>
                     <excludes>
-                        <exclude>${enable.yaks.tests}</exclude>
+                        <exclude>${enable.integration.tests}</exclude>
                     </excludes>
                 </configuration>
             </plugin>
