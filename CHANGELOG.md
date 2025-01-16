@@ -6,6 +6,9 @@
 
 **Merged pull requests:**
 
+- Kamelets Catalog - Make the description a one liner [\#2358](https://github.com/apache/camel-kamelets/pull/2358) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#2357](https://github.com/apache/camel-kamelets/pull/2357) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump org.postgresql:postgresql from 42.7.4 to 42.7.5 [\#2356](https://github.com/apache/camel-kamelets/pull/2356) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Kamelets Catalog - Make the description a one liner  [\#2355](https://github.com/apache/camel-kamelets/pull/2355) ([oscerd](https://github.com/oscerd))
 - Generated sources regen [\#2354](https://github.com/apache/camel-kamelets/pull/2354) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Kamelets Catalog - Make the description a one liner [\#2353](https://github.com/apache/camel-kamelets/pull/2353) ([oscerd](https://github.com/oscerd))
