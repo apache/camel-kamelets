@@ -6,6 +6,8 @@
 
 **Merged pull requests:**
 
+- chore: Use pure Citrus instead of YAKS [\#2360](https://github.com/apache/camel-kamelets/pull/2360) ([christophd](https://github.com/christophd))
+- Kamelets Catalog - Make the description a one liner  [\#2359](https://github.com/apache/camel-kamelets/pull/2359) ([oscerd](https://github.com/oscerd))
 - Kamelets Catalog - Make the description a one liner [\#2358](https://github.com/apache/camel-kamelets/pull/2358) ([oscerd](https://github.com/oscerd))
 - Generated sources regen [\#2357](https://github.com/apache/camel-kamelets/pull/2357) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Bump org.postgresql:postgresql from 42.7.4 to 42.7.5 [\#2356](https://github.com/apache/camel-kamelets/pull/2356) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -389,7 +391,7 @@
 - Fix AWS DDB Streams Source Kamelet [\#2008](https://github.com/apache/camel-kamelets/pull/2008) ([christophd](https://github.com/christophd))
 - Generated sources regen for SBOM [\#2007](https://github.com/apache/camel-kamelets/pull/2007) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Replace IBM bean by the IBM jakarta version [\#2006](https://github.com/apache/camel-kamelets/pull/2006) ([gansheer](https://github.com/gansheer))
-- Bump org.citrusframework.citrus:yaks-bom from 0.19.0 to 0.19.1 [\#2004](https://github.com/apache/camel-kamelets/pull/2004) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.citrusframework.yaks:yaks-bom from 0.19.0 to 0.19.1 [\#2004](https://github.com/apache/camel-kamelets/pull/2004) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Kamelet Catalog: Provide a method in the catalog API to get DataType … [\#2002](https://github.com/apache/camel-kamelets/pull/2002) ([oscerd](https://github.com/oscerd))
 - Bump org.apache.maven.plugins:maven-gpg-plugin from 3.2.3 to 3.2.4 [\#2001](https://github.com/apache/camel-kamelets/pull/2001) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump org.apache.maven.resolver:maven-resolver-api from 1.9.18 to 1.9.19 [\#2000](https://github.com/apache/camel-kamelets/pull/2000) ([dependabot[bot]](https://github.com/apps/dependabot))
