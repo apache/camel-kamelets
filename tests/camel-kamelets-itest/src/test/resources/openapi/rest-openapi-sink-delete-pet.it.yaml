@@ -26,11 +26,6 @@ variables:
   - name: "openApiSpec"
     value: "citrus:readFile(openapi/openapi.json)"
 actions:
-  # Purge Http service
-  - purge:
-      endpoints:
-        - name: "httpServer"
-
   # Create Camel JBang integration
   - camel:
       jbang:

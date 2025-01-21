@@ -15,18 +15,10 @@
  * limitations under the License.
  */
 
-
-
-import org.apache.camel.CamelContext
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.s3.S3Client
-
-if (context.getReferenceResolver().isResolvable(CamelContext.class)) {
-    println "Destroying former S3 client instance"
-    context.getReferenceResolver().resolve(CamelContext.class).getRegistry().unbind("amazonS3Client")
-}
 
 S3Client s3 = S3Client
         .builder()

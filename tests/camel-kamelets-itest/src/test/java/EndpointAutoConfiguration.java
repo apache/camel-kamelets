@@ -15,42 +15,41 @@
  * limitations under the License.
  */
 
-import java.nio.file.Path;
-
 import org.citrusframework.annotations.CitrusConfiguration;
-import org.citrusframework.camel.jbang.CamelJBangSettings;
-import org.citrusframework.container.SequenceBeforeSuite;
-import org.citrusframework.exceptions.CitrusRuntimeException;
+import org.citrusframework.container.SequenceAfterTest;
 import org.citrusframework.http.server.HttpServer;
 import org.citrusframework.spi.BindToRegistry;
 import org.springframework.http.HttpStatus;
 
+import static org.citrusframework.actions.PurgeEndpointAction.Builder.purgeEndpoints;
 import static org.citrusframework.http.endpoint.builder.HttpEndpoints.http;
+import static org.citrusframework.jbang.actions.JBangAction.Builder.jbang;
 
 @CitrusConfiguration
 public class EndpointAutoConfiguration {
 
+    private final HttpServer httpServer = http()
+            .server()
+            .port(8081)
+            .defaultStatus(HttpStatus.CREATED)
+            .timeout(60000L)
+            .autoStart(true)
+            .build();
+
     @BindToRegistry
     public HttpServer httpServer() {
-        return http()
-                .server()
-                .port(8081)
-                .defaultStatus(HttpStatus.CREATED)
-                .timeout(120000L)
-                .autoStart(true)
-                .build();
+        return httpServer;
     }
 
     @BindToRegistry
-    public SequenceBeforeSuite setup() {
-        // TODO: Workaround - remove when Citrus 4.5.1 is released
-        return SequenceBeforeSuite.Builder.beforeSuite()
-                .actions(context -> {
-                    Path workDir = CamelJBangSettings.getWorkDir();
-                    if (!workDir.toFile().exists() && !workDir.toFile().mkdirs()) {
-                        throw new CitrusRuntimeException("Failed to create JBang working directory: %s".formatted(workDir.toAbsolutePath().toString()));
-                    }
-                })
+    public SequenceAfterTest afterTest() {
+        return SequenceAfterTest.Builder.afterTest()
+                .actions(
+                    // Workaround to stop all Camel JBang integrations after test - remove when Citrus 4.5.2 is released
+                    jbang().app("camel@apache/camel").command("stop"),
+                    // Auto purge Http server endpoint
+                    purgeEndpoints().endpoint(httpServer)
+                )
                 .build();
     }
 

@@ -26,11 +26,6 @@ variables:
   - name: "field.name"
     value: "subject"
 actions:
-  # Purge Http service
-  - purge:
-      endpoints:
-        - name: "httpServer"
-
   # Create Camel JBang integration
   - camel:
       jbang:

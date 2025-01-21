@@ -30,11 +30,6 @@ variables:
   - name: "slack.message"
     value: "Camel rocks!"
 actions:
-  # Purge Http service
-  - purge:
-      endpoints:
-        - name: "httpServer"
-
   # Create Camel JBang integration
   - camel:
       jbang:

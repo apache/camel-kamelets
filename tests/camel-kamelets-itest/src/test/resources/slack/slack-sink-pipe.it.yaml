@@ -32,11 +32,6 @@ variables:
   - name: "timer.source.period"
     value: "10000"
 actions:
-  # Purge Http service
-  - purge:
-      endpoints:
-        - name: "httpServer"
-
   # Create Camel JBang integration
   - camel:
       jbang:

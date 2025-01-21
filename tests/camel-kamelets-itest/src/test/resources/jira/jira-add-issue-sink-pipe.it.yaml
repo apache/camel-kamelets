@@ -42,11 +42,6 @@ variables:
   - name: "jira.password"
     value: "secr3t"
 actions:
-  # Purge Http service
-  - purge:
-      endpoints:
-        - name: "httpServer"
-
   # Create Camel JBang integration
   - camel:
       jbang:
