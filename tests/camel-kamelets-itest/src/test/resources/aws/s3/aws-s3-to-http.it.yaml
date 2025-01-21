@@ -34,11 +34,6 @@ actions:
       http:
         url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
 
-  # Purge Http service
-  - purge:
-      endpoints:
-        - name: "httpServer"
-
   # Create AWS-S3 client
   - camel:
       createComponent:

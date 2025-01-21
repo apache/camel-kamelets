@@ -15,17 +15,10 @@
  * limitations under the License.
  */
 
-
-import org.apache.camel.CamelContext
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.sqs.SqsClient
-
-if (context.getReferenceResolver().isResolvable(CamelContext.class)) {
-        println "Destroying former SQS client instance"
-        context.getReferenceResolver().resolve(CamelContext.class).getRegistry().unbind("amazonSQSClient")
-}
 
 SqsClient sqsClient = SqsClient
         .builder()

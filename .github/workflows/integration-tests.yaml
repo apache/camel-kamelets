@@ -62,7 +62,8 @@ jobs:
         ./mvnw clean install -DskipTests -DskipITs
     - name: Run Tests
       env:
-        CITRUS_TESTCONTAINERS_LOCALSTACK_IMAGE_NAME: "mirror.gcr.io/localstack/localstack"
+        CITRUS_TESTCONTAINERS_REGISTRY_MIRROR: "mirror.gcr.io"
+        CITRUS_TESTCONTAINERS_REGISTRY_MIRROR_ENABLED: "true"
       run: |
         echo "Install JBang via SDKMAN"
 

@@ -34,11 +34,6 @@ variables:
   - name: "jira.jql"
     value: "assignee=citrus"
 actions:
-  # Purge Http service
-  - purge:
-      endpoints:
-        - name: "httpServer"
-
   # Create Camel JBang integration
   - camel:
       jbang:
