@@ -6,6 +6,9 @@
 
 **Merged pull requests:**
 
+- Bump golang.org/x/net from 0.26.0 to 0.33.0 in /crds [\#2364](https://github.com/apache/camel-kamelets/pull/2364) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore: Integration test improvements [\#2363](https://github.com/apache/camel-kamelets/pull/2363) ([christophd](https://github.com/christophd))
+- Bump actions/setup-go from 5.2.0 to 5.3.0 [\#2362](https://github.com/apache/camel-kamelets/pull/2362) ([dependabot[bot]](https://github.com/apps/dependabot))
 - chore: Use pure Citrus instead of YAKS [\#2360](https://github.com/apache/camel-kamelets/pull/2360) ([christophd](https://github.com/christophd))
 - Kamelets Catalog - Make the description a one liner  [\#2359](https://github.com/apache/camel-kamelets/pull/2359) ([oscerd](https://github.com/oscerd))
 - Kamelets Catalog - Make the description a one liner [\#2358](https://github.com/apache/camel-kamelets/pull/2358) ([oscerd](https://github.com/oscerd))
