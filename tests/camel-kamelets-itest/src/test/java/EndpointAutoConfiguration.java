@@ -23,7 +23,6 @@ import org.springframework.http.HttpStatus;
 
 import static org.citrusframework.actions.PurgeEndpointAction.Builder.purgeEndpoints;
 import static org.citrusframework.http.endpoint.builder.HttpEndpoints.http;
-import static org.citrusframework.jbang.actions.JBangAction.Builder.jbang;
 
 @CitrusConfiguration
 public class EndpointAutoConfiguration {
@@ -45,8 +44,6 @@ public class EndpointAutoConfiguration {
     public SequenceAfterTest afterTest() {
         return SequenceAfterTest.Builder.afterTest()
                 .actions(
-                    // Workaround to stop all Camel JBang integrations after test - remove when Citrus 4.5.2 is released
-                    jbang().app("camel@apache/camel").command("stop"),
                     // Auto purge Http server endpoint
                     purgeEndpoints().endpoint(httpServer)
                 )
