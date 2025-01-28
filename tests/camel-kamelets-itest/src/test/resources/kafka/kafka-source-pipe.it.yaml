@@ -47,6 +47,9 @@ actions:
             file: "kafka/kafka-source-pipe.yaml"
             systemProperties:
               file: "kafka/application.properties"
+              properties:
+                - name: http.sink.url
+                  value: "http://localhost:${http.server.port}/result"
 
   # Verify topic subscription
   - camel:

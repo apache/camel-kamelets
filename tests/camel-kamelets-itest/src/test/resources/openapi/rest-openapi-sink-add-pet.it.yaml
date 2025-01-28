@@ -35,6 +35,8 @@ actions:
             file: "openapi/rest-openapi-sink-pipe.yaml"
             systemProperties:
               properties:
+                - name: "petstore.server.url"
+                  value: "http://localhost:${petstore.server.port}"
                 - name: "petId"
                   value: "${petId}"
                 - name: "pet"
@@ -45,13 +47,13 @@ actions:
 
   # Verify OpenAPI spec request
   - http:
-      server: "httpServer"
+      server: "petstoreServer"
       receiveRequest:
         GET:
           path: "/petstore/openapi.json"
 
   - http:
-      server: "httpServer"
+      server: "petstoreServer"
       sendResponse:
         response:
           status: 200
@@ -63,7 +65,7 @@ actions:
 
   # Verify add pet request
   - http:
-      server: "httpServer"
+      server: "petstoreServer"
       receiveRequest:
         POST:
           path: "/petstore/pet"
@@ -71,7 +73,7 @@ actions:
             data: "${pet}"
 
   - http:
-      server: "httpServer"
+      server: "petstoreServer"
       sendResponse:
         response:
           status: 201

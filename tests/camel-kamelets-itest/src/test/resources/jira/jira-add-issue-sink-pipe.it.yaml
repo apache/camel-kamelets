@@ -19,8 +19,6 @@ name: jira-add-issue-sink-pipe-test
 variables:
   - name: "timer.source.period"
     value: "10000"
-  - name: "jira.url"
-    value: "http://localhost:8081"
   - name: "jira.project.key"
     value: "CAMEL"
   - name: "jira.issue.assignee"
@@ -42,6 +40,10 @@ variables:
   - name: "jira.password"
     value: "secr3t"
 actions:
+  - createVariables:
+      variables:
+        - name: "jira.url"
+          value: "http://localhost:${jira.server.port}"
   # Create Camel JBang integration
   - camel:
       jbang:
@@ -74,7 +76,7 @@ actions:
 
   # Verify issue type request
   - http:
-      server: "httpServer"
+      server: "jiraServer"
       receiveRequest:
         GET:
           path: "/rest/api/latest/issuetype"
@@ -83,7 +85,7 @@ actions:
               value: "Basic citrus:encodeBase64(${jira.username}:${jira.password})"
 
   - http:
-      server: "httpServer"
+      server: "jiraServer"
       sendResponse:
         response:
           status: 200
@@ -115,7 +117,7 @@ actions:
 
   # Verify add issue request
   - http:
-      server: "httpServer"
+      server: "jiraServer"
       receiveRequest:
         POST:
           path: "/rest/api/latest/issue"
@@ -142,7 +144,7 @@ actions:
               }
 
   - http:
-      server: "httpServer"
+      server: "jiraServer"
       sendResponse:
         response:
           status: 200

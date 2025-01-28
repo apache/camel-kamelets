@@ -17,8 +17,6 @@
 
 name: slack-sink-pipe-test
 variables:
-  - name: "slack.server.url"
-    value: "http://localhost:8081"
   - name: "slack.token"
     value: "xoxb-citrus:randomNumber(10)-citrus:randomNumber(13)-citrus:randomString(34)"
   - name: "slack.channel"
@@ -32,6 +30,10 @@ variables:
   - name: "timer.source.period"
     value: "10000"
 actions:
+  - createVariables:
+      variables:
+        - name: "slack.server.url"
+          value: "http://localhost:${slack.server.port}"
   # Create Camel JBang integration
   - camel:
       jbang:
@@ -49,7 +51,7 @@ actions:
 
   # Verify message post request
   - http:
-      server: "httpServer"
+      server: "slackServer"
       receiveRequest:
         POST:
           path: "/"
@@ -62,7 +64,7 @@ actions:
               }
 
   - http:
-      server: "httpServer"
+      server: "slackServer"
       sendResponse:
         response:
           status: 200

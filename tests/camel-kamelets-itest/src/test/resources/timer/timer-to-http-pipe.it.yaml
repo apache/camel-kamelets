@@ -17,11 +17,13 @@
 
 name: timer-to-http-pipe-test
 variables:
-  - name: "server.url"
-    value: "http://localhost:8081"
   - name: "timer.message"
     value: "Camel rocks!"
 actions:
+  - createVariables:
+      variables:
+        - name: "http.server.url"
+          value: "http://localhost:${http.server.port}"
   # Create Camel JBang integration
   - camel:
       jbang:
@@ -31,8 +33,8 @@ actions:
             file: "timer/timer-to-http-pipe.yaml"
             systemProperties:
               properties:
-                - name: "server.url"
-                  value: "${server.url}"
+                - name: "http.sink.url"
+                  value: "${http.server.url}"
                 - name: "timer.message"
                   value: "${timer.message}"
 

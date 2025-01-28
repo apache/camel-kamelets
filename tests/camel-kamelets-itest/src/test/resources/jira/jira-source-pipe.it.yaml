@@ -17,8 +17,6 @@
 
 name: jira-source-pipe-test
 variables:
-  - name: "jira.url"
-    value: "http://localhost:8081"
   - name: "jira.project.id"
     value: "10001"
   - name: "jira.issue.id"
@@ -34,6 +32,10 @@ variables:
   - name: "jira.jql"
     value: "assignee=citrus"
 actions:
+  - createVariables:
+      variables:
+        - name: "jira.url"
+          value: "http://localhost:${jira.server.port}"
   # Create Camel JBang integration
   - camel:
       jbang:
@@ -54,7 +56,7 @@ actions:
 
   # Verify latest issue request
   - http:
-      server: "httpServer"
+      server: "jiraServer"
       receiveRequest:
         GET:
           path: "/rest/api/latest/search"
@@ -68,7 +70,7 @@ actions:
               value: "Basic citrus:encodeBase64(${jira.username}:${jira.password})"
 
   - http:
-      server: "httpServer"
+      server: "jiraServer"
       sendResponse:
         response:
           status: 200
@@ -95,7 +97,7 @@ actions:
 
   # Verify search request
   - http:
-      server: "httpServer"
+      server: "jiraServer"
       receiveRequest:
         GET:
           path: "/rest/api/latest/search"
@@ -111,7 +113,7 @@ actions:
               value: "Basic citrus:encodeBase64(${jira.username}:${jira.password})"
 
   - http:
-      server: "httpServer"
+      server: "jiraServer"
       sendResponse:
         response:
           status: 200
