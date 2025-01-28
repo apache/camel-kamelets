@@ -4,8 +4,16 @@
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.3...HEAD)
 
+**Closed issues:**
+
+- Release Camel Kamelets 4.8.3 [\#2349](https://github.com/apache/camel-kamelets/issues/2349)
+
 **Merged pull requests:**
 
+- Kamelets Catalog - Make the description a one liner  [\#2368](https://github.com/apache/camel-kamelets/pull/2368) ([oscerd](https://github.com/oscerd))
+- Bump golang.org/x/net from 0.23.0 to 0.33.0 in /script/validator [\#2367](https://github.com/apache/camel-kamelets/pull/2367) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump golang.org/x/net from 0.23.0 to 0.33.0 in /script/generator [\#2366](https://github.com/apache/camel-kamelets/pull/2366) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.citrusframework:citrus-bom from 4.5.1 to 4.5.2 [\#2365](https://github.com/apache/camel-kamelets/pull/2365) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump golang.org/x/net from 0.26.0 to 0.33.0 in /crds [\#2364](https://github.com/apache/camel-kamelets/pull/2364) ([dependabot[bot]](https://github.com/apps/dependabot))
 - chore: Integration test improvements [\#2363](https://github.com/apache/camel-kamelets/pull/2363) ([christophd](https://github.com/christophd))
 - Bump actions/setup-go from 5.2.0 to 5.3.0 [\#2362](https://github.com/apache/camel-kamelets/pull/2362) ([dependabot[bot]](https://github.com/apps/dependabot))
