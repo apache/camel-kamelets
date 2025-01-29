@@ -42,5 +42,5 @@ spec:
       apiVersion: camel.apache.org/v1
       name: rest-openapi-sink
     properties:
-      specification: http://localhost:8081/petstore/openapi.json
+      specification: "{{petstore.server.url}}/petstore/openapi.json"
       operation: "{{spec.operation}}"

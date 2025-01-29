@@ -28,7 +28,7 @@
           expression:
             constant: '{{timer.message}}'
       - to:
-          uri: '{{server.url}}/events'
+          uri: '{{http.sink.url}}/events'
       - to:
           uri: 'log:info'
           parameters:

@@ -17,8 +17,6 @@
 
 name: slack-source-pipe-test
 variables:
-  - name: "slack.server.url"
-    value: "http://localhost:8081"
   - name: "slack.token"
     value: "xoxb-citrus:randomNumber(10)-citrus:randomNumber(13)-citrus:randomString(34)"
   - name: "slack.channel"
@@ -30,6 +28,10 @@ variables:
   - name: "slack.message"
     value: "Camel rocks!"
 actions:
+  - createVariables:
+      variables:
+        - name: "slack.server.url"
+          value: "http://localhost:${slack.server.port}"
   # Create Camel JBang integration
   - camel:
       jbang:
@@ -45,7 +47,7 @@ actions:
 
   # Verify auth test request
   - http:
-      server: "httpServer"
+      server: "slackServer"
       receiveRequest:
         POST:
           path: "/api/auth.test"
@@ -55,7 +57,7 @@ actions:
               value: "Bearer ${slack.token}"
 
   - http:
-      server: "httpServer"
+      server: "slackServer"
       sendResponse:
         response:
           status: 200
@@ -68,7 +70,7 @@ actions:
 
   # Verify conversations list request
   - http:
-      server: "httpServer"
+      server: "slackServer"
       receiveRequest:
         POST:
           path: "/api/conversations.list"
@@ -78,7 +80,7 @@ actions:
               value: "Bearer ${slack.token}"
 
   - http:
-      server: "httpServer"
+      server: "slackServer"
       sendResponse:
         response:
           status: 200
@@ -91,7 +93,7 @@ actions:
 
   # Verify conversations history request
   - http:
-      server: "httpServer"
+      server: "slackServer"
       receiveRequest:
         POST:
           path: "/api/conversations.history"
@@ -101,7 +103,7 @@ actions:
               value: "Bearer ${slack.token}"
 
   - http:
-      server: "httpServer"
+      server: "slackServer"
       sendResponse:
         response:
           status: 200

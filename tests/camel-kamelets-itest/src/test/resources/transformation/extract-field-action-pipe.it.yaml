@@ -17,13 +17,15 @@
 
 name: extract-field-action-pipe-test
 variables:
-  - name: "server.url"
-    value: "http://localhost:8081"
   - name: "field.name"
     value: "subject"
   - name: "field.value"
     value: "Camel rocks!"
 actions:
+  - createVariables:
+      variables:
+        - name: "http.server.url"
+          value: "http://localhost:${http.server.port}"
   # Create Camel JBang integration
   - camel:
       jbang:
@@ -33,8 +35,8 @@ actions:
             file: "transformation/extract-field-action-pipe.yaml"
             systemProperties:
               properties:
-                - name: "server.url"
-                  value: "${server.url}"
+                - name: "http.sink.url"
+                  value: "${http.server.url}"
                 - name: "field.name"
                   value: "${field.name}"
                 - name: "input"

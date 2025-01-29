@@ -17,11 +17,13 @@
 
 name: data-type-action-pipe-test
 variables:
-  - name: "server.url"
-    value: "http://localhost:8081"
   - name: "uuid"
     value: "citrus:randomUUID()"
 actions:
+  - createVariables:
+      variables:
+        - name: "http.server.url"
+          value: "http://localhost:${http.server.port}"
   # Create Camel JBang integration
   - camel:
       jbang:
@@ -31,8 +33,8 @@ actions:
             file: "transformation/data-type-action-pipe.yaml"
             systemProperties:
               properties:
-                - name: "server.url"
-                  value: "${server.url}"
+                - name: "http.sink.url"
+                  value: "${http.server.url}"
                 - name: "input"
                   value: |
                     { \"id\": \"${uuid}\" }

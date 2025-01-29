@@ -76,4 +76,4 @@ spec:
       apiVersion: camel.apache.org/v1
       name: http-sink
     properties:
-      url: http://localhost:8081/incoming
+      url: "{{http.sink.url}}"

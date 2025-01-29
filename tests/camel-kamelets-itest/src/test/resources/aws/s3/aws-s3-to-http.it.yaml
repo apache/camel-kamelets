@@ -48,6 +48,9 @@ actions:
             file: "aws/s3/aws-s3-to-http.yaml"
             systemProperties:
               file: "aws/s3/application.properties"
+              properties:
+                - name: http.sink.url
+                  value: "http://localhost:${http.server.port}/incoming"
 
   # Publish event
   - send:

@@ -33,5 +33,5 @@ spec:
       securityProtocol: '{{kafka.securityProtocol}}'
       deserializeHeaders: '{{kafka.deserializeHeaders}}'
   sink:
-    uri: http://localhost:8081/result
+    uri: "{{http.sink.url}}"
 

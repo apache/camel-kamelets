@@ -26,4 +26,4 @@ spec:
       apiVersion: camel.apache.org/v1
       name: earthquake-source
   sink:
-    uri: http://localhost:8081/test
+    uri: "{{http.sink.url}}"
