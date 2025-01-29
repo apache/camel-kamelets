@@ -10,6 +10,7 @@
 
 **Merged pull requests:**
 
+- Kamelets Catalog - Make the description a one liner  [\#2371](https://github.com/apache/camel-kamelets/pull/2371) ([oscerd](https://github.com/oscerd))
 - Kamelets Catalog - Make the description a one liner  [\#2368](https://github.com/apache/camel-kamelets/pull/2368) ([oscerd](https://github.com/oscerd))
 - Bump golang.org/x/net from 0.23.0 to 0.33.0 in /script/validator [\#2367](https://github.com/apache/camel-kamelets/pull/2367) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump golang.org/x/net from 0.23.0 to 0.33.0 in /script/generator [\#2366](https://github.com/apache/camel-kamelets/pull/2366) ([dependabot[bot]](https://github.com/apps/dependabot))
