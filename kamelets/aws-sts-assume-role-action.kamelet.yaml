@@ -31,16 +31,7 @@ metadata:
 spec:
   definition:
     title: "AWS STS Assume Role Action"
-    description: |-
-      Assume a role through STS
-
-      Access Key/Secret Key are the basic method for authenticating to the AWS STS Service. These parameters are optional because the Kamelet provides the 'useDefaultCredentialsProvider'.
-      
-      When using a default Credentials Provider the Translate client will load the credentials through this provider and won't use the static credential. This is reason for not having the access key and secret key as mandatory parameter for this Kamelet.
-      
-      In the headers, you have to specify the `role-arn` / `ce-role-arn` property to specify the role ARN you want to assume.
-
-      In the headers, you have to specify the `role-session-name` / `ce-role-session-name` property to specify the role Session name you want to use.
+    description: Assume a role through STS
     required:
       - region
     type: object
