@@ -31,12 +31,7 @@ metadata:
 spec:
   definition:
     title: "AWS Translate Action"
-    description: |-
-      Translate a text in a specific language.
-
-      Access Key/Secret Key are the basic method for authenticating to the AWS Translate Service. These parameters are optional because the Kamelet provides the 'useDefaultCredentialsProvider'.
-      
-      When using a default Credentials Provider the Translate client will load the credentials through this provider and won't use the static credential. This is reason for not having the access key and secret key as mandatory parameter for this Kamelet.
+    description: Translate a text in a specific language.
     required:
       - region
       - sourceLanguage
