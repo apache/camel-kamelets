@@ -10,6 +10,7 @@
 
 **Merged pull requests:**
 
+- Kamelets Catalog - Make the description a one liner [\#2376](https://github.com/apache/camel-kamelets/pull/2376) ([oscerd](https://github.com/oscerd))
 - Kamelets Catalog - Make the description a one liner  [\#2373](https://github.com/apache/camel-kamelets/pull/2373) ([oscerd](https://github.com/oscerd))
 - Bump actions/setup-java from 4.6.0 to 4.7.0 [\#2372](https://github.com/apache/camel-kamelets/pull/2372) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Kamelets Catalog - Make the description a one liner  [\#2371](https://github.com/apache/camel-kamelets/pull/2371) ([oscerd](https://github.com/oscerd))
