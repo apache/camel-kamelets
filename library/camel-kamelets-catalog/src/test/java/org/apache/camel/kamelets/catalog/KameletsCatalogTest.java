@@ -154,8 +154,8 @@ public class KameletsCatalogTest {
 
     @Test
     void testSupportedHeaders() throws Exception {
-        verifyHeaders("aws-s3-source", 25);
-        verifyHeaders("aws-s3-sink", 34);
+        verifyHeaders("aws-s3-source", 26);
+        verifyHeaders("aws-s3-sink", 35);
         verifyHeaders("aws-cloudtrail-source", 4);
         verifyHeaders("aws-redshift-source", 0);
         verifyHeaders("aws-not-exists", 0);
@@ -179,10 +179,10 @@ public class KameletsCatalogTest {
         verifyHeaders("exec-sink", 0);
         verifyHeaders("fhir-source", 0);
         verifyHeaders("file-watch-source", 10);
-        verifyHeaders("ftp-source", 10);
-        verifyHeaders("ftp-sink", 8);
-        verifyHeaders("ftps-source", 10);
-        verifyHeaders("ftps-sink", 8);
+        verifyHeaders("ftp-source", 15);
+        verifyHeaders("ftp-sink", 6);
+        verifyHeaders("ftps-source", 15);
+        verifyHeaders("ftps-sink", 6);
         verifyHeaders("github-commit-source", 7);
         verifyHeaders("github-event-source", 7);
         verifyHeaders("github-pullrequest-comment-source", 7);
@@ -195,8 +195,8 @@ public class KameletsCatalogTest {
         verifyHeaders("google-pubsub-sink", 3);
         verifyHeaders("google-pubsub-source", 5);
         verifyHeaders("google-sheets-source", 6);
-        verifyHeaders("google-storage-source", 20);
-        verifyHeaders("google-storage-sink", 14);
+        verifyHeaders("google-storage-source", 21);
+        verifyHeaders("google-storage-sink", 15);
         verifyHeaders("http-source", 5);
         verifyHeaders("http-sink", 14);
         verifyHeaders("http-secured-source", 5);
@@ -227,8 +227,8 @@ public class KameletsCatalogTest {
         verifyHeaders("mail-sink", 8);
         verifyHeaders("mariadb-source", 0);
         verifyHeaders("mariadb-sink", 8);
-        verifyHeaders("minio-source", 14);
-        verifyHeaders("minio-sink", 22);
+        verifyHeaders("minio-source", 15);
+        verifyHeaders("minio-sink", 23);
         verifyHeaders("mongodb-changes-stream-source", 3);
         verifyHeaders("mongodb-sink", 12);
         verifyHeaders("mongodb-source", 3);
@@ -255,8 +255,8 @@ public class KameletsCatalogTest {
         verifyHeaders("salesforce-composite-upsert-sink", 1);
         verifyHeaders("salesforce-source", 19);
         verifyHeaders("scp-sink", 0);
-        verifyHeaders("sftp-sink", 8);
-        verifyHeaders("sftp-source", 10);
+        verifyHeaders("sftp-sink", 6);
+        verifyHeaders("sftp-source", 15);
         verifyHeaders("slack-sink", 0);
         verifyHeaders("slack-source", 0);
         verifyHeaders("splunk-hec-sink", 1);
