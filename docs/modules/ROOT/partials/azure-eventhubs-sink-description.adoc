@@ -1,0 +1,23 @@
+== Azure Event Hubs Sink Kamelet Description
+
+=== Authentication methods
+
+In this Kamelet you have the possibility of using the Azure Identity mechanism or the plain Shared Account Key. Respectively the parameters are `AZURE_IDENTITY` and `CONNECTION_STRING`
+
+The order of evaluation for `AZURE_IDENTITY` is the following:
+
+ - Enviroment
+ - Workload Identity 
+ - Managed Identity 
+ - Azure Developer CLI 
+ - IntelliJ
+ - Azure CLI
+ - Azure Powershell
+
+For more information about this you can look at https://learn.microsoft.com/en-us/java/api/overview/azure/identity-readme[Azure Identity documentation]
+
+=== Optional Headers
+
+In the headers, you can optionally set the `partition-id` / `ce-partition-id` property to specify the partition id for a specific item.
+
+If you do not set the property in the header, Azure Event Hubs will do that for you.
