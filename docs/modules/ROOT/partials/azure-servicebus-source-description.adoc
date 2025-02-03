@@ -1,0 +1,23 @@
+== Azure Servicebus Source Kamelet Description
+
+=== Authentication methods
+
+In this Kamelet you have the possibility of using the Azure Identity mechanism or the plain Shared Account Key. Respectively the parameters are `AZURE_IDENTITY`, `CONNECTION_STRING` and `TOKEN_CREDENTIAL`
+
+The order of evaluation for `AZURE_IDENTITY` is the following:
+
+ - Enviroment
+ - Workload Identity 
+ - Managed Identity 
+ - Azure Developer CLI 
+ - IntelliJ
+ - Azure CLI
+ - Azure Powershell
+
+For more information about this you can look at https://learn.microsoft.com/en-us/java/api/overview/azure/identity-readme[Azure Identity documentation]
+
+For `TOKEN_CREDENTIAL` type, you'll need to add `com.azure.core.credential.TokenCredential` instance in the Camel registry.
+
+=== Topic vs Queue
+
+The subscribtion name parameter needs to be populated in case of consuming from a Topic, while it's not required in case of Queue.
