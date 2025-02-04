@@ -6,10 +6,13 @@
 
 **Closed issues:**
 
+- Bump to 4.10.0-SNAPSHOT Camel [\#2374](https://github.com/apache/camel-kamelets/issues/2374)
 - Release Camel Kamelets 4.8.3 [\#2349](https://github.com/apache/camel-kamelets/issues/2349)
 
 **Merged pull requests:**
 
+- Kamelets Catalog - Make the description a one liner [\#2380](https://github.com/apache/camel-kamelets/pull/2380) ([oscerd](https://github.com/oscerd))
+- Prepare for 4.10.0 Release: Upgrade to 4.10.0-SNAPSHOT [\#2378](https://github.com/apache/camel-kamelets/pull/2378) ([oscerd](https://github.com/oscerd))
 - Generated sources regen for SBOM [\#2377](https://github.com/apache/camel-kamelets/pull/2377) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Kamelets Catalog - Make the description a one liner [\#2376](https://github.com/apache/camel-kamelets/pull/2376) ([oscerd](https://github.com/oscerd))
 - Bump fabric8-version from 6.13.4 to 7.1.0 [\#2375](https://github.com/apache/camel-kamelets/pull/2375) ([dependabot[bot]](https://github.com/apps/dependabot))
