@@ -6,12 +6,14 @@
 
 **Closed issues:**
 
+- Align Dependencies with Camel 4.10.0 [\#2382](https://github.com/apache/camel-kamelets/issues/2382)
 - Align Azure SDK BOM Dependencies with Camel 4.10.0 [\#2381](https://github.com/apache/camel-kamelets/issues/2381)
 - Bump to 4.10.0-SNAPSHOT Camel [\#2374](https://github.com/apache/camel-kamelets/issues/2374)
 - Release Camel Kamelets 4.8.3 [\#2349](https://github.com/apache/camel-kamelets/issues/2349)
 
 **Merged pull requests:**
 
+- Align Dependencies with Camel 4.10.0 [\#2384](https://github.com/apache/camel-kamelets/pull/2384) ([oscerd](https://github.com/oscerd))
 - Align Azure SDK BOM Dependencies with Camel 4.10.0 [\#2383](https://github.com/apache/camel-kamelets/pull/2383) ([oscerd](https://github.com/oscerd))
 - Kamelets Catalog - Make the description a one liner [\#2380](https://github.com/apache/camel-kamelets/pull/2380) ([oscerd](https://github.com/oscerd))
 - Prepare for 4.10.0 Release: Upgrade to 4.10.0-SNAPSHOT [\#2378](https://github.com/apache/camel-kamelets/pull/2378) ([oscerd](https://github.com/oscerd))
