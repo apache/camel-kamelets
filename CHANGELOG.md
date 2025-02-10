@@ -13,6 +13,7 @@
 
 **Merged pull requests:**
 
+- Generated sources regen for SBOM [\#2385](https://github.com/apache/camel-kamelets/pull/2385) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Align Dependencies with Camel 4.10.0 [\#2384](https://github.com/apache/camel-kamelets/pull/2384) ([oscerd](https://github.com/oscerd))
 - Align Azure SDK BOM Dependencies with Camel 4.10.0 [\#2383](https://github.com/apache/camel-kamelets/pull/2383) ([oscerd](https://github.com/oscerd))
 - Kamelets Catalog - Make the description a one liner [\#2380](https://github.com/apache/camel-kamelets/pull/2380) ([oscerd](https://github.com/oscerd))
