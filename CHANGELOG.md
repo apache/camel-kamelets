@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Upgrade to Camel 4.10.0 [\#2387](https://github.com/apache/camel-kamelets/issues/2387)
 - Align Dependencies with Camel 4.10.0 [\#2382](https://github.com/apache/camel-kamelets/issues/2382)
 - Align Azure SDK BOM Dependencies with Camel 4.10.0 [\#2381](https://github.com/apache/camel-kamelets/issues/2381)
 - Bump to 4.10.0-SNAPSHOT Camel [\#2374](https://github.com/apache/camel-kamelets/issues/2374)
