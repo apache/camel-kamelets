@@ -6,26 +6,6 @@ This version ({page-component-display-version}) of {page-component-title} depend
 
 * xref:{camel-docs-version}@components::index.adoc[Camel] at version {camel-version}
 
-ifndef::version-used[It is not currently used by other subprojects such as camel-k or camel-kafka-connector.]
-ifdef::version-used[]
-It is used by:
-
-ifdef::camel-k-version[]
-* xref:{camel-k-docs-version}@camel-k::index.adoc[Camel-K] at version {camel-k-version}
-endif::[]
-ifdef::camel-kafka-connector-version[]
-* xref:{camel-kafka-connector-docs-version}@camel-kafka-connector::index.adoc[Camel Kafka Connector] at version {camel-kafka-connector-version}
-endif::[]
-
-endif::[]
-
-ifdef::lts[This long term service release will be supported until {lts}.]
-ifndef::lts[]
-ifdef::prerelease[This is the development version of {page-component-title}. It should not be used in production.]
-ifndef::prerelease[This release will not be updated, but rather replaced by a new release.]
-endif::[]
---
-
 == Kamelet specification
 
 Kamelets were originally born for Kubernetes and they have eventually moved to be used as Camel core resources. Its specification is a Kubernetes CRD specification. You can use it in your project by using Maven dependency `org.apache.camel.kamelets:camel-kamelets-crds`.
