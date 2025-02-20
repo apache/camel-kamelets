@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.10.0...HEAD)
+
+**Closed issues:**
+
+- Make the website docs independent [\#2392](https://github.com/apache/camel-kamelets/issues/2392)
+
 ## [v4.10.0](https://github.com/apache/camel-kamelets/tree/v4.10.0) (2025-02-12)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.3...v4.10.0)
