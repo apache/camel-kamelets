@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- kafka-batch-scram-source.kamelet dependency on KafkaHeaderDeserializer class [\#2396](https://github.com/apache/camel-kamelets/issues/2396)
 - Make the website docs independent [\#2392](https://github.com/apache/camel-kamelets/issues/2392)
 
 ## [v4.10.0](https://github.com/apache/camel-kamelets/tree/v4.10.0) (2025-02-12)
