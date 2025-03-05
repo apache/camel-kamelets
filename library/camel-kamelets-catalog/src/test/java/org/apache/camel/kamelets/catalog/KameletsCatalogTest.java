@@ -253,7 +253,7 @@ public class KameletsCatalogTest {
         verifyHeaders("salesforce-delete-sink", 1);
         verifyHeaders("salesforce-update-sink", 1);
         verifyHeaders("salesforce-composite-upsert-sink", 1);
-        verifyHeaders("salesforce-source", 19);
+        verifyHeaders("salesforce-source", 20);
         verifyHeaders("scp-sink", 0);
         verifyHeaders("sftp-sink", 6);
         verifyHeaders("sftp-source", 15);
