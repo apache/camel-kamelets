@@ -1,11 +1,12 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v4.10.1](https://github.com/apache/camel-kamelets/tree/v4.10.1) (2025-03-05)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.10.0...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.10.0...v4.10.1)
 
 **Closed issues:**
 
+- Upgrade to Camel 4.10.1 [\#2402](https://github.com/apache/camel-kamelets/issues/2402)
 - kafka-batch-scram-source.kamelet dependency on KafkaHeaderDeserializer class [\#2396](https://github.com/apache/camel-kamelets/issues/2396)
 - Make the website docs independent [\#2392](https://github.com/apache/camel-kamelets/issues/2392)
 
