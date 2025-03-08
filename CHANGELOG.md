@@ -1,5 +1,21 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.4...HEAD)
+
+**Closed issues:**
+
+- Reflect changes in CAMEL-21833 for Manual Commit in Kafka Kamelets [\#2409](https://github.com/apache/camel-kamelets/issues/2409)
+
+## [v4.8.4](https://github.com/apache/camel-kamelets/tree/v4.8.4) (2025-03-06)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.10.1...v4.8.4)
+
+**Closed issues:**
+
+- Upgrade to Camel 4.8.4 [\#2406](https://github.com/apache/camel-kamelets/issues/2406)
+
 ## [v4.10.1](https://github.com/apache/camel-kamelets/tree/v4.10.1) (2025-03-05)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.10.0...v4.10.1)
