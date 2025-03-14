@@ -92,7 +92,7 @@ spec:
       - setProperty:
           name: "renames"
           constant: "{{renames}}"
-      - bean: "org.apache.camel.component.kamelet.utils.transform.ReplaceField"
+      - bean: "org.apache.camel.component.kafka.transform.ReplaceField"
       - choice:
           when:
           - simple: "${exchangeProperty[deserialized]} == 'true'"
