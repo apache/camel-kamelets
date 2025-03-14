@@ -56,7 +56,7 @@ spec:
   template:
     beans:
       - name: insertField
-        type: "#class:org.apache.camel.component.kamelet.utils.transform.InsertField"
+        type: "#class:org.apache.camel.component.kafka.transform.InsertField"
         properties:
           field: '{{field}}'
           value: '{{value}}'
