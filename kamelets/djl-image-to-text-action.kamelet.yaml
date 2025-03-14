@@ -38,8 +38,6 @@ spec:
   dependencies:
     - "mvn:ai.djl.pytorch:pytorch-engine:0.29.0"
     - "mvn:ai.djl.pytorch:pytorch-model-zoo:0.29.0"
-    - "mvn:net.sf.extjwnl:extjwnl:2.0.5"
-    - "mvn:net.sf.extjwnl:extjwnl-data-wn31:1.2"
     - "camel:core"
     - "camel:kamelet"
     - "camel:jackson"
@@ -47,7 +45,7 @@ spec:
   template:
     beans:
       - name: imageNetUtil
-        type: "#class:org.apache.camel.component.kamelet.utils.djl.ImageNetUtil"
+        type: "#class:org.apache.camel.component.djl.ImageNetUtil"
     from:
       uri: "kamelet:source"
       steps:
