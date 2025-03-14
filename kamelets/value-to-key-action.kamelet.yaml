@@ -61,7 +61,7 @@ spec:
       - setProperty:
           name: "fields"
           constant: "{{fields}}"
-      - bean: "org.apache.camel.component.kamelet.utils.transform.kafka.ValueToKey"
+      - bean: "org.apache.camel.component.kafka.transform.ValueToKey"
       - choice:
           when:
           - simple: "${exchangeProperty[deserialized]} == 'true'"
