@@ -7,6 +7,7 @@
 **Closed issues:**
 
 - Release Camel-Kamelets 4.10.2 [\#2415](https://github.com/apache/camel-kamelets/issues/2415)
+- Release Camel-Kamelets 4.8.5 [\#2414](https://github.com/apache/camel-kamelets/issues/2414)
 
 ## [v4.8.5](https://github.com/apache/camel-kamelets/tree/v4.8.5) (2025-03-10)
 
