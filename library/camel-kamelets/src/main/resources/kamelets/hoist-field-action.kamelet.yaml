@@ -59,7 +59,7 @@ spec:
       - setProperty:
           name: "field"
           constant: "{{field}}"
-      - bean: "org.apache.camel.component.kamelet.utils.transform.HoistField"
+      - bean: "org.apache.camel.component.kafka.transform.HoistField"
       - marshal:
           json:
             library: Jackson
