@@ -80,7 +80,7 @@ spec:
   template:
     beans:
       - name: extractField
-        type: "#class:org.apache.camel.component.kamelet.utils.transform.ExtractField"
+        type: "#class:org.apache.camel.component.kafka.transform.ExtractField"
         properties:
           field: '{{field}}'
           headerOutput: '{{headerOutput}}'
