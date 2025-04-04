@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.10.3...HEAD)
+
+**Closed issues:**
+
+- Release Camel-Kamelets 4.10.3 [\#2435](https://github.com/apache/camel-kamelets/issues/2435)
+- Upgrade to Camel 4.10.3 [\#2434](https://github.com/apache/camel-kamelets/issues/2434)
+
 ## [v4.10.3](https://github.com/apache/camel-kamelets/tree/v4.10.3) (2025-03-31)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.5...v4.10.3)
