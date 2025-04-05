@@ -1,13 +1,51 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v4.11.0](https://github.com/apache/camel-kamelets/tree/v4.11.0) (2025-04-04)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.10.3...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.10.3...v4.11.0)
 
 **Closed issues:**
 
+- Upgrade Camel to 4.11.0 [\#2442](https://github.com/apache/camel-kamelets/issues/2442)
+- Re-introduce Solr Kamelets [\#2440](https://github.com/apache/camel-kamelets/issues/2440)
 - Release Camel-Kamelets 4.10.3 [\#2435](https://github.com/apache/camel-kamelets/issues/2435)
 - Upgrade to Camel 4.10.3 [\#2434](https://github.com/apache/camel-kamelets/issues/2434)
+
+**Merged pull requests:**
+
+- Upgrade to Camel 4.11.0 [\#2444](https://github.com/apache/camel-kamelets/pull/2444) ([oscerd](https://github.com/oscerd))
+- Re-introduce Solr Kamelets [\#2441](https://github.com/apache/camel-kamelets/pull/2441) ([oscerd](https://github.com/oscerd))
+- Add the output of the maven build metadata plugin to the gitignore file [\#2437](https://github.com/apache/camel-kamelets/pull/2437) ([cunningt](https://github.com/cunningt))
+- Bump org.apache.maven.plugins:maven-surefire-plugin from 3.5.2 to 3.5.3 [\#2433](https://github.com/apache/camel-kamelets/pull/2433) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugins:maven-failsafe-plugin from 3.5.2 to 3.5.3 [\#2432](https://github.com/apache/camel-kamelets/pull/2432) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2431](https://github.com/apache/camel-kamelets/pull/2431) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Kamelets Catalog - Make the description a one liner  [\#2430](https://github.com/apache/camel-kamelets/pull/2430) ([oscerd](https://github.com/oscerd))
+- Upgrade golang.org/x/net to 0.36.0 [\#2429](https://github.com/apache/camel-kamelets/pull/2429) ([oscerd](https://github.com/oscerd))
+- Bump golang.org/x/net to 0.36.0 [\#2428](https://github.com/apache/camel-kamelets/pull/2428) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#2426](https://github.com/apache/camel-kamelets/pull/2426) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen for SBOM [\#2425](https://github.com/apache/camel-kamelets/pull/2425) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump actions/upload-artifact from 4.6.1 to 4.6.2 [\#2424](https://github.com/apache/camel-kamelets/pull/2424) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/setup-go from 5.3.0 to 5.4.0 [\#2423](https://github.com/apache/camel-kamelets/pull/2423) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.activemq:artemis-jakarta-client-all from 2.39.0 to 2.40.0 [\#2422](https://github.com/apache/camel-kamelets/pull/2422) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2421](https://github.com/apache/camel-kamelets/pull/2421) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Reflect changes from CAMEL-21843 in involved Kamelets - Kafka Header … [\#2420](https://github.com/apache/camel-kamelets/pull/2420) ([oscerd](https://github.com/oscerd))
+- Reflect changes from CAMEL-21843 in involved Kamelets - Kafka  [\#2419](https://github.com/apache/camel-kamelets/pull/2419) ([oscerd](https://github.com/oscerd))
+- Reflect changes from CAMEL-21843 in involved Kamelets - DJL [\#2418](https://github.com/apache/camel-kamelets/pull/2418) ([oscerd](https://github.com/oscerd))
+- Reflect changes from CAMEL-21843 in involved Kamelets - MongoDB [\#2417](https://github.com/apache/camel-kamelets/pull/2417) ([oscerd](https://github.com/oscerd))
+- Bump golang.org/x/net from 0.33.0 to 0.36.0 in /crds [\#2416](https://github.com/apache/camel-kamelets/pull/2416) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2413](https://github.com/apache/camel-kamelets/pull/2413) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen [\#2411](https://github.com/apache/camel-kamelets/pull/2411) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Reflect changes in CAMEL-21833 for Manual Commit in Kafka Kamelets [\#2410](https://github.com/apache/camel-kamelets/pull/2410) ([oscerd](https://github.com/oscerd))
+- Bump to 4.11.0-SNAPSHOT [\#2404](https://github.com/apache/camel-kamelets/pull/2404) ([oscerd](https://github.com/oscerd))
+- Bump peter-evans/create-pull-request from 7.0.7 to 7.0.8 [\#2401](https://github.com/apache/camel-kamelets/pull/2401) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.camel:camel-dependencies from 4.10.0 to 4.10.1 [\#2400](https://github.com/apache/camel-kamelets/pull/2400) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump camel.version from 4.10.0 to 4.10.1 [\#2399](https://github.com/apache/camel-kamelets/pull/2399) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.resolver:maven-resolver-api from 2.0.6 to 2.0.7 [\#2398](https://github.com/apache/camel-kamelets/pull/2398) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugins:maven-deploy-plugin from 3.1.3 to 3.1.4 [\#2397](https://github.com/apache/camel-kamelets/pull/2397) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump peter-evans/create-pull-request from 7.0.6 to 7.0.7 [\#2395](https://github.com/apache/camel-kamelets/pull/2395) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/upload-artifact from 4.6.0 to 4.6.1 [\#2394](https://github.com/apache/camel-kamelets/pull/2394) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(doc\): remove references from other projects [\#2393](https://github.com/apache/camel-kamelets/pull/2393) ([squakez](https://github.com/squakez))
+- Generated sources regen for SBOM [\#2391](https://github.com/apache/camel-kamelets/pull/2391) ([github-actions[bot]](https://github.com/apps/github-actions))
 
 ## [v4.10.3](https://github.com/apache/camel-kamelets/tree/v4.10.3) (2025-03-31)
 
