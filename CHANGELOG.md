@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.11.0...HEAD)
+
+**Closed issues:**
+
+- Release Camel-Kamelets 4.11.0 [\#2443](https://github.com/apache/camel-kamelets/issues/2443)
+- Guide to add Yaks tests: how to create test for sink and source Kamelets [\#831](https://github.com/apache/camel-kamelets/issues/831)
+
 ## [v4.11.0](https://github.com/apache/camel-kamelets/tree/v4.11.0) (2025-04-04)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.10.3...v4.11.0)
