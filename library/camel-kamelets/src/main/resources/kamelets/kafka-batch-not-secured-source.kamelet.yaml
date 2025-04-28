@@ -90,21 +90,21 @@ spec:
       batchSize:
         title: Batch Dimension
         description: The maximum number of records returned in a single call to poll()
-        type: int
+        type: integer
         default: 500
       pollTimeout:
         title: Poll Timeout Interval
         description: The timeout used when polling the KafkaConsumer
-        type: int
+        type: integer
         default: 5000
       maxPollIntervalMs:
         title: Max Poll Interval
         description: The maximum delay between invocations of poll() when using consumer group management
-        type: int
+        type: integer
       batchingIntervalMs:
         title: Batching Interval
         description: In consumer batching mode, then this option is specifying a time in millis, to trigger batch completion eager when the current batch size has not reached the maximum size defined by maxPollRecords. Notice the trigger is not exact at the given interval, as this can only happen between kafka polls (see pollTimeoutMs option).
-        type: int
+        type: integer
       topicIsPattern:
         title: Topic Is Pattern
         description: Whether the topic is a pattern (regular expression). This can be used to subscribe to dynamic number of topics matching the pattern.

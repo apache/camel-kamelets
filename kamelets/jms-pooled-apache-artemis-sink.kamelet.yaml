@@ -71,17 +71,17 @@ spec:
       maxSessionsPerConnection:
         title: "Max Sessions Per Connection"
         description: "The maximum number of pooled sessions per connection in the pool"
-        type: int
+        type: integer
         default: 500 
       maxIdleSessionsPerConnection:
         title: "Max Idle Sessions Per Connection"
         description: "The number of idle sessions allowed per connection before they are closed."
-        type: int
+        type: integer
         default: 500
       connectionIdleTimeout:
         title: "Connection Idle Timeout"
         description: "The maximum time a pooled Connection can sit unused before it is eligible for removal (in milliseconds)"
-        type: int
+        type: integer
         default: 30000     
   dependencies:
   - "camel:jms"
