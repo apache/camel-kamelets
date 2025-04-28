@@ -37,12 +37,12 @@ spec:
     type: object
     properties:
       signatureAlgorithm:
-        title: Signature Algorithm
+        title: PQC Signature Algorithm
         description: The PQC Signature Algorithm to be used.
         type: string
         enum: [MLDSA","SLHDSA","LMS","XMSS","FALCON","PICNIC","RAINBOW"]
       operation:
-        title: The PQC Signature Operation
+        title: PQC Signature Operation
         description: The PQC Signature Operation to be performed.
         type: string
         enum: ["sign","verify"]
