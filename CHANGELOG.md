@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- JSON Schema `int` type seems not right [\#2453](https://github.com/apache/camel-kamelets/issues/2453)
 - Release Camel-Kamelets 4.11.0 [\#2443](https://github.com/apache/camel-kamelets/issues/2443)
 - Guide to add Yaks tests: how to create test for sink and source Kamelets [\#831](https://github.com/apache/camel-kamelets/issues/831)
 
