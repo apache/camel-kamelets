@@ -23,6 +23,9 @@ actions:
   - camel:
       jbang:
         run:
+          args:
+            - "--port"
+            - "${protobuf.webhook.server.port}"
           integration:
             file: "protobuf/protobuf-deserialize-pipe.yaml"
   - camel:
@@ -32,6 +35,8 @@ actions:
             file: "protobuf/protobuf-serialize-pipe.yaml"
             systemProperties:
               properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${protobuf.webhook.server.port}/user"
                 - name: "input"
                   value: |
                     { \"id\": \"${uuid}\", \"firstname\": \"Sheldon\", \"lastname\": \"Cooper\", \"age\": 28 }

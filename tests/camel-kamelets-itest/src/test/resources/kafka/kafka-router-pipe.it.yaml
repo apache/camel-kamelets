@@ -43,6 +43,9 @@ actions:
   - camel:
       jbang:
         run:
+          args:
+            - "--port"
+            - "${kafka.webhook.server.port}"
           integration:
             file: "kafka/kafka-router-pipe.yaml"
             systemProperties:
@@ -50,7 +53,7 @@ actions:
 
   # Invoke Http webhook endpoint
   - http:
-      client: "http://localhost:8080/messages"
+      client: "http://localhost:${kafka.webhook.server.port}/messages"
       sendRequest:
         fork: true
         GET:
@@ -72,7 +75,7 @@ actions:
 
   # Verify Http webhook response
   - http:
-      client: "http://localhost:8080/messages"
+      client: "http://localhost:${kafka.webhook.server.port}/messages"
       receiveResponse:
         response:
           status: 200

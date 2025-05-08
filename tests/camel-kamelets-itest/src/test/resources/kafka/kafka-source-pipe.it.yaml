@@ -49,7 +49,7 @@ actions:
               file: "kafka/application.properties"
               properties:
                 - name: http.sink.url
-                  value: "http://localhost:${http.server.port}/result"
+                  value: "http://localhost:${kafka.sink.server.port}/result"
 
   # Verify topic subscription
   - camel:
@@ -73,7 +73,7 @@ actions:
 
   # Verify Http request
   - http:
-      server: "httpServer"
+      server: "kafkaSinkServer"
       receiveRequest:
         POST:
           path: "/result"

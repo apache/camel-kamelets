@@ -18,57 +18,50 @@
 import java.util.stream.Stream;
 
 import org.citrusframework.common.TestLoader;
+import org.citrusframework.container.SequenceAfterTest;
+import org.citrusframework.container.SequenceBeforeTest;
+import org.citrusframework.http.server.HttpServer;
 import org.citrusframework.junit.jupiter.CitrusSupport;
 import org.citrusframework.junit.jupiter.CitrusTestFactory;
 import org.citrusframework.junit.jupiter.CitrusTestFactorySupport;
+import org.citrusframework.spi.BindToRegistry;
+import org.citrusframework.util.SocketUtils;
 import org.junit.jupiter.api.DynamicTest;
 
-@CitrusSupport
-public class KameletsIT {
+import static org.citrusframework.actions.CreateVariablesAction.Builder.createVariables;
+import static org.citrusframework.actions.PurgeEndpointAction.Builder.purgeEndpoints;
+import static org.citrusframework.http.endpoint.builder.HttpEndpoints.http;
 
-    @CitrusTestFactory
-    public Stream<DynamicTest> avro() {
-        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("avro");
+@CitrusSupport
+public class CommonIT {
+
+    private final int httpServerPort = SocketUtils.findAvailableTcpPort();
+
+    @BindToRegistry
+    HttpServer httpServer = http()
+                .server()
+                .port(httpServerPort)
+                .timeout(60000L)
+                .autoStart(true)
+                .build();
+
+    @BindToRegistry
+    public SequenceBeforeTest beforeCommon() {
+        return new SequenceBeforeTest.Builder().actions(
+                createVariables().variable("http.server.port", String.valueOf(httpServerPort))
+        ).build();
     }
 
-    @CitrusTestFactory
-    public Stream<DynamicTest> aws() {
-        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws");
+    @BindToRegistry
+    public SequenceAfterTest afterCommon() {
+        return new SequenceAfterTest.Builder().actions(
+                purgeEndpoints().endpoint(httpServer)
+        ).build();
     }
 
     @CitrusTestFactory
     public Stream<DynamicTest> earthquake() {
         return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("earthquake");
-    }
-
-    @CitrusTestFactory
-    public Stream<DynamicTest> jira() {
-        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("jira");
-    }
-
-    @CitrusTestFactory
-    public Stream<DynamicTest> kafka() {
-        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("kafka");
-    }
-
-    @CitrusTestFactory
-    public Stream<DynamicTest> mail() {
-        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("mail");
-    }
-
-    @CitrusTestFactory
-    public Stream<DynamicTest> openapi() {
-        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("openapi");
-    }
-
-    @CitrusTestFactory
-    public Stream<DynamicTest> protobuf() {
-        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("protobuf");
-    }
-
-    @CitrusTestFactory
-    public Stream<DynamicTest> slack() {
-        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("slack");
     }
 
     @CitrusTestFactory

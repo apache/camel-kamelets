@@ -16,10 +16,10 @@ Once everything is set you just need to run
 
 This runs all available Citrus tests.
 
-You can run individual tests when specifying its folder name on the class `KameletsIT` (e.g. `aws`).
+You can run individual tests when specifying its folder name on the class `CommonIT` (e.g. `timer`).
 
 ```console
-  mvn verify -Dtest=KameletsIT#aws
+  mvn verify -Dtest=CommonIT#timer
 ```
 
 You can run the tests also from your favorite Java IDE.

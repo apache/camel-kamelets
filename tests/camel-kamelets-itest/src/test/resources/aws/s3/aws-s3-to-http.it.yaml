@@ -50,7 +50,7 @@ actions:
               file: "aws/s3/application.properties"
               properties:
                 - name: http.sink.url
-                  value: "http://localhost:${http.server.port}/incoming"
+                  value: "http://localhost:${aws.sink.server.port}/incoming"
 
   # Publish event
   - send:
@@ -64,7 +64,7 @@ actions:
 
   # Verify Http request
   - http:
-      server: "httpServer"
+      server: "awsSinkServer"
       receiveRequest:
         POST:
           path: "/incoming"
