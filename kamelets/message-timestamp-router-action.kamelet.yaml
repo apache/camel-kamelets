@@ -50,7 +50,7 @@ spec:
         type: string
       timestampKeyFormat:
         title: Timestamp Keys Format
-        description: Format of the timestamp keys. Possible values are 'timestamp' or any format string for the timestamp that is compatible with java.text.SimpleDateFormat. In case of 'timestamp' the field will be evaluated as milliseconds since 1970, so as a UNIX Timestamp. 
+        description: Format of the timestamp keys. Possible values are 'timestamp' or any format string for the timestamp that is compatible with java.text.SimpleDateFormat. In case of 'timestamp' the field will be evaluated as milliseconds since 1970, so as a UNIX Timestamp.
         type: string
         default: "timestamp"
     type: object
@@ -58,6 +58,7 @@ spec:
   - "camel:jackson"
   - "camel:kamelet"
   - "camel:core"
+  - "camel:kafka"
   template:
     from:
       uri: kamelet:source
@@ -67,7 +68,7 @@ spec:
           - simple: "${header[Content-Type]} == 'application/json'"
             steps:
             - unmarshal:
-                json: 
+                json:
                   library: Jackson
                   unmarshalType: com.fasterxml.jackson.databind.JsonNode
       - setProperty:
@@ -84,7 +85,7 @@ spec:
           constant: "{{timestampKeyFormat}}"
       - bean: "org.apache.camel.component.kafka.transform.MessageTimestampRouter"
       - marshal:
-          json: 
+          json:
             library: Jackson
             unmarshalType: com.fasterxml.jackson.databind.JsonNode
       - setHeader:
