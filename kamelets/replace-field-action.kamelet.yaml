@@ -68,6 +68,7 @@ spec:
   - "camel:core"
   - "camel:jackson"
   - "camel:kamelet"
+  - "camel:kafka"
   template:
     from:
       uri: kamelet:source
@@ -80,7 +81,7 @@ spec:
                 name: deserialized
                 constant: "true"
             - unmarshal:
-                json: 
+                json:
                   library: Jackson
                   unmarshalType: com.fasterxml.jackson.databind.JsonNode
       - setProperty:
@@ -98,7 +99,7 @@ spec:
           - simple: "${exchangeProperty[deserialized]} == 'true'"
             steps:
             - marshal:
-                json: 
+                json:
                   library: Jackson
                   unmarshalType: com.fasterxml.jackson.databind.JsonNode
             - setHeader:
