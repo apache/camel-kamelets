@@ -17,7 +17,7 @@
 apiVersion: camel.apache.org/v1
 kind: Kamelet
 metadata:
-  name: pqc-signature-sink
+  name: pqc-signature-action
   annotations:
     camel.apache.org/kamelet.support.level: "Stable"
     camel.apache.org/catalog.version: "4.12.0-SNAPSHOT"
@@ -26,11 +26,11 @@ metadata:
     camel.apache.org/kamelet.group: "PQC"
     camel.apache.org/kamelet.namespace: "PQC"
   labels:
-    camel.apache.org/kamelet.type: sink
+    camel.apache.org/kamelet.type: action
 spec:
   definition:
-    title: PQC Signature Sink
-    description: Sign a payload with a PQC algorithm.
+    title: PQC Signature Action
+    description: Sign or verify a payload with a PQC algorithm.
     required:
     - signatureAlgorithm
     - operation
