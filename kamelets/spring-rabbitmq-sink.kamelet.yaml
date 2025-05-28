@@ -84,6 +84,12 @@ spec:
         description: The virtual host
         type: string
         default: "/"
+      protocol:
+        title:  Protocol
+        description: The AMQP protocol to use.
+        type: string
+        enum: ["amqp", "amqps"]
+        default: "amqp"
   dependencies:
     - "camel:spring-rabbitmq"
     - "camel:kamelet"
@@ -94,8 +100,7 @@ spec:
         properties:
           username: '{{?username}}'
           password: '{{?password}}'
-          host: '{{host}}'
-          port: '{{port}}'
+          uri: '{{protocol}}://{{host}}:{{port}}'
           virtualHost: "{{vhost}}"
     from:
       uri: "kamelet:source"
