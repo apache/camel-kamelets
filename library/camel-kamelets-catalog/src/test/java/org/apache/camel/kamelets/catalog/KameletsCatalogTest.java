@@ -244,7 +244,7 @@ public class KameletsCatalogTest {
         verifyHeaders("oracle-database-source", 0);
         verifyHeaders("postgresql-sink", 8);
         verifyHeaders("postgresql-source", 0);
-        verifyHeaders("pulsar-sink", 4);
+        verifyHeaders("pulsar-sink", 5);
         verifyHeaders("pulsar-source", 11);
         verifyHeaders("redis-sink", 29);
         verifyHeaders("redis-source", 28);
@@ -253,7 +253,7 @@ public class KameletsCatalogTest {
         verifyHeaders("salesforce-delete-sink", 1);
         verifyHeaders("salesforce-update-sink", 1);
         verifyHeaders("salesforce-composite-upsert-sink", 1);
-        verifyHeaders("salesforce-source", 20);
+        verifyHeaders("salesforce-source", 21);
         verifyHeaders("scp-sink", 0);
         verifyHeaders("sftp-sink", 6);
         verifyHeaders("sftp-source", 15);
