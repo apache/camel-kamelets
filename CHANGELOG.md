@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Support TLS on RabbitMQ Kamelets [\#2476](https://github.com/apache/camel-kamelets/issues/2476)
 - Release 4.10.4 [\#2456](https://github.com/apache/camel-kamelets/issues/2456)
 - Upgrade to Camel 4.10.4 [\#2455](https://github.com/apache/camel-kamelets/issues/2455)
 
