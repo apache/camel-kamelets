@@ -1,14 +1,43 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v4.12.0](https://github.com/apache/camel-kamelets/tree/v4.12.0) (2025-05-29)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.10.4...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.10.4...v4.12.0)
 
 **Closed issues:**
 
 - Support TLS on RabbitMQ Kamelets [\#2476](https://github.com/apache/camel-kamelets/issues/2476)
+- Upgrade to Camel 4.12.0 [\#2474](https://github.com/apache/camel-kamelets/issues/2474)
 - Release 4.10.4 [\#2456](https://github.com/apache/camel-kamelets/issues/2456)
 - Upgrade to Camel 4.10.4 [\#2455](https://github.com/apache/camel-kamelets/issues/2455)
+
+**Merged pull requests:**
+
+- Upgrade Camel to version 4.12.0 [\#2480](https://github.com/apache/camel-kamelets/pull/2480) ([oscerd](https://github.com/oscerd))
+- Bump org.postgresql:postgresql from 42.7.5 to 42.7.6 [\#2478](https://github.com/apache/camel-kamelets/pull/2478) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Support TLS on RabbitMQ Kamelets  [\#2477](https://github.com/apache/camel-kamelets/pull/2477) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#2473](https://github.com/apache/camel-kamelets/pull/2473) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump fabric8-version from 7.3.0 to 7.3.1 [\#2472](https://github.com/apache/camel-kamelets/pull/2472) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump golang.org/x/net from 0.36.0 to 0.38.0 in /script/generator [\#2471](https://github.com/apache/camel-kamelets/pull/2471) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.resolver:maven-resolver-api from 2.0.8 to 2.0.9 [\#2470](https://github.com/apache/camel-kamelets/pull/2470) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump fabric8-version from 7.2.0 to 7.3.0 [\#2469](https://github.com/apache/camel-kamelets/pull/2469) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Kamelet for PQC Signature should be actions and not Sink [\#2468](https://github.com/apache/camel-kamelets/pull/2468) ([oscerd](https://github.com/oscerd))
+- chore: Fix tests with Citrus 4.6.0 [\#2467](https://github.com/apache/camel-kamelets/pull/2467) ([christophd](https://github.com/christophd))
+- Bump actions/setup-go from 5.4.0 to 5.5.0 [\#2466](https://github.com/apache/camel-kamelets/pull/2466) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.citrusframework:citrus-bom from 4.5.2 to 4.6.0 [\#2465](https://github.com/apache/camel-kamelets/pull/2465) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2464](https://github.com/apache/camel-kamelets/pull/2464) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen [\#2463](https://github.com/apache/camel-kamelets/pull/2463) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump golang.org/x/net from 0.36.0 to 0.38.0 in /script/validator [\#2461](https://github.com/apache/camel-kamelets/pull/2461) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump fabric8-version from 7.1.0 to 7.2.0 [\#2460](https://github.com/apache/camel-kamelets/pull/2460) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.activemq:artemis-jakarta-client-all from 2.40.0 to 2.41.0 [\#2459](https://github.com/apache/camel-kamelets/pull/2459) ([dependabot[bot]](https://github.com/apps/dependabot))
+- JSON Schema int type seems not right [\#2458](https://github.com/apache/camel-kamelets/pull/2458) ([oscerd](https://github.com/oscerd))
+- Support PQC Component producer operation - Signature operations [\#2454](https://github.com/apache/camel-kamelets/pull/2454) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#2452](https://github.com/apache/camel-kamelets/pull/2452) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump golang.org/x/net from 0.36.0 to 0.38.0 in /crds [\#2450](https://github.com/apache/camel-kamelets/pull/2450) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump commons-io:commons-io from 2.18.0 to 2.19.0 [\#2449](https://github.com/apache/camel-kamelets/pull/2449) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.resolver:maven-resolver-api from 2.0.7 to 2.0.8 [\#2448](https://github.com/apache/camel-kamelets/pull/2448) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/setup-java from 4.7.0 to 4.7.1 [\#2447](https://github.com/apache/camel-kamelets/pull/2447) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2446](https://github.com/apache/camel-kamelets/pull/2446) ([github-actions[bot]](https://github.com/apps/github-actions))
 
 ## [v4.10.4](https://github.com/apache/camel-kamelets/tree/v4.10.4) (2025-05-02)
 
