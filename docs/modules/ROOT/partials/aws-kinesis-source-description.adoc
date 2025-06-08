@@ -59,7 +59,7 @@ You could consume the stream content with the KCL support
             showHeaders: true
 ----
 
-With the `useKclConsumers` enabled you won't have to deal with shard iteration directly, everything will be managed by the AWS Kinesis client library and the KCL layer.
+With the `useKclConsumers` enabled, you won't have to deal with shard iteration directly. Everything is managed by the AWS Kinesis client library and the KCL layer.
 
 As a side note you need to remember that the KCL consumer will need access to DynamoDB and Cloudwatch services from AWS, so it will create clients to these services under the hood and it will use them.
 

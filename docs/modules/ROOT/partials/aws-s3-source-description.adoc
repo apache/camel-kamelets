@@ -37,7 +37,7 @@ You could consume the bucket content and directly delete the object once consume
             uri: "kamelet:log-sink"
 ----
 
-This kind of approach will ensure the object will be consumed just one time and after the consumption it will be deleted from the S3 bucket.
+This kind of approach ensures that the object is consumed just one time and after the consumption it will be deleted from the S3 bucket.
 
 The `deleteAfterRead` property is true by default.
 
