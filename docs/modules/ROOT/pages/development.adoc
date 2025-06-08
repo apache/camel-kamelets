@@ -474,7 +474,7 @@ functionality provided by a single Camel Component.
 TIP: This example is complicated on purpose and uses several components and EIPs from Apache Camel. Normally, Kamelets are much simpler.
 
 It is a Kamelet of type `source`, but most of the principles explained here can be taken into account also when developing a Kamelet
-of type `sink`. The technical differences between the two scenarios will be highlighted in the xref:creating-sink[Creating a sink Kamelet] section.
+of type `sink`. The technical differences between the two scenarios are highlighted in the xref:creating-sink[Creating a sink Kamelet] section.
 
 We're taking a real world use case of moderate complexity. We create a source of earthquake events around the world, taking data from the https://earthquake.usgs.gov/fdsnws/event/1/[USGS APIs].
 
@@ -710,7 +710,7 @@ public class Earthquake extends RouteBuilder {
 This looks the same as before, but notice that the `period` and `lookAhead` parameters are set in the modeline, while the route uses the `{\{period}}`
 and `{\{lookAhead}}` placeholders instead of the actual values.
 
-As before, this integration can be tested with `camel run Earthquake.java` (the modeline parameters will be automatically added by the kamel CLI).
+As before, this integration can be tested with `camel run Earthquake.java` (the modeline parameters are automatically added by the kamel CLI).
 
 === Step 4 (optional): translate into YAML DSL
 
@@ -861,7 +861,7 @@ spec:
 <2> The old reference to "log:info" has been replaced with "kamelet:sink" here
 
 The only difference between the YAML route embedded in the Kamelet and the one identified before is the final sink, which was "log:info" and now is "kamelet:sink", i.e.
-a placeholder that will be replaced with something else when the Kamelet is actually used (the user decides what is the destination of the earthquake events).
+a placeholder that is replaced with something else when the Kamelet is actually used (the user decides what is the destination of the earthquake events).
 
 === Step 6: describe the parameters
 
@@ -1112,7 +1112,7 @@ Let's start with a simple integration:
         constant: Hello
     - to: direct:endpoint
 ----
-<1> Setting the `chatId` property directly in modeline, the `authorizationToken` will be passed from command line
+<1> Setting the `chatId` property directly in modeline, the `authorizationToken` is passed from command line
 <2> The route that will become the Kamelet route template
 <3> We marhsal the output as JSON because it may be required to be transferred over the wire
 <4> A testing route to check if the integration works
