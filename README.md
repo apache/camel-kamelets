@@ -73,18 +73,18 @@ metadata:
 spec:
   definition:
     title: Timer Source
-    description: Produces periodic events with a custom payload
+    description: Produces periodic events with a custom payload.
     required:
       - message
     properties:
       period:
         title: Period
-        description: The interval between two events in milliseconds
+        description: The interval between two events in milliseconds.
         type: integer
         default: 1000
       message:
         title: Message
-        description: The message to generate
+        description: The message to generat.
         type: string
         example: hello world
   types:

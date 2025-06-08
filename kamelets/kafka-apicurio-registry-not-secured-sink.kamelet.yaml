@@ -48,11 +48,11 @@ spec:
     properties:
       topic:
         title: Topic Names
-        description: Comma separated list of Kafka topic names
+        description: Comma separated list of Kafka topic names.
         type: string
       bootstrapServers:
         title: Bootstrap Servers
-        description: Comma separated list of Kafka Broker URLs
+        description: Comma separated list of Kafka Broker URLs.
         type: string
       valueSerializer:
         title: Value Serializer
@@ -61,14 +61,14 @@ spec:
         default: "io.apicurio.registry.serde.avro.AvroKafkaSerializer"
       apicurioRegistryUrl:
         title: Apicurio Registry URL
-        description: The Apicurio Schema Registry URL
+        description: The Apicurio Schema Registry URL.
         type: string
         x-descriptors:
         - urn:keda:metadata:apicurioRegistryUrl
         - urn:keda:required
       avroDatumProvider:
         title: Avro Datum Provider
-        description: How to write data with Avro
+        description: How to write data with Avro.
         type: string
         default: "io.apicurio.registry.serde.avro.ReflectAvroDatumProvider"
   dependencies:

@@ -30,9 +30,9 @@ metadata:
     camel.apache.org/kamelet.type: "sink"
 spec:
   definition:
-    title: FHIR Sink
+    title: "FHIR Sink"
     description: |-
-      Forward data to a Fhir endpoint.
+      Forward data to a FHIR endpoint.
     required:
     - serverUrl
     - methodName
@@ -40,7 +40,7 @@ spec:
     properties:
       apiName:
         title: API Name
-        description: "What kind of operation to perform"
+        description: "What kind of operation to perform."
         type: string
         enum:  ["CAPABILITIES", "CREATE", "DELETE", "HISTORY", "LOAD_PAGE", "META", "OPERATION", "PATCH", "READ", "SEARCH", "TRANSACTION", "UPDATE", "VALIDATE"]
       methodName:
@@ -53,7 +53,7 @@ spec:
         type: string
         default: "JSON"
       fhirVersion:
-        title: Fhir Version
+        title: FHIR Version
         description: "The FHIR Version to use."
         type: string
         enum:  ["DSTU2", "DSTU2_HL7ORG", "DSTU2_1", "DSTU3", "R4", "R5"]

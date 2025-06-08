@@ -40,11 +40,11 @@ spec:
     properties:
       queueNameOrArn:
         title: Queue Name
-        description: The SQS Queue Name or ARN
+        description: The SQS Queue Name or ARN.
         type: string
       deleteAfterRead:
         title: Auto-delete Messages
-        description: Delete messages after consuming them
+        description: Delete messages after consuming them.
         type: boolean
         default: true
       accessKey:
@@ -85,13 +85,13 @@ spec:
         default: amazonaws.com
       protocol:
         title: Protocol
-        description: The underlying protocol used to communicate with SQS
+        description: The underlying protocol used to communicate with SQS.
         type: string
         example: http or https
         default: https
       queueURL:
         title: Queue URL
-        description: The full SQS Queue URL (required if using KEDA)
+        description: The full SQS Queue URL (required if using KEDA).
         type: string
         x-descriptors:
         - urn:keda:metadata:queueURL
@@ -133,7 +133,7 @@ spec:
         default: false
       delay:
         title: Delay
-        description: The number of milliseconds before the next poll of the selected stream
+        description: The number of milliseconds before the next poll of the selected stream.
         type: integer
         default: 500
       greedy:
@@ -164,7 +164,7 @@ spec:
       headers:
         CamelAwsSqsMessageId:
           title: The SQS Message Id
-          description: The Amazon SQS message ID
+          description: The Amazon SQS message ID.
           type: string
         CamelAwsSqsReceiptHandle:
           title: The SQS Message Receipt Handle
@@ -198,11 +198,11 @@ spec:
           headers:
             CamelCloudEventID:
               title: CloudEvent ID
-              description: The Camel exchange id set as event id
+              description: The Camel exchange id set as event id.
               type: string
             CamelCloudEventType:
               title: CloudEvent Type
-              description: The event type
+              description: The event type.
               default: "org.apache.camel.event.aws.sqs.receiveMessage"
               type: string
             CamelCloudEventSource:
@@ -211,7 +211,7 @@ spec:
               type: string
             CamelCloudEventSubject:
               title: CloudEvent Subject
-              description: The event subject. The SQS message ID
+              description: The event subject. The SQS message ID.
               type: string
             CamelCloudEventTime:
               title: CloudEvent Time

@@ -39,23 +39,23 @@ spec:
     properties:
       topic:
         title: Topic
-        description: The topic to send messages to
+        description: The topic to send messages to.
         type: string
         example: "mytopic"
       brokerUrl:
         title: Broker URL
-        description: The URL of the broker where to establish the connection
+        description: The URL of the broker where to establish the connection.
         type: string
         example: "tcp://mosquitto:1883"
       username:
         title: Username
-        description: Username to use when connecting to the MQTT v5 compliant broker
+        description: Username to use when connecting to the MQTT v5 compliant broker.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: Password to use when connecting to the MQTT v5 compliant broker
+        description: Password to use when connecting to the MQTT v5 compliant broker.
         type: string
         format: password
         x-descriptors:

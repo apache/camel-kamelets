@@ -29,9 +29,9 @@ metadata:
     camel.apache.org/kamelet.type: "source"
 spec:
   definition:
-    title: "Fhir Source"
+    title: "FHIR Source"
     description: |-
-      Receive data from Fhir server.
+      Receive data from FHIR server.
     required:
       - serverUrl
       - username
@@ -40,11 +40,11 @@ spec:
     properties:
       serverUrl:
         title: Server URL
-        description: The Fhir server url
+        description: The FHIR server url.
         type: string
       url:
         title: URL
-        description: The Fhir resource type url
+        description: The FHIR resource type url.
         type: string
         default: "/Patient"
       encoding:
@@ -54,27 +54,27 @@ spec:
         default: "JSON"
         enum: ["JSON", "XML"]
       fhirVersion:
-        title: Fhir Version
+        title: FHIR Version
         description: The FHIR Version to use.
         type: string
         default: "R4"
         enum: ["DSTU2", "DSTU2_HL7ORG", "DSTU2_1", "DSTU3", "R4", "R5"]
       username:
         title: Username
-        description: The username to access the Fhir server
+        description: The username to access the FHIR server.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access the Fhir server
+        description: The password to access the FHIR server.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       prettyPrint:
         title: Json Pretty Print
-        description: Define if the Json must be pretty print or not
+        description: Define if the Json must be pretty print or not.
         type: boolean
         default: true
   types:

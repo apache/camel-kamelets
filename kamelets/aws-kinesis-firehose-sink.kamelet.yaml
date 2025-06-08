@@ -30,7 +30,7 @@ metadata:
     camel.apache.org/kamelet.type: sink
 spec:
   definition:
-    title: AWS Kinesis Firehose Sink
+    title: "AWS Kinesis Firehose Sink"
     description: Send message to an AWS Kinesis Firehose Stream.
     required:
       - streamName
@@ -39,7 +39,7 @@ spec:
     properties:
       streamName:
         title: Stream Name
-        description: The name of the stream we want to send to data to
+        description: The name of the stream we want to send to data to.
         type: string
       accessKey:
         title: Access Key

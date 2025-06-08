@@ -68,26 +68,26 @@ spec:
         default: false
       restartingPolicy:
         title: Restarting Policy
-        description: The restarting policy to use in streaming upload mode. There are 2 enums and the value can be one of override, lastPart
+        description: The restarting policy to use in streaming upload mode. There are 2 enums and the value can be one of `override`, `lastPart`.
         type: string
         default: "lastPart"
       batchMessageNumber:
         title: Batch Message Number
-        description: The number of messages composing a batch in streaming upload mode
+        description: The number of messages composing a batch in streaming upload mode.
         type: integer
         default: 10
       batchSize:
         title: Batch Size
-        description: The batch size (in bytes) in streaming upload mode
+        description: The batch size (in bytes) in streaming upload mode.
         type: integer
         default: 1000000
       streamingUploadTimeout:
         title: Streaming Upload Timeout
-        description: While streaming upload mode is true, this option set the timeout to complete upload
+        description: While streaming upload mode is true, this option set the timeout to complete upload.
         type: integer
       namingStrategy:
         title: Naming Strategy
-        description: The naming strategy to use in streaming upload mode. There are 2 enums and the value can be one of progressive, random
+        description: The naming strategy to use in streaming upload mode. There are 2 enums and the value can be one of progressive, random.
         type: string
         default: "progressive"
       keyName:

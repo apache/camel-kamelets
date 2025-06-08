@@ -37,19 +37,19 @@ spec:
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
-    - description: The Kamelet type
+    - description: The Kamelet typ.
       jsonPath: .metadata.labels.camel\.apache\.org\/kamelet\.type
       name: Type
       type: string
-    - description: The Kamelet provider
+    - description: The Kamelet provide.
       jsonPath: .metadata.annotations.camel\.apache\.org\/provider
       name: Provider
       type: string
-    - description: The Kamelet bundled
+    - description: The Kamelet bundle.
       jsonPath: .metadata.labels.camel\.apache\.org\/kamelet\.bundled
       name: Bundled
       type: string
-    - description: The Camel compatible version
+    - description: The Camel compatible versio.
       jsonPath: .metadata.annotations.camel\.apache\.org\/catalog\.version
       name: Camel Version
       type: string
@@ -80,11 +80,11 @@ spec:
             properties:
               dataTypes:
                 additionalProperties:
-                  description: DataTypesSpec represents the specification for a set
+                  description: DataTypesSpec represents the specification for a set.
                     of data types.
                   properties:
                     default:
-                      description: the default data type for this Kamelet
+                      description: the default data type for this Kamelet.
                       type: string
                     headers:
                       additionalProperties:
