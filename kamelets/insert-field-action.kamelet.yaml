@@ -35,7 +35,7 @@ spec:
 
       The insert field action expects an `application/json` content type.
 
-      If for example you have an object like '{ "foo":"John", "bar":30 }' and your action has been configured with field as 'element' and value as 'hello', you'll get '{ "foo":"John", "bar":30, "element":"hello" }' as a result.
+      For example,  if you have an object like '{ "foo":"John", "bar":30 }', and your action is configured with the field `element` and the value `hello`, the result is `{ "foo":"John", "bar":30, "element":"hello" }`.
     required:
       - field
       - value
