@@ -33,7 +33,7 @@ spec:
     description: |-
       Removes a custom field by given name from the message in transit.
 
-      The drop field action expects an application/json content type.
+      The drop field action expects an `application/json` content type.
 
       If for example you have an object like '{ "foo":"John", "bar":30, "element":"hello" }' and your action has been configured with field as 'element', you'll get '{ "foo":"John", "bar":30 }' as a result because the field 'element' has been removed.
     required:
