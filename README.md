@@ -13,7 +13,7 @@ Documents and guides about Kamelets can be found in the [Kamelets User and Devel
 
 Kamelets in this repository are intended to be generic connectors that any external platform can embed in order to leverage the Apache Camel integration capabilities.
 
-All Kamelets posted here will be subject to the scrutiny of the Apache Camel PMC to assess their compliance with the ecosystem and, in any case, they **MUST** be in line with the general [Apache Code of Conduct](https://www.apache.org/foundation/policies/conduct.html).
+All Kamelets posted here are subject to the scrutiny of the Apache Camel PMC to assess their compliance with the ecosystem and, in any case, they **MUST** be in line with the general [Apache Code of Conduct](https://www.apache.org/foundation/policies/conduct.html).
 
 ### Building and validating
 
@@ -73,18 +73,18 @@ metadata:
 spec:
   definition:
     title: Timer Source
-    description: Produces periodic events with a custom payload
+    description: Produces periodic events with a custom payload.
     required:
       - message
     properties:
       period:
         title: Period
-        description: The interval between two events in milliseconds
+        description: The interval between two events in milliseconds.
         type: integer
         default: 1000
       message:
         title: Message
-        description: The message to generate
+        description: The message to generat.
         type: string
         example: hello world
   types:
@@ -219,7 +219,7 @@ Then perform the release:
 
 Go to https://repository.apache.org/ and close the staging repository.
 
-A URL will be generated for the repository, like: https://repository.apache.org/content/repositories/orgapachecamel-xxxx. The URL needs to be communicated during the voting process.
+A URL is generated for the repository, like: https://repository.apache.org/content/repositories/orgapachecamel-xxxx. The URL needs to be communicated during the voting process.
 
 Now run:
 
@@ -271,7 +271,7 @@ cd release-utils/scripts/
 
 ### Updating documentation version
 
-If we are talking about a minor release, it will be enough to edit the 'docs/antora.yml' file like this:
+If we are talking about a minor release, it is enough to edit the 'docs/antora.yml' file like this:
 
 ```yaml
 name: camel-kamelets

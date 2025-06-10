@@ -2,7 +2,7 @@
 
 === Authentication methods
 
-In this Kamelet you have the possibility of avoiding the usage of explicit static credentials by specifying the useDefaultCredentialsProvider option and set it to true.
+In this Kamelet you can avoid the usage of explicit static credentials by specifying the useDefaultCredentialsProvider option and set it to true.
 
 The order of evaluation for Default Credentials Provider is the following:
 
@@ -13,7 +13,7 @@ The order of evaluation for Default Credentials Provider is the following:
  - Amazon ECS container credentials - loaded from the Amazon ECS if the environment variable `AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` is set.
  - Amazon EC2 Instance profile credentials. 
  
-You have also the possibility of using Profile Credentials Provider, by specifying the useProfileCredentialsProvider option to true and profileCredentialsName to the profile name.
+You can also use the Profile Credentials Provider, by setting the `useProfileCredentialsProvider` option to `true` and `profileCredentialsName` to the profile name.
 
 Only one of access key/secret key or default credentials provider could be used
 
@@ -59,7 +59,7 @@ You could consume the stream content with the KCL support
             showHeaders: true
 ----
 
-With the `useKclConsumers` enabled you won't have to deal with shard iteration directly, everything will be managed by the AWS Kinesis client library and the KCL layer.
+With the `useKclConsumers` enabled, you won't have to deal with shard iteration directly. Everything is managed by the AWS Kinesis client library and the KCL layer.
 
 As a side note you need to remember that the KCL consumer will need access to DynamoDB and Cloudwatch services from AWS, so it will create clients to these services under the hood and it will use them.
 

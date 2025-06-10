@@ -2,7 +2,7 @@
 
 === Authentication methods
 
-In this Kamelet you have the possibility of avoiding the usage of explicit static credentials by specifying the useDefaultCredentialsProvider option and set it to true.
+In this Kamelet you can avoid the usage of explicit static credentials by specifying the useDefaultCredentialsProvider option and set it to true.
 
 The order of evaluation for Default Credentials Provider is the following:
 
@@ -13,7 +13,7 @@ The order of evaluation for Default Credentials Provider is the following:
  - Amazon ECS container credentials - loaded from the Amazon ECS if the environment variable `AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` is set.
  - Amazon EC2 Instance profile credentials. 
  
-You have also the possibility of using Profile Credentials Provider, by specifying the useProfileCredentialsProvider option to true and profileCredentialsName to the profile name.
+You can also use the Profile Credentials Provider, by setting the `useProfileCredentialsProvider` option to `true` and `profileCredentialsName` to the profile name.
 
 Only one of access key/secret key or default credentials provider could be used
 
@@ -37,13 +37,13 @@ You could consume the bucket content and directly delete the object once consume
             uri: "kamelet:log-sink"
 ----
 
-This kind of approach will ensure the object will be consumed just one time and after the consumption it will be deleted from the S3 bucket.
+This kind of approach ensures that the object is consumed just one time and after the consumption it is deleted from the S3 bucket.
 
 The `deleteAfterRead` property is true by default.
 
 If you set the property to false you'll consume the same set of objects multiple times and you'll have to deal with managing the situation.
 
-The `ignoreBody` option is set to false by default, but you have the possibility to enable it. With that option set you're going to ignore the file payload and just consume the object metadata.
+The `ignoreBody` option is set to false by default, but you can enable it. With that option set you're going to ignore the file payload and just consume the object metadata.
 
 You could also define a `prefix` parameter. With that set you're going to consume only files starting with that prefix. As an example you could have:
 

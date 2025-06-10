@@ -44,11 +44,11 @@ spec:
     properties:
       topic:
         title: Topic Name
-        description: The topic name or regexp
+        description: The topic name or regexp.
         type: string
       tenant:
         title: Tenant Name
-        description: The Tenant Name
+        description: The Tenant Name.
         type: string
       topicType:
         title: Topic Type
@@ -57,7 +57,7 @@ spec:
         enum: ["persistent", "non-persistent"]
       namespaceName:
         title: Pulsar Namespace Name
-        description: The Pulsar Namespace Name
+        description: The Pulsar Namespace Name.
         type: string
       serviceUrl:
         title: Service URL
@@ -83,7 +83,7 @@ spec:
         default: 1000
       batchingMaxPublishDelayMicros:
         title: Batching Maximum Publish Delay in Microsecond
-        description: "The maximum time period within which the messages sent will be batched if batchingEnabled is true."
+        description: "Used if `batchingEnabled` is `true`. Sets the maximum time period within which the messages sent are batched."
         type: integer
         default: 1000
       blockIfQueueFull:
@@ -114,7 +114,7 @@ spec:
         default: 1000
       maxPendingMessagesAcrossPartitions:
         title: Maximum Pending Messages Across Partitions
-        description: "The maximum number of pending messages for partitioned topics. The maxPendingMessages value will be reduced if (number of partitions maxPendingMessages) exceeds this value. Partitioned topics have a pending message queue for each partition."
+        description: "The maximum number of pending messages for partitioned topics. The `maxPendingMessages` value is reduced if (number of partitions `maxPendingMessages`) exceeds this value. Partitioned topics have a pending message queue for each partition."
         type: integer
         default: 50000
       messageRoutingMode:

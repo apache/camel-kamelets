@@ -56,7 +56,7 @@ metadata:
 spec:
   definition:
     title: "Timer"
-    description: "Produces periodic events with a custom payload"
+    description: "Produces periodic events with a custom payload."
     required:
       - message
     properties:
@@ -111,11 +111,11 @@ spec:
           json: {}
       - to: "kamelet:sink" # <5>
 ----
-<1> `keywords` is a path parameter in xref:components::twitter-search-component.adoc[Camel Twitter-search]
-<2> Some endpoint parameters are just mapped 1-1
-<3> The Camel component `consumerKey` is named `apiKey` to reflect the actual name in the Twitter developer portal
-<4> The Camel Twitter component generates Java objects, so we marshal them to JSON
-<5> A Source Kamelet sends data to the special endpoint "kamelet:sink", that will be replaced at runtime by a different target
+<1> `keywords` is a path parameter in xref:components::twitter-search-component.adoc[Camel Twitter-search].
+<2> Some endpoint parameters are just mapped 1-1.
+<3> The Camel component `consumerKey` is named `apiKey` to reflect the actual name in the Twitter developer portal.
+<4> The Camel Twitter component generates Java objects, so we marshal them to JSON.
+<5> A Source Kamelet sends data to the special endpoint `kamelet:sink`, that is replaced at runtime by a different target.
 
 The YAML route template above just uses the `twitter-search` component to do searches on Twitter. We added a marshalling step to JSON
 because the output of a Kamelet needs always to be something that can be transferred over the wire.
@@ -471,12 +471,12 @@ All referenced data types are backed by a specific transformer implementation ei
 We're now going to create a Kamelet with a high degree of complexity, to show how the Kamelet model can be used also to go over the
 functionality provided by a single Camel Component.
 
-TIP: This example is complicated on purpose and uses several components and EIPs from Apache Camel: luckily your Kamelets will be much simpler than this one.
+TIP: This example is complicated on purpose and uses several components and EIPs from Apache Camel. Normally, Kamelets are much simpler.
 
-It will be a Kamelet of type "source", but most of the principles explained here can be taken into account also when developing a Kamelet
-of type "sink". The technical differences between the two scenarios will be highlighted in the xref:creating-sink["Creating a sink Kamelet"] section.
+It is a Kamelet of type `source`, but most of the principles explained here can be taken into account also when developing a Kamelet
+of type `sink`. The technical differences between the two scenarios are highlighted in the xref:creating-sink[Creating a sink Kamelet] section.
 
-We're going to take a real world use case having a moderate complexity: we want to create a source of eartquake events around the world, taking data from the https://earthquake.usgs.gov/fdsnws/event/1/[USGS APIs].
+We're taking a real world use case of moderate complexity. We create a source of earthquake events around the world, taking data from the https://earthquake.usgs.gov/fdsnws/event/1/[USGS APIs].
 
 === Step 1: write an end-to-end integration
 
@@ -710,7 +710,7 @@ public class Earthquake extends RouteBuilder {
 This looks the same as before, but notice that the `period` and `lookAhead` parameters are set in the modeline, while the route uses the `{\{period}}`
 and `{\{lookAhead}}` placeholders instead of the actual values.
 
-As before, this integration can be tested with `camel run Earthquake.java` (the modeline parameters will be automatically added by the kamel CLI).
+As before, this integration can be tested with `camel run Earthquake.java` (the modeline parameters are automatically added by the kamel CLI).
 
 === Step 4 (optional): translate into YAML DSL
 
@@ -861,7 +861,7 @@ spec:
 <2> The old reference to "log:info" has been replaced with "kamelet:sink" here
 
 The only difference between the YAML route embedded in the Kamelet and the one identified before is the final sink, which was "log:info" and now is "kamelet:sink", i.e.
-a placeholder that will be replaced with something else when the Kamelet is actually used (the user decides what is the destination of the earthquake events).
+a placeholder that is replaced with something else when the Kamelet is actually used (the user decides what is the destination of the earthquake events).
 
 === Step 6: describe the parameters
 
@@ -1112,7 +1112,7 @@ Let's start with a simple integration:
         constant: Hello
     - to: direct:endpoint
 ----
-<1> Setting the `chatId` property directly in modeline, the `authorizationToken` will be passed from command line
+<1> Setting the `chatId` property directly in modeline, the `authorizationToken` is passed from command line
 <2> The route that will become the Kamelet route template
 <3> We marhsal the output as JSON because it may be required to be transferred over the wire
 <4> A testing route to check if the integration works

@@ -42,46 +42,46 @@ spec:
     properties:
       connectionHost:
         title: Connection Host
-        description: The IMAP server host
+        description: The IMAP server host.
         type: string
         default: outlook.office365.com
       connectionPort:
         title: Connection Port
-        description: The IMAP server port
+        description: The IMAP server port.
         type: string
         default: 993
       tenantId:
         title: Tenant ID
-        description: Azure Active Directory Tenant ID
+        description: Azure Active Directory Tenant ID.
         type: string
       clientId:
         title: Client ID
-        description: Azure Active Directory Application Client ID
+        description: Azure Active Directory Application Client ID.
         type: string
         x-descriptors:
           - urn:camel:group:credentials
       clientSecret:
         title: Client Secret
-        description: The Azure Active Directory Application Client Secret
+        description: The Azure Active Directory Application Client Secret.
         type: string
         format: password
         x-descriptors:
           - urn:camel:group:credentials
       username:
         title: Username
-        description: The username to access the mail box
+        description: The username to access the mail box.
         type: string
         example: arthur@mycompany.com
         x-descriptors:
           - urn:camel:group:credentials
       fetchSize:
         title: Fetch Size
-        description: The number of messages fetched for each poll (-1 for no limits)
+        description: The number of messages fetched for each poll (-1 for no limits).
         type: integer
         default: 10
       delay:
         title: Delay
-        description: The delay between fetches in milliseconds
+        description: The delay between fetches in milliseconds.
         type: integer
         default: 60000
   dependencies:

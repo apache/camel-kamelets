@@ -38,7 +38,7 @@ spec:
       
       If you use the default credentials provider, the S3 client loads the credentials through this provider and doesn't use the basic authentication method.
 
-      Two headers will be duplicated with different names for clarity at sink level, CamelAwsS3Key will be duplicated into aws.s3.key and CamelAwsS3BucketName will be duplicated in aws.s3.bucket.name
+      Two headers are duplicated with different names for clarity at sink level. `CamelAwsS3Key` is duplicated into `aws.s3.key` and `CamelAwsS3BucketName` is duplicated in `aws.s3.bucket.name`.
     required:
       - bucketNameOrArn
       - region
@@ -121,7 +121,7 @@ spec:
         default: false
       profileCredentialsName:
         title: Profile Credentials Name
-        description: If using a profile credentials provider this parameter will set the profile name.
+        description: If using a profile credentials provider this parameter sets  the profile name.
         type: string
       sessionToken:
         title: Session Token
@@ -164,7 +164,7 @@ spec:
           type: string
         CamelAwsS3Key:
           title: S3 Key
-          description: The key under which the retrieved object is stored
+          description: The key under which the retrieved object is stored.
           type: string
         CamelAwsS3ContentType:
           title: Content Type

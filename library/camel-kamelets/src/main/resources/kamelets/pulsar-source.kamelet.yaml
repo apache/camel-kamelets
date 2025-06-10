@@ -83,11 +83,11 @@ spec:
         default: 10
       deadLetterTopic:
         title: Dead Letter Topic
-        description: "Name of the topic where the messages which fail maxRedeliverCount times will be sent. Note: if not set, default topic name will be topicName-subscriptionName-DLQ."
+        description: "Name of the topic where the messages which fail `maxRedeliverCount` times is sent. Note: if not set, the default topic name is `topicName-subscriptionName-DLQ`."
         type: integer
       maxRedeliverCount:
         title: Maximum Redelivery Count
-        description: "Maximum number of times that a message will be redelivered before being sent to the dead letter queue. If this value is not set, no Dead Letter Policy will be created."
+        description: "Maximum number of times that a message is redelivered before being sent to the dead letter queue. If this value is not set, no Dead Letter Policy is created."
         type: integer
       negativeAckRedeliveryDelayMicros:
         title: Negative Ack Redelivery Delay in Microseconds

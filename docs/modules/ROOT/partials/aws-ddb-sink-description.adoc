@@ -2,7 +2,7 @@
 
 === Authentication methods
 
-In this Kamelet you have the possibility of avoiding the usage of explicit static credentials by specifying the useDefaultCredentialsProvider option and set it to true.
+In this Kamelet you can avoid the usage of explicit static credentials by specifying the useDefaultCredentialsProvider option and set it to true.
 
 The order of evaluation for Default Credentials Provider is the following:
 
@@ -13,7 +13,7 @@ The order of evaluation for Default Credentials Provider is the following:
  - Amazon ECS container credentials - loaded from the Amazon ECS if the environment variable `AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` is set.
  - Amazon EC2 Instance profile credentials. 
  
-You have also the possibility of using Profile Credentials Provider, by specifying the useProfileCredentialsProvider option to true and profileCredentialsName to the profile name.
+You can also use the Profile Credentials Provider, by setting the `useProfileCredentialsProvider` option to `true` and `profileCredentialsName` to the profile name.
 
 Only one of access key/secret key or default credentials provider could be used
 
@@ -27,7 +27,7 @@ For PutItem operation the Json body defines all item attributes.
 For DeleteItem operation the Json body defines only the primary key attributes that identify the item to delete.
 For UpdateItem operation the Json body defines both key attributes to identify the item to be updated and all item attributes tht get updated on the item.
       
-The given Json body can use "operation", "key" and "item" as top level properties that will be mapped to respective attribute value maps.
+The given JSON body can use `operation`, `key` and `item` as top level properties that are mapped to the respective attribute value maps.
 
 [source,json]
 ----      

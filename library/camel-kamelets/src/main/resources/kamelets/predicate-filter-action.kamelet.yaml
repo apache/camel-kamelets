@@ -30,13 +30,13 @@ metadata:
 spec:
   definition:
     title: "Predicate Filter Action"
-    description: "Filter based on a JsonPath Expression. Since this is a filter, the expression will be a negation, this means that if the foo field of the example is equals to John, the message will go ahead, otherwise it will be filtered out."
+    description: "Filter based on a JSONPath Expression. Since this is a filter, the expression is a negation, this means that if the `foo` field of the example is equals to `John`, the message goes ahead, otherwise it is filtered out."
     required:
       - expression
     properties:
       expression:
         title: Expression 
-        description: The JsonPath Expression to evaluate, without the external parenthesis. Since this is a filter, the expression will be a negation, this means that if the foo field of the example is equals to John, the message will go ahead, otherwise it will be filtered out. 
+        description: The JSONPath Expression to evaluate, without the external parenthesis. Since this is a filter, the expression is a negation. This means that if the `foo` field of the example is equal to `John`, the message goes ahead. Otherwise it is filtered out.
         type: string
         example: '@.foo =~ /.*John/'
     type: object

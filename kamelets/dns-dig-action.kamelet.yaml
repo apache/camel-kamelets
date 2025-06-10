@@ -39,9 +39,9 @@ spec:
 
       - `dns-type` / `ce-dnstype`: as the DNS type
 
-      If the domain-name header won't be set the body will be used as domain name.
+      If the `domain-name` header is not set, the body is used as domain name.
 
-      If the dns-type header won't be set, the DNS Type A will be used.
+      If the `dns-type` header is not set, the DNS Type A is used.
     type: object
   dependencies:
     - "camel:core"
