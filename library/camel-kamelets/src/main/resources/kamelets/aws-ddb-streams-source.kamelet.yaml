@@ -82,7 +82,7 @@ spec:
         default: false
       profileCredentialsName:
         title: Profile Credentials Name
-        description: If using a profile credentials provider this parameter will set the profile name.
+        description: If using a profile credentials provider this parameter sets  the profile name.
         type: string
       sessionToken:
         title: Session Token
@@ -130,11 +130,11 @@ spec:
           headers:
             CamelCloudEventID:
               title: CloudEvent ID
-              description: The Camel exchange id set as event id
+              description: The Camel exchange id set as event id.
               type: string
             CamelCloudEventType:
               title: CloudEvent Type
-              description: The event type
+              description: The event type.
               default: "org.apache.camel.event.aws.ddbstream.getRecords"
               type: string
             CamelCloudEventSource:
@@ -150,7 +150,6 @@ spec:
               description: The exchange creation timestamp as event time.
               type: string
   dependencies:
-  - 
   - "camel:gson"
   - "camel:aws2-ddb"
   - "camel:kamelet"

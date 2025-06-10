@@ -30,13 +30,13 @@ metadata:
 spec:
   definition:
     title: "Value to Key Action"
-    description: "Replace the Kafka record key with a new key formed from a fields subset coming from the message body"
+    description: "Replace the Kafka record key with a new key formed from a fields subset coming from the message body."
     required:
       - fields
     properties:
       fields:
         title: Fields
-        description: Comma separated list of fields to be used to form the new key
+        description: Comma separated list of fields to be used to form the new key.
         type: string
     type: object
   dependencies:

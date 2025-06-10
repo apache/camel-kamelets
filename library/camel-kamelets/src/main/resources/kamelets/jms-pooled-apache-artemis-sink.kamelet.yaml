@@ -31,7 +31,7 @@ metadata:
 spec:
   definition:
     title: "JMS Pooled - Apache Artemis Sink"
-    description: "Send data to an Apache Artemis message broker by using JMS Pooled"
+    description: "Send data to an Apache Artemis message broker by using JMS Pooled."
     required:
       - destinationName
       - brokerURL
@@ -70,7 +70,7 @@ spec:
         - urn:keda:required
       maxSessionsPerConnection:
         title: "Max Sessions Per Connection"
-        description: "The maximum number of pooled sessions per connection in the pool"
+        description: "The maximum number of pooled sessions per connection in the pool."
         type: integer
         default: 500 
       maxIdleSessionsPerConnection:
@@ -80,7 +80,7 @@ spec:
         default: 500
       connectionIdleTimeout:
         title: "Connection Idle Timeout"
-        description: "The maximum time a pooled Connection can sit unused before it is eligible for removal (in milliseconds)"
+        description: "The maximum time a pooled Connection can sit unused before it is eligible for removal (in milliseconds)."
         type: integer
         default: 30000     
   dependencies:
