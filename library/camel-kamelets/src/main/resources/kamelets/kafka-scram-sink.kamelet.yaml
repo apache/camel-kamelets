@@ -49,15 +49,15 @@ spec:
     properties:
       topic:
         title: Topic Names
-        description: Comma separated list of Kafka topic names
+        description: Comma separated list of Kafka topic names.
         type: string
       bootstrapServers:
         title: Bootstrap Servers
-        description: Comma separated list of Kafka Broker URLs
+        description: Comma separated list of Kafka Broker URLs.
         type: string
       securityProtocol:
         title: Security Protocol
-        description: Protocol used to communicate with brokers. SASL_PLAINTEXT, PLAINTEXT, SASL_SSL and SSL are supported
+        description: Protocol used to communicate with brokers. SASL_PLAINTEXT, PLAINTEXT, SASL_SSL and SSL are supported.
         type: string
         default: SASL_SSL
       saslMechanism:
@@ -67,13 +67,13 @@ spec:
         default: SCRAM-SHA-512
       user:
         title: Username
-        description: Username to authenticate to Kafka 
+        description: Username to authenticate to Kafka .
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: Password to authenticate to kafka
+        description: Password to authenticate to kafka.
         type: string
         format: password
         x-descriptors:

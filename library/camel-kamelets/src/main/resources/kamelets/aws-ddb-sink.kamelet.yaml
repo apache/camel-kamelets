@@ -84,7 +84,7 @@ spec:
         default: false
       profileCredentialsName:
         title: Profile Credentials Name
-        description: If using a profile credentials provider this parameter will set the profile name.
+        description: If using a profile credentials provider this parameter sets  the profile name.
         type: string
       sessionToken:
         title: Session Token
@@ -115,7 +115,7 @@ spec:
             For DeleteItem operation the Json body defines only the primary key attributes that identify the item to delete.
             For UpdateItem operation the Json body defines both key attributes to identify the item to be updated and all item attributes tht get updated on the item.
   
-            The given Json body can use `operation`, `key` and `item` as top level properties that are mapped to respective attribute value maps.
+            The given JSON body can use `operation`, `key` and `item` as top level properties that are mapped to respective attribute value maps.
           headers:
             CamelAwsDdbOperation:
               title: Operation

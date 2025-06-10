@@ -39,9 +39,9 @@ spec:
 
       - `caffeine-operation` / `ce-caffeineoperation`: as the operation to perform. It can be PUT, GET, INVALIDATE and CLEANUP.
 
-      If the `caffeine-key` header is not set the exchange ID is used as key.
+      If the `caffeine-key` header is not set, the exchange ID is used as key.
 
-      If the caffeine-operation header is not set, the `GET` operation is performed.
+      If the `caffeine-operation` header is not set, the GET operation is performed.
     required:
       - cacheName
     type: object

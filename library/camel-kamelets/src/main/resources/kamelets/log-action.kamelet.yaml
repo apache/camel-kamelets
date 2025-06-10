@@ -36,37 +36,37 @@ spec:
     properties:
       loggerName:
         title: Logger Name
-        description: Name of the logging category to use
+        description: Name of the logging category to use.
         type: string
         default: "log-action"
       level:
         title: Log Level
-        description: Logging level to use
+        description: Logging level to use.
         type: string
         default: "INFO"
         enum: ["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "OFF"]
       logMask:
         title: Log Mask
-        description: Mask sensitive information like password or passphrase in the log
+        description: Mask sensitive information like password or passphrase in the log.
         type: boolean
         default: false        
       marker:
         title: Marker
-        description: An optional Marker name to use
+        description: An optional Marker name to use.
         type: string
       multiline:
         title: Multiline
-        description: If enabled then each information is outputted on a newline
+        description: If enabled then each information is outputted on a newline.
         type: boolean
         default: false        
       showAllProperties:
         title: Show All Properties
-        description: Show all of the exchange properties (both internal and custom)
+        description: Show all of the exchange properties (both internal and custom).
         type: boolean
         default: false        
       showBody:
         title: Show Body
-        description: Show the message body
+        description: Show the message body.
         type: boolean
         default: true        
       showBodyType:

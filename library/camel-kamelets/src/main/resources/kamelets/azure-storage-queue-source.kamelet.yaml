@@ -34,7 +34,7 @@ spec:
     description: |-
       Receive events from Azure Storage queues.
 
-      One header is duplicated with a different name for clarity at sink level. `CamelAzureStorageQueueMessageId` is duplicated into `azure.storage.queue.message.id`.
+      One header is duplicated with different names for clarity at sink level. `CamelAzureStorageQueueMessageId` is duplicated into `azure.storage.queue.message.id`.
     required:
       - accountName
       - queueName
@@ -75,7 +75,7 @@ spec:
       headers:
         CamelAzureStorageQueueMessageId:
           title: Azure Storage Queue Message Id
-          description: The id of the message
+          description: The id of the message.
           type: string
         CamelAzureStorageQueueInsertionTime:
           title: Azure Storage Queue Message Insertion Time
@@ -96,7 +96,7 @@ spec:
           type: OffsetDateTime
         CamelAzureStorageQueueDequeueCount:
           title: Dequeue Count
-          description: The number of times the message has been dequeued
+          description: The number of times the message has been dequeued.
           type: long
       types:
         text:
@@ -111,11 +111,11 @@ spec:
           headers:
             CamelCloudEventID:
               title: CloudEvent ID
-              description: The Camel exchange id set as event id
+              description: The Camel exchange id set as event id.
               type: string
             CamelCloudEventType:
               title: CloudEvent Type
-              description: The event type
+              description: The event type.
               default: "org.apache.camel.event.azure.storage.queue.receiveMessages"
               type: string
             CamelCloudEventSource:

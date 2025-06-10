@@ -83,7 +83,7 @@ spec:
         default: 10
       deadLetterTopic:
         title: Dead Letter Topic
-        description: "Name of the topic where the messages which fail `maxRedeliverCount` times is sent. Note: if not set, the default topic name is `topicName-subscriptionName-DLQ`."
+        description: "Name of the topic where the messages which fail `maxRedeliverCount` times are sent. Note: if not set, default topic name is topicName-subscriptionName-DLQ."
         type: integer
       maxRedeliverCount:
         title: Maximum Redelivery Count

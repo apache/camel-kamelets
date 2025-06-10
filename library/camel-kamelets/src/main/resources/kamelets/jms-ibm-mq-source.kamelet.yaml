@@ -50,48 +50,48 @@ spec:
     properties:
       serverName:
         title: "IBM MQ Server name"
-        description: "IBM MQ Server name or address"
+        description: "IBM MQ Server name or address."
         type: string
       serverPort:
         title: "IBM MQ Server Port"
-        description: "IBM MQ Server port"
+        description: "IBM MQ Server port."
         type: integer
         default: 1414
       destinationType:
         title: "Destination Type"
-        description: "The JMS destination type (queue or topic)"
+        description: "The JMS destination type (queue or topic)."
         type: string
         default: queue
       destinationName:
         title: "Destination Name"
-        description: "The destination name"
+        description: "The destination name."
         type: string
       queueManager:
         title: "IBM MQ Queue Manager"
-        description: "Name of the IBM MQ Queue Manager"
+        description: "Name of the IBM MQ Queue Manager."
         type: string
       channel:
         title: "IBM MQ Channel"
-        description: "Name of the IBM MQ Channel"
+        description: "Name of the IBM MQ Channel."
         type: string
       clientId:
         title: "IBM MQ Client ID"
-        description: "Name of the IBM MQ Client ID"
+        description: "Name of the IBM MQ Client ID."
         type: string
       username:
         title: "Username"
-        description: "Username to authenticate to IBM MQ server"
+        description: "Username to authenticate to IBM MQ server."
         type: string
       password:
         title: "Password"
-        description: "Password to authenticate to IBM MQ server"
+        description: "Password to authenticate to IBM MQ server."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       sslCipherSuite:
         title: "CipherSuite"
-        description: "CipherSuite to use for enabling TLS"
+        description: "CipherSuite to use for enabling TLS."
         type: string
   dependencies:
   - "camel:jms"
