@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.12.0...HEAD)
+
+**Closed issues:**
+
+- Release 4.12.0 [\#2475](https://github.com/apache/camel-kamelets/issues/2475)
+
 ## [v4.12.0](https://github.com/apache/camel-kamelets/tree/v4.12.0) (2025-05-29)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.10.4...v4.12.0)
@@ -1406,7 +1414,7 @@
 **Merged pull requests:**
 
 - Point to 3.20.0 since it has been released [\#1229](https://github.com/apache/camel-kamelets/pull/1229) ([oscerd](https://github.com/oscerd))
-- 3.20.0-SNAPSHOT upgrade, until 3.20.0 is released [\#1225](https://github.com/apache/camel-kamelets/pull/1225) ([oscerd](https://github.com/oscerd))
+- 3.20.0-SNAPSHOT upgrade, until 3.20.0 will be released [\#1225](https://github.com/apache/camel-kamelets/pull/1225) ([oscerd](https://github.com/oscerd))
 - Upgrade Activemq-http to version 5.17.3 [\#1224](https://github.com/apache/camel-kamelets/pull/1224) ([oscerd](https://github.com/oscerd))
 - Upgrade Artemis to version 2.27.1 [\#1223](https://github.com/apache/camel-kamelets/pull/1223) ([oscerd](https://github.com/oscerd))
 - Added a Deploy action on push [\#1222](https://github.com/apache/camel-kamelets/pull/1222) ([oscerd](https://github.com/oscerd))
