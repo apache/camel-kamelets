@@ -1,11 +1,13 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v4.10.5](https://github.com/apache/camel-kamelets/tree/v4.10.5) (2025-06-13)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.12.0...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.12.0...v4.10.5)
 
 **Closed issues:**
 
+- Upgrade to 4.10.5 [\#2495](https://github.com/apache/camel-kamelets/issues/2495)
+- Remove random beer / coffee source [\#2485](https://github.com/apache/camel-kamelets/issues/2485)
 - Release 4.12.0 [\#2475](https://github.com/apache/camel-kamelets/issues/2475)
 
 ## [v4.12.0](https://github.com/apache/camel-kamelets/tree/v4.12.0) (2025-05-29)
