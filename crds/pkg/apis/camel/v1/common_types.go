@@ -88,7 +88,7 @@ type DataSpec struct {
 	ContentRef string `json:"contentRef,omitempty"`
 	// the confimap key holding the source content
 	ContentKey string `json:"contentKey,omitempty"`
-	// the content type (tipically text or binary)
+	// the content type (typically text or binary)
 	ContentType string `json:"contentType,omitempty"`
 	// if the content is compressed (base64 encrypted)
 	Compression bool `json:"compression,omitempty"`
