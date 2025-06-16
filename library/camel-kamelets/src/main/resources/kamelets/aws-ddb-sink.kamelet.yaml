@@ -69,7 +69,7 @@ spec:
         example: PutItem
       useDefaultCredentialsProvider:
         title: Default Credentials Provider
-        description: If `true`, the DynamoDB client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
+        description: If true, the DynamoDB client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
         type: boolean
         default: false
       useProfileCredentialsProvider:
@@ -84,7 +84,7 @@ spec:
         default: false
       profileCredentialsName:
         title: Profile Credentials Name
-        description: If using a profile credentials provider this parameter sets  the profile name.
+        description: If using a profile credentials provider this parameter sets the profile name.
         type: string
       sessionToken:
         title: Session Token
@@ -109,7 +109,7 @@ spec:
         json:
           format: "aws2-ddb:application-json"
           description: |-
-            JSON representation of a DDB operation. The input type supports the operations: `PutItem`, `UpdateItem`, `DeleteItem`.
+            Json representation of a DDB operation. The input type supports the operations: PutItem, UpdateItem, DeleteItem
             
             For PutItem operation the Json body defines all item attributes.
             For DeleteItem operation the Json body defines only the primary key attributes that identify the item to delete.

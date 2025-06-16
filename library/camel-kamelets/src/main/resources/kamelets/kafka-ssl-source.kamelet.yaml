@@ -31,7 +31,7 @@ spec:
   definition:
     title: "Kafka SSL Source"
     description: |-
-      Receive data from Kafka topics with SSL/TLS support.
+      Receive data from Kafka topics with SSL/TLS support
     required:
       - topic
       - bootstrapServers
@@ -66,7 +66,7 @@ spec:
         default: GSSAPI
       autoCommitEnable:
         title: Auto Commit Enable
-        description: If `true`, periodically commit to ZooKeeper the offset of messages already fetched by the consumer.
+        description: If true, periodically commit to ZooKeeper the offset of messages already fetched by the consumer.
         type: boolean
         default: true
       allowManualCommit:
