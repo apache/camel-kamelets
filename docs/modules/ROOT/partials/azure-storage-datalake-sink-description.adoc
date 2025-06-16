@@ -2,7 +2,14 @@
 
 === Authentication methods
 
-In this Kamelet you have the possibility of using the `CLIENT_SECRET`, `SHARED_KEY_CREDENTIAL`, `AZURE_IDENTITY`, `AZURE_SAS` and `SERVICE_CLIENT_INSTANCE`. The default is `CLIENT_SECRET`.
+In this Kamelet, you can use these Azure authentication methods:
+
+- Client secret: `CLIENT_SECRET` (default)
+- Azure SAS: `AZURE_SAS`
+- Azure Identity mechanism:  `AZURE_IDENTITY`
+- Plain Shared Account Key:  `SHARED_ACCOUNT_KEY`
+- Service client instance: `SERVICE_CLIENT_INSTANCE`
+- Shared key credentials: `SHARED_KEY_CREDENTIAL`
 
 The order of evaluation for `AZURE_IDENTITY` is the following:
 
@@ -14,7 +21,7 @@ The order of evaluation for `AZURE_IDENTITY` is the following:
  - Azure CLI
  - Azure Powershell
 
-For more information about this you can look at https://learn.microsoft.com/en-us/java/api/overview/azure/identity-readme[Azure Identity documentation]
+For more information, see the https://learn.microsoft.com/en-us/java/api/overview/azure/identity-readme[Azure Identity documentation]
 
 === Optional Headers
 

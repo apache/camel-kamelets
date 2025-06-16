@@ -455,15 +455,14 @@ spec:
                       description: the confimap reference holding the source content
                       type: string
                     contentType:
-                      description: the content type (tipically text or binary)
+                      description: the content type (typically text or binary)
                       type: string
                     from-kamelet:
                       description: True if the spec is generated from a Kamelet
                       type: boolean
                     interceptors:
                       description: |-
-                        Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader
-                        uses to pre/post process sources
+                        Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader uses to pre/post process sources.
                       items:
                         type: string
                       type: array
@@ -651,7 +650,7 @@ spec:
                       type: object
                   type: object
                 description: |-
-                  data specification types for the events consumed/produced by the Kamelet
+                  Data specification types for the events consumed/produced by the Kamelet.
                   Deprecated: In favor of using DataTypes
                 type: object
               versions:
@@ -1038,15 +1037,14 @@ spec:
                               content
                             type: string
                           contentType:
-                            description: the content type (tipically text or binary)
+                            description: the content type (typically text or binary)
                             type: string
                           from-kamelet:
                             description: True if the spec is generated from a Kamelet
                             type: boolean
                           interceptors:
                             description: |-
-                              Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader
-                              uses to pre/post process sources
+                              Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader uses to pre/post process sources.
                             items:
                               type: string
                             type: array
@@ -1238,22 +1236,22 @@ spec:
                             type: object
                         type: object
                       description: |-
-                        data specification types for the events consumed/produced by the Kamelet
+                        Data specification types for the events consumed/produced by the Kamelet.
                         Deprecated: In favor of using DataTypes
                       type: object
                   type: object
                 description: |-
-                  the optional versions available for this Kamelet. This field may not be taken in account by Camel core and is meant to support
-                  any user defined versioning model on cluster only. If the user wants to use any given version, she must materialize a file with the given version spec
-                  as the `main` Kamelet spec on the runtime.
+                  The optional versions available for this Kamelet. This field may not be taken in account by Camel core and is meant to support
+                  any user defined versioning model on cluster only. If the user wants to use any given version, she must materialize a file with
+                  the given version specification as the `main` Kamelet spec on the runtime.
                 type: object
             type: object
           status:
             default:
               phase: Ready
             description: |-
-              the actual status of the resource
-              Deprecated no longer in use
+              The current status of the resource.
+              Deprecated, no longer in use.
             properties:
               conditions:
                 description: Conditions --

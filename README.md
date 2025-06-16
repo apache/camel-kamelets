@@ -69,7 +69,7 @@ metadata:
     camel.apache.org/kamelet.icon: data:image/svg+xml;base64,PD94...
     camel.apache.org/provider: "Apache Software Foundation"
   labels:
-    camel.apache.org/kamelet.type: source
+    camel.apache.org/kamelet.type: "source"
 spec:
   definition:
     title: Timer Source

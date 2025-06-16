@@ -81,7 +81,7 @@ spec:
         default: true
       ignoreFileNotFoundOrPermissionError:
         title: Ignore File Not Found Or Permission Error
-        description: Whether to ignore when (trying to list files in directories or when downloading a file), which does not exist or due to permission error. By default when a directory or file does not exists or insufficient permission, then an exception is thrown. Setting this option to true allows to ignore that instead.
+        description: Whether to ignore when (trying to list files in directories or when downloading a file), which does not exist or due to permission error. By default when a directory or file does not exists or insufficient permission, then an exception is thrown. Setting this option to `true` allows to ignore that instead.
         type: boolean
         default: false
       binary:
@@ -119,7 +119,7 @@ spec:
         default: true
       delete:
         title: Delete
-        description: If true, the file is deleted after it is processed successfully.
+        description: If `true`, the file is deleted after it is processed successfully.
         type: boolean
         default: false
   dependencies:

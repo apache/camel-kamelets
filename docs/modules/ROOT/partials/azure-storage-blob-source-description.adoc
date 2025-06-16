@@ -2,7 +2,10 @@
 
 === Authentication methods
 
-In this Kamelet you have the possibility of using the Azure Identity mechanism or the plain Shared Account Key. Respectively the parameters are `AZURE_IDENTITY` and `SHARED_ACCOUNT_KEY`.
+In this Kamelet, you can use these Azure authentication methods:
+
+- Azure Identity mechanism:  `AZURE_IDENTITY`
+- Plain Shared Account Key:  `SHARED_ACCOUNT_KEY`
 
 The order of evaluation for `AZURE_IDENTITY` is the following:
 
@@ -14,4 +17,4 @@ The order of evaluation for `AZURE_IDENTITY` is the following:
  - Azure CLI
  - Azure Powershell
 
-For more information about this you can look at https://learn.microsoft.com/en-us/java/api/overview/azure/identity-readme[Azure Identity documentation]
+For more information, see the https://learn.microsoft.com/en-us/java/api/overview/azure/identity-readme[Azure Identity documentation]

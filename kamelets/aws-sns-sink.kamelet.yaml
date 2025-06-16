@@ -27,7 +27,7 @@ metadata:
     camel.apache.org/kamelet.group: "AWS SNS"
     camel.apache.org/kamelet.namespace: "AWS"
   labels:
-    camel.apache.org/kamelet.type: sink
+    camel.apache.org/kamelet.type: "sink"
 spec:
   definition:
     title: "AWS SNS Sink"
@@ -82,7 +82,7 @@ spec:
         default: false
       profileCredentialsName:
         title: Profile Credentials Name
-        description: If using a profile credentials provider this parameter sets  the profile name.
+        description: If using a profile credentials provider this parameter sets the profile name.
         type: string
       sessionToken:
         title: Session Token

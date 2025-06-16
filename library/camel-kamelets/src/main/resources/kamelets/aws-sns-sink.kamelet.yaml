@@ -27,7 +27,7 @@ metadata:
     camel.apache.org/kamelet.group: "AWS SNS"
     camel.apache.org/kamelet.namespace: "AWS"
   labels:
-    camel.apache.org/kamelet.type: sink
+    camel.apache.org/kamelet.type: "sink"
 spec:
   definition:
     title: "AWS SNS Sink"
@@ -67,7 +67,7 @@ spec:
         default: false
       useDefaultCredentialsProvider:
         title: Default Credentials Provider
-        description: If true, the SNS client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
+        description: If `true`, the SNS client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
         type: boolean
         default: false
       useProfileCredentialsProvider:

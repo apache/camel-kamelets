@@ -27,12 +27,12 @@ metadata:
     camel.apache.org/kamelet.group: "SCP"
     camel.apache.org/kamelet.namespace: "File"
   labels:
-    camel.apache.org/kamelet.type: sink
+    camel.apache.org/kamelet.type: "sink"
 spec:
   definition:
     title: "SCP Sink"
     description: |-
-      Send file to an FTP Server through Secure Copy Protocol
+      Send file to an FTP Server through Secure Copy Protocol.
     required:
       - serverName
       - serverPort
