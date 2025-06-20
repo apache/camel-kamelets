@@ -41,7 +41,7 @@ spec:
         description: The json patch transformation
         type: string
         example: "file:////template.json"
-        pattern: "^(http|https|file|classpath)://.*"
+        pattern: "^(http|https|file|classpath|ref|bean)://.*"
   dependencies:
   - "camel:json-patch"
   - "camel:kamelet"

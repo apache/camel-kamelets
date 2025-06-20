@@ -41,7 +41,7 @@ spec:
         description: The URI to the OpenApi specification file.
         type: string
         example: "https://api.example.com/openapi.json"
-        pattern: "^(http|https|file|classpath)://.*"
+        pattern: "^(http|https|file|classpath|ref|bean)://.*"
       operation:
         title: Operation ID
         description: The operation to call.
