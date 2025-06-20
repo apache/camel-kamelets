@@ -47,7 +47,7 @@ spec:
         description: The inline template to apply a transformation through template.
         type: string
         example: "file:////template.vm"
-        pattern: "^(http|https|file|classpath)://.*"
+        pattern: "^(http|https|file|classpath|ref|bean)://.*"
   dependencies:
   - "camel:xj"
   - "camel:kamelet"

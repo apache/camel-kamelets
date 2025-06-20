@@ -41,7 +41,7 @@ spec:
         description: The inline template
         type: string
         example: "file:////template.vm"
-        pattern: "^(http|https|file|classpath)://.*"
+        pattern: "^(http|https|file|classpath|ref|bean)://.*"
   dependencies:
   - "camel:velocity"
   - "camel:kamelet"

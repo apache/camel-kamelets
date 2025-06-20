@@ -96,7 +96,7 @@ spec:
         title: Private Key URI
         description: Set the private key file (loaded from classpath by default) so that the SFTP endpoint can do private key verification.
         type: string
-        pattern: "^(http|https|file|classpath)://.*"
+        pattern: "^(http|https|file|classpath|ref|bean)://.*"
       strictHostKeyChecking:
         title: Strict Host Checking
         description: Sets whether to use strict host key checking.

@@ -41,7 +41,7 @@ spec:
         description: The inline template for JSLT Transformation
         type: string
         example: "file://template.json"
-        pattern: "^(http|https|file|classpath)://.*"
+        pattern: "^(http|https|file|classpath|ref|bean)://.*"
   dependencies:
   - "camel:jslt"
   - "camel:kamelet"

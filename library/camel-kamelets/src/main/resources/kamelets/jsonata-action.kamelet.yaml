@@ -41,7 +41,7 @@ spec:
         description: The inline template.
         type: string
         example: "file:////template.spec"
-        pattern: "^(http|https|file|classpath)://.*"
+        pattern: "^(http|https|file|classpath|ref|bean)://.*"
   dependencies:
   - "camel:jsonata"
   - "camel:kamelet"
