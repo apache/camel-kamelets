@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.10.5...HEAD)
+
+**Closed issues:**
+
+- Kamelets Catalog - Make the catalog searchable [\#2503](https://github.com/apache/camel-kamelets/issues/2503)
+- Release 4.10.5 [\#2496](https://github.com/apache/camel-kamelets/issues/2496)
+
 ## [v4.10.5](https://github.com/apache/camel-kamelets/tree/v4.10.5) (2025-06-13)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.12.0...v4.10.5)
