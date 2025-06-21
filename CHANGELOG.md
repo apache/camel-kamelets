@@ -7,6 +7,7 @@
 **Closed issues:**
 
 - Kamelets Catalog - Make the catalog searchable [\#2503](https://github.com/apache/camel-kamelets/issues/2503)
+- Add ref and bean to the pattern for ResourceUri [\#2502](https://github.com/apache/camel-kamelets/issues/2502)
 - Release 4.10.5 [\#2496](https://github.com/apache/camel-kamelets/issues/2496)
 
 ## [v4.10.5](https://github.com/apache/camel-kamelets/tree/v4.10.5) (2025-06-13)
