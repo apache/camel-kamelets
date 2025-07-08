@@ -6,6 +6,8 @@
 
 **Closed issues:**
 
+- Align Azure Dependencies to Azure SDK BOM 1.2.36 [\#2522](https://github.com/apache/camel-kamelets/issues/2522)
+- PQC Kamelet: Remove Rainbow algorithm since it has been removed in Bouncycastle 1.81 [\#2520](https://github.com/apache/camel-kamelets/issues/2520)
 - Release 4.8.8 [\#2512](https://github.com/apache/camel-kamelets/issues/2512)
 - Release 4.10.6 [\#2510](https://github.com/apache/camel-kamelets/issues/2510)
 
