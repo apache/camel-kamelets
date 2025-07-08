@@ -239,7 +239,7 @@ public class KameletsCatalogTest {
         verifyHeaders("mysql-sink", 8);
         verifyHeaders("mysql-source", 0);
         verifyHeaders("nats-sink", 5);
-        verifyHeaders("nats-source", 5);
+        verifyHeaders("nats-source", 7);
         verifyHeaders("oracle-database-sink", 8);
         verifyHeaders("oracle-database-source", 0);
         verifyHeaders("postgresql-sink", 8);
