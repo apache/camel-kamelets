@@ -1,0 +1,68 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: pqc-kem-action
+  annotations:
+    camel.apache.org/kamelet.support.level: "Stable"
+    camel.apache.org/catalog.version: "4.13.0-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MjAiCmhlaWdodD0iNDIwIiBzdHJva2U9IiMwMDAiIGZpbGw9Im5vbmUiPgo8cGF0aCBzdHJva2Utd2lkdGg9IjI2IgpkPSJNMjA5LDE1YTE5NSwxOTUgMCAxLDAgMiwweiIvPgo8cGF0aCBzdHJva2Utd2lkdGg9IjE4IgpkPSJtMjEwLDE1djM5MG0xOTUtMTk1SDE1TTU5LDkwYTI2MCwyNjAgMCAwLDAgMzAyLDAgbTAsMjQwIGEyNjAsMjYwIDAgMCwwLTMwMiwwTTE5NSwyMGEyNTAsMjUwIDAgMCwwIDAsMzgyIG0zMCwwIGEyNTAsMjUwIDAgMCwwIDAtMzgyIi8+Cjwvc3ZnPg=="
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "PQC"
+    camel.apache.org/kamelet.namespace: "PQC"
+  labels:
+    camel.apache.org/kamelet.type: "action"
+spec:
+  definition:
+    title: "PQC Key Encapsulation/Decapsulation Action"
+    description: Encapsulate or Decapsulate a secret Key with a PQC KEM algorithm.
+    required:
+    - keyEncapsulationAlgorithm
+    - operation
+    - symmetricKeyAlgorithm
+    type: object
+    properties:
+      keyEncapsulationAlgorithm:
+        title: PQC Key Encapsulation Algorithm
+        description: The PQC Key Encapsulation Algorithm to be used.
+        type: string
+        enum: ["MLKEM","BIKE","HQC","CMCE","SABER","FRODO","NTRU","NTRULPRime"]
+      operation:
+        title: PQC KEM Operation
+        description: The PQC KEM Operation to be performed.
+        type: string
+        enum: ["generateSecretKeyEncapsulation","extractSecretKeyEncapsulation","extractSecretKeyFromEncapsulation"]
+      symmetricKeyAlgorithm:
+        title: Symmetric Key Algorithm
+        description: The Symmetric Key Algorithm to be used in KEM operations.
+        type: string
+        enum: ["AES","RC2","RC5","ARIA","CAMELLIA","CAST5","CAST6","CHACHA7539","DSTU7624","GOST28147","GOST3412_2015","GRAIN128","HC128","HC256","SALSA20","SEED","SM4","DESEDE"]
+  dependencies:
+  - "camel:http"
+  - "camel:kamelet"
+  - "camel:core"
+  template:
+    from:
+      uri: kamelet:source
+      steps:
+      - to:
+          uri: "pqc:kem"
+          parameters:
+            keyEncapsulationAlgorithm: "{{keyEncapsulationAlgorithm}}"
+            operation: "{{operation}}"
+            symmetricKeyAlgorithm: "{{symmetricKeyAlgorithm}}"
