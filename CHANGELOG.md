@@ -11,6 +11,7 @@
 - PQC Kamelet: Remove Rainbow algorithm since it has been removed in Bouncycastle 1.81 [\#2520](https://github.com/apache/camel-kamelets/issues/2520)
 - Release 4.8.8 [\#2512](https://github.com/apache/camel-kamelets/issues/2512)
 - Release 4.10.6 [\#2510](https://github.com/apache/camel-kamelets/issues/2510)
+- Support PQC Component producer operation [\#2451](https://github.com/apache/camel-kamelets/issues/2451)
 
 ## [v4.8.8](https://github.com/apache/camel-kamelets/tree/v4.8.8) (2025-06-27)
 
