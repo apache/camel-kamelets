@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v4.13.0](https://github.com/apache/camel-kamelets/tree/v4.13.0) (2025-07-10)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.8...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.8.8...v4.13.0)
 
 **Closed issues:**
 
@@ -12,6 +12,36 @@
 - Release 4.8.8 [\#2512](https://github.com/apache/camel-kamelets/issues/2512)
 - Release 4.10.6 [\#2510](https://github.com/apache/camel-kamelets/issues/2510)
 - Support PQC Component producer operation [\#2451](https://github.com/apache/camel-kamelets/issues/2451)
+
+**Merged pull requests:**
+
+- PQC KEM Action [\#2528](https://github.com/apache/camel-kamelets/pull/2528) ([oscerd](https://github.com/oscerd))
+- Upgrade to Camel 4.13.0 [\#2527](https://github.com/apache/camel-kamelets/pull/2527) ([oscerd](https://github.com/oscerd))
+- Upgrade Quarkus Apicurio Registry Avro to version 3.24.2 [\#2524](https://github.com/apache/camel-kamelets/pull/2524) ([oscerd](https://github.com/oscerd))
+- Align Azure Kafka related deps version to Azure SDK BOM version 1.2.36 for next Release 4.13.0 [\#2523](https://github.com/apache/camel-kamelets/pull/2523) ([oscerd](https://github.com/oscerd))
+- PQC Kamelet: Remove Rainbow algorithm since it has been removed in Bo… [\#2521](https://github.com/apache/camel-kamelets/pull/2521) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#2519](https://github.com/apache/camel-kamelets/pull/2519) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Upgrade SnowFlake JDBC to version 3.24.2 [\#2517](https://github.com/apache/camel-kamelets/pull/2517) ([oscerd](https://github.com/oscerd))
+- Bump org.apache.maven.plugins:maven-gpg-plugin from 3.2.7 to 3.2.8 [\#2516](https://github.com/apache/camel-kamelets/pull/2516) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.resolver:maven-resolver-api from 2.0.9 to 2.0.10 [\#2515](https://github.com/apache/camel-kamelets/pull/2515) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.citrusframework:citrus-bom from 4.6.0 to 4.7.0 [\#2508](https://github.com/apache/camel-kamelets/pull/2508) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2507](https://github.com/apache/camel-kamelets/pull/2507) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Add ref and bean to the pattern for ResourceUri [\#2505](https://github.com/apache/camel-kamelets/pull/2505) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#2501](https://github.com/apache/camel-kamelets/pull/2501) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Documentation improvements [\#2500](https://github.com/apache/camel-kamelets/pull/2500) ([rhaetor](https://github.com/rhaetor))
+- Generated sources regen for SBOM [\#2499](https://github.com/apache/camel-kamelets/pull/2499) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Remove Coffee and Beer Source Kamelets [\#2494](https://github.com/apache/camel-kamelets/pull/2494) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#2493](https://github.com/apache/camel-kamelets/pull/2493) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump org.postgresql:postgresql from 42.7.6 to 42.7.7 [\#2492](https://github.com/apache/camel-kamelets/pull/2492) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen [\#2491](https://github.com/apache/camel-kamelets/pull/2491) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Documentation language, consistency, typos and errors. [\#2490](https://github.com/apache/camel-kamelets/pull/2490) ([rhaetor](https://github.com/rhaetor))
+- Bump org.apache.maven:maven-artifact from 3.9.9 to 3.9.10 [\#2489](https://github.com/apache/camel-kamelets/pull/2489) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven:maven-plugin-api from 3.9.9 to 3.9.10 [\#2488](https://github.com/apache/camel-kamelets/pull/2488) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven:maven-compat from 3.9.9 to 3.9.10 [\#2487](https://github.com/apache/camel-kamelets/pull/2487) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven:maven-core from 3.9.9 to 3.9.10 [\#2486](https://github.com/apache/camel-kamelets/pull/2486) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2484](https://github.com/apache/camel-kamelets/pull/2484) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen [\#2483](https://github.com/apache/camel-kamelets/pull/2483) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump com.amazon.redshift:redshift-jdbc42 from 2.1.0.32 to 2.1.0.33 [\#2482](https://github.com/apache/camel-kamelets/pull/2482) ([dependabot[bot]](https://github.com/apps/dependabot))
 
 ## [v4.8.8](https://github.com/apache/camel-kamelets/tree/v4.8.8) (2025-06-27)
 
