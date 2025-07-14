@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bom serialNumber="urn:uuid:eed6997f-d716-37f4-941e-aeb4a3a396b0" version="1" xmlns="http://cyclonedx.org/schema/bom/1.6">
+<bom serialNumber="urn:uuid:4ad41752-255a-32f1-ad9e-fcb7e7a5cdc4" version="1" xmlns="http://cyclonedx.org/schema/bom/1.6">
   <metadata>
     <lifecycles>
       <lifecycle>
@@ -27,11 +27,11 @@
         </component>
       </components>
     </tools>
-    <component type="library" bom-ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-parent@4.13.0-SNAPSHOT?type=pom">
+    <component type="library" bom-ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-parent@4.14.0-SNAPSHOT?type=pom">
       <publisher>The Apache Software Foundation</publisher>
       <group>org.apache.camel.kamelets</group>
       <name>camel-kamelets-parent</name>
-      <version>4.13.0-SNAPSHOT</version>
+      <version>4.14.0-SNAPSHOT</version>
       <description>Camel Kamelets Library Parent</description>
       <licenses>
         <license>
@@ -39,7 +39,7 @@
           <url>https://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
       </licenses>
-      <purl>pkg:maven/org.apache.camel.kamelets/camel-kamelets-parent@4.13.0-SNAPSHOT?type=pom</purl>
+      <purl>pkg:maven/org.apache.camel.kamelets/camel-kamelets-parent@4.14.0-SNAPSHOT?type=pom</purl>
       <externalReferences>
         <reference type="website">
           <url>https://camel.apache.org/camel-kamelets-parent</url>
@@ -65,11 +65,11 @@
     </properties>
   </metadata>
   <components>
-    <component type="library" bom-ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-crds@4.13.0-SNAPSHOT?type=jar">
+    <component type="library" bom-ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-crds@4.14.0-SNAPSHOT?type=jar">
       <publisher>The Apache Software Foundation</publisher>
       <group>org.apache.camel.kamelets</group>
       <name>camel-kamelets-crds</name>
-      <version>4.13.0-SNAPSHOT</version>
+      <version>4.14.0-SNAPSHOT</version>
       <description>Camel Kamelets CRDs</description>
       <licenses>
         <license>
@@ -77,7 +77,7 @@
           <url>https://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
       </licenses>
-      <purl>pkg:maven/org.apache.camel.kamelets/camel-kamelets-crds@4.13.0-SNAPSHOT?type=jar</purl>
+      <purl>pkg:maven/org.apache.camel.kamelets/camel-kamelets-crds@4.14.0-SNAPSHOT?type=jar</purl>
       <externalReferences>
         <reference type="website">
           <url>https://camel.apache.org/camel-kamelets-parent/library/camel-kamelets-crds</url>
@@ -1047,44 +1047,6 @@
         </reference>
       </externalReferences>
     </component>
-    <component type="library" bom-ref="pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml@2.19.0?type=jar">
-      <publisher>FasterXML</publisher>
-      <group>com.fasterxml.jackson.dataformat</group>
-      <name>jackson-dataformat-yaml</name>
-      <version>2.19.0</version>
-      <description>Support for reading and writing YAML-encoded data via Jackson abstractions.</description>
-      <scope>required</scope>
-      <hashes>
-        <hash alg="MD5">8d55f25db2f8ecbb08f27dfc1928c467</hash>
-        <hash alg="SHA-1">2d735ab4ecebf5c2bf248d4036fd4ba6d73d0cc1</hash>
-        <hash alg="SHA-256">46e54dcbd39d4d12cda18ec9276e7b888e08fc765ea0c77e71662306f0d4abc4</hash>
-        <hash alg="SHA-512">7544ef5d9ccc1bc993245f9834984f36b15abba7ceaef23d893426c1945ed0862b5316cad319ecb48953125e534399bb3d5ead1fdcaa643fd949cd64e226191c</hash>
-        <hash alg="SHA-384">abd557fa388c90a4aa338e806e65810e13d34c1a0ad31f54fe5d661995f19a0528ccd1fb94ff6c08a420a828d1535f46</hash>
-        <hash alg="SHA3-384">7ee206a80fdb77c89e00c7cbca16080fb317ef6c54ad3c2f20fc3e984c587a1668d9e16b20473736d02e27e126a1fc0b</hash>
-        <hash alg="SHA3-256">642e711bdeb5a15e462278f98649bd207a073bfe85f0ce56ed3aef0002402d3e</hash>
-        <hash alg="SHA3-512">7425e23b4def0784a78b00e5cb17a1646314f55905f1d88feb848cd6213bc7b68ec5e2125375fe7b4810801552a148c8a4ebdbbeaaddbf1f73b93fc1f8d3af49</hash>
-      </hashes>
-      <licenses>
-        <license>
-          <id>Apache-2.0</id>
-        </license>
-      </licenses>
-      <purl>pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml@2.19.0?type=jar</purl>
-      <externalReferences>
-        <reference type="website">
-          <url>https://github.com/FasterXML/jackson-dataformats-text</url>
-        </reference>
-        <reference type="distribution-intake">
-          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </reference>
-        <reference type="issue-tracker">
-          <url>https://github.com/FasterXML/jackson-dataformats-text/issues</url>
-        </reference>
-        <reference type="vcs">
-          <url>https://github.com/FasterXML/jackson-dataformats-text/jackson-dataformat-yaml</url>
-        </reference>
-      </externalReferences>
-    </component>
     <component type="library" bom-ref="pkg:maven/org.yaml/snakeyaml@2.4?type=jar">
       <group>org.yaml</group>
       <name>snakeyaml</name>
@@ -1119,44 +1081,6 @@
         </reference>
         <reference type="vcs">
           <url>https://bitbucket.org/snakeyaml/snakeyaml/src</url>
-        </reference>
-      </externalReferences>
-    </component>
-    <component type="library" bom-ref="pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.19.0?type=jar">
-      <publisher>FasterXML</publisher>
-      <group>com.fasterxml.jackson.datatype</group>
-      <name>jackson-datatype-jsr310</name>
-      <version>2.19.0</version>
-      <description>Add-on module to support JSR-310 (Java 8 Date &amp; Time API) data types.</description>
-      <scope>required</scope>
-      <hashes>
-        <hash alg="MD5">6e92e0e81ae02e34cf4495839fb04599</hash>
-        <hash alg="SHA-1">4c98a2fa8b35b5ffe102438f747f7b526619fde7</hash>
-        <hash alg="SHA-256">0ee97bf32936349d6a4cf6d8428533bf4a4b5b3e7e55fd9a4f19508ce062a775</hash>
-        <hash alg="SHA-512">370cede2804a33cbfdbb635b1029fa0172a506e769508bad749f489bbed83e158e62faaafd122bfc28966a254bc1818a82b03b52b2c5720264d2354917e77a44</hash>
-        <hash alg="SHA-384">feae828d61c6dc31e02a51d37df20170dc46045e55ceb185251e3183b7370007f2fd3379342b86754344347a09f9af68</hash>
-        <hash alg="SHA3-384">445ddd3e3af40988c71bb5451f28883c2a1bb60c1fdc876629eb9c9ea54d990f1f71292d1f924ad933c468f08b392f36</hash>
-        <hash alg="SHA3-256">ae6de56e884521f2225eaaf1d025ce6e83d07ccb43637c220520d16c91db4e76</hash>
-        <hash alg="SHA3-512">53e0a3d0ccff6a0a280098ebbfc0272d58ec8974f7542720108269bd7c079cc96a0545b003b98f14140c888f81ffd35b3a22e6c20e8cf2ed051661ff5d9d82cb</hash>
-      </hashes>
-      <licenses>
-        <license>
-          <id>Apache-2.0</id>
-        </license>
-      </licenses>
-      <purl>pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.19.0?type=jar</purl>
-      <externalReferences>
-        <reference type="website">
-          <url>https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310</url>
-        </reference>
-        <reference type="distribution-intake">
-          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </reference>
-        <reference type="issue-tracker">
-          <url>https://github.com/FasterXML/jackson-modules-java8/issues</url>
-        </reference>
-        <reference type="vcs">
-          <url>http://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310</url>
         </reference>
       </externalReferences>
     </component>
@@ -2402,11 +2326,11 @@
         </reference>
       </externalReferences>
     </component>
-    <component type="library" bom-ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets@4.13.0-SNAPSHOT?type=jar">
+    <component type="library" bom-ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets@4.14.0-SNAPSHOT?type=jar">
       <publisher>The Apache Software Foundation</publisher>
       <group>org.apache.camel.kamelets</group>
       <name>camel-kamelets</name>
-      <version>4.13.0-SNAPSHOT</version>
+      <version>4.14.0-SNAPSHOT</version>
       <description>Camel Kamelets</description>
       <licenses>
         <license>
@@ -2414,7 +2338,7 @@
           <url>https://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
       </licenses>
-      <purl>pkg:maven/org.apache.camel.kamelets/camel-kamelets@4.13.0-SNAPSHOT?type=jar</purl>
+      <purl>pkg:maven/org.apache.camel.kamelets/camel-kamelets@4.14.0-SNAPSHOT?type=jar</purl>
       <externalReferences>
         <reference type="website">
           <url>https://camel.apache.org/camel-kamelets-parent/library/camel-kamelets</url>
@@ -2433,11 +2357,11 @@
         </reference>
       </externalReferences>
     </component>
-    <component type="library" bom-ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-catalog@4.13.0-SNAPSHOT?type=jar">
+    <component type="library" bom-ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-catalog@4.14.0-SNAPSHOT?type=jar">
       <publisher>The Apache Software Foundation</publisher>
       <group>org.apache.camel.kamelets</group>
       <name>camel-kamelets-catalog</name>
-      <version>4.13.0-SNAPSHOT</version>
+      <version>4.14.0-SNAPSHOT</version>
       <description>Camel Kamelets Catalog</description>
       <licenses>
         <license>
@@ -2445,7 +2369,7 @@
           <url>https://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
       </licenses>
-      <purl>pkg:maven/org.apache.camel.kamelets/camel-kamelets-catalog@4.13.0-SNAPSHOT?type=jar</purl>
+      <purl>pkg:maven/org.apache.camel.kamelets/camel-kamelets-catalog@4.14.0-SNAPSHOT?type=jar</purl>
       <externalReferences>
         <reference type="website">
           <url>https://camel.apache.org/camel-kamelets-parent/library/camel-kamelets-catalog</url>
@@ -2464,28 +2388,218 @@
         </reference>
       </externalReferences>
     </component>
-    <component type="library" bom-ref="pkg:maven/io.github.classgraph/classgraph@4.8.179?type=jar">
+    <component type="library" bom-ref="pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml@2.19.1?type=jar">
+      <publisher>FasterXML</publisher>
+      <group>com.fasterxml.jackson.dataformat</group>
+      <name>jackson-dataformat-yaml</name>
+      <version>2.19.1</version>
+      <description>Support for reading and writing YAML-encoded data via Jackson abstractions.</description>
+      <scope>required</scope>
+      <hashes>
+        <hash alg="MD5">ae96eb6e03940a90817c47ab426cbcd4</hash>
+        <hash alg="SHA-1">7227825f12607a539d213d227a7c126cb76ad9d3</hash>
+        <hash alg="SHA-256">d0d538c5ba235ac88c8c3c52e146d3d5e1bbcc8b90e3d757cf0dbe39225e8d00</hash>
+        <hash alg="SHA-512">87d038e1b069cc27c1a82ea366a03f0fc79b4430c4ddfb6b705d44dfbd0f1425efda5182c5f8334a24acb3ccda8c4a07083b587450ddca193ec2cb94aa68aaf5</hash>
+        <hash alg="SHA-384">2cd64ddc36129efabfc6d4e59601e5f4996ee27e8e9bbbdcdf2ca828416305afbae4b2525374466401192b94ab8d7ba6</hash>
+        <hash alg="SHA3-384">97521aa642261f209a2658ddf01ac90bafb9c51021afe823008f6eeae88efe9e6bf283991598e7071c76933ff314564e</hash>
+        <hash alg="SHA3-256">d2209ced6a74b543bfaaf4ad3b659b8800b54cbd858954ee22cf14ce06f3070c</hash>
+        <hash alg="SHA3-512">d0e7de906428f1c47bf729a4f55ca65699652285347681ac63368af4e9a1c7923a8ee90d16e0b216769593241933a7808697fa1aea0e8c7ca2cf1da0bb2b1c20</hash>
+      </hashes>
+      <licenses>
+        <license>
+          <id>Apache-2.0</id>
+        </license>
+      </licenses>
+      <purl>pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml@2.19.1?type=jar</purl>
+      <externalReferences>
+        <reference type="website">
+          <url>https://github.com/FasterXML/jackson-dataformats-text</url>
+        </reference>
+        <reference type="distribution-intake">
+          <url>https://central.sonatype.com/api/v1/publisher</url>
+        </reference>
+        <reference type="issue-tracker">
+          <url>https://github.com/FasterXML/jackson-dataformats-text/issues</url>
+        </reference>
+        <reference type="vcs">
+          <url>https://github.com/FasterXML/jackson-dataformats-text/jackson-dataformat-yaml</url>
+        </reference>
+      </externalReferences>
+    </component>
+    <component type="library" bom-ref="pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.19.1?type=jar">
+      <publisher>FasterXML</publisher>
+      <group>com.fasterxml.jackson.core</group>
+      <name>jackson-databind</name>
+      <version>2.19.1</version>
+      <description>General data-binding functionality for Jackson: works on core streaming API</description>
+      <scope>required</scope>
+      <hashes>
+        <hash alg="MD5">c0afda7ea90602055f7ddca32f2c48ad</hash>
+        <hash alg="SHA-1">e8cb8e76faea3e0791165f5d3614fc45933b2ee0</hash>
+        <hash alg="SHA-256">0bc539401d52c6b14e668947c851dcc49f78a4ada3d1fc8e8f71440613fc26ce</hash>
+        <hash alg="SHA-512">cc80d6288764f2f0a41b2a8c132acb80e0e57ba72564ad473b27e9f5c3d64ce989ade878c5348cac78110b19155172e94eeaed916262f9114f4f83b357295c83</hash>
+        <hash alg="SHA-384">4cceccc1a7928a7676371e01f4866439f21819de43b038021f4705690659bfea6a92d0e8e9952c4929b1b65693c5e13f</hash>
+        <hash alg="SHA3-384">ffc5281a0af8daa29db3f136ef921e84ce3afccc4609c7728c1667bef764bb9852d8a0a62433c379dad91fda2b700278</hash>
+        <hash alg="SHA3-256">fd706a462bf15a23b2da0900084c9e33101d7d2a9e2aa951382f84be1be92d20</hash>
+        <hash alg="SHA3-512">5de6b81effffc19d5a4a78b61025af46d54cdec226c2aad5177c9f9dd44d5406dc5e49226f1d4f12616c63585d806d5e44671ebc21366a1c36ee3284902555df</hash>
+      </hashes>
+      <licenses>
+        <license>
+          <id>Apache-2.0</id>
+        </license>
+      </licenses>
+      <purl>pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.19.1?type=jar</purl>
+      <externalReferences>
+        <reference type="website">
+          <url>https://github.com/FasterXML/jackson</url>
+        </reference>
+        <reference type="distribution-intake">
+          <url>https://central.sonatype.com/api/v1/publisher</url>
+        </reference>
+        <reference type="issue-tracker">
+          <url>https://github.com/FasterXML/jackson-databind/issues</url>
+        </reference>
+        <reference type="vcs">
+          <url>https://github.com/FasterXML/jackson-databind</url>
+        </reference>
+      </externalReferences>
+    </component>
+    <component type="library" bom-ref="pkg:maven/com.fasterxml.jackson.core/jackson-core@2.19.1?type=jar">
+      <publisher>FasterXML</publisher>
+      <group>com.fasterxml.jackson.core</group>
+      <name>jackson-core</name>
+      <version>2.19.1</version>
+      <description>Core Jackson processing abstractions (aka Streaming API), implementation for JSON</description>
+      <scope>required</scope>
+      <hashes>
+        <hash alg="MD5">52aec5a03ab9fd81dcc8fee45952da17</hash>
+        <hash alg="SHA-1">6e5a8cb8a6cada322497cefb7726657d98aaee15</hash>
+        <hash alg="SHA-256">c46369e1a21810100adbc92503b62f15a9ef1640427932f4fe1588ef7ce7e480</hash>
+        <hash alg="SHA-512">7f924882f803bd34f5d2cbd98ccee3a48f9a279e35840b7c7f0ce47dd5f56ab5c096ac1422f440919de5f36576a3eeb1f8270194815b18fe5d3b217f914625f5</hash>
+        <hash alg="SHA-384">050b72a476d875876420002e3b02897a98caaae16aea167db1fc62b0b8fe5558e45c7b83d3689bdb025ff00a51cf339b</hash>
+        <hash alg="SHA3-384">602ba08e8d966f61f68119c5dd50de604924d389351df3747b9935ad5f776db78334f64fc5b8c5071c9d9801f4ae9b22</hash>
+        <hash alg="SHA3-256">e050ee76abc2496622d34b4f0711b36393a08069a4fd0aba8e20ddc640875614</hash>
+        <hash alg="SHA3-512">d5bf6bd7b02e9f41cb72163bc5d3020bbb0394768a0dd7aff57a83321fa340d370d0ec0f472599aa6052e89de843222b60f26822c7c259132f92ebdd21e6226f</hash>
+      </hashes>
+      <licenses>
+        <license>
+          <id>Apache-2.0</id>
+        </license>
+      </licenses>
+      <purl>pkg:maven/com.fasterxml.jackson.core/jackson-core@2.19.1?type=jar</purl>
+      <externalReferences>
+        <reference type="website">
+          <url>https://github.com/FasterXML/jackson-core</url>
+        </reference>
+        <reference type="distribution-intake">
+          <url>https://central.sonatype.com/api/v1/publisher</url>
+        </reference>
+        <reference type="issue-tracker">
+          <url>https://github.com/FasterXML/jackson-core/issues</url>
+        </reference>
+        <reference type="vcs">
+          <url>https://github.com/FasterXML/jackson-core</url>
+        </reference>
+      </externalReferences>
+    </component>
+    <component type="library" bom-ref="pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.19.1?type=jar">
+      <publisher>FasterXML</publisher>
+      <group>com.fasterxml.jackson.datatype</group>
+      <name>jackson-datatype-jsr310</name>
+      <version>2.19.1</version>
+      <description>Add-on module to support JSR-310 (Java 8 Date &amp; Time API) data types.</description>
+      <scope>required</scope>
+      <hashes>
+        <hash alg="MD5">c05d3933b51ef186ed04c6ad58487e53</hash>
+        <hash alg="SHA-1">e9df57105f3b0730040ad7f3a1b603684a3329f4</hash>
+        <hash alg="SHA-256">366eb89065d568a7c0ede73c26a343f293f076d2f8efd0dc69cbe574ca01220e</hash>
+        <hash alg="SHA-512">43ad6fe00061cb6b8f804ac1380eb252da64de8ea02f748dcc69039daed5d777abed5c964c9446a06412dea181364d4dd63459bd55289a617a88a8b5b170a112</hash>
+        <hash alg="SHA-384">fb0d1c824738a185dfd067c56837056ec1dc16f1813252bef69e54b950bfa529551680eae4b342416a49ab3b55c68e6c</hash>
+        <hash alg="SHA3-384">4585c7589d3739118f71c6a69b5a20569f6db50986f0a6e68f82b7d45b7bb066d99af4fc46e46061d0522cd75994ac1c</hash>
+        <hash alg="SHA3-256">e48632b08d11cb5182c2a50c96be3530c8018c0cf45c63c540e3b5a61cfcf2a8</hash>
+        <hash alg="SHA3-512">3b5ddca411e7204d6fc5853b07e46fc8716fbd9e6966fcf539eb65afa45f51e591d5d74a0a961ca4bd7efe4c82cf9df4f6c6b200ab09613637dc2577412ec191</hash>
+      </hashes>
+      <licenses>
+        <license>
+          <id>Apache-2.0</id>
+        </license>
+      </licenses>
+      <purl>pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.19.1?type=jar</purl>
+      <externalReferences>
+        <reference type="website">
+          <url>https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310</url>
+        </reference>
+        <reference type="distribution-intake">
+          <url>https://central.sonatype.com/api/v1/publisher</url>
+        </reference>
+        <reference type="issue-tracker">
+          <url>https://github.com/FasterXML/jackson-modules-java8/issues</url>
+        </reference>
+        <reference type="vcs">
+          <url>http://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310</url>
+        </reference>
+      </externalReferences>
+    </component>
+    <component type="library" bom-ref="pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.19.1?type=jar">
+      <publisher>FasterXML</publisher>
+      <group>com.fasterxml.jackson.core</group>
+      <name>jackson-annotations</name>
+      <version>2.19.1</version>
+      <description>Core annotations used for value types, used by Jackson data binding package.</description>
+      <scope>required</scope>
+      <hashes>
+        <hash alg="MD5">c41dfd16e1724f746f994adb86c11047</hash>
+        <hash alg="SHA-1">37e4f0c5dba684e00137defdb04ad9df95920c44</hash>
+        <hash alg="SHA-256">5a3cd7211ab26b36213f43a2a94bc052a3385af780c5c135329741b2d79a9730</hash>
+        <hash alg="SHA-512">f37dd10819684d185bbcbcc82fe511bb8fee6e732ef15613f8614885bc267f207323d30b75f3cd4a5b5ac3ac6a679d2231ba6f64acd23353128094e78818a58c</hash>
+        <hash alg="SHA-384">556b4fe3e234cfb6b6e60f39664aecf951e3ce8d1888dd22ae1da455b77d3191340bf3b83ffbd954d78b001f045864b3</hash>
+        <hash alg="SHA3-384">1f37e086c3849d0fe24492d7ec7b09cafe0e2aa59c856de65d0d0d389a57446d80f8773a1ea3e9ed8d4721c738f8ea67</hash>
+        <hash alg="SHA3-256">aec9745abfe23958171df1684890fe71eda7580146aebe4d51ad361dd8516b94</hash>
+        <hash alg="SHA3-512">1025f4aaea2ea2aa64f663a0d2831060b936baad89f3601012067e943635632da810baaec517c99c662b1a94611d875f7e743459b3ca2cf06ced7d2e8b5efb2b</hash>
+      </hashes>
+      <licenses>
+        <license>
+          <id>Apache-2.0</id>
+        </license>
+      </licenses>
+      <purl>pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.19.1?type=jar</purl>
+      <externalReferences>
+        <reference type="website">
+          <url>https://github.com/FasterXML/jackson</url>
+        </reference>
+        <reference type="distribution-intake">
+          <url>https://central.sonatype.com/api/v1/publisher</url>
+        </reference>
+        <reference type="issue-tracker">
+          <url>https://github.com/FasterXML/jackson-annotations/issues</url>
+        </reference>
+        <reference type="vcs">
+          <url>https://github.com/FasterXML/jackson-annotations</url>
+        </reference>
+      </externalReferences>
+    </component>
+    <component type="library" bom-ref="pkg:maven/io.github.classgraph/classgraph@4.8.180?type=jar">
       <group>io.github.classgraph</group>
       <name>classgraph</name>
-      <version>4.8.179</version>
+      <version>4.8.180</version>
       <description>The uber-fast, ultra-lightweight classpath and module scanner for JVM languages.</description>
       <scope>required</scope>
       <hashes>
-        <hash alg="MD5">8cc922c49da71ce93a21172f7e2d530c</hash>
-        <hash alg="SHA-1">f159dd8bbbf381c4006c1f675ec4e648c8317f32</hash>
-        <hash alg="SHA-256">16558357f234052370109127a45d69a9bd6d8646925594792634486dc48b159d</hash>
-        <hash alg="SHA-512">8ae750523f086c667f1ecb22cdd02037f217b67841757c2545100ec314145268a60cc6f381bde86659fa090f1a05de8f7cf3ebaf13fb4e737fda749a1ce77078</hash>
-        <hash alg="SHA-384">6357a477ed3a56bdb7ef155d3d8b18e50a3209d2c9ea214594f806fe4779988378c4c3c5f6885b4a41fe90ac1f7cdd84</hash>
-        <hash alg="SHA3-384">9cb145c2224af68499e3044a517d31507f6585189127545f4842e02b879492613d74909b6e38edd354bb97c954903705</hash>
-        <hash alg="SHA3-256">e3153e2489ab425fba5e69677ede8aa3450ac2d3128480928abf5d1b36570fc3</hash>
-        <hash alg="SHA3-512">f6cd8437ac84c3e506657b41d844084481a0083d6ff538031e9851b11fb63d76b1b23c04522947063522ef4851319dac4d37cab4f4368b7bd175ace89c7281ee</hash>
+        <hash alg="MD5">a0823f49fbfc1af3ec2344b3140d23dd</hash>
+        <hash alg="SHA-1">aaa09049cd621dfb742e844722c822a69d7f44bb</hash>
+        <hash alg="SHA-256">de4a4185bfaabc8963faae20e7fa249dec662afd2c61c54dfd2dea55932f4c3a</hash>
+        <hash alg="SHA-512">4d8e7c4b3b596991a68a46114b4e07f5a9b59e56e196938cbdc34299e4fe966d7fbbef5d99d2343e330e1258f10f9c0f283ddf606b5a29e62eb5173c851ce355</hash>
+        <hash alg="SHA-384">367af2af33ae7bebcdb67db48ab5c7ef7a238dbe13d763f862ae66ffe3c2ad2c0afe83e5ff08da67e7f6315ba7b8155f</hash>
+        <hash alg="SHA3-384">a0dc644fa21ee2fddf0155113b16c6f8dce87ce49c97229930663134c8a77e3f64c2556adbe409582ee8274d384b4d24</hash>
+        <hash alg="SHA3-256">448197dfd8ef0b4337e05ec16247cca0b9d43fabe3ff4ea1bd1110376e14c3d1</hash>
+        <hash alg="SHA3-512">6706c32612081fedffe07fc2c2206aa76952e6a30a9db02f48f13a7082ff2884dbb9fa1dce1e28d03febac07666e63c33b72f6e973ee42a9ced11ce557abee34</hash>
       </hashes>
       <licenses>
         <license>
           <id>MIT</id>
         </license>
       </licenses>
-      <purl>pkg:maven/io.github.classgraph/classgraph@4.8.179?type=jar</purl>
+      <purl>pkg:maven/io.github.classgraph/classgraph@4.8.180?type=jar</purl>
       <externalReferences>
         <reference type="website">
           <url>https://github.com/classgraph/classgraph</url>
@@ -2501,22 +2615,22 @@
         </reference>
       </externalReferences>
     </component>
-    <component type="library" bom-ref="pkg:maven/org.apache.camel/camel-tooling-model@4.12.0?type=jar">
+    <component type="library" bom-ref="pkg:maven/org.apache.camel/camel-tooling-model@4.13.0?type=jar">
       <publisher>The Apache Software Foundation</publisher>
       <group>org.apache.camel</group>
       <name>camel-tooling-model</name>
-      <version>4.12.0</version>
+      <version>4.13.0</version>
       <description>Tooling Model</description>
       <scope>required</scope>
       <hashes>
-        <hash alg="MD5">88e10c26084e71c0188c7ea840226c58</hash>
-        <hash alg="SHA-1">f64a2a04b9f72f4e9232753c219eb599553e8c94</hash>
-        <hash alg="SHA-256">b282adc3db6ed42c0fc8c1d819414e6878b6d780711b212bbc3c1ea3967d8d5c</hash>
-        <hash alg="SHA-512">17237706d8df79a2b20e6158061691a6354180786315e49594740d196d6cef3749bfe7088bb964d598b11cab6bd871a13ba765fc69b456901c1c89806aea0d61</hash>
-        <hash alg="SHA-384">341ebfe3fa7d08daefe49bfb76661275f1f99a518b65fd0057aeb4e8e5b67a1cb2bd661556b6e7c2c26f7fe8c1b2f858</hash>
-        <hash alg="SHA3-384">2c218bf4c83059b9d07b11f3bf5fad1eea2824dec7ec2df7c2f2d7a3bdf1dfb51e3f04faa832afca56f8ce9299db275e</hash>
-        <hash alg="SHA3-256">93fe6f1a9be9bb0af6d3a536aa8ba445f7fa75fbc9d863aef5090fdcac7143f0</hash>
-        <hash alg="SHA3-512">c92267e495cef677ab1a19aa86e158118c1e2670c26b7947ce1d93a3800afcbc48d2e30109ddf0aacb437d7606250d0d79a8fe15ed07e26a85754765c4e209e0</hash>
+        <hash alg="MD5">8774b39f8f974a3868f19455f615b45a</hash>
+        <hash alg="SHA-1">c6dee571aaba53cdf9541f1c0ef9d4ce579bef9b</hash>
+        <hash alg="SHA-256">3845bef23a789de6cff8ddc704d1c8439d0fe461fb2d981207166b3542d1f727</hash>
+        <hash alg="SHA-512">34118938068279823e64abc2503bd30af07cd1a594b1c1a2db8c382646b2828b3744d39b1a957d64632f3e0ed615a19dd684a1f4380d9672703208e099686956</hash>
+        <hash alg="SHA-384">6ef59c1e8ac1d542c7aef995ada43e5cdd3462f58b042b147ff92811e6fe129f7e952b5bb651f793780222b378f52bcc</hash>
+        <hash alg="SHA3-384">f48eba1cd4bde335da9cad5af078658af9b3f0d032f0f44e58a83e849e64bff9253ed4cadd202ee8f2fe00621152886d</hash>
+        <hash alg="SHA3-256">252f91f5fcb067813903cf0a325f387c6bb5b369300127fdebf6697c1fa457bc</hash>
+        <hash alg="SHA3-512">847272d72f659b54e77e72a2098754f9f41f23256cbda26e974634cc7c1812515ab3a5ceb81bcebf4fd5feaa28c02e6fbea7577f6a517425adee8f31704e5d1f</hash>
       </hashes>
       <licenses>
         <license>
@@ -2524,7 +2638,7 @@
           <url>https://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
       </licenses>
-      <purl>pkg:maven/org.apache.camel/camel-tooling-model@4.12.0?type=jar</purl>
+      <purl>pkg:maven/org.apache.camel/camel-tooling-model@4.13.0?type=jar</purl>
       <externalReferences>
         <reference type="website">
           <url>https://www.apache.org/camel/camel-parent/tooling/camel-tooling-model/</url>
@@ -2536,26 +2650,26 @@
           <url>https://mail-archives.apache.org/mod_mbox/www-announce/</url>
         </reference>
         <reference type="vcs">
-          <url>https://github.com/apache/maven-apache-parent/tree/apache-34/camel/camel-parent/tooling/camel-tooling-model</url>
+          <url>https://github.com/apache/maven-apache-parent/tree/apache-35/camel/camel-parent/tooling/camel-tooling-model</url>
         </reference>
       </externalReferences>
     </component>
-    <component type="library" bom-ref="pkg:maven/org.apache.camel/camel-util-json@4.12.0?type=jar">
+    <component type="library" bom-ref="pkg:maven/org.apache.camel/camel-util-json@4.13.0?type=jar">
       <publisher>The Apache Software Foundation</publisher>
       <group>org.apache.camel</group>
       <name>camel-util-json</name>
-      <version>4.12.0</version>
+      <version>4.13.0</version>
       <description>A json simple parser that preserves the ordering in Map as read from JSon source</description>
       <scope>required</scope>
       <hashes>
-        <hash alg="MD5">251d597f7265aa1391655c3657b0097b</hash>
-        <hash alg="SHA-1">6c4e3055ff857c855d1f6f2b3f180a776f931a63</hash>
-        <hash alg="SHA-256">c35cd1d2c406195488a096aa3ac993a7b55c009156fa376ff87ac654e42268e3</hash>
-        <hash alg="SHA-512">0dfcefe0fb86d785b9411e7a98a3df5a2ac861d8b2619b0a355c94e1dc1989479ce3056e7295cf33f202bfbdf63ae42913aa2c3563e0e77ffbe2518d1378e180</hash>
-        <hash alg="SHA-384">95f57dbfc9ce4e0d9e2b54915c97472abb29e403b0934d2c17eb387c4c032c6da0817539bcfb627657350f8eae41e2a8</hash>
-        <hash alg="SHA3-384">b7c8f2a203ba8a6e5ab84d1b0c3905ff5d55221cce8f0af74d9260983f12baa686933b6c73f0855d356646f5e681a623</hash>
-        <hash alg="SHA3-256">9ce8545caabeb575b7a5c5c236ed45d92d8c63d521e6a0dbc0c6d4ea1d7f0d46</hash>
-        <hash alg="SHA3-512">36390cdde0764dae2f9e14a2d5c6356df61242fe37220235ab432dd688d27404ce8f43b8c96cff8e77ae00015e8dcd277ba7707875f40794bbf758e61716d058</hash>
+        <hash alg="MD5">9a879616d3824cd778a537f0e417c7d0</hash>
+        <hash alg="SHA-1">d042f3ee5a78f403b475fdc2db7bc8ea85240cae</hash>
+        <hash alg="SHA-256">9768d4c3486e67a8d3697cdce9c2b2b13bc39e486376c56adad535fd594f886b</hash>
+        <hash alg="SHA-512">93ff0976bda2f9375e8f4743aa0f53032abd45eb7762eec0cbe4a86b5101234b2d4f758aaf5923ab12c4a22288014751894743ea0e794cc74589fa0fdc0ac806</hash>
+        <hash alg="SHA-384">315a5da96573e2b9ffafc2cf94b5896948df8cbaeb16374a9679b4edf3e32417c8a29fb6a6df6fb324db1720c6fecc53</hash>
+        <hash alg="SHA3-384">d819cc5936e1cfc56ad2efd878940e2c89658e64a0bef68fdd449741516ada24457088a32e15372c5bbcb546d8f226bd</hash>
+        <hash alg="SHA3-256">e319cd63a1721eac85c06ec12a09d332578ab870c8024ce6b21ca2d349d0ed33</hash>
+        <hash alg="SHA3-512">70c7cae9e204f90b09fea5358c8329f199a236c8621699cccfe073bbf1d31304d5d2c066b14b750266fae5177dd329ad30236a968b4de6fbfa266053f20acd45</hash>
       </hashes>
       <licenses>
         <license>
@@ -2563,7 +2677,7 @@
           <url>https://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
       </licenses>
-      <purl>pkg:maven/org.apache.camel/camel-util-json@4.12.0?type=jar</purl>
+      <purl>pkg:maven/org.apache.camel/camel-util-json@4.13.0?type=jar</purl>
       <externalReferences>
         <reference type="website">
           <url>https://www.apache.org/camel/camel-parent/tooling/camel-util-json/</url>
@@ -2575,26 +2689,26 @@
           <url>https://mail-archives.apache.org/mod_mbox/www-announce/</url>
         </reference>
         <reference type="vcs">
-          <url>https://github.com/apache/maven-apache-parent/tree/apache-34/camel/camel-parent/tooling/camel-util-json</url>
+          <url>https://github.com/apache/maven-apache-parent/tree/apache-35/camel/camel-parent/tooling/camel-util-json</url>
         </reference>
       </externalReferences>
     </component>
-    <component type="library" bom-ref="pkg:maven/org.apache.camel/camel-catalog@4.12.0?type=jar">
+    <component type="library" bom-ref="pkg:maven/org.apache.camel/camel-catalog@4.13.0?type=jar">
       <publisher>The Apache Software Foundation</publisher>
       <group>org.apache.camel</group>
       <name>camel-catalog</name>
-      <version>4.12.0</version>
+      <version>4.13.0</version>
       <description>Camel Catalog</description>
       <scope>required</scope>
       <hashes>
-        <hash alg="MD5">d99f0beaeb59a24e06dab28870ca27d5</hash>
-        <hash alg="SHA-1">e4c2a4b2329f948fe7d20740b94432ddebaadfc6</hash>
-        <hash alg="SHA-256">042e5c97bd9099a04188c8b68e0f7ffb48c9e606cafffb17380e818811018c58</hash>
-        <hash alg="SHA-512">c1c7ab7903ecbaa76959e53172cf34ba9a0b52169038895862da95be8290cade732d6a811429f9e104be5a4401b8677bfdf966154d40cbd8966070cc4c80240a</hash>
-        <hash alg="SHA-384">8f9e81b4133894a8bd9273fd87b5412344ad022ab8bfe54f3adb03bf9c0a31a1d27c1282d51581aed1d7c594a6a66499</hash>
-        <hash alg="SHA3-384">e9731d231d378e85096bc3d01eedc385e583c86545a7fd1793d7aa6eb6d7943541ded3234776d414919ae20c40bc3b0d</hash>
-        <hash alg="SHA3-256">de63f2b03c2079303866930309e6ebcd72da95381997c4f3339d63be25952b9a</hash>
-        <hash alg="SHA3-512">b2040e5244efa69d205a78122a50eb2520d267eb89de742c5768793b4a752d2ec775ed2946dd25da85d87c279e17af170d1dfd2eb64fd23ff56b1e6c8d9fb3d1</hash>
+        <hash alg="MD5">47426afd6df8b34af551aac1c622cf7b</hash>
+        <hash alg="SHA-1">5367fc96e4eda1c693319dbe1bc8c6a0b6a00b8f</hash>
+        <hash alg="SHA-256">5f29f87607e7b68aa0399817e57dffe1113ec3bd3950236349e5d90e3c70b874</hash>
+        <hash alg="SHA-512">66fdbce2118d167583c58ad089ff7f626e3f0d9fa190de7c1e7ee01e109d1f8a53cad41fa9f537d37d59f441cc9895530f62a417bcf9fc0a2a534d9bfeaa01da</hash>
+        <hash alg="SHA-384">ffd50267a0559e581332ae4400ba0b5d799a0060982a55e4f238c3438d806c0e12ce16c558e81dc6c139897648ca5395</hash>
+        <hash alg="SHA3-384">9a3e5b09a89f561f67fc50dd157db6b22d86bf4cc2396048163a5ba635973375720feb1e1774362d261030c3e16d2c70</hash>
+        <hash alg="SHA3-256">f5deadcc35e3cce35a350beb245a634bf7a8b895be4e3d0d159b0563b875800f</hash>
+        <hash alg="SHA3-512">391e4713d7a460379a60822b50ba98987f0f3c982d1fcb9eaa1d70d67ecb286b529500665f73139740bff760b0cf8ea0d84154ccb2de19051126f2f9fca2e3f3</hash>
       </hashes>
       <licenses>
         <license>
@@ -2602,7 +2716,7 @@
           <url>https://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
       </licenses>
-      <purl>pkg:maven/org.apache.camel/camel-catalog@4.12.0?type=jar</purl>
+      <purl>pkg:maven/org.apache.camel/camel-catalog@4.13.0?type=jar</purl>
       <externalReferences>
         <reference type="website">
           <url>https://www.apache.org/camel/camel-parent/catalog/camel-catalog/</url>
@@ -2614,26 +2728,26 @@
           <url>https://mail-archives.apache.org/mod_mbox/www-announce/</url>
         </reference>
         <reference type="vcs">
-          <url>https://github.com/apache/maven-apache-parent/tree/apache-34/camel/camel-parent/catalog/camel-catalog</url>
+          <url>https://github.com/apache/maven-apache-parent/tree/apache-35/camel/camel-parent/catalog/camel-catalog</url>
         </reference>
       </externalReferences>
     </component>
-    <component type="library" bom-ref="pkg:maven/org.apache.camel/camel-core-catalog@4.12.0?type=jar">
+    <component type="library" bom-ref="pkg:maven/org.apache.camel/camel-core-catalog@4.13.0?type=jar">
       <publisher>The Apache Software Foundation</publisher>
       <group>org.apache.camel</group>
       <name>camel-core-catalog</name>
-      <version>4.12.0</version>
+      <version>4.13.0</version>
       <description>The Camel Core Catalog</description>
       <scope>required</scope>
       <hashes>
-        <hash alg="MD5">3fdfb6b79dafbec8408a78d388328bbe</hash>
-        <hash alg="SHA-1">1bb75cad5017d9bbf2850a552a54923bdd3b4542</hash>
-        <hash alg="SHA-256">8c937ac06f216be15f5b9009de37c0a3b39fea5602cde5947fd2a8000cb745a1</hash>
-        <hash alg="SHA-512">fb7715051e7f02c31e4d9cf4e2ead8768104e2b61c0490c693a81d7f7d3db09aaaaf0efe2d9b9003490510421af5ccb6f1b4fbc07a04e8dfa2557884a216a1e2</hash>
-        <hash alg="SHA-384">52d1df2b167cdff32ca16335f01fb32f974d03c5c75ff51b87a5f49e8547551c3680f8c0a69d6c7b368fcdf299ac4e87</hash>
-        <hash alg="SHA3-384">191006ed23e07f6a555249347cedfc59db6ad10dc704a80b8b332ef64da6e0026c08dd8ce1d7300611a186439b39dae1</hash>
-        <hash alg="SHA3-256">8b2982da6da3c7ad9cd8d2aa994f030150eac2d8210f7130454815b297c2b2aa</hash>
-        <hash alg="SHA3-512">c5e558ffbd175a9112430b24a929c9fb0233f08fbf0f8c03ef71d0d053a6db61035d8cbbe4f54bd4c5ca21081a64cc73ff2e9da252d0deccfeade90d1bed721b</hash>
+        <hash alg="MD5">7e927ed4818509d4a36624ea3f4e1163</hash>
+        <hash alg="SHA-1">69d41c76b2cd2d63e7b1f81ae7c979bd90c78a69</hash>
+        <hash alg="SHA-256">8f56ce981ebdf3729f16e5a531c55be3f0ccfcee403d51fe804e8f63edb3d217</hash>
+        <hash alg="SHA-512">bff4c82ff342054471fbe036c8cc908a567f7cd48885b0eab831fe288b7d4a21533ec31b53a1c6b4cfd9e2f3b2d3ac86c9973dd1f9f056f073a2c2b130b62513</hash>
+        <hash alg="SHA-384">d1021a9bbd8a8b68798ca38be0841366d23e4fd4d862d3f7522af4207a337afdea6900c16fddbf92c69a05aba715d08d</hash>
+        <hash alg="SHA3-384">ef25402f0f29f9add0e476c0228815d5792e8f2e176d2fd308e942f3f9a8f098c5e375c5f95e6298684195a2fa1995f5</hash>
+        <hash alg="SHA3-256">2a780ac67674e18bf7b8055f7ff62baa5fd3338214865c9b25d5a57997002059</hash>
+        <hash alg="SHA3-512">4c27956f0d90c47b0796320b65cee503cb95058d4b5aada732ffbe5e1a9667743f7619da5ea54384d49ecbbac9b6be38bedf52cf791cc38a8477a8b2586670db</hash>
       </hashes>
       <licenses>
         <license>
@@ -2641,7 +2755,7 @@
           <url>https://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
       </licenses>
-      <purl>pkg:maven/org.apache.camel/camel-core-catalog@4.12.0?type=jar</purl>
+      <purl>pkg:maven/org.apache.camel/camel-core-catalog@4.13.0?type=jar</purl>
       <externalReferences>
         <reference type="website">
           <url>https://www.apache.org/camel/camel-parent/core/camel-core-catalog/</url>
@@ -2653,26 +2767,26 @@
           <url>https://mail-archives.apache.org/mod_mbox/www-announce/</url>
         </reference>
         <reference type="vcs">
-          <url>https://github.com/apache/maven-apache-parent/tree/apache-34/camel/camel-parent/core/camel-core-catalog</url>
+          <url>https://github.com/apache/maven-apache-parent/tree/apache-35/camel/camel-parent/core/camel-core-catalog</url>
         </reference>
       </externalReferences>
     </component>
-    <component type="library" bom-ref="pkg:maven/org.apache.camel/camel-api@4.12.0?type=jar">
+    <component type="library" bom-ref="pkg:maven/org.apache.camel/camel-api@4.13.0?type=jar">
       <publisher>The Apache Software Foundation</publisher>
       <group>org.apache.camel</group>
       <name>camel-api</name>
-      <version>4.12.0</version>
+      <version>4.13.0</version>
       <description>The Camel API</description>
       <scope>required</scope>
       <hashes>
-        <hash alg="MD5">863b3fe13e723183db0b4c32f674046c</hash>
-        <hash alg="SHA-1">9a56e31791e2bc07fd086a1d37fd0676734191b5</hash>
-        <hash alg="SHA-256">b15684d13cfc943e93ed7b987151574efde169e7efc7bf2f0bef423172be2399</hash>
-        <hash alg="SHA-512">d05372416c33358f1ed9d5e39ace83f80932690323d33713182177da1377b64c0b13be6490d0e597a18713623eb68046c072a6de7ec8f83ea3380be45bb0422d</hash>
-        <hash alg="SHA-384">05ee6ada6f3c9f5cb34d541748564ba6dc95f1e81503ead272270bbc8adadbc6431b0afa0d9234c2402a3af90bf41bac</hash>
-        <hash alg="SHA3-384">129e65687cd31a05f5763930e36dba2f594ecbc531506eb8bde7739118d52fbd1393c91293c65041b47999a646e64d5f</hash>
-        <hash alg="SHA3-256">30ae1b8c99ef0c54c853fb632b60fe5ba4b5e8a37a341a1b5cc10c6a0f8ae0b2</hash>
-        <hash alg="SHA3-512">254c3196650e1a76bdc3d2be510c13106131dd4cd33b5fa2d3894cfc5ad477f9b445895b80a9ed1401dc448d604305decb5902134fbcaf90e97dee7df9ce97fb</hash>
+        <hash alg="MD5">a2fb424fa2b62a08604b19e84d295a1f</hash>
+        <hash alg="SHA-1">4ff9ff284f531db8758383e57000ec2c04897dcb</hash>
+        <hash alg="SHA-256">e7899b88ebfa7841d3a8ad28e5dda9ec81c1627cf14f7c8dc4af2e94251dec46</hash>
+        <hash alg="SHA-512">866afe6b0b7952a40ad7ddef6a3dbc8f37ac838f06227a32b514a474b6716bb426161efb7e140b5a1d21b1ef934fdf9f6668e2c524170ac3941e23414ef59fbe</hash>
+        <hash alg="SHA-384">43c7b35706733695e4fad7e1cddc0e2b78c2f1fa477533bf3745d42fcf3b6be6ae447a1cceeb9bdfb61d339028b16da9</hash>
+        <hash alg="SHA3-384">5fce1ec75ae2ba01bbedad7cb4f8bd0a65498fa8d99830e04647bf3d8584fcc575d355b2b403648465f6c8d61f5676c5</hash>
+        <hash alg="SHA3-256">a820151eb9501b11f9549cc289efeccb5ad65f94cb038dc51441b98433e2b365</hash>
+        <hash alg="SHA3-512">77e82804d57862746c1f6ea0bd9e96dc6c2ce03eb6717e1b9fcd333531c1e504ba5355ca36976b97cc7a0b1e804dc7f700d0b394fc396cd9a99d114a2ec10a6d</hash>
       </hashes>
       <licenses>
         <license>
@@ -2680,7 +2794,7 @@
           <url>https://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
       </licenses>
-      <purl>pkg:maven/org.apache.camel/camel-api@4.12.0?type=jar</purl>
+      <purl>pkg:maven/org.apache.camel/camel-api@4.13.0?type=jar</purl>
       <externalReferences>
         <reference type="website">
           <url>https://www.apache.org/camel/camel-parent/core/camel-api/</url>
@@ -2692,26 +2806,26 @@
           <url>https://mail-archives.apache.org/mod_mbox/www-announce/</url>
         </reference>
         <reference type="vcs">
-          <url>https://github.com/apache/maven-apache-parent/tree/apache-34/camel/camel-parent/core/camel-api</url>
+          <url>https://github.com/apache/maven-apache-parent/tree/apache-35/camel/camel-parent/core/camel-api</url>
         </reference>
       </externalReferences>
     </component>
-    <component type="library" bom-ref="pkg:maven/org.apache.camel/camel-util@4.12.0?type=jar">
+    <component type="library" bom-ref="pkg:maven/org.apache.camel/camel-util@4.13.0?type=jar">
       <publisher>The Apache Software Foundation</publisher>
       <group>org.apache.camel</group>
       <name>camel-util</name>
-      <version>4.12.0</version>
+      <version>4.13.0</version>
       <description>The Camel Utilities</description>
       <scope>required</scope>
       <hashes>
-        <hash alg="MD5">c2eee89ff982c830890d469e53fad020</hash>
-        <hash alg="SHA-1">e83117e96ec6538ef824e2a71d0cb4715180f354</hash>
-        <hash alg="SHA-256">adfec7ebaa74ea0abacef944b4a0fb8109076227ae1f5b0c71518d7a11fe46b1</hash>
-        <hash alg="SHA-512">f991274ab824e33449e48ac1233b28ced74f8943a76faea3d3c8bfce9f2394083d461e2e8f0561107e8d63541a1bfcf8a83698d16f55ff12b2f22c510b27522e</hash>
-        <hash alg="SHA-384">6e7e7b74f5ddbdcb60266b00bbc1d20a4d5e83c02397838c89599951d94263ed45e38dfa59766ffc95afca161a489253</hash>
-        <hash alg="SHA3-384">7a83f9ee1d785d228188d77fd85fc25ac09dd8dd83f7b15da18ac61e0ea614e3abdbdd8a57e46ca84cf8d1b77d7405d0</hash>
-        <hash alg="SHA3-256">156fa53450701fc54174b1d1f94a1485436fc782992b24cb921917386f96eeef</hash>
-        <hash alg="SHA3-512">99086705afeee05b4653a3cd6dade5ce458d87ab3055abdeaa33710c0d411308ff3e6922a768c8348595430248479e679df0d6be466a6dd9d583cb9e0249c92c</hash>
+        <hash alg="MD5">9efecb53bc9b1140fc17c991cabeaf9e</hash>
+        <hash alg="SHA-1">8eabdb5c6e769677e6a508bc4df9ac1863a99b38</hash>
+        <hash alg="SHA-256">4ac881cb23bde0a96e44c974366f24bd5d29af789a670b825c551fb5090b6c66</hash>
+        <hash alg="SHA-512">4c66f9933e9fec39c9e8ef9a42ae513b6a37cb87ba53f37443c24dc567769789cd84afbb13ab6aa9b5651230c4616c3f2c1b2db5bf8cbe28241506753fa4e6be</hash>
+        <hash alg="SHA-384">34e55dbf7880d311de017e9132bcbdd214d0c9cb87c8da525437310e7916b615dc690e1875fa8d22e67fa4d5cd8ee12b</hash>
+        <hash alg="SHA3-384">859270f380a582452e7bc93973c9c953b70c9165352b1a897a21d57f960b1539b5a29f9d52950049c35ece39e04f2dcd</hash>
+        <hash alg="SHA3-256">cdc6eade8a551f3a48fa80b307b82dbb0359a49aa74281250e1f9834b9a7ed6b</hash>
+        <hash alg="SHA3-512">343ffbfc8727e1b630e854e82efa2d7795dd29d3f511396b9ea5589406589b6d545f67a072e8791873d56c88ede9e390edee3091da94a05f1e052c74928146e2</hash>
       </hashes>
       <licenses>
         <license>
@@ -2719,7 +2833,7 @@
           <url>https://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
       </licenses>
-      <purl>pkg:maven/org.apache.camel/camel-util@4.12.0?type=jar</purl>
+      <purl>pkg:maven/org.apache.camel/camel-util@4.13.0?type=jar</purl>
       <externalReferences>
         <reference type="website">
           <url>https://www.apache.org/camel/camel-parent/core/camel-util/</url>
@@ -2731,7 +2845,7 @@
           <url>https://mail-archives.apache.org/mod_mbox/www-announce/</url>
         </reference>
         <reference type="vcs">
-          <url>https://github.com/apache/maven-apache-parent/tree/apache-34/camel/camel-parent/core/camel-util</url>
+          <url>https://github.com/apache/maven-apache-parent/tree/apache-35/camel/camel-parent/core/camel-util</url>
         </reference>
       </externalReferences>
     </component>
@@ -2817,11 +2931,11 @@
         </reference>
       </externalReferences>
     </component>
-    <component type="library" bom-ref="pkg:maven/org.apache.camel.kamelets/kamelets-maven-plugin@4.13.0-SNAPSHOT?type=maven-plugin">
+    <component type="library" bom-ref="pkg:maven/org.apache.camel.kamelets/kamelets-maven-plugin@4.14.0-SNAPSHOT?type=maven-plugin">
       <publisher>The Apache Software Foundation</publisher>
       <group>org.apache.camel.kamelets</group>
       <name>kamelets-maven-plugin</name>
-      <version>4.13.0-SNAPSHOT</version>
+      <version>4.14.0-SNAPSHOT</version>
       <description>Camel Kamelets Maven Plugin</description>
       <licenses>
         <license>
@@ -2829,7 +2943,7 @@
           <url>https://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
       </licenses>
-      <purl>pkg:maven/org.apache.camel.kamelets/kamelets-maven-plugin@4.13.0-SNAPSHOT?type=maven-plugin</purl>
+      <purl>pkg:maven/org.apache.camel.kamelets/kamelets-maven-plugin@4.14.0-SNAPSHOT?type=maven-plugin</purl>
       <externalReferences>
         <reference type="website">
           <url>https://camel.apache.org/camel-kamelets-parent/library/kamelets-maven-plugin</url>
@@ -2848,22 +2962,22 @@
         </reference>
       </externalReferences>
     </component>
-    <component type="library" bom-ref="pkg:maven/org.apache.camel/camel-tooling-util@4.12.0?type=jar">
+    <component type="library" bom-ref="pkg:maven/org.apache.camel/camel-tooling-util@4.13.0?type=jar">
       <publisher>The Apache Software Foundation</publisher>
       <group>org.apache.camel</group>
       <name>camel-tooling-util</name>
-      <version>4.12.0</version>
+      <version>4.13.0</version>
       <description>Tooling utilities</description>
       <scope>required</scope>
       <hashes>
-        <hash alg="MD5">6c0b7bc55d1cc64c8c01c467dce80e56</hash>
-        <hash alg="SHA-1">fa45b213a98fb1376360b64d079183ec45171b07</hash>
-        <hash alg="SHA-256">ab4f69de4f1d5093437abfa4403665a2aa6d5cb22b7f74793bbe758a0e2c7331</hash>
-        <hash alg="SHA-512">568a5124e1f1a8f3ddc17f28c5445095fcc4651f1a6de90bdc3ab5d8ced0eef29a13b3876eaa438a2662e070757d257dd3b231dfd6fc513f0d9200bbe38b226c</hash>
-        <hash alg="SHA-384">2a9acef77502eaf3dd3c2773313102322145edfc8bdd366a05be3ce2c1f8be3fe766d959bf39d2e52398c2562885d934</hash>
-        <hash alg="SHA3-384">118a937772f706631d59774ca888dc8c703d848538164ad727b1b59b7ae7cf88269129d7929d38ca0dd0dcf51fb458ae</hash>
-        <hash alg="SHA3-256">80185d53d587a62aa7053358cbaa0f50e8897c2338690a317bf325082595988c</hash>
-        <hash alg="SHA3-512">8534fddd10e5a63385ee973590843b3b63a3f924f2ef5472f3c6f6bfc6b02b5b384644c4e888339b6a7992842b07e1cd76f4d9d59bf6bb4086ad32078a97a016</hash>
+        <hash alg="MD5">2cf1cd1c389268c2f724505ecae1ead0</hash>
+        <hash alg="SHA-1">cb12cf13977161b28ac2080c13f88b9df5187545</hash>
+        <hash alg="SHA-256">3b5078df9373d6be7d49438e3102503f926685120dc6e897604e13cb7d19bf20</hash>
+        <hash alg="SHA-512">b8b7e5190b28730a337d154b021a00129526b70d149346a786fd7bcf9e110535aa818c572ad8126f759abe35576fb02b53a7c19bcdb193ced0fa21094a6d97cf</hash>
+        <hash alg="SHA-384">1de31d65b8a14b26f9a1fe568d82312de595b4548920de19099e06c00ed71a6711ee98055a86925f9be29c3c701f086b</hash>
+        <hash alg="SHA3-384">3ca84996b1e21e856617e485c294f6e4d3470b589a6ce623270f55643a42862e000d1209a2a405fd9bc5e0944a3ea1be</hash>
+        <hash alg="SHA3-256">16c43263c4cd897fefc827312335f0115f65edf3377e7a816b685d92ec733a94</hash>
+        <hash alg="SHA3-512">52ff3a3a5be6c5fb2f7d97ef057fb2898c6d0cd20949034986b320ed74480fbca17aa03a8e2b44d1a6e9ea6bd612cb8c3087944e9e901e746262f3314d8b659a</hash>
       </hashes>
       <licenses>
         <license>
@@ -2871,7 +2985,7 @@
           <url>https://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
       </licenses>
-      <purl>pkg:maven/org.apache.camel/camel-tooling-util@4.12.0?type=jar</purl>
+      <purl>pkg:maven/org.apache.camel/camel-tooling-util@4.13.0?type=jar</purl>
       <externalReferences>
         <reference type="website">
           <url>https://www.apache.org/camel/camel-parent/tooling/camel-tooling-util/</url>
@@ -2883,7 +2997,7 @@
           <url>https://mail-archives.apache.org/mod_mbox/www-announce/</url>
         </reference>
         <reference type="vcs">
-          <url>https://github.com/apache/maven-apache-parent/tree/apache-34/camel/camel-parent/tooling/camel-tooling-util</url>
+          <url>https://github.com/apache/maven-apache-parent/tree/apache-35/camel/camel-parent/tooling/camel-tooling-util</url>
         </reference>
       </externalReferences>
     </component>
@@ -4586,11 +4700,11 @@ file comparators, endian transformation classes, and much more.</description>
         </reference>
       </externalReferences>
     </component>
-    <component type="library" bom-ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-bom@4.13.0-SNAPSHOT?type=pom">
+    <component type="library" bom-ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-bom@4.14.0-SNAPSHOT?type=pom">
       <publisher>The Apache Software Foundation</publisher>
       <group>org.apache.camel.kamelets</group>
       <name>camel-kamelets-bom</name>
-      <version>4.13.0-SNAPSHOT</version>
+      <version>4.14.0-SNAPSHOT</version>
       <description>Camel Kamelets BOM</description>
       <licenses>
         <license>
@@ -4598,7 +4712,7 @@ file comparators, endian transformation classes, and much more.</description>
           <url>https://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
       </licenses>
-      <purl>pkg:maven/org.apache.camel.kamelets/camel-kamelets-bom@4.13.0-SNAPSHOT?type=pom</purl>
+      <purl>pkg:maven/org.apache.camel.kamelets/camel-kamelets-bom@4.14.0-SNAPSHOT?type=pom</purl>
       <externalReferences>
         <reference type="website">
           <url>https://camel.apache.org/camel-kamelets-parent/library/camel-kamelets-bom</url>
@@ -4617,11 +4731,11 @@ file comparators, endian transformation classes, and much more.</description>
         </reference>
       </externalReferences>
     </component>
-    <component type="library" bom-ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-itest@4.13.0-SNAPSHOT?type=jar">
+    <component type="library" bom-ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-itest@4.14.0-SNAPSHOT?type=jar">
       <publisher>The Apache Software Foundation</publisher>
       <group>org.apache.camel.kamelets</group>
       <name>camel-kamelets-itest</name>
-      <version>4.13.0-SNAPSHOT</version>
+      <version>4.14.0-SNAPSHOT</version>
       <description>Camel Kamelets Integration Tests</description>
       <licenses>
         <license>
@@ -4629,7 +4743,7 @@ file comparators, endian transformation classes, and much more.</description>
           <url>https://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
       </licenses>
-      <purl>pkg:maven/org.apache.camel.kamelets/camel-kamelets-itest@4.13.0-SNAPSHOT?type=jar</purl>
+      <purl>pkg:maven/org.apache.camel.kamelets/camel-kamelets-itest@4.14.0-SNAPSHOT?type=jar</purl>
       <externalReferences>
         <reference type="website">
           <url>https://camel.apache.org/camel-kamelets-parent/tests/camel-kamelets-itest</url>
@@ -4650,15 +4764,15 @@ file comparators, endian transformation classes, and much more.</description>
     </component>
   </components>
   <dependencies>
-    <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-parent@4.13.0-SNAPSHOT?type=pom">
-      <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-crds@4.13.0-SNAPSHOT?type=jar"/>
-      <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets@4.13.0-SNAPSHOT?type=jar"/>
-      <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-catalog@4.13.0-SNAPSHOT?type=jar"/>
-      <dependency ref="pkg:maven/org.apache.camel.kamelets/kamelets-maven-plugin@4.13.0-SNAPSHOT?type=maven-plugin"/>
-      <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-bom@4.13.0-SNAPSHOT?type=pom"/>
-      <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-itest@4.13.0-SNAPSHOT?type=jar"/>
+    <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-parent@4.14.0-SNAPSHOT?type=pom">
+      <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-crds@4.14.0-SNAPSHOT?type=jar"/>
+      <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets@4.14.0-SNAPSHOT?type=jar"/>
+      <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-catalog@4.14.0-SNAPSHOT?type=jar"/>
+      <dependency ref="pkg:maven/org.apache.camel.kamelets/kamelets-maven-plugin@4.14.0-SNAPSHOT?type=maven-plugin"/>
+      <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-bom@4.14.0-SNAPSHOT?type=pom"/>
+      <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-itest@4.14.0-SNAPSHOT?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-crds@4.13.0-SNAPSHOT?type=jar">
+    <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-crds@4.14.0-SNAPSHOT?type=jar">
       <dependency ref="pkg:maven/io.fabric8/kubernetes-client@7.3.1?type=jar"/>
       <dependency ref="pkg:maven/io.fabric8/generator-annotations@7.3.1?type=jar"/>
       <dependency ref="pkg:maven/io.sundr/builder-annotations@0.200.4?type=jar"/>
@@ -4941,57 +5055,63 @@ file comparators, endian transformation classes, and much more.</description>
     </dependency>
     <dependency ref="pkg:maven/io.sundr/resourcecify-annotations@0.200.4?type=jar"/>
     <dependency ref="pkg:maven/org.projectlombok/lombok@1.18.38?type=jar"/>
-    <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets@4.13.0-SNAPSHOT?type=jar"/>
-    <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-catalog@4.13.0-SNAPSHOT?type=jar">
+    <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets@4.14.0-SNAPSHOT?type=jar"/>
+    <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-catalog@4.14.0-SNAPSHOT?type=jar">
       <dependency ref="pkg:maven/org.slf4j/slf4j-api@2.0.17?type=jar"/>
-      <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets@4.13.0-SNAPSHOT?type=jar"/>
-      <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-crds@4.13.0-SNAPSHOT?type=jar"/>
-      <dependency ref="pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml@2.19.0?type=jar"/>
-      <dependency ref="pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.19.0?type=jar"/>
-      <dependency ref="pkg:maven/io.github.classgraph/classgraph@4.8.179?type=jar"/>
-      <dependency ref="pkg:maven/org.apache.camel/camel-tooling-model@4.12.0?type=jar"/>
-      <dependency ref="pkg:maven/org.apache.camel/camel-catalog@4.12.0?type=jar"/>
+      <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets@4.14.0-SNAPSHOT?type=jar"/>
+      <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-crds@4.14.0-SNAPSHOT?type=jar"/>
+      <dependency ref="pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml@2.19.1?type=jar"/>
+      <dependency ref="pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.19.1?type=jar"/>
+      <dependency ref="pkg:maven/io.github.classgraph/classgraph@4.8.180?type=jar"/>
+      <dependency ref="pkg:maven/org.apache.camel/camel-tooling-model@4.13.0?type=jar"/>
+      <dependency ref="pkg:maven/org.apache.camel/camel-catalog@4.13.0?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml@2.19.0?type=jar">
-      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.19.0?type=jar"/>
+    <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.19.1?type=jar">
+      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.19.1?type=jar"/>
+      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-core@2.19.1?type=jar"/>
+    </dependency>
+    <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.19.1?type=jar"/>
+    <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-core@2.19.1?type=jar"/>
+    <dependency ref="pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml@2.19.1?type=jar">
+      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.19.1?type=jar"/>
       <dependency ref="pkg:maven/org.yaml/snakeyaml@2.4?type=jar"/>
-      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-core@2.19.0?type=jar"/>
+      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-core@2.19.1?type=jar"/>
     </dependency>
     <dependency ref="pkg:maven/org.yaml/snakeyaml@2.4?type=jar"/>
-    <dependency ref="pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.19.0?type=jar">
-      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.19.0?type=jar"/>
-      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-core@2.19.0?type=jar"/>
-      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.19.0?type=jar"/>
+    <dependency ref="pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.19.1?type=jar">
+      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.19.1?type=jar"/>
+      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-core@2.19.1?type=jar"/>
+      <dependency ref="pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.19.1?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/io.github.classgraph/classgraph@4.8.179?type=jar"/>
-    <dependency ref="pkg:maven/org.apache.camel/camel-tooling-model@4.12.0?type=jar">
-      <dependency ref="pkg:maven/org.apache.camel/camel-util-json@4.12.0?type=jar"/>
+    <dependency ref="pkg:maven/io.github.classgraph/classgraph@4.8.180?type=jar"/>
+    <dependency ref="pkg:maven/org.apache.camel/camel-tooling-model@4.13.0?type=jar">
+      <dependency ref="pkg:maven/org.apache.camel/camel-util-json@4.13.0?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/org.apache.camel/camel-util-json@4.12.0?type=jar"/>
-    <dependency ref="pkg:maven/org.apache.camel/camel-catalog@4.12.0?type=jar">
-      <dependency ref="pkg:maven/org.apache.camel/camel-core-catalog@4.12.0?type=jar"/>
-      <dependency ref="pkg:maven/org.apache.camel/camel-util-json@4.12.0?type=jar"/>
-      <dependency ref="pkg:maven/org.apache.camel/camel-tooling-model@4.12.0?type=jar"/>
+    <dependency ref="pkg:maven/org.apache.camel/camel-util-json@4.13.0?type=jar"/>
+    <dependency ref="pkg:maven/org.apache.camel/camel-catalog@4.13.0?type=jar">
+      <dependency ref="pkg:maven/org.apache.camel/camel-core-catalog@4.13.0?type=jar"/>
+      <dependency ref="pkg:maven/org.apache.camel/camel-util-json@4.13.0?type=jar"/>
+      <dependency ref="pkg:maven/org.apache.camel/camel-tooling-model@4.13.0?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/org.apache.camel/camel-core-catalog@4.12.0?type=jar">
-      <dependency ref="pkg:maven/org.apache.camel/camel-api@4.12.0?type=jar"/>
-      <dependency ref="pkg:maven/org.apache.camel/camel-tooling-model@4.12.0?type=jar"/>
+    <dependency ref="pkg:maven/org.apache.camel/camel-core-catalog@4.13.0?type=jar">
+      <dependency ref="pkg:maven/org.apache.camel/camel-api@4.13.0?type=jar"/>
+      <dependency ref="pkg:maven/org.apache.camel/camel-tooling-model@4.13.0?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/org.apache.camel/camel-api@4.12.0?type=jar">
-      <dependency ref="pkg:maven/org.apache.camel/camel-util@4.12.0?type=jar"/>
+    <dependency ref="pkg:maven/org.apache.camel/camel-api@4.13.0?type=jar">
+      <dependency ref="pkg:maven/org.apache.camel/camel-util@4.13.0?type=jar"/>
       <dependency ref="pkg:maven/org.slf4j/slf4j-api@2.0.17?type=jar"/>
       <dependency ref="pkg:maven/jakarta.xml.bind/jakarta.xml.bind-api@4.0.2?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/org.apache.camel/camel-util@4.12.0?type=jar">
+    <dependency ref="pkg:maven/org.apache.camel/camel-util@4.13.0?type=jar">
       <dependency ref="pkg:maven/org.slf4j/slf4j-api@2.0.17?type=jar"/>
     </dependency>
     <dependency ref="pkg:maven/jakarta.xml.bind/jakarta.xml.bind-api@4.0.2?type=jar">
       <dependency ref="pkg:maven/jakarta.activation/jakarta.activation-api@2.1.3?type=jar"/>
     </dependency>
     <dependency ref="pkg:maven/jakarta.activation/jakarta.activation-api@2.1.3?type=jar"/>
-    <dependency ref="pkg:maven/org.apache.camel.kamelets/kamelets-maven-plugin@4.13.0-SNAPSHOT?type=maven-plugin">
-      <dependency ref="pkg:maven/org.apache.camel/camel-util@4.12.0?type=jar"/>
-      <dependency ref="pkg:maven/org.apache.camel/camel-tooling-util@4.12.0?type=jar"/>
+    <dependency ref="pkg:maven/org.apache.camel.kamelets/kamelets-maven-plugin@4.14.0-SNAPSHOT?type=maven-plugin">
+      <dependency ref="pkg:maven/org.apache.camel/camel-util@4.13.0?type=jar"/>
+      <dependency ref="pkg:maven/org.apache.camel/camel-tooling-util@4.13.0?type=jar"/>
       <dependency ref="pkg:maven/org.apache.maven.resolver/maven-resolver-api@2.0.10?type=jar"/>
       <dependency ref="pkg:maven/org.apache.maven/maven-core@3.9.10?type=jar"/>
       <dependency ref="pkg:maven/org.apache.maven/maven-artifact@3.9.10?type=jar"/>
@@ -5001,10 +5121,10 @@ file comparators, endian transformation classes, and much more.</description>
       <dependency ref="pkg:maven/org.codehaus.plexus/plexus-container-default@2.1.1?type=jar"/>
       <dependency ref="pkg:maven/org.codehaus.plexus/plexus-utils@4.0.2?type=jar"/>
       <dependency ref="pkg:maven/commons-io/commons-io@2.19.0?type=jar"/>
-      <dependency ref="pkg:maven/org.apache.camel/camel-catalog@4.12.0?type=jar"/>
-      <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-catalog@4.13.0-SNAPSHOT?type=jar"/>
+      <dependency ref="pkg:maven/org.apache.camel/camel-catalog@4.13.0?type=jar"/>
+      <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-catalog@4.14.0-SNAPSHOT?type=jar"/>
     </dependency>
-    <dependency ref="pkg:maven/org.apache.camel/camel-tooling-util@4.12.0?type=jar"/>
+    <dependency ref="pkg:maven/org.apache.camel/camel-tooling-util@4.13.0?type=jar"/>
     <dependency ref="pkg:maven/org.apache.maven.resolver/maven-resolver-api@2.0.10?type=jar"/>
     <dependency ref="pkg:maven/org.apache.maven/maven-core@3.9.10?type=jar">
       <dependency ref="pkg:maven/org.apache.maven/maven-model@3.9.10?type=jar"/>
@@ -5167,7 +5287,7 @@ file comparators, endian transformation classes, and much more.</description>
     </dependency>
     <dependency ref="pkg:maven/org.hamcrest/hamcrest-core@1.3?type=jar"/>
     <dependency ref="pkg:maven/commons-io/commons-io@2.19.0?type=jar"/>
-    <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-bom@4.13.0-SNAPSHOT?type=pom"/>
-    <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-itest@4.13.0-SNAPSHOT?type=jar"/>
+    <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-bom@4.14.0-SNAPSHOT?type=pom"/>
+    <dependency ref="pkg:maven/org.apache.camel.kamelets/camel-kamelets-itest@4.14.0-SNAPSHOT?type=jar"/>
   </dependencies>
 </bom>
