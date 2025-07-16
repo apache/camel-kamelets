@@ -48,6 +48,20 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      jetstreamEnabled:
+        title: Jetstream Enabled
+        description: Sets whether to enable JetStream support for this endpoint.
+        type: boolean
+        default: false
+      jetstreamName:
+        title: Jetstream Stream Name
+        description: Sets the name of the JetStream stream to use.
+        type: string
+      jetstreamAsync:
+        title: Jetstream Async Enabled
+        description: Sets whether to operate JetStream requests asynchronously.
+        type: boolean
+        default: true
   dependencies:
   - "camel:nats"
   - "camel:kamelet"
@@ -59,3 +73,6 @@ spec:
           uri: "nats:{{topic}}"
           parameters:
             servers: "{{servers}}"
+            jetstreamEnabled: "{{?jetstreamEnabled}}"
+            jetstreamName: "{{?jetstreamName}}"
+            jetstreamAsync: "{{?jetstreamAsync}}"
