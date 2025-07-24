@@ -8,6 +8,7 @@
 
 - Support JetStream in Nats Kamelets [\#2531](https://github.com/apache/camel-kamelets/issues/2531)
 - Release 4.13.0 [\#2526](https://github.com/apache/camel-kamelets/issues/2526)
+- Improve 3rd party dependant Kamelets [\#2056](https://github.com/apache/camel-kamelets/issues/2056)
 
 ## [v4.13.0](https://github.com/apache/camel-kamelets/tree/v4.13.0) (2025-07-10)
 
