@@ -31,10 +31,7 @@ metadata:
 spec:
   definition:
     title: "Azure Storage Queue Source"
-    description: |-
-      Receive events from Azure Storage queues.
-
-      One header is duplicated with different names for clarity at sink level. `CamelAzureStorageQueueMessageId` is duplicated into `azure.storage.queue.message.id`.
+    description: Receive events from Azure Storage queues.
     required:
       - accountName
       - queueName
