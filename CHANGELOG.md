@@ -1,14 +1,36 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v4.14.0](https://github.com/apache/camel-kamelets/tree/v4.14.0) (2025-08-25)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.13.0...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.13.0...v4.14.0)
 
 **Closed issues:**
 
 - Support JetStream in Nats Kamelets [\#2531](https://github.com/apache/camel-kamelets/issues/2531)
 - Release 4.13.0 [\#2526](https://github.com/apache/camel-kamelets/issues/2526)
 - Improve 3rd party dependant Kamelets [\#2056](https://github.com/apache/camel-kamelets/issues/2056)
+
+**Merged pull requests:**
+
+- Bump org.apache.camel:camel-dependencies from 4.13.0 to 4.14.0 [\#2551](https://github.com/apache/camel-kamelets/pull/2551) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump camel.version from 4.13.0 to 4.14.0 [\#2550](https://github.com/apache/camel-kamelets/pull/2550) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugins:maven-javadoc-plugin from 3.11.2 to 3.11.3 [\#2549](https://github.com/apache/camel-kamelets/pull/2549) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Fix Azure Storage queuev sink [\#2547](https://github.com/apache/camel-kamelets/pull/2547) ([oscerd](https://github.com/oscerd))
+- Kamelets Catalog - Make the description a one liner - Azure Storage Queue  [\#2546](https://github.com/apache/camel-kamelets/pull/2546) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#2545](https://github.com/apache/camel-kamelets/pull/2545) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump com.amazon.redshift:redshift-jdbc42 from 2.1.0.33 to 2.1.0.34 [\#2544](https://github.com/apache/camel-kamelets/pull/2544) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2543](https://github.com/apache/camel-kamelets/pull/2543) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump commons-io:commons-io from 2.19.0 to 2.20.0 [\#2542](https://github.com/apache/camel-kamelets/pull/2542) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2541](https://github.com/apache/camel-kamelets/pull/2541) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump golang.org/x/oauth2 from 0.10.0 to 0.27.0 in /script/validator [\#2540](https://github.com/apache/camel-kamelets/pull/2540) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen [\#2539](https://github.com/apache/camel-kamelets/pull/2539) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump org.apache.activemq:artemis-jakarta-client-all from 2.41.0 to 2.42.0 [\#2538](https://github.com/apache/camel-kamelets/pull/2538) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Support JetStream in Nats Kamelets  [\#2537](https://github.com/apache/camel-kamelets/pull/2537) ([oscerd](https://github.com/oscerd))
+- Bump org.apache.maven:maven-artifact from 3.9.10 to 3.9.11 [\#2536](https://github.com/apache/camel-kamelets/pull/2536) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven:maven-plugin-api from 3.9.10 to 3.9.11 [\#2535](https://github.com/apache/camel-kamelets/pull/2535) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven:maven-compat from 3.9.10 to 3.9.11 [\#2534](https://github.com/apache/camel-kamelets/pull/2534) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven:maven-core from 3.9.10 to 3.9.11 [\#2533](https://github.com/apache/camel-kamelets/pull/2533) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2532](https://github.com/apache/camel-kamelets/pull/2532) ([github-actions[bot]](https://github.com/apps/github-actions))
 
 ## [v4.13.0](https://github.com/apache/camel-kamelets/tree/v4.13.0) (2025-07-10)
 
