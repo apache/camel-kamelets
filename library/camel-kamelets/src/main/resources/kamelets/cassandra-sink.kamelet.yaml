@@ -30,10 +30,7 @@ metadata:
 spec:
   definition:
     title: "Cassandra Sink"
-    description: |-
-      Send data to an Apache Cassandra cluster.
-
-      This Kamelet expects JSON Array formatted data. The content of the JSON Array is used as input for the CQL Prepared Statement set in the query parameter.
+    description: Send data to an Apache Cassandra cluster.
     required:
       - connectionHost
       - connectionPort
