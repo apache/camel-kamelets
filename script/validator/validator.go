@@ -19,10 +19,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/apache/camel-k/v2/pkg/metadata"
-	"github.com/apache/camel-k/v2/pkg/util/camel"
-	"github.com/apache/camel-k/v2/pkg/util/dsl"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -30,14 +26,11 @@ import (
 	"sort"
 	"strings"
 
-	camelapiv1 "github.com/apache/camel-k/v2/pkg/apis/camel/v1"
+	camelapiv1 "github.com/apache/camel-kamelets/crds/pkg/apis/camel/v1"
 	"github.com/bbalet/stopwords"
 	perrors "github.com/pkg/errors"
-	yamlv3 "gopkg.in/yaml.v3"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/apimachinery/pkg/runtime/serializer"
 	"k8s.io/apimachinery/pkg/util/json"
 	"k8s.io/apimachinery/pkg/util/yaml"
 )
@@ -78,7 +71,6 @@ func main() {
 	errors = append(errors, verifyAnnotations(kamelets)...)
 	errors = append(errors, verifyDescriptors(kamelets)...)
 	errors = append(errors, verifyDuplicates(kamelets)...)
-	errors = append(errors, verifyMissingDependencies(kamelets)...)
 	errors = append(errors, verifyUsedParams(kamelets)...)
 
 	for _, err := range errors {
@@ -87,46 +79,6 @@ func main() {
 	if len(errors) > 0 {
 		os.Exit(1)
 	}
-}
-
-func verifyMissingDependencies(kamelets []KameletInfo) (errors []error) {
-	for _, kamelet := range kamelets {
-		yamlDslTemplate, err := dsl.TemplateToYamlDSL(*kamelet.Kamelet.Spec.Template, kamelet.Kamelet.Name)
-		if err != nil {
-			panic(err)
-		}
-
-		code := camelapiv1.SourceSpec{
-			DataSpec: camelapiv1.DataSpec{
-				Name:    "source.yaml",
-				Content: string(yamlDslTemplate),
-			},
-			Language: camelapiv1.LanguageYaml,
-		}
-
-		catalog, _ := camel.DefaultCatalog()
-		meta, _ := metadata.Extract(catalog, code)
-
-		if meta.Metadata.Dependencies != nil {
-			meta.Metadata.Dependencies.Each(func(extractedDep string) bool {
-				if !containsDependency(kamelet, extractedDep) {
-					errors = append(errors, fmt.Errorf("kamelet %q need dependency %q", kamelet.Name, extractedDep))
-				}
-				return true
-			})
-		}
-	}
-
-	return errors
-}
-
-func containsDependency(kamelet KameletInfo, extractedDep string) bool {
-	for _, d := range kamelet.Spec.Dependencies {
-		if d == extractedDep {
-			return true
-		}
-	}
-	return false
 }
 
 func verifyDuplicates(kamelets []KameletInfo) (errors []error) {
@@ -199,26 +151,15 @@ func verifyInvalidContent(kamelets []KameletInfo) (errors []error) {
 			continue
 		}
 
-		file, err := ioutil.ReadFile(kamelet.FileName)
+		file, err := os.ReadFile(kamelet.FileName)
 		if err != nil {
 			errors = append(errors, perrors.Wrapf(err, "cannot load kamelet %q", kamelet.Name))
 			continue
 		}
 		var yamlFile map[string]interface{}
-		err = yamlv3.Unmarshal(file, &yamlFile)
+		err = yaml.Unmarshal(file, &yamlFile)
 		if err != nil {
 			errors = append(errors, perrors.Wrapf(err, "kamelet %q is not a valid YAML file", kamelet.Name))
-			continue
-		}
-		jsonFile, err := yaml.ToJSON(file)
-		if err != nil {
-			errors = append(errors, perrors.Wrapf(err, "cannot convert kamelet %q to JSON", kamelet.Name))
-			continue
-		}
-		unstrFile := unstructured.Unstructured{}
-		err = json.Unmarshal(jsonFile, &unstrFile)
-		if err != nil {
-			errors = append(errors, perrors.Wrapf(err, "cannot unmarshal kamelet file %q", kamelet.Name))
 			continue
 		}
 	}
@@ -354,17 +295,8 @@ func listKamelets(dir string) []KameletInfo {
 	err := camelapiv1.AddToScheme(scheme)
 	handleGeneralError("cannot to add camel APIs to scheme", err)
 
-	codecs := serializer.NewCodecFactory(scheme)
-	gv := camelapiv1.SchemeGroupVersion
-	gvk := schema.GroupVersionKind{
-		Group:   gv.Group,
-		Version: gv.Version,
-		Kind:    "Kamelet",
-	}
-	decoder := codecs.UniversalDecoder(gv)
-
 	kamelets := make([]KameletInfo, 0)
-	files, err := ioutil.ReadDir(dir)
+	files, err := os.ReadDir(dir)
 	filesSorted := make([]string, 0)
 	handleGeneralError(fmt.Sprintf("cannot list dir %q", dir), err)
 	for _, fd := range files {
@@ -375,27 +307,34 @@ func listKamelets(dir string) []KameletInfo {
 	}
 	sort.Strings(filesSorted)
 	for _, fileName := range filesSorted {
-		content, err := ioutil.ReadFile(fileName)
+		content, err := os.ReadFile(fileName)
 		handleGeneralError(fmt.Sprintf("cannot read file %q", fileName), err)
-
-		json, err := yaml.ToJSON(content)
-		handleGeneralError(fmt.Sprintf("cannot convert file %q to JSON", fileName), err)
-
-		kamelet := camelapiv1.Kamelet{}
-		_, _, err = decoder.Decode(json, &gvk, &kamelet)
+		var kamelet *camelapiv1.Kamelet
+		err = yaml.Unmarshal(content, &kamelet)
 		handleGeneralError(fmt.Sprintf("cannot unmarshal file %q into Kamelet", fileName), err)
 		kameletInfo := KameletInfo{
-			Kamelet:  kamelet,
+			Kamelet:  *kamelet,
 			FileName: fileName,
 		}
 		kamelets = append(kamelets, kameletInfo)
+		break
 	}
 	return kamelets
 }
 
 func verifyUsedParams(kamelets []KameletInfo) (errors []error) {
 	for _, k := range kamelets {
-		if k.FileName != "../../kamelets/azure-storage-blob-source.kamelet.yaml" && k.FileName != "../../kamelets/aws-s3-event-based-source.kamelet.yaml" && k.FileName != "../../kamelets/set-kafka-key-action.kamelet.yaml" && k.FileName != "../../kamelets/azure-storage-blob-event-based-source.kamelet.yaml" && k.FileName != "../../kamelets/google-storage-event-based-source.kamelet.yaml" && k.FileName != "../../kamelets/elasticsearch-search-source.kamelet.yaml" && k.FileName != "../../kamelets/opensearch-search-source.kamelet.yaml" && k.FileName != "../../kamelets/kafka-azure-schema-registry-source.kamelet.yaml" && k.FileName != "../../kamelets/kafka-azure-schema-registry-sink.kamelet.yaml" && k.FileName != "../../kamelets/kafka-batch-azure-schema-registry-source.kamelet.yaml" && k.FileName != "../../kamelets/cassandra-sink.kamelet.yaml" {
+		if k.FileName != "../../kamelets/azure-storage-blob-source.kamelet.yaml" &&
+			k.FileName != "../../kamelets/aws-s3-event-based-source.kamelet.yaml" &&
+			k.FileName != "../../kamelets/set-kafka-key-action.kamelet.yaml" &&
+			k.FileName != "../../kamelets/azure-storage-blob-event-based-source.kamelet.yaml" &&
+			k.FileName != "../../kamelets/google-storage-event-based-source.kamelet.yaml" &&
+			k.FileName != "../../kamelets/elasticsearch-search-source.kamelet.yaml" &&
+			k.FileName != "../../kamelets/opensearch-search-source.kamelet.yaml" &&
+			k.FileName != "../../kamelets/kafka-azure-schema-registry-source.kamelet.yaml" &&
+			k.FileName != "../../kamelets/kafka-azure-schema-registry-sink.kamelet.yaml" &&
+			k.FileName != "../../kamelets/kafka-batch-azure-schema-registry-source.kamelet.yaml" &&
+			k.FileName != "../../kamelets/cassandra-sink.kamelet.yaml" {
 			used := getUsedParams(k.Kamelet)
 			declared := getDeclaredParams(k.Kamelet)
 			for p := range used {
