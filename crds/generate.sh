@@ -15,12 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+location=$(dirname $0)
+
 deploy_crd_file() {
   source=$1
   # Make a copy to serve as the base for post-processing
   cp "$source" "${source}.orig"
   # Post-process source
-  cat ./header.txt > "$source"
+  cat $location/header.txt > "$source"
   echo "" >> "$source"
   cat ${source}.orig >> "$source"
 

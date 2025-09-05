@@ -16,8 +16,15 @@
 install:
 	./mvnw clean install
 
+compile-crds:
+	cd crds && \
+	go build ./...
+
 generate:
-	cd script/generator && \
+	cd crds && \
+	./gen_client.sh && \
+	./generate.sh && \
+	cd ../script/generator && \
 	go run . ../../kamelets/ ../../docs/modules/ROOT/
 
 validate:
