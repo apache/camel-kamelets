@@ -25,7 +25,7 @@ import (
 	"strings"
 	"testing"
 
-	v1 "github.com/apache/camel-kamelets/pkg/apis/camel/v1"
+	v1 "github.com/apache/camel-kamelets/crds/pkg/apis/camel/v1"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
