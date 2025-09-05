@@ -32,7 +32,7 @@ deploy_crd_file() {
   rm -f "${source}.orig"
 }
 
-go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.15.0
+go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.17.2
 $(go env GOPATH)/bin/controller-gen object paths=./...
 $(go env GOPATH)/bin/controller-gen crd paths=./...
 # Let's also run some test to validate the project

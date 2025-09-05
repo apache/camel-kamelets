@@ -19,16 +19,14 @@ package main
 
 import (
 	"fmt"
-	camelapiv1 "github.com/apache/camel-k/v2/pkg/apis/camel/v1"
-	"io/ioutil"
-	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/apimachinery/pkg/runtime/serializer"
-	"k8s.io/apimachinery/pkg/util/yaml"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
+
+	camelapiv1 "github.com/apache/camel-kamelets/crds/pkg/apis/camel/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/util/yaml"
 )
 
 func main() {
@@ -65,7 +63,7 @@ func saveNav(links []string, out string) {
 		err = os.Remove(dest)
 		handleGeneralError(fmt.Sprintf("cannot remove file %q", dest), err)
 	}
-	err := ioutil.WriteFile(dest, []byte(content), 0666)
+	err := os.WriteFile(dest, []byte(content), 0666)
 	handleGeneralError(fmt.Sprintf("cannot write file %q", dest), err)
 	fmt.Printf("%q written\n", dest)
 }
@@ -75,17 +73,8 @@ func listKamelets(dir string) []camelapiv1.Kamelet {
 	err := camelapiv1.AddToScheme(scheme)
 	handleGeneralError("cannot to add camel APIs to scheme", err)
 
-	codecs := serializer.NewCodecFactory(scheme)
-	gv := camelapiv1.SchemeGroupVersion
-	gvk := schema.GroupVersionKind{
-		Group:   gv.Group,
-		Version: gv.Version,
-		Kind:    "Kamelet",
-	}
-	decoder := codecs.UniversalDecoder(gv)
-
 	kamelets := make([]camelapiv1.Kamelet, 0)
-	files, err := ioutil.ReadDir(dir)
+	files, err := os.ReadDir(dir)
 	filesSorted := make([]string, 0)
 	handleGeneralError(fmt.Sprintf("cannot list dir %q", dir), err)
 	for _, fd := range files {
@@ -96,16 +85,14 @@ func listKamelets(dir string) []camelapiv1.Kamelet {
 	}
 	sort.Strings(filesSorted)
 	for _, fileName := range filesSorted {
-		content, err := ioutil.ReadFile(fileName)
+		yamlContent, err := os.ReadFile(fileName)
 		handleGeneralError(fmt.Sprintf("cannot read file %q", fileName), err)
-
-		json, err := yaml.ToJSON(content)
-		handleGeneralError(fmt.Sprintf("cannot convert file %q to JSON", fileName), err)
-
-		kamelet := camelapiv1.Kamelet{}
-		_, _, err = decoder.Decode(json, &gvk, &kamelet)
+		jsonContent, err := yaml.ToJSON(yamlContent)
+		handleGeneralError(fmt.Sprintf("cannot convert yaml file %q into json", fileName), err)
+		var kamelet *camelapiv1.Kamelet
+		err = yaml.Unmarshal(jsonContent, &kamelet)
 		handleGeneralError(fmt.Sprintf("cannot unmarshal file %q into Kamelet", fileName), err)
-		kamelets = append(kamelets, kamelet)
+		kamelets = append(kamelets, *kamelet)
 	}
 	return kamelets
 }

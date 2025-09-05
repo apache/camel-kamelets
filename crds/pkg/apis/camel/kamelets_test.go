@@ -27,8 +27,9 @@ import (
 
 	v1 "github.com/apache/camel-kamelets/crds/pkg/apis/camel/v1"
 	"github.com/stretchr/testify/assert"
-	"gopkg.in/yaml.v3"
+	"github.com/stretchr/testify/require"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/yaml"
 )
 
 func TestBasicKameletSpec(t *testing.T) {
@@ -51,13 +52,21 @@ func TestLibraryKamelets(t *testing.T) {
 		if !(strings.HasSuffix(f.Name(), ".yaml") || strings.HasSuffix(f.Name(), ".yml")) {
 			return nil
 		}
-		var kamelet *v1.Kamelet
+		var kamelet v1.Kamelet
 		yamlContent, err := os.ReadFile(path.Join(dir, f.Name()))
-		assert.NotEmpty(t, yamlContent)
-		assert.NoError(t, err)
-		err = yaml.Unmarshal(yamlContent, &kamelet)
-		assert.NoError(t, err)
+		// NOTE: we must convert to JSON, because
+		// the golang spec is only in json
+		jsonContent, err := yaml.ToJSON(yamlContent)
+		require.NoError(t, err)
+		assert.NotEmpty(t, jsonContent)
+		require.NoError(t, err)
+		err = yaml.Unmarshal(jsonContent, &kamelet)
+		require.NoError(t, err)
+
 		assert.NotNil(t, kamelet, "Could not marshal Kamelet %s", f.Name())
+		assert.NotNil(t, kamelet.Spec, "Could not marshal Kamelet Spec %s", f.Name())
+		assert.NotNil(t, kamelet.Spec.Template, "Could not marshal Kamelet Template %s", f.Name())
+		assert.NotEqual(t, "", kamelet.Name, "Could not marshal Kamelet Name %s", f.Name())
 		return nil
 	})
 	assert.NoError(t, err)
