@@ -10,7 +10,7 @@ You need the following tools to run the tests:
 
 Once everything is set you just need to run
 
-```console
+```shell
   mvn verify -Denable.integration.tests
 ```
 
@@ -18,7 +18,7 @@ This runs all available Citrus tests.
 
 You can run individual tests when specifying its folder name on the class `CommonIT` (e.g. `timer`).
 
-```console
+```shell
   mvn verify -Dtest=CommonIT#timer
 ```
 

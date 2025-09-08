@@ -36,7 +36,7 @@ import static org.citrusframework.http.endpoint.builder.HttpEndpoints.http;
 public class KafkaIT {
 
     private final int kafkaSinkServerPort = SocketUtils.findAvailableTcpPort();
-    private final int kafkaWebhookPort = SocketUtils.findAvailableTcpPort();
+    private final int kafkaWebhookPort = 8080;
 
     @BindToRegistry
     HttpServer kafkaSinkServer = http()
