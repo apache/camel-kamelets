@@ -49,9 +49,17 @@ actions:
                 - name: "kafka.message"
                   value: "${kafka.message}"
 
+  # Kafka consumer endpoint
+  - createEndpoint:
+      name: kafkaSinkConsumer
+      type: "kafka"
+      properties:
+        topic: "${kafka.topic}"
+        server: "${CITRUS_TESTCONTAINERS_REDPANDA_BOOTSTRAP_SERVERS}"
+
   # Verify Kafka event
   - receive:
-      endpoint: kafka:${kafka.topic}?server=${CITRUS_TESTCONTAINERS_REDPANDA_BOOTSTRAP_SERVERS}
+      endpoint: kafkaSinkConsumer
       message:
         body:
           data: |

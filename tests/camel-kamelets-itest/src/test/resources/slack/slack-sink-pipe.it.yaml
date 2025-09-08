@@ -33,7 +33,8 @@ actions:
   - createVariables:
       variables:
         - name: "slack.server.url"
-          value: "http://localhost:${slack.server.port}"
+          value: "http://localhost:${slack.sink.server.port}"
+
   # Create Camel JBang integration
   - camel:
       jbang:
@@ -51,7 +52,7 @@ actions:
 
   # Verify message post request
   - http:
-      server: "slackServer"
+      server: "slackSinkServer"
       receiveRequest:
         POST:
           path: "/"
@@ -64,7 +65,7 @@ actions:
               }
 
   - http:
-      server: "slackServer"
+      server: "slackSinkServer"
       sendResponse:
         response:
           status: 200

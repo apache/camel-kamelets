@@ -58,9 +58,17 @@ actions:
           integration: "kafka-source-pipe"
           logMessage: "Subscribed to topic(s): ${kafka.topic}"
 
+  # Kafka producer endpoint
+  - createEndpoint:
+      name: kafkaProducer
+      type: "kafka"
+      properties:
+        topic: "${kafka.topic}"
+        server: "${CITRUS_TESTCONTAINERS_REDPANDA_BOOTSTRAP_SERVERS}"
+
   # Push event to Kafka
   - send:
-      endpoint: kafka:${kafka.topic}?server=${CITRUS_TESTCONTAINERS_REDPANDA_BOOTSTRAP_SERVERS}
+      endpoint: kafkaProducer
       message:
         headers:
           - name: "event-source"
