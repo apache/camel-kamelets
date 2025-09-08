@@ -18,7 +18,6 @@
 import java.util.stream.Stream;
 
 import org.citrusframework.common.TestLoader;
-import org.citrusframework.container.SequenceAfterTest;
 import org.citrusframework.container.SequenceBeforeTest;
 import org.citrusframework.http.server.HttpServer;
 import org.citrusframework.junit.jupiter.CitrusSupport;
@@ -29,18 +28,26 @@ import org.citrusframework.util.SocketUtils;
 import org.junit.jupiter.api.DynamicTest;
 
 import static org.citrusframework.actions.CreateVariablesAction.Builder.createVariables;
-import static org.citrusframework.actions.PurgeEndpointAction.Builder.purgeEndpoints;
 import static org.citrusframework.http.endpoint.builder.HttpEndpoints.http;
 
 @CitrusSupport
 public class SlackIT {
 
-    private final int slackServerPort = SocketUtils.findAvailableTcpPort();
+    private final int slackSinkServerPort = SocketUtils.findAvailableTcpPort();
+    private final int slackSourceServerPort = SocketUtils.findAvailableTcpPort();
 
     @BindToRegistry
-    HttpServer slackServer = http()
+    HttpServer slackSinkServer = http()
                 .server()
-                .port(slackServerPort)
+                .port(slackSinkServerPort)
+                .timeout(120000L)
+                .autoStart(true)
+                .build();
+
+    @BindToRegistry
+    HttpServer slackSourceServer = http()
+                .server()
+                .port(slackSourceServerPort)
                 .timeout(120000L)
                 .autoStart(true)
                 .build();
@@ -48,14 +55,8 @@ public class SlackIT {
     @BindToRegistry
     public SequenceBeforeTest beforeSlack() {
         return new SequenceBeforeTest.Builder().onTests("slack-*").actions(
-                createVariables().variable("slack.server.port", String.valueOf(slackServerPort))
-        ).build();
-    }
-
-    @BindToRegistry
-    public SequenceAfterTest afterSlack() {
-        return new SequenceAfterTest.Builder().onTests("slack-*").actions(
-                purgeEndpoints().endpoint(slackServer)
+                createVariables().variable("slack.source.server.port", String.valueOf(slackSourceServerPort)),
+                createVariables().variable("slack.sink.server.port", String.valueOf(slackSinkServerPort))
         ).build();
     }
 

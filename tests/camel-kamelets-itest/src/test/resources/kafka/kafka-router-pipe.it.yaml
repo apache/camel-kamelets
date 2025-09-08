@@ -65,9 +65,19 @@ actions:
             - name: "message"
               value: "citrus:urlEncode(${kafka.message})"
 
+  # Kafka consumer endpoint
+  - createEndpoint:
+      name: kafkaRouterConsumer
+      type: "kafka"
+      properties:
+        topic: "${topic}"
+        server: "${CITRUS_TESTCONTAINERS_REDPANDA_BOOTSTRAP_SERVERS}"
+        consumerGroup: "consumer-1"
+        offsetReset: "earliest"
+
   # Verify Kafka event
   - receive:
-      endpoint: kafka:${topic}?server=${CITRUS_TESTCONTAINERS_REDPANDA_BOOTSTRAP_SERVERS}&consumerGroup=consumer-1&offsetReset=earliest
+      endpoint: kafkaRouterConsumer
       message:
         body:
           data: |
