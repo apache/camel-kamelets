@@ -31,7 +31,8 @@ actions:
   - createVariables:
       variables:
         - name: "slack.server.url"
-          value: "http://localhost:${slack.server.port}"
+          value: "http://localhost:${slack.source.server.port}"
+
   # Create Camel JBang integration
   - camel:
       jbang:
@@ -45,9 +46,14 @@ actions:
                 - name: "slack.message"
                   value: "${slack.message}"
 
+  # Make sure to remove old messages from server for more stable tests
+  - purge:
+      endpoints:
+        - ref: "slackSourceServer"
+
   # Verify auth test request
   - http:
-      server: "slackServer"
+      server: "slackSourceServer"
       receiveRequest:
         POST:
           path: "/api/auth.test"
@@ -57,7 +63,7 @@ actions:
               value: "Bearer ${slack.token}"
 
   - http:
-      server: "slackServer"
+      server: "slackSourceServer"
       sendResponse:
         response:
           status: 200
@@ -70,7 +76,7 @@ actions:
 
   # Verify conversations list request
   - http:
-      server: "slackServer"
+      server: "slackSourceServer"
       receiveRequest:
         POST:
           path: "/api/conversations.list"
@@ -80,7 +86,7 @@ actions:
               value: "Bearer ${slack.token}"
 
   - http:
-      server: "slackServer"
+      server: "slackSourceServer"
       sendResponse:
         response:
           status: 200
@@ -93,7 +99,7 @@ actions:
 
   # Verify conversations history request
   - http:
-      server: "slackServer"
+      server: "slackSourceServer"
       receiveRequest:
         POST:
           path: "/api/conversations.history"
@@ -103,7 +109,7 @@ actions:
               value: "Bearer ${slack.token}"
 
   - http:
-      server: "slackServer"
+      server: "slackSourceServer"
       sendResponse:
         response:
           status: 200
