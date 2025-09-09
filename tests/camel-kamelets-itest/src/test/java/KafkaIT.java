@@ -27,6 +27,7 @@ import org.citrusframework.http.server.HttpServer;
 import org.citrusframework.junit.jupiter.CitrusSupport;
 import org.citrusframework.junit.jupiter.CitrusTestFactory;
 import org.citrusframework.junit.jupiter.CitrusTestFactorySupport;
+import org.citrusframework.kafka.endpoint.KafkaEndpoint;
 import org.citrusframework.spi.BindToRegistry;
 import org.citrusframework.util.SocketUtils;
 import org.junit.jupiter.api.DynamicTest;
@@ -82,6 +83,15 @@ public class KafkaIT {
                 Endpoint endpoint = context.getEndpointFactory().create("kafkaSinkConsumer", context);
                 if (endpoint instanceof ShutdownPhase destroyable) {
                     destroyable.destroy();
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+
+            try {
+                Endpoint endpoint = context.getEndpointFactory().create("kafkaProducer", context);
+                if (endpoint instanceof KafkaEndpoint kafkaEndpoint) {
+                    kafkaEndpoint.createProducer().getProducer().close();
                 }
             } catch (Exception e) {
                 // ignore
