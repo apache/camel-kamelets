@@ -33,13 +33,13 @@ spec:
     title: "AWS Eventbridge Sink"
     description: Send events to an Amazon Eventbridge Eventbus.
 
-      In the headers, you need to set the `resources-arn` / `ce-resources-arn` property to specify the ARN of resources related to the event.
+      In the headers, you can set the `resources-arn` / `ce-resources-arn` property to specify the ARN of resources related to the event.
 
-      In the headers, you need to set the `detail-type` / `ce-detail-type` property to specify the detail type related to the event.
+      In the headers, you can set the `detail-type` / `ce-detail-type` property to specify the detail type related to the event.
 
-      In the headers, you need to set the `event-source` / `ce-event-source` property to specify the event source related to the event.
+      In the headers, you can set the `event-source` / `ce-event-source` property to specify the event source related to the event.
 
-      If you do not set the property in the header, the Kamelet uses the exchange ID for the file name.
+      If you do not set the property in the header, the Kamelet uses the given Kamelet properties as a default.
     required:
       - eventbusNameOrArn
       - region
@@ -48,6 +48,23 @@ spec:
       eventbusNameOrArn:
         title: Eventbus Name
         description: The Eventbridge Eventbus name or Amazon Resource Name (ARN).
+        type: string
+      resourcesArn:
+        title: Event Resource ARN
+        description: The ARN of resources related to the AWS event (e.g. `arn:aws:s3:eu-east-1:000000000001:test`).
+        type: string
+      eventSourcePrefix:
+        title: Event Source Prefix
+        description: The event source prefix set for all events sent to the eventbus.
+        type: string
+        default: ""
+      eventSource:
+        title: Event Source
+        description: The event source related to the AWS event (e.g. `aws.s3`).
+        type: string
+      detailType:
+        title: Event Detail Type
+        description: The event detail type related to the AWS event.
         type: string
       accessKey:
         title: Access Key
@@ -123,6 +140,11 @@ spec:
             - setHeader:
                 name: CamelAwsEventbridgeResourcesArn
                 simple: "${header[ce-resources-arn]}"
+          otherwise:
+            steps:
+            - setHeader:
+                name: CamelAwsEventbridgeResourcesArn
+                simple: "{{?resourcesArn}}"
       - choice:
           when:
           - simple: "${header[detail-type]}"
@@ -135,18 +157,33 @@ spec:
             - setHeader:
                 name: CamelAwsEventbridgeDetailType
                 simple: "${header[ce-detail-type]}"
+          otherwise:
+            steps:
+            - setHeader:
+                name: CamelAwsEventbridgeDetailType
+                simple: "{{?detailType}}"
       - choice:
           when:
           - simple: "${header[event-source]}"
             steps:
             - setHeader:
                 name: CamelAwsEventbridgeSource
-                simple: "${header[event-source]}"
+                simple: "{{?eventSourcePrefix}}${header[event-source]}"
           - simple: "${header[ce-event-source]}"
             steps:
             - setHeader:
                 name: CamelAwsEventbridgeSource
-                simple: "${header[ce-event-source]}"            
+                simple: "{{?eventSourcePrefix}}${header[ce-event-source]}"
+          - simple: "${header[ce-source]}"
+            steps:
+            - setHeader:
+                name: CamelAwsEventbridgeSource
+                simple: "{{?eventSourcePrefix}}${header[ce-source]}"
+          otherwise:
+            steps:
+            - setHeader:
+                name: CamelAwsEventbridgeSource
+                simple: "{{?eventSourcePrefix}}{{?eventSource}}"
       - to:
           uri: "aws2-eventbridge:{{eventbusNameOrArn}}"
           parameters:
