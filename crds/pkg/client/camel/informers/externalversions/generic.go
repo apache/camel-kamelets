@@ -53,7 +53,7 @@ func (f *genericInformer) Lister() cache.GenericLister {
 // TODO extend this to unknown resources with a client pool
 func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource) (GenericInformer, error) {
 	switch resource {
-	// Group=camel, Version=v1
+	// Group=camel.apache.org, Version=v1
 	case v1.SchemeGroupVersion.WithResource("kamelets"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Camel().V1().Kamelets().Informer()}, nil
 
