@@ -32,7 +32,7 @@ import (
 // apply configuration type exists for the given GroupVersionKind.
 func ForKind(kind schema.GroupVersionKind) interface{} {
 	switch kind {
-	// Group=camel, Version=v1
+	// Group=camel.apache.org, Version=v1
 	case v1.SchemeGroupVersion.WithKind("DataSpec"):
 		return &camelv1.DataSpecApplyConfiguration{}
 	case v1.SchemeGroupVersion.WithKind("DataTypeSpec"):

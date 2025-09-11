@@ -1,0 +1,1083 @@
+[#_camel_apache_org_v1]
+== camel.apache.org/v1
+
+Package v1 contains API Schema definitions for the camel v1 API group
+
+==  Resource Types
+
+[#_camel_apache_org_v1_Kamelet]
+=== Kamelet
+
+Kamelet is the Schema for the kamelets API.
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`apiVersion` +
+string
+|`camel.apache.org/v1`
+
+|`kind` +
+string
+|`Kamelet`
+|`metadata` +
+*https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.dex .PackageSegments -2}}[Kubernetes meta/v1.ObjectMeta]*
+|
+
+
+
+
+Refer to the Kubernetes API documentation for the fields of the `metadata` field.
+|`spec` +
+*xref:#_camel_apache_org_v1_KameletSpec[KameletSpec]*
+|
+
+
+the desired specification
+
+|`status` +
+*xref:#_camel_apache_org_v1_KameletStatus[KameletStatus]*
+|
+
+
+the actual status of the resource
+Deprecated no longer in use
+
+
+|===
+
+== Internal Types
+
+[#_camel_apache_org_v1_DataSpec]
+=== DataSpec
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_SourceSpec, SourceSpec>>
+
+DataSpec represents the way the source is materialized in the running `Pod`.
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`name` +
+string
+|
+
+
+the name of the specification
+
+|`path` +
+string
+|
+
+
+the path where the file is stored
+
+|`content` +
+string
+|
+
+
+the source code (plain text)
+
+|`rawContent` +
+[]byte
+|
+
+
+the source code (binary)
+
+|`contentRef` +
+string
+|
+
+
+the confimap reference holding the source content
+
+|`contentKey` +
+string
+|
+
+
+the confimap key holding the source content
+
+|`contentType` +
+string
+|
+
+
+the content type (typically text or binary)
+
+|`compression` +
+bool
+|
+
+
+if the content is compressed (base64 encrypted)
+
+
+|===
+
+[#_camel_apache_org_v1_DataTypeReference]
+=== DataTypeReference
+
+DataTypeReference references to the specification of a data type by its scheme and format name.
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`scheme` +
+string
+|
+
+
+the data type component scheme
+
+|`format` +
+string
+|
+
+
+the data type format name
+
+
+|===
+
+[#_camel_apache_org_v1_DataTypeSpec]
+=== DataTypeSpec
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_DataTypesSpec, DataTypesSpec>>
+
+DataTypeSpec represents the specification for a data type.
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`scheme` +
+string
+|
+
+
+the data type component scheme
+
+|`format` +
+string
+|
+
+
+the data type format name
+
+|`description` +
+string
+|
+
+
+optional description
+
+|`mediaType` +
+string
+|
+
+
+media type as expected for HTTP media types (ie, application/json)
+
+|`dependencies` +
+[]string
+|
+
+
+the list of Camel or Maven dependencies required by the data type
+
+|`headers` +
+*xref:#_camel_apache_org_v1_HeaderSpec[map[string\]github.com/apache/camel-kamelets/crds/pkg/apis/camel/v1.HeaderSpec]*
+|
+
+
+one to many header specifications
+
+|`schema` +
+*xref:#_camel_apache_org_v1_JSONSchemaProps[JSONSchemaProps]*
+|
+
+
+the expected schema for the data type
+
+
+|===
+
+[#_camel_apache_org_v1_DataTypesSpec]
+=== DataTypesSpec
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_KameletSpecBase, KameletSpecBase>>
+
+DataTypesSpec represents the specification for a set of data types.
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`default` +
+string
+|
+
+
+the default data type for this Kamelet
+
+|`types` +
+*xref:#_camel_apache_org_v1_DataTypeSpec[map[string\]github.com/apache/camel-kamelets/crds/pkg/apis/camel/v1.DataTypeSpec]*
+|
+
+
+one to many data type specifications
+
+|`headers` +
+*xref:#_camel_apache_org_v1_HeaderSpec[map[string\]github.com/apache/camel-kamelets/crds/pkg/apis/camel/v1.HeaderSpec]*
+|
+
+
+one to many header specifications
+
+
+|===
+
+[#_camel_apache_org_v1_EventTypeSpec]
+=== EventTypeSpec
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_KameletSpecBase, KameletSpecBase>>
+
+EventTypeSpec represents a specification for an event type.
+Deprecated: In favor of using DataTypeSpec.
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`mediaType` +
+string
+|
+
+
+media type as expected for HTTP media types (ie, application/json)
+
+|`schema` +
+*xref:#_camel_apache_org_v1_JSONSchemaProps[JSONSchemaProps]*
+|
+
+
+the expected schema for the event
+
+
+|===
+
+[#_camel_apache_org_v1_ExternalDocumentation]
+=== ExternalDocumentation
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_JSONSchemaProps, JSONSchemaProps>>
+
+ExternalDocumentation allows referencing an external resource for extended documentation.
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`description` +
+string
+|
+
+
+
+
+|`url` +
+string
+|
+
+
+
+
+
+|===
+
+[#_camel_apache_org_v1_HeaderSpec]
+=== HeaderSpec
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_DataTypeSpec, DataTypeSpec>>
+* <<#_camel_apache_org_v1_DataTypesSpec, DataTypesSpec>>
+
+HeaderSpec represents the specification for a header used in the Kamelet.
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`type` +
+string
+|
+
+
+
+
+|`title` +
+string
+|
+
+
+
+
+|`description` +
+string
+|
+
+
+
+
+|`required` +
+bool
+|
+
+
+
+
+|`default` +
+string
+|
+
+
+
+
+
+|===
+
+[#_camel_apache_org_v1_JSON]
+=== JSON
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_JSONSchemaProp, JSONSchemaProp>>
+* <<#_camel_apache_org_v1_JSONSchemaProps, JSONSchemaProps>>
+
+JSON represents any valid JSON value.
+These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil.
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`RawMessage` +
+*xref:#_camel_apache_org_v1_RawMessage[RawMessage]*
+|(Members of `RawMessage` are embedded into this type.)
+
+
+
+
+
+|===
+
+[#_camel_apache_org_v1_JSONSchemaProp]
+=== JSONSchemaProp
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_JSONSchemaProps, JSONSchemaProps>>
+
+
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`id` +
+string
+|
+
+
+
+
+|`deprecated` +
+bool
+|
+
+
+
+
+|`description` +
+string
+|
+
+
+
+
+|`type` +
+string
+|
+
+
+
+
+|`format` +
+string
+|
+
+
+format is an OpenAPI v3 format string. Unknown formats are ignored. The following formats are validated:
+
+- bsonobjectid: a bson object ID, i.e. a 24 characters hex string
+- uri: an URI as parsed by Golang net/url.ParseRequestURI
+- email: an email address as parsed by Golang net/mail.ParseAddress
+- hostname: a valid representation for an Internet host name, as defined by RFC 1034, section 3.1 [RFC1034].
+- ipv4: an IPv4 IP as parsed by Golang net.ParseIP
+- ipv6: an IPv6 IP as parsed by Golang net.ParseIP
+- cidr: a CIDR as parsed by Golang net.ParseCIDR
+- mac: a MAC address as parsed by Golang net.ParseMAC
+- uuid: an UUID that allows uppercase defined by the regex (?i)^[0-9a-f]\{8}-?[0-9a-f]\{4}-?[0-9a-f]\{4}-?[0-9a-f]\{4}-?[0-9a-f]\{12}$
+- uuid3: an UUID3 that allows uppercase defined by the regex (?i)^[0-9a-f]\{8}-?[0-9a-f]\{4}-?3[0-9a-f]\{3}-?[0-9a-f]\{4}-?[0-9a-f]\{12}$
+- uuid4: an UUID4 that allows uppercase defined by the regex (?i)^[0-9a-f]\{8}-?[0-9a-f]\{4}-?4[0-9a-f]\{3}-?[89ab][0-9a-f]\{3}-?[0-9a-f]\{12}$
+- uuid5: an UUID5 that allows uppercase defined by the regex (?i)^[0-9a-f]\{8}-?[0-9a-f]\{4}-?5[0-9a-f]\{3}-?[89ab][0-9a-f]\{3}-?[0-9a-f]\{12}$
+- isbn: an ISBN10 or ISBN13 number string like "0321751043" or "978-0321751041"
+- isbn10: an ISBN10 number string like "0321751043"
+- isbn13: an ISBN13 number string like "978-0321751041"
+- creditcard: a credit card number defined by the regex ^(?:4[0-9]\{12}(?:[0-9]\{3})?{vbar}5[1-5][0-9]\{14}{vbar}6(?:011{vbar}5[0-9][0-9])[0-9]\{12}{vbar}3[47][0-9]\{13}{vbar}3(?:0[0-5]{vbar}[68][0-9])[0-9]\{11}{vbar}(?:2131{vbar}1800{vbar}35\\d\{3})\\d\{11})$ with any non digit characters mixed in
+- ssn: a U.S. social security number following the regex ^\\d\{3}[- ]?\\d\{2}[- ]?\\d\{4}$
+- hexcolor: an hexadecimal color code like "\#FFFFFF" following the regex ^#?([0-9a-fA-F]\{3}{vbar}[0-9a-fA-F]\{6})$
+- rgbcolor: an RGB color code like rgb like "rgb(255,255,255)"
+- byte: base64 encoded binary data
+- password: any kind of string
+- date: a date string like "2006-01-02" as defined by full-date in RFC3339
+- duration: a duration string like "22 ns" as parsed by Golang time.ParseDuration or compatible with Scala duration format
+- datetime: a date time string like "2014-12-15T19:30:20.000Z" as defined by date-time in RFC3339.
+
+|`title` +
+string
+|
+
+
+
+
+|`default` +
+*xref:#_camel_apache_org_v1_JSON[JSON]*
+|
+
+
+default is a default value for undefined object fields.
+
+|`maximum` +
+encoding/json.Number
+|
+
+
+
+
+|`exclusiveMaximum` +
+bool
+|
+
+
+
+
+|`minimum` +
+encoding/json.Number
+|
+
+
+
+
+|`exclusiveMinimum` +
+bool
+|
+
+
+
+
+|`maxLength` +
+int64
+|
+
+
+
+
+|`minLength` +
+int64
+|
+
+
+
+
+|`pattern` +
+string
+|
+
+
+
+
+|`maxItems` +
+int64
+|
+
+
+
+
+|`minItems` +
+int64
+|
+
+
+
+
+|`uniqueItems` +
+bool
+|
+
+
+
+
+|`maxProperties` +
+int64
+|
+
+
+
+
+|`minProperties` +
+int64
+|
+
+
+
+
+|`multipleOf` +
+encoding/json.Number
+|
+
+
+
+
+|`enum` +
+*xref:#_camel_apache_org_v1_JSON[[\]JSON]*
+|
+
+
+
+
+|`example` +
+*xref:#_camel_apache_org_v1_JSON[JSON]*
+|
+
+
+
+
+|`nullable` +
+bool
+|
+
+
+
+
+|`x-descriptors` +
+[]string
+|
+
+
+XDescriptors is a list of extended properties that trigger a custom behavior in external systems
+
+
+|===
+
+[#_camel_apache_org_v1_JSONSchemaProps]
+=== JSONSchemaProps
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_DataTypeSpec, DataTypeSpec>>
+* <<#_camel_apache_org_v1_EventTypeSpec, EventTypeSpec>>
+* <<#_camel_apache_org_v1_KameletSpecBase, KameletSpecBase>>
+
+JSONSchemaProps is a JSON-Schema following Specification Draft 4 (http://json-schema.org/).
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`id` +
+string
+|
+
+
+
+
+|`description` +
+string
+|
+
+
+
+
+|`title` +
+string
+|
+
+
+
+
+|`properties` +
+*xref:#_camel_apache_org_v1_JSONSchemaProp[map[string\]github.com/apache/camel-kamelets/crds/pkg/apis/camel/v1.JSONSchemaProp]*
+|
+
+
+
+
+|`required` +
+[]string
+|
+
+
+
+
+|`example` +
+*xref:#_camel_apache_org_v1_JSON[JSON]*
+|
+
+
+
+
+|`externalDocs` +
+*xref:#_camel_apache_org_v1_ExternalDocumentation[ExternalDocumentation]*
+|
+
+
+
+
+|`$schema` +
+*xref:#_camel_apache_org_v1_JSONSchemaURL[JSONSchemaURL]*
+|
+
+
+
+
+|`type` +
+string
+|
+
+
+
+
+
+|===
+
+[#_camel_apache_org_v1_JSONSchemaURL]
+=== JSONSchemaURL(`string` alias)
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_JSONSchemaProps, JSONSchemaProps>>
+
+JSONSchemaURL represents a schema url.
+
+
+[#_camel_apache_org_v1_KameletCondition]
+=== KameletCondition
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_KameletStatus, KameletStatus>>
+
+KameletCondition describes the state of a resource at a certain point.
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`type` +
+*xref:#_camel_apache_org_v1_KameletConditionType[KameletConditionType]*
+|
+
+
+Type of kamelet condition.
+
+|`status` +
+*https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.dex .PackageSegments -2}}[Kubernetes core/v1.ConditionStatus]*
+|
+
+
+Status of the condition, one of True, False, Unknown.
+
+|`lastUpdateTime` +
+*https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.dex .PackageSegments -2}}[Kubernetes meta/v1.Time]*
+|
+
+
+The last time this condition was updated.
+
+|`lastTransitionTime` +
+*https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.dex .PackageSegments -2}}[Kubernetes meta/v1.Time]*
+|
+
+
+Last time the condition transitioned from one status to another.
+
+|`reason` +
+string
+|
+
+
+The reason for the condition's last transition.
+
+|`message` +
+string
+|
+
+
+A human-readable message indicating details about the transition.
+
+
+|===
+
+[#_camel_apache_org_v1_KameletConditionType]
+=== KameletConditionType(`string` alias)
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_KameletCondition, KameletCondition>>
+
+KameletConditionType --.
+
+
+[#_camel_apache_org_v1_KameletPhase]
+=== KameletPhase(`string` alias)
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_KameletStatus, KameletStatus>>
+
+KameletPhase --.
+
+
+[#_camel_apache_org_v1_KameletProperty]
+=== KameletProperty
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_KameletStatus, KameletStatus>>
+
+KameletProperty specify the behavior of a property in a Kamelet.
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`name` +
+string
+|
+
+
+the name of the property
+
+|`default` +
+string
+|
+
+
+the default value of the property (if any)
+
+
+|===
+
+[#_camel_apache_org_v1_KameletSpec]
+=== KameletSpec
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_Kamelet, Kamelet>>
+
+KameletSpec specifies the configuration required to execute a Kamelet.
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`KameletSpecBase` +
+*xref:#_camel_apache_org_v1_KameletSpecBase[KameletSpecBase]*
+|(Members of `KameletSpecBase` are embedded into this type.)
+
+
+
+
+|`versions` +
+*xref:#_camel_apache_org_v1_KameletSpecBase[map[string\]github.com/apache/camel-kamelets/crds/pkg/apis/camel/v1.KameletSpecBase]*
+|
+
+
+the optional versions available for this Kamelet. This field may not be taken in account by Camel core and is meant to support
+any user defined versioning model on cluster only. If the user wants to use any given version, she must materialize a file with the given version spec
+as the `main` Kamelet spec on the runtime.
+
+
+|===
+
+[#_camel_apache_org_v1_KameletSpecBase]
+=== KameletSpecBase
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_KameletSpec, KameletSpec>>
+
+KameletSpecBase specifies the base configuration of a Kamelet.
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`definition` +
+*xref:#_camel_apache_org_v1_JSONSchemaProps[JSONSchemaProps]*
+|
+
+
+defines the formal configuration of the Kamelet
+
+|`sources` +
+*xref:#_camel_apache_org_v1_SourceSpec[[\]SourceSpec]*
+|
+
+
+sources in any Camel DSL supported
+
+|`template` +
+*xref:#_camel_apache_org_v1_Template[Template]*
+|
+
+
+the main source in YAML DSL
+
+|`types` +
+*xref:#_camel_apache_org_v1_EventTypeSpec[map[github.com/apache/camel-kamelets/crds/pkg/apis/camel/v1.TypeSlot\]github.com/apache/camel-kamelets/crds/pkg/apis/camel/v1.EventTypeSpec]*
+|
+
+
+data specification types for the events consumed/produced by the Kamelet
+Deprecated: In favor of using DataTypes
+
+|`dataTypes` +
+*xref:#_camel_apache_org_v1_DataTypesSpec[map[github.com/apache/camel-kamelets/crds/pkg/apis/camel/v1.TypeSlot\]github.com/apache/camel-kamelets/crds/pkg/apis/camel/v1.DataTypesSpec]*
+|
+
+
+data specification types for the events consumed/produced by the Kamelet
+
+|`dependencies` +
+[]string
+|
+
+
+Camel dependencies needed by the Kamelet
+
+
+|===
+
+[#_camel_apache_org_v1_KameletStatus]
+=== KameletStatus
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_Kamelet, Kamelet>>
+
+KameletStatus defines the observed state of Kamelet.
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`observedGeneration` +
+int64
+|
+
+
+ObservedGeneration is the most recent generation observed for this Kamelet.
+
+|`phase` +
+*xref:#_camel_apache_org_v1_KameletPhase[KameletPhase]*
+|
+
+
+Phase --
+
+|`conditions` +
+*xref:#_camel_apache_org_v1_KameletCondition[[\]KameletCondition]*
+|
+
+
+Conditions --
+
+|`properties` +
+*xref:#_camel_apache_org_v1_KameletProperty[[\]KameletProperty]*
+|
+
+
+Properties --
+
+
+|===
+
+[#_camel_apache_org_v1_Language]
+=== Language(`string` alias)
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_SourceSpec, SourceSpec>>
+
+Language represents a supported language (Camel DSL).
+
+
+[#_camel_apache_org_v1_RawMessage]
+=== RawMessage(`[]byte` alias)
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_JSON, JSON>>
+* <<#_camel_apache_org_v1_Template, Template>>
+
+RawMessage is a raw encoded JSON value.
+It implements Marshaler and Unmarshaler and can
+be used to delay JSON decoding or precompute a JSON encoding.
+
+
+[#_camel_apache_org_v1_ResourceCondition]
+=== ResourceCondition
+
+ResourceCondition is a common type for all conditions.
+
+
+[#_camel_apache_org_v1_SourceSpec]
+=== SourceSpec
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_KameletSpecBase, KameletSpecBase>>
+
+SourceSpec defines the configuration for one or more routes to be executed in a certain Camel DSL language.
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`DataSpec` +
+*xref:#_camel_apache_org_v1_DataSpec[DataSpec]*
+|(Members of `DataSpec` are embedded into this type.)
+
+
+contains configuration related to the source code
+
+|`language` +
+*xref:#_camel_apache_org_v1_Language[Language]*
+|
+
+
+specify which is the language (Camel DSL) used to interpret this source code
+
+|`loader` +
+string
+|
+
+
+Loader is an optional id of the org.apache.camel.k.RoutesLoader that will
+interpret this source at runtime
+
+|`interceptors` +
+[]string
+|
+
+
+Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader
+uses to pre/post process sources
+
+|`type` +
+*xref:#_camel_apache_org_v1_SourceType[SourceType]*
+|
+
+
+Type defines the kind of source described by this object
+
+|`property-names` +
+[]string
+|
+
+
+List of property names defined in the source (e.g. if type is "template")
+
+|`from-kamelet` +
+bool
+|
+
+
+True if the spec is generated from a Kamelet
+
+
+|===
+
+[#_camel_apache_org_v1_SourceType]
+=== SourceType(`string` alias)
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_SourceSpec, SourceSpec>>
+
+SourceType represents an available source type.
+
+
+[#_camel_apache_org_v1_Template]
+=== Template
+
+*Appears on:*
+
+* <<#_camel_apache_org_v1_KameletSpecBase, KameletSpecBase>>
+
+Template is an unstructured object representing a Kamelet template in YAML/JSON DSL.
+
+[cols="2,2a",options="header"]
+|===
+|Field
+|Description
+
+|`RawMessage` +
+*xref:#_camel_apache_org_v1_RawMessage[RawMessage]*
+|(Members of `RawMessage` are embedded into this type.)
+
+
+an unstructured raw message
+
+
+|===
+
+[#_camel_apache_org_v1_TypeSlot]
+=== TypeSlot(`string` alias)
+
+TypeSlot represent a kind of data (ie, input, output, ...).

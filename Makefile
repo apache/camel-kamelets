@@ -25,7 +25,8 @@ generate:
 	./gen_client.sh && \
 	./generate.sh && \
 	cd ../script/generator && \
-	go run . ../../kamelets/ ../../docs/modules/ROOT/
+	go run . ../../kamelets/ ../../docs/modules/ROOT/ && \
+	cd ../../crds && ./gen_crd/gen_crd_api.sh
 
 validate:
 	cd script/validator && \

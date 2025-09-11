@@ -41,7 +41,7 @@ func Kamelet(name, namespace string) *KameletApplyConfiguration {
 	b.WithName(name)
 	b.WithNamespace(namespace)
 	b.WithKind("Kamelet")
-	b.WithAPIVersion("camel/v1")
+	b.WithAPIVersion("camel.apache.org/v1")
 	return b
 }
 
