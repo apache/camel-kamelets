@@ -1,0 +1,73 @@
+== Earthquake Source Kamelet Description
+
+This Kamelet provides real-time earthquake data from the United States Geological Survey (USGS) API. It periodically fetches information about current earthquake events happening worldwide and outputs each earthquake as a separate JSON message.
+
+=== Output format
+
+The Kamelet outputs earthquake data in JSON format. Each message contains details about a single earthquake event, including:
+
+- Geographic coordinates (latitude, longitude)
+- Magnitude and depth
+- Time of occurrence
+- Location description
+- Additional metadata from USGS
+
+=== Data source
+
+The Kamelet uses the official USGS Earthquake API at `https://earthquake.usgs.gov/fdsnws/event/1/query` to retrieve earthquake data in GeoJSON format.
+
+=== Configuration options
+
+- **period**: Polling interval in milliseconds (default: 60000 = 1 minute)
+- **lookAhead**: When starting fresh, how many minutes back to look for earthquakes (default: 120 minutes)
+
+=== Caching mechanism
+
+The Kamelet maintains state to avoid duplicate earthquake reports by:
+
+1. Caching the timestamp of the last update
+2. Only fetching earthquakes that occurred after the last known update
+3. Using the USGS API's `updatedafter` parameter for efficient filtering
+
+=== Usage examples
+
+Basic earthquake monitoring with default settings:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:earthquake-source"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Custom polling interval and look-ahead period:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:earthquake-source"
+      parameters:
+        period: 300000
+        lookAhead: 60
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Filter earthquakes by magnitude in the route:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:earthquake-source"
+      steps:
+        - filter:
+            simple: "${jsonpath($.properties.mag)} >= 4.0"
+        - to:
+            uri: "kamelet:log-sink"
+----

@@ -30,20 +30,7 @@ metadata:
 spec:
   definition:
     title: "Microsoft SQL Server Sink"
-    description: |-
-      Send data to a Microsoft SQL Server Database.
-
-      In your Pipe file, you must explicitly declare the SQL Server driver dependency in spec->integration->dependencies
-
-      - "mvn:com.microsoft.sqlserver:mssql-jdbc:<version>"
-
-      This Kamelet expects a JSON-formatted body. Use key:value pairs to map the JSON fields and parameters. For example, here is a query:
-
-      'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
-
-      Here is example input for the example query:
-
-      '{ "username":"oscerd", "city":"Rome"}'
+    description: Send data to a Microsoft SQL Server Database.
     required:
       - serverName
       - username

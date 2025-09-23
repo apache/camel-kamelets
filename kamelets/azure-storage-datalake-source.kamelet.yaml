@@ -31,8 +31,7 @@ metadata:
 spec:
   definition:
     title: "Azure Storage Blob Data Lake Source"
-    description: |-
-      Consume files from Azure Storage Blob Data Lake.
+    description: Consume files from Azure Storage Blob Data Lake.
     required:
       - accountName
       - clientId
@@ -103,8 +102,7 @@ spec:
           type: object
         CamelAzureStorageDataLakeAccessTierChangeTime:
           title: Azure Storage Data Lake Access Tier Change Time.
-          description: |-
-            Datetime when the access tier of the blob last changed.
+          description: Datetime when the access tier of the blob last changed.
           type: object
         CamelAzureStorageDataLakeArchiveStatus:
           title: Azure Storage Data Lake Archive Status
@@ -201,9 +199,7 @@ spec:
           mediaType: application/octet-stream
         cloudevents:
           format: "azure-storage-datalake:application-cloudevents"
-          description: |-
-            Data type transformer converts Azure Data Lake consumer response to CloudEvent v1_0 data format. The data type sets
-            Camel specific CloudEvent headers with values extracted from Azure Data Lake consumer response.
+          description: Data type transformer converts Azure Data Lake consumer response to CloudEvent v1_0 data format. The data type sets
           headers:
             CamelCloudEventID:
               title: CloudEvent ID

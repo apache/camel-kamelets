@@ -1,0 +1,84 @@
+== Slack Source Kamelet Description
+
+=== Authentication
+
+This Kamelet requires a Slack app token for authentication. You need to create a Slack app and obtain the necessary permissions to access channels and messages.
+
+=== Configuration
+
+The Slack Source Kamelet supports the following configurations:
+
+- **Token**: Slack app token for authentication (required)
+- **Channel**: Slack channel to monitor (required)
+- **Server URL**: Slack API server URL (optional, defaults to Slack's API)
+- **Delay**: Polling interval in milliseconds for checking new messages
+- **Max Results**: Maximum number of messages to retrieve per poll
+
+=== Output Format
+
+The Kamelet outputs Slack messages as JSON objects containing message content, user information, timestamp, and channel details.
+
+=== Setup Requirements
+
+1. Create a Slack app in your workspace
+2. Add necessary OAuth scopes (channels:history, channels:read)
+3. Install the app to your workspace
+4. Copy the OAuth access token
+
+=== Usage Example
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:slack-source"
+      parameters:
+        token: "xoxb-your-slack-bot-token"
+        channel: "#general"
+        delay: 10000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with Specific Channel ID
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:slack-source"
+      parameters:
+        token: "xoxb-your-slack-bot-token"
+        channel: "C1234567890"
+        delay: 5000
+        maxResults: 50
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example Monitoring Multiple Aspects
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:slack-source"
+      parameters:
+        token: "xoxb-your-slack-bot-token"
+        channel: "#alerts"
+        delay: 30000
+      steps:
+        - filter:
+            simple: "${body.contains('ERROR')}"
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Security Considerations
+
+- Store the Slack token securely as a secret
+- Use appropriate OAuth scopes to limit access
+- Monitor token usage and rotate tokens periodically
+- Consider using Slack's real-time messaging API for high-frequency scenarios

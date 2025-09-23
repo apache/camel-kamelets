@@ -98,8 +98,7 @@ spec:
           type: string
         CamelFileName:
           title: Azure Storage Files File Name 
-          description: |-
-            Name of the consumed file as a relative file path with offset from the starting directory configured on the endpoint.
+          description: Name of the consumed file as a relative file path with offset from the starting directory configured on the endpoint.
           type: string
         CamelFileNameConsumed:
           title: Azure Storage Files Consumed File Name
@@ -107,10 +106,7 @@ spec:
           type: string
         CamelFileAbsolute:
           title: Azure Storage Files Consumed Absolute Format
-          description: |- 
-            A boolean option specifying whether the consumed file denotes an absolute path or not. 
-            Should normally be false for relative paths. Absolute paths should normally not be used but we added to the move option to allow moving files to absolute paths. 
-            But can be used elsewhere as well.
+          description: A boolean option specifying whether the consumed file denotes an absolute path or not.
           type: boolean
         CamelFileAbsolutePath:
           title: Azure Storage Files Consumed Absolute Path
@@ -144,9 +140,7 @@ spec:
           mediaType: application/octet-stream
         cloudevents:
           format: "azure-files:application-cloudevents"
-          description: |-
-            Data type transformer converts Azure Storage Files poll response to CloudEvent v1_0 data format. The data type sets
-            Camel specific CloudEvent headers with values extracted from Azure Storage Files poll response.
+          description: Data type transformer converts Azure Storage Files poll response to CloudEvent v1_0 data format. The data type sets
           headers:
             CamelCloudEventID:
               title: CloudEvent ID

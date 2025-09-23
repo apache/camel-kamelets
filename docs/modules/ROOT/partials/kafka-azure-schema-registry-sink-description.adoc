@@ -1,0 +1,17 @@
+== Azure Kafka through Eventhubs with Azure Schema Registry Sink Kamelet Description
+
+=== Azure Integration
+
+This Kamelet connects to Azure Event Hubs using Kafka protocol and integrates with Azure Schema Registry for schema management. It provides a bridge between Kafka-based applications and Azure's messaging services.
+
+=== Authentication
+
+The Kamelet uses SASL authentication with connection string-based credentials. The security protocol defaults to SASL_SSL for secure communication with Azure Event Hubs.
+
+=== Schema Registry
+
+Integration with Azure Schema Registry provides centralized schema management for Avro data serialization. The Kamelet requires configuration of the specific Avro value type to be processed.
+
+=== Azure Credentials
+
+The Kamelet uses DefaultAzureCredential for authentication to Azure Schema Registry, supporting various Azure authentication methods including managed identity and service principal authentication.

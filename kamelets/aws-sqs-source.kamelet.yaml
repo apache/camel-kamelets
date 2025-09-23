@@ -177,13 +177,11 @@ spec:
           type: string
         CamelAwsSqsAttributes:
           title: The SQS Message System Attributes
-          description: |-
-            A map of the attributes requested in ReceiveMessage to their respective values, the Map type is Map<MessageSystemAttributeName, String>
+          description: A map of the attributes requested in ReceiveMessage to their respective values, the Map type is Map<MessageSystemAttributeName, String>
           type: object
         CamelAwsSqsMessageAttributes:
           title: The SQS Message Attributes
-          description: |-
-            The Amazon SQS message attributes, the Map type is Map<String, MessageAttributeValue>
+          description: The Amazon SQS message attributes, the Map type is Map<String, MessageAttributeValue>
           type: object
       types:
         text:
@@ -192,9 +190,7 @@ spec:
           mediaType: text/plain
         cloudevents:
           format: "aws2-sqs:application-cloudevents"
-          description: |-
-            Output data type represents AWS SQS receive message response as CloudEvent V1. The data type sets Camel specific CloudEvent headers on the exchange with
-            respective data from the SQS message and its derived object.
+          description: Output data type represents AWS SQS receive message response as CloudEvent V1. The data type sets Camel specific CloudEvent headers on the exchange with
           headers:
             CamelCloudEventID:
               title: CloudEvent ID

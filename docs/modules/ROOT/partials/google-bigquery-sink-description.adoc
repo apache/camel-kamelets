@@ -1,0 +1,20 @@
+== Google Big Query Sink Kamelet Description
+
+=== Authentication
+
+This Kamelet uses Google Cloud service account authentication. You must provide a base64-encoded service account key for BigQuery access.
+
+=== Input Format
+
+This Kamelet expects JSON-formatted data as input for insertion into BigQuery tables.
+
+=== Required Configuration
+
+- **Project ID**: The Google Cloud Project ID
+- **Dataset**: The Big Query Dataset ID
+- **Table**: The Big Query Table ID
+- **Service Account Key**: Base64-encoded service account credentials
+
+=== Data Processing
+
+The Kamelet automatically unmarshals JSON data using Jackson before sending it to the specified BigQuery table.

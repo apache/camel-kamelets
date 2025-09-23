@@ -1,0 +1,34 @@
+== Google Sheets Sink Kamelet Description
+
+=== Authentication
+
+This Kamelet uses OAuth 2.0 authentication with Google Sheets API. You need to provide:
+- Client ID and Client Secret from your Google Cloud Console application
+- Access Token (typically expires after an hour)
+- Refresh Token for long-term usage (recommended)
+
+=== Input Format
+
+This Kamelet expects JSON data that will be transformed into Google Sheets ValueRange format.
+
+=== Operation Modes
+
+- **Update**: Updates existing data in specified cells
+- **Append**: Appends new data to the spreadsheet (default)
+
+=== Configuration Options
+
+- **Spreadsheet ID**: The unique identifier for your Google Sheets spreadsheet
+- **Range**: Cell range specification (e.g., "A1:B3")
+- **Major Dimension**: ROWS (default) or COLUMNS
+- **Column Names**: Custom column mappings
+- **Value Input Option**: USER_ENTERED (default) or RAW
+
+=== Headers Support
+
+The Kamelet supports various headers to override configuration:
+- `CamelGoogleSheets.range`: Override the cell range
+- `CamelGoogleSheets.spreadsheetId`: Override spreadsheet ID
+- `CamelGoogleSheets.majorDimension`: Override major dimension
+- `CamelGoogleSheets.columnNames`: Override column names
+- `CamelGoogleSheets.valueInputOption`: Override value input option

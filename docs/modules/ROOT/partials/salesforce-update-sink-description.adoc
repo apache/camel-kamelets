@@ -1,0 +1,39 @@
+== Salesforce Update Sink Kamelet Description
+
+=== Salesforce CRM Integration
+
+This Kamelet integrates with Salesforce CRM to update existing records in Salesforce objects. It provides efficient record modification capabilities through Salesforce's REST API.
+
+=== Record Updates
+
+Updates existing records in specified Salesforce objects using record IDs or external ID fields. Supports partial updates where only modified fields are updated.
+
+=== Field-Level Updates
+
+Enables selective field updates without affecting other record fields, providing granular control over data modifications and preserving unchanged data.
+
+=== Optimistic Locking
+
+Salesforce provides optimistic locking mechanisms to prevent conflicts when multiple systems attempt to update the same record simultaneously.
+
+=== Validation and Workflow
+
+Updated records are subject to Salesforce's validation rules, workflow rules, and triggers, ensuring business logic enforcement and data integrity.
+
+=== Audit Trail
+
+Salesforce maintains comprehensive audit trails for record updates, including:
+
+- Field history tracking
+- User identification
+- Timestamp information
+- Before and after values
+
+=== Integration Patterns
+
+Supports various integration patterns including:
+
+- Real-time data synchronization
+- Batch update operations
+- Event-driven updates
+- Scheduled data maintenance

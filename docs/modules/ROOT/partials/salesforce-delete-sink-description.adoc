@@ -1,0 +1,29 @@
+== Salesforce Delete Sink Kamelet Description
+
+=== Salesforce CRM Integration
+
+This Kamelet integrates with Salesforce CRM to delete records from Salesforce objects. It provides secure record deletion capabilities through Salesforce's REST API.
+
+=== Record Deletion
+
+Deletes records from specified Salesforce objects using record IDs or external ID fields. Supports deletion of records from any accessible Salesforce object.
+
+=== Safety and Recovery
+
+Salesforce provides safety mechanisms for deleted records:
+
+- Deleted records are moved to the Recycle Bin
+- Records can be restored within the retention period
+- Audit trails maintain deletion history
+
+=== Cascade Effects
+
+Considers Salesforce's cascade deletion rules and relationships when deleting records, ensuring referential integrity and proper handling of related data.
+
+=== Bulk Operations
+
+Can be used for both individual record deletions and bulk deletion operations, depending on the integration requirements and data volume.
+
+=== Permission Controls
+
+Respects Salesforce's object-level and field-level security settings, ensuring that only authorized operations are performed based on user permissions.

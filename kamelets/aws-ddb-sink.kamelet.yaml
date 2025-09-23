@@ -108,14 +108,7 @@ spec:
       types:
         json:
           format: "aws2-ddb:application-json"
-          description: |-
-            Json representation of a DDB operation. The input type supports the operations: PutItem, UpdateItem, DeleteItem
-            
-            For PutItem operation the Json body defines all item attributes.
-            For DeleteItem operation the Json body defines only the primary key attributes that identify the item to delete.
-            For UpdateItem operation the Json body defines both key attributes to identify the item to be updated and all item attributes tht get updated on the item.
-  
-            The given JSON body can use `operation`, `key` and `item` as top level properties that are mapped to respective attribute value maps.
+          description: Json representation of a DDB operation. The input type supports the operations: PutItem, UpdateItem, DeleteItem
           headers:
             CamelAwsDdbOperation:
               title: Operation

@@ -84,8 +84,7 @@ spec:
           type: OffsetDateTime
         CamelAzureStorageQueuePopReceipt:
           title: Pop Receipt
-          description: |-
-            Unique identifier that must match for the message to be deleted or updated. If deletion fails using this pop receipt then the message has been dequeued by another client.
+          description: Unique identifier that must match for the message to be deleted or updated. If deletion fails using this pop receipt then the message has been dequeued by another client.
           type: string
         CamelAzureStorageQueueTimeNextVisible:
           title: Azure Storage Queue Message Time Next Visible
@@ -102,9 +101,7 @@ spec:
           mediaType: text/plain
         cloudevents:
           format: "azure-storage-queue:application-cloudevents"
-          description: |-
-            Output data type represents Azure Storage Queue receive messages operation as CloudEvent V1. The data type sets Camel
-            specific CloudEvent headers on the exchange.
+          description: Output data type represents Azure Storage Queue receive messages operation as CloudEvent V1. The data type sets Camel
           headers:
             CamelCloudEventID:
               title: CloudEvent ID

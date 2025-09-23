@@ -1,0 +1,84 @@
+== Mail IMAP Source Kamelet Description
+
+=== Authentication
+
+This Kamelet requires username and password authentication to connect to an IMAP mail server. It supports both standard and secure IMAP connections.
+
+=== Configuration
+
+The Mail IMAP Source Kamelet supports the following configurations:
+
+- **Host**: IMAP server hostname (required)
+- **Port**: IMAP server port (default: 993 for IMAPS, 143 for IMAP)
+- **Username**: Email account username (required)
+- **Password**: Email account password (required)
+- **Folder**: Email folder to monitor (default: "INBOX")
+- **Unseen Only**: Only process unread emails (default: true)
+- **Delete**: Delete emails after processing (default: false)
+- **Connection Encryption**: Use SSL/TLS encryption (default: true)
+
+=== Output Format
+
+The Kamelet outputs email messages including headers, body content, attachments, and metadata such as sender, recipient, and timestamp information.
+
+=== Usage Example
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mail-imap-source"
+      parameters:
+        host: "imap.gmail.com"
+        port: "993"
+        username: "user@gmail.com"
+        password: "app-password"
+        folder: "INBOX"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with Custom Folder
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mail-imap-source"
+      parameters:
+        host: "mail.example.com"
+        port: "993"
+        username: "support@example.com"
+        password: "mailpass"
+        folder: "Support"
+        unseenOnly: true
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with Email Deletion
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mail-imap-source"
+      parameters:
+        host: "imap.example.com"
+        username: "processor@example.com"
+        password: "mailpass"
+        folder: "Processing"
+        delete: true
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Security Considerations
+
+- Use app-specific passwords for Gmail and similar providers
+- Enable SSL/TLS encryption for secure connections
+- Store credentials securely using secrets management
+- Consider OAuth2 authentication for enhanced security

@@ -30,12 +30,7 @@ metadata:
 spec:
   definition:
     title: "Google Storage Sink"
-    description: |-
-      Upload objects to Google Cloud Storage.
-
-      If you specify the `serviceAccountKey` property, you must base64 encode it before you pass it as a parameter.
-
-      In the header, you can set the `file` / `ce-file` property to specify the filename to upload. If you do set property in the header, the Kamelet uses the exchange ID as filename.
+    description: Upload objects to Google Cloud Storage.
     required:
       - bucketNameOrArn
     type: object

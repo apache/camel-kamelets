@@ -1,0 +1,26 @@
+== FTP Sink Kamelet Description
+
+=== Authentication
+
+This Kamelet uses username and password authentication to connect to FTP servers.
+
+=== Connection Configuration
+
+Requires:
+- Connection host (FTP server hostname)
+- Connection port (defaults to 21)
+- Username and password credentials
+- Directory name for file operations
+
+=== File Transfer Options
+
+- **Transfer Mode**: ASCII (default) or Binary mode
+- **Passive Mode**: Can be enabled for firewall compatibility
+- **File Existence Handling**: Override (default), Append, Fail, or Ignore
+- **Auto-create Directories**: Automatically creates missing directories (enabled by default)
+
+=== Optional Headers
+
+In the header, you can optionally set the `file` / `ce-file` property to specify the name of the file to upload.
+
+If you do not set the property in the header, the Kamelet uses a default naming convention.

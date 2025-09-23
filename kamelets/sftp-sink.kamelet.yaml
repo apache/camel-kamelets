@@ -30,12 +30,7 @@ metadata:
 spec:
   definition:
     title: "SFTP Sink"
-    description: |-
-      Send data to an SFTP Server.
-
-      In the header, you can set the `file` / `ce-file` property to specify the filename to upload.
-
-      If you do not set the property in the header, the Kamelet uses the exchange ID for the filename.
+    description: Send data to an SFTP Server.
     required:
       - connectionHost
       - connectionPort
