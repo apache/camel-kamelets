@@ -30,12 +30,7 @@ metadata:
 spec:
   definition:
     title: "MongoDB Sink"
-    description: |-
-      Send data to MongoDB.
-
-      This Kamelet expects a JSON-formatted body.
-
-      In the header, you can set the `db-upsert` / `ce-dbupsert` property, a boolean value that specifies whether the database should create an element if it does not exist.
+    description: Send data to MongoDB.
     required:
       - hosts
       - collection

@@ -1,0 +1,35 @@
+== Chuck Norris Source Kamelet Description
+
+This Kamelet provides a periodic source of Chuck Norris jokes from the Chuck Norris API. It fetches random jokes at configurable intervals and outputs them as plain text.
+
+=== Output format
+
+The Kamelet outputs Chuck Norris jokes as plain text strings, one joke per message. The jokes are extracted from the JSON response using JSONPath to get the `value` field from the API response.
+
+=== Usage examples
+
+Basic usage with default 10-second interval:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:chuck-norris-source"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Custom interval of 30 seconds:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:chuck-norris-source"
+      parameters:
+        period: 30000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

@@ -30,16 +30,7 @@ metadata:
 spec:
   definition:
     title: "Kafka Sink"
-    description: |-
-      Send data to Kafka topics through Plain Login Module.
-
-      The Kamelet is able to understand the following headers to be set:
-
-      - `key` / `ce-key`: as message key
-    
-      - `partition-key` / `ce-partitionkey`: as message partition key
-
-      Both the headers are optional.
+    description: Send data to Kafka topics through Plain Login Module.
     required:
       - topic
       - bootstrapServers

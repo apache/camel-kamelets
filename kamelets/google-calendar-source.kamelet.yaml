@@ -30,8 +30,7 @@ metadata:
 spec:
   definition:
     title: "Google Calendar Source"
-    description: |-
-      Receive event data from Google Calendar.
+    description: Receive event data from Google Calendar.
     required:
       - index
       - calendarId
@@ -108,14 +107,11 @@ spec:
       types:
         json:
           format: "application-json"
-          description: |-
-            Json representation of a Google Calendar event object.
+          description: Json representation of a Google Calendar event object.
           mediaType: application/json
         cloudevents:
           format: "google-calendar-stream:application-cloudevents"
-          description: |-
-            Output data type represents Google Calendar Stream response as CloudEvent V1. The data type sets Camel specific CloudEvent headers on the exchange with
-            respective data from the Calendar Events and its derived object.
+          description: Output data type represents Google Calendar Stream response as CloudEvent V1. The data type sets Camel specific CloudEvent headers on the exchange with respective data from the Calendar Events and its derived object.
           headers:
             CamelCloudEventID:
               title: CloudEvent ID

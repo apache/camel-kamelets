@@ -127,9 +127,7 @@ spec:
           mediaType: text/plain
         cloudevents:
           format: "aws-cloudtrail:application-cloudevents"
-          description: |-
-            Data type transformer converts AWS Cloudtrail lookup events response to CloudEvent v1_0 data format. The data type
-            sets Camel specific CloudEvent headers with values extracted from AWS Cloudtrail lookup events response.
+          description: Data type transformer converts AWS Cloudtrail lookup events response to CloudEvent v1_0 data format. The data type sets Camel specific CloudEvent headers with values extracted from AWS Cloudtrail lookup events response.
           headers:
             CamelCloudEventID:
               title: CloudEvent ID

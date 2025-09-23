@@ -30,16 +30,7 @@ metadata:
 spec:
   definition:
     title: "Kafka Not Secured with Apicurio Registry Sink"
-    description: |-
-      Send data to Kafka topics on an insecure broker with Apicurio Registry.
-
-      The Kamelet is able to understand the following headers to be set:
-
-      - `key` / `ce-key`: as message key
-    
-      - `partition-key` / `ce-partitionkey`: as message partition key
-
-      Both the headers are optional.
+    description: Send data to Kafka topics on an insecure broker with Apicurio Registry.
     required:
       - topic
       - bootstrapServers

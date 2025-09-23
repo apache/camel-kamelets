@@ -29,16 +29,7 @@ metadata:
     camel.apache.org/kamelet.type: "sink"
 spec:
   definition:
-    description: |-
-      Send data to Kafka topics wit TLS/SSL support.
-
-      The Kamelet is able to understand the following headers to be set:
-
-      - `key` / `ce-key`: as message key
-
-      - `partition-key` / `ce-partitionkey`: as message partition key
-
-      Both the headers are optional.
+    description: Send data to Kafka topics wit TLS/SSL support.
     required:
       - topic
       - bootstrapServers

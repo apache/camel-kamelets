@@ -30,10 +30,7 @@ metadata:
 spec:
   definition:
     title: "Google Storage Source"
-    description: |-
-      Consume objects from Google Cloud Storage.
-
-      If you specify the `serviceAccountKey` property, you must base64 encode it before you pass it as a parameter.
+    description: Consume objects from Google Cloud Storage.
     required:
       - bucketNameOrArn
     type: object
@@ -85,9 +82,7 @@ spec:
           type: string
         CamelGoogleCloudStorageETag:
           title: ETag Value
-          description: |-
-            The hex encoded 128-bit MD5 digest of the associated object according to RFC 1864.
-            Is the generation number of the object for which you are retrieving information.
+          description: The hex encoded 128-bit MD5 digest of the associated object according to RFC 1864.
           type: string
       types:
         binary:
@@ -96,9 +91,7 @@ spec:
           mediaType: application/octet-stream
         cloudevents:
           format: "aws2-s3:application-cloudevents"
-          description: |-
-            Output data type represents Google Storage download to response as CloudEvent V1. The data type sets Camel specific CloudEvent headers on the exchange with
-            respective data from the S3 bucket and its derived object.
+          description: Output data type represents Google Storage download response as CloudEvent V1. The data type sets Camel specific CloudEvent headers on the exchange with respective data from the Google Storage bucket and its derived object.
           headers:
             CamelCloudEventID:
               title: CloudEvent ID

@@ -1,0 +1,75 @@
+== Redis Source Kamelet Description
+
+=== Authentication
+
+This Kamelet supports Redis authentication using password-based authentication. The connection can be configured with or without authentication depending on your Redis setup.
+
+=== Configuration
+
+The Redis Source Kamelet supports the following configurations:
+
+- **Redis Host**: The hostname or IP address of the Redis server (required)
+- **Redis Port**: The port number of the Redis server (default: 6379)
+- **Password**: Password for Redis authentication (optional)
+- **Channels**: Redis channels to subscribe to (required)
+- **Connection Timeout**: Connection timeout in milliseconds
+- **Database**: Redis database number to connect to
+
+=== Output Format
+
+The Kamelet outputs Redis messages received from subscribed channels. Messages include both the channel name and message content.
+
+=== Usage Example
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:redis-source"
+      parameters:
+        redisHost: "redis.example.com"
+        redisPort: "6379"
+        password: "redispass"
+        channels: "notifications,alerts"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with Multiple Channels
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:redis-source"
+      parameters:
+        redisHost: "redis.example.com"
+        redisPort: "6379"
+        channels: "user-events,system-events,admin-events"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with Database Selection
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:redis-source"
+      parameters:
+        redisHost: "redis.example.com"
+        redisPort: "6379"
+        password: "redispass"
+        database: "1"
+        channels: "cache-invalidation"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Pub/Sub Pattern
+
+This kamelet implements the Redis publish/subscribe pattern, allowing real-time message consumption from Redis channels. Multiple channels can be subscribed to simultaneously by providing a comma-separated list.

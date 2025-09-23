@@ -1,0 +1,28 @@
+== Infinispan Sink Kamelet Description
+
+=== Authentication
+
+This Kamelet uses username and password authentication to connect to Infinispan cache instances.
+
+=== Security Configuration
+
+- **Secure Connection**: Enabled by default (secure: true)
+- **SASL Mechanism**: DIGEST-MD5 (default)
+- **Security Realm**: "default" realm
+- **Security Server Name**: "infinispan" (default)
+
+=== Required Configuration
+
+- **Cache Name**: The name of the Infinispan cache to use
+- **Hosts**: Host address of the Infinispan instance
+- **Username and Password**: Credentials for authentication
+
+=== Cache Operations
+
+Objects are stored in the specified cache using keys derived from headers or exchange ID.
+
+=== Optional Headers
+
+- `key` / `ce-key`: Specify the cache key for the object
+
+If no key is provided in headers, the Kamelet uses the exchange ID as the cache key.

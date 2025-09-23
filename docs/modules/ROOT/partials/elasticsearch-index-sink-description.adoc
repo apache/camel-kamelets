@@ -1,0 +1,28 @@
+== ElasticSearch Index Sink Kamelet Description
+
+=== Input Format
+
+This Kamelet expects JSON-formatted data as input and outputs plain text responses.
+
+=== Authentication
+
+This Kamelet supports username and password authentication for connecting to ElasticSearch clusters.
+
+=== SSL Configuration
+
+SSL connection is enabled by default. You can provide a base64-encoded certificate for secure connections to your ElasticSearch cluster.
+
+=== Index Configuration
+
+You can specify:
+- Cluster name (required)
+- Host addresses in `ip:port` format (required)
+- Index name for storing documents
+
+=== Optional Headers
+
+The Kamelet supports the following optional headers:
+- `indexId` / `ce-indexid`: To specify the document ID for indexing
+- `indexName` / `ce-indexname`: To override the configured index name
+
+Both headers are optional and will use configured defaults if not provided.

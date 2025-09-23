@@ -1,0 +1,34 @@
+== FHIR Sink Kamelet Description
+
+=== FHIR Operations
+
+This Kamelet supports various FHIR operations including CREATE, READ, UPDATE, DELETE, SEARCH, and others. You must specify both the API name and method name for the operation.
+
+=== FHIR Versions
+
+Supports multiple FHIR versions:
+- DSTU2, DSTU2_HL7ORG, DSTU2_1
+- DSTU3
+- R4 (default)
+- R5
+
+=== Data Encoding
+
+Supports both JSON (default) and XML encoding for FHIR resources. The Kamelet automatically handles marshalling and unmarshalling based on the configured encoding.
+
+=== Authentication
+
+Supports multiple authentication methods:
+- OAuth 2.0 access tokens
+- Basic authentication with username and password
+
+=== Proxy Support
+
+The Kamelet can be configured to work through HTTP proxies with optional authentication.
+
+=== Configuration Options
+
+Additional configuration includes:
+- Pretty printing for requests
+- Request/response logging
+- Lazy producer startup

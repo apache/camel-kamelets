@@ -1,0 +1,46 @@
+== Kafka Batch Azure Schema Registry Source Kamelet Description
+
+=== Authentication methods
+
+This Kamelet connects to Kafka using:
+
+- Azure Schema Registry for schema management
+- Kafka security configuration (SASL/SSL)
+- Batch consumption mode for processing multiple messages
+
+=== Output format
+
+The Kamelet consumes messages in batches from Kafka topics with schema validation through Azure Schema Registry and produces the batch data in the configured format.
+
+=== Configuration
+
+The Kamelet requires Kafka and Azure Schema Registry connection parameters:
+
+- `topic`: The Kafka topic to consume from
+- `bootstrapServers`: Comma separated list of Kafka Broker URLs
+- `azureRegistryUrl`: The Azure Schema Registry URL
+- Security and batch processing parameters
+
+=== Usage example
+
+```yaml
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: kafka-batch-azure-schema-registry-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: kafka-batch-azure-schema-registry-source
+    properties:
+      topic: "my-topic"
+      bootstrapServers: "kafka-broker1:9092,kafka-broker2:9092"
+      azureRegistryUrl: "https://my-registry.servicebus.windows.net"
+  sink:
+    ref:
+      kind: Service
+      apiVersion: v1
+      name: my-service
+```

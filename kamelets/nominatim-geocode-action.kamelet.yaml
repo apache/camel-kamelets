@@ -30,24 +30,7 @@ metadata:
 spec:
   definition:
     title: "Nominatim GeoCode Action"
-    description: |-
-      Find locations on Earth by name and address. 
-      This Kamelet expects in the body the `address` to find.
-      The return message will also contain the following headers with the geolocation info:
-       
-      - `CamelGeoCoderAddress`
-      - `CamelGeoCoderCity`
-      - `CamelGeoCoderCountryLong`
-      - `CamelGeoCoderCountryShort`
-      - `CamelGeoCoderLat`
-      - `CamelGeoCoderLng`
-      - `CamelGeoCoderLatlng`
-      - `CamelGeoCoderPostalCode`
-      - `CamelGeoCoderRegionCode`
-      - `CamelGeoCoderRegionName`
-      - `CamelGeoCoderStatus`
-      
-      The body is returned in JSON format.
+    description: Find locations on Earth by name and address.
     required:
       - serverUrl
     type: object

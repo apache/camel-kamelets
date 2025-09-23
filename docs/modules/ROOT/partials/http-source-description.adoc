@@ -1,0 +1,71 @@
+== HTTP Source Kamelet Description
+
+=== Configuration
+
+The HTTP Source Kamelet periodically fetches data from an HTTP endpoint. It supports the following configurations:
+
+- **URL**: The HTTP endpoint to fetch data from (required, must start with http:// or https://)
+- **Period**: The interval between fetches in milliseconds (default: 10000)
+- **Content Type**: The Accept header content type for the request (default: "application/json")
+
+=== Authentication
+
+This is the basic HTTP source kamelet without authentication. For secured HTTP endpoints requiring authentication, use the HTTP Secured Source kamelet instead.
+
+=== Output Format
+
+The Kamelet outputs the HTTP response body and preserves any HTTP headers from the response.
+
+=== Usage Example
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:http-source"
+      parameters:
+        url: "https://api.example.com/data"
+        period: 30000
+        contentType: "application/json"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with XML Content
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:http-source"
+      parameters:
+        url: "https://api.example.com/xml-feed"
+        period: 60000
+        contentType: "application/xml"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with High Frequency Polling
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:http-source"
+      parameters:
+        url: "https://api.example.com/status"
+        period: 5000
+        contentType: "text/plain"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+This example polls the endpoint every 5 seconds for status updates.
+
+=== Scheduling Behavior
+
+The kamelet uses a timer to periodically fetch data from the specified URL. The timer starts immediately when the route starts and repeats at the configured interval. Each request includes the specified Accept header to indicate the expected content type.

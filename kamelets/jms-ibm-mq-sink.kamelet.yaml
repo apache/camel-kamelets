@@ -31,12 +31,7 @@ metadata:
 spec:
   definition:
     title: "JMS - IBM MQ Sink"
-    description: |-
-      A Kamelet that can produce events to an IBM MQ message queue using JMS.
-
-      In your Pipe file, you must explicitly declare the IBM MQ Server driver dependency in spec->integration->dependencies
-
-      - "mvn:com.ibm.mq:com.ibm.mq.jakarta.client:<version>"
+    description: A Kamelet that can produce events to an IBM MQ message queue using JMS.
 
     required:
       - serverName

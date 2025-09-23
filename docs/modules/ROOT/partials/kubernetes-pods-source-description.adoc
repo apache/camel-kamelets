@@ -1,0 +1,42 @@
+== Kubernetes-pods-source Kamelet Description
+
+=== Authentication methods
+
+This Kamelet connects to Kubernetes using:
+
+- Service account authentication (recommended in cluster)
+- Kubeconfig file authentication
+- Token-based authentication
+
+=== Output format
+
+The Kamelet watches Kubernetes pods resources and produces event data in JSON format when resources are created, updated, or deleted.
+
+=== Configuration
+
+The Kamelet supports various Kubernetes connection parameters:
+
+- `namespace`: The Kubernetes namespace to watch (optional)
+- Authentication and connection configuration
+
+=== Usage example
+
+```yaml
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: kubernetes-pods-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: kubernetes-pods-source
+    properties:
+      namespace: "default"
+  sink:
+    ref:
+      kind: Service
+      apiVersion: v1
+      name: my-service
+```

@@ -1,0 +1,46 @@
+== Jira Source Kamelet Description
+
+=== Authentication methods
+
+This Kamelet uses basic authentication (username and password) to connect to JIRA. You need to provide:
+
+- Username and password for JIRA authentication
+- JIRA instance URL
+
+=== Output format
+
+The Kamelet receives notifications about new issues from JIRA and produces the issue data in JSON format.
+
+=== Configuration
+
+The Kamelet requires the following parameters:
+
+- `jiraUrl`: The URL of your instance of JIRA
+- `username`: The username to access JIRA
+- `password`: The password to access JIRA
+- `jql`: The JQL query to filter issues
+
+=== Usage example
+
+```yaml
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: jira-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: jira-source
+    properties:
+      jiraUrl: "http://my_jira.com:8081"
+      username: "{{username}}"
+      password: "{{password}}"
+      jql: "project = TEST"
+  sink:
+    ref:
+      kind: Service
+      apiVersion: v1
+      name: my-service
+```

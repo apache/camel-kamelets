@@ -1,0 +1,27 @@
+== Jira Add Comment Sink Kamelet Description
+
+=== JIRA Operations
+
+This Kamelet adds comments to existing JIRA issues.
+
+=== Input Format
+
+Expects JSON-formatted data containing the comment information.
+
+=== Authentication
+
+Supports multiple authentication methods:
+- **Username and Password**: Basic authentication
+- **Personal Token**: API token authentication
+
+=== Required Configuration
+
+- **JIRA URL**: The URL of your JIRA instance
+
+=== Optional Headers
+
+- `ce-issueKey`: Specify the JIRA issue key to add the comment to
+
+=== Usage
+
+The Kamelet sends the comment data to the specified JIRA issue, enabling automated comment addition to issues based on events or data processing.

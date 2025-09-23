@@ -30,16 +30,7 @@ metadata:
 spec:
   definition:
     title: "Azure Kafka through Eventhubs with Azure Schema Registry Sink"
-    description: |-
-      Send data to Kafka topics on Azure Eventhubs combined with Azure Schema Registry.
-
-      The Kamelet is able to understand the following headers to be set:
-
-      - `key` / `ce-key`: as message key
-    
-      - `partition-key` / `ce-partitionkey`: as message partition key
-
-      Both the headers are optional.
+    description: Send data to Kafka topics on Azure Eventhubs combined with Azure Schema Registry.
     required:
       - topic
       - bootstrapServers

@@ -1,0 +1,47 @@
+== JMS IBM MQ Source Kamelet Description
+
+=== Authentication methods
+
+This Kamelet supports IBM MQ authentication including:
+
+- Channel and queue manager configuration
+- Username and password authentication
+- IBM MQ specific connection settings
+
+=== Output format
+
+The Kamelet consumes messages from IBM MQ queues and produces the message data in the configured format.
+
+=== Configuration
+
+The Kamelet requires IBM MQ specific connection parameters:
+
+- `destinationName`: The destination queue name
+- `queueManager`: IBM MQ queue manager name
+- `channel`: IBM MQ channel name
+- `connName`: IBM MQ connection name (host:port)
+
+=== Usage example
+
+```yaml
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: jms-ibm-mq-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: jms-ibm-mq-source
+    properties:
+      destinationName: "MY.QUEUE"
+      queueManager: "QM1"
+      channel: "DEV.APP.SVRCONN"
+      connName: "localhost(1414)"
+  sink:
+    ref:
+      kind: Service
+      apiVersion: v1
+      name: my-service
+```

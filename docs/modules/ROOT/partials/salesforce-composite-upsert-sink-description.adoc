@@ -1,0 +1,30 @@
+== Salesforce Composite Upsert Sink Kamelet Description
+
+=== Salesforce CRM Integration
+
+This Kamelet integrates with Salesforce CRM using composite upsert operations. Composite operations allow multiple records to be processed in a single API call, improving efficiency and reducing API usage.
+
+=== Upsert Operations
+
+Performs upsert (insert or update) operations that create new records if they don't exist or update existing records based on external ID fields. This provides flexible data synchronization capabilities.
+
+=== Batch Processing
+
+Composite operations enable batch processing of multiple records in a single request, reducing API call overhead and improving performance for bulk data operations.
+
+=== External ID Matching
+
+Uses external ID fields for record matching, allowing integration with external systems while maintaining data relationships and avoiding duplicate records.
+
+=== API Efficiency
+
+Salesforce composite operations optimize API usage by:
+
+- Reducing the number of API calls
+- Minimizing network round trips
+- Improving overall integration performance
+- Supporting bulk data operations
+
+=== Error Handling
+
+Provides detailed error information for each record in the composite operation, enabling granular error handling and data quality management.

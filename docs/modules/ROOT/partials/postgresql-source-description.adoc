@@ -1,0 +1,64 @@
+== PostgreSQL Source Kamelet Description
+
+=== Authentication
+
+This Kamelet requires username and password authentication to connect to a PostgreSQL database. The credentials are configured through the `username` and `password` properties.
+
+=== Configuration
+
+The PostgreSQL Source Kamelet supports the following configurations:
+
+- **Server Name**: The hostname or IP address of the PostgreSQL server (required)
+- **Username**: Username for database authentication (required)
+- **Password**: Password for database authentication (required)
+- **Query**: SQL query to execute (required)
+- **Database Name**: Name of the PostgreSQL database (required)
+- **Server Port**: Port number for the PostgreSQL server (default: 5432)
+- **Period**: Interval between query executions in milliseconds
+- **Connection Properties**: Additional JDBC connection properties
+
+=== Output Format
+
+The Kamelet outputs query results as JSON objects. Each row from the result set is converted to a JSON object with column names as keys.
+
+=== Usage Example
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:postgresql-source"
+      parameters:
+        serverName: "postgres.example.com"
+        username: "dbuser"
+        password: "dbpass"
+        databaseName: "analytics"
+        query: "SELECT * FROM events WHERE created_at > NOW() - INTERVAL '1 hour'"
+        period: 30000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with Complex Query
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:postgresql-source"
+      parameters:
+        serverName: "postgres.example.com"
+        username: "dbuser"
+        password: "dbpass"
+        databaseName: "ecommerce"
+        query: "SELECT o.id, o.total, u.email FROM orders o JOIN users u ON o.user_id = u.id WHERE o.status = 'PENDING'"
+        period: 60000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Connection Management
+
+The kamelet manages PostgreSQL connections automatically, including connection pooling and reconnection on failures. Query execution is scheduled at the specified interval with robust error handling.

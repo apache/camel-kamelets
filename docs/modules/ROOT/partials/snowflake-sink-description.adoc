@@ -1,0 +1,25 @@
+== Snowflake Sink Kamelet Description
+
+=== Cloud Data Warehouse
+
+This Kamelet integrates with Snowflake, a cloud-based data warehouse platform that provides scalable data storage and analytics capabilities. Snowflake is designed for modern data architecture and cloud-native applications.
+
+=== JDBC Connectivity
+
+Uses the Snowflake JDBC driver for native connectivity to Snowflake instances. The driver provides optimized performance and supports Snowflake-specific features and data types.
+
+=== Instance Configuration
+
+Requires configuration of the Snowflake instance URL (e.g., `instance.snowflakecomputing.com`) which uniquely identifies your Snowflake account and region.
+
+=== Data Processing
+
+Processes JSON input data through unmarshalling before executing SQL queries. This enables seamless integration with JSON-based data pipelines and streaming applications.
+
+=== Query Execution
+
+Supports parameterized SQL queries using named parameters that map to JSON data fields. This ensures secure and efficient data insertion into Snowflake tables.
+
+=== Cloud-Native Features
+
+Snowflake's cloud-native architecture provides automatic scaling, performance optimization, and enterprise-grade security, making this Kamelet suitable for large-scale data operations.

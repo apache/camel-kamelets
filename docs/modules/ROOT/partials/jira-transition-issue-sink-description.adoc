@@ -1,0 +1,29 @@
+== Jira Transition Issue Sink Kamelet Description
+
+=== JIRA Operations
+
+This Kamelet transitions JIRA issues to new statuses (e.g., from "In Progress" to "Done").
+
+=== Input Format
+
+Expects JSON-formatted data containing the transition information.
+
+=== Authentication
+
+Supports multiple authentication methods:
+- **Username and Password**: Basic authentication
+- **Personal Token**: API token authentication
+
+=== Required Configuration
+
+- **JIRA URL**: The URL of your JIRA instance
+
+=== Transition Configuration Headers
+
+The Kamelet supports headers to specify transition details:
+- `ce-issueKey`: The JIRA issue key to transition
+- `ce-issueTransitionId`: The transition ID to execute
+
+=== Usage
+
+The Kamelet changes the status of existing JIRA issues by executing workflow transitions, enabling automated issue state management based on external events or processing results.

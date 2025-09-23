@@ -1,0 +1,21 @@
+== JMS Pooled - Apache Artemis Sink Kamelet Description
+
+=== Connection Configuration
+
+This Kamelet connects to an Apache Artemis message broker using JMS with connection pooling for improved performance and resource management.
+
+=== Connection Pooling
+
+The Kamelet uses pooled connections to optimize resource usage and performance. Key pooling configuration options include:
+
+- Maximum sessions per connection (default: 500)
+- Maximum idle sessions per connection (default: 500)
+- Connection idle timeout in milliseconds (default: 30000)
+
+=== Authentication
+
+Optional authentication can be configured using username and password properties for secure broker connections.
+
+=== Destination Configuration
+
+The Kamelet supports both queue and topic destinations. The destination type can be configured using the `destinationType` property, which defaults to `queue`.

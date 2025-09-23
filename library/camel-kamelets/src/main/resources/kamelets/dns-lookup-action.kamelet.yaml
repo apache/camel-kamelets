@@ -30,14 +30,7 @@ metadata:
 spec:
   definition:
     title: "DNS Lookup Action"
-    description: |-
-      Lookup for a domain
-
-      The Kamelet expects the following headers to be set:
-
-      - `domain-name` / `ce-domainname`: as the domain for which we are looking up
-
-      If the domain-name header is not set, the body is used as domain name.
+    description: Lookup for a domain
     type: object
   types:
     out:
