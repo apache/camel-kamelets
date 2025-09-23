@@ -1,0 +1,34 @@
+== Jira Add Issue Sink Kamelet Description
+
+=== JIRA Operations
+
+This Kamelet creates new issues in JIRA.
+
+=== Input Format
+
+Expects JSON-formatted data containing the issue information.
+
+=== Authentication
+
+Supports multiple authentication methods:
+- **Username and Password**: Basic authentication
+- **Personal Token**: API token authentication
+
+=== Required Configuration
+
+- **JIRA URL**: The URL of your JIRA instance
+
+=== Issue Configuration Headers
+
+The Kamelet supports various headers to configure issue details:
+- `ce-projectKey`: JIRA project key
+- `ce-issueTypeName`: Type of issue to create
+- `ce-issueSummary`: Issue summary/title
+- `ce-issueAssignee`: Assignee for the issue
+- `ce-issuePriorityName`: Priority level
+- `ce-issueComponents`: Issue components
+- `ce-issueDescription`: Detailed description
+
+=== Usage
+
+The Kamelet creates new JIRA issues with the specified details, enabling automated issue creation based on events or data processing workflows.

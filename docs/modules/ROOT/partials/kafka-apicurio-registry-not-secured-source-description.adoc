@@ -1,0 +1,45 @@
+== Kafka Apicurio Registry Not Secured Source Kamelet Description
+
+=== Authentication methods
+
+This Kamelet connects to Kafka using:
+
+- No security (not secured setup)
+- Apicurio Schema Registry for schema management
+- Bootstrap servers configuration
+
+=== Output format
+
+The Kamelet consumes messages from Kafka topics with schema validation through Apicurio Registry and produces the message data in the configured format.
+
+=== Configuration
+
+The Kamelet requires Kafka and Apicurio Registry connection parameters:
+
+- `topic`: The Kafka topic to consume from
+- `bootstrapServers`: Comma separated list of Kafka Broker URLs
+- `apicurioRegistryUrl`: The Apicurio Schema Registry URL
+
+=== Usage example
+
+```yaml
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: kafka-apicurio-registry-not-secured-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: kafka-apicurio-registry-not-secured-source
+    properties:
+      topic: "my-topic"
+      bootstrapServers: "kafka-broker1:9092,kafka-broker2:9092"
+      apicurioRegistryUrl: "http://apicurio-registry:8080/apis/registry/v2"
+  sink:
+    ref:
+      kind: Service
+      apiVersion: v1
+      name: my-service
+```

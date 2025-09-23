@@ -1,0 +1,30 @@
+== MQTT Sink Kamelet Description
+
+=== MQTT Protocol
+
+This Kamelet implements the MQTT (Message Queuing Telemetry Transport) protocol, a lightweight messaging protocol designed for IoT devices and applications with limited bandwidth or unreliable network connections.
+
+=== Broker Integration
+
+Connects to MQTT brokers using configurable broker URLs. Supports various MQTT brokers including Eclipse Mosquitto, HiveMQ, and cloud-based MQTT services.
+
+=== Publish-Subscribe Pattern
+
+Enables publish-subscribe messaging by sending messages to MQTT topics. This pattern allows for decoupled communication between message producers and consumers.
+
+=== Authentication
+
+Optional username and password authentication for secure broker connections. Suitable for both open and secured MQTT broker deployments.
+
+=== IoT and Mobile Applications
+
+MQTT's lightweight nature makes it ideal for:
+
+- IoT device communication
+- Mobile applications with limited bandwidth
+- Unreliable network scenarios
+- Battery-powered devices requiring minimal overhead
+
+=== Quality of Service
+
+MQTT supports different Quality of Service levels for message delivery guarantees, though this Kamelet uses the default QoS settings provided by the underlying MQTT client.

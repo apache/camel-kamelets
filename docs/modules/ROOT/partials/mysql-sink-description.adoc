@@ -1,0 +1,21 @@
+== MySQL Sink Kamelet Description
+
+=== Database Connection
+
+This Kamelet connects to MySQL databases using the MySQL Connector/J JDBC driver. MySQL is one of the world's most popular open-source relational database management systems.
+
+=== Data Processing
+
+The Kamelet expects JSON input data which is automatically unmarshalled before executing the SQL query. This allows for seamless integration with JSON-based data sources.
+
+=== Parameterized Queries
+
+SQL queries use named parameters (e.g., `:#username`, `:#city`) that map to fields in the incoming JSON data. This approach provides protection against SQL injection attacks while maintaining query flexibility.
+
+=== Connection Management
+
+Uses Apache Commons DBCP2 for efficient database connection pooling. This provides optimal resource utilization and connection lifecycle management.
+
+=== Authentication and Security
+
+Requires username and password authentication for database access. The Kamelet uses the latest MySQL JDBC driver which supports modern security features and protocols.

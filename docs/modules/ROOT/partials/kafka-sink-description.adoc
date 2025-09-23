@@ -1,0 +1,24 @@
+== Kafka Sink Kamelet Description
+
+=== Headers Support
+
+The Kamelet is able to understand the following headers to be set:
+
+- `key` / `ce-key`: as message key
+- `partition-key` / `ce-partitionkey`: as message partition key
+
+Both headers are optional.
+
+=== Authentication
+
+This Kamelet uses Plain Login Module for authentication with username and password.
+
+=== Security Protocols
+
+Supports multiple security protocols:
+- SASL_PLAINTEXT
+- PLAINTEXT
+- SASL_SSL
+- SSL
+
+Default security protocol is SASL_SSL with PLAIN SASL mechanism.

@@ -1,0 +1,34 @@
+== Jira Update Issue Sink Kamelet Description
+
+=== JIRA Operations
+
+This Kamelet updates fields of existing JIRA issues.
+
+=== Input Format
+
+Expects JSON-formatted data containing the updated issue information.
+
+=== Authentication
+
+Supports multiple authentication methods:
+- **Username and Password**: Basic authentication
+- **Personal Token**: API token authentication
+
+=== Required Configuration
+
+- **JIRA URL**: The URL of your JIRA instance
+
+=== Issue Update Headers
+
+The Kamelet supports various headers to update issue fields:
+- `ce-issueKey`: The JIRA issue key to update
+- `ce-issueTypeName`: Update issue type
+- `ce-issueSummary`: Update issue summary/title
+- `ce-issueAssignee`: Update assignee
+- `ce-issuePriorityName`: Update priority level
+- `ce-issueComponents`: Update issue components
+- `ce-issueDescription`: Update detailed description
+
+=== Usage
+
+The Kamelet modifies existing JIRA issues with new field values, enabling automated issue updates based on external data or processing results.

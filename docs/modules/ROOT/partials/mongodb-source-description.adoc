@@ -1,0 +1,83 @@
+== MongoDB Source Kamelet Description
+
+=== Authentication
+
+This Kamelet supports MongoDB authentication using username and password credentials. The connection can be configured with or without authentication depending on your MongoDB setup.
+
+=== Configuration
+
+The MongoDB Source Kamelet supports the following configurations:
+
+- **Hosts**: MongoDB server hosts and ports (required)
+- **Collection**: MongoDB collection name to query (required)
+- **Database**: MongoDB database name (required)
+- **Username**: Username for authentication (optional)
+- **Password**: Password for authentication (optional)
+- **Query**: MongoDB query filter in JSON format
+- **Tail**: Enable tailable cursor for real-time changes
+- **Create Collection**: Auto-create collection if it doesn't exist
+
+=== Output Format
+
+The Kamelet outputs MongoDB documents as JSON objects, preserving the original document structure including ObjectId fields.
+
+=== Usage Example
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mongodb-source"
+      parameters:
+        hosts: "mongodb.example.com:27017"
+        database: "analytics"
+        collection: "events"
+        username: "mongouser"
+        password: "mongopass"
+        query: '{"status": "active"}'
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with Tailable Cursor
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mongodb-source"
+      parameters:
+        hosts: "mongodb.example.com:27017"
+        database: "logs"
+        collection: "app_logs"
+        username: "mongouser"
+        password: "mongopass"
+        tail: true
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Replica Set Example
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mongodb-source"
+      parameters:
+        hosts: "mongo1.example.com:27017,mongo2.example.com:27017,mongo3.example.com:27017"
+        database: "production"
+        collection: "orders"
+        username: "mongouser"
+        password: "mongopass"
+        query: '{"created_at": {"$gte": {"$date": "2023-01-01T00:00:00Z"}}}'
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Query Format
+
+MongoDB queries should be provided in standard MongoDB JSON query format. The kamelet supports complex queries including operators like $gte, $lte, $in, etc.

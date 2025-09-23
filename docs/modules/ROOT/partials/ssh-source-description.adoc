@@ -1,0 +1,86 @@
+== SSH Source Kamelet Description
+
+=== Authentication
+
+This Kamelet supports SSH authentication using username and password credentials. It can execute commands on remote SSH servers and retrieve the output.
+
+=== Configuration
+
+The SSH Source Kamelet supports the following configurations:
+
+- **Host**: SSH server hostname or IP address (required)
+- **Port**: SSH server port (default: 22)
+- **Username**: Username for SSH authentication (required)
+- **Password**: Password for SSH authentication (required)
+- **Poll Command**: Command to execute on the remote server (required)
+- **Cert Resource**: SSH certificate resource for key-based authentication
+- **Timeout**: Command execution timeout in milliseconds
+- **Poll Interval**: Interval between command executions
+
+=== Output Format
+
+The Kamelet outputs the result of SSH command execution as text, including both stdout and stderr streams from the remote command.
+
+=== Usage Example
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ssh-source"
+      parameters:
+        host: "server.example.com"
+        port: "22"
+        username: "sshuser"
+        password: "sshpass"
+        pollCommand: "tail -n 10 /var/log/application.log"
+        pollInterval: 30000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with System Monitoring
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ssh-source"
+      parameters:
+        host: "server.example.com"
+        username: "monitor"
+        password: "monitorpass"
+        pollCommand: "df -h | grep -E '(Filesystem|/dev/)'  && free -m"
+        pollInterval: 60000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with Custom Timeout
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ssh-source"
+      parameters:
+        host: "server.example.com"
+        username: "operator"
+        password: "operatorpass"
+        pollCommand: "ps aux | grep java | grep -v grep"
+        timeout: 10000
+        pollInterval: 120000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Security Considerations
+
+- Use strong passwords or preferably SSH key authentication
+- Limit the commands that can be executed
+- Consider using dedicated monitoring users with restricted permissions
+- Monitor SSH access logs for security purposes
+- Use non-standard SSH ports when possible

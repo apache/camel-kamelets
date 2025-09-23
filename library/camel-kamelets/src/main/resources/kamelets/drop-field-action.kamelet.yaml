@@ -30,12 +30,7 @@ metadata:
 spec:
   definition:
     title: "Drop Field Action"
-    description: |-
-      Removes a custom field by given name from the message in transit.
-
-      The drop field action expects an `application/json` content type.
-
-      For example,  if you have an object like '{ "foo":"John", "bar":30 }', and your action is configured with the field `element` and the value `hello`, the result is `{ "foo":"John", "bar":30, "element":"hello" }`.
+    description: Removes a custom field by given name from the message in transit.
     required:
       - field
     properties:

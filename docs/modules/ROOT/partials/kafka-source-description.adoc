@@ -1,0 +1,65 @@
+== Kafka Source Kamelet Description
+
+=== Authentication
+
+This Kamelet requires SASL/PLAIN authentication to connect to Kafka through a Plain Login Module. The credentials are configured through the `user` and `password` properties.
+
+=== Configuration
+
+The Kafka Source Kamelet supports the following configurations:
+
+- **Topic**: Comma-separated list of Kafka topic names to consume from (required)
+- **Bootstrap Servers**: Comma-separated list of Kafka bootstrap servers (required)
+- **User**: Username for SASL/PLAIN authentication (required)
+- **Password**: Password for SASL/PLAIN authentication (required)
+- **Consumer Group**: Kafka consumer group ID for managing offsets
+- **Auto Offset Reset**: What to do when there is no initial offset (earliest, latest, none)
+- **Allow Manual Commit**: Enable manual commit for better control over message processing
+
+=== Output Format
+
+The Kamelet outputs Kafka message content and includes Kafka headers and metadata such as topic, partition, offset, and timestamp.
+
+=== Usage Example
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:kafka-source"
+      parameters:
+        topic: "orders,payments"
+        bootstrapServers: "kafka.example.com:9092"
+        user: "kafka-user"
+        password: "kafka-password"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with Consumer Group
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:kafka-source"
+      parameters:
+        topic: "user-events"
+        bootstrapServers: "kafka1.example.com:9092,kafka2.example.com:9092"
+        user: "kafka-user"
+        password: "kafka-password"
+        consumerGroup: "my-consumer-group"
+        autoOffsetReset: "earliest"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Security
+
+This kamelet uses SASL/PLAIN authentication mechanism with TLS encryption enabled for secure communication with Kafka brokers.
+
+=== Error Handling
+
+The consumer automatically handles connection failures and will attempt to reconnect to the Kafka cluster. Failed message processing can be handled through Camel's error handling mechanisms.

@@ -1,0 +1,48 @@
+== GitHub Commit Source Kamelet Description
+
+=== Authentication methods
+
+This Kamelet uses OAuth token-based authentication to connect to GitHub. You need to provide:
+
+- A valid OAuth token with appropriate repository permissions
+- The repository name and owner information
+
+=== Output format
+
+The Kamelet produces commit data in JSON format containing commit information from the specified GitHub repository and branch.
+
+=== Configuration
+
+The Kamelet requires the following parameters:
+
+- `repoName`: The GitHub repository name
+- `repoOwner`: The repository owner (user or organization)
+- `oauthToken`: OAuth token for authentication
+- `startingSha`: SHA from which to start consuming (beginning, last, or specific SHA)
+- `branch`: The branch to consume commits from
+
+=== Usage example
+
+```yaml
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: github-commit-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: github-commit-source
+    properties:
+      repoName: "my-repository"
+      repoOwner: "my-organization"
+      oauthToken: "{{oauth-token}}"
+      startingSha: "last"
+      branch: "main"
+  sink:
+    ref:
+      kind: Service
+      apiVersion: v1
+      name: my-service
+```

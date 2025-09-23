@@ -1,0 +1,84 @@
+== MQTT Source Kamelet Description
+
+=== Authentication
+
+This Kamelet supports MQTT authentication using username and password credentials. It can also connect to MQTT brokers without authentication if not required.
+
+=== Configuration
+
+The MQTT Source Kamelet supports the following configurations:
+
+- **Topic**: MQTT topic to subscribe to (required)
+- **Broker URL**: MQTT broker URL (required, e.g., tcp://broker.example.com:1883)
+- **Username**: Username for MQTT authentication (optional)
+- **Password**: Password for MQTT authentication (optional)
+- **Client ID**: MQTT client identifier (optional)
+- **Quality of Service**: QoS level (0, 1, or 2)
+- **Retain**: Whether to retain messages
+- **Clean Session**: Whether to start a clean session
+
+=== Output Format
+
+The Kamelet outputs MQTT message payload along with MQTT headers including topic, QoS level, and message properties.
+
+=== Usage Example
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mqtt-source"
+      parameters:
+        topic: "sensors/temperature"
+        brokerUrl: "tcp://mqtt.example.com:1883"
+        username: "mqttuser"
+        password: "mqttpass"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with QoS Configuration
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mqtt-source"
+      parameters:
+        topic: "critical/alerts"
+        brokerUrl: "tcp://mqtt.example.com:1883"
+        username: "mqttuser"
+        password: "mqttpass"
+        qualityOfService: "2"
+        clientId: "camel-consumer-1"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with SSL/TLS
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mqtt-source"
+      parameters:
+        topic: "secure/data"
+        brokerUrl: "ssl://mqtt.example.com:8883"
+        username: "mqttuser"
+        password: "mqttpass"
+        qualityOfService: "1"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Quality of Service Levels
+
+- **QoS 0**: At most once delivery (fire and forget)
+- **QoS 1**: At least once delivery (acknowledged delivery)
+- **QoS 2**: Exactly once delivery (assured delivery)
+
+Choose the appropriate QoS level based on your reliability requirements.

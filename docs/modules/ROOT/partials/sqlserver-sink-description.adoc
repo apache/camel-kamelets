@@ -1,0 +1,32 @@
+== Microsoft SQL Server Sink Kamelet Description
+
+=== Enterprise Database Platform
+
+This Kamelet integrates with Microsoft SQL Server, a comprehensive database platform that provides enterprise-class data management and business intelligence capabilities.
+
+=== JDBC Driver
+
+Uses the Microsoft SQL Server JDBC driver for optimal connectivity and performance. The driver supports modern SQL Server features and security protocols.
+
+=== Security Configuration
+
+Provides configurable encryption and certificate trust options:
+
+- Connection encryption can be enabled/disabled based on security requirements
+- Server certificate trust settings can be configured for different deployment scenarios
+
+=== Data Processing
+
+Processes JSON input data through unmarshalling before SQL execution. This enables integration with modern JSON-based applications and data pipelines.
+
+=== Parameterized Queries
+
+Supports secure SQL query execution using named parameters (e.g., `:#username`, `:#city`) that map to JSON data fields, preventing SQL injection vulnerabilities.
+
+=== Connection Management
+
+Utilizes Apache Commons DBCP2 for efficient connection pooling, ensuring optimal resource utilization and performance in enterprise environments.
+
+=== Default Port Configuration
+
+Uses SQL Server's default port 1433, with configurable port settings for custom installations and security configurations.

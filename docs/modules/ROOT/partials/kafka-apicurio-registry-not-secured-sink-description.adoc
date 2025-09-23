@@ -1,0 +1,20 @@
+== Kafka Not Secured with Apicurio Registry Sink Kamelet Description
+
+=== Schema Registry Integration
+
+This Kamelet integrates with Apicurio Registry for schema management and serialization of Avro data. The registry provides centralized schema storage and versioning capabilities.
+
+=== Avro Serialization
+
+The Kamelet uses Avro serialization with configurable datum providers for efficient data serialization. The default serializer is configured for Avro data format with reflect-based datum provider.
+
+=== Message Headers
+
+The Kamelet supports both standard and CloudEvents headers for message keys and partition routing:
+
+- Message key headers: `key` or `ce-key`
+- Partition key headers: `partition-key` or `ce-partitionkey`
+
+=== Security Note
+
+This Kamelet connects to an insecure Kafka broker without authentication. Use appropriate secured variants for production environments.

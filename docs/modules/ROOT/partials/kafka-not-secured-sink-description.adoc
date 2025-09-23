@@ -1,0 +1,27 @@
+== Kafka Not Secured Sink Kamelet Description
+
+=== Basic Kafka Integration
+
+This Kamelet provides a simple integration with Kafka topics using an unsecured connection. It's designed for development environments or internal networks where security is not a primary concern.
+
+=== Message Headers
+
+The Kamelet supports both standard and CloudEvents headers for message routing:
+
+- Message key headers: `key` or `ce-key`
+- Partition key headers: `partition-key` or `ce-partitionkey`
+
+=== Minimal Configuration
+
+Only requires the essential configuration parameters: topic names and bootstrap servers. No authentication or encryption is configured.
+
+=== Use Cases
+
+Suitable for:
+- Development and testing environments
+- Internal network communications
+- Proof-of-concept implementations
+
+=== Security Warning
+
+This Kamelet does not provide any security mechanisms. Do not use in production environments where data protection is required.

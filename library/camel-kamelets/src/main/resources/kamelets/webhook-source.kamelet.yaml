@@ -30,13 +30,7 @@ metadata:
 spec:
   definition:
     title: "Webhook Source"
-    description: |-
-      Creates an HTTP endpoint that can be used as a bridge to forward data to the Kamelet sink.
-
-      The "subpath" parameter of the Webhook source allows to customize the subpath where the integration will respond to HTTP requests.
-      It's common to use a non-guessable ID for that parameter.
-
-      When the "subpath" parameter is set to "webhook" (default), the integration will accept requests at the "https://integration-external-url/webhook" endpoint.
+    description: Creates an HTTP endpoint that can be used as a bridge to forward data to the Kamelet sink.
     type: object
     properties:
       subpath:

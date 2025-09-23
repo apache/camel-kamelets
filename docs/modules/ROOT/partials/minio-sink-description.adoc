@@ -1,0 +1,25 @@
+== Minio Sink Kamelet Description
+
+=== Object Storage Integration
+
+This Kamelet integrates with MinIO, an open-source object storage system that is compatible with Amazon S3 APIs. MinIO is ideal for cloud-native applications and data lake architectures.
+
+=== S3-Compatible API
+
+MinIO provides S3-compatible APIs, making it easy to migrate from Amazon S3 or integrate with S3-compatible applications and tools.
+
+=== Authentication
+
+Uses access key and secret key authentication for secure access to MinIO instances. These credentials should be properly managed and secured according to security best practices.
+
+=== Bucket Management
+
+The Kamelet can optionally auto-create buckets if they don't exist, providing flexibility for dynamic storage scenarios. Objects are stored with configurable key names.
+
+=== Object Naming
+
+Object names can be specified through configuration or derived from message headers (`file` or `ce-file`). If no name is provided, the exchange ID is used as the object name.
+
+=== Deployment Flexibility
+
+Supports various deployment scenarios including on-premises, cloud, and hybrid environments with configurable endpoint URLs.

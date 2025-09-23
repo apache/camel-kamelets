@@ -1,0 +1,20 @@
+== Google Storage Sink Kamelet Description
+
+=== Authentication
+
+This Kamelet supports Google Cloud service account authentication. The service account key is optional - if not provided, the Kamelet will use default credentials.
+
+=== Required Configuration
+
+- **Bucket Name or ARN**: The Google Cloud Storage bucket name or Amazon Resource Name
+
+=== Optional Configuration
+
+- **Service Account Key**: Base64-encoded service account credentials
+- **Auto Create Bucket**: Automatically creates the bucket if it doesn't exist (defaults to false)
+
+=== Optional Headers
+
+In the header, you can optionally set the `file` / `ce-file` property to specify the name of the object to upload.
+
+If you do not set the property in the header, the Kamelet uses the exchange ID for the object name.

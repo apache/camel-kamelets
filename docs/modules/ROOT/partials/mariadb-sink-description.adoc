@@ -1,0 +1,21 @@
+== MariaDB Sink Kamelet Description
+
+=== Database Connection
+
+This Kamelet connects to MariaDB databases using JDBC. MariaDB is a popular open-source relational database management system that is a compatible drop-in replacement for MySQL.
+
+=== Data Processing
+
+The Kamelet expects JSON input data which is unmarshalled before executing the SQL query. The input data fields can be referenced in the SQL query using named parameters.
+
+=== Query Configuration
+
+The SQL query should use named parameters (e.g., `:#username`, `:#city`) that correspond to fields in the incoming JSON data. This allows for safe parameterized queries that prevent SQL injection attacks.
+
+=== Connection Pooling
+
+The Kamelet uses Apache Commons DBCP2 for connection pooling, providing efficient database connection management and resource optimization.
+
+=== Authentication
+
+Requires username and password authentication for secure database access. These credentials should be properly managed and secured.

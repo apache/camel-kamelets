@@ -1,0 +1,68 @@
+== Cron Source Kamelet Description
+
+This Kamelet provides a cron-based scheduler that sends events at specific times defined by a cron expression. It allows you to generate custom messages according to a cron schedule.
+
+=== Output format
+
+The Kamelet outputs the configured message as plain text content at the times specified by the cron expression.
+
+=== Configuration requirements
+
+This Kamelet requires the following mandatory properties:
+
+- **schedule**: A cron expression that defines when events should be triggered
+- **message**: The text message to send when the schedule triggers
+
+=== Cron expression format
+
+The cron expression follows the standard format:
+```
+<seconds> <minutes> <hours> <day-of-month> <month> <day-of-week> [year]
+```
+
+=== Usage examples
+
+Send a message every 3 seconds during the 10th hour:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:cron-source"
+      parameters:
+        schedule: "0/3 10 * * * ?"
+        message: "hello world"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Send a daily reminder at 9 AM:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:cron-source"
+      parameters:
+        schedule: "0 0 9 * * ?"
+        message: "Daily reminder: Check your tasks!"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Send a message every Monday at 8:30 AM:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:cron-source"
+      parameters:
+        schedule: "0 30 8 ? * MON"
+        message: "Weekly team meeting reminder"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

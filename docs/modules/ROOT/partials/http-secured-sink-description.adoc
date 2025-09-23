@@ -1,0 +1,33 @@
+== Secured HTTP Sink Kamelet Description
+
+=== Authentication Methods
+
+This Kamelet supports multiple authentication methods:
+- **Basic Authentication**: Username and password
+- **Digest Authentication**: Enhanced security over basic auth
+- **NTLM Authentication**: Windows-based authentication
+- **OAuth 2.0**: Client credentials flow with token endpoint
+
+=== HTTP Methods
+
+Supports all standard HTTP methods: GET, POST (default), PUT, DELETE, HEAD, OPTIONS, TRACE, and PATCH.
+
+=== OAuth 2.0 Configuration
+
+For OAuth 2.0 authentication, configure:
+- Client ID and Client Secret
+- Token Endpoint URL
+- OAuth Scope (optional)
+
+=== Authentication Options
+
+- **Preemptive Authentication**: Send credentials with the first request (defaults to false)
+- **Authentication Methods**: Specify allowed methods as comma-separated values
+
+=== Required Configuration
+
+- **URL**: The target HTTP/HTTPS endpoint
+
+=== Headers
+
+The Kamelet automatically sets the HTTP method header and removes any existing CamelHttpUri header to prevent conflicts.

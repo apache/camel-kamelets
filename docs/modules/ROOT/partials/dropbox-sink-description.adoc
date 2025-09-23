@@ -1,0 +1,19 @@
+== Dropbox Sink Kamelet Description
+
+=== Authentication
+
+This Kamelet uses OAuth 2.0 access token authentication to connect to Dropbox. You need to provide:
+- Access Token: OAuth access token from Dropbox
+- Client Identifier: Your Dropbox App client identifier
+
+=== File Upload Configuration
+
+The Kamelet uploads files to a specified remote path on Dropbox with configurable upload modes:
+- `add`: Renames the new file if a file with the same name exists
+- `force`: Overwrites the existing file
+
+=== Optional Headers
+
+In the header, you can optionally set the `file` / `ce-file` property to specify the name of the file to upload.
+
+If you do not set the property in the header, the Kamelet uses a default naming convention.

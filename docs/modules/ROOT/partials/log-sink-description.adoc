@@ -1,0 +1,31 @@
+== Log Sink Kamelet Description
+
+=== Debugging and Monitoring
+
+This Kamelet is designed for debugging purposes, logging all data it receives to help developers monitor and troubleshoot data flows.
+
+=== Log Levels
+
+Supports standard logging levels: TRACE, DEBUG, INFO (default), WARN, ERROR, and OFF.
+
+=== Configuration Options
+
+- **Logger Name**: Custom logging category (defaults to "log-sink")
+- **Log Level**: Controls verbosity of logging output
+- **Log Mask**: Masks sensitive information like passwords
+- **Marker**: Optional marker name for log categorization
+
+=== Display Options
+
+Extensive customization for what information to display:
+- **Message Body**: Show/hide message content (default: true)
+- **Headers**: Display message headers (default: false)
+- **Properties**: Show exchange properties
+- **Body Type**: Display Java type information
+- **Exchange Pattern**: Show Message Exchange Pattern (MEP)
+- **Streams**: Handle stream body display
+- **Multiline**: Format output across multiple lines
+
+=== Usage
+
+Ideal for development, testing, and production monitoring to understand data flow and diagnose issues in integration pipelines.
