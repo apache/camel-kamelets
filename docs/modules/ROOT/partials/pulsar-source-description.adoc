@@ -1,0 +1,43 @@
+== Pulsar Source Kamelet Description
+
+=== Authentication methods
+
+This Kamelet connects to Pulsar using appropriate authentication mechanisms:
+
+- Service-specific authentication methods
+- API keys, tokens, or credential-based authentication
+- Connection configuration
+
+=== Output format
+
+The Kamelet consumes data from Pulsar and produces the data in JSON format.
+
+=== Configuration
+
+The Kamelet requires connection parameters specific to Pulsar:
+
+- Service connection details
+- Authentication credentials
+- Query or consumption parameters
+
+=== Usage example
+
+```yaml
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: pulsar-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: pulsar-source
+    properties:
+      # Add service-specific properties here
+  sink:
+    ref:
+      kind: Service
+      apiVersion: v1
+      name: my-service
+```

@@ -1,0 +1,17 @@
+== JMS - IBM MQ Sink Kamelet Description
+
+=== Connection Configuration
+
+This Kamelet connects to an IBM MQ message broker using JMS. IBM MQ is an enterprise-grade messaging middleware that provides reliable message delivery.
+
+=== Authentication
+
+The Kamelet requires authentication credentials including username and password to connect to the IBM MQ server. These credentials should be configured securely.
+
+=== Destination Configuration
+
+The Kamelet supports both queue and topic destinations. The destination type can be configured using the `destinationType` property, which defaults to `queue`.
+
+=== SSL/TLS Support
+
+Optional SSL/TLS encryption can be enabled by configuring the `sslCipherSuite` property with an appropriate cipher suite.

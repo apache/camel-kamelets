@@ -1,0 +1,29 @@
+== Mail Sink Kamelet Description
+
+=== SMTP Email Delivery
+
+This Kamelet sends emails through SMTP servers with configurable authentication and addressing.
+
+=== Required Configuration
+
+- **Connection Host**: SMTP server hostname (e.g., smtp.gmail.com)
+- **Username and Password**: SMTP authentication credentials
+
+=== Optional Configuration
+
+- **Connection Port**: SMTP port (defaults to 25)
+- **From**: Sender email address
+- **To**: Primary recipient
+- **Subject**: Email subject line
+
+=== Email Headers Support
+
+The Kamelet supports various email headers through CloudEvents:
+- `ce-subject`: Override email subject
+- `ce-from`: Override sender address
+- `ce-to`: Override recipient address
+- `ce-cc`: Add CC recipients
+
+=== Usage
+
+Enables automated email notifications, alerts, and reports by sending emails through configured SMTP servers as part of integration workflows.

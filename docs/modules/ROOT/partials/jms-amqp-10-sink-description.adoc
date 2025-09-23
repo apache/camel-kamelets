@@ -1,0 +1,13 @@
+== JMS - AMQP 1.0 Sink Kamelet Description
+
+=== Connection Configuration
+
+This Kamelet connects to any AMQP 1.0 compliant message broker using the Apache Qpid JMS client.
+
+=== Destination Configuration
+
+The Kamelet supports both queue and topic destinations. The destination type can be configured using the `destinationType` property, which defaults to `queue`.
+
+=== AMQP 1.0 Protocol
+
+This sink uses the AMQP 1.0 protocol for sending messages to the broker. AMQP 1.0 is an open standard messaging protocol that provides reliable, secure, and interoperable messaging.

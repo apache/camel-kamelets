@@ -1,0 +1,43 @@
+== Twitter Timeline Source Kamelet Description
+
+=== Authentication methods
+
+This Kamelet connects to Twitter Timeline using appropriate authentication mechanisms:
+
+- Service-specific authentication methods
+- API keys, tokens, or credential-based authentication
+- Connection configuration
+
+=== Output format
+
+The Kamelet consumes data from Twitter Timeline and produces the data in JSON format.
+
+=== Configuration
+
+The Kamelet requires connection parameters specific to Twitter Timeline:
+
+- Service connection details
+- Authentication credentials
+- Query or consumption parameters
+
+=== Usage example
+
+```yaml
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: twitter-timeline-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: twitter-timeline-source
+    properties:
+      # Add service-specific properties here
+  sink:
+    ref:
+      kind: Service
+      apiVersion: v1
+      name: my-service
+```

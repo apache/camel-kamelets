@@ -1,0 +1,60 @@
+== FHIR Source Kamelet Description
+
+=== Authentication
+
+This Kamelet requires username and password authentication to access the FHIR server. The credentials are configured through the `username` and `password` properties.
+
+=== Configuration
+
+The FHIR Source Kamelet supports the following configurations:
+
+- **Server URL**: The FHIR server URL endpoint (required)
+- **Resource URL**: The FHIR resource type URL (default: "/Patient")
+- **Encoding**: Response encoding format - JSON or XML (default: "JSON")
+- **FHIR Version**: The FHIR specification version to use (default: "R4")
+- **Pretty Print**: Whether to format JSON responses for readability (default: true)
+
+=== Output Format
+
+The Kamelet outputs data in JSON format, marshalling FHIR resources according to the specified FHIR version and pretty print settings.
+
+=== Usage Example
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:fhir-source"
+      parameters:
+        serverUrl: "https://hapi.fhir.org/baseR4"
+        username: "your-username"
+        password: "your-password"
+        url: "/Patient"
+        fhirVersion: "R4"
+        encoding: "JSON"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with Different Resource Type
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:fhir-source"
+      parameters:
+        serverUrl: "https://hapi.fhir.org/baseR4"
+        username: "your-username"
+        password: "your-password"
+        url: "/Observation"
+        fhirVersion: "R4"
+        encoding: "JSON"
+        prettyPrint: false
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+This example searches for Observation resources from the FHIR server with compact JSON output.

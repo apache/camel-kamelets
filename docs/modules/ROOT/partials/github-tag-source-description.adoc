@@ -1,0 +1,44 @@
+== GitHub Tag Source Kamelet Description
+
+=== Authentication methods
+
+This Kamelet uses OAuth token-based authentication to connect to GitHub. You need to provide:
+
+- A valid OAuth token with appropriate repository permissions
+- The repository name and owner information
+
+=== Output format
+
+The Kamelet produces tag data in JSON format containing tag information from the specified GitHub repository.
+
+=== Configuration
+
+The Kamelet requires the following parameters:
+
+- `repoName`: The GitHub repository name
+- `repoOwner`: The repository owner (user or organization)
+- `oauthToken`: OAuth token for authentication
+
+=== Usage example
+
+```yaml
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: github-tag-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: github-tag-source
+    properties:
+      repoName: "my-repository"
+      repoOwner: "my-organization"
+      oauthToken: "{{oauth-token}}"
+  sink:
+    ref:
+      kind: Service
+      apiVersion: v1
+      name: my-service
+```

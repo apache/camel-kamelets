@@ -30,8 +30,7 @@ metadata:
 spec:
   definition:
     title: "Google Sheets Source"
-    description: |-
-      Receive data from Google Sheets.
+    description: Receive data from Google Sheets.
     required:
       - spreadsheetId
       - clientId
@@ -138,23 +137,15 @@ spec:
       types:
         json:
           format: "application-json"
-          description: |-
-            Json representation of a GoogleSheets ValueRange object that holds all values for the given cell range.
-            Or Json array of values for a single row/column in the range when 'splitResults' mode is enabled.
+          description: Json representation of a GoogleSheets ValueRange object that holds all values for the given cell range.
           mediaType: application/json
         json-struct:
           format: "google-sheets:application-x-struct"
-          description: |-
-            Special Json representation of Google Sheets ValueRange object with just row and column values as a generic JsonNode.
-            Each cell value is represented by a Json property named after the respective row (A-Z) or column (1-n) depending on the given majorDimension.
-            Custom column names are supported in order to use custom property names instead of generic row (A-Z) or column (1-n) coordinates.
-            The produced Json struct is ready to be transformed back into a proper Google Sheets ValueRange object that can be used in an update/append values operation.
+          description: Special Json representation of Google Sheets ValueRange object with just row and column values as a generic JsonNode.
           mediaType: application/json
         cloudevents:
           format: "google-sheets-stream:application-cloudevents"
-          description: |-
-            Output data type represents Google Sheets Stream response as CloudEvent V1. The data type sets Camel specific CloudEvent headers on the exchange with
-            respective data from the Spreasheet and its derived object.
+          description: Output data type represents Google Sheets Stream response as CloudEvent V1. The data type sets Camel specific CloudEvent headers on the exchange with respective data from the Spreadsheet and its derived object.
           headers:
             CamelCloudEventID:
               title: CloudEvent ID

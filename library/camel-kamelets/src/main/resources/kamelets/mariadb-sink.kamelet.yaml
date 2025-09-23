@@ -30,20 +30,7 @@ metadata:
 spec:
   definition:
     title: "MariaDB Sink"
-    description: |-
-      Send data to a MariaDB Database.
-
-      In your Pipe file, you must explicitly declare the MariaDB Server driver dependency in spec->integration->dependencies.
-      
-      - "mvn:org.mariadb.jdbc:mariadb-java-client:<version>"
-
-      This Kamelet expects a JSON-formatted body. Use key:value pairs to map the JSON fields and parameters. For example, here is a query:
-
-      'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
-
-      Here is example input for the example query:
-
-      '{ "username":"oscerd", "city":"Rome"}'
+    description: Send data to a MariaDB Database. This Kamelet expects a JSON-formatted body. Use key:value pairs to map the JSON fields and parameters.
     required:
       - serverName
       - username

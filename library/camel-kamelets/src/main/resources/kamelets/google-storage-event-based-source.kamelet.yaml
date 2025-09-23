@@ -30,14 +30,7 @@ metadata:
 spec:
   definition:
     title: "Google Storage Event-based Source"
-    description: |-
-      Receive data from Google Pubsub reporting events related to a Google Storage bucket.
-
-      Service account key is the basic method for authenticating to the Google Pubsub and Google Storage.
-
-      To use this Kamelet, you need to set up Events notification for your Google Storage Bucket.
-
-      You must encode the `serviceAccountKey` property before you pass it as a parameter.
+    description: Receive data from Google Pubsub reporting events related to a Google Storage bucket.
     required:
       - projectId
       - subscriptionName

@@ -1,0 +1,25 @@
+== MongoDB Sink Kamelet Description
+
+=== NoSQL Database Integration
+
+This Kamelet integrates with MongoDB, a popular NoSQL document database. MongoDB stores data in flexible, JSON-like documents, making it ideal for applications requiring dynamic schemas.
+
+=== SSL/TLS Security
+
+The Kamelet supports SSL/TLS encryption for secure connections to MongoDB. SSL is enabled by default, and certificate validation can be configured based on security requirements.
+
+=== Authentication
+
+Optional username and password authentication is supported for secured MongoDB instances. The Kamelet uses SSL-aware MongoDB client connections for secure data transmission.
+
+=== Write Operations
+
+The Kamelet performs insert operations into the specified collection. It supports upsert operations through header configuration (`db-upsert` or `ce-dbupsert` headers).
+
+=== Write Concerns
+
+Configurable write concern levels ensure data durability and consistency based on application requirements. Options include acknowledged, journaled, majority, and various numbered write concerns.
+
+=== Collection Management
+
+The Kamelet can optionally create collections during initialization if they don't exist, providing flexibility for dynamic database structures.

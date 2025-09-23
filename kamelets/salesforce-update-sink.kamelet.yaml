@@ -30,16 +30,7 @@ metadata:
 spec:
   definition:
     title: "Salesforce Update Sink"
-    description: |-
-      Update an object in Salesforce.
-
-      The body received must contain a JSON key-value pair for each property to update inside the payload attribute, for example:
-
-      `{ "payload": { "Phone": "1234567890", "Name": "Antonia" } }`
-
-      The body received must include the `sObjectName` and `sObjectId` properties, for example:
-
-      `{ "payload": { "Phone": "1234567890", "Name": "Antonia" }, "sObjectId": "sObjectId", "sObjectName": "sObjectName" }`
+    description: Update an object in Salesforce.
 
     required:
       - clientId

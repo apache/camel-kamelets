@@ -1,0 +1,75 @@
+== Dropbox Source Kamelet Description
+
+This Kamelet consumes files from Dropbox by periodically searching for files matching specified criteria, downloading them, and then deleting them from Dropbox after processing.
+
+=== Authentication methods
+
+This Kamelet requires Dropbox authentication using:
+
+- **accessToken**: OAuth 2.0 access token for Dropbox API access
+- **clientIdentifier**: Your Dropbox App client identifier
+
+To obtain these credentials:
+
+1. Create a Dropbox App in the https://www.dropbox.com/developers/apps[Dropbox App Console]
+2. Generate an access token for your app
+3. Use the App Key as the client identifier
+
+=== Configuration requirements
+
+The Kamelet requires the following mandatory properties:
+
+- **period**: Polling interval in milliseconds (default: 10000)
+- **accessToken**: Dropbox OAuth access token
+- **clientIdentifier**: Dropbox App client identifier
+- **remotePath**: The folder path in Dropbox to search
+- **query**: Search query to filter files
+
+=== File processing behavior
+
+The Kamelet follows this process:
+
+1. Searches for files in the specified Dropbox path using the query
+2. Downloads each matching file
+3. Sends the file content to the sink
+4. Deletes the file from Dropbox after successful processing
+
+WARNING: Files are permanently deleted from Dropbox after processing. Ensure you have backups if needed.
+
+=== Usage examples
+
+Basic file consumption from a Dropbox folder:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:dropbox-source"
+      parameters:
+        accessToken: "your-oauth-token"
+        clientIdentifier: "your-app-key"
+        remotePath: "/inbox"
+        query: ".txt"
+        period: 30000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Search for specific file types:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:dropbox-source"
+      parameters:
+        accessToken: "your-oauth-token"
+        clientIdentifier: "your-app-key"
+        remotePath: "/documents"
+        query: "invoice .pdf"
+        period: 60000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

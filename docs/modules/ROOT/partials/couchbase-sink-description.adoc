@@ -1,0 +1,22 @@
+== Couchbase Sink Kamelet Description
+
+=== Authentication
+
+This Kamelet uses username and password authentication to connect to Couchbase.
+
+=== Configuration
+
+This Kamelet requires configuration of:
+- Protocol (e.g., http or https)
+- Hostname of the Couchbase server
+- Bucket name to store documents
+- Username and password credentials
+
+Optional settings include:
+- Port (defaults to 8091)
+- Starting ID for document inserts (defaults to 1)
+- Auto start ID flag (defaults to true)
+
+=== Document Storage
+
+Documents are stored in the specified Couchbase bucket. The Kamelet can automatically generate document IDs starting from a configurable starting point.

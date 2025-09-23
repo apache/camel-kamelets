@@ -30,8 +30,7 @@ metadata:
 spec:
   definition:
     title: "Slack Source"
-    description: |-
-      Receive messages from a Slack channel.
+    description: Receive messages from a Slack channel.
     required:
       - channel
       - token
@@ -77,9 +76,7 @@ spec:
           mediaType: application/json
         cloudevents:
           format: "slack:application-cloudevents"
-          description: |-
-            Output data type represents Azure Storage Blob get blob response as CloudEvent V1. The data type sets Camel specific CloudEvent headers on the exchange with
-            respective data from the Azure container and its derived object.
+          description: Output data type represents Slack channel messages as CloudEvent V1. The data type sets Camel specific CloudEvent headers on the exchange with respective data from the Slack message and its derived object.
           headers:
             CamelCloudEventID:
               title: CloudEvent ID

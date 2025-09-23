@@ -30,28 +30,7 @@ metadata:
 spec:
   definition:
     title: "Jira Add Issue Sink"
-    description: |-
-      Add a new issue to Jira.
-
-      The Kamelet expects the following headers to be set:
-
-      - `projectKey` / `ce-projectKey`: as the Jira project key.
-
-      - `issueTypeName` / `ce-issueTypeName`: as the name of the issue type (example: Bug, Enhancement).
-
-      - `issueSummary` / `ce-issueSummary`: as the title or summary of the issue.
-
-      - `issueAssignee` / `ce-issueAssignee`: as the user assigned to the issue (Optional).
-
-      - `issuePriorityName` / `ce-issuePriorityName`: as the priority name of the issue (example: Critical, Blocker, Trivial) (Optional).
-
-      - `issueComponents` / `ce-issueComponents`: as list of string with the valid component names (Optional).
-
-      - `issueDescription` / `ce-issueDescription`: as the issue description (Optional).
-
-      The issue description can be set from the body of the message or the `issueDescription`/`ce-issueDescription` in the header, however the body takes precedence.
-
-      To authenticate, a username/password or personal token must be defined. We recommend to use personal token as it is a safer way to get access to Jira.
+    description: Add a new issue to Jira.
 
     required:
       - jiraUrl

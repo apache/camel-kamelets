@@ -30,12 +30,7 @@ metadata:
 spec:
   definition:
     title: "Minio Sink"
-    description: |-
-      Upload data to MinIO.
-
-      In the header, you can set the `file` / `ce-file` property to specify the filename to upload.
-
-      If you do not set the property in the header, the Kamelet uses the exchange ID for the filename.
+    description: Upload data to MinIO.
     required:
       - bucketName
       - accessKey

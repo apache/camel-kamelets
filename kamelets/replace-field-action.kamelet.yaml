@@ -30,18 +30,7 @@ metadata:
 spec:
   definition:
     title: "Replace Field Action"
-    description: |-
-      Replace field with a different key in the message in transit.
-
-      The required parameter `renames` is a comma-separated list of colon-delimited renaming pairs like for example `foo:bar,abc:xyz` and it represents the field rename mappings.
-
-      The optional parameter `enabled` represents the fields to include. If specified, only the named fields are included in the resulting message.
-
-      The optional parameter `disabled` represents the fields to exclude. If specified, the listed fields are excluded from the resulting message. This takes precedence over the `enabled` parameter.
-
-      The default value of `enabled` parameter is `all`, so all the fields in the payload are included.
-
-      The default value of `disabled` parameter is `none`, so no fields in the payload are excluded.
+    description: Replace field with a different key in the message in transit.
     required:
       - renames
     properties:

@@ -1,0 +1,46 @@
+== Snowflake Source Kamelet Description
+
+=== Authentication methods
+
+This Kamelet connects to Snowflake using:
+
+- Database-specific connection credentials
+- Username and password authentication
+- Connection URL/string configuration
+
+=== Output format
+
+The Kamelet monitors Snowflake for changes and produces the data in JSON format.
+
+=== Configuration
+
+The Kamelet requires database connection parameters:
+
+- Database connection URL/server information
+- Username and password for authentication
+- Query or monitoring configuration
+
+=== Usage example
+
+```yaml
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: snowflake-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: snowflake-source
+    properties:
+      serverName: "database-server"
+      username: "{{username}}"
+      password: "{{password}}"
+      databaseName: "mydb"
+  sink:
+    ref:
+      kind: Service
+      apiVersion: v1
+      name: my-service
+```

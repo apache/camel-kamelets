@@ -1,0 +1,48 @@
+== HTTP Secured Source Kamelet Description
+
+=== Authentication methods
+
+This Kamelet supports multiple authentication methods:
+
+- OAuth authentication
+- Basic authentication using username and password
+- No authentication (if not specified)
+
+=== Output format
+
+The Kamelet periodically fetches a secured HTTP resource and provides the content as output. The content type is configurable and defaults to application/json.
+
+=== Configuration
+
+The Kamelet requires the following parameters:
+
+- `url`: The URL to fetch for data
+
+Optional parameters:
+- `period`: The interval between fetches in milliseconds (default: 10000)
+- `contentType`: The content type accepted for the resource (default: "application/json")
+- Authentication parameters (oauth or basic auth credentials)
+
+=== Usage example
+
+```yaml
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: http-secured-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: http-secured-source
+    properties:
+      url: "https://api.example.com/data"
+      period: 30000
+      contentType: "application/json"
+  sink:
+    ref:
+      kind: Service
+      apiVersion: v1
+      name: my-service
+```
