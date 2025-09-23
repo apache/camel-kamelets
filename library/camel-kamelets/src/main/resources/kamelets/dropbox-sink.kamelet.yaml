@@ -30,14 +30,7 @@ metadata:
 spec:
   definition:
     title: "Dropbox Sink"
-    description: |-
-      Upload Files to Dropbox.
-
-      The Kamelet expects the following headers to be set:
-
-      - `file` / `ce-file`: as the file name to upload
-
-      If the header is not set, the exchange ID is used as file name.
+    description: Upload Files to Dropbox.
     required:
       - accessToken
       - clientIdentifier

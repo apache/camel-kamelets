@@ -1,0 +1,74 @@
+== Timer Source Kamelet Description
+
+This Kamelet produces periodic messages with a custom payload at configurable intervals. It's useful for generating scheduled events or heartbeat messages.
+
+=== Output format
+
+The Kamelet outputs the configured message with a specified content type. By default, it produces plain text messages.
+
+=== Special headers
+
+The Kamelet sets the following header:
+
+- `Content-Type`: Configurable content type (default: `text/plain`)
+
+=== Configuration requirements
+
+This Kamelet requires the following mandatory property:
+
+- **message**: The text message to generate
+
+=== Configuration options
+
+- **period**: Time interval between messages in milliseconds (default: 1000)
+- **message**: The message content to send (required)
+- **contentType**: MIME type of the message (default: `text/plain`)
+- **repeatCount**: Maximum number of messages to send (optional - if not set, runs indefinitely)
+
+=== Usage examples
+
+Basic periodic message:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: "hello world"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Custom interval and content type:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: '{"status": "heartbeat", "timestamp": "${date:now:yyyy-MM-dd HH:mm:ss}"}'
+        contentType: "application/json"
+        period: 30000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Limited number of messages:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: "Scheduled notification"
+        period: 5000
+        repeatCount: 10
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

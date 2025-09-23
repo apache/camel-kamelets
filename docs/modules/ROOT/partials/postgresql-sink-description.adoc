@@ -1,0 +1,25 @@
+== PostgreSQL Sink Kamelet Description
+
+=== Input Format
+
+This Kamelet expects a JSON-formatted body. Use key:value pairs to map the JSON fields and parameters.
+
+=== Query Example
+
+Here is an example query:
+
+[source,sql]
+----
+INSERT INTO accounts (username,city) VALUES (:#username,:#city)
+----
+
+Here is example input for the example query:
+
+[source,json]
+----
+{ "username":"oscerd", "city":"Rome"}
+----
+
+=== Authentication
+
+The Kamelet requires username and password authentication to connect to the PostgreSQL database.

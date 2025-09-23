@@ -1,0 +1,53 @@
+== Google Pubsub Source Kamelet Description
+
+=== Authentication methods
+
+This Kamelet uses Service Account Key authentication to connect to Google Cloud Pub/Sub. You need to provide:
+
+- A service account key encoded in base64 format
+- The Google Cloud Project ID
+- The subscription name from which to consume messages
+
+=== Output format
+
+The Kamelet consumes messages from Google Cloud Pub/Sub and produces the message data in JSON format.
+
+=== Configuration
+
+The Kamelet requires the following parameters:
+
+- `projectId`: The Google Cloud Pub/Sub Project ID
+- `subscriptionName`: The subscription name
+
+Optional parameters:
+- `serviceAccountKey`: The service account key to use as credentials (must be base64 encoded)
+- `synchronousPull`: Specifies to synchronously pull batches of messages (default: false)
+- `maxMessagesPerPoll`: The maximum number of messages to receive from the server in a single API call (default: 1)
+- `concurrentConsumers`: The number of parallel streams to consume from the subscription (default: 1)
+
+=== Usage example
+
+```yaml
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: google-pubsub-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: google-pubsub-source
+    properties:
+      projectId: "my-gcp-project"
+      subscriptionName: "my-subscription"
+      serviceAccountKey: "{{service-account-key-base64}}"
+      synchronousPull: true
+      maxMessagesPerPoll: 10
+      concurrentConsumers: 2
+  sink:
+    ref:
+      kind: Service
+      apiVersion: v1
+      name: my-service
+```

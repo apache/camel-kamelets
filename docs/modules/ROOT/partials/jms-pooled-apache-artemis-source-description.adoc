@@ -1,0 +1,47 @@
+== JMS Pooled Apache Artemis Source Kamelet Description
+
+=== Authentication methods
+
+This Kamelet connects to Apache Artemis JMS broker using:
+
+- Broker URL and connection credentials
+- Pooled connection factory for better performance
+- Username and password authentication
+
+=== Output format
+
+The Kamelet consumes messages from Apache Artemis JMS queues and produces the message data in the configured format.
+
+=== Configuration
+
+The Kamelet requires Apache Artemis connection parameters:
+
+- `brokerURL`: The Apache Artemis broker URL
+- `destinationName`: The destination queue or topic name
+- `username`: Username for authentication
+- `password`: Password for authentication
+
+=== Usage example
+
+```yaml
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: jms-pooled-apache-artemis-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: jms-pooled-apache-artemis-source
+    properties:
+      brokerURL: "tcp://artemis-broker:61616"
+      destinationName: "my-queue"
+      username: "{{username}}"
+      password: "{{password}}"
+  sink:
+    ref:
+      kind: Service
+      apiVersion: v1
+      name: my-service
+```

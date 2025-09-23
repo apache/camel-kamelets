@@ -1,0 +1,21 @@
+== Kafka Not Secured with Apicurio Registry secured with Keycloak Sink Kamelet Description
+
+=== Schema Registry Security
+
+This Kamelet integrates with Apicurio Registry that is secured with Keycloak authentication. While the Kafka broker connection is not secured, the schema registry access requires proper authentication.
+
+=== Keycloak Authentication
+
+The Kamelet supports OAuth2/OpenID Connect authentication through Keycloak for accessing the Apicurio Registry. Configuration includes:
+
+- Keycloak service URL and realm
+- Client ID and client secret
+- Username and password for authentication
+
+=== Avro Serialization
+
+Uses Apicurio Registry's Avro serializer with configurable datum providers for efficient schema-based data serialization.
+
+=== Security Considerations
+
+While the Kafka broker connection is not secured, the schema registry authentication ensures that only authorized applications can access and modify schemas.

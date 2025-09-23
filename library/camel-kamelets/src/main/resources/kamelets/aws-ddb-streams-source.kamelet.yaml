@@ -124,9 +124,7 @@ spec:
           mediaType: application/json
         cloudevents:
           format: "aws2-ddbstream:application-cloudevents"
-          description: |-
-            Data type transformer converts AWS Dynamo DB Streams get records response to CloudEvent v1_0 data format. The data
-            type sets Camel specific CloudEvent headers with values extracted from AWS Dynamo DB Streams get records.
+          description: Data type transformer converts AWS Dynamo DB Streams get records response to CloudEvent v1_0 data format. The data type sets Camel specific CloudEvent headers with values extracted from AWS Dynamo DB Streams get records.
           headers:
             CamelCloudEventID:
               title: CloudEvent ID

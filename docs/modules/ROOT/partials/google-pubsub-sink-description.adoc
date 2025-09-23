@@ -1,0 +1,18 @@
+== Google Pubsub Sink Kamelet Description
+
+=== Authentication
+
+This Kamelet supports Google Cloud authentication through service account keys. The service account key is optional - if not provided, the Kamelet will use default credentials.
+
+=== Required Configuration
+
+- **Project ID**: The Google Cloud Pub/Sub Project ID
+- **Destination Name**: The Pub/Sub topic name to publish messages to
+
+=== Optional Configuration
+
+- **Service Account Key**: Base64-encoded service account credentials (optional)
+
+=== Message Publishing
+
+The Kamelet publishes messages to the specified Google Cloud Pub/Sub topic, enabling reliable message delivery and processing across distributed systems.

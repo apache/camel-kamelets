@@ -30,14 +30,7 @@ metadata:
 spec:
   definition:
     title: "DNS IP Action"
-    description: |-
-      Get an IP from a DNS
-
-      The Kamelet expects the following headers to be set:
-
-      - `domain` / `ce-domain`: as the domain for which we are looking for the IP
-
-      If the header isn't set the body is used as domain to look for.
+    description: Get an IP from a DNS
     type: object
   dependencies:
     - "camel:core"

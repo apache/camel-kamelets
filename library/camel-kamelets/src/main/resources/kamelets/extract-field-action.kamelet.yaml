@@ -30,21 +30,7 @@ metadata:
 spec:
   definition:
     title: "Extract Field Action"
-    description: |-
-      Extract a field from the message body.
-
-      The extract field action expects an `application/json` content type.
-
-      The field parameter specifies which field in the JSON to extract. By default, the message body is overridden with the extracted field.
-
-      The optional parameter `headerOutput` specifies whether the extracted field should be stored in a message header named 'CamelKameletsExtractFieldName', leaving the message body untouched.
-
-      The optional parameter `headerOutputName` specifies a custom header name instead of the default 'CamelKameletsExtractFieldName'. This parameter must be used in conjunction with `headerOutput`.
-      If no `headerOutputName` parameter is provided, the default 'CamelKameletsExtractFieldName' is used.
-
-      The optional parameter `strictHeaderCheck` enables a strict header name check. If enabled, the action checks if the header output name (custom or default) is already used in the exchange. If so, the extracted field is stored in the message body, if not, the extracted field is stored in the selected header (custom or default).
-
-      The `headerOutput`/`headerOutputName`/`strictHeaderCheck` parameters are particulary useful in case you would like to reuse an extracted field as parameter for another header, for example.
+    description: Extract a field from the message body.
     required:
       - field
     properties:

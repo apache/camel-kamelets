@@ -33,8 +33,7 @@ metadata:
 spec:
   definition:
     title: "Kafka Batch Source"
-    description: |-
-      Receive data from Kafka topics in batch through Plain Login Module and commit them manually through KafkaManualCommit..
+    description: Receive data from Kafka topics in batch through Plain Login Module and commit them manually through KafkaManualCommit. This provides complete control over when messages are committed, allowing for custom processing logic before acknowledgment.
     required:
       - topic
       - bootstrapServers

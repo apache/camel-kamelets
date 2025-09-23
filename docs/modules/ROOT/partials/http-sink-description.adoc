@@ -1,0 +1,17 @@
+== HTTP Sink Kamelet Description
+
+=== HTTP Methods
+
+Supports all standard HTTP methods: GET, POST (default), PUT, DELETE, HEAD, OPTIONS, TRACE, and PATCH.
+
+=== Required Configuration
+
+- **URL**: The target HTTP or HTTPS endpoint where data will be sent
+
+=== Usage
+
+This Kamelet forwards data to HTTP or HTTPS endpoints without authentication. For secured endpoints requiring authentication, use the HTTP Secured Sink Kamelet instead.
+
+=== Headers
+
+The Kamelet automatically sets the HTTP method header and removes any existing CamelHttpUri header to prevent conflicts.

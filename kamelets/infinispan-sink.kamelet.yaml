@@ -30,14 +30,7 @@ metadata:
 spec:
   definition:
     title: "Infinispan Sink"
-    description: |-
-      Write object to an Infinispan cache.
-
-      The Kamelet expects the following headers to be set:
-
-      - `key` / `ce-key`: as the key to use when put an object in the Infinispan cache.
-
-      If the header is not set, the exchange ID is used as key.
+    description: Write object to an Infinispan cache.
     required:
       - cacheName
       - hosts

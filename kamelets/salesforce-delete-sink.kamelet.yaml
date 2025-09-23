@@ -30,11 +30,7 @@ metadata:
 spec:
   definition:
     title: "Salesforce Delete Sink"
-    description: |-
-      Remove an object from Salesforce. 
-      
-      The data body must be JSON-formatted and it must
-      contain two keys: `sObjectId` and `sObjectName`. For example: `{ "sObjectId": "XXXXX0", "sObjectName": "Contact" }`
+    description: Remove an object from Salesforce.
     required:
       - clientId
       - clientSecret

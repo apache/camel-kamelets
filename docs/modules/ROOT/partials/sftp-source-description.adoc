@@ -1,0 +1,88 @@
+== SFTP Source Kamelet Description
+
+=== Authentication
+
+This Kamelet supports SFTP authentication using username and password credentials. SFTP provides secure file transfer over SSH, ensuring encrypted communication.
+
+=== Configuration
+
+The SFTP Source Kamelet supports the following configurations:
+
+- **Connection Host**: The hostname or IP address of the SFTP server (required)
+- **Connection Port**: The port number of the SFTP server (default: 22)
+- **Username**: Username for SFTP authentication (required)
+- **Password**: Password for SFTP authentication (required)
+- **Directory Name**: The starting directory path on the SFTP server (required)
+- **Recursive**: Process files in subdirectories (default: false)
+- **Idempotent**: Skip already-processed files (default: true)
+- **Binary**: Use binary transfer mode instead of ASCII (default: false)
+- **Auto Create**: Automatically create the starting directory if it doesn't exist (default: true)
+- **Delete**: Delete files after successful processing (default: false)
+
+=== Output Format
+
+The Kamelet outputs file content as an `InputStream` and sets headers with file information:
+- `file`: The name of the processed file
+- `ce-file`: Cloud Events compatible file name header
+
+=== Security
+
+SFTP provides enhanced security over standard FTP by using SSH for authentication and encryption, ensuring that credentials and data are transmitted securely.
+
+=== Usage Example
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:sftp-source"
+      parameters:
+        connectionHost: "sftp.example.com"
+        connectionPort: "22"
+        username: "sftpuser"
+        password: "sftppass"
+        directoryName: "/incoming"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with Recursive Processing
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:sftp-source"
+      parameters:
+        connectionHost: "sftp.example.com"
+        username: "sftpuser"
+        password: "sftppass"
+        directoryName: "/data"
+        recursive: true
+        binary: true
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with File Deletion
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:sftp-source"
+      parameters:
+        connectionHost: "sftp.example.com"
+        username: "sftpuser"
+        password: "sftppass"
+        directoryName: "/processed"
+        delete: true
+        idempotent: false
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+This example deletes files after processing and disables idempotency to allow re-processing of files with the same name.

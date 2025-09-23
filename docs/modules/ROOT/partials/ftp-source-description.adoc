@@ -1,0 +1,88 @@
+== FTP Source Kamelet Description
+
+=== Authentication
+
+This Kamelet requires username and password authentication to access the FTP server. The credentials are configured through the `username` and `password` properties.
+
+=== Configuration
+
+The FTP Source Kamelet supports the following configurations:
+
+- **Connection Host**: The hostname or IP address of the FTP server (required)
+- **Connection Port**: The port number of the FTP server (default: 21)
+- **Username**: Username for FTP authentication (required)
+- **Password**: Password for FTP authentication (required)
+- **Directory Name**: The starting directory path on the FTP server (required)
+- **Passive Mode**: Use passive mode for FTP connections (default: false)
+- **Recursive**: Process files in subdirectories (default: false)
+- **Idempotent**: Skip already-processed files (default: true)
+- **Binary**: Use binary transfer mode instead of ASCII (default: false)
+- **Auto Create**: Automatically create the starting directory if it doesn't exist (default: true)
+- **Delete**: Delete files after successful processing (default: false)
+
+=== Output Format
+
+The Kamelet outputs file content as an `InputStream` and sets headers with file information:
+- `file`: The name of the processed file
+- `ce-file`: Cloud Events compatible file name header
+
+=== Usage Example
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ftp-source"
+      parameters:
+        connectionHost: "ftp.example.com"
+        connectionPort: "21"
+        username: "ftpuser"
+        password: "ftppass"
+        directoryName: "/incoming"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with Passive Mode and Recursive Processing
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ftp-source"
+      parameters:
+        connectionHost: "ftp.example.com"
+        connectionPort: "21"
+        username: "ftpuser"
+        password: "ftppass"
+        directoryName: "/data"
+        passiveMode: true
+        recursive: true
+        binary: true
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with File Deletion
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ftp-source"
+      parameters:
+        connectionHost: "ftp.example.com"
+        connectionPort: "21"
+        username: "ftpuser"
+        password: "ftppass"
+        directoryName: "/processed"
+        delete: true
+        idempotent: false
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+This example deletes files after processing and disables idempotency to allow re-processing of files with the same name.

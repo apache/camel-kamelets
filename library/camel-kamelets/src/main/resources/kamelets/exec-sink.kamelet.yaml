@@ -30,14 +30,7 @@ metadata:
 spec:
   definition:
     title: "Exec Sink"
-    description: |-
-      Execute system commands
-
-      The Kamelet expects the following headers to be set:
-
-      - `args` / `ce-args`: as the args to be set on the executable.
-
-      If the header is not set, the executable is run without arguments.
+    description: Execute system commands
     required:
     - executable
     type: object

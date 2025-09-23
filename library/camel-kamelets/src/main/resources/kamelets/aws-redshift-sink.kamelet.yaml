@@ -30,7 +30,7 @@ metadata:
 spec:
   definition:
     title: "AWS Redshift Sink"
-    description: Send data to an AWS Redshift Database.
+    description: Send data to an AWS Redshift Database. This Kamelet expects a JSON-formatted body. Use key:value pairs to map the JSON fields and parameters.
     required:
       - serverName
       - username

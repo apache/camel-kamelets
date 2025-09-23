@@ -100,8 +100,7 @@ spec:
           type: java.time.Instant
         CamelAzureEventHubsSequenceNumber:
           title: Azure Event Hubs Event Sequence Number
-          description: |-
-            It sets the sequence number assigned to the event when it was enqueued in the associated Event Hub partition. This is unique for every message received in the Event Hub partition. This is only present on a received EventData.
+          description: It sets the sequence number assigned to the event when it was enqueued in the associated Event Hub partition. This is unique for every message received in the Event Hub partition. This is only present on a received EventData.
           type: long
         CamelAzureEventHubsMetadata:
           title: Azure Event Hubs Event Metadata
@@ -122,9 +121,7 @@ spec:
           mediaType: application/octet-stream
         cloudevents:
           format: "azure-eventhubs:application-cloudevents"
-          description: |-
-            Data type transformer converts Azure Eventhubs consumer response to CloudEvent v1_0 data format. The data type sets
-            Camel specific CloudEvent headers with values extracted from Azure Eventhubs consumer response.
+          description: Data type transformer converts Azure Eventhubs consumer response to CloudEvent v1_0 data format. The data type sets
           headers:
             CamelCloudEventID:
               title: CloudEvent ID

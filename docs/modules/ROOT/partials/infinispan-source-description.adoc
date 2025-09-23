@@ -1,0 +1,51 @@
+== Infinispan Source Kamelet Description
+
+=== Authentication methods
+
+This Kamelet uses username and password authentication to connect to Infinispan cache. You need to provide:
+
+- Username and password for Infinispan authentication
+- Host information for the Infinispan instance
+- Optionally, security settings (secure connection enabled by default)
+
+=== Output format
+
+The Kamelet gets events from an Infinispan cache and produces the event data in the configured format.
+
+=== Configuration
+
+The Kamelet requires the following parameters:
+
+- `cacheName`: The name of the Infinispan cache to use
+- `hosts`: Specifies the host of the cache on Infinispan instance
+- `username`: Username to connect to Infinispan
+- `password`: Password to connect to Infinispan
+
+Optional parameters:
+- `secure`: If the Infinispan instance is secured or not (default: true)
+
+=== Usage example
+
+```yaml
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: infinispan-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: infinispan-source
+    properties:
+      cacheName: "my-cache"
+      hosts: "infinispan-server:11222"
+      username: "{{username}}"
+      password: "{{password}}"
+      secure: true
+  sink:
+    ref:
+      kind: Service
+      apiVersion: v1
+      name: my-service
+```

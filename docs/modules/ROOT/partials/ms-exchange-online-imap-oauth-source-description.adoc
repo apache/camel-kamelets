@@ -1,0 +1,43 @@
+== Ms Exchange Online Imap Oauth Source Kamelet Description
+
+=== Authentication methods
+
+This Kamelet connects to Ms Exchange Online Imap Oauth using appropriate authentication mechanisms:
+
+- Service-specific authentication methods
+- API keys, tokens, or credential-based authentication
+- Connection configuration
+
+=== Output format
+
+The Kamelet consumes data from Ms Exchange Online Imap Oauth and produces the data in JSON format.
+
+=== Configuration
+
+The Kamelet requires connection parameters specific to Ms Exchange Online Imap Oauth:
+
+- Service connection details
+- Authentication credentials
+- Query or consumption parameters
+
+=== Usage example
+
+```yaml
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: ms-exchange-online-imap-oauth-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: ms-exchange-online-imap-oauth-source
+    properties:
+      # Add service-specific properties here
+  sink:
+    ref:
+      kind: Service
+      apiVersion: v1
+      name: my-service
+```

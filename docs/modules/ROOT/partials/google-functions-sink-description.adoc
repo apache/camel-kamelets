@@ -1,0 +1,16 @@
+== Google Functions Sink Kamelet Description
+
+=== Authentication
+
+This Kamelet uses Google Cloud service account authentication. You must provide a base64-encoded service account key for Google Cloud Functions access.
+
+=== Required Configuration
+
+- **Project ID**: The Google Cloud Functions Project ID
+- **Region**: The region where Google Cloud Functions has been deployed
+- **Function Name**: The specific function name to invoke
+- **Service Account Key**: Base64-encoded service account credentials
+
+=== Function Invocation
+
+The Kamelet sends data to the specified Google Cloud Function, enabling serverless processing of your data streams.

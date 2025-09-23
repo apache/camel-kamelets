@@ -1,0 +1,50 @@
+== Google Sheets Source Kamelet Description
+
+=== Authentication methods
+
+This Kamelet uses OAuth 2.0 authentication to connect to Google Sheets. You need to provide:
+
+- Client ID and Client Secret from your Google Cloud Console application
+- Access Token for immediate access (typically expires after an hour)
+- Refresh Token for long-term usage (allows automatic token renewal)
+- The Spreadsheet ID from which to read data
+
+=== Output format
+
+The Kamelet produces spreadsheet data in JSON format from the specified Google Sheets document.
+
+=== Configuration
+
+The Kamelet requires the following parameters:
+
+- `spreadsheetId`: The Spreadsheet ID to be used as events source
+- `clientId`: Client ID of the sheets application
+- `clientSecret`: Client Secret of the sheets application
+- `accessToken`: OAuth 2 access token
+- `refreshToken`: OAuth 2 refresh token for long term usage
+
+=== Usage example
+
+```yaml
+apiVersion: camel.apache.org/v1alpha1
+kind: KameletBinding
+metadata:
+  name: google-sheets-source-binding
+spec:
+  source:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1alpha1
+      name: google-sheets-source
+    properties:
+      spreadsheetId: "1BxEBc3z8Zm4x7_5uW9QdQpVmW8QFvOoE"
+      clientId: "{{client-id}}"
+      clientSecret: "{{client-secret}}"
+      accessToken: "{{access-token}}"
+      refreshToken: "{{refresh-token}}"
+  sink:
+    ref:
+      kind: Service
+      apiVersion: v1
+      name: my-service
+```

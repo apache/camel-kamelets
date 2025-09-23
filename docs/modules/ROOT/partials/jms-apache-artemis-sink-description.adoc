@@ -1,0 +1,13 @@
+== JMS - Apache Artemis Sink Kamelet Description
+
+=== Connection Configuration
+
+This Kamelet connects to an Apache Artemis message broker using JMS. Apache Artemis is a high-performance, scalable messaging broker that supports multiple messaging protocols.
+
+=== Destination Configuration
+
+The Kamelet supports both queue and topic destinations. The destination type can be configured using the `destinationType` property, which defaults to `queue`.
+
+=== Apache Artemis Client
+
+This sink uses the Apache Artemis Jakarta JMS client library to establish connections and send messages to the broker.
