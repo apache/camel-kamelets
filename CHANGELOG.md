@@ -7,6 +7,7 @@
 **Closed issues:**
 
 - Release 4.14.0 [\#2553](https://github.com/apache/camel-kamelets/issues/2553)
+- Kamelets Catalog - Make the description a one liner  [\#2345](https://github.com/apache/camel-kamelets/issues/2345)
 
 ## [v4.14.0](https://github.com/apache/camel-kamelets/tree/v4.14.0) (2025-08-25)
 
