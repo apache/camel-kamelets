@@ -1,11 +1,12 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v4.10.7](https://github.com/apache/camel-kamelets/tree/v4.10.7) (2025-09-24)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.14.0...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.14.0...v4.10.7)
 
 **Closed issues:**
 
+- Upgrade to Camel 4.10.7 [\#2591](https://github.com/apache/camel-kamelets/issues/2591)
 - Release 4.14.0 [\#2553](https://github.com/apache/camel-kamelets/issues/2553)
 - Kamelets Catalog - Make the description a one liner  [\#2345](https://github.com/apache/camel-kamelets/issues/2345)
 
