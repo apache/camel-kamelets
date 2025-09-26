@@ -33,6 +33,9 @@
 
 import org.citrusframework.actions.testcontainers.aws2.AwsService
 import org.citrusframework.testcontainers.aws2.LocalStackContainer
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
+import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.eventbridge.EventBridgeClient
 import software.amazon.awssdk.services.eventbridge.model.PutRuleResponse
 import software.amazon.awssdk.services.eventbridge.model.Target
@@ -55,8 +58,18 @@ PutRuleResponse putRuleResponse = eventBridgeClient.putRule(b -> b.name("events-
                     }
                     '''))
 
+SqsClient sqsClient = SqsClient
+        .builder()
+        .endpointOverride(URI.create('${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}'))
+        .credentialsProvider(StaticCredentialsProvider.create(
+                AwsBasicCredentials.create(
+                        '${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}',
+                        '${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}')
+        ))
+        .region(Region.of('${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}'))
+        .build()
+
 // Create SQS queue acting as an EventBridge notification endpoint
-SqsClient sqsClient = container.getClient(AwsService.SQS);
 CreateQueueResponse createQueueResponse = sqsClient.createQueue(b -> b.queueName('${aws.sqs.queueName}'))
 
 // Modify access policy for the queue just created, so EventBridge rule is allowed to send messages
