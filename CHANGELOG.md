@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.10.7...HEAD)
+
+**Fixed bugs:**
+
+- AwsIT.aws test is failing [\#2595](https://github.com/apache/camel-kamelets/issues/2595)
+
 ## [v4.10.7](https://github.com/apache/camel-kamelets/tree/v4.10.7) (2025-09-24)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.14.0...v4.10.7)
