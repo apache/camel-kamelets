@@ -60,9 +60,6 @@ spec:
         title: Apicurio Registry URL
         description: The Apicurio Schema Registry URL
         type: string
-        x-descriptors:
-        - urn:keda:metadata:apicurioRegistryUrl
-        - urn:keda:required
       avroDatumProvider:
         title: Avro Datum Provider
         description: How to write data with Avro
@@ -88,8 +85,6 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
-        - urn:keda:authentication:password
-        - urn:keda:required
       apicurioAuthUsername:
         title: Apicurio Registry Auth Username
         description: The Username in Keycloak instance securing the Apicurio Registry
@@ -101,8 +96,6 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
-        - urn:keda:authentication:password
-        - urn:keda:required
   dependencies:
     - "camel:core"
     - "camel:kamelet"
