@@ -27,7 +27,6 @@ metadata:
     camel.apache.org/provider: Apache Software Foundation
     camel.apache.org/kamelet.group: AWS S3 Event-Based
     camel.apache.org/kamelet.namespace: "AWS"
-    camel.apache.org/keda.type: aws-s3-event-based-queue
   labels:
     camel.apache.org/kamelet.type: "source"
 spec:
@@ -57,8 +56,6 @@ spec:
         format: password
         x-descriptors:
           - 'urn:camel:group:credentials'
-          - 'urn:keda:authentication:awsAccessKeyID'
-          - 'urn:keda:required'
       secretKey:
         title: Secret Key
         description: The secret key obtained from AWS.
@@ -66,15 +63,10 @@ spec:
         format: password
         x-descriptors:
           - 'urn:camel:group:credentials'
-          - 'urn:keda:authentication:awsSecretAccessKey'
-          - 'urn:keda:required'
       region:
         title: AWS Region
         description: The AWS region to access.
         type: string
-        x-descriptors:
-          - 'urn:keda:metadata:awsRegion'
-          - 'urn:keda:required'
         enum:
           - ap-south-1
           - eu-south-1
@@ -129,11 +121,8 @@ spec:
         default: https
       queueURL:
         title: Queue URL
-        description: The full SQS Queue URL (required if using KEDA)
+        description: The full SQS Queue URL
         type: string
-        x-descriptors:
-          - 'urn:keda:metadata:queueURL'
-          - 'urn:keda:required'
       uriEndpointOverride:
         title: Overwrite Endpoint URI
         description: >-

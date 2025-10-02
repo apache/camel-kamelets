@@ -388,12 +388,6 @@ func getUsedParams(k camelapiv1.Kamelet) map[string]bool {
 		}
 		params := make(map[string]bool)
 		inspectTemplateParams(templateData, params)
-		for propName, propVal := range k.Spec.Definition.Properties {
-			if hasXDescriptorPrefix(propVal, "urn:keda:") {
-				// Assume KEDA parameters may be used by KEDA
-				params[propName] = true
-			}
-		}
 		return params
 	}
 	return nil

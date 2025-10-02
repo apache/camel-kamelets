@@ -53,7 +53,7 @@ spec:
         default: SASL_SSL
       saslMechanism:
         title: SASL Mechanism
-        description: The Simple Authentication and Security Layer (SASL) Mechanism used. 
+        description: The Simple Authentication and Security Layer (SASL) Mechanism used.
         type: string
         default: PLAIN
       password:
@@ -72,9 +72,6 @@ spec:
         title: Azure Schema Registry URL
         description: The Apicurio Schema Registry URL
         type: string
-        x-descriptors:
-        - urn:keda:metadata:bootstrapServers
-        - urn:keda:required
       specificAvroValueType:
         title: Specific Avro Value Type
         description: The Specific Type Avro will have to deal with

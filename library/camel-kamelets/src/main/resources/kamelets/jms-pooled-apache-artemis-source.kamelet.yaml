@@ -57,16 +57,12 @@ spec:
         type: string
         x-descriptors:
         - urn:camel:group:credentials
-        - urn:keda:authentication:password
-        - urn:keda:required 
       password:
         title: "Broker Password"
         description: "The JMS Broker Password."
         type: string
         x-descriptors:
         - urn:camel:group:credentials
-        - urn:keda:authentication:password
-        - urn:keda:required
       maxSessionsPerConnection:
         title: "Max Session Per Connection"
         description: "The maximum number of pooled sessions per connection in the pool."
@@ -81,7 +77,7 @@ spec:
         title: "Connection Idle Timeout"
         description: "The maximum time a pooled Connection can sit unused before it is eligible for removal (in milliseconds)."
         type: integer
-        default: 30000       
+        default: 30000
   dependencies:
   - "camel:jms"
   - "camel:kamelet"
@@ -101,7 +97,7 @@ spec:
           connectionFactory: '#bean:{{connectionFactoryBean}}'
           maxSessionsPerConnection: "{{maxSessionsPerConnection}}"
           maxIdleSessionsPerConnection: "{{maxIdleSessionsPerConnection}}"
-          connectionIdleTimeout: "{{connectionIdleTimeout}}"        
+          connectionIdleTimeout: "{{connectionIdleTimeout}}"
     from:
       uri: "jms:{{destinationType}}:{{destinationName}}"
       parameters:
