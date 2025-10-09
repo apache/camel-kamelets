@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Upgrade to Camel 4.15.0 [\#2608](https://github.com/apache/camel-kamelets/issues/2608)
 - Release 4.14.1 [\#2602](https://github.com/apache/camel-kamelets/issues/2602)
 - Upgrade to camel 4.14.1 [\#2601](https://github.com/apache/camel-kamelets/issues/2601)
 
