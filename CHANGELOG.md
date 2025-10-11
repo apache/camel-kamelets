@@ -1,14 +1,53 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v4.15.0](https://github.com/apache/camel-kamelets/tree/v4.15.0) (2025-10-10)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.14.1...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.14.1...v4.15.0)
 
 **Closed issues:**
 
 - Upgrade to Camel 4.15.0 [\#2608](https://github.com/apache/camel-kamelets/issues/2608)
 - Release 4.14.1 [\#2602](https://github.com/apache/camel-kamelets/issues/2602)
 - Upgrade to camel 4.14.1 [\#2601](https://github.com/apache/camel-kamelets/issues/2601)
+
+**Merged pull requests:**
+
+- Bump org.apache.camel:camel-dependencies from 4.14.0 to 4.15.0 [\#2607](https://github.com/apache/camel-kamelets/pull/2607) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump camel.version from 4.14.0 to 4.15.0 [\#2606](https://github.com/apache/camel-kamelets/pull/2606) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Use camel-bom for versions of camel dependencies [\#2604](https://github.com/apache/camel-kamelets/pull/2604) ([cunningt](https://github.com/cunningt))
+- chore: remove keda descriptors [\#2600](https://github.com/apache/camel-kamelets/pull/2600) ([squakez](https://github.com/squakez))
+- Bump org.citrusframework:citrus-bom from 4.8.0 to 4.8.1 [\#2597](https://github.com/apache/camel-kamelets/pull/2597) ([dependabot[bot]](https://github.com/apps/dependabot))
+- fix\(\#2595\): Workaround to fix AWS tests [\#2596](https://github.com/apache/camel-kamelets/pull/2596) ([christophd](https://github.com/christophd))
+- Improve discovery of Quantum-related kamelets [\#2594](https://github.com/apache/camel-kamelets/pull/2594) ([apupier](https://github.com/apupier))
+- Kamelets Catalog - Make the description a one liner [\#2589](https://github.com/apache/camel-kamelets/pull/2589) ([oscerd](https://github.com/oscerd))
+- Bump org.apache.maven.plugins:maven-javadoc-plugin from 3.11.3 to 3.12.0 [\#2587](https://github.com/apache/camel-kamelets/pull/2587) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2586](https://github.com/apache/camel-kamelets/pull/2586) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen [\#2585](https://github.com/apache/camel-kamelets/pull/2585) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen [\#2584](https://github.com/apache/camel-kamelets/pull/2584) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump org.postgresql:postgresql from 42.7.7 to 42.7.8 [\#2583](https://github.com/apache/camel-kamelets/pull/2583) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugins:maven-failsafe-plugin from 3.5.3 to 3.5.4 [\#2582](https://github.com/apache/camel-kamelets/pull/2582) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugins:maven-surefire-plugin from 3.5.3 to 3.5.4 [\#2581](https://github.com/apache/camel-kamelets/pull/2581) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2580](https://github.com/apache/camel-kamelets/pull/2580) ([github-actions[bot]](https://github.com/apps/github-actions))
+- fix\(doc\): add to nav [\#2578](https://github.com/apache/camel-kamelets/pull/2578) ([squakez](https://github.com/squakez))
+- Bump org.apache.maven.resolver:maven-resolver-api from 2.0.10 to 2.0.11 [\#2577](https://github.com/apache/camel-kamelets/pull/2577) ([dependabot[bot]](https://github.com/apps/dependabot))
+- feat\(doc\): adding Kamelet spec [\#2576](https://github.com/apache/camel-kamelets/pull/2576) ([squakez](https://github.com/squakez))
+- Enhance AWS EventBridge Sink Kamelet [\#2573](https://github.com/apache/camel-kamelets/pull/2573) ([christophd](https://github.com/christophd))
+- Improve integration tests [\#2572](https://github.com/apache/camel-kamelets/pull/2572) ([christophd](https://github.com/christophd))
+- Bump fabric8-version from 7.3.1 to 7.4.0 [\#2571](https://github.com/apache/camel-kamelets/pull/2571) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Stabilize integration tests [\#2570](https://github.com/apache/camel-kamelets/pull/2570) ([christophd](https://github.com/christophd))
+- Fix tests with next SNAPSHOT and Camel 4.14.0 [\#2569](https://github.com/apache/camel-kamelets/pull/2569) ([christophd](https://github.com/christophd))
+- feat\(api\): make it kubernetes suitable [\#2568](https://github.com/apache/camel-kamelets/pull/2568) ([squakez](https://github.com/squakez))
+- feat: make the golang independent from camel k [\#2567](https://github.com/apache/camel-kamelets/pull/2567) ([squakez](https://github.com/squakez))
+- feat\(go\): make it a golang dependency [\#2566](https://github.com/apache/camel-kamelets/pull/2566) ([squakez](https://github.com/squakez))
+- Bump actions/setup-go from 5.5.0 to 6.0.0 [\#2565](https://github.com/apache/camel-kamelets/pull/2565) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Kamelets Catalog - Make the description a one liner - Chuck Norris Ka… [\#2563](https://github.com/apache/camel-kamelets/pull/2563) ([oscerd](https://github.com/oscerd))
+- Kamelets Catalog - Make the description a one liner - CEPH Kamelets [\#2561](https://github.com/apache/camel-kamelets/pull/2561) ([oscerd](https://github.com/oscerd))
+- Kamelets Catalog - Make description a one liner - Cassandra Kamelets [\#2559](https://github.com/apache/camel-kamelets/pull/2559) ([oscerd](https://github.com/oscerd))
+- Kamelets Catalog - Make the description a one liner - Bitcoin source [\#2557](https://github.com/apache/camel-kamelets/pull/2557) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#2556](https://github.com/apache/camel-kamelets/pull/2556) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump org.citrusframework:citrus-bom from 4.7.0 to 4.8.0 [\#2555](https://github.com/apache/camel-kamelets/pull/2555) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/setup-java from 4.7.1 to 5.0.0 [\#2552](https://github.com/apache/camel-kamelets/pull/2552) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/checkout from 4 to 5 [\#2548](https://github.com/apache/camel-kamelets/pull/2548) ([dependabot[bot]](https://github.com/apps/dependabot))
 
 ## [v4.14.1](https://github.com/apache/camel-kamelets/tree/v4.14.1) (2025-10-03)
 
