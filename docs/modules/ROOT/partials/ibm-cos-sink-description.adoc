@@ -1,0 +1,128 @@
+== IBM Cloud Object Storage Sink Kamelet Description
+
+=== Authentication methods
+
+This Kamelet requires authentication with IBM Cloud using an API Key and Service Instance ID (CRN - Cloud Resource Name).
+
+To obtain these credentials:
+
+ - API Key - Create an IBM Cloud API Key through the IBM Cloud console (Manage > Access (IAM) > API keys).
+ - Service Instance ID - This is the Cloud Resource Name (CRN) of your IBM COS instance, found in your IBM COS service instance details.
+ - Endpoint URL - The IBM COS endpoint URL for your region (e.g., https://s3.us-south.cloud-object-storage.appdomain.cloud).
+
+For more information, see the https://cloud.ibm.com/docs/cloud-object-storage[IBM Cloud Object Storage documentation]
+
+=== Optional Headers
+
+In the header, you can optionally set the `file` / `ce-file` property to specify the name of the object to upload.
+
+If you do not set the property in the header, the Kamelet uses the exchange ID for the object key name.
+
+=== Usage examples
+
+Upload data to an IBM COS bucket:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      steps:
+        - to:
+            uri: "kamelet:ibm-cos-sink"
+            parameters:
+              bucketName: "my-bucket"
+              apiKey: "{{ibm.api.key}}"
+              serviceInstanceId: "{{ibm.service.instance.id}}"
+              endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
+              location: "us-south"
+----
+
+==== Auto-creating buckets
+
+The Kamelet can automatically create the bucket if it doesn't exist:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      steps:
+        - to:
+            uri: "kamelet:ibm-cos-sink"
+            parameters:
+              bucketName: "my-bucket"
+              apiKey: "{{ibm.api.key}}"
+              serviceInstanceId: "{{ibm.service.instance.id}}"
+              endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
+              location: "us-south"
+              autoCreateBucket: true
+----
+
+==== Specifying a custom key name
+
+You can specify a fixed key name for all uploaded objects:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      steps:
+        - to:
+            uri: "kamelet:ibm-cos-sink"
+            parameters:
+              bucketName: "my-bucket"
+              apiKey: "{{ibm.api.key}}"
+              serviceInstanceId: "{{ibm.service.instance.id}}"
+              endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
+              location: "us-south"
+              keyName: "data/myfile.txt"
+----
+
+==== Using multi-part upload for large files
+
+For large files, you can enable multi-part upload:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      steps:
+        - to:
+            uri: "kamelet:ibm-cos-sink"
+            parameters:
+              bucketName: "my-bucket"
+              apiKey: "{{ibm.api.key}}"
+              serviceInstanceId: "{{ibm.service.instance.id}}"
+              endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
+              location: "us-south"
+              multiPartUpload: true
+              partSize: 52428800
+----
+
+The `partSize` is specified in bytes (default is 25MB = 26214400 bytes).
+
+==== Specifying storage class
+
+You can specify different storage classes for cost optimization:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      steps:
+        - to:
+            uri: "kamelet:ibm-cos-sink"
+            parameters:
+              bucketName: "my-bucket"
+              apiKey: "{{ibm.api.key}}"
+              serviceInstanceId: "{{ibm.service.instance.id}}"
+              endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
+              location: "us-south"
+              storageClass: "STANDARD"
+----
+
+Available storage classes include STANDARD, VAULT, COLD, and FLEX.
