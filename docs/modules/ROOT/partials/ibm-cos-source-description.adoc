@@ -1,0 +1,124 @@
+== IBM Cloud Object Storage Source Kamelet Description
+
+=== Authentication methods
+
+This Kamelet requires authentication with IBM Cloud using an API Key and Service Instance ID (CRN - Cloud Resource Name).
+
+To obtain these credentials:
+
+ - API Key - Create an IBM Cloud API Key through the IBM Cloud console (Manage > Access (IAM) > API keys).
+ - Service Instance ID - This is the Cloud Resource Name (CRN) of your IBM COS instance, found in your IBM COS service instance details.
+ - Endpoint URL - The IBM COS endpoint URL for your region (e.g., https://s3.us-south.cloud-object-storage.appdomain.cloud).
+
+For more information, see the https://cloud.ibm.com/docs/cloud-object-storage[IBM Cloud Object Storage documentation]
+
+=== Usage examples
+
+You can consume objects from an IBM COS bucket and delete them after processing:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ibm-cos-source"
+      parameters:
+        bucketName: "my-bucket"
+        apiKey: "{{ibm.api.key}}"
+        serviceInstanceId: "{{ibm.service.instance.id}}"
+        endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
+        location: "us-south"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+The `deleteAfterRead` property is true by default, ensuring each object is consumed only once.
+
+==== Consuming objects without deletion
+
+To consume objects without deleting them, set `deleteAfterRead` to false:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ibm-cos-source"
+      parameters:
+        bucketName: "my-bucket"
+        apiKey: "{{ibm.api.key}}"
+        serviceInstanceId: "{{ibm.service.instance.id}}"
+        endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
+        location: "us-south"
+        deleteAfterRead: false
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+==== Moving objects after reading
+
+Instead of deleting objects, you can move them to another bucket:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ibm-cos-source"
+      parameters:
+        bucketName: "my-bucket"
+        apiKey: "{{ibm.api.key}}"
+        serviceInstanceId: "{{ibm.service.instance.id}}"
+        endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
+        location: "us-south"
+        deleteAfterRead: false
+        moveAfterRead: true
+        destinationBucket: "archive-bucket"
+        destinationBucketPrefix: "processed/"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+==== Consuming with a prefix filter
+
+You can filter objects using a prefix:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ibm-cos-source"
+      parameters:
+        bucketName: "my-bucket"
+        apiKey: "{{ibm.api.key}}"
+        serviceInstanceId: "{{ibm.service.instance.id}}"
+        endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
+        location: "us-south"
+        prefix: "inbox/"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+This consumes only objects with keys starting with `inbox/`.
+
+==== Consuming only metadata
+
+To consume only object metadata without the body, set `includeBody` to false:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ibm-cos-source"
+      parameters:
+        bucketName: "my-bucket"
+        apiKey: "{{ibm.api.key}}"
+        serviceInstanceId: "{{ibm.service.instance.id}}"
+        endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
+        location: "us-south"
+        includeBody: false
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
