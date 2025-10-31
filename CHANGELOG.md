@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.15.0...HEAD)
+
+**Closed issues:**
+
+- Camel IBM COS: Create Kamelets [\#2625](https://github.com/apache/camel-kamelets/issues/2625)
+- Release 4.15.0 [\#2609](https://github.com/apache/camel-kamelets/issues/2609)
+
 ## [v4.15.0](https://github.com/apache/camel-kamelets/tree/v4.15.0) (2025-10-10)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.14.1...v4.15.0)
