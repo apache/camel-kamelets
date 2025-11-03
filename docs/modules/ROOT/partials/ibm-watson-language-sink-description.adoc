@@ -1,0 +1,60 @@
+== IBM Watson Natural Language Understanding Sink Kamelet Description
+
+=== Authentication
+
+This Kamelet uses IBM Cloud IAM (Identity and Access Management) for authentication. You need to provide:
+
+- **apiKey**: Your IBM Cloud API key with access to Watson Natural Language Understanding service
+- **serviceUrl** (optional): The Watson NLU service endpoint URL for your region
+
+=== Getting your credentials
+
+1. Log in to the https://cloud.ibm.com[IBM Cloud Console]
+2. Navigate to your Watson Natural Language Understanding service instance
+3. Go to **Service credentials** section
+4. Create new credentials or use existing ones
+5. Copy the **apikey** value
+
+=== Regional endpoints
+
+Watson Natural Language Understanding provides different endpoints for different regions:
+
+- **US South**: `https://api.us-south.natural-language-understanding.watson.cloud.ibm.com`
+- **US East**: `https://api.us-east.natural-language-understanding.watson.cloud.ibm.com`
+- **EU GB (London)**: `https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com`
+- **EU DE (Frankfurt)**: `https://api.eu-de.natural-language-understanding.watson.cloud.ibm.com`
+- **Tokyo**: `https://api.jp-tok.natural-language-understanding.watson.cloud.ibm.com`
+- **Sydney**: `https://api.au-syd.natural-language-understanding.watson.cloud.ibm.com`
+
+If not specified, the kamelet uses the default US South endpoint.
+
+For more information, see the https://cloud.ibm.com/apidocs/natural-language-understanding[Watson Natural Language Understanding API documentation].
+
+=== Analysis features
+
+Watson NLU can analyze text for:
+
+- **Sentiment** - Detect positive, negative, or neutral sentiment (enabled by default)
+- **Emotions** - Identify joy, anger, sadness, fear, disgust
+- **Entities** - Extract people, companies, organizations, cities (enabled by default)
+- **Keywords** - Extract important keywords and phrases (enabled by default)
+- **Concepts** - Identify high-level concepts not explicitly mentioned
+- **Categories** - Classify content into hierarchical categories
+
+You can enable or disable each feature using the kamelet properties.
+
+=== Operations
+
+This kamelet supports two operations:
+
+- **analyzeText** (default) - Analyze text provided in the message body
+- **analyzeUrl** - Analyze content from a URL specified in the `CamelIBMWatsonLanguageUrl` header
+
+=== Pricing
+
+Watson Natural Language Understanding offers a free tier:
+
+- **Lite Plan**: 30,000 NLU items per month (free)
+- Additional items are charged per item
+
+For current pricing details, visit the https://www.ibm.com/cloud/watson-natural-language-understanding/pricing[Watson NLU Pricing page].
