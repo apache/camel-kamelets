@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Add IBM Watson Language Sink Kamelet [\#2629](https://github.com/apache/camel-kamelets/issues/2629)
 - Camel IBM COS: Create Kamelets [\#2625](https://github.com/apache/camel-kamelets/issues/2625)
 - Release 4.15.0 [\#2609](https://github.com/apache/camel-kamelets/issues/2609)
 
