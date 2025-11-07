@@ -1,8 +1,36 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v4.16.0](https://github.com/apache/camel-kamelets/tree/v4.16.0) (2025-11-06)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.15.0...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.14.2...v4.16.0)
+
+**Merged pull requests:**
+
+- Bump camel.version from 4.15.0 to 4.16.0 [\#2633](https://github.com/apache/camel-kamelets/pull/2633) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.camel:camel-dependencies from 4.15.0 to 4.16.0 [\#2632](https://github.com/apache/camel-kamelets/pull/2632) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.activemq:artemis-jakarta-client-all from 2.43.0 to 2.44.0 [\#2631](https://github.com/apache/camel-kamelets/pull/2631) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Add IBM Watson Language Sink Kamelet [\#2630](https://github.com/apache/camel-kamelets/pull/2630) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#2628](https://github.com/apache/camel-kamelets/pull/2628) ([github-actions[bot]](https://github.com/apps/github-actions))
+- ci: Add github workflow to validation documentation on PR [\#2627](https://github.com/apache/camel-kamelets/pull/2627) ([gansheer](https://github.com/gansheer))
+- Camel IBM COS: Create Kamelets [\#2626](https://github.com/apache/camel-kamelets/pull/2626) ([oscerd](https://github.com/oscerd))
+- Bump org.citrusframework:citrus-bom from 4.8.1 to 4.8.2 [\#2624](https://github.com/apache/camel-kamelets/pull/2624) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(api\): clarify scope of variables [\#2623](https://github.com/apache/camel-kamelets/pull/2623) ([squakez](https://github.com/squakez))
+- Bump org.apache.maven.plugins:maven-plugin-plugin from 3.15.1 to 3.15.2 [\#2622](https://github.com/apache/camel-kamelets/pull/2622) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugin-tools:maven-plugin-annotations from 3.15.1 to 3.15.2 [\#2621](https://github.com/apache/camel-kamelets/pull/2621) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/upload-artifact from 4.6.2 to 5.0.0 [\#2620](https://github.com/apache/camel-kamelets/pull/2620) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugins:maven-antrun-plugin from 3.1.0 to 3.2.0 [\#2619](https://github.com/apache/camel-kamelets/pull/2619) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen [\#2618](https://github.com/apache/camel-kamelets/pull/2618) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump org.apache.rat:apache-rat-plugin from 0.16.1 to 0.17 [\#2617](https://github.com/apache/camel-kamelets/pull/2617) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2616](https://github.com/apache/camel-kamelets/pull/2616) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump org.apache.activemq:artemis-jakarta-client-all from 2.42.0 to 2.43.0 [\#2615](https://github.com/apache/camel-kamelets/pull/2615) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen [\#2614](https://github.com/apache/camel-kamelets/pull/2614) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump com.amazon.redshift:redshift-jdbc42 from 2.1.0.34 to 2.2.0 [\#2613](https://github.com/apache/camel-kamelets/pull/2613) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.resolver:maven-resolver-api from 2.0.11 to 2.0.13 [\#2612](https://github.com/apache/camel-kamelets/pull/2612) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2611](https://github.com/apache/camel-kamelets/pull/2611) ([github-actions[bot]](https://github.com/apps/github-actions))
+
+## [v4.14.2](https://github.com/apache/camel-kamelets/tree/v4.14.2) (2025-11-06)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.15.0...v4.14.2)
 
 **Closed issues:**
 
