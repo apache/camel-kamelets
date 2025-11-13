@@ -1,5 +1,16 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.16.0...HEAD)
+
+**Closed issues:**
+
+- Release 4.16.0 [\#2637](https://github.com/apache/camel-kamelets/issues/2637)
+- Upgrade to Camel 4.16.0 [\#2636](https://github.com/apache/camel-kamelets/issues/2636)
+- Release 4.14.2 [\#2635](https://github.com/apache/camel-kamelets/issues/2635)
+- Upgrade to Camel 4.14.2 [\#2634](https://github.com/apache/camel-kamelets/issues/2634)
+
 ## [v4.16.0](https://github.com/apache/camel-kamelets/tree/v4.16.0) (2025-11-06)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.14.2...v4.16.0)
