@@ -1471,8 +1471,8 @@ We're also going to use the CLI:
 yaks run earthquake-source.feature
 ----
 
-When testing a source, the backbone of the Gherking file that you'll write is similar to the one above.
-Depending on the source under test, you may need to stimulate the production of some data using additional Gherking steps
+When testing a source, the backbone of the Gherkin file that you'll write is similar to the one above.
+Depending on the source under test, you may need to stimulate the production of some data using additional Gherkin steps
 before verifying that the data has been produced
 (in our case, it's better not to try to stimulate an earthquake :D).
 
@@ -1570,6 +1570,6 @@ yaks run telegram-sink.feature --resource webhook-to-telegram.yaml --resource te
 
 If everything goes well, you should receive a message during the test execution.
 
-For a more specific test that checks also the content sent to Telegram, you should add additional Gherking steps
+For a more specific test that checks also the content sent to Telegram, you should add additional Gherkin steps
 to get and verify the actual message via other Telegram APIs. We're not going in so much details for this example,
 but the Gherkin file highlighted above is a good approximation of the backbone you'll find in tests for Kamelets of type "sink".
