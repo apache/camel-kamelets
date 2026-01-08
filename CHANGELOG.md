@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Upgrade to Camel 4.14.3 [\#2677](https://github.com/apache/camel-kamelets/issues/2677)
 - Add Databricks Kamelets [\#2671](https://github.com/apache/camel-kamelets/issues/2671)
 - Release 4.16.0 [\#2637](https://github.com/apache/camel-kamelets/issues/2637)
 - Upgrade to Camel 4.16.0 [\#2636](https://github.com/apache/camel-kamelets/issues/2636)
