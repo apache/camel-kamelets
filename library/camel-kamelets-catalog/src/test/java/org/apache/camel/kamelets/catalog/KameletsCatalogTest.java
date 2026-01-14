@@ -226,7 +226,7 @@ public class KameletsCatalogTest {
         verifyHeaders("mail-source", 0);
         verifyHeaders("mail-sink", 8);
         verifyHeaders("mariadb-source", 0);
-        verifyHeaders("mariadb-sink", 8);
+        verifyHeaders("mariadb-sink", 9);
         verifyHeaders("minio-source", 15);
         verifyHeaders("minio-sink", 23);
         verifyHeaders("mongodb-changes-stream-source", 3);
@@ -236,13 +236,13 @@ public class KameletsCatalogTest {
         verifyHeaders("mqtt-source", 2);
         verifyHeaders("mqtt5-sink", 3);
         verifyHeaders("mqtt5-source", 2);
-        verifyHeaders("mysql-sink", 8);
+        verifyHeaders("mysql-sink", 9);
         verifyHeaders("mysql-source", 0);
         verifyHeaders("nats-sink", 5);
         verifyHeaders("nats-source", 7);
-        verifyHeaders("oracle-database-sink", 8);
+        verifyHeaders("oracle-database-sink", 9);
         verifyHeaders("oracle-database-source", 0);
-        verifyHeaders("postgresql-sink", 8);
+        verifyHeaders("postgresql-sink", 9);
         verifyHeaders("postgresql-source", 0);
         verifyHeaders("pulsar-sink", 5);
         verifyHeaders("pulsar-source", 11);
@@ -262,7 +262,7 @@ public class KameletsCatalogTest {
         verifyHeaders("splunk-hec-sink", 1);
         verifyHeaders("splunk-sink", 0);
         verifyHeaders("splunk-source", 0);
-        verifyHeaders("sqlserver-sink", 8);
+        verifyHeaders("sqlserver-sink", 9);
         verifyHeaders("sqlserver-source", 0);
         verifyHeaders("ssh-sink", 4);
         verifyHeaders("ssh-source", 4);
