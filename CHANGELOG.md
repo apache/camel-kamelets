@@ -1,5 +1,53 @@
 # Changelog
 
+## [v4.17.0](https://github.com/apache/camel-kamelets/tree/v4.17.0) (2026-01-14)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.14.4...v4.17.0)
+
+**Closed issues:**
+
+- Upgrade to Camel 4.17.0 [\#2689](https://github.com/apache/camel-kamelets/issues/2689)
+
+**Merged pull requests:**
+
+- Upgrade to Camel 4.17.0 [\#2692](https://github.com/apache/camel-kamelets/pull/2692) ([oscerd](https://github.com/oscerd))
+- chore\(deps\): bump org.citrusframework:citrus-bom from 4.9.0 to 4.9.1 [\#2691](https://github.com/apache/camel-kamelets/pull/2691) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump actions/setup-go from 6.1.0 to 6.2.0 [\#2686](https://github.com/apache/camel-kamelets/pull/2686) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump fabric8-version from 7.4.0 to 7.5.0 [\#2684](https://github.com/apache/camel-kamelets/pull/2684) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen [\#2683](https://github.com/apache/camel-kamelets/pull/2683) ([github-actions[bot]](https://github.com/apps/github-actions))
+- chore\(deps\): bump com.amazon.redshift:redshift-jdbc42 from 2.2.1 to 2.2.2 [\#2682](https://github.com/apache/camel-kamelets/pull/2682) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Use jose4j 0.9.6 [\#2680](https://github.com/apache/camel-kamelets/pull/2680) ([cunningt](https://github.com/cunningt))
+- Generated sources regen for SBOM [\#2676](https://github.com/apache/camel-kamelets/pull/2676) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen [\#2675](https://github.com/apache/camel-kamelets/pull/2675) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen [\#2673](https://github.com/apache/camel-kamelets/pull/2673) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Add Databricks source and sink Kamelet [\#2672](https://github.com/apache/camel-kamelets/pull/2672) ([oscerd](https://github.com/oscerd))
+- chore\(deps\): bump org.messaginghub:pooled-jms from 3.1.7 to 3.2.1 [\#2670](https://github.com/apache/camel-kamelets/pull/2670) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2669](https://github.com/apache/camel-kamelets/pull/2669) ([github-actions[bot]](https://github.com/apps/github-actions))
+- chore\(deps\): bump org.apache.maven:maven-compat from 3.9.11 to 3.9.12 [\#2667](https://github.com/apache/camel-kamelets/pull/2667) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump org.apache.maven:maven-artifact from 3.9.11 to 3.9.12 [\#2666](https://github.com/apache/camel-kamelets/pull/2666) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen [\#2665](https://github.com/apache/camel-kamelets/pull/2665) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump org.apache.maven:maven-core from 3.9.11 to 3.9.12 [\#2664](https://github.com/apache/camel-kamelets/pull/2664) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.commons:commons-dbcp2 from 2.13.0 to 2.14.0 [\#2663](https://github.com/apache/camel-kamelets/pull/2663) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven:maven-plugin-api from 3.9.11 to 3.9.12 [\#2662](https://github.com/apache/camel-kamelets/pull/2662) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.resolver:maven-resolver-api from 2.0.13 to 2.0.14 [\#2661](https://github.com/apache/camel-kamelets/pull/2661) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.citrusframework:citrus-bom from 4.8.2 to 4.9.0 [\#2660](https://github.com/apache/camel-kamelets/pull/2660) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/upload-artifact from 5.0.0 to 6.0.0 [\#2659](https://github.com/apache/camel-kamelets/pull/2659) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump peter-evans/create-pull-request from 7.0.9 to 8.0.0 [\#2658](https://github.com/apache/camel-kamelets/pull/2658) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/setup-java from 5.0.0 to 5.1.0 [\#2656](https://github.com/apache/camel-kamelets/pull/2656) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Gherking-\>gherkin [\#2655](https://github.com/apache/camel-kamelets/pull/2655) ([rhaetor](https://github.com/rhaetor))
+- Bump actions/checkout from 5.0.0 to 6.0.1 [\#2654](https://github.com/apache/camel-kamelets/pull/2654) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugins:maven-source-plugin from 3.3.1 to 3.4.0 [\#2653](https://github.com/apache/camel-kamelets/pull/2653) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.apache.maven.plugins:maven-resources-plugin from 3.3.1 to 3.4.0 [\#2652](https://github.com/apache/camel-kamelets/pull/2652) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump peter-evans/create-pull-request from 7.0.8 to 7.0.9 [\#2651](https://github.com/apache/camel-kamelets/pull/2651) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Kamelets images svg [\#2650](https://github.com/apache/camel-kamelets/pull/2650) ([rhaetor](https://github.com/rhaetor))
+- Generated sources regen [\#2648](https://github.com/apache/camel-kamelets/pull/2648) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Bump com.amazon.redshift:redshift-jdbc42 from 2.2.0 to 2.2.1 [\#2647](https://github.com/apache/camel-kamelets/pull/2647) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/setup-go from 6.0.0 to 6.1.0 [\#2646](https://github.com/apache/camel-kamelets/pull/2646) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2644](https://github.com/apache/camel-kamelets/pull/2644) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Use the camel-bom version for camel-core/camel-aws2-eventbridge [\#2643](https://github.com/apache/camel-kamelets/pull/2643) ([cunningt](https://github.com/cunningt))
+- Bump commons-io:commons-io from 2.20.0 to 2.21.0 [\#2641](https://github.com/apache/camel-kamelets/pull/2641) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2640](https://github.com/apache/camel-kamelets/pull/2640) ([github-actions[bot]](https://github.com/apps/github-actions))
+
 ## [v4.14.4](https://github.com/apache/camel-kamelets/tree/v4.14.4) (2026-01-12)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.16.0...v4.14.4)
