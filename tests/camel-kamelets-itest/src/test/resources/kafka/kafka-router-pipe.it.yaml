@@ -17,8 +17,6 @@
 
 name: kafka-router-pipe-test
 variables:
-  - name: "kafka.securityProtocol"
-    value: "PLAINTEXT"
   - name: "kafka.deserializeHeaders"
     value: "true"
   - name: "kafka.topic"
@@ -29,9 +27,9 @@ variables:
     value: "citrus:unixTimestamp()000"
   - name: "topic"
     value: "${kafka.topic}_citrus:currentDate('YYYY-MM-dd')"
-  - name: "kafka.user"
+  - name: "kafka.saslUsername"
     value: "redpanda"
-  - name: "kafka.password"
+  - name: "kafka.saslPassword"
     value: "admin"
 actions:
   # Create Kafka infrastructure
