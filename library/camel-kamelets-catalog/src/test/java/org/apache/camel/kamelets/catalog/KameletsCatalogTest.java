@@ -215,10 +215,6 @@ public class KameletsCatalogTest {
         verifyHeaders("jms-ibm-mq-sink", 18);
         verifyHeaders("kafka-source", 9);
         verifyHeaders("kafka-sink", 5);
-        verifyHeaders("kafka-ssl-source", 9);
-        verifyHeaders("kafka-ssl-sink", 5);
-        verifyHeaders("kafka-not-secured-source", 9);
-        verifyHeaders("kafka-not-secured-sink", 5);
         verifyHeaders("kubernetes-namespaces-source", 2);
         verifyHeaders("kubernetes-nodes-source", 2);
         verifyHeaders("kubernetes-pods-source", 2);

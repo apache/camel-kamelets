@@ -10,12 +10,10 @@ spec:
       name: kafka-source
     properties:
       bootstrapServers: "The Bootstrap Servers"
-      password: "The Password"
       topic: "The Topic Names"
-      user: "The Username"
+      saslAuthType: "NONE"
   sink:
     ref:
       kind: KafkaTopic
       apiVersion: kafka.strimzi.io/v1beta1
       name: my-topic
-  
