@@ -30,12 +30,10 @@ metadata:
 spec:
   definition:
     title: "Kafka Source"
-    description: Receive data from Kafka topics through Plain Login Module.
+    description: Receive data from Kafka topics.
     required:
       - topic
       - bootstrapServers
-      - user
-      - password
     type: object
     properties:
       topic:
@@ -46,29 +44,71 @@ spec:
         title: Bootstrap Servers
         description: Comma separated list of Kafka Broker URLs
         type: string
-      securityProtocol:
-        title: Security Protocol
-        description: Protocol used to communicate with brokers. SASL_PLAINTEXT, PLAINTEXT, SASL_SSL and SSL are supported
+      saslAuthType:
+        title: Authentication Type
+        description: Authentication type to use. Use NONE for no authentication, PLAIN or SCRAM_SHA_256/SCRAM_SHA_512 for username/password, SSL for certificate-based, OAUTH for OAuth 2.0, AWS_MSK_IAM for MSK, or KERBEROS for Kerberos.
         type: string
-        default: SASL_SSL
-      saslMechanism:
-        title: SASL Mechanism
-        description: The Simple Authentication and Security Layer (SASL) Mechanism used.
-        type: string
-        default: PLAIN
-      user:
+        default: NONE
+        enum: ["NONE", "PLAIN", "SCRAM_SHA_256", "SCRAM_SHA_512", "SSL", "OAUTH", "AWS_MSK_IAM", "KERBEROS"]
+      saslUsername:
         title: Username
-        description: Username to authenticate to Kafka
+        description: Username for SASL authentication. Required when saslAuthType is PLAIN, SCRAM_SHA_256, or SCRAM_SHA_512.
         type: string
         x-descriptors:
-        - urn:camel:group:credentials
-      password:
+          - urn:camel:group:credentials
+      saslPassword:
         title: Password
-        description: Password to authenticate to kafka
+        description: Password for SASL authentication. Required when saslAuthType is PLAIN, SCRAM_SHA_256, or SCRAM_SHA_512.
         type: string
         format: password
         x-descriptors:
-        - urn:camel:group:credentials
+          - urn:camel:group:credentials
+      oauthClientId:
+        title: OAuth Client ID
+        description: OAuth client ID. Required when saslAuthType is OAUTH.
+        type: string
+      oauthClientSecret:
+        title: OAuth Client Secret
+        description: OAuth client secret. Required when saslAuthType is OAUTH.
+        type: string
+        format: password
+        x-descriptors:
+          - urn:camel:group:credentials
+      oauthTokenEndpointUri:
+        title: OAuth Token Endpoint
+        description: OAuth token endpoint URI. Required when saslAuthType is OAUTH.
+        type: string
+      oauthScope:
+        title: OAuth Scope
+        description: OAuth scope. Optional when saslAuthType is OAUTH.
+        type: string
+      sslTruststoreLocation:
+        title: SSL Truststore Location
+        description: The location of the trust store file.
+        type: string
+      sslTruststorePassword:
+        title: SSL Truststore Password
+        description: The password for the trust store file.
+        type: string
+        format: password
+        x-descriptors:
+          - urn:camel:group:credentials
+      sslKeystoreLocation:
+        title: SSL Keystore Location
+        description: The location of the key store file. Used for mTLS authentication.
+        type: string
+      sslKeystorePassword:
+        title: SSL Keystore Password
+        description: The password for the key store file.
+        type: string
+        format: password
+        x-descriptors:
+          - urn:camel:group:credentials
+      sslKeyPassword:
+        title: SSL Key Password
+        description: The password of the private key in the key store file.
+        type: string
+        format: password
       autoCommitEnable:
         title: Auto Commit Enable
         description: If true, periodically commit to ZooKeeper the offset of messages already fetched by the consumer
@@ -81,7 +121,7 @@ spec:
         default: false
       pollOnError:
         title: Poll On Error Behavior
-        description: What to do if kafka threw an exception while polling for new messages. There are 5 enums and the value can be one of `DISCARD`, `ERROR_HANDLER`, `RECONNECT`, `RETRY`, `STOP`
+        description: What to do if kafka threw an exception while polling for new messages. There are 5 enums and the value can be one of DISCARD, ERROR_HANDLER, RECONNECT, RETRY, STOP
         type: string
         default: "ERROR_HANDLER"
       autoOffsetReset:
@@ -117,10 +157,19 @@ spec:
     from:
       uri: "kafka:{{topic}}"
       parameters:
-        brokers: "{{?bootstrapServers}}"
-        securityProtocol: "{{securityProtocol}}"
-        saslMechanism: "{{saslMechanism}}"
-        saslJaasConfig: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="{{user}}" password="{{password}}";'
+        brokers: "{{bootstrapServers}}"
+        saslAuthType: "{{saslAuthType}}"
+        saslUsername: "{{?saslUsername}}"
+        saslPassword: "{{?saslPassword}}"
+        oauthClientId: "{{?oauthClientId}}"
+        oauthClientSecret: "{{?oauthClientSecret}}"
+        oauthTokenEndpointUri: "{{?oauthTokenEndpointUri}}"
+        oauthScope: "{{?oauthScope}}"
+        sslTruststoreLocation: "{{?sslTruststoreLocation}}"
+        sslTruststorePassword: "{{?sslTruststorePassword}}"
+        sslKeystoreLocation: "{{?sslKeystoreLocation}}"
+        sslKeystorePassword: "{{?sslKeystorePassword}}"
+        sslKeyPassword: "{{?sslKeyPassword}}"
         autoCommitEnable: "{{autoCommitEnable}}"
         allowManualCommit: "{{allowManualCommit}}"
         pollOnError: "{{pollOnError}}"

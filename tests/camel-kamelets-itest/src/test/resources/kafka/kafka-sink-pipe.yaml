@@ -36,7 +36,7 @@ spec:
       name: kafka-sink
     properties:
       bootstrapServers: '{{kafka.bootstrapServers}}'
-      user: '{{kafka.user}}'
-      password: '{{kafka.password}}'
       topic: '{{kafka.topic}}'
-      securityProtocol: '{{kafka.securityProtocol}}'
+      saslAuthType: 'PLAIN'
+      saslUsername: '{{kafka.saslUsername}}'
+      saslPassword: '{{kafka.saslPassword}}'

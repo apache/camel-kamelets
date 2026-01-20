@@ -17,8 +17,6 @@
 
 name: kafka-source-pipe-test
 variables:
-  - name: "kafka.securityProtocol"
-    value: "PLAINTEXT"
   - name: "kafka.deserializeHeaders"
     value: "true"
   - name: "kafka.topic"
@@ -29,9 +27,9 @@ variables:
     value: "citrus:randomNumber(4)"
   - name: "kafka.message"
     value: "Camel rocks!"
-  - name: "kafka.user"
+  - name: "kafka.saslUsername"
     value: "redpanda"
-  - name: "kafka.password"
+  - name: "kafka.saslPassword"
     value: "admin"
 actions:
   # Create Kafka infrastructure

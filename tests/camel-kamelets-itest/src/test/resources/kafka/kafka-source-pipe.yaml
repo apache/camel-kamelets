@@ -27,10 +27,10 @@ spec:
       name: kafka-source
     properties:
       bootstrapServers: '{{kafka.bootstrapServers}}'
-      user: '{{kafka.user}}'
-      password: '{{kafka.password}}'
       topic: '{{kafka.topic}}'
-      securityProtocol: '{{kafka.securityProtocol}}'
+      saslAuthType: 'PLAIN'
+      saslUsername: '{{kafka.saslUsername}}'
+      saslPassword: '{{kafka.saslPassword}}'
       deserializeHeaders: '{{kafka.deserializeHeaders}}'
   sink:
     uri: "{{http.sink.url}}"
