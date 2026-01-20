@@ -163,7 +163,7 @@ public class KameletsCatalogTest {
         verifyHeaders("azure-functions-sink", 8);
         verifyHeaders("azure-servicebus-source", 21);
         verifyHeaders("azure-storage-blob-source", 34);
-        verifyHeaders("azure-storage-blob-sink", 33);
+        verifyHeaders("azure-storage-blob-sink", 37);
         verifyHeaders("azure-storage-blob-changefeed-source", 34);
         verifyHeaders("azure-storage-datalake-source", 25);
         verifyHeaders("azure-storage-datalake-sink", 37);
