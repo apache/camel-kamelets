@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.17.0...HEAD)
+
+**Closed issues:**
+
+- Bump to Camel 4.18.0-SNAPSHOT [\#2701](https://github.com/apache/camel-kamelets/issues/2701)
+- Create a single Sink and Source Kamelets for Kafka now that CAMEL-22864 is part of 4.18.0 [\#2700](https://github.com/apache/camel-kamelets/issues/2700)
+- Release 4.14.4 [\#2678](https://github.com/apache/camel-kamelets/issues/2678)
+
 ## [v4.17.0](https://github.com/apache/camel-kamelets/tree/v4.17.0) (2026-01-14)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.14.4...v4.17.0)
