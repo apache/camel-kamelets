@@ -163,7 +163,7 @@ public class KameletsCatalogTest {
         verifyHeaders("azure-functions-sink", 8);
         verifyHeaders("azure-servicebus-source", 21);
         verifyHeaders("azure-storage-blob-source", 34);
-        verifyHeaders("azure-storage-blob-sink", 33);
+        verifyHeaders("azure-storage-blob-sink", 37);
         verifyHeaders("azure-storage-blob-changefeed-source", 34);
         verifyHeaders("azure-storage-datalake-source", 25);
         verifyHeaders("azure-storage-datalake-sink", 37);
@@ -193,7 +193,7 @@ public class KameletsCatalogTest {
         verifyHeaders("google-functions-sink", 5);
         verifyHeaders("google-mail-source", 6);
         verifyHeaders("google-pubsub-sink", 3);
-        verifyHeaders("google-pubsub-source", 5);
+        verifyHeaders("google-pubsub-source", 6);
         verifyHeaders("google-sheets-source", 6);
         verifyHeaders("google-storage-source", 21);
         verifyHeaders("google-storage-sink", 15);
