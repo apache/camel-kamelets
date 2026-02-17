@@ -1,0 +1,26 @@
+== Google Vertex AI Sink Kamelet Description
+
+=== Authentication
+
+This Kamelet uses Google Cloud service account authentication. The service account key is optional - if not provided, the Kamelet will use Application Default Credentials (ADC).
+
+If you provide a service account key, it must be base64-encoded. Ensure that the service account has the `aiplatform.endpoints.predict` permission (typically granted through the `Vertex AI User` role).
+
+=== Required Configuration
+
+- **Project ID**: The Google Cloud Project ID
+- **Location**: The Google Cloud region where Vertex AI models are available (e.g., `us-central1`)
+- **Model ID**: The model identifier to use for predictions (e.g., `gemini-2.5-pro`)
+
+=== Optional Configuration
+
+- **Service Account Key**: Base64-encoded service account credentials
+- **Operation**: The operation to perform (default: `generateText`). Supported operations are `generateText`, `generateChat`, `generateImage`, `generateEmbeddings`, `generateCode`, `generateMultimodal`, and `rawPredict`
+- **Temperature**: Controls randomness in generation (0.0 to 1.0)
+- **Max Output Tokens**: Maximum number of tokens to generate in the response
+- **Top P**: Nucleus sampling parameter (0.0 to 1.0)
+- **Top K**: Only sample from the top K options for each subsequent token
+
+=== Content Generation
+
+The Kamelet sends the message body as a prompt to the specified Google Vertex AI model and returns the generated content. It supports Google native models (Gemini, Imagen) as well as partner models (Claude, Llama, Mistral) through the `rawPredict` operation.
