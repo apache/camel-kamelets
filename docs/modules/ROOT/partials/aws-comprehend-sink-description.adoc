@@ -1,0 +1,42 @@
+== AWS Comprehend Sink Kamelet Description
+
+=== Authentication methods
+
+In this Kamelet you can avoid using explicit static credentials by specifying the `useDefaultCredentialsProvider` option and set it to `true`.
+
+The order of evaluation for Default Credentials Provider is the following:
+
+ - Java system properties - `aws.accessKeyId` and `aws.secretKey`.
+ - Environment variables - `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+ - Web Identity Token from AWS STS.
+ - The shared credentials and config files.
+ - Amazon ECS container credentials - loaded from the Amazon ECS if the environment variable `AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` is set.
+ - Amazon EC2 Instance profile credentials.
+
+You can also use the Profile Credentials Provider, by setting the `useProfileCredentialsProvider` option to `true` and `profileCredentialsName` to the profile name.
+
+Only one of access key/secret key or default credentials provider could be used
+
+For more information, see the https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials.html[AWS credentials documentation]
+
+=== Operations
+
+The kamelet supports the following operations:
+
+ - *detectDominantLanguage* (default) - Detects the dominant language of the input text.
+ - *detectEntities* - Detects named entities (people, places, organizations, etc.) in the input text.
+ - *detectKeyPhrases* - Detects key noun phrases in the input text.
+ - *detectSentiment* - Detects the sentiment (positive, negative, neutral, mixed) of the input text.
+ - *detectSyntax* - Detects the parts of speech (nouns, verbs, adjectives, etc.) in the input text.
+ - *detectPiiEntities* - Detects personally identifiable information (PII) in the input text.
+ - *detectToxicContent* - Detects toxic content in the input text.
+ - *classifyDocument* - Classifies the input text using a custom document classifier endpoint.
+ - *containsPiiEntities* - Checks whether the input text contains PII entities.
+
+=== Language Code
+
+The `languageCode` parameter is required for all operations except `detectDominantLanguage`. Use a 2-letter ISO 639-1 code (e.g., `en` for English, `es` for Spanish).
+
+=== Document Classification
+
+For the `classifyDocument` operation, you must provide the `endpointArn` parameter pointing to your custom classifier endpoint.
