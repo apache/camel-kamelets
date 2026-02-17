@@ -1,0 +1,19 @@
+apiVersion: camel.apache.org/v1
+kind: Pipe
+metadata:
+  name: aws-comprehend-sink-pipe
+spec:
+  source:
+    ref:
+      kind: KafkaTopic
+      apiVersion: kafka.strimzi.io/v1beta1
+      name: my-topic
+  sink:
+    ref:
+      kind: Kamelet
+      apiVersion: camel.apache.org/v1
+      name: aws-comprehend-sink
+    properties:
+      accessKey: "The Access Key"
+      secretKey: "The Secret Key"
+      region: "eu-west-1"
