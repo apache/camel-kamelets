@@ -193,7 +193,7 @@ public class KameletsCatalogTest {
         verifyHeaders("google-functions-sink", 5);
         verifyHeaders("google-mail-source", 6);
         verifyHeaders("google-pubsub-sink", 3);
-        verifyHeaders("google-pubsub-source", 5);
+        verifyHeaders("google-pubsub-source", 6);
         verifyHeaders("google-sheets-source", 6);
         verifyHeaders("google-storage-source", 21);
         verifyHeaders("google-storage-sink", 15);
