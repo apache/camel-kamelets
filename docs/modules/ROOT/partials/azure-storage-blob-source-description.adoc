@@ -6,15 +6,18 @@ In this Kamelet, you can use these Azure authentication methods:
 
 - Azure Identity mechanism:  `AZURE_IDENTITY`
 - Plain Shared Account Key:  `SHARED_ACCOUNT_KEY`
+- Client Secret Credentials:  `CLIENT_SECRET`
 
 The order of evaluation for `AZURE_IDENTITY` is the following:
 
  - Enviroment
- - Workload Identity 
- - Managed Identity 
- - Azure Developer CLI 
+ - Workload Identity
+ - Managed Identity
+ - Azure Developer CLI
  - IntelliJ
  - Azure CLI
  - Azure Powershell
+
+For `CLIENT_SECRET` you'll need to provide `clientId`, `clientSecret`, and `tenantId` properties.
 
 For more information, see the https://learn.microsoft.com/en-us/java/api/overview/azure/identity-readme[Azure Identity documentation]

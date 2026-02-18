@@ -5,3 +5,14 @@
 For this Kamelet the Connection string is the basic method for authenticating to the Azure Servicebus Queue.
 
 To use this Kamelet you'll need to set up Events on your Azure Storage Blob account and select as an endpoint an Azure Servicebus Queue.
+
+For the Azure Storage Blob access, you can use these Azure authentication methods:
+
+- Azure Identity mechanism:  `AZURE_IDENTITY`
+- Plain Shared Account Key:  `SHARED_ACCOUNT_KEY`
+- Shared Key Credential:  `SHARED_KEY_CREDENTIAL`
+- Client Secret Credentials:  `CLIENT_SECRET`
+
+For `CLIENT_SECRET` you'll need to provide `clientId`, `clientSecret`, and `tenantId` properties.
+
+For more information, see the https://learn.microsoft.com/en-us/java/api/overview/azure/identity-readme[Azure Identity documentation]
