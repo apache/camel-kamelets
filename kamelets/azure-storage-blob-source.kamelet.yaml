@@ -54,13 +54,34 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      clientId:
+        title: Client Id
+        description: The Azure Storage Blob client Id.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      clientSecret:
+        title: Client Secret
+        description: The Azure Storage Blob client secret.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      tenantId:
+        title: Tenant Id
+        description: The Azure Storage Blob tenant id.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
       delay:
         title: Delay
         description: The number of milliseconds before the next poll of the selected blob.
         type: integer
         default: 500
       deleteAfterRead:
-        title: Auto-delete Blob 
+        title: Auto-delete Blob
         description: Specifies to delete blobs after consuming them
         type: boolean
         default: false
@@ -68,7 +89,7 @@ spec:
         title: Credential Type
         description: Determines the credential strategy to adopt.
         type: string
-        enum: ["SHARED_ACCOUNT_KEY", "AZURE_IDENTITY"]
+        enum: ["SHARED_ACCOUNT_KEY", "AZURE_IDENTITY", "CLIENT_SECRET"]
         default: "SHARED_ACCOUNT_KEY"
   dataTypes:
     out:
@@ -148,6 +169,9 @@ spec:
       uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
       parameters:
         accessKey: "{{?accessKey}}"
+        azureClientId: "{{?clientId}}"
+        azureClientSecret: "{{?clientSecret}}"
+        azureTenantId: "{{?tenantId}}"
         credentialType: "{{credentialType}}"
         delay: "{{delay}}"
       steps:
@@ -162,5 +186,8 @@ spec:
                       parameters:
                         operation: "deleteBlob"
                         accessKey: "{{?accessKey}}"
+                        azureClientId: "{{?clientId}}"
+                        azureClientSecret: "{{?clientSecret}}"
+                        azureTenantId: "{{?tenantId}}"
                         credentialType: "{{credentialType}}"
 
