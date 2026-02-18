@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.14.5...HEAD)
+
+**Closed issues:**
+
+- Create an AWS comprehend Sink Kamelet [\#2723](https://github.com/apache/camel-kamelets/issues/2723)
+- Create a Google Vertex AI Sink Kamelet [\#2721](https://github.com/apache/camel-kamelets/issues/2721)
+- Upgrade to Camel 4.14.5 [\#2717](https://github.com/apache/camel-kamelets/issues/2717)
+
 ## [v4.14.5](https://github.com/apache/camel-kamelets/tree/v4.14.5) (2026-02-16)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.17.0...v4.14.5)
