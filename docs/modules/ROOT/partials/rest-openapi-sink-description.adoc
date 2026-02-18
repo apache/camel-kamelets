@@ -12,9 +12,13 @@ Uses OpenAPI specifications to understand API endpoints, request/response format
 
 Supports various HTTP operations (GET, POST, PUT, DELETE, etc.) as defined in the OpenAPI specification, providing comprehensive REST API integration capabilities.
 
+=== Host and Base Path Configuration
+
+The host and base path for the REST service can be configured to override the default values found in the OpenAPI specification. This is useful for production environments where the specification may contain default values like localhost:8080 that need to be replaced with the actual service endpoint.
+
 === Schema Validation
 
-OpenAPI specifications include schema definitions that can be used for request and response validation, ensuring data integrity and API compliance.
+OpenAPI specifications include schema definitions that can be used for request and response validation, ensuring data integrity and API compliance. Client request validation can be enabled to check if outgoing requests conform to the OpenAPI specification before they are sent.
 
 === Documentation-Driven Development
 

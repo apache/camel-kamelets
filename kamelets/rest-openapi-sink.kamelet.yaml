@@ -46,6 +46,21 @@ spec:
         title: Operation ID
         description: The operation to call.
         type: string
+      host:
+        title: Host
+        description: The host to use for calling the REST service. Overrides the value found in the OpenAPI specification. The format is https://hostname:port.
+        type: string
+        example: "https://api.example.com:443"
+      basePath:
+        title: Base Path
+        description: The API base path. Overrides the value present in the OpenAPI specification.
+        type: string
+        example: "/v3"
+      clientRequestValidation:
+        title: Client Request Validation
+        description: Whether to enable validation of the client request to check if the incoming request is valid according to the OpenAPI specification.
+        type: boolean
+        default: false
   dependencies:
   - "camel:rest-openapi"
   - "camel:http"
@@ -55,4 +70,9 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - to: "rest-openapi:{{specification}}#{{operation}}"
+      - to:
+          uri: "rest-openapi:{{specification}}#{{operation}}"
+          parameters:
+            host: "{{?host}}"
+            basePath: "{{?basePath}}"
+            clientRequestValidation: "{{clientRequestValidation}}"
