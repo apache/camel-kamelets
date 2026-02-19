@@ -1,14 +1,50 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v4.18.0](https://github.com/apache/camel-kamelets/tree/v4.18.0) (2026-02-18)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.14.5...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.14.5...v4.18.0)
 
 **Closed issues:**
 
+- Upgrade to Camel 4.18.0 [\#2730](https://github.com/apache/camel-kamelets/issues/2730)
+- Create an AWS Polly Sink Kamelet [\#2725](https://github.com/apache/camel-kamelets/issues/2725)
 - Create an AWS comprehend Sink Kamelet [\#2723](https://github.com/apache/camel-kamelets/issues/2723)
 - Create a Google Vertex AI Sink Kamelet [\#2721](https://github.com/apache/camel-kamelets/issues/2721)
 - Upgrade to Camel 4.14.5 [\#2717](https://github.com/apache/camel-kamelets/issues/2717)
+- Externalize Databricks driver version for auto-update [\#2674](https://github.com/apache/camel-kamelets/issues/2674)
+- CAMEL-22688 - Add support for Client Secret Credentials in Azure Identity authentication for camel-azure-storage-blob component - Reflect in the Kamelet [\#2642](https://github.com/apache/camel-kamelets/issues/2642)
+- rest-openapi-sink kamelet sink - Add option to configure host and basePath option [\#2344](https://github.com/apache/camel-kamelets/issues/2344)
+
+**Merged pull requests:**
+
+- CAMEL-22688 - Add support for Client Secret Credentials in Azure Iden… [\#2734](https://github.com/apache/camel-kamelets/pull/2734) ([oscerd](https://github.com/oscerd))
+- Externalize Databricks driver version for auto-update [\#2733](https://github.com/apache/camel-kamelets/pull/2733) ([oscerd](https://github.com/oscerd))
+- Upgrade to Camel 4.18.0 [\#2732](https://github.com/apache/camel-kamelets/pull/2732) ([oscerd](https://github.com/oscerd))
+- rest-openapi-sink kamelet - Add option to configure host and basePath… [\#2729](https://github.com/apache/camel-kamelets/pull/2729) ([oscerd](https://github.com/oscerd))
+- Added an AWS Polly Sink Kamelet [\#2726](https://github.com/apache/camel-kamelets/pull/2726) ([oscerd](https://github.com/oscerd))
+- Create an AWS comprehend Sink Kamelet [\#2724](https://github.com/apache/camel-kamelets/pull/2724) ([oscerd](https://github.com/oscerd))
+- Create a Google Vertex AI Sink Kamelet [\#2722](https://github.com/apache/camel-kamelets/pull/2722) ([oscerd](https://github.com/oscerd))
+- chore\(deps\): bump org.apache.maven.resolver:maven-resolver-api from 2.0.14 to 2.0.15 [\#2720](https://github.com/apache/camel-kamelets/pull/2720) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump com.amazon.redshift:redshift-jdbc42 from 2.2.3 to 2.2.4 [\#2716](https://github.com/apache/camel-kamelets/pull/2716) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2715](https://github.com/apache/camel-kamelets/pull/2715) ([github-actions[bot]](https://github.com/apps/github-actions))
+- chore\(deps\): bump org.postgresql:postgresql from 42.7.9 to 42.7.10 [\#2714](https://github.com/apache/camel-kamelets/pull/2714) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump com.amazon.redshift:redshift-jdbc42 from 2.2.2 to 2.2.3 [\#2713](https://github.com/apache/camel-kamelets/pull/2713) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump org.citrusframework:citrus-bom from 4.9.1 to 4.9.2 [\#2712](https://github.com/apache/camel-kamelets/pull/2712) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2711](https://github.com/apache/camel-kamelets/pull/2711) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen for SBOM [\#2710](https://github.com/apache/camel-kamelets/pull/2710) ([github-actions[bot]](https://github.com/apps/github-actions))
+- chore\(deps\): bump fabric8-version from 7.5.1 to 7.5.2 [\#2708](https://github.com/apache/camel-kamelets/pull/2708) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2707](https://github.com/apache/camel-kamelets/pull/2707) ([github-actions[bot]](https://github.com/apps/github-actions))
+- chore\(deps\): bump actions/checkout from 6.0.1 to 6.0.2 [\#2706](https://github.com/apache/camel-kamelets/pull/2706) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump peter-evans/create-pull-request from 8.0.0 to 8.1.0 [\#2705](https://github.com/apache/camel-kamelets/pull/2705) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump actions/setup-java from 5.1.0 to 5.2.0 [\#2704](https://github.com/apache/camel-kamelets/pull/2704) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Create a single Sink and Source Kamelets for Kafka now that CAMEL-228… [\#2703](https://github.com/apache/camel-kamelets/pull/2703) ([oscerd](https://github.com/oscerd))
+- Bump to Camel-4.18.0-SNAPSHOT [\#2702](https://github.com/apache/camel-kamelets/pull/2702) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#2699](https://github.com/apache/camel-kamelets/pull/2699) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen for SBOM [\#2698](https://github.com/apache/camel-kamelets/pull/2698) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen [\#2697](https://github.com/apache/camel-kamelets/pull/2697) ([github-actions[bot]](https://github.com/apps/github-actions))
+- chore\(deps\): bump org.postgresql:postgresql from 42.7.8 to 42.7.9 [\#2696](https://github.com/apache/camel-kamelets/pull/2696) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump fabric8-version from 7.5.0 to 7.5.1 [\#2695](https://github.com/apache/camel-kamelets/pull/2695) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump org.messaginghub:pooled-jms from 3.2.1 to 3.2.2 [\#2694](https://github.com/apache/camel-kamelets/pull/2694) ([dependabot[bot]](https://github.com/apps/dependabot))
 
 ## [v4.14.5](https://github.com/apache/camel-kamelets/tree/v4.14.5) (2026-02-16)
 
