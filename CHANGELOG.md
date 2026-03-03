@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.18.0...HEAD)
+
+**Closed issues:**
+
+- Release 4.18.0 [\#2731](https://github.com/apache/camel-kamelets/issues/2731)
+- Release 4.14.5 [\#2718](https://github.com/apache/camel-kamelets/issues/2718)
+
 ## [v4.18.0](https://github.com/apache/camel-kamelets/tree/v4.18.0) (2026-02-18)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.14.5...v4.18.0)
