@@ -3,7 +3,7 @@
 This folder contains a suite of integration tests for Kamelets
 
 You need the following tools to run the tests:
-- Java 17
+- Java 21
 - [JBang](https://www.jbang.dev/)
 - [Camel JBang](https://camel.apache.org/manual/camel-jbang.html)
 - [Citrus JBang App](https://citrusframework.org/citrus/reference/html/index.html#runtime-jbang-install)
