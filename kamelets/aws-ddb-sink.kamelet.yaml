@@ -145,7 +145,7 @@ spec:
       - setProperty:
           name: operation
           constant: "{{operation}}"
-      - transform:
+      - transformDataType:
           toType: "aws2-ddb:application-json"
       - to:
           uri: "aws2-ddb:{{table}}"

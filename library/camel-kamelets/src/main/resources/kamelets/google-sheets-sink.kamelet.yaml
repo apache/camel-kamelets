@@ -163,7 +163,7 @@ spec:
         - setHeader:
             name: CamelGoogleSheets.valueInputOption
             simple: "{{?valueInputOption}}"
-        - transform:
+        - transformDataType:
             toType: "google-sheets:application-x-struct"
         - to:
             uri: "google-sheets:data/{{operation}}"
