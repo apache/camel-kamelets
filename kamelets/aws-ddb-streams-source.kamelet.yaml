@@ -168,6 +168,6 @@ spec:
         overrideEndpoint: "{{overrideEndpoint}}"
         delay: "{{delay}}"
       steps:
-      - transform:
+      - transformDataType:
           toType: "aws2-ddb:application-x-struct"
       - to: "kamelet:sink"
