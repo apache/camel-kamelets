@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- aws-ddb-sink.kamelet.yaml transform not working [\#2748](https://github.com/apache/camel-kamelets/issues/2748)
 - Release 4.18.0 [\#2731](https://github.com/apache/camel-kamelets/issues/2731)
 - Release 4.14.5 [\#2718](https://github.com/apache/camel-kamelets/issues/2718)
 
