@@ -1,0 +1,9 @@
+- route:
+    from:
+      uri: "kamelet:jms-amqp-10-ssl-source"
+      parameters:
+        destinationName: "The Destination Name"
+        remoteURI: "amqps://my-host:5671?transport.trustStoreLocation=/path/to/truststore.jks&transport.trustStorePassword=changeit"
+      steps:
+        - to:
+            uri: "log:info"

@@ -1,0 +1,12 @@
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 1000
+        message: "Hello Camel JBang"
+      steps:
+        - to:
+            uri: "kamelet:jms-amqp-10-ssl-sink"
+            parameters:
+              destinationName: "The Destination Name"
+              remoteURI: "amqps://my-host:5671?transport.trustStoreLocation=/path/to/truststore.jks&transport.trustStorePassword=changeit"

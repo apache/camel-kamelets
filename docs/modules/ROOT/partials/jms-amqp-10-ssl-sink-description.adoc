@@ -1,0 +1,24 @@
+== JMS - AMQP 1.0 SSL Sink Kamelet Description
+
+=== Connection Configuration
+
+This Kamelet connects to any AMQP 1.0 compliant message broker over an SSL/TLS connection using the Apache Qpid JMS client.
+
+=== SSL/TLS Configuration
+
+SSL transport options are configured as query parameters on the `remoteURI`. Common options include:
+
+- `transport.trustStoreLocation`: Path to the truststore file
+- `transport.trustStorePassword`: Password for the truststore
+- `transport.keyStoreLocation`: Path to the keystore file
+- `transport.keyStorePassword`: Password for the keystore
+- `transport.verifyHost`: Verify hostname matches certificate (default: true)
+- `transport.trustAll`: Trust server certificate implicitly (default: false)
+
+=== Destination Configuration
+
+The Kamelet supports both queue and topic destinations. The destination type can be configured using the `destinationType` property, which defaults to `queue`.
+
+=== AMQP 1.0 Protocol
+
+This sink uses the AMQP 1.0 protocol over SSL/TLS for sending messages to the broker. AMQP 1.0 is an open standard messaging protocol that provides reliable, secure, and interoperable messaging.
