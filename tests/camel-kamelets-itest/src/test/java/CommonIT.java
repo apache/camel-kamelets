@@ -73,4 +73,9 @@ public class CommonIT {
     public Stream<DynamicTest> transformation() {
         return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("transformation");
     }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> crypto() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("crypto");
+    }
 }
