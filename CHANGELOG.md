@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.18.1...HEAD)
+
+**Closed issues:**
+
+- Re-factor the kafka kamelets to a single one [\#1901](https://github.com/apache/camel-kamelets/issues/1901)
+- AMQPS Kamelets \(Source / Sink\) [\#1774](https://github.com/apache/camel-kamelets/issues/1774)
+
 ## [v4.18.1](https://github.com/apache/camel-kamelets/tree/v4.18.1) (2026-03-30)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.18.0...v4.18.1)
