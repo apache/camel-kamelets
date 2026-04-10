@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Create a Crypto Dataformat action [\#2529](https://github.com/apache/camel-kamelets/issues/2529)
 - Re-factor the kafka kamelets to a single one [\#1901](https://github.com/apache/camel-kamelets/issues/1901)
 - AMQPS Kamelets \(Source / Sink\) [\#1774](https://github.com/apache/camel-kamelets/issues/1774)
 
