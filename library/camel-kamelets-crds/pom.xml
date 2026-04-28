@@ -39,6 +39,7 @@
 
     <fabric8-version>7.6.1</fabric8-version>
     <maven-surefire-plugin-version>3.5.0</maven-surefire-plugin-version>
+    <maven-compiler-plugin-version>3.13.0</maven-compiler-plugin-version>
   </properties>
 
   <dependencyManagement>
@@ -76,6 +77,14 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin-version}</version>
+        <configuration>
+          <proc>full</proc>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>io.fabric8</groupId>
         <artifactId>java-generator-maven-plugin</artifactId>
