@@ -19,11 +19,15 @@ name: avro-data-type-test
 variables:
   - name: "uuid"
     value: citrus:randomUUID()
+  - name: "camelVersion"
+    value: "citrus:systemProperty('citrus.camel.jbang.version')"
+  - name: "kameletsVersion"
+    value: "citrus:systemProperty('citrus.camel.jbang.kamelets.version')"
 actions:
   - echo:
-      message: "Camel JBang version: citrus:env('citrus.camel.jbang.version')"
+      message: "Camel JBang version: ${camelVersion}"
   - echo:
-      message: "Kamelets version: citrus:env('citrus.camel.jbang.kamelets.version')"
+      message: "Kamelets version: ${kameletsVersion}"
   - camel:
       jbang:
         run:
