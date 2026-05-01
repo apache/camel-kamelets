@@ -20,6 +20,10 @@ variables:
   - name: "uuid"
     value: citrus:randomUUID()
 actions:
+  - echo:
+      message: "Camel JBang version: citrus:env('citrus.camel.jbang.version')"
+  - echo:
+      message: "Kamelets version: citrus:env('citrus.camel.jbang.kamelets.version')"
   - camel:
       jbang:
         run:
