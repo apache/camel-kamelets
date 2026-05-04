@@ -186,6 +186,18 @@
     </dependencies>
 
     <build>
+        <testResources>
+            <!-- Standard test resources without filtering to preserve runtime placeholders like ${avro.webhook.server.port} -->
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
+            </testResource>
+            <!-- This is needed to provide maven filtering of the citrus-application.properties file so that we can keep the camel and camel-kamelets versions up to date -->
+            <testResource>
+                <directory>src/test/resources-filtered</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
