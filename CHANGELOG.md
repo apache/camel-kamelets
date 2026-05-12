@@ -1,5 +1,13 @@
 # Changelog
 
+## [v4.18.2](https://github.com/apache/camel-kamelets/tree/v4.18.2) (2026-05-11)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.20.0...v4.18.2)
+
+**Closed issues:**
+
+- Upgrade Camel to 4.18.2 [\#2824](https://github.com/apache/camel-kamelets/issues/2824)
+
 ## [v4.20.0](https://github.com/apache/camel-kamelets/tree/v4.20.0) (2026-04-28)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.18.1...v4.20.0)
