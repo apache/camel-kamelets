@@ -31,7 +31,7 @@ metadata:
 spec:
   definition:
     title: "JMS - AMQP 1.0 Sink"
-    description: "Send data to any AMQP 1.0 compliant message broker by using the Apache Qpid JMS client."
+    description: "Send data to any AMQP 1.0 compliant message broker by using the Apache Qpid JMS client. For SSL/TLS connections, use the amqps:// scheme in the remoteURI and configure SSL transport options as query parameters (e.g. transport.trustStoreLocation, transport.trustStorePassword, transport.keyStoreLocation, transport.keyStorePassword, transport.verifyHost, transport.trustAll)."
     required:
       - destinationName
       - remoteURI
@@ -48,7 +48,7 @@ spec:
         type: string
       remoteURI:
         title: "Broker URL"
-        description: "The JMS URL."
+        description: "The JMS URL. Use the amqps:// scheme for SSL/TLS connections."
         type: string
         example: "amqp://my-host:31616"
   dependencies:
