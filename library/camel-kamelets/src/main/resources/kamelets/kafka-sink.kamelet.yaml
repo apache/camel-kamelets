@@ -109,6 +109,8 @@ spec:
         description: The password of the private key in the key store file.
         type: string
         format: password
+        x-descriptors:
+          - urn:camel:group:credentials
   dependencies:
     - "camel:core"
     - "camel:kafka"
