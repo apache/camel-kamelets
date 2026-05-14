@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.18.2...HEAD)
+
+**Implemented enhancements:**
+
+- Consolidate JMS AMQP 10 SSL variants into single kamelets with optional SSL parameters [\#2828](https://github.com/apache/camel-kamelets/issues/2828)
+
+**Fixed bugs:**
+
+- Add missing x-descriptors for credential properties in Kafka kamelets [\#2829](https://github.com/apache/camel-kamelets/issues/2829)
+
 ## [v4.18.2](https://github.com/apache/camel-kamelets/tree/v4.18.2) (2026-05-11)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.20.0...v4.18.2)
