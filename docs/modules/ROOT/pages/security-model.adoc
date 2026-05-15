@@ -60,7 +60,7 @@ A Kamelet is a single YAML file containing a *Camel route template* (in
 properties* the route author binds (in `spec.definition.properties`). The
 catalog ships about 250 of these (94 sources, 95 sinks, 61 actions). A Kamelet
 is referenced by name from a route or `Pipe`; the runtime substitutes
-`{{property}}` placeholders with the bound values and runs the template like any
+`{\{property}}` placeholders with the bound values and runs the template like any
 other Camel route.
 
 The security-relevant consequence: *in a hand-written Camel route, the route
@@ -116,7 +116,7 @@ inspect or rewrite the template.
 
 The fundamental trust boundary is identical to Camel's: between *the Kamelet
 (its template plus the operator's bound configuration)* and *the data flowing
-through it*. The Kamelet template and every `{{property}}` value are trusted;
+through it*. The Kamelet template and every `{\{property}}` value are trusted;
 anything that arrives in an `Exchange` body, header or attachment from the wire
 or filesystem is untrusted.
 
@@ -170,7 +170,7 @@ first is the security-relevant product.
   runtime.
 | No - unsupported / build / examples
 
-| The Kamelet execution runtime: the `kamelet:` component, `{{property}}`
+| The Kamelet execution runtime: the `kamelet:` component, `{\{property}}`
   placeholder binding, and `org.apache.camel.kamelets.utils.*`
 | *Lives in `apache/camel` core, not in this repository* (the
   `camel-kamelets-utils` module was removed here and folded into core).
@@ -213,7 +213,7 @@ below is the catalog-template layer.
 
 | A template does not pass untrusted message data to an expression/template/
   query evaluator the Kamelet's purpose did not call for
-| The template feeds `${body}` / an inbound header into `simple`, a template
+| The template feeds `$\{body}` / an inbound header into `simple`, a template
   language, JSONPath or a query string in a way the operator never asked for
 | High to Critical (CVSS 8.1-9.8)
 
@@ -251,18 +251,18 @@ a Camel-internal dispatch header (`CamelHttpUri`, `CamelFileName`,
 `Camel*DestinationName`, `CamelExecCommand*`, `CamelBeanMethodName`, ...) - or
 that fails to strip such a header it does not consume - so that wire input
 redirects the component. Many catalog templates already defend this (for
-example `http-sink` performs `removeHeader: CamelHttpUri` before `to: {{url}}`,
+example `http-sink` performs `removeHeader: CamelHttpUri` before `to: {\{url}}`,
 and `extract-field-action` sanitises a configurable header name). A *new or
 changed template* that maps untrusted input into dispatch without that
 discipline is the catalog analogue of the Camel header-injection CVE family.
 
 ==== Template-introduced expression / template / query injection
 
-A template that passes untrusted message data (not a `{{property}}`) to a
+A template that passes untrusted message data (not a `{\{property}}`) to a
 `simple` expression, a template language (Velocity, Freemarker, Mustache, MVEL,
 JSLT, XJ, string-template, ...), JSONPath/JQ, or a back-end query string the
 Kamelet builds. The defect is the template doing this without the route author
-asking; an operator binding a `{{template}}` / `{{query}}` / `{{expression}}`
+asking; an operator binding a `{\{template}}` / `{\{query}}` / `{\{expression}}`
 property to untrusted data is out of scope (route-author responsibility,
 mirroring Camel).
 
@@ -289,7 +289,7 @@ The following are *not* Kamelet Catalog vulnerabilities and will be closed as
 such, with a reference to this page.
 
 * *A route author or operator binding a Kamelet property to untrusted data.*
-  `{{template}}`, `{{query}}`, `{{expression}}`, `{{url}}`, `{{executable}}`,
+  `{\{template}}`, `{\{query}}`, `{\{expression}}`, `{\{url}}`, `{\{executable}}`,
   file paths and credentials are configuration. The catalog cannot decide on the
   operator's behalf whether a bound value is trusted. Template-language Kamelets
   (`velocity-template-action`, `jslt-action`, `freemarker-template-action`,
@@ -302,7 +302,7 @@ such, with a reference to this page.
   route-author error, exactly as in the Camel model.
 * *A Kamelet doing, by design, the dangerous thing it is named for.*
   `exec-sink` ("Execute system commands") deliberately maps an inbound `args` /
-  `ce-args` header into `CamelExecCommandArgs` and runs `exec:{{executable}}`;
+  `ce-args` header into `CamelExecCommandArgs` and runs `exec:{\{executable}}`;
   `ssh-sink`, `scp-sink`, `ssh-source` run remote commands/transfers. Placing
   such a Kamelet downstream of untrusted input is operator responsibility - the
   behaviour is the Kamelet's documented contract, analogous to Camel's
@@ -323,7 +323,7 @@ such, with a reference to this page.
   Kamelet's declared `mvn:` dependencies are vetted only for Apache-license
   compatibility; their CVEs follow Camel's third-party-dependency policy.
 * *Defects in the Kamelet execution runtime.* The `kamelet:` component,
-  `{{property}}` placeholder binding and `org.apache.camel.kamelets.utils.*`
+  `{\{property}}` placeholder binding and `org.apache.camel.kamelets.utils.*`
   live in `apache/camel`; route such findings there.
 * *Denial of service via resource exhaustion.* Unthrottled sources, oversized
   messages, expansion bombs - operators apply `throttle`, `circuitBreaker`,
@@ -395,8 +395,8 @@ For these assumptions to hold, the route author and operator must:
 * *Load Kamelets only from a trusted, integrity-checked catalog.* An entity that
   can add or modify a Kamelet definition has arbitrary code execution by design.
 * *Bind every property from trusted configuration* - never bind
-  `{{template}}` / `{{query}}` / `{{expression}}` / `{{url}}` /
-  `{{executable}}` / credentials / file paths from untrusted message data.
+  `{\{template}}` / `{\{query}}` / `{\{expression}}` / `{\{url}}` /
+  `{\{executable}}` / credentials / file paths from untrusted message data.
 * *Strip `Camel*` headers from untrusted producers* before a sink Kamelet, even
   though many templates also do this for the dispatch headers they know:
 +
@@ -424,7 +424,7 @@ change matches this model:
   dispatch-controlling position?* If so it must strip or fix every
   Camel-internal header it does not deliberately consume, before the dispatching
   step.
-* *Does the template pass message data (not a `{{property}}`) to an
+* *Does the template pass message data (not a `{\{property}}`) to an
   expression/template/query evaluator?* If yes, that is the in-scope injection
   class - the evaluated input must be a bound property, not the body/headers.
 * *Does the template add a component with a security-relevant default?* Ship the
@@ -475,7 +475,7 @@ The closed set of outcomes for a report, scanner finding, or AI analysis:
 | _Missing or incorrect secret / constraint metadata_
 
 | `OUT-OF-MODEL: operator-bound-input`
-| Requires attacker control of a `{{property}}` (template, query, expression,
+| Requires attacker control of a `{\{property}}` (template, query, expression,
   URL, command, path, credential).
 | _Out of scope_, item 1
 
