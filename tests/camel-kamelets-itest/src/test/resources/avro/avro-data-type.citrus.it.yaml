@@ -46,7 +46,7 @@ actions:
                 - name: "http.sink.url"
                   value: "http://localhost:${avro.webhook.server.port}/user"
                 - name: "input"
-                  value: |
+                  value: >-
                     { \"id\": \"${uuid}\", \"firstname\": \"Sheldon\", \"lastname\": \"Cooper\", \"age\": 28 }
   - camel:
       jbang:

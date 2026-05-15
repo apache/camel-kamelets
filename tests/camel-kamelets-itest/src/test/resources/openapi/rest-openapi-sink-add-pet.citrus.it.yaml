@@ -40,7 +40,7 @@ actions:
                 - name: "petId"
                   value: "${petId}"
                 - name: "pet"
-                  value: |
+                  value: >-
                     { \"id\": ${petId}, \"name\": \"fluffy\", \"category\": {\"id\": ${petId}, \"name\": \"dog\"}, \"photoUrls\": [ \"petstore/v3/photos/${petId}\" ], \"tags\": [{\"id\": ${petId}, \"name\": \"generated\"}], \"status\": \"available\"}
                 - name: "spec.operation"
                   value: "${spec.operation}"
