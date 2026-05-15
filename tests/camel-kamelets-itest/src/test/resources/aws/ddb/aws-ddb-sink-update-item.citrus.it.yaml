@@ -67,10 +67,10 @@ actions:
         - name: "aws.ddb.item.title.new"
           value: "King Kong - Historical"
         - name: "aws.ddb.item.directors"
-          value: |
+          value: >-
             [\"Merian C. Cooper\", \"Ernest B. Schoedsack\"]
         - name: "aws.ddb.json.data"
-          value: |
+          value: >-
             { \"key\": {\"id\": ${aws.ddb.item.id}}, \"item\": {\"title\": \"${aws.ddb.item.title.new}\", \"year\": ${aws.ddb.item.year}, \"directors\": ${aws.ddb.item.directors}} }
   - groovy:
       script:

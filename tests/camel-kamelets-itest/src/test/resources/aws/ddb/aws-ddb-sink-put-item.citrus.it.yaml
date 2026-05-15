@@ -65,7 +65,7 @@ actions:
         - name: "aws.ddb.item.title"
           value: "Star Wars IV"
         - name: "aws.ddb.json.data"
-          value: |
+          value: >-
             { \"id\": ${aws.ddb.item.id}, \"year\": ${aws.ddb.item.year}, \"title\": \"${aws.ddb.item.title}\" }
 
   # Create Camel JBang integration

@@ -26,7 +26,7 @@ variables:
   - name: "aws.kinesis.message"
     value: "Camel rocks!"
   - name: "aws.kinesis.json.data"
-    value: |
+    value: >-
       { \"message\": \"${aws.kinesis.message}\" }
   - name: "timer.source.period"
     value: "10000"
