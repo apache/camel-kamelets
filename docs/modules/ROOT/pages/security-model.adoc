@@ -1,0 +1,586 @@
+= Security Model
+
+This page documents the security model of the *Apache Camel Kamelet Catalog*:
+who is trusted, where the trust boundaries sit, what counts as a catalog
+vulnerability, and what is left to the route author and the deployment operator.
+It is the reference used by the Apache Camel PMC when triaging security reports
+against the Kamelet Catalog and when deciding whether a behaviour should be
+hardened in a Kamelet template or addressed by the deployment.
+
+The Kamelet Catalog is an *Apache Camel sub-project*. It does not define its own
+trust model from scratch: it *specialises* the
+https://camel.apache.org/manual/security-model.html[Apache Camel Security Model]
+for the specific shape of a Kamelet (a pre-written, PMC-reviewed Camel route
+template distributed as YAML). Where this document is silent, the Camel Security
+Model governs. Where they overlap, this document is the more specific authority
+for the catalog.
+
+[IMPORTANT]
+====
+*Status:* Maintainer-ratified (Apache Camel PMC, 2026-05-15). Ready to publish
+as the catalog's security model. +
+*Version binding:* written against `camel-kamelets` 4.20.0 (commit
+`79dcf4cfca`, 2026-05-15), Camel 4.20.0. A report against catalog version _N_ is
+triaged against this model as it stood at _N_, not at `main`. +
+*Provenance:* claims grounded in the catalog README, the
+`development.adoc` developer guide, the CRD specification, or the Kamelet YAML
+itself are stated as fact. The structural inferences in the initial draft were
+ratified by the Camel PMC on 2026-05-15; the _Maintainer ratification_ section
+at the end records what was confirmed and what was deliberately deferred, so a
+triager can cite "_(maintainer, 2026-05)_" rather than bare prose. +
+*Confidence:* the trust model, component families and scope boundaries are
+documented (catalog README, developer guide, Kamelet YAML, the parent Camel
+model) and PMC-confirmed; one item (a machine-readable triage sidecar) is
+deferred by PMC decision, not unresolved. +
+*Reporting:* see _Reporting a vulnerability_. Findings that fall under
+_In-scope vulnerability classes_ are reported privately through the Camel ASF
+process; findings under _Out of scope_ or _Known limitations_ are closed with a
+reference to this page.
+====
+
+== Audience
+
+This document is written for four audiences:
+
+* *Security researchers and CVE reporters* who need to know what the Camel PMC
+  will accept as a Kamelet Catalog vulnerability before submitting a report.
+* *Automated triage tooling* (CVE scanners, AI-assisted security review) that
+  needs an authoritative scope statement to distinguish a real catalog
+  vulnerability from intentional, documented design.
+* *Kamelet authors and reviewers* contributing or reviewing Kamelet YAML, who
+  need to know which template patterns and property defaults are acceptable.
+* *Route authors and deployment operators* who embed Kamelets in an
+  integration, and need to know which responsibilities the catalog delegates to
+  them.
+
+== What a Kamelet is (and what this changes)
+
+A Kamelet is a single YAML file containing a *Camel route template* (in
+`spec.template`, YAML DSL) plus a JSON-schema declaration of the *configuration
+properties* the route author binds (in `spec.definition.properties`). The
+catalog ships about 250 of these (94 sources, 95 sinks, 61 actions). A Kamelet
+is referenced by name from a route or `Pipe`; the runtime substitutes
+`{{property}}` placeholders with the bound values and runs the template like any
+other Camel route.
+
+The security-relevant consequence: *in a hand-written Camel route, the route
+author writes the route; in a Kamelet, the catalog author (the Camel community,
+reviewed by the PMC) writes the route fragment and the route author only
+supplies bound property values.* The trust boundary between trusted route code
+and untrusted message data is unchanged from Camel's model - but the *author of
+the trusted code* is now the catalog. That is the single fact that shapes
+everything below: a Kamelet template must be safe-by-default for the
+untrusted-data boundary, because the operator who deploys it generally does not
+inspect or rewrite the template.
+
+== Trust model
+
+=== Roles
+
+[cols="1,1,3"]
+|===
+| Role | Trust level | What this role can do
+
+| Kamelet authors and the Camel PMC
+| Trusted
+| Author and review the Kamelet template (which is route code), choose property
+  defaults, decide which inbound headers a template maps where, and select the
+  underlying Camel component. The catalog relies on PMC review to ship templates
+  that are safe by default.
+
+| Route authors (who reference a Kamelet and bind its properties in Java, XML,
+  YAML DSL or a `Pipe`)
+| Fully trusted
+| Choose which Kamelet to use and where to place it in a route, and bind every
+  property - URLs, queries, file paths, OS commands, template/expression
+  strings, credentials - from configuration. Binding a property to an
+  attacker-controlled value is route-author error, not a catalog vulnerability.
+
+| Deployment operators
+| Fully trusted
+| Decide network exposure of source Kamelets, supply secrets and the secrets
+  backend, choose the Camel runtime and JVM, and decide which catalog to load
+  Kamelets from. Loading a Kamelet from an untrusted source is operator error
+  (see _Known limitations_).
+
+| External message senders / data flowing through the Kamelet
+| Untrusted
+| Provide the message body, headers and attachments that a source Kamelet emits
+  or that a sink/action Kamelet consumes. This is the primary attacker model.
+  The catalog's templates must not turn this data into code execution, endpoint
+  redirection, unsafe deserialisation, remote-resource resolution or auth bypass
+  on their own.
+|===
+
+=== Trust boundaries
+
+The fundamental trust boundary is identical to Camel's: between *the Kamelet
+(its template plus the operator's bound configuration)* and *the data flowing
+through it*. The Kamelet template and every `{{property}}` value are trusted;
+anything that arrives in an `Exchange` body, header or attachment from the wire
+or filesystem is untrusted.
+
+The Kamelet Catalog adds one internal boundary of its own: the boundary between
+*the catalog as a distribution* (the set of YAML files the PMC signs and
+releases) and *the consumer that loads them*. An entity that can introduce or
+modify a Kamelet definition in the catalog a runtime loads is, by design, a
+trusted route author with arbitrary route/code execution. Integrity of the
+catalog artifact is therefore a precondition of this whole model, not a property
+the runtime re-checks.
+
+=== Component families
+
+The repository ships several artifacts with different threat profiles. Only the
+first is the security-relevant product.
+
+[cols="2,3,1",options="header"]
+|===
+| Family | What it is | In this model?
+
+| Kamelet YAML catalog (`kamelets/*.kamelet.yaml`, shipped via the
+  `camel-kamelets` resource bundle)
+| ~250 PMC-reviewed Camel route templates. The product. All template-level
+  security posture lives here.
+| *Yes - primary*
+
+| `camel-kamelets-catalog` (Java)
+| Runtime metadata reader. Loads only the YAML bundled on its own classpath at
+  build time, via Jackson `YAMLFactory`, into Fabric8/CRD model objects. No
+  public API accepts a caller-supplied path, URL or stream; not on the message
+  data path.
+| Yes - metadata API surface only
+
+| `camel-kamelets-crds` (Java)
+| Fabric8-generated Kubernetes model POJOs for the Kamelet CRD. Deserialised by
+  the consumer's Kubernetes client / Fabric8, not by code in this repository.
+| No - the deserialiser is the consumer's, not this repo's (PMC-confirmed)
+
+| `kamelets-maven-plugin`
+| Build-time validation of catalog YAML against the Camel component model.
+| No - build tooling
+
+| `camel-kamelets-bom`, `camel-kamelets` packaging
+| Maven BOM (pom only) and the resource bundle that jars family 1.
+| Only as the delivery vehicle for family 1
+
+| `script/` (Go generator/validator), `crds/` Go client generator,
+  `tests/camel-kamelets-itest` (Citrus), `templates/` (init `.vm` and Pipe
+  examples)
+| CI, documentation generation, test and scaffolding code. Not shipped to a
+  runtime.
+| No - unsupported / build / examples
+
+| The Kamelet execution runtime: the `kamelet:` component, `{{property}}`
+  placeholder binding, and `org.apache.camel.kamelets.utils.*`
+| *Lives in `apache/camel` core, not in this repository* (the
+  `camel-kamelets-utils` module was removed here and folded into core).
+| No - governed by the Camel Security Model
+|===
+
+The last row is the most consequential boundary statement: a defect in *how* a
+Kamelet is executed (placeholder resolution, the `kamelet:` component, the
+shared utility beans) is an `apache/camel` finding, not a catalog finding. A
+defect in *what a shipped template does by default* is a catalog finding.
+
+== Vulnerability scope
+
+A report is in scope when it demonstrates that a *shipped Kamelet template*, in
+its default configuration, lets untrusted message data cross a trust boundary
+that an equivalent competently-written hand route would not have crossed -
+because the defect is in the template the catalog authored, not in how the
+operator wired it.
+
+=== Security properties and violation severity
+
+The catalog commits to a small set of properties *on top of* whatever the
+underlying Camel component already provides. The Camel Security Model's
+property/severity table applies unchanged to the component layer; the table
+below is the catalog-template layer.
+
+[cols="3,3,1",options="header"]
+|===
+| Property the catalog upholds (default configuration)
+| What a violation looks like
+| Indicative severity
+
+| A sink/action template that maps an untrusted inbound header or body into a
+  dispatch-controlling position strips or fixes the Camel-internal dispatch
+  headers it does not intend to expose
+| A wire-supplied `CamelHttpUri`, `CamelFileName`, `Camel*DestinationName`,
+  `CamelExec*` (etc.) header survives into a `to:` / component call and
+  redirects the sink, when the Kamelet's stated purpose did not require it
+| High to Critical (CVSS 7.5-9.8)
+
+| A template does not pass untrusted message data to an expression/template/
+  query evaluator the Kamelet's purpose did not call for
+| The template feeds `${body}` / an inbound header into `simple`, a template
+  language, JSONPath or a query string in a way the operator never asked for
+| High to Critical (CVSS 8.1-9.8)
+
+| A shipped template does not enable a security-relevant component default that
+  the Camel model classes as insecure (Java deserialisation on an untrusted
+  consumer, TLS verification disabled, an admin surface bound to `0.0.0.0`)
+| Adding the Kamelet to a route and sending a message reaches the insecure
+  behaviour with no risky property set
+| Severity of the underlying Camel class; in scope
+
+| Secret-bearing properties are declared so tooling can mask them
+  (`format: password`, `x-descriptors: urn:camel:group:credentials`)
+| A credential property is rendered or logged in plaintext by tooling that
+  honoured the schema, because the Kamelet failed to mark it
+| Medium (CVSS 4.0-6.5)
+
+| Free-form destination-like properties constrain their accepted shape
+  (`pattern:` regex on URLs, template resource URIs, etc.)
+| A property documented as an HTTP URL accepts a `file:` / `jar:` / `classpath:`
+  value because the template declared no constraint - widening operator error
+  into reachable behaviour
+| Low to Medium (CVSS 3.7-6.1); see the false-friend note in _Out of scope_
+|===
+
+These tiers are indicative. The PMC assigns the definitive CVSS per report. A
+property only counts here if the catalog has actually committed to it in a
+template, the README/developer guide, or a PMC statement.
+
+=== In-scope vulnerability classes
+
+==== Template-introduced header / dispatch injection
+
+A sink or action template that copies an untrusted inbound header or body into
+a Camel-internal dispatch header (`CamelHttpUri`, `CamelFileName`,
+`Camel*DestinationName`, `CamelExecCommand*`, `CamelBeanMethodName`, ...) - or
+that fails to strip such a header it does not consume - so that wire input
+redirects the component. Many catalog templates already defend this (for
+example `http-sink` performs `removeHeader: CamelHttpUri` before `to: {{url}}`,
+and `extract-field-action` sanitises a configurable header name). A *new or
+changed template* that maps untrusted input into dispatch without that
+discipline is the catalog analogue of the Camel header-injection CVE family.
+
+==== Template-introduced expression / template / query injection
+
+A template that passes untrusted message data (not a `{{property}}`) to a
+`simple` expression, a template language (Velocity, Freemarker, Mustache, MVEL,
+JSLT, XJ, string-template, ...), JSONPath/JQ, or a back-end query string the
+Kamelet builds. The defect is the template doing this without the route author
+asking; an operator binding a `{{template}}` / `{{query}}` / `{{expression}}`
+property to untrusted data is out of scope (route-author responsibility,
+mirroring Camel).
+
+==== Insecure component default shipped in a template
+
+A template that adds a Camel component to the route with a security-relevant
+option set to the insecure value by default (Java serialisation on a consumer
+exposed to an untrusted broker, TLS/hostname verification disabled, a
+permissive header filter, an unfiltered `ObjectInputStream`), reachable simply
+by deploying the Kamelet. This is the Camel "insecure defaults" class scoped to
+the template's choice of defaults.
+
+==== Missing or incorrect secret / constraint metadata
+
+A property carrying a credential that is not declared `format: password` with
+the credentials `x-descriptors`, so schema-honouring tooling exposes it; or a
+destination-like property whose missing `pattern:` turns a documented operator
+contract into reachable unintended behaviour. Triaged as low/medium hardening
+unless it produces a concrete disclosure.
+
+=== Out of scope
+
+The following are *not* Kamelet Catalog vulnerabilities and will be closed as
+such, with a reference to this page.
+
+* *A route author or operator binding a Kamelet property to untrusted data.*
+  `{{template}}`, `{{query}}`, `{{expression}}`, `{{url}}`, `{{executable}}`,
+  file paths and credentials are configuration. The catalog cannot decide on the
+  operator's behalf whether a bound value is trusted. Template-language Kamelets
+  (`velocity-template-action`, `jslt-action`, `freemarker-template-action`,
+  `mvel-template-action`, `mustache-template-action`, `xj-template-action`,
+  `string-template-action`, `chunk-template-action`) and SQL/NoSQL/GraphQL
+  Kamelets (`postgresql-*`, `mysql-*`, `mariadb-*`, `sqlserver-*`,
+  `oracle-database-*`, `cassandra-*`, `mongodb-*`, `snowflake-*`,
+  `graphql-sink`, ...) evaluate or build their template/query from an
+  operator-bound property. Wiring an untrusted source into that property is
+  route-author error, exactly as in the Camel model.
+* *A Kamelet doing, by design, the dangerous thing it is named for.*
+  `exec-sink` ("Execute system commands") deliberately maps an inbound `args` /
+  `ce-args` header into `CamelExecCommandArgs` and runs `exec:{{executable}}`;
+  `ssh-sink`, `scp-sink`, `ssh-source` run remote commands/transfers. Placing
+  such a Kamelet downstream of untrusted input is operator responsibility - the
+  behaviour is the Kamelet's documented contract, analogous to Camel's
+  "bean-based dispatch via internal headers is intentional" limitation.
+* *Network exposure of a source Kamelet.* `webhook-source`, `http-source`,
+  `http-secured-source` and similar open a `platform-http` listener. The catalog
+  does not add authentication except where a Kamelet's name and properties say
+  it does (`*-secured-*` variants expose auth *options* the operator must
+  configure). Exposing a source to untrusted networks, or not configuring the
+  offered auth, is operator responsibility.
+* *Explicitly-named insecure convenience Kamelets.* `*-not-secured-*` /
+  `kafka-not-secured-*` Kamelets advertise their posture in the name and are
+  development/test conveniences. Their lack of transport security is the
+  documented contract, not a defect.
+* *Vulnerabilities in the underlying Camel component or its transitive
+  dependencies.* "Kamelet X uses component Y which had CVE Z" is a Camel /
+  upstream finding unless the *template* configures Y insecurely by default. A
+  Kamelet's declared `mvn:` dependencies are vetted only for Apache-license
+  compatibility; their CVEs follow Camel's third-party-dependency policy.
+* *Defects in the Kamelet execution runtime.* The `kamelet:` component,
+  `{{property}}` placeholder binding and `org.apache.camel.kamelets.utils.*`
+  live in `apache/camel`; route such findings there.
+* *Denial of service via resource exhaustion.* Unthrottled sources, oversized
+  messages, expansion bombs - operators apply `throttle`, `circuitBreaker`,
+  resilience and JVM limits, exactly as in the Camel model.
+* *The `data:image` icon annotation as an injection vector.* It is base64
+  metadata for catalog tooling, never executed by the route runtime; safe
+  rendering of catalog metadata is the consuming UI's concern.
+* *`camel-kamelets-catalog` "deserialises YAML".* It parses only YAML bundled
+  on its own build-time classpath into model objects; it is not an
+  untrusted-document parser, and exposes no API that accepts caller-supplied
+  YAML.
+* *Build, CI, scaffolding and test code* (`script/`, `crds/` generator,
+  `tests/`, `templates/`, `kamelets-maven-plugin`) - separately authored,
+  not shipped to a runtime.
+* *Reports from automated scanners with no proof of a concrete trust-boundary
+  breach through a shipped template.*
+
+=== Known limitations
+
+These look like vulnerabilities at first glance but are documented design
+points. They may be tightened over time through the normal upgrade-guide
+channel.
+
+* *The `exec-sink` argument path is intentional.* It reads an untrusted inbound
+  header into command arguments by design; the Kamelet is literally named
+  "Exec Sink" and lives in the `System` namespace. The mitigation is operator
+  placement, not a template change.
+* *Kafka source Kamelets default `deserializeHeaders: true`.* Inbound Kafka
+  message headers are converted to their String representation by a fixed
+  `KafkaHeaderDeserializer` bean (CAMEL-21843). This is a documented default
+  with a per-Kamelet opt-out property; it is a String conversion, not Java
+  object deserialisation.
+* *A `pattern:` regex on a property is shape validation, not an attack control.*
+  It constrains what an operator may type (e.g. a URL must start `http`/
+  `https`); it does not make an attacker-controlled bound value safe and is not
+  an SSRF defence. See the false-friend note below.
+* *`kamelet.verified=true` is a functional-test marker, not a security audit.*
+  It records that Citrus tests assert the Kamelet's behaviour; it makes no
+  security assertion.
+* *A Kamelet inherits the security posture of its underlying component.* A
+  report must show the *template*, not the Camel component, is the cause.
+* *There are no global build-time or compile flags that change the security
+  envelope.* The catalog is data (YAML); the only security-relevant "variants"
+  are per-Kamelet defaults and the explicitly-named insecure-convenience
+  Kamelets, both covered above. "The project" is the catalog as released, not a
+  configurable family of binaries.
+
+==== False-friend properties
+
+Single highest-value note for an integrator:
+
+* *An "action" Kamelet between an untrusted source and a sink is not a
+  sanitiser, WAF, or trust boundary.* It transforms or filters per its
+  documented purpose only. `predicate-filter-action` /
+  `header-matches-filter-action` decide pass/drop on a JSONPath/header; they do
+  not neutralise hostile content.
+* *A `pattern:` regex looks like input security; it is operator-typo
+  containment.* It restricts scheme/shape, not trust.
+* *`*-secured-*` in a Kamelet name means "auth options exist", not "auth is on
+  by default".* The operator must configure them.
+* *`kamelet.verified=true` looks like a security seal; it is a test marker.*
+
+== Downstream responsibilities
+
+For these assumptions to hold, the route author and operator must:
+
+* *Treat a deployed Kamelet exactly like a route they wrote* - it runs with
+  their privileges and trust.
+* *Load Kamelets only from a trusted, integrity-checked catalog.* An entity that
+  can add or modify a Kamelet definition has arbitrary code execution by design.
+* *Bind every property from trusted configuration* - never bind
+  `{{template}}` / `{{query}}` / `{{expression}}` / `{{url}}` /
+  `{{executable}}` / credentials / file paths from untrusted message data.
+* *Strip `Camel*` headers from untrusted producers* before a sink Kamelet, even
+  though many templates also do this for the dispatch headers they know:
++
+[source,yaml]
+----
+- from:
+    uri: "platform-http:///ingest"
+    steps:
+      - removeHeaders: { pattern: "Camel*" }
+      - to: "kamelet:http-sink?url=https://trusted/backend"
+----
+* *Not place command/transfer Kamelets* (`exec-sink`, `ssh-*`, `scp-sink`)
+  downstream of untrusted input.
+* *Secure inbound source Kamelets* with network controls and, where offered, the
+  `*-secured-*` auth options.
+* *Resolve credentials through a Camel vault*, not plaintext Kamelet properties.
+* *Pin the catalog and Camel versions* and follow Camel security announcements.
+
+== Guidance for Kamelet authors and reviewers
+
+When contributing or reviewing a Kamelet, these questions decide whether the
+change matches this model:
+
+* *Does the template map an untrusted inbound header or body into a
+  dispatch-controlling position?* If so it must strip or fix every
+  Camel-internal header it does not deliberately consume, before the dispatching
+  step.
+* *Does the template pass message data (not a `{{property}}`) to an
+  expression/template/query evaluator?* If yes, that is the in-scope injection
+  class - the evaluated input must be a bound property, not the body/headers.
+* *Does the template add a component with a security-relevant default?* Ship the
+  safe default; if a Kamelet must relax one, name it (e.g. `*-not-secured-*`),
+  document it, and get PMC sign-off.
+* *Does a property carry a secret?* Mark it `format: password` with
+  `x-descriptors: [urn:camel:group:credentials]`.
+* *Does a free-form property feed an endpoint URI or resource?* Add a `pattern:`
+  to contain operator error - and remember it is not a trust control.
+* *Does the change relax a default or widen what a template forwards?* It needs
+  an upgrade-guide entry and PMC review.
+
+== Reporting a vulnerability
+
+The Kamelet Catalog uses the standard Apache Camel / ASF vulnerability process:
+
+* Read https://camel.apache.org/security/[Apache Camel Security].
+* Email `private-security@camel.apache.org` with the affected catalog
+  version(s), the specific Kamelet, and a proof of concept that demonstrates the
+  trust-boundary breach *through a shipped template in its default
+  configuration*.
+* Do not open a public issue, pull request, or mailing-list/social post about an
+  unpublished vulnerability. Follow the ASF Security team's instructions.
+
+Reports matching _In-scope vulnerability classes_ are triaged on the private
+list, fixed in a coordinated release, and published as a CVE advisory under the
+Camel project. Reports matching _Out of scope_ or _Known limitations_ are closed
+with a reference to this page.
+
+=== Triage dispositions
+
+The closed set of outcomes for a report, scanner finding, or AI analysis:
+
+[cols="2,3,1",options="header"]
+|===
+| Disposition | Meaning | Licensed by
+
+| `VALID`
+| A shipped template, in default configuration, turns untrusted data into
+  execution / redirection / unsafe deserialisation / remote-resource fetch /
+  auth bypass that the template - not the operator's wiring - introduced.
+| _In-scope vulnerability classes_
+
+| `VALID-HARDENING`
+| No property above is broken, but a template could reasonably strip a header,
+  tighten a `pattern:`, add secret metadata, or flip a default. Fixed at PMC
+  discretion; usually no CVE.
+| _Missing or incorrect secret / constraint metadata_
+
+| `OUT-OF-MODEL: operator-bound-input`
+| Requires attacker control of a `{{property}}` (template, query, expression,
+  URL, command, path, credential).
+| _Out of scope_, item 1
+
+| `OUT-OF-MODEL: by-design-named-behaviour`
+| Requires the Kamelet to do the dangerous thing it is explicitly named for, or
+  network exposure of a source.
+| _Out of scope_, items 2-4
+
+| `OUT-OF-MODEL: runtime-not-in-this-repo`
+| The defect is in the `kamelet:` component, placeholder binding, or
+  `kamelets.utils` - route to `apache/camel`.
+| _Component families_, last row
+
+| `OUT-OF-MODEL: unsupported-component`
+| Lands in `script/`, `crds/` generator, `tests/`, `templates/`, or the build
+  plugin.
+| _Component families_ / _Out of scope_
+
+| `BY-DESIGN: property-disclaimed`
+| Concerns a behaviour _Known limitations_ documents (Kafka header
+  deserialisation, `pattern:` not a trust control, verified marker, component
+  inheritance).
+| _Known limitations_
+
+| `OUT-OF-MODEL: third-party`
+| Underlying Camel component or transitive dependency CVE not caused by the
+  template.
+| _Out of scope_, item 5
+
+| `MODEL-GAP`
+| Cannot be routed to any of the above - triggers a revision of this model
+  rather than an ad-hoc call.
+| this section
+|===
+
+=== Conditions that would change this model
+
+Revise this document when: a new Kamelet introduces a sink-side dispatch
+surface or evaluates message data as an expression/template by default; a
+template ships an insecure component default; the catalog gains a runtime that
+parses untrusted Kamelet YAML; `camel-kamelets-utils` returns to this
+repository; a `script/` / example artifact is promoted into shipped runtime; or
+a report arrives that cannot be cleanly assigned a disposition above.
+
+== Maintainer ratification
+
+The structural inferences in the initial draft were put to the Apache Camel PMC
+and *confirmed on 2026-05-15*. They are now folded into the body as fact; this
+record preserves the chain of authority so a triager can cite
+"_(maintainer, 2026-05)_" when closing a report.
+
+[cols="3,2",options="header"]
+|===
+| Question put to the PMC | Ratified answer (now in the body)
+
+| Is the catalog covered by Camel's existing security process, with this page
+  as the Kamelet-specific annex?
+| *Yes.* `private-security@camel.apache.org`, the Camel PMC, CVEs under the
+  Camel project. (Header / _Reporting a vulnerability_.)
+
+| Must a sink/action template that maps untrusted input into a dispatch
+  position strip the dispatch headers it does not consume - committed property
+  or per-Kamelet practice?
+| *Committed property.* Every such new or changed template must satisfy it.
+  (_Security properties_ / _Guidance for Kamelet authors and reviewers_.)
+
+| Is loading a Kamelet from an untrusted/user-writable source "attacker is a
+  trusted route author - RCE by design, out of scope"?
+| *Yes.* (_Trust boundaries_; _Downstream responsibilities_.)
+
+| Is `deserializeHeaders: true` on Kafka source Kamelets the supported
+  production default?
+| *Yes* - supported default, String conversion only, per-Kamelet opt-out
+  documented; a report against it is `BY-DESIGN`. (_Known limitations_.)
+
+| Are the `*-not-secured-*` Kamelets shippable / out of scope?
+| *Out of scope* as a "vulnerability" - documented dev/test convenience,
+  explicit in the name. (_Out of scope_.)
+
+| Is `camel-kamelets-crds` in or out of model?
+| *Out of model* - the deserialiser is the consumer's Kubernetes client /
+  Fabric8, not this repository's code. (_Component families_.)
+
+| Document placement and pointers (this page, root `SECURITY.md`, `AGENTS.md`
+  mirroring `apache/camel`)?
+| *Confirmed* and in place. (_Related documents_.)
+
+| Publish a machine-readable triage sidecar (per-Kamelet trust / in-out /
+  dispositions) for automated review?
+| *Deferred by PMC decision* - revisit once the prose model has lived through
+  a few triage cycles. This is a deliberate non-goal for now, not an open
+  question. (_Conditions that would change this model_.)
+|===
+
+A future revision is triggered by the events listed under
+_Conditions that would change this model_ - in particular a report that cannot
+be assigned a disposition, which is treated as a `MODEL-GAP` and a prompt to
+revise this page rather than make an ad-hoc call.
+
+== Related documents
+
+* https://camel.apache.org/manual/security-model.html[Apache Camel Security
+  Model] - the parent model this page specialises.
+* xref:development.adoc[Kamelets Developer Guide] - how Kamelets are authored.
+* xref:apis/spec.adoc[Kamelet CRD specification] - the YAML contract.
+* https://camel.apache.org/security/[Apache Camel Security] - the public
+  advisory index and reporting process.
+* `SECURITY.md` (repository root) - the GitHub-rendered security pointer.
