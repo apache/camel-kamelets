@@ -9,7 +9,7 @@ hardened in a Kamelet template or addressed by the deployment.
 
 The Kamelet Catalog is an *Apache Camel sub-project*. It does not define its own
 trust model from scratch: it *specialises* the
-https://camel.apache.org/manual/security-model.html[Apache Camel Security Model]
+link:/manual/security-model.html[Apache Camel Security Model]
 for the specific shape of a Kamelet (a pre-written, PMC-reviewed Camel route
 template distributed as YAML). Where this document is silent, the Camel Security
 Model governs. Where they overlap, this document is the more specific authority
@@ -441,7 +441,7 @@ change matches this model:
 
 The Kamelet Catalog uses the standard Apache Camel / ASF vulnerability process:
 
-* Read https://camel.apache.org/security/[Apache Camel Security].
+* Read link:/security/[Apache Camel Security].
 * Email `private-security@camel.apache.org` with the affected catalog
   version(s), the specific Kamelet, and a proof of concept that demonstrates the
   trust-boundary breach *through a shipped template in its default
@@ -577,10 +577,10 @@ revise this page rather than make an ad-hoc call.
 
 == Related documents
 
-* https://camel.apache.org/manual/security-model.html[Apache Camel Security
+* link:/manual/security-model.html[Apache Camel Security
   Model] - the parent model this page specialises.
 * xref:development.adoc[Kamelets Developer Guide] - how Kamelets are authored.
 * xref:apis/spec.adoc[Kamelet CRD specification] - the YAML contract.
-* https://camel.apache.org/security/[Apache Camel Security] - the public
+* link:/security/[Apache Camel Security] - the public
   advisory index and reporting process.
 * `SECURITY.md` (repository root) - the GitHub-rendered security pointer.
