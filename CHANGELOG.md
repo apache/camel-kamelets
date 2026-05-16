@@ -12,6 +12,10 @@
 
 - Add missing x-descriptors for credential properties in Kafka kamelets [\#2829](https://github.com/apache/camel-kamelets/issues/2829)
 
+**Closed issues:**
+
+- Add a Kamelet Catalog security model \(and SECURITY.md / AGENTS.md\) mirroring apache/camel [\#2834](https://github.com/apache/camel-kamelets/issues/2834)
+
 ## [v4.18.2](https://github.com/apache/camel-kamelets/tree/v4.18.2) (2026-05-11)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.20.0...v4.18.2)
