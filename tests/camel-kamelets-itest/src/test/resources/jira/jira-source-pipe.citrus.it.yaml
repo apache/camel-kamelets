@@ -62,9 +62,15 @@ actions:
           path: "/rest/api/latest/search"
           parameters:
             - name: jql
-              value: "citrus:urlEncode(${jira.jql})+ORDER+BY+key+desc"
+              value: "citrus:urlEncode(${jira.jql})+ORDER+BY+created+DESC"
+            - name: expand
+              value: "schema%2Cnames"
+            - name: fields
+              value: "%2Anavigable"
             - name: maxResults
               value: "1"
+            - name: startAt
+              value: "0"
           headers:
             - name: Authorization
               value: "Basic citrus:encodeBase64(${jira.username}:${jira.password})"
@@ -95,6 +101,36 @@ actions:
                   ]
               }
 
+  # Verify myself request
+  - http:
+      server: "jiraServer"
+      receiveRequest:
+        GET:
+          path: "/rest/api/latest/myself"
+          headers:
+            - name: Authorization
+              value: "Basic citrus:encodeBase64(${jira.username}:${jira.password})"
+
+  - http:
+      server: "jiraServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              {
+                "name": "citrus",
+                "emailAddress": "citrus@example.com",
+                "displayName": "Citrus User",
+                "timeZone": "America/New_York",
+                "avatarUrls": {
+                  "48x48": "${jira.url}/secure/useravatar?ownerId=citrus&avatarId=10342"
+                }
+              }
+
   # Verify search request
   - http:
       server: "jiraServer"
@@ -103,11 +139,15 @@ actions:
           path: "/rest/api/latest/search"
           parameters:
             - name: jql
-              value: "citrus:urlEncode(${jira.jql})+ORDER+BY+key+desc"
-            - name: maxResults
-              value: "50"
+              value: "citrus:urlEncode(${jira.jql})"
             - name: expand
               value: "schema%2Cnames"
+            - name: fields
+              value: "%2Anavigable"
+            - name: maxResults
+              value: "50"
+            - name: startAt
+              value: "0"
           headers:
             - name: Authorization
               value: "Basic citrus:encodeBase64(${jira.username}:${jira.password})"
