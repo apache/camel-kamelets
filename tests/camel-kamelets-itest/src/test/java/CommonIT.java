@@ -78,4 +78,24 @@ public class CommonIT {
     public Stream<DynamicTest> crypto() {
         return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("crypto");
     }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> header() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("header");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> filter() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("filter");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> httpTests() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("http");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> log() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("log");
+    }
 }

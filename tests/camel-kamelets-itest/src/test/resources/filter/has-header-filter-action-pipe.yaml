@@ -18,7 +18,7 @@
 apiVersion: camel.apache.org/v1
 kind: Pipe
 metadata:
-  name: extract-field-action-pipe
+  name: has-header-filter-action-pipe
 spec:
   source:
     ref:
@@ -27,14 +27,20 @@ spec:
       name: timer-source
     properties:
       period: 10000
-      contentType: application/json
       message: "{{input}}"
   steps:
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1
-        name: extract-field-action
+        name: insert-header-action
       properties:
-        field: "{{field.name}}"
+        name: "{{header.name}}"
+        value: "{{header.value}}"
+    - ref:
+        kind: Kamelet
+        apiVersion: camel.apache.org/v1
+        name: has-header-filter-action
+      properties:
+        name: "{{header.name}}"
   sink:
     uri: "{{http.sink.url}}/result"

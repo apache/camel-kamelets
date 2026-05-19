@@ -18,7 +18,7 @@
 apiVersion: camel.apache.org/v1
 kind: Pipe
 metadata:
-  name: extract-field-action-pipe
+  name: drop-field-action-pipe
 spec:
   source:
     ref:
@@ -33,7 +33,7 @@ spec:
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1
-        name: extract-field-action
+        name: drop-field-action
       properties:
         field: "{{field.name}}"
   sink:

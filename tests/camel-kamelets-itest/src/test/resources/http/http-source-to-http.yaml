@@ -18,23 +18,16 @@
 apiVersion: camel.apache.org/v1
 kind: Pipe
 metadata:
-  name: extract-field-action-pipe
+  name: http-source-to-http
 spec:
   source:
     ref:
       kind: Kamelet
       apiVersion: camel.apache.org/v1
-      name: timer-source
+      name: http-source
     properties:
+      url: "{{http.source.url}}/data"
       period: 10000
       contentType: application/json
-      message: "{{input}}"
-  steps:
-    - ref:
-        kind: Kamelet
-        apiVersion: camel.apache.org/v1
-        name: extract-field-action
-      properties:
-        field: "{{field.name}}"
   sink:
     uri: "{{http.sink.url}}/result"
