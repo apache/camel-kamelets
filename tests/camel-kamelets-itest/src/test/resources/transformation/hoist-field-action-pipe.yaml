@@ -18,7 +18,7 @@
 apiVersion: camel.apache.org/v1
 kind: Pipe
 metadata:
-  name: extract-field-action-pipe
+  name: hoist-field-action-pipe
 spec:
   source:
     ref:
@@ -33,8 +33,8 @@ spec:
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1
-        name: extract-field-action
+        name: hoist-field-action
       properties:
-        field: "{{field.name}}"
+        field: "{{hoist.field}}"
   sink:
     uri: "{{http.sink.url}}/result"

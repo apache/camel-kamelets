@@ -15,26 +15,26 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: extract-field-action-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: timer-source
-    properties:
-      period: 10000
-      contentType: application/json
-      message: "{{input}}"
-  steps:
-    - ref:
-        kind: Kamelet
-        apiVersion: camel.apache.org/v1
-        name: extract-field-action
-      properties:
-        field: "{{field.name}}"
-  sink:
-    uri: "{{http.sink.url}}/result"
+name: log-sink-pipe-test
+variables:
+  - name: "log.message"
+    value: "Hello from log-sink test!"
+actions:
+  # Create Camel JBang integration
+  - camel:
+      jbang:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "log/log-sink-pipe.yaml"
+            systemProperties:
+              properties:
+                - name: "message"
+                  value: "${log.message}"
+
+  # Verify the log output contains the message
+  - camel:
+      jbang:
+        verify:
+          integration: "log-sink-pipe"
+          logMessage: "${log.message}"
