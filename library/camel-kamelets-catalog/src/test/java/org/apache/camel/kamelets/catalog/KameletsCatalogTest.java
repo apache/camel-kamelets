@@ -162,9 +162,9 @@ public class KameletsCatalogTest {
         verifyHeaders("azure-eventhubs-sink", 2);
         verifyHeaders("azure-functions-sink", 8);
         verifyHeaders("azure-servicebus-source", 21);
-        verifyHeaders("azure-storage-blob-source", 35);
-        verifyHeaders("azure-storage-blob-sink", 38);
-        verifyHeaders("azure-storage-blob-changefeed-source", 35);
+        verifyHeaders("azure-storage-blob-source", 39);
+        verifyHeaders("azure-storage-blob-sink", 46);
+        verifyHeaders("azure-storage-blob-changefeed-source", 39);
         verifyHeaders("azure-storage-datalake-source", 25);
         verifyHeaders("azure-storage-datalake-sink", 37);
         verifyHeaders("azure-storage-queue-source", 6);
@@ -235,7 +235,7 @@ public class KameletsCatalogTest {
         verifyHeaders("mysql-sink", 9);
         verifyHeaders("mysql-source", 0);
         verifyHeaders("nats-sink", 5);
-        verifyHeaders("nats-source", 8);
+        verifyHeaders("nats-source", 9);
         verifyHeaders("oracle-database-sink", 9);
         verifyHeaders("oracle-database-source", 0);
         verifyHeaders("postgresql-sink", 9);
@@ -249,7 +249,7 @@ public class KameletsCatalogTest {
         verifyHeaders("salesforce-delete-sink", 1);
         verifyHeaders("salesforce-update-sink", 1);
         verifyHeaders("salesforce-composite-upsert-sink", 1);
-        verifyHeaders("salesforce-source", 21);
+        verifyHeaders("salesforce-source", 22);
         verifyHeaders("scp-sink", 0);
         verifyHeaders("sftp-sink", 6);
         verifyHeaders("sftp-source", 15);
