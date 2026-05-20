@@ -28,18 +28,12 @@ actions:
   - camel:
       jbang:
         run:
-          waitForRunningState: false
           integration:
             file: "transformation/replace-field-action-pipe.yaml"
-            systemProperties:
-              properties:
-                - name: "http.sink.url"
-                  value: "${http.server.url}"
-                - name: "renames"
-                  value: "oldName:newName"
-                - name: "input"
-                  value: |
-                    { \"oldName\": \"${field.value}\" }
+          args:
+            - "--prop=http.sink.url=${http.server.url}"
+            - "--prop=renames=oldName:newName"
+            - "--prop=input=\"{ \\\"oldName\\\": \\\"${field.value}\\\" }\""
 
   # Verify Http request
   - http:

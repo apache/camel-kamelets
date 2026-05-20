@@ -28,13 +28,7 @@ spec:
     properties:
       period: "{{timer.source.period}}"
       message: "{{aws.ddb.json.data}}"
-  steps:
-    - ref:
-        kind: Kamelet
-        apiVersion: camel.apache.org/v1
-        name: log-action
-      properties:
-        showHeaders: true
+      contentType: "application/json"
   sink:
     ref:
       kind: Kamelet

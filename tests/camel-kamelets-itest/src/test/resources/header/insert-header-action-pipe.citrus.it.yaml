@@ -32,20 +32,13 @@ actions:
   - camel:
       jbang:
         run:
-          waitForRunningState: false
           integration:
             file: "header/insert-header-action-pipe.yaml"
-            systemProperties:
-              properties:
-                - name: "http.sink.url"
-                  value: "${http.server.url}"
-                - name: "header.name"
-                  value: "${header.name}"
-                - name: "header.value"
-                  value: "${header.value}"
-                - name: "input"
-                  value: |
-                    { \"id\": \"${id}\" }
+          args:
+            - "--prop=http.sink.url=${http.server.url}"
+            - "--prop=header.name=${header.name}"
+            - "--prop=header.value=${header.value}"
+            - "--prop=input={ \"id\": \"${id}\" }"
 
   # Verify Http request with the inserted header
   - http:

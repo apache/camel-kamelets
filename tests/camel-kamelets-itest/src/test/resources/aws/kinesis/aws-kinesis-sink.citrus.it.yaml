@@ -53,13 +53,16 @@ actions:
         run:
           integration:
             file: "aws/kinesis/aws-kinesis-sink-pipe.yaml"
-            systemProperties:
-              properties:
-                - name: "timer.source.period"
-                  value: "${timer.source.period}"
-                - name: "aws.kinesis.json.data"
-                  value: "${aws.kinesis.json.data}"
-              file: "aws/kinesis/application.properties"
+          args:
+            - "--prop=timer.source.period=${timer.source.period}"
+            - "--prop=aws.kinesis.json.data=\"{ \\\"message\\\": \\\"${aws.kinesis.message}\\\" }\""
+            - "--prop=aws.kinesis.streamName=${aws.kinesis.streamName}"
+            - "--prop=aws.kinesis.partitionKey=${aws.kinesis.partitionKey}"
+            - "--prop=aws.kinesis.uriEndpointOverride=${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+            - "--prop=aws.kinesis.secretKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
+            - "--prop=aws.kinesis.accessKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
+            - "--prop=aws.kinesis.region=${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
+            - "--prop=aws.kinesis.overrideEndpoint=true"
 
   # Create event listener
   - camel:
@@ -67,8 +70,13 @@ actions:
         run:
           integration:
             file: "aws/kinesis/aws-kinesis-event-listener.yaml"
-            systemProperties:
-              file: "aws/kinesis/application.properties"
+          args:
+            - "--prop=aws.kinesis.streamName=${aws.kinesis.streamName}"
+            - "--prop=aws.kinesis.uriEndpointOverride=${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+            - "--prop=aws.kinesis.secretKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
+            - "--prop=aws.kinesis.accessKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
+            - "--prop=aws.kinesis.region=${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
+            - "--prop=aws.kinesis.overrideEndpoint=true"
 
   # Verify event received
   - camel:

@@ -46,22 +46,14 @@ actions:
         run:
           integration:
             file: "aws/s3/aws-s3-to-log-uri-based.yaml"
-            systemProperties:
-              properties:
-                - name: "aws.s3.bucketNameOrArn"
-                  value: "${aws.s3.bucketNameOrArn}"
-                - name: "aws.s3.uriEndpointOverride"
-                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
-                - name: "aws.s3.overrideEndpoint"
-                  value: "true"
-                - name: "aws.s3.forcePathStyle"
-                  value: "true"
-                - name: "aws.s3.secretKey"
-                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
-                - name: "aws.s3.accessKey"
-                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
-                - name: "aws.s3.region"
-                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
+          args:
+            - "--prop=aws.s3.bucketNameOrArn=${aws.s3.bucketNameOrArn}"
+            - "--prop=aws.s3.uriEndpointOverride=${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+            - "--prop=aws.s3.overrideEndpoint=true"
+            - "--prop=aws.s3.forcePathStyle=true"
+            - "--prop=aws.s3.secretKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
+            - "--prop=aws.s3.accessKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
+            - "--prop=aws.s3.region=${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
 
   # Publish event
   - send:

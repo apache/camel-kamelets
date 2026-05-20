@@ -66,12 +66,6 @@ actions:
           value: "King Kong"
         - name: "aws.ddb.item.title.new"
           value: "King Kong - Historical"
-        - name: "aws.ddb.item.directors"
-          value: >-
-            [\"Merian C. Cooper\", \"Ernest B. Schoedsack\"]
-        - name: "aws.ddb.json.data"
-          value: >-
-            { \"key\": {\"id\": ${aws.ddb.item.id}}, \"item\": {\"title\": \"${aws.ddb.item.title.new}\", \"year\": ${aws.ddb.item.year}, \"directors\": ${aws.ddb.item.directors}} }
   - groovy:
       script:
         file: "aws/ddb/putItem.groovy"
@@ -92,15 +86,16 @@ actions:
         run:
           integration:
             file: "aws/ddb/aws-ddb-sink-pipe.yaml"
-            systemProperties:
-              properties:
-                - name: "timer.source.period"
-                  value: "${timer.source.period}"
-                - name: "aws.ddb.operation"
-                  value: "${aws.ddb.operation}"
-                - name: "aws.ddb.json.data"
-                  value: "${aws.ddb.json.data}"
-              file: "aws/ddb/application.properties"
+          args:
+            - "--prop=timer.source.period=${timer.source.period}"
+            - "--prop=aws.ddb.operation=${aws.ddb.operation}"
+            - "--prop=aws.ddb.json.data=\"{ \\\"operation\\\": \\\"UpdateItem\\\", \\\"key\\\": { \\\"id\\\": ${aws.ddb.item.id} }, \\\"item\\\": { \\\"title\\\": \\\"${aws.ddb.item.title.new}\\\", \\\"directors\\\": [\\\"Merian C. Cooper\\\", \\\"Ernest B. Schoedsack\\\"] } }\""
+            - "--prop=aws.ddb.tableName=${aws.ddb.tableName}"
+            - "--prop=aws.ddb.uriEndpointOverride=${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+            - "--prop=aws.ddb.secretKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
+            - "--prop=aws.ddb.accessKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
+            - "--prop=aws.ddb.region=${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
+            - "--prop=aws.ddb.overrideEndpoint=true"
 
   # Verify Kamelet sink
   - createVariables:

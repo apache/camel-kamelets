@@ -23,10 +23,8 @@ actions:
         run:
           integration:
             file: "earthquake/earthquake-to-http.yaml"
-            systemProperties:
-              properties:
-                - name: http.sink.url
-                  value: "http://localhost:${http.server.port}/test"
+          args:
+            - "--prop=http.sink.url=http://localhost:${http.server.port}/test"
 
   # Verify Http request
   - http:

@@ -27,9 +27,7 @@ spec:
       name: timer-source
     properties:
       period: 10000
-      contentType: text/plain
-      message: >
-        {{input}}
+      message: "{{input}}"
   steps:
     - ref:
         kind: Kamelet

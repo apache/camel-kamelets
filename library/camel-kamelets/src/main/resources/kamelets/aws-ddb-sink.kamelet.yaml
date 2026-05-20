@@ -139,21 +139,23 @@ spec:
   - "camel:aws2-ddb"
   - "camel:kamelet"
   template:
+    beans:
+      - name: dataTypeProcessor
+        type: "#class:org.apache.camel.processor.transformer.DelegatingDataTypeProcessor"
     from:
       uri: "kamelet:source"
       steps:
       - setProperty:
           name: operation
           constant: "{{operation}}"
-      - transformDataType:
-          toType: "aws2-ddb:application-json"
+      - process:
+          ref: "#bean:dataTypeProcessor?method=process(*, aws2-ddb, application-json)"
       - to:
           uri: "aws2-ddb:{{table}}"
           parameters:
             secretKey: "{{?secretKey}}"
             accessKey: "{{?accessKey}}"
             region: "{{region}}"
-            operation: "{{operation}}"
             useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
             useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
             useSessionCredentials: "{{useSessionCredentials}}"

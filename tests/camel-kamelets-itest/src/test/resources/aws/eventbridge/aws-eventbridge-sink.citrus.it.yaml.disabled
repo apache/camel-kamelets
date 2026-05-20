@@ -60,13 +60,19 @@ actions:
         run:
           integration:
             file: "aws/eventbridge/aws-eventbridge-sink-pipe.yaml"
-            systemProperties:
-              properties:
-                - name: "timer.source.period"
-                  value: "${timer.source.period}"
-                - name: "aws.eventbridge.json.data"
-                  value: "${aws.eventbridge.json.data}"
-              file: "aws/eventbridge/application.properties"
+          args:
+            - "--prop=timer.source.period=${timer.source.period}"
+            - "--prop=aws.eventbridge.json.data=\"{ \\\"message\\\": \\\"Hello AWS EventBridge!\\\" }\""
+            - "--prop=aws.eventbridge.eventbusName=${aws.eventbridge.eventbusName}"
+            - "--prop=aws.eventbridge.resourcesArn=${aws.eventbridge.resourcesArn}"
+            - "--prop=aws.eventbridge.eventSource=${aws.eventbridge.eventSource}"
+            - "--prop=aws.eventbridge.eventSourcePrefix=${aws.eventbridge.eventSourcePrefix}"
+            - "--prop=aws.eventbridge.detailType=${aws.eventbridge.detailType}"
+            - "--prop=aws.eventbridge.uriEndpointOverride=${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+            - "--prop=aws.eventbridge.secretKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
+            - "--prop=aws.eventbridge.accessKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
+            - "--prop=aws.eventbridge.region=${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
+            - "--prop=aws.eventbridge.overrideEndpoint=true"
 
   # Create event listener
   - camel:
@@ -74,11 +80,13 @@ actions:
         run:
           integration:
             file: "aws/eventbridge/aws-sqs-event-listener-pipe.yaml"
-            systemProperties:
-              properties:
-                - name: "aws.sqs.queueName"
-                  value: "${aws.sqs.queueName}"
-              file: "aws/eventbridge/application.properties"
+          args:
+            - "--prop=aws.sqs.queueName=${aws.sqs.queueName}"
+            - "--prop=aws.sqs.uriEndpointOverride=${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+            - "--prop=aws.sqs.secretKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
+            - "--prop=aws.sqs.accessKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
+            - "--prop=aws.sqs.region=${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
+            - "--prop=aws.sqs.overrideEndpoint=true"
 
   # Verify event received
   - camel:

@@ -32,20 +32,13 @@ actions:
   - camel:
       jbang:
         run:
-          waitForRunningState: false
           integration:
             file: "transformation/insert-field-action-pipe.yaml"
-            systemProperties:
-              properties:
-                - name: "http.sink.url"
-                  value: "${http.server.url}"
-                - name: "field.name"
-                  value: "${field.name}"
-                - name: "field.value"
-                  value: "${field.value}"
-                - name: "input"
-                  value: >-
-                    { \"id\": \"${id}\" }
+          args:
+            - "--prop=http.sink.url=${http.server.url}"
+            - "--prop=field.name=${field.name}"
+            - "--prop=field.value=\"${field.value}\""
+            - "--prop=input=\"{ \\\"id\\\": \\\"${id}\\\" }\""
 
   # Verify Http request
   - http:

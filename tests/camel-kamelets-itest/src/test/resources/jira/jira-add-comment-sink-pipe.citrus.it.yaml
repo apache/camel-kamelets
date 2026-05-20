@@ -52,23 +52,15 @@ actions:
   - camel:
       jbang:
         run:
-          waitForRunningState: false
           integration:
             file: "jira/jira-add-comment-sink-pipe.yaml"
-            systemProperties:
-              properties:
-                - name: "timer.source.period"
-                  value: "${timer.source.period}"
-                - name: "jira.url"
-                  value: "${jira.url}"
-                - name: "jira.issue.key"
-                  value: "${jira.issue.key}"
-                - name: "jira.issue.comment"
-                  value: "${jira.issue.comment}"
-                - name: "jira.username"
-                  value: "${jira.username}"
-                - name: "jira.password"
-                  value: "${jira.password}"
+          args:
+            - "--prop=timer.source.period=${timer.source.period}"
+            - "--prop=jira.url=${jira.url}"
+            - "--prop=jira.issue.key=${jira.issue.key}"
+            - "--prop=jira.issue.comment=\"${jira.issue.comment}\""
+            - "--prop=jira.username=\"${jira.username}\""
+            - "--prop=jira.password=\"${jira.password}\""
 
   # Verify get issue request
   - http:

@@ -46,11 +46,15 @@ actions:
         run:
           integration:
             file: "aws/s3/aws-s3-to-http.yaml"
-            systemProperties:
-              file: "aws/s3/application.properties"
-              properties:
-                - name: http.sink.url
-                  value: "http://localhost:${aws.sink.server.port}/incoming"
+          args:
+            - "--prop=http.sink.url=http://localhost:${aws.sink.server.port}/incoming"
+            - "--prop=aws.s3.bucketNameOrArn=${aws.s3.bucketNameOrArn}"
+            - "--prop=aws.s3.uriEndpointOverride=${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+            - "--prop=aws.s3.overrideEndpoint=true"
+            - "--prop=aws.s3.forcePathStyle=true"
+            - "--prop=aws.s3.secretKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
+            - "--prop=aws.s3.accessKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
+            - "--prop=aws.s3.region=${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
 
   # Publish event
   - send:

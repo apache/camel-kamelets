@@ -24,13 +24,10 @@ actions:
   - camel:
       jbang:
         run:
-          waitForRunningState: false
           integration:
             file: "log/log-sink-pipe.yaml"
-            systemProperties:
-              properties:
-                - name: "message"
-                  value: "${log.message}"
+          args:
+            - "--prop=message=\"${log.message}\""
 
   # Verify the log output contains the message
   - camel:

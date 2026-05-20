@@ -44,20 +44,13 @@ actions:
         run:
           integration:
             file: "aws/sqs/aws-sqs-uri-pipe.yaml"
-            systemProperties:
-              properties:
-                - name: "aws.sqs.queueName"
-                  value: "${aws.sqs.queueName}"
-                - name: "aws.sqs.uriEndpointOverride"
-                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
-                - name: "aws.sqs.overrideEndpoint"
-                  value: "true"
-                - name: "aws.sqs.secretKey"
-                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
-                - name: "aws.sqs.accessKey"
-                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
-                - name: "aws.sqs.region"
-                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
+          args:
+            - "--prop=aws.sqs.queueName=${aws.sqs.queueName}"
+            - "--prop=aws.sqs.uriEndpointOverride=${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+            - "--prop=aws.sqs.overrideEndpoint=true"
+            - "--prop=aws.sqs.secretKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
+            - "--prop=aws.sqs.accessKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
+            - "--prop=aws.sqs.region=${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
 
   # Publish event
   - send:

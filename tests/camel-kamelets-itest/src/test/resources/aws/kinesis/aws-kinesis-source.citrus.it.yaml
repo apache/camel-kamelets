@@ -46,8 +46,13 @@ actions:
         run:
           integration:
             file: "aws/kinesis/aws-kinesis-source-pipe.yaml"
-            systemProperties:
-              file: "aws/kinesis/application.properties"
+          args:
+            - "--prop=aws.kinesis.streamName=${aws.kinesis.streamName}"
+            - "--prop=aws.kinesis.uriEndpointOverride=${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+            - "--prop=aws.kinesis.secretKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
+            - "--prop=aws.kinesis.accessKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
+            - "--prop=aws.kinesis.region=${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
+            - "--prop=aws.kinesis.overrideEndpoint=true"
 
   # Publish event
   - send:

@@ -43,16 +43,11 @@ actions:
           waitForRunningState: false
           integration:
             file: "jira/jira-source-pipe.yaml"
-            systemProperties:
-              properties:
-                - name: "jira.url"
-                  value: "${jira.url}"
-                - name: "jira.username"
-                  value: "${jira.username}"
-                - name: "jira.password"
-                  value: "${jira.password}"
-                - name: "jira.jql"
-                  value: "${jira.jql}"
+          args:
+            - "--prop=jira.url=${jira.url}"
+            - "--prop=jira.username=\"${jira.username}\""
+            - "--prop=jira.password=\"${jira.password}\""
+            - "--prop=jira.jql=${jira.jql}"
 
   # Verify latest issue request
   - http:

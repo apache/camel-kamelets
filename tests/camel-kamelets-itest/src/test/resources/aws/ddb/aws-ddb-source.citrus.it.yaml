@@ -51,8 +51,13 @@ actions:
         run:
           integration:
             file: "aws/ddb/aws-ddb-source-pipe.yaml"
-            systemProperties:
-              file: "aws/ddb/application.properties"
+          args:
+            - "--prop=aws.ddb.tableName=${aws.ddb.tableName}"
+            - "--prop=aws.ddb.uriEndpointOverride=${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+            - "--prop=aws.ddb.secretKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
+            - "--prop=aws.ddb.accessKey=${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
+            - "--prop=aws.ddb.region=${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
+            - "--prop=aws.ddb.overrideEndpoint=true"
 
   - groovy:
       script:

@@ -27,11 +27,11 @@ spec:
       name: aws-sqs-source
     properties:
       queueNameOrArn: "{{aws.sqs.queueName}}"
-      uriEndpointOverride: "{{aws.eventbridge.uriEndpointOverride}}"
-      overrideEndpoint: "{{aws.eventbridge.overrideEndpoint}}"
-      accessKey: "{{aws.eventbridge.accessKey}}"
-      secretKey: "{{aws.eventbridge.secretKey}}"
-      region: "{{aws.eventbridge.region}}"
+      uriEndpointOverride: "{{aws.sqs.uriEndpointOverride}}"
+      overrideEndpoint: "{{aws.sqs.overrideEndpoint}}"
+      accessKey: "{{aws.sqs.accessKey}}"
+      secretKey: "{{aws.sqs.secretKey}}"
+      region: "{{aws.sqs.region}}"
   sink:
     ref:
       kind: Kamelet

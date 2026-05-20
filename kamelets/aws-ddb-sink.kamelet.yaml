@@ -145,6 +145,8 @@ spec:
       - setProperty:
           name: operation
           constant: "{{operation}}"
+      - convertBodyTo:
+          type: "java.io.InputStream"
       - transformDataType:
           toType: "aws2-ddb:application-json"
       - to:
@@ -153,7 +155,6 @@ spec:
             secretKey: "{{?secretKey}}"
             accessKey: "{{?accessKey}}"
             region: "{{region}}"
-            operation: "{{operation}}"
             useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
             useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
             useSessionCredentials: "{{useSessionCredentials}}"

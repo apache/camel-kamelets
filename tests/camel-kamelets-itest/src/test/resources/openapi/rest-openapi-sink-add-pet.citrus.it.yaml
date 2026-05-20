@@ -33,17 +33,11 @@ actions:
           waitForRunningState: false
           integration:
             file: "openapi/rest-openapi-sink-pipe.yaml"
-            systemProperties:
-              properties:
-                - name: "petstore.server.url"
-                  value: "http://localhost:${petstore.server.port}"
-                - name: "petId"
-                  value: "${petId}"
-                - name: "pet"
-                  value: >-
-                    { \"id\": ${petId}, \"name\": \"fluffy\", \"category\": {\"id\": ${petId}, \"name\": \"dog\"}, \"photoUrls\": [ \"petstore/v3/photos/${petId}\" ], \"tags\": [{\"id\": ${petId}, \"name\": \"generated\"}], \"status\": \"available\"}
-                - name: "spec.operation"
-                  value: "${spec.operation}"
+          args:
+            - "--prop=petstore.server.url=http://localhost:${petstore.server.port}"
+            - "--prop=petId=${petId}"
+            - "--prop=pet=\"{ \\\"id\\\": ${petId}, \\\"name\\\": \\\"fluffy\\\", \\\"category\\\": {\\\"id\\\": ${petId}, \\\"name\\\": \\\"dog\\\"}, \\\"photoUrls\\\": [ \\\"petstore/v3/photos/${petId}\\\" ], \\\"tags\\\": [{\\\"id\\\": ${petId}, \\\"name\\\": \\\"generated\\\"}], \\\"status\\\": \\\"available\\\"}\""
+            - "--prop=spec.operation=${spec.operation}"
 
   # Verify OpenAPI spec request
   - http:

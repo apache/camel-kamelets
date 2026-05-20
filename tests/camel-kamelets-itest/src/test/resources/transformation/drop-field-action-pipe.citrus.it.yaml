@@ -30,18 +30,12 @@ actions:
   - camel:
       jbang:
         run:
-          waitForRunningState: false
           integration:
             file: "transformation/drop-field-action-pipe.yaml"
-            systemProperties:
-              properties:
-                - name: "http.sink.url"
-                  value: "${http.server.url}"
-                - name: "field.name"
-                  value: "${field.name}"
-                - name: "input"
-                  value: |
-                    { \"id\": \"${id}\", \"${field.name}\": \"Camel rocks!\" }
+          args:
+            - "--prop=http.sink.url=${http.server.url}"
+            - "--prop=field.name=${field.name}"
+            - "--prop=input=\"{ \\\"id\\\": \\\"${id}\\\", \\\"${field.name}\\\": \\\"Camel rocks!\\\" }\""
 
   # Verify Http request
   - http:
