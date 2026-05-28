@@ -38,7 +38,7 @@ actions:
                 - name: "filter.expression"
                   value: "@.name =~ /.*Camel.*/"
                 - name: "input"
-                  value: |
+                  value: >-
                     { \"name\": \"${name.value}\" }
 
   # Verify Http request - message should pass through because expression matches
