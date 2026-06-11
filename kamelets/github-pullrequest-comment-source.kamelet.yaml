@@ -57,11 +57,11 @@ spec:
       mediaType: application/json
   dependencies:
   - "camel:jackson"
-  - "camel:github"
+  - "camel:github2"
   - "camel:kamelet"
   template:
     from:
-      uri: "github://pullRequestComment"
+      uri: "github2://pullRequestComment"
       parameters:
         repoName: "{{repoName}}"
         repoOwner: "{{repoOwner}}"

@@ -231,8 +231,9 @@ public class KameletsCatalog {
             String prefixName = local.getMetadata().getName().substring(0, lastIndex);
             String schemeName = enumValue(prefixName);
             if (schemeName != null) {
-                if (ObjectHelper.isNotEmpty(cc.componentModel(schemeName).getEndpointHeaders())) {
-                    List<ComponentModel.EndpointHeaderModel> headers = cc.componentModel(schemeName).getEndpointHeaders();
+                ComponentModel componentModel = cc.componentModel(schemeName);
+                if (componentModel != null && ObjectHelper.isNotEmpty(componentModel.getEndpointHeaders())) {
+                    List<ComponentModel.EndpointHeaderModel> headers = componentModel.getEndpointHeaders();
                     for (ComponentModel.EndpointHeaderModel e : headers) {
                         if (ObjectHelper.isEmpty(e.getLabel()) || e.getLabel().equalsIgnoreCase(camelType)) {
                             resultingHeaders.add(e);
