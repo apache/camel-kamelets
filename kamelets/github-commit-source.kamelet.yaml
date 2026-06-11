@@ -68,11 +68,11 @@ spec:
       mediaType: application/json
   dependencies:
   - "camel:jackson"
-  - "camel:github"
+  - "camel:github2"
   - "camel:kamelet"
   template:
     from:
-      uri: "github://commit/{{branch}}"
+      uri: "github2://commit/{{branch}}"
       parameters:
         repoName: "{{repoName}}"
         repoOwner: "{{repoOwner}}"
