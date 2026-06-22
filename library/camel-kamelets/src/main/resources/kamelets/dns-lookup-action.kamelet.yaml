@@ -49,17 +49,17 @@ spec:
           - simple: "${header[domain-name]}"
             steps:
             - setHeader:
-                name: dns.domain
+                name: CamelDnsDomain
                 simple: "${header[domain-name]}"
           - simple: "${header[ce-domainname]}"
             steps:
             - setHeader:
-                name: dns.domain
+                name: CamelDnsDomain
                 simple: "${header[ce-domainname]}"
           otherwise:
             steps:
             - setHeader:
-                name: dns.domain
+                name: CamelDnsDomain
                 simple: "${body}"
       - to:
           uri: "dns:lookup"

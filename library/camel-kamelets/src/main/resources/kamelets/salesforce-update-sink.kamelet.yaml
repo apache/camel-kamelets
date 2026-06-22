@@ -93,10 +93,10 @@ spec:
       uri: kamelet:source
       steps:
         - setHeader:
-            name: sObjectId
+            name: CamelSalesforceId
             jsonpath: "$.sObjectId"
         - setHeader:
-            name: sObjectName
+            name: CamelSalesforceSObjectName
             jsonpath: "$.sObjectName"
         - transform:
             jsonpath: "$.payload"

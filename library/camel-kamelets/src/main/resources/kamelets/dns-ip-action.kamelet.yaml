@@ -45,17 +45,17 @@ spec:
           - simple: "${header[domain]}"
             steps:
             - setHeader:
-                name: dns.domain
+                name: CamelDnsDomain
                 simple: "${header[domain]}"
           - simple: "${header[ce-domain]}"
             steps:
             - setHeader:
-                name: dns.domain
+                name: CamelDnsDomain
                 simple: "${header[ce-domain]}"
           otherwise:
             steps:
             - setHeader:
-                name: dns.domain
+                name: CamelDnsDomain
                 simple: "${body}"
       - to:
           uri: "dns:ip"

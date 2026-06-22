@@ -99,16 +99,16 @@ spec:
       uri: kamelet:source
       steps:
         - setHeader:
-            name: sObjectId
+            name: CamelSalesforceId
             jsonpath: "$['sObjectId']"
         - setHeader:
-            name: sObjectName
+            name: CamelSalesforceSObjectName
             jsonpath: "$['sObjectName']"
         - setBody:
             simple: "${null}"
         - to:
             uri: "{{local-delete-salesforce}}:deleteSObject"
         - removeHeader:
-            name: sObjectId
+            name: CamelSalesforceId
         - removeHeader:
-            name: sObjectName
+            name: CamelSalesforceSObjectName

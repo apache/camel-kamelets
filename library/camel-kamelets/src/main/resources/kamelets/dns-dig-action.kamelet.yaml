@@ -45,34 +45,34 @@ spec:
           - simple: "${header[domain-name]}"
             steps:
             - setHeader:
-                name: dns.name
+                name: CamelDnsName
                 simple: "${header[domain-name]}"
           - simple: "${header[ce-domainname]}"
             steps:
             - setHeader:
-                name: dns.name
+                name: CamelDnsName
                 simple: "${header[ce-domainname]}"
           otherwise:
             steps:
             - setHeader:
-                name: dns.name
+                name: CamelDnsName
                 simple: "${body}"
       - choice:
           when:
           - simple: "${header[dns-type]}"
             steps:
             - setHeader:
-                name: dns.type
+                name: CamelDnsType
                 simple: "${header[dns-type]}"
           - simple: "${header[ce-dnstype]}"
             steps:
             - setHeader:
-                name: dns.type
+                name: CamelDnsType
                 simple: "${header[ce-dnstype]}"
           otherwise:
             steps:
             - setHeader:
-                name: dns.type
+                name: CamelDnsType
                 constant: "A"
       - to:
           uri: "dns:dig"
