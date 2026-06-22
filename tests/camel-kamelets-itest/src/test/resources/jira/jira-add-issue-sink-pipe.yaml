@@ -34,28 +34,28 @@ spec:
         apiVersion: camel.apache.org/v1
         name: insert-header-action
       properties:
-        name: projectKey
+        name: CamelJiraIssueProjectKey
         value: "{{jira.project.key}}"
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1
         name: insert-header-action
       properties:
-        name: issueTypeName
+        name: CamelJiraIssueTypeName
         value: "{{jira.issue.type}}"
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1
         name: insert-header-action
       properties:
-        name: issueSummary
+        name: CamelJiraIssueSummary
         value: "{{jira.issue.summary}}"
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1
         name: insert-header-action
       properties:
-        name: issueAssignee
+        name: CamelJiraIssueAssignee
         value: "{{jira.issue.assignee}}"
     - ref:
         kind: Kamelet

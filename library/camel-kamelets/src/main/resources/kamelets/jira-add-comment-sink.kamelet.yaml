@@ -78,7 +78,7 @@ spec:
           - simple: "${header[ce-issueKey]}"
             steps:
             - setHeader:
-                name: issueKey
+                name: CamelJiraIssueKey
                 simple: "${header[ce-issueKey]}"
       - to:
           uri: "jira:AddComment"
@@ -86,4 +86,3 @@ spec:
             jiraUrl: "{{jiraUrl}}"
             username: "{{?username}}"
             password: "{{?password}}"
-            accessToken: "{{?personal-token}}"

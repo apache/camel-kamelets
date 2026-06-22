@@ -56,10 +56,6 @@ spec:
         title: Icon URL
         description: The avatar to use when sending a message to a channel or user.
         type: string
-      username:
-        title: Username
-        description: The username for the bot when it sends messages to a channel or user.
-        type: string
   types:
     out:
       mediaType: application/json
@@ -77,4 +73,3 @@ spec:
             webhookUrl: "{{webhookUrl}}"
             iconEmoji: "{{?iconEmoji}}"
             iconUrl: "{{?iconUrl}}"
-            username: "{{?username}}"

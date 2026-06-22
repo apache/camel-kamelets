@@ -78,14 +78,14 @@ spec:
           - simple: "${header[ce-issueKey]}"
             steps:
             - setHeader:
-                name: issueKey
+                name: CamelJiraIssueKey
                 simple: "${header[ce-issueKey]}"
       - choice:
           when:
           - simple: "${header[ce-issueTransitionId]}"
             steps:
             - setHeader:
-                name: issueTransitionId
+                name: CamelJiraIssueTransitionId
                 simple: "${header[ce-issueTransitionId]}"
       - to:
           uri: "jira:transitionIssue"
@@ -93,4 +93,3 @@ spec:
             jiraUrl: "{{jiraUrl}}"
             username: "{{?username}}"
             password: "{{?password}}"
-            accessToken: "{{?personal-token}}"
