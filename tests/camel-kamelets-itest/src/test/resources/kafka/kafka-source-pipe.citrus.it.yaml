@@ -82,12 +82,6 @@ actions:
           headers:
             - name: event-source
               value: "${kafka.source}"
-            - name: kafka.TOPIC
-              value: "${kafka.topic}"
-            - name: kafka.KEY
-              value: "${kafka.message.key}"
-            - name: kafka.PARTITION
-              value: "0"
           body:
             data: |
               ${kafka.message}
