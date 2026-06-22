@@ -27,10 +27,6 @@ variables:
     value: "citrus:unixTimestamp()000"
   - name: "topic"
     value: "${kafka.topic}_citrus:currentDate('YYYY-MM-dd')"
-  - name: "kafka.saslUsername"
-    value: "redpanda"
-  - name: "kafka.saslPassword"
-    value: "admin"
 actions:
   # Create Kafka infrastructure
   - testcontainers:
@@ -76,6 +72,7 @@ actions:
   # Verify Kafka event
   - receive:
       endpoint: kafkaRouterConsumer
+      timeout: 30000
       message:
         body:
           data: |

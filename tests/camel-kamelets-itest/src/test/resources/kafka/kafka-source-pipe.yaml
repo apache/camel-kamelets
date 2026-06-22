@@ -28,9 +28,6 @@ spec:
     properties:
       bootstrapServers: '{{kafka.bootstrapServers}}'
       topic: '{{kafka.topic}}'
-      saslAuthType: 'PLAIN'
-      saslUsername: '{{kafka.saslUsername}}'
-      saslPassword: '{{kafka.saslPassword}}'
       deserializeHeaders: '{{kafka.deserializeHeaders}}'
   sink:
     uri: "{{http.sink.url}}"

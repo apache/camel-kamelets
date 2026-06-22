@@ -27,10 +27,6 @@ variables:
     value: "citrus:randomNumber(4)"
   - name: "kafka.message"
     value: "Camel rocks!"
-  - name: "kafka.saslUsername"
-    value: "redpanda"
-  - name: "kafka.saslPassword"
-    value: "admin"
 actions:
   # Create Kafka infrastructure
   - testcontainers:

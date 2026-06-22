@@ -25,10 +25,6 @@ variables:
     value: "citrus:randomNumber(4)"
   - name: "kafka.message"
     value: "Camel rocks!"
-  - name: "kafka.saslUsername"
-    value: "redpanda"
-  - name: "kafka.saslPassword"
-    value: "admin"
 actions:
   # Create Kafka infrastructure
   - testcontainers:
@@ -54,10 +50,13 @@ actions:
       properties:
         topic: "${kafka.topic}"
         server: "${CITRUS_TESTCONTAINERS_REDPANDA_BOOTSTRAP_SERVERS}"
+        consumerGroup: "consumer-1"
+        offsetReset: "earliest"
 
   # Verify Kafka event
   - receive:
       endpoint: kafkaSinkConsumer
+      timeout: 30000
       message:
         body:
           data: |
