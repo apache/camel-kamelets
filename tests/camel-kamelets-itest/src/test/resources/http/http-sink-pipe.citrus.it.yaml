@@ -36,7 +36,7 @@ actions:
                 - name: "http.sink.url"
                   value: "${http.server.url}"
                 - name: "input"
-                  value: |
+                  value: >-
                     { \"id\": \"${id}\", \"message\": \"Hello from http-sink\" }
 
   # Verify Http request received by the mock server
