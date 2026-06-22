@@ -23,6 +23,7 @@ import org.citrusframework.junit.jupiter.CitrusSupport;
 import org.citrusframework.junit.jupiter.CitrusTestFactory;
 import org.citrusframework.junit.jupiter.CitrusTestFactorySupport;
 import org.citrusframework.spi.BindToRegistry;
+import org.citrusframework.util.SocketUtils;
 import org.junit.jupiter.api.DynamicTest;
 
 import static org.citrusframework.actions.CreateVariablesAction.Builder.createVariables;
@@ -30,7 +31,7 @@ import static org.citrusframework.actions.CreateVariablesAction.Builder.createVa
 @CitrusSupport
 public class AvroIT {
 
-    private final int avroWebhookPort = 8080;
+    private final int avroWebhookPort = SocketUtils.findAvailableTcpPort();
 
     @BindToRegistry
     public SequenceBeforeTest beforeAvro() {
