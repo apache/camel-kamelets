@@ -47,6 +47,6 @@ spec:
       uri: kamelet:source
       steps:
       - filter:
-          simple: "${header[kafka.TOPIC]} !regex '{{regex}}'"
+          simple: "${header[CamelKafkaTopic]} !regex '{{regex}}'"
           steps:
             - stop: {}
