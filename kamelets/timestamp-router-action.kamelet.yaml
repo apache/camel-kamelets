@@ -47,6 +47,10 @@ spec:
         description: The name of the header containing a timestamp
         type: string
         default: "kafka.TIMESTAMP"
+      topicHeaderName:
+        title: Topic Header Name
+        description: The name of the header containing the topic name. When not set, the default Kafka topic header (CamelKafkaTopic) is used.
+        type: string
     type: object
   dependencies:
   - "camel:kamelet"
@@ -65,4 +69,7 @@ spec:
       - setProperty:
           name: "timestampHeaderName"
           constant: "{{timestampHeaderName}}"
+      - setProperty:
+          name: "topicHeaderName"
+          constant: "{{?topicHeaderName}}"
       - bean: "org.apache.camel.component.kafka.transform.TimestampRouter"
