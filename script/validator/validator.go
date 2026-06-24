@@ -317,7 +317,6 @@ func listKamelets(dir string) []KameletInfo {
 			FileName: fileName,
 		}
 		kamelets = append(kamelets, kameletInfo)
-		break
 	}
 	return kamelets
 }
@@ -326,6 +325,7 @@ func verifyUsedParams(kamelets []KameletInfo) (errors []error) {
 	for _, k := range kamelets {
 		if k.FileName != "../../kamelets/azure-storage-blob-source.kamelet.yaml" &&
 			k.FileName != "../../kamelets/aws-s3-event-based-source.kamelet.yaml" &&
+			k.FileName != "../../kamelets/aws-sqs-source.kamelet.yaml" &&
 			k.FileName != "../../kamelets/set-kafka-key-action.kamelet.yaml" &&
 			k.FileName != "../../kamelets/azure-storage-blob-event-based-source.kamelet.yaml" &&
 			k.FileName != "../../kamelets/google-storage-event-based-source.kamelet.yaml" &&
@@ -334,7 +334,8 @@ func verifyUsedParams(kamelets []KameletInfo) (errors []error) {
 			k.FileName != "../../kamelets/kafka-azure-schema-registry-source.kamelet.yaml" &&
 			k.FileName != "../../kamelets/kafka-azure-schema-registry-sink.kamelet.yaml" &&
 			k.FileName != "../../kamelets/kafka-batch-azure-schema-registry-source.kamelet.yaml" &&
-			k.FileName != "../../kamelets/cassandra-sink.kamelet.yaml" {
+			k.FileName != "../../kamelets/cassandra-sink.kamelet.yaml" &&
+			k.FileName != "../../kamelets/data-type-action.kamelet.yaml" {
 			used := getUsedParams(k.Kamelet)
 			declared := getDeclaredParams(k.Kamelet)
 			for p := range used {
