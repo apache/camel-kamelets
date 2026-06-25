@@ -98,4 +98,9 @@ public class CommonIT {
     public Stream<DynamicTest> log() {
         return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("log");
     }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> counter() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("counter");
+    }
 }
