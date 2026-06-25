@@ -58,12 +58,15 @@ spec:
         - urn:camel:group:credentials
       privateKeyFile:
         title: Private Key File
-        description: Set the private key file so that the SFTP endpoint can do private key verification.
+        description: Set the private key file so that the SCP endpoint can do private key verification.
         type: string
       privateKeyPassphrase:
         title: Private Key Passphrase
-        description: Set the private key file passphrase so that the SFTP endpoint can do private key verification.
+        description: Set the private key file passphrase so that the SCP endpoint can do private key verification.
         type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
       strictHostKeyChecking:
         title: Strict Host Checking
         description: Sets whether to use strict host key checking.

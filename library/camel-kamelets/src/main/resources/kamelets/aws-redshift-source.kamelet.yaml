@@ -30,7 +30,7 @@ metadata:
 spec:
   definition:
     title: "AWS Redshift Source"
-    description: Query data from an AWS RedShift Database.
+    description: Query data from an AWS Redshift Database.
     required:
       - serverName
       - username
@@ -51,25 +51,25 @@ spec:
         default: 5439
       username:
         title: Username
-        description: The username to access a secured AWS RedShift Database.
+        description: The username to access a secured AWS Redshift Database.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access a secured AWS RedShift Database.
+        description: The password to access a secured AWS Redshift Database.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       query:
         title: Query
-        description: The query to execute against the AWS RedShift Database.
+        description: The query to execute against the AWS Redshift Database.
         type: string
         example: 'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
       databaseName:
         title: Database Name
-        description: The name of the AWS RedShift Database.
+        description: The name of the AWS Redshift Database.
         type: string
       consumedQuery:
         title: Consumed Query
@@ -78,7 +78,7 @@ spec:
         example: 'DELETE FROM accounts where user_id = :#user_id'
       delay:
         title: Delay
-        description: The number of milliseconds before the next poll from the AWS RedShift database.
+        description: The number of milliseconds before the next poll from the AWS Redshift database.
         type: integer
         default: 500
   types:

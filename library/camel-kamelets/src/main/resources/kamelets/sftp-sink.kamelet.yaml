@@ -87,6 +87,9 @@ spec:
         title: Private Key Passphrase
         description: Set the private key file passphrase so that the SFTP endpoint can do private key verification.
         type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
       privateKeyUri:
         title: Private Key URI
         description: Set the private key file (loaded from classpath by default) so that the SFTP endpoint can do private key verification.
