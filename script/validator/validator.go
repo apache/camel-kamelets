@@ -72,6 +72,9 @@ func main() {
 	errors = append(errors, verifyDescriptors(kamelets)...)
 	errors = append(errors, verifyDuplicates(kamelets)...)
 	errors = append(errors, verifyUsedParams(kamelets)...)
+	errors = append(errors, verifyTemplateConvention(kamelets)...)
+	errors = append(errors, verifyDependencies(kamelets)...)
+	errors = append(errors, verifyCatalogVersion(kamelets)...)
 
 	for _, err := range errors {
 		fmt.Printf("ERROR: %v\n", err)
@@ -114,7 +117,71 @@ func verifyDescriptors(kamelets []KameletInfo) (errors []error) {
 			if p.Format == "password" && !hasXDescriptor(p, credDescriptor) {
 				errors = append(errors, fmt.Errorf("property %q in kamelet %q has \"password\" format but misses descriptor %q", k, kamelet.Name, credDescriptor))
 			}
+			deprecatedDescriptorPrefix := "urn:alm:descriptor:com.tectonic.ui"
+			if hasXDescriptorPrefix(p, deprecatedDescriptorPrefix) {
+				errors = append(errors, fmt.Errorf("property %q in kamelet %q uses the deprecated x-descriptor prefix %q; use %q instead", k, kamelet.Name, deprecatedDescriptorPrefix, credDescriptor))
+			}
 		}
+	}
+	return errors
+}
+
+// verifyTemplateConvention enforces the routing convention documented in the
+// catalog README: a source Kamelet sends to "kamelet:sink" and a sink Kamelet
+// consumes from "kamelet:source". Action Kamelets are not constrained here.
+func verifyTemplateConvention(kamelets []KameletInfo) (errors []error) {
+	for _, kamelet := range kamelets {
+		if kamelet.Spec.Template == nil {
+			continue
+		}
+		template := string(kamelet.Spec.Template.RawMessage)
+		switch kamelet.Labels["camel.apache.org/kamelet.type"] {
+		case "source":
+			if !strings.Contains(template, "kamelet:sink") {
+				errors = append(errors, fmt.Errorf("source kamelet %q must route to \"kamelet:sink\"", kamelet.Name))
+			}
+		case "sink":
+			if !strings.Contains(template, "kamelet:source") {
+				errors = append(errors, fmt.Errorf("sink kamelet %q must consume from \"kamelet:source\"", kamelet.Name))
+			}
+		}
+	}
+	return errors
+}
+
+// verifyDependencies enforces the dependency syntax documented in the catalog
+// README: every spec.dependencies entry must be a "camel:<component>",
+// "mvn:group:artifact:version" or "github:apache/..." reference.
+func verifyDependencies(kamelets []KameletInfo) (errors []error) {
+	for _, kamelet := range kamelets {
+		for _, dep := range kamelet.Spec.Dependencies {
+			if !strings.HasPrefix(dep, "camel:") &&
+				!strings.HasPrefix(dep, "mvn:") &&
+				!strings.HasPrefix(dep, "github:apache/") {
+				errors = append(errors, fmt.Errorf("kamelet %q declares dependency %q that is not a \"camel:\", \"mvn:group:artifact:version\" or \"github:apache/...\" reference", kamelet.Name, dep))
+			}
+		}
+	}
+	return errors
+}
+
+// verifyCatalogVersion checks that every Kamelet shares the same
+// camel.apache.org/catalog.version annotation, catching a Kamelet that was
+// added or edited without bumping the catalog version.
+func verifyCatalogVersion(kamelets []KameletInfo) (errors []error) {
+	const versionAnnotation = "camel.apache.org/catalog.version"
+	versions := make(map[string][]string)
+	for _, kamelet := range kamelets {
+		v := kamelet.Annotations[versionAnnotation]
+		versions[v] = append(versions[v], kamelet.Name)
+	}
+	if len(versions) > 1 {
+		summary := make([]string, 0, len(versions))
+		for v, names := range versions {
+			summary = append(summary, fmt.Sprintf("%q (%d kamelets)", v, len(names)))
+		}
+		sort.Strings(summary)
+		errors = append(errors, fmt.Errorf("inconsistent %s across the catalog: %s", versionAnnotation, strings.Join(summary, ", ")))
 	}
 	return errors
 }
