@@ -56,9 +56,9 @@ actions:
         fork: true
         GET:
           parameters:
-            - name: "kafka.TOPIC"
+            - name: "CamelKafkaTopic"
               value: "${kafka.topic}"
-            - name: "kafka.TIMESTAMP"
+            - name: "CamelKafkaTimestamp"
               value: "${timestamp}"
             - name: "message"
               value: "citrus:urlEncode(${kafka.message})"

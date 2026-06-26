@@ -73,24 +73,24 @@ spec:
           - simple: "${header[key]}"
             steps:
             - setHeader:
-                name: kafka.KEY
+                name: CamelKafkaKey
                 simple: "${header[key]}"
           - simple: "${header[ce-key]}"
             steps:
             - setHeader:
-                name: kafka.KEY
+                name: CamelKafkaKey
                 simple: "${header[ce-key]}"
       - choice:
           when:
           - simple: "${header[partition-key]}"
             steps:
             - setHeader:
-                name: kafka.PARTITION_KEY
+                name: CamelKafkaPartitionKey
                 simple: "${header[partition-key]}"
           - simple: "${header[ce-partitionkey]}"
             steps:
             - setHeader:
-                name: kafka.PARTITION_KEY
+                name: CamelKafkaPartitionKey
                 simple: "${header[ce-partitionkey]}"
       - to:
           uri: "kafka:{{topic}}"

@@ -97,27 +97,27 @@ spec:
       steps:
       - choice:
           when:
-          - simple: "${header[indexId]}"
+          - simple: "${header[CamelElasticsearchIndexId]}"
             steps:
             - setHeader:
-                name: "indexId"
-                simple: "${header[indexId]}"
+                name: "CamelElasticsearchIndexId"
+                simple: "${header[CamelElasticsearchIndexId]}"
           - simple: "${header[ce-indexid]}"
             steps:
             - setHeader:
-                name: "indexId"
+                name: "CamelElasticsearchIndexId"
                 simple: "${header[ce-indexid]}"
       - choice:
           when:
-          - simple: "${header[indexName]}"
+          - simple: "${header[CamelElasticsearchIndexName]}"
             steps:
             - setHeader:
-                name: "indexName"
-                simple: "${header[indexName]}"
+                name: "CamelElasticsearchIndexName"
+                simple: "${header[CamelElasticsearchIndexName]}"
           - simple: "${header[ce-indexname]}"
             steps:
             - setHeader:
-                name: "indexName"
+                name: "CamelElasticsearchIndexName"
                 simple: "${header[ce-indexname]}"
       - unmarshal:
           json: {}
