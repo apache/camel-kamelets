@@ -18,6 +18,7 @@
 - Jira sink kamelets: optional accessToken parameter prevents endpoint creation [\#2869](https://github.com/apache/camel-kamelets/issues/2869)
 - camel-kamelets - itest failures running locally [\#2868](https://github.com/apache/camel-kamelets/issues/2868)
 - Add a Kamelet Catalog security model \(and SECURITY.md / AGENTS.md\) mirroring apache/camel [\#2834](https://github.com/apache/camel-kamelets/issues/2834)
+- Release 4.18.2 [\#2823](https://github.com/apache/camel-kamelets/issues/2823)
 
 ## [v4.18.2](https://github.com/apache/camel-kamelets/tree/v4.18.2) (2026-05-11)
 
