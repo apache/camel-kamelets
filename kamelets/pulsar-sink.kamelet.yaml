@@ -112,11 +112,6 @@ spec:
         description: "Size of the pending massages queue. When the queue is full, by default, any further sends will fail unless blockIfQueueFull=true."
         type: integer
         default: 1000
-      maxPendingMessagesAcrossPartitions:
-        title: Maximum Pending Messages Across Partitions
-        description: "The maximum number of pending messages for partitioned topics. The `maxPendingMessages` value is reduced if (number of partitions `maxPendingMessages`) exceeds this value. Partitioned topics have a pending message queue for each partition."
-        type: integer
-        default: 50000
       messageRoutingMode:
         title: Message Routing Mode
         description: "Message Routing Mode to use."
@@ -151,7 +146,6 @@ spec:
               initialSequenceId: "{{?initialSequenceId}}"
               lazyStartProducer: "{{?lazyStartProducer}}"
               maxPendingMessages: "{{?maxPendingMessages}}"
-              maxPendingMessagesAcrossPartitions: "{{?maxPendingMessagesAcrossPartitions}}"
               messageRoutingMode: "{{?messageRoutingMode}}"
               producerName: "{{?producerName}}"
               sendTimeoutMs: "{{?sendTimeoutMs}}"
