@@ -52,7 +52,7 @@ spec:
       uri: kamelet:source
       steps:
       - setHeader:
-          name: kafka.KEY
+          name: CamelKafkaKey
           simple: "${header.{{headerName}}}"
       - choice:
           precondition: true

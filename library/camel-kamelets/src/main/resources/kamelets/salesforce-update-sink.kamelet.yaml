@@ -93,10 +93,10 @@ spec:
       uri: kamelet:source
       steps:
         - setHeader:
-            name: sObjectId
+            name: CamelSalesforceSObjectId
             jsonpath: "$.sObjectId"
         - setHeader:
-            name: sObjectName
+            name: CamelSalesforceSObjectName
             jsonpath: "$.sObjectName"
         - transform:
             jsonpath: "$.payload"
@@ -107,6 +107,6 @@ spec:
             parameters:
               rawPayload: "true"
         - removeHeader:
-            name: sObjectId
+            name: CamelSalesforceSObjectId
         - removeHeader:
-            name: sObjectName
+            name: CamelSalesforceSObjectName

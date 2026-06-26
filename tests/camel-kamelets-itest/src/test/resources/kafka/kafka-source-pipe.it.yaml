@@ -86,11 +86,11 @@ actions:
           headers:
             - name: event-source
               value: "${kafka.source}"
-            - name: kafka.TOPIC
+            - name: CamelKafkaTopic
               value: "${kafka.topic}"
-            - name: kafka.KEY
+            - name: CamelKafkaKey
               value: "${kafka.message.key}"
-            - name: kafka.PARTITION
+            - name: CamelKafkaPartition
               value: "0"
           body:
             data: |
