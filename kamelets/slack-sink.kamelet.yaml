@@ -48,14 +48,6 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
-      iconEmoji:
-        title: Icon Emoji
-        description: Use a Slack emoji as an avatar.
-        type: string
-      iconUrl:
-        title: Icon URL
-        description: The avatar to use when sending a message to a channel or user.
-        type: string
   types:
     out:
       mediaType: application/json
@@ -71,5 +63,3 @@ spec:
           uri: "slack:{{channel}}"
           parameters:
             webhookUrl: "{{webhookUrl}}"
-            iconEmoji: "{{?iconEmoji}}"
-            iconUrl: "{{?iconUrl}}"
