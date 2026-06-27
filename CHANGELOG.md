@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Audit and update deprecated Camel component usage for 4.21.0 [\#2830](https://github.com/apache/camel-kamelets/issues/2830)
 - Consolidate JMS AMQP 10 SSL variants into single kamelets with optional SSL parameters [\#2828](https://github.com/apache/camel-kamelets/issues/2828)
 
 **Fixed bugs:**
