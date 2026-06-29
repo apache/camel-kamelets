@@ -127,6 +127,18 @@ public class KameletsCatalogTest {
     }
 
     @Test
+    void testLookupMethodsNeverReturnNull() throws Exception {
+        // Hardened contract: the label/annotation lookups return a non-null
+        // (possibly empty) list and never NPE on a Kamelet that lacks the
+        // queried label/annotation.
+        assertNotNull(catalog.getKameletsByName("does-not-exist"));
+        assertTrue(catalog.getKameletsByType("does-not-exist").isEmpty());
+        assertTrue(catalog.getKameletsByNamespace("does-not-exist").isEmpty());
+        assertTrue(catalog.getKameletsByGroups("does-not-exist").isEmpty());
+        assertTrue(catalog.getKameletByProvider("does-not-exist").isEmpty());
+    }
+
+    @Test
     void testGetKameletsDependencies() throws Exception {
         List<String> deps = catalog.getKameletDependencies("aws-sqs-source");
         assertEquals(3, deps.size());

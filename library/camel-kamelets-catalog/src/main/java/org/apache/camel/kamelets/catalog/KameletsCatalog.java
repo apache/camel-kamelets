@@ -96,6 +96,20 @@ public class KameletsCatalog {
         return fileName.substring(9);
     }
 
+    private static String labelValue(Kamelet kamelet, String key) {
+        if (kamelet.getMetadata() != null && kamelet.getMetadata().getLabels() != null) {
+            return kamelet.getMetadata().getLabels().get(key);
+        }
+        return null;
+    }
+
+    private static String annotationValue(Kamelet kamelet, String key) {
+        if (kamelet.getMetadata() != null && kamelet.getMetadata().getAnnotations() != null) {
+            return kamelet.getMetadata().getAnnotations().get(key);
+        }
+        return null;
+    }
+
 
     public Map<String, Kamelet> getKamelets() {
         return kameletModels;
@@ -114,27 +128,33 @@ public class KameletsCatalog {
     }
 
     public List<Kamelet> getKameletsByType(String type) {
-        List<Kamelet> collect = kameletModels.entrySet().stream()
-                .filter(x -> x.getValue().getMetadata().getLabels().get(KameletLabelNames.KAMELET_LABEL_TYPE).contains(type))
+        return kameletModels.entrySet().stream()
+                .filter(x -> {
+                    String value = labelValue(x.getValue(), KameletLabelNames.KAMELET_LABEL_TYPE);
+                    return value != null && value.contains(type);
+                })
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
-        return collect;
     }
 
     public List<Kamelet> getKameletsByNamespace(String namespace) {
-        List<Kamelet> collect = kameletModels.entrySet().stream()
-                .filter(x -> x.getValue().getMetadata().getAnnotations().get(KameletAnnotationsNames.KAMELET_ANNOTATION_NAMESPACE).contains(namespace))
+        return kameletModels.entrySet().stream()
+                .filter(x -> {
+                    String value = annotationValue(x.getValue(), KameletAnnotationsNames.KAMELET_ANNOTATION_NAMESPACE);
+                    return value != null && value.contains(namespace);
+                })
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
-        return collect;
     }
 
     public List<Kamelet> getKameletsByGroups(String group) {
-        List<Kamelet> collect = kameletModels.entrySet().stream()
-                .filter(x -> x.getValue().getMetadata().getAnnotations().get(KameletAnnotationsNames.KAMELET_ANNOTATION_GROUP).contains(group))
+        return kameletModels.entrySet().stream()
+                .filter(x -> {
+                    String value = annotationValue(x.getValue(), KameletAnnotationsNames.KAMELET_ANNOTATION_GROUP);
+                    return value != null && value.contains(group);
+                })
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
-        return collect;
     }
 
     public Definition getKameletDefinition(String name) {
@@ -147,15 +167,13 @@ public class KameletsCatalog {
     }
 
     public List<Kamelet> getKameletByProvider(String provider) {
-        List<Kamelet> collect = kameletModels.entrySet().stream()
-                .filter(x -> x.getValue().getMetadata().getAnnotations().get(KameletAnnotationsNames.KAMELET_ANNOTATION_PROVIDER).equalsIgnoreCase(provider))
+        return kameletModels.entrySet().stream()
+                .filter(x -> {
+                    String value = annotationValue(x.getValue(), KameletAnnotationsNames.KAMELET_ANNOTATION_PROVIDER);
+                    return value != null && value.equalsIgnoreCase(provider);
+                })
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
-        if (!collect.isEmpty()) {
-            return collect;
-        } else {
-            return Collections.emptyList();
-        }
     }
 
     public List<String> getKameletRequiredProperties(String name) {
