@@ -50,6 +50,7 @@ permissions:  # added using https://github.com/step-security/secure-repo
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
     - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       with:
@@ -72,6 +73,7 @@ jobs:
         path: maven-repo-${{ github.run_id }}-${{ github.run_number }}.tgz
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     # Run only when pushing to the branches (either main or release), never on merge requests and forks
     if: ${{ github.repository == 'apache/camel-kamelets' && github.event_name == 'push' }}
     env:

@@ -31,6 +31,7 @@ jobs:
       pull-requests: write # to create a PR (peter-evans/create-pull-request)
 
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
       matrix:
         java: [ '17' ]

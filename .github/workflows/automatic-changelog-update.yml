@@ -27,6 +27,7 @@ jobs:
   generate_changelog:
     if: github.repository == 'apache/camel-kamelets'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     name: Generate changelog for main branch
     steps:
       - name: "Checkout"
