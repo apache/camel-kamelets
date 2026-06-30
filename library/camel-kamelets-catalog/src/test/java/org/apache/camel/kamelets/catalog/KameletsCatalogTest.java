@@ -127,6 +127,28 @@ public class KameletsCatalogTest {
     }
 
     @Test
+    void testLookupMethodsContract() throws Exception {
+        // Positive case: a known label/annotation value returns a populated list.
+        assertFalse(catalog.getKameletsByType(KameletTypeEnum.SOURCE.type()).isEmpty());
+        assertFalse(catalog.getKameletsByNamespace("AWS").isEmpty());
+        assertFalse(catalog.getKameletsByGroups("AWS S3").isEmpty());
+        assertFalse(catalog.getKameletByProvider("Apache Software Foundation").isEmpty());
+
+        // Hardened contract: the lookups return a non-null (possibly empty) list
+        // and never NPE on a Kamelet that lacks the queried label/annotation; an
+        // unknown value yields an empty list.
+        assertNotNull(catalog.getKameletsByName("does-not-exist"));
+        List<Kamelet> byType = catalog.getKameletsByType("does-not-exist");
+        assertTrue(byType.isEmpty(), () -> "expected an empty list for an unknown type but got " + byType);
+        List<Kamelet> byNamespace = catalog.getKameletsByNamespace("does-not-exist");
+        assertTrue(byNamespace.isEmpty(), () -> "expected an empty list for an unknown namespace but got " + byNamespace);
+        List<Kamelet> byGroup = catalog.getKameletsByGroups("does-not-exist");
+        assertTrue(byGroup.isEmpty(), () -> "expected an empty list for an unknown group but got " + byGroup);
+        List<Kamelet> byProvider = catalog.getKameletByProvider("does-not-exist");
+        assertTrue(byProvider.isEmpty(), () -> "expected an empty list for an unknown provider but got " + byProvider);
+    }
+
+    @Test
     void testGetKameletsDependencies() throws Exception {
         List<String> deps = catalog.getKameletDependencies("aws-sqs-source");
         assertEquals(3, deps.size());
