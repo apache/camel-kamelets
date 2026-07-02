@@ -121,6 +121,13 @@ func verifyDescriptors(kamelets []KameletInfo) (errors []error) {
 			if hasXDescriptorPrefix(p, deprecatedDescriptorPrefix) {
 				errors = append(errors, fmt.Errorf("property %q in kamelet %q uses the deprecated x-descriptor prefix %q; use %q instead", k, kamelet.Name, deprecatedDescriptorPrefix, credDescriptor))
 			}
+			seenDescriptors := make(map[string]bool)
+			for _, d := range p.XDescriptors {
+				if seenDescriptors[d] {
+					errors = append(errors, fmt.Errorf("property %q in kamelet %q lists the x-descriptor %q more than once", k, kamelet.Name, d))
+				}
+				seenDescriptors[d] = true
+			}
 		}
 	}
 	return errors
