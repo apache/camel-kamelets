@@ -60,8 +60,28 @@ public class AwsIT {
     }
 
     @CitrusTestFactory
-    public Stream<DynamicTest> aws() {
-        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws");
+    public Stream<DynamicTest> awsS3() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.s3");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> awsSqs() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.sqs");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> awsDdb() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.ddb");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> awsKinesis() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.kinesis");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> awsEventBridge() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.eventbridge");
     }
 
 }
