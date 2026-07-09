@@ -15,27 +15,26 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: aws-kinesis-source-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: aws-kinesis-source
-    properties:
-      stream: '{{aws.kinesis.streamName}}'
-      overrideEndpoint: '{{aws.kinesis.overrideEndpoint}}'
-      uriEndpointOverride: '{{aws.kinesis.uriEndpointOverride}}'
-      accessKey: '{{aws.kinesis.accessKey}}'
-      secretKey: '{{aws.kinesis.secretKey}}'
-      region: '{{aws.kinesis.region}}'
-  sink:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: log-sink
-      properties:
-        showHeaders: true
+- route:
+    from:
+      uri: "timer:tick"
+      parameters:
+        period: "{{timer.source.period}}"
+        repeatCount: 1
+      steps:
+      - setBody:
+          constant: "{{aws.eventbridge.json.data}}"
+      - log: "${body}"
+      - to:
+          uri: "kamelet:aws-eventbridge-sink"
+          parameters:
+            eventbusNameOrArn: "{{aws.eventbridge.eventbusName}}"
+            overrideEndpoint: "{{aws.eventbridge.overrideEndpoint}}"
+            uriEndpointOverride: "{{aws.eventbridge.uriEndpointOverride}}"
+            accessKey: "{{aws.eventbridge.accessKey}}"
+            secretKey: "{{aws.eventbridge.secretKey}}"
+            region: "{{aws.eventbridge.region}}"
+            resourcesArn: "{{aws.eventbridge.resourcesArn}}"
+            eventSource: "{{aws.eventbridge.eventSource}}"
+            eventSourcePrefix: "{{aws.eventbridge.eventSourcePrefix}}"
+            detailType: "{{aws.eventbridge.detailType}}"

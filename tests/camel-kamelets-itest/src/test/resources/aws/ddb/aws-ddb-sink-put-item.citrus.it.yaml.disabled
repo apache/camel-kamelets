@@ -26,7 +26,7 @@ variables:
   - name: "timer.source.period"
     value: "10000"
 actions:
-  # Create LocalStack infrastructure
+  # Create AWS infrastructure (Floci container)
   - testcontainers:
       start:
         localstack:
@@ -73,7 +73,7 @@ actions:
       jbang:
         run:
           integration:
-            file: "aws/ddb/aws-ddb-sink-pipe.yaml"
+            file: "aws/ddb/aws-ddb-sink-route.yaml"
             systemProperties:
               properties:
                 - name: "timer.source.period"

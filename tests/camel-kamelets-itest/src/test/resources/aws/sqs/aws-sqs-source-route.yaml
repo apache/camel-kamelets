@@ -15,28 +15,18 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: aws-ddb-source-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: aws-ddb-streams-source
-    properties:
-      streamIteratorType: FROM_START
-      table: "{{aws.ddb.tableName}}"
-      overrideEndpoint: "{{aws.ddb.overrideEndpoint}}"
-      uriEndpointOverride: "{{aws.ddb.uriEndpointOverride}}"
-      accessKey: "{{aws.ddb.accessKey}}"
-      secretKey: "{{aws.ddb.secretKey}}"
-      region: "{{aws.ddb.region}}"
-  sink:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: log-sink
-    properties:
-      showHeaders: true
+- route:
+    from:
+      uri: "kamelet:aws-sqs-source"
+      parameters:
+        queueNameOrArn: "{{aws.sqs.queueName}}"
+        uriEndpointOverride: "{{aws.sqs.uriEndpointOverride}}"
+        overrideEndpoint: "{{aws.sqs.overrideEndpoint}}"
+        accessKey: "{{aws.sqs.accessKey}}"
+        secretKey: "{{aws.sqs.secretKey}}"
+        region: "{{aws.sqs.region}}"
+      steps:
+      - to:
+          uri: "kamelet:log-sink"
+          parameters:
+            showHeaders: true

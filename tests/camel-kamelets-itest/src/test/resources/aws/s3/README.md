@@ -7,7 +7,7 @@ This test verifies the AWS S3 Kamelet source defined in [aws-s3-source.kamelet.y
 The test verifies the AWS S3 Kamelet source by creating a Camel K integration that uses the Kamelet and listens for messages on the
 AWS S3 bucket.
 
-The test uses a [LocalStack Testcontainers](https://www.testcontainers.org/modules/localstack/) instance to start a local AWS S3 service for mocking reasons.
+The test uses a [Testcontainers](https://www.testcontainers.org/modules/localstack/) instance to start a local AWS S3 service for mocking reasons.
 The Kamelet and the test interact with the local AWS S3 service for validation of functionality.
 
 ### Test Kamelet source
@@ -15,7 +15,7 @@ The Kamelet and the test interact with the local AWS S3 service for validation o
 The test performs the following high level steps for configs - URI, secret and property based:
 
 *Preparation*
-- Start the AWS S3 service as LocalStack container
+- Start the AWS S3 service as Testcontainers container
 - Overwrite the Kamelet with the latest source
 - Prepare the Camel AWS S3 client
 
@@ -27,7 +27,7 @@ The test performs the following high level steps for configs - URI, secret and p
 - Verify that the integration has received the message event
 
 *Cleanup*
-- Stop the LocalStack container
+- Stop the Testcontainers container
 - Delete the Camel K integration
 - Delete the secret from the current namespacce
 

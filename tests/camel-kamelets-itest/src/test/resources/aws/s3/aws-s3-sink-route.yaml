@@ -15,36 +15,23 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: aws-ddb-sink-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: timer-source
-    properties:
-      period: "{{timer.source.period}}"
-      message: "{{aws.ddb.json.data}}"
-  steps:
-    - ref:
-        kind: Kamelet
-        apiVersion: camel.apache.org/v1
-        name: log-action
-      properties:
-        showHeaders: true
-  sink:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: aws-ddb-sink
-    properties:
-      table: "{{aws.ddb.tableName}}"
-      operation: "{{aws.ddb.operation}}"
-      overrideEndpoint: "{{aws.ddb.overrideEndpoint}}"
-      uriEndpointOverride: "{{aws.ddb.uriEndpointOverride}}"
-      accessKey: "{{aws.ddb.accessKey}}"
-      secretKey: "{{aws.ddb.secretKey}}"
-      region: "{{aws.ddb.region}}"
+- route:
+    from:
+      uri: "timer:tick"
+      parameters:
+        period: "10000"
+        repeatCount: 1
+      steps:
+      - setBody:
+          constant: "{{test.message}}"
+      - to:
+          uri: "kamelet:aws-s3-sink"
+          parameters:
+            bucketNameOrArn: "{{aws.s3.bucketNameOrArn}}"
+            accessKey: "{{aws.s3.accessKey}}"
+            secretKey: "{{aws.s3.secretKey}}"
+            region: "{{aws.s3.region}}"
+            overrideEndpoint: "{{aws.s3.overrideEndpoint}}"
+            uriEndpointOverride: "{{aws.s3.uriEndpointOverride}}"
+            forcePathStyle: "{{aws.s3.forcePathStyle}}"
+            keyName: "{{aws.s3.key}}"

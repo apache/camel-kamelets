@@ -24,7 +24,7 @@ variables:
   - name: "aws.kinesis.streamData"
     value: "Camel rocks!"
 actions:
-  # Create LocalStack infrastructure
+  # Create AWS infrastructure (Floci container)
   - testcontainers:
       start:
         localstack:
@@ -45,7 +45,7 @@ actions:
       jbang:
         run:
           integration:
-            file: "aws/kinesis/aws-kinesis-source-pipe.yaml"
+            file: "aws/kinesis/aws-kinesis-source-route.yaml"
             systemProperties:
               file: "aws/kinesis/application.properties"
 
@@ -63,5 +63,5 @@ actions:
   - camel:
       jbang:
         verify:
-          integration: "aws-kinesis-source-pipe"
+          integration: "aws-kinesis-source-route"
           logMessage: "${aws.kinesis.streamData}"

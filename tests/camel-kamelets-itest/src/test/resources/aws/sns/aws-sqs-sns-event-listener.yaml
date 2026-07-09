@@ -15,27 +15,15 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: aws-sqs-event-listener-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: aws-sqs-source
-    properties:
-      queueNameOrArn: "{{aws.sqs.queueName}}"
-      uriEndpointOverride: "{{aws.eventbridge.uriEndpointOverride}}"
-      overrideEndpoint: "{{aws.eventbridge.overrideEndpoint}}"
-      accessKey: "{{aws.eventbridge.accessKey}}"
-      secretKey: "{{aws.eventbridge.secretKey}}"
-      region: "{{aws.eventbridge.region}}"
-  sink:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: log-sink
-    properties:
-      showHeaders: true
+- route:
+    from:
+      uri: "aws2-sqs:{{aws.sqs.queueName}}"
+      parameters:
+        accessKey: "{{aws.sqs.accessKey}}"
+        secretKey: "{{aws.sqs.secretKey}}"
+        region: "{{aws.sqs.region}}"
+        overrideEndpoint: "{{aws.sqs.overrideEndpoint}}"
+        uriEndpointOverride: "{{aws.sqs.uriEndpointOverride}}"
+      steps:
+      - to:
+          uri: "log:aws-sqs-sns-event-listener"

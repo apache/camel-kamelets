@@ -22,7 +22,7 @@ variables:
   - name: "aws.sqs.message"
     value: "Hello from SQS Kamelet"
 actions:
-  # Create LocalStack infrastructure
+  # Create AWS infrastructure (Floci container)
   - testcontainers:
       start:
         localstack:
@@ -43,7 +43,7 @@ actions:
       jbang:
         run:
           integration:
-            file: "aws/sqs/aws-sqs-uri-pipe.yaml"
+            file: "aws/sqs/aws-sqs-source-route.yaml"
             systemProperties:
               properties:
                 - name: "aws.sqs.queueName"
@@ -70,5 +70,5 @@ actions:
   - camel:
       jbang:
         verify:
-          integration: "aws-sqs-uri-pipe"
+          integration: "aws-sqs-source-route"
           logMessage: "${aws.sqs.message}"

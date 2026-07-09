@@ -15,28 +15,19 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: aws-s3-uri-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: aws-s3-source
-    properties:
-      bucketNameOrArn: "{{aws.s3.bucketNameOrArn}}"
-      uriEndpointOverride: "{{aws.s3.uriEndpointOverride}}"
-      overrideEndpoint: "{{aws.s3.overrideEndpoint}}"
-      forcePathStyle: "{{aws.s3.forcePathStyle}}"
-      accessKey: "{{aws.s3.accessKey}}"
-      secretKey: "{{aws.s3.secretKey}}"
-      region: "{{aws.s3.region}}"
-  sink:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: log-sink
-    properties:
-      showHeaders: true
+- route:
+    from:
+      uri: "kamelet:aws-s3-source"
+      parameters:
+        bucketNameOrArn: "{{aws.s3.bucketNameOrArn}}"
+        uriEndpointOverride: "{{aws.s3.uriEndpointOverride}}"
+        overrideEndpoint: "{{aws.s3.overrideEndpoint}}"
+        forcePathStyle: "{{aws.s3.forcePathStyle}}"
+        accessKey: "{{aws.s3.accessKey}}"
+        secretKey: "{{aws.s3.secretKey}}"
+        region: "{{aws.s3.region}}"
+      steps:
+      - to:
+          uri: "kamelet:log-sink"
+          parameters:
+            showHeaders: true
