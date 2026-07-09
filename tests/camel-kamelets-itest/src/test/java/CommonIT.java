@@ -103,4 +103,39 @@ public class CommonIT {
     public Stream<DynamicTest> counter() {
         return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("counter");
     }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> cron() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("cron");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> setBody() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("setbody");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> delay() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("delay");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> throttle() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("throttle");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> xj() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("xj");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> dns() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("dns");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> kafkaRouter() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("kafkarouter");
+    }
 }
