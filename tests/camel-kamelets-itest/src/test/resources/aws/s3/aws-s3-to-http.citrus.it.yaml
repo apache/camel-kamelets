@@ -24,7 +24,7 @@ variables:
   - name: "aws.s3.key"
     value: "hello.txt"
 actions:
-  # Create LocalStack infrastructure
+  # Create AWS infrastructure (Floci container)
   - testcontainers:
       start:
         localstack:
@@ -45,7 +45,7 @@ actions:
       jbang:
         run:
           integration:
-            file: "aws/s3/aws-s3-to-http.yaml"
+            file: "aws/s3/aws-s3-source-to-http-route.yaml"
             systemProperties:
               file: "aws/s3/application.properties"
               properties:
@@ -89,5 +89,5 @@ actions:
   - camel:
       jbang:
         verify:
-          integration: "aws-s3-to-http"
+          integration: "aws-s3-source-to-http-route"
           logMessage: "${aws.s3.message}"

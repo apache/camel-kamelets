@@ -84,4 +84,9 @@ public class AwsIT {
         return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.eventbridge");
     }
 
+    @CitrusTestFactory
+    public Stream<DynamicTest> awsSns() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.sns");
+    }
+
 }

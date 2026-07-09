@@ -24,7 +24,7 @@ variables:
   - name: "aws.s3.key"
     value: "hello.txt"
 actions:
-  # Create LocalStack infrastructure
+  # Create AWS infrastructure (Floci container)
   - testcontainers:
       start:
         localstack:

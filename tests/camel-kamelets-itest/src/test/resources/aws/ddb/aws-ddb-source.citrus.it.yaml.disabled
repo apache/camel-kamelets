@@ -30,7 +30,7 @@ variables:
   - name: "aws.ddb.item.title"
     value: "Star Wars IV"
 actions:
-  # Create LocalStack infrastructure
+  # Create AWS infrastructure (Floci container)
   - testcontainers:
       start:
         localstack:
@@ -50,7 +50,7 @@ actions:
       jbang:
         run:
           integration:
-            file: "aws/ddb/aws-ddb-source-pipe.yaml"
+            file: "aws/ddb/aws-ddb-source-route.yaml"
             systemProperties:
               file: "aws/ddb/application.properties"
 
@@ -62,6 +62,6 @@ actions:
   - camel:
       jbang:
         verify:
-          integration: "aws-ddb-source-pipe"
+          integration: "aws-ddb-source-route"
           logMessage: |
             "Star Wars IV"

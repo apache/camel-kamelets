@@ -15,35 +15,60 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: aws-sqs-to-log-uri-based-test
+name: aws-sns-sink-route-test
 variables:
+  - name: "aws.sns.topicName"
+    value: "sns-test-topic"
   - name: "aws.sqs.queueName"
-    value: "queue3"
-  - name: "aws.sqs.message"
-    value: "Hello from SQS Kamelet"
+    value: "sns-test-queue"
+  - name: "test.message"
+    value: "Hello from SNS sink test"
 actions:
   # Create AWS infrastructure (Floci container)
   - testcontainers:
       start:
         localstack:
           services:
+            - "SNS"
             - "SQS"
   - waitFor:
       http:
         url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
 
-  # Create AWS-SQS client
-  - camel:
-      createComponent:
-        name: amazonSQSClient
-        file: "aws/sqs/amazonSQSClient.groovy"
+  # Create SNS topic, SQS queue, and subscribe SQS to SNS
+  - groovy:
+      script:
+        file: "aws/sns/setupSnsToSqs.groovy"
 
-  # Create Camel JBang integration
+  # Create Camel JBang integration for the SNS sink
   - camel:
       jbang:
         run:
           integration:
-            file: "aws/sqs/aws-sqs-to-log-uri-based.yaml"
+            file: "aws/sns/aws-sns-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "test.message"
+                  value: "${test.message}"
+                - name: "aws.sns.topicName"
+                  value: "${aws.sns.topicName}"
+                - name: "aws.sns.uriEndpointOverride"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+                - name: "aws.sns.overrideEndpoint"
+                  value: "true"
+                - name: "aws.sns.secretKey"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
+                - name: "aws.sns.accessKey"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
+                - name: "aws.sns.region"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
+
+  # Create event listener to consume the message forwarded from SNS to SQS
+  - camel:
+      jbang:
+        run:
+          integration:
+            file: "aws/sns/aws-sqs-sns-event-listener.yaml"
             systemProperties:
               properties:
                 - name: "aws.sqs.queueName"
@@ -59,16 +84,9 @@ actions:
                 - name: "aws.sqs.region"
                   value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
 
-  # Publish event
-  - send:
-      endpoint: camel:aws2-sqs://${aws.sqs.queueName}?amazonSQSClient=#amazonSQSClient
-      message:
-        body:
-          data: "${aws.sqs.message}"
-
-  # Verify AWS-SQS source
+  # Verify message received by the SQS listener
   - camel:
       jbang:
         verify:
-          integration: "aws-sqs-to-log-uri-based"
-          logMessage: "${aws.sqs.message}"
+          integration: "aws-sqs-sns-event-listener"
+          logMessage: "${test.message}"
