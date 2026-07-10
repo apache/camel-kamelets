@@ -17,11 +17,14 @@
 
 import com.mongodb.client.MongoClients
 import com.mongodb.client.MongoClient
+import com.mongodb.client.model.CreateCollectionOptions
 import org.bson.Document
 
 MongoClient mongoClient = MongoClients.create('mongodb://${CITRUS_TESTCONTAINERS_MONGODB_HOST}:${CITRUS_TESTCONTAINERS_MONGODB_PORT}')
 
 def db = mongoClient.getDatabase('testdb')
-def col = db.getCollection('testcol')
 
+db.createCollection('testcol', new CreateCollectionOptions().capped(true).sizeInBytes(1048576))
+
+def col = db.getCollection('testcol')
 col.insertOne(new Document('name', 'source-test').append('value', 'hello-from-mongo'))

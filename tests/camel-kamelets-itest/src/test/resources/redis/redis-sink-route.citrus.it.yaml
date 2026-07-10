@@ -26,8 +26,7 @@ actions:
           exposedPorts:
             - 6379
           waitFor:
-            log:
-              message: "Ready to accept connections"
+            logMessage: "Ready to accept connections"
 
   # Create Camel JBang integration (sink)
   - camel:

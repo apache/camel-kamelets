@@ -40,8 +40,7 @@ actions:
             - name: "CASSANDRA_DC"
               value: "datacenter1"
           waitFor:
-            log:
-              message: "Startup complete"
+            logMessage: "Startup complete"
 
   # Setup keyspace and table
   - groovy:
