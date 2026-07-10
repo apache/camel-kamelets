@@ -1,0 +1,70 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: cassandra-source-route-test
+actions:
+  # Create Cassandra infrastructure
+  - testcontainers:
+      start:
+        container:
+          name: "cassandra"
+          image: "cassandra:4.1"
+          exposedPorts:
+            - 9042
+          startUpTimeout: 120
+          env:
+            - name: "CASSANDRA_SNITCH"
+              value: "GossipingPropertyFileSnitch"
+            - name: "JVM_OPTS"
+              value: "-Dcassandra.skip_wait_for_gossip_to_settle=0 -Dcassandra.initial_token=0"
+            - name: "HEAP_NEWSIZE"
+              value: "128M"
+            - name: "MAX_HEAP_SIZE"
+              value: "1024M"
+            - name: "CASSANDRA_ENDPOINT_SNITCH"
+              value: "GossipingPropertyFileSnitch"
+            - name: "CASSANDRA_DC"
+              value: "datacenter1"
+          waitFor:
+            log:
+              message: "Startup complete"
+
+  # Setup keyspace and table
+  - groovy:
+      script:
+        file: "cassandra/setupKeyspace.groovy"
+
+  # Create Camel JBang integration (source)
+  - camel:
+      jbang:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "cassandra/cassandra-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "cassandra.host"
+                  value: "${CITRUS_TESTCONTAINERS_CASSANDRA_HOST}"
+                - name: "cassandra.port"
+                  value: "${CITRUS_TESTCONTAINERS_CASSANDRA_SERVICE_PORT}"
+
+  # Verify Cassandra source
+  - camel:
+      jbang:
+        verify:
+          integration: "cassandra-source-route"
+          logMessage: "hello-cassandra"
