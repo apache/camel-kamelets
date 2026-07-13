@@ -31,9 +31,12 @@ actions:
           exposedPorts:
             - 4222
             - 8222
-          command: "-m 8222"
           waitFor:
-            url: "http://localhost:8222"
+            disabled: true
+
+  # Wait for NATS to be ready
+  - sleep:
+      milliseconds: 3000
 
   # Start source (subscriber) first
   - camel:
@@ -46,7 +49,7 @@ actions:
                 - name: "nats.topic"
                   value: "${nats.topic}"
                 - name: "nats.servers"
-                  value: "nats://${CITRUS_TESTCONTAINERS_NATS_HOST}:${CITRUS_TESTCONTAINERS_NATS_SERVICE_PORT}"
+                  value: "nats://${CITRUS_TESTCONTAINERS_NATS_HOST}:${CITRUS_TESTCONTAINERS_NATS_PORT}"
 
   # Start sink (publisher)
   - camel:
@@ -62,7 +65,7 @@ actions:
                 - name: "nats.topic"
                   value: "${nats.topic}"
                 - name: "nats.servers"
-                  value: "nats://${CITRUS_TESTCONTAINERS_NATS_HOST}:${CITRUS_TESTCONTAINERS_NATS_SERVICE_PORT}"
+                  value: "nats://${CITRUS_TESTCONTAINERS_NATS_HOST}:${CITRUS_TESTCONTAINERS_NATS_PORT}"
 
   # Verify source received the message
   - camel:
