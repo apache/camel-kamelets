@@ -15,7 +15,7 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: aws-ddb-sink-put-item-test
+name: aws-ddb-sink-delete-item-test
 variables:
   - name: "maxRetryAttempts"
     value: "20"
@@ -57,16 +57,29 @@ actions:
   - createVariables:
       variables:
         - name: "aws.ddb.operation"
-          value: "PutItem"
+          value: "DeleteItem"
         - name: "aws.ddb.item.id"
           value: "citrus:randomNumber(4)"
         - name: "aws.ddb.item.year"
-          value: "1977"
+          value: "1985"
         - name: "aws.ddb.item.title"
-          value: "Star Wars IV"
+          value: "Back to the future"
         - name: "aws.ddb.json.data"
           value: >-
-            { \"id\": ${aws.ddb.item.id}, \"year\": ${aws.ddb.item.year}, \"title\": \"${aws.ddb.item.title}\" }
+            {"id": ${aws.ddb.item.id}}
+  - groovy:
+      script:
+        file: "aws/ddb/putItem.groovy"
+  - createVariables:
+      variables:
+        - name: "aws.ddb.items"
+          value: "[[id:AttributeValue(N=${aws.ddb.item.id}), title:AttributeValue(S=${aws.ddb.item.title}), year:AttributeValue(N=${aws.ddb.item.year})]]"
+  - repeatOnError:
+      until: "i > ${maxRetryAttempts}"
+      actions:
+        - groovy:
+            script:
+              file: "aws/ddb/verifyItems.groovy"
 
   # Create Camel JBang integration
   - camel:
@@ -87,11 +100,11 @@ actions:
   # Verify Kamelet sink
   - createVariables:
       variables:
-        - name: "aws.ddb.item"
-          value: "[title:AttributeValue(S=${aws.ddb.item.title}), year:AttributeValue(N=${aws.ddb.item.year}), id:AttributeValue(N=${aws.ddb.item.id})]"
+        - name: "aws.ddb.items"
+          value: "[[id:AttributeValue(N=${aws.ddb.item.id}), title:AttributeValue(S=${aws.ddb.item.title}), year:AttributeValue(N=${aws.ddb.item.year})]]"
   - repeatOnError:
       until: "i > ${maxRetryAttempts}"
       actions:
         - groovy:
             script:
-              file: "aws/ddb/getItem.groovy"
+              file: "aws/ddb/verifyItems.groovy"
