@@ -24,9 +24,7 @@
       steps:
       - setBody:
           constant: "{{aws.ddb.json.data}}"
-      - log:
-          message: "${body}"
-          showHeaders: true
+      - log: "${body}"
       - to:
           uri: "kamelet:aws-ddb-sink"
           parameters:

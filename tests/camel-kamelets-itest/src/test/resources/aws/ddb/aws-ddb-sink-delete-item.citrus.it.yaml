@@ -73,7 +73,7 @@ actions:
   - createVariables:
       variables:
         - name: "aws.ddb.items"
-          value: "[[title:AttributeValue(S=${aws.ddb.item.title}), year:AttributeValue(N=${aws.ddb.item.year}), id:AttributeValue(N=${aws.ddb.item.id})]]"
+          value: "[[id:AttributeValue(N=${aws.ddb.item.id}), title:AttributeValue(S=${aws.ddb.item.title}), year:AttributeValue(N=${aws.ddb.item.year})]]"
   - repeatOnError:
       until: "i > ${maxRetryAttempts}"
       actions:
@@ -101,7 +101,7 @@ actions:
   - createVariables:
       variables:
         - name: "aws.ddb.items"
-          value: "[[title:AttributeValue(S=${aws.ddb.item.title}), year:AttributeValue(N=${aws.ddb.item.year}), id:AttributeValue(N=${aws.ddb.item.id})]]"
+          value: "[[id:AttributeValue(N=${aws.ddb.item.id}), title:AttributeValue(S=${aws.ddb.item.title}), year:AttributeValue(N=${aws.ddb.item.year})]]"
   - repeatOnError:
       until: "i > ${maxRetryAttempts}"
       actions:

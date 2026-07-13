@@ -21,8 +21,10 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue
 var amazonDDBClient = context.getReferenceResolver().resolve("amazonDDBClient")
 
 try {
-    assert '${aws.ddb.item}' == amazonDDBClient.getItem(b -> b.tableName('${aws.ddb.tableName}')
-            .key(Collections.singletonMap("id", AttributeValue.builder().n('${aws.ddb.item.id}').build())))?.item()?.toString()
+    def item = amazonDDBClient.getItem(b -> b.tableName('${aws.ddb.tableName}')
+            .key(Collections.singletonMap("id", AttributeValue.builder().n('${aws.ddb.item.id}').build())))?.item()
+
+    assert new TreeMap(item).toString() == '${aws.ddb.item}'
 } catch (AssertionError e) {
     throw new CitrusRuntimeException("AWS DDB item verification failed", e)
 }
