@@ -22,7 +22,7 @@ variables:
   - name: "mqtt.topic"
     value: "test/topic"
 actions:
-  # Start Mosquitto container
+  # Start Mosquitto container with anonymous access
   - testcontainers:
       start:
         container:
@@ -30,13 +30,9 @@ actions:
           image: "eclipse-mosquitto:2"
           exposedPorts:
             - 1883
+          command: "sh -c 'echo -e \"listener 1883\\nallow_anonymous true\" > /tmp/m.conf && mosquitto -c /tmp/m.conf'"
           waitFor:
-            disabled: true
-          command: "mosquitto -c /dev/null -p 1883"
-
-  # Wait for Mosquitto to be ready
-  - sleep:
-      milliseconds: 3000
+            logMessage: "mosquitto version"
 
   # Start source (subscriber) first
   - camel:

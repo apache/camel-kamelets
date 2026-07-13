@@ -30,13 +30,8 @@ actions:
           image: "nats:2"
           exposedPorts:
             - 4222
-            - 8222
           waitFor:
-            disabled: true
-
-  # Wait for NATS to be ready
-  - sleep:
-      milliseconds: 3000
+            logMessage: "Server is ready"
 
   # Start source (subscriber) first
   - camel:
