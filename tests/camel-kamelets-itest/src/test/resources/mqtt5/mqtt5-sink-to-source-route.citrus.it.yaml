@@ -22,17 +22,23 @@ variables:
   - name: "mqtt.topic"
     value: "test/topic"
 actions:
-  # Start Mosquitto container with anonymous access
+  # Start EMQX MQTT broker (allows anonymous by default)
   - testcontainers:
       start:
         container:
-          name: "mosquitto"
-          image: "eclipse-mosquitto:2"
+          name: "mqtt"
+          image: "emqx/emqx:5"
           exposedPorts:
             - 1883
-          command: "sh -c 'echo -e \"listener 1883\\nallow_anonymous true\" > /tmp/m.conf && mosquitto -c /tmp/m.conf'"
+          env:
+            - name: "EMQX_LISTENERS__TCP__DEFAULT__ENABLE"
+              value: "true"
           waitFor:
-            logMessage: "mosquitto version"
+            disabled: true
+
+  # Wait for EMQX to be ready
+  - sleep:
+      milliseconds: 10000
 
   # Start source (subscriber) first
   - camel:
@@ -45,7 +51,7 @@ actions:
                 - name: "mqtt.topic"
                   value: "${mqtt.topic}"
                 - name: "mqtt.brokerUrl"
-                  value: "tcp://${CITRUS_TESTCONTAINERS_MOSQUITTO_HOST}:${CITRUS_TESTCONTAINERS_MOSQUITTO_PORT}"
+                  value: "tcp://${CITRUS_TESTCONTAINERS_MQTT_HOST}:${CITRUS_TESTCONTAINERS_MQTT_PORT}"
 
   # Start sink (publisher)
   - camel:
@@ -61,7 +67,7 @@ actions:
                 - name: "mqtt.topic"
                   value: "${mqtt.topic}"
                 - name: "mqtt.brokerUrl"
-                  value: "tcp://${CITRUS_TESTCONTAINERS_MOSQUITTO_HOST}:${CITRUS_TESTCONTAINERS_MOSQUITTO_PORT}"
+                  value: "tcp://${CITRUS_TESTCONTAINERS_MQTT_HOST}:${CITRUS_TESTCONTAINERS_MQTT_PORT}"
 
   # Verify source received the message
   - camel:

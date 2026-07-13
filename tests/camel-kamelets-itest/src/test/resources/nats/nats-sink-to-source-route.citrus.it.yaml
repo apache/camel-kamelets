@@ -31,7 +31,11 @@ actions:
           exposedPorts:
             - 4222
           waitFor:
-            logMessage: "Server is ready"
+            disabled: true
+
+  # Wait for NATS to be ready
+  - sleep:
+      milliseconds: 5000
 
   # Start source (subscriber) first
   - camel:
