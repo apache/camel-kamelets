@@ -1,0 +1,72 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: nats-sink-to-source-route-test
+variables:
+  - name: "test.message"
+    value: "hello-nats-test"
+  - name: "nats.topic"
+    value: "test-topic"
+actions:
+  # Start NATS container
+  - testcontainers:
+      start:
+        container:
+          name: "nats"
+          image: "nats:2"
+          exposedPorts:
+            - 4222
+            - 8222
+          command: "-m 8222"
+          waitFor:
+            url: "http://localhost:8222"
+
+  # Start source (subscriber) first
+  - camel:
+      jbang:
+        run:
+          integration:
+            file: "nats/nats-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "nats.topic"
+                  value: "${nats.topic}"
+                - name: "nats.servers"
+                  value: "nats://${CITRUS_TESTCONTAINERS_NATS_HOST}:${CITRUS_TESTCONTAINERS_NATS_SERVICE_PORT}"
+
+  # Start sink (publisher)
+  - camel:
+      jbang:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "nats/nats-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "test.message"
+                  value: "${test.message}"
+                - name: "nats.topic"
+                  value: "${nats.topic}"
+                - name: "nats.servers"
+                  value: "nats://${CITRUS_TESTCONTAINERS_NATS_HOST}:${CITRUS_TESTCONTAINERS_NATS_SERVICE_PORT}"
+
+  # Verify source received the message
+  - camel:
+      jbang:
+        verify:
+          integration: "nats-source-route"
+          logMessage: "${test.message}"

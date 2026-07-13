@@ -1,0 +1,75 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: mqtt5-sink-to-source-route-test
+variables:
+  - name: "test.message"
+    value: "hello-mqtt5-test"
+  - name: "mqtt.topic"
+    value: "test/topic"
+actions:
+  # Start Mosquitto container
+  - testcontainers:
+      start:
+        container:
+          name: "mosquitto"
+          image: "eclipse-mosquitto:2"
+          exposedPorts:
+            - 1883
+          waitFor:
+            disabled: true
+          command: "mosquitto -c /dev/null -p 1883"
+
+  # Wait for Mosquitto to be ready
+  - sleep:
+      milliseconds: 3000
+
+  # Start source (subscriber) first
+  - camel:
+      jbang:
+        run:
+          integration:
+            file: "mqtt5/mqtt5-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "mqtt.topic"
+                  value: "${mqtt.topic}"
+                - name: "mqtt.brokerUrl"
+                  value: "tcp://${CITRUS_TESTCONTAINERS_MOSQUITTO_HOST}:${CITRUS_TESTCONTAINERS_MOSQUITTO_SERVICE_PORT}"
+
+  # Start sink (publisher)
+  - camel:
+      jbang:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "mqtt5/mqtt5-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "test.message"
+                  value: "${test.message}"
+                - name: "mqtt.topic"
+                  value: "${mqtt.topic}"
+                - name: "mqtt.brokerUrl"
+                  value: "tcp://${CITRUS_TESTCONTAINERS_MOSQUITTO_HOST}:${CITRUS_TESTCONTAINERS_MOSQUITTO_SERVICE_PORT}"
+
+  # Verify source received the message
+  - camel:
+      jbang:
+        verify:
+          integration: "mqtt5-source-route"
+          logMessage: "${test.message}"
