@@ -42,7 +42,7 @@ actions:
 
   # Create Camel JBang integration for the SNS sink
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "aws/sns/aws-sns-sink-route.yaml"
@@ -65,7 +65,7 @@ actions:
 
   # Create event listener to consume the message forwarded from SNS to SQS
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "aws/sns/aws-sqs-sns-event-listener.yaml"
@@ -86,7 +86,7 @@ actions:
 
   # Verify message received by the SQS listener
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "aws-sqs-sns-event-listener"
           logMessage: "${test.message}"

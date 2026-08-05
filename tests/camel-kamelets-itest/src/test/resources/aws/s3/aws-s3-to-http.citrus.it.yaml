@@ -42,7 +42,7 @@ actions:
 
   # Create Camel JBang integration
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "aws/s3/aws-s3-source-to-http-route.yaml"
@@ -68,7 +68,7 @@ actions:
       receiveRequest:
         POST:
           path: "/incoming"
-          contentType: "text/plain; charset=UTF-8"
+          contentType: "text/plain; charset=utf-8"
           headers:
             - name: ce-specversion
               value: "1.0"
@@ -87,7 +87,7 @@ actions:
 
   # Verify AWS-S3 source
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "aws-s3-source-to-http-route"
           logMessage: "${aws.s3.message}"

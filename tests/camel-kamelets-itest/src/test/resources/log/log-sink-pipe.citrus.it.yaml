@@ -22,7 +22,7 @@ variables:
 actions:
   # Create Camel JBang integration
   - camel:
-      jbang:
+      cli:
         run:
           waitForRunningState: false
           integration:
@@ -34,7 +34,7 @@ actions:
 
   # Verify the log output contains the message
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "log-sink-pipe"
           logMessage: "${log.message}"

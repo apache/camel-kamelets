@@ -46,7 +46,7 @@ actions:
           value: "http://localhost:${jira.server.port}"
   # Create Camel JBang integration
   - camel:
-      jbang:
+      cli:
         run:
           waitForRunningState: false
           integration:
@@ -161,7 +161,7 @@ actions:
 
   # Verify JIRA source
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "jira-add-issue-sink-pipe"
           logMessage: "${jira.issue.summary}"

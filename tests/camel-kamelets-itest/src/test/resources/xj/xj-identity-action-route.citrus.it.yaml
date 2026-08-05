@@ -18,7 +18,7 @@
 name: xj-identity-action-route-test
 actions:
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "xj/xj-identity-action-route.yaml"
@@ -38,7 +38,7 @@ actions:
           status: 200
           reasonPhrase: "OK"
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "xj-identity-action-route"
           logMessage: "name"

@@ -18,13 +18,13 @@
 name: regex-router-action-route-test
 actions:
   - camel:
-      jbang:
+      cli:
         run:
           waitForRunningState: false
           integration:
             file: "kafkarouter/regex-router-action-route.yaml"
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "regex-router-action-route"
           logMessage: "prefix-my-topic"

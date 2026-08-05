@@ -29,7 +29,7 @@ actions:
 
   # Create Camel JBang integration
   - camel:
-      jbang:
+      cli:
         run:
           waitForRunningState: false
           integration:
@@ -39,7 +39,7 @@ actions:
 
   # Verify PostgreSQL source
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "postgresql-source-route"
           logMessage: "hello-postgres"

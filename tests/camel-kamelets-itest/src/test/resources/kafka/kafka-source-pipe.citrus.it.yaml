@@ -35,7 +35,7 @@ actions:
 
   # Create Camel JBang integration
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "kafka/kafka-source-pipe.yaml"
@@ -47,7 +47,7 @@ actions:
 
   # Verify topic subscription
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "kafka-source-pipe"
           logMessage: "Subscribed to topic(s): ${kafka.topic}"

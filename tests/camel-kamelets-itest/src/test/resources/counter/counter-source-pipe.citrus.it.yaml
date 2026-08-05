@@ -19,7 +19,7 @@ name: counter-source-pipe-test
 actions:
   # Run the counter-source -> log-sink Pipe via Camel JBang
   - camel:
-      jbang:
+      cli:
         run:
           waitForRunningState: false
           integration:
@@ -27,7 +27,7 @@ actions:
 
   # Verify the generated sequential number reaches the log sink
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "counter-source-pipe"
           logMessage: "777777"

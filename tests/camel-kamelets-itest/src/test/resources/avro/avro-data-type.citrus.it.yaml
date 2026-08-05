@@ -20,16 +20,16 @@ variables:
   - name: "uuid"
     value: citrus:randomUUID()
   - name: "camelVersion"
-    value: "citrus:systemProperty('citrus.camel.jbang.version')"
+    value: "citrus:systemProperty('citrus.camel.cli.version')"
   - name: "kameletsVersion"
-    value: "citrus:systemProperty('citrus.camel.jbang.kamelets.version')"
+    value: "citrus:systemProperty('citrus.camel.cli.kamelets.version')"
 actions:
   - echo:
       message: "Camel JBang version: ${camelVersion}"
   - echo:
       message: "Kamelets version: ${kameletsVersion}"
   - camel:
-      jbang:
+      cli:
         run:
           args:
             - "--port"
@@ -37,7 +37,7 @@ actions:
           integration:
             file: "avro/avro-x-struct-sink-pipe.yaml"
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "avro/avro-binary-source-pipe.yaml"
@@ -49,7 +49,7 @@ actions:
                   value: >-
                     { \"id\": \"${uuid}\", \"firstname\": \"Sheldon\", \"lastname\": \"Cooper\", \"age\": 28 }
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "avro-x-struct-sink-pipe"
           logMessage: |

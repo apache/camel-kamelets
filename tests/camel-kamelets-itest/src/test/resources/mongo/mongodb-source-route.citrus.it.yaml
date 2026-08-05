@@ -29,7 +29,7 @@ actions:
 
   # Create Camel JBang integration (source)
   - camel:
-      jbang:
+      cli:
         run:
           waitForRunningState: false
           integration:
@@ -39,7 +39,7 @@ actions:
 
   # Verify MongoDB source picked up the document
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "mongodb-source-route"
           logMessage: "hello-from-mongo"

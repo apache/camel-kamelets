@@ -47,7 +47,7 @@ actions:
 
   # Create Camel JBang integration
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "aws/ddb/aws-ddb-source-route.yaml"
@@ -60,7 +60,7 @@ actions:
 
   # Verify AWS-DDB source
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "aws-ddb-source-route"
           logMessage: |
