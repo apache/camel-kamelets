@@ -40,7 +40,7 @@ actions:
 
   # Create Camel JBang integration
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "aws/sqs/aws-sqs-source-route.yaml"
@@ -68,7 +68,7 @@ actions:
 
   # Verify AWS-SQS source
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "aws-sqs-source-route"
           logMessage: "${aws.sqs.message}"

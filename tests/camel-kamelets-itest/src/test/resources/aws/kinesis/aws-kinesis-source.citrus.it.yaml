@@ -42,7 +42,7 @@ actions:
 
   # Create Camel JBang integration
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "aws/kinesis/aws-kinesis-source-route.yaml"
@@ -61,7 +61,7 @@ actions:
 
   # Verify AWS-KINESIS source
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "aws-kinesis-source-route"
           logMessage: "${aws.kinesis.streamData}"

@@ -18,13 +18,13 @@
 name: timestamp-router-action-route-test
 actions:
   - camel:
-      jbang:
+      cli:
         run:
           waitForRunningState: false
           integration:
             file: "kafkarouter/timestamp-router-action-route.yaml"
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "timestamp-router-action-route"
           logMessage: "my-topic-20240703"

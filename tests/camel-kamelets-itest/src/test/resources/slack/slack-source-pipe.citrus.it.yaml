@@ -35,7 +35,7 @@ actions:
 
   # Create Camel JBang integration
   - camel:
-      jbang:
+      cli:
         run:
           waitForRunningState: false
           integration:
@@ -122,7 +122,7 @@ actions:
 
   # Verify Slack source
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "slack-source-pipe"
           logMessage: "${slack.message}"

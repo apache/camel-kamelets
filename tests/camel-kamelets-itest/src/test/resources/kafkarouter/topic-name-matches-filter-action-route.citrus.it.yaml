@@ -18,13 +18,13 @@
 name: topic-name-matches-filter-action-route-test
 actions:
   - camel:
-      jbang:
+      cli:
         run:
           waitForRunningState: false
           integration:
             file: "kafkarouter/topic-name-matches-filter-action-route.yaml"
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "topic-name-matches-filter-action-route"
           logMessage: "topic-filter-test-data"

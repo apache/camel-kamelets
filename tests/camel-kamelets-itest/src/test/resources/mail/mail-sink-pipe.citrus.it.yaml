@@ -41,7 +41,7 @@ actions:
 
   # Create Camel JBang integration
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "mail/mail-sink-pipe.yaml"
@@ -65,13 +65,9 @@ actions:
             {
               "from": "${mail.from}",
               "to": "${mail.to}",
-              "cc": null,
-              "bcc": null,
-              "replyTo": "@ignore@",
               "subject": "${mail.subject}",
               "body": {
                 "contentType": "text/plain",
                 "content": "${mail.message}",
-                "attachments": null
               }
             }

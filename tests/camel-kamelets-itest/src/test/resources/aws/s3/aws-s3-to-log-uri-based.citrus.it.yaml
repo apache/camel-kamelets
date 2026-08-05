@@ -42,7 +42,7 @@ actions:
 
   # Create Camel JBang integration
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "aws/s3/aws-s3-to-log-uri-based.yaml"
@@ -75,7 +75,7 @@ actions:
 
   # Verify AWS-S3 source
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "aws-s3-to-log-uri-based"
           logMessage: "${aws.s3.message}"

@@ -40,7 +40,7 @@ actions:
 
   # Create Camel JBang integration
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "aws/sqs/aws-sqs-sink-route.yaml"
@@ -63,7 +63,7 @@ actions:
 
   # Create event listener to consume the message from SQS
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "aws/sqs/aws-sqs-sink-event-listener.yaml"
@@ -84,7 +84,7 @@ actions:
 
   # Verify message received by the listener
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "aws-sqs-sink-event-listener"
           logMessage: "${test.message}"

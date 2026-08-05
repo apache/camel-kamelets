@@ -49,7 +49,7 @@ actions:
 
   # Create Camel JBang integration
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "aws/kinesis/aws-kinesis-sink-route.yaml"
@@ -63,7 +63,7 @@ actions:
 
   # Create event listener
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "aws/kinesis/aws-kinesis-event-listener.yaml"
@@ -72,7 +72,7 @@ actions:
 
   # Verify event received
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "aws-kinesis-event-listener"
           logMessage: |

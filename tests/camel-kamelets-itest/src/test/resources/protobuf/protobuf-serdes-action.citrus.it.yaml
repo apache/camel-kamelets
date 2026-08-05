@@ -21,7 +21,7 @@ variables:
     value: citrus:randomUUID()
 actions:
   - camel:
-      jbang:
+      cli:
         run:
           args:
             - "--port"
@@ -29,7 +29,7 @@ actions:
           integration:
             file: "protobuf/protobuf-deserialize-pipe.yaml"
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "protobuf/protobuf-serialize-pipe.yaml"
@@ -41,7 +41,7 @@ actions:
                   value: >-
                     { \"id\": \"${uuid}\", \"firstname\": \"Sheldon\", \"lastname\": \"Cooper\", \"age\": 28 }
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "protobuf-deserialize-pipe"
           logMessage: |

@@ -29,7 +29,7 @@ actions:
 
   # Create Camel JBang integration (sink)
   - camel:
-      jbang:
+      cli:
         run:
           waitForRunningState: false
           integration:
@@ -39,7 +39,7 @@ actions:
 
   # Verify PostgreSQL sink executed
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "postgresql-sink-route"
           logMessage: "from-sink"

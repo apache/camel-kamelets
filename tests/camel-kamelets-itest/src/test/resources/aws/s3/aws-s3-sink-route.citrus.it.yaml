@@ -42,7 +42,7 @@ actions:
 
   # Create Camel JBang integration
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "aws/s3/aws-s3-sink-route.yaml"
@@ -56,7 +56,7 @@ actions:
 
   # Verify S3 sink wrote the object
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "aws-s3-sink-route"
           logMessage: "${test.message}"

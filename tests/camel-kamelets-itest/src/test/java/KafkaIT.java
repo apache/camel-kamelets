@@ -18,8 +18,8 @@
 import java.util.stream.Stream;
 
 import org.citrusframework.TestAction;
-import org.citrusframework.common.ShutdownPhase;
-import org.citrusframework.common.TestLoader;
+import org.citrusframework.api.common.ShutdownPhase;
+import org.citrusframework.api.common.TestLoader;
 import org.citrusframework.container.SequenceAfterTest;
 import org.citrusframework.container.SequenceBeforeTest;
 import org.citrusframework.endpoint.Endpoint;

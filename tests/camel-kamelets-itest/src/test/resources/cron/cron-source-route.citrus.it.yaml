@@ -18,13 +18,13 @@
 name: cron-source-route-test
 actions:
   - camel:
-      jbang:
+      cli:
         run:
           waitForRunningState: false
           integration:
             file: "cron/cron-source-route.yaml"
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "cron-source-route"
           logMessage: "cron-test-12345"

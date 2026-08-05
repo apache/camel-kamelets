@@ -31,7 +31,7 @@
  * limitations under the License.
  */
 
-import org.citrusframework.actions.testcontainers.aws2.AwsService
+import org.citrusframework.api.actions.testcontainers.aws2.AwsService
 import org.citrusframework.testcontainers.aws2.LocalStackContainer
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider

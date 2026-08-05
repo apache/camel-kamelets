@@ -56,7 +56,7 @@ actions:
 
   # Create Camel JBang integration
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "aws/eventbridge/aws-eventbridge-sink-route.yaml"
@@ -70,7 +70,7 @@ actions:
 
   # Create event listener
   - camel:
-      jbang:
+      cli:
         run:
           integration:
             file: "aws/eventbridge/aws-sqs-event-listener-route.yaml"
@@ -82,7 +82,7 @@ actions:
 
   # Verify event received
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "aws-sqs-event-listener-route"
           logMessage: |

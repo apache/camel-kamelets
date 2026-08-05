@@ -17,7 +17,7 @@
 
 import java.util.stream.Stream;
 
-import org.citrusframework.common.TestLoader;
+import org.citrusframework.api.common.TestLoader;
 import org.citrusframework.container.SequenceAfterTest;
 import org.citrusframework.container.SequenceBeforeTest;
 import org.citrusframework.http.server.HttpServer;

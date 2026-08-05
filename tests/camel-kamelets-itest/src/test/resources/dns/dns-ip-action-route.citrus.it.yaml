@@ -18,13 +18,13 @@
 name: dns-ip-action-route-test
 actions:
   - camel:
-      jbang:
+      cli:
         run:
           waitForRunningState: false
           integration:
             file: "dns/dns-ip-action-route.yaml"
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "dns-ip-action-route"
           logMessage: "127.0.0.1"

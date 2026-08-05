@@ -37,7 +37,7 @@ actions:
 
   # Create Camel JBang integration
   - camel:
-      jbang:
+      cli:
         run:
           waitForRunningState: false
           integration:
@@ -56,7 +56,7 @@ actions:
       receiveRequest:
         POST:
           path: "/"
-          contentType: "application/json; charset=UTF-8"
+          contentType: "application/json; charset=utf-8"
           body:
             data: |
               {
@@ -74,7 +74,7 @@ actions:
 
   # Verify Slack sink
   - camel:
-      jbang:
+      cli:
         verify:
           integration: "slack-sink-pipe"
           logMessage: "${slack.message}"
