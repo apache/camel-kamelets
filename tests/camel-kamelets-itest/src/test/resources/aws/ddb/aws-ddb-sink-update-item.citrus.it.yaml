@@ -16,7 +16,6 @@
 # ---------------------------------------------------------------------------
 
 name: aws-ddb-sink-update-item-test
-status: DISABLED
 variables:
   - name: "maxRetryAttempts"
     value: "20"
@@ -107,9 +106,9 @@ actions:
   - createVariables:
       variables:
         - name: "aws.ddb.item.directors"
-          value: "[Ernest B. Schoedsack, Merian C. Cooper]"
+          value: "[Merian C. Cooper, Ernest B. Schoedsack]"
         - name: "aws.ddb.item"
-          value: "[id:AttributeValue(N=${aws.ddb.item.id}), title:AttributeValue(S=${aws.ddb.item.title.new}), year:AttributeValue(N=${aws.ddb.item.year}), directors:AttributeValue(SS=${aws.ddb.item.directors})]"
+          value: "[directors:AttributeValue(SS=${aws.ddb.item.directors}), id:AttributeValue(N=${aws.ddb.item.id}), title:AttributeValue(S=${aws.ddb.item.title.new}), year:AttributeValue(N=${aws.ddb.item.year})]"
 
   - repeatOnError:
       until: "i > ${maxRetryAttempts}"
