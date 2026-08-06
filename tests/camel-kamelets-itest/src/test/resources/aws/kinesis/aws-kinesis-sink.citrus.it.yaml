@@ -37,15 +37,12 @@ actions:
         localstack:
           services:
             - "KINESIS"
+          options:
+            streams: '${aws.kinesis.streamName}'
+            kinesisClientName: "kinesisSinkClient"
   - waitFor:
       http:
         url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
-
-  # Create AWS-KINESIS client
-  - camel:
-      createComponent:
-        name: amazonKinesisClient
-        file: "aws/kinesis/amazonKinesisClient.groovy"
 
   # Create Camel JBang integration
   - camel:

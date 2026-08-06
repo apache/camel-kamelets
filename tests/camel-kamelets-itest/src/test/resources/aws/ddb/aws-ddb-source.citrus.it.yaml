@@ -19,6 +19,8 @@ name: aws-ddb-source-test
 variables:
   - name: "maxRetryAttempts"
     value: "20"
+  - name: "aws.ddb.client.name"
+    value: "ddbSourceItemClient"
   - name: "aws.ddb.streams"
     value: "true"
   - name: "aws.ddb.tableName"
@@ -36,14 +38,12 @@ actions:
         localstack:
           services:
             - "DYNAMODB"
+          options:
+            tables: '${aws.ddb.tableName}'
+            dynamodbClientName: 'ddbSourceItemClient'
   - waitFor:
       http:
         url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
-
-  # Create AWS-DDB client
-  - groovy:
-      script:
-        file: "aws/ddb/amazonDDBClient.groovy"
 
   # Create Camel JBang integration
   - camel:

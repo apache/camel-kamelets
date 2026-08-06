@@ -19,6 +19,8 @@ name: aws-ddb-sink-put-item-test
 variables:
   - name: "maxRetryAttempts"
     value: "20"
+  - name: "aws.ddb.client.name"
+    value: "ddbPutItemClient"
   - name: "aws.ddb.streams"
     value: "false"
   - name: "aws.ddb.tableName"
@@ -32,14 +34,12 @@ actions:
         localstack:
           services:
             - "DYNAMODB"
+          options:
+            tables: '${aws.ddb.tableName}'
+            dynamodbClientName: 'ddbPutItemClient'
   - waitFor:
       http:
         url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
-
-  # Create AWS-DDB client
-  - groovy:
-      script:
-        file: "aws/ddb/amazonDDBClient.groovy"
 
   # Verify empty AWS-DDB
   - createVariables:

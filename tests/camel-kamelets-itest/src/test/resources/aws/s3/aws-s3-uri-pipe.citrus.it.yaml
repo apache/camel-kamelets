@@ -30,15 +30,12 @@ actions:
         localstack:
           services:
             - "S3"
+          options:
+            buckets: '${aws.s3.bucketNameOrArn}'
+            s3ClientName: "s3PipeClient"
   - waitFor:
       http:
         url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
-
-  # Create AWS-S3 client
-  - camel:
-      createComponent:
-        name: amazonS3Client
-        file: "aws/s3/amazonS3Client.groovy"
 
   # Create Camel JBang integration
   - camel:
@@ -65,7 +62,7 @@ actions:
 
   # Publish event
   - send:
-      endpoint: camel:aws2-s3://${aws.s3.bucketNameOrArn}?amazonS3Client=#amazonS3Client
+      endpoint: camel:aws2-s3://${aws.s3.bucketNameOrArn}?amazonS3Client=#s3PipeClient
       message:
         headers:
           - name: CamelAwsS3Key

@@ -16,13 +16,14 @@
  */
 
 import org.citrusframework.exceptions.CitrusRuntimeException
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 
-var amazonDDBClient = context.getReferenceResolver().resolve("amazonDDBClient")
+var amazonDDBClient = context.getReferenceResolver().resolve('${aws.ddb.client.name}', DynamoDbClient.class)
 
 try {
     def items = amazonDDBClient.scan(b -> b.tableName('${aws.ddb.tableName}'))?.items()
     def sorted = items.collect { new TreeMap(it) }
-    assert '${aws.ddb.items}' == sorted.toString()
+    assert sorted.toString() == '${aws.ddb.items}'
 } catch (AssertionError e) {
     throw new CitrusRuntimeException("AWS DDB item verification failed", e)
 }
