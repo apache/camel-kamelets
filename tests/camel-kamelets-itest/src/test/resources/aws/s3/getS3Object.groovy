@@ -15,23 +15,10 @@
  * limitations under the License.
  */
 
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
-import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.GetObjectRequest
 
-S3Client s3 = S3Client
-        .builder()
-        .endpointOverride(URI.create('${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}'))
-        .credentialsProvider(StaticCredentialsProvider.create(
-                AwsBasicCredentials.create(
-                        '${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}',
-                        '${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}')
-        ))
-        .forcePathStyle(true)
-        .region(Region.of('${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}'))
-        .build()
+S3Client s3 = context.getReferenceResolver().resolve("s3SinkClient", S3Client.class)
 
 def response = s3.getObjectAsBytes(GetObjectRequest.builder()
         .bucket('${aws.s3.bucketNameOrArn}')

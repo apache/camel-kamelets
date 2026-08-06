@@ -15,10 +15,12 @@
  * limitations under the License.
  */
 
+
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue
 import software.amazon.awssdk.services.dynamodb.model.ReturnValue
 
-var amazonDDBClient = context.getReferenceResolver().resolve("amazonDDBClient")
+var amazonDDBClient = context.getReferenceResolver().resolve('${aws.ddb.client.name}', DynamoDbClient.class)
 
 Map<String, AttributeValue> item = new HashMap<>()
 item.put("id", AttributeValue.builder().n('${aws.ddb.item.id}').build())

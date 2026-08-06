@@ -16,9 +16,10 @@
  */
 
 import org.citrusframework.exceptions.CitrusRuntimeException
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue
 
-var amazonDDBClient = context.getReferenceResolver().resolve("amazonDDBClient")
+var amazonDDBClient = context.getReferenceResolver().resolve('${aws.ddb.client.name}', DynamoDbClient.class)
 
 try {
     def item = amazonDDBClient.getItem(b -> b.tableName('${aws.ddb.tableName}')

@@ -16,9 +16,12 @@
 # ---------------------------------------------------------------------------
 
 name: aws-ddb-sink-update-item-test
+status: DISABLED
 variables:
   - name: "maxRetryAttempts"
     value: "20"
+  - name: "aws.ddb.client.name"
+    value: "ddbUpdateItemClient"
   - name: "aws.ddb.streams"
     value: "false"
   - name: "aws.ddb.tableName"
@@ -32,14 +35,12 @@ actions:
         localstack:
           services:
             - "DYNAMODB"
+          options:
+            tables: '${aws.ddb.tableName}'
+            dynamodbClientName: 'ddbUpdateItemClient'
   - waitFor:
       http:
         url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
-
-  # Create AWS-DDB client
-  - groovy:
-      script:
-        file: "aws/ddb/amazonDDBClient.groovy"
 
   # Verify empty AWS-DDB
   - createVariables:

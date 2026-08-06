@@ -30,15 +30,12 @@ actions:
         localstack:
           services:
             - "S3"
+          options:
+            buckets: '${aws.s3.bucketNameOrArn}'
+            s3ClientName: "amazonS3Client"
   - waitFor:
       http:
         url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
-
-  # Create AWS-S3 client
-  - camel:
-      createComponent:
-        name: amazonS3Client
-        file: "aws/s3/amazonS3Client.groovy"
 
   # Create Camel JBang integration
   - camel:

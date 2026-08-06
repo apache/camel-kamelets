@@ -15,32 +15,12 @@
  * limitations under the License.
  */
 
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
-import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.sns.SnsClient
 import software.amazon.awssdk.services.sqs.SqsClient
 import software.amazon.awssdk.services.sqs.model.QueueAttributeName
 
-def credentials = StaticCredentialsProvider.create(
-        AwsBasicCredentials.create(
-                '${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}',
-                '${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}'))
-
-def region = Region.of('${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}')
-def endpoint = URI.create('${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}')
-
-SnsClient snsClient = SnsClient.builder()
-        .endpointOverride(endpoint)
-        .credentialsProvider(credentials)
-        .region(region)
-        .build()
-
-SqsClient sqsClient = SqsClient.builder()
-        .endpointOverride(endpoint)
-        .credentialsProvider(credentials)
-        .region(region)
-        .build()
+SnsClient snsClient = context.getReferenceResolver().resolve("snsClient", SnsClient.class)
+SqsClient sqsClient = context.getReferenceResolver().resolve("sqsClient", SqsClient.class)
 
 def topicArn = snsClient.createTopic(b -> b.name('${aws.sns.topicName}')).topicArn()
 

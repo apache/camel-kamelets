@@ -28,15 +28,12 @@ actions:
         localstack:
           services:
             - "SQS"
+          options:
+            queues: '${aws.sqs.queueName}'
+            sqsClientName: "sqsSinkClient"
   - waitFor:
       http:
         url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
-
-  # Create AWS-SQS client
-  - camel:
-      createComponent:
-        name: amazonSQSClient
-        file: "aws/sqs/amazonSQSClient.groovy"
 
   # Create Camel JBang integration
   - camel:
