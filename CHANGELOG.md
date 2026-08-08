@@ -4,9 +4,14 @@
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.18.3...HEAD)
 
+**Fixed bugs:**
+
+- integration-tests workflow red on main: every Citrus integration fails to resolve run.deps \(camel-jackson-avro/protobuf\) [\#2897](https://github.com/apache/camel-kamelets/issues/2897)
+
 **Closed issues:**
 
 - Release 4.18.3 [\#2921](https://github.com/apache/camel-kamelets/issues/2921)
+- Citrus is misleading waiting message [\#2867](https://github.com/apache/camel-kamelets/issues/2867)
 
 ## [v4.18.3](https://github.com/apache/camel-kamelets/tree/v4.18.3) (2026-07-13)
 
