@@ -24,6 +24,9 @@
       steps:
       - setBody:
           constant: "{{aws.ddb.json.data}}"
+      - setProperty:
+          name: operation
+          constant: "{{aws.ddb.operation}}"
       - log: "${body}"
       - to:
           uri: "kamelet:aws-ddb-sink"
