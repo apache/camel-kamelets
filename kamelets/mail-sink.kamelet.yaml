@@ -45,8 +45,16 @@ spec:
       connectionPort:
         description: The mail server port
         title: Port
-        default: 25
+        default: 465
         type: string
+      protocol:
+        title: Protocol
+        description: The mail protocol to use. Use smtps for an implicitly TLS-encrypted
+          connection; smtp connects in the clear, which sends the configured
+          credentials unencrypted.
+        type: string
+        enum: ["smtp", "smtps"]
+        default: "smtps"
       username:
         title: Username
         description: The username to access the mail box
@@ -126,7 +134,7 @@ spec:
         - removeHeaders:
             pattern: "ce-*"
         - to:
-            uri: "smtp:{{connectionHost}}:{{connectionPort}}"
+            uri: "{{protocol}}:{{connectionHost}}:{{connectionPort}}"
             parameters:
               subject: "{{subject}}"
               from: "{{from}}"
