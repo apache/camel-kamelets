@@ -79,12 +79,12 @@ spec:
             steps:
             - setHeader:
                 name: CamelFileName
-                simple: "${header[file]}"
+                simple: "${header.file.replaceAll('^.*[/\\\\]', '').replaceAll('^\\.+$', '')}"
           - simple: "${header[ce-file]}"
             steps:
             - setHeader:
                 name: CamelFileName
-                simple: "${header[ce-file]}"
+                simple: "${header['ce-file'].replaceAll('^.*[/\\\\]', '').replaceAll('^\\.+$', '')}"
           otherwise:
             steps:
             - setHeader:
