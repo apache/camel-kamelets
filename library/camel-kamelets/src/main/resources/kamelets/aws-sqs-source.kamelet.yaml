@@ -84,7 +84,9 @@ spec:
         default: https
       queueURL:
         title: Queue URL
-        description: The full SQS Queue URL.
+        description: The full SQS Queue URL. When set, it is used verbatim and every
+          other property that would otherwise determine the queue URL is ignored.
+          Intended for connecting to a mock SQS implementation.
         type: string
       useDefaultCredentialsProvider:
         title: Default Credentials Provider
@@ -222,6 +224,7 @@ spec:
         useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
         useSessionCredentials: "{{useSessionCredentials}}"
         uriEndpointOverride: "{{?uriEndpointOverride}}"
+        queueUrl: "{{?queueURL}}"
         profileCredentialsName: "{{?profileCredentialsName}}"
         sessionToken: "{{?sessionToken}}"
         overrideEndpoint: "{{overrideEndpoint}}"

@@ -105,6 +105,16 @@ spec:
       steps:
       - removeHeader:
           name: CamelHttpUri
+      - removeHeader:
+          name: CamelHttpPath
+      - removeHeader:
+          name: CamelHttpQuery
+      - removeHeader:
+          name: CamelHttpRawQuery
+      - removeHeader:
+          name: CamelRestHttpUri
+      - removeHeader:
+          name: CamelRestHttpQuery
       - setHeader:
           name: CamelHttpMethod
           constant: "{{method}}"
