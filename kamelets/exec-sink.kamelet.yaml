@@ -59,6 +59,14 @@ spec:
             - setHeader:
                 name: CamelExecCommandArgs
                 simple: "${header[ce-args]}"
+      # args / ce-args above are this Kamelet's documented interface and are kept.
+      # These three would override the operator-pinned exec:{{executable}}.
+      - removeHeader:
+          name: CamelExecCommandExecutable
+      - removeHeader:
+          name: CamelExecCommandWorkingDir
+      - removeHeader:
+          name: CamelExecCommandOutFile
       - to:
           uri: "exec:{{executable}}"
       - setBody:

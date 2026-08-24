@@ -143,6 +143,12 @@ spec:
             - setHeader:
                 name: CamelKafkaPartitionKey
                 simple: "${header[ce-partitionkey]}"
+      # key / partition-key above are this Kamelet's documented interface and are
+      # kept. The topic is pinned to {{topic}} below.
+      - removeHeader:
+          name: CamelKafkaOverrideTopic
+      - removeHeader:
+          name: CamelKafkaOverrideTimestamp
       - to:
           uri: "kafka:{{topic}}"
           parameters:

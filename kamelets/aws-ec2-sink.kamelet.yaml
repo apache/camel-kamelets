@@ -110,6 +110,10 @@ spec:
             - setHeader:
                 name: CamelAwsEC2InstancesIds
                 simple: "${header[ce-instanceids]}"
+      # instanceIds / ce-instanceids above are this Kamelet's documented interface
+      # and are kept. The operation is pinned to describeInstancesStatus below.
+      - removeHeader:
+          name: CamelAwsEC2Operation
       - to:
           uri: "aws2-ec2:ec2-route"
           parameters:
