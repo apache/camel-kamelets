@@ -132,7 +132,7 @@ spec:
         - choice:
             precondition: true
             when:
-              - simple: '${properties:getBlob:true}'
+              - simple: '${properties:getBlob:false}'
                 steps:
                   - setBody:
                       simple: ${body.toString()}
