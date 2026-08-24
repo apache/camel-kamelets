@@ -100,12 +100,18 @@ spec:
             steps:
             - setHeader:
                 name: CamelFileName
-                simple: "${header.file.replaceAll('^.*[/\\\\]', '').replaceAll('^\\.+$', '')}"
+                simple: "${header[file]}"
+            - setHeader:
+                name: CamelFileName
+                simple: "${file:onlyname}"
           - simple: "${header[ce-file]}"
             steps:
             - setHeader:
                 name: CamelFileName
-                simple: "${header['ce-file'].replaceAll('^.*[/\\\\]', '').replaceAll('^\\.+$', '')}"
+                simple: "${header[ce-file]}"
+            - setHeader:
+                name: CamelFileName
+                simple: "${file:onlyname}"
       - to:
           uri: "ftps:{{username}}@{{connectionHost}}:{{connectionPort}}/{{directoryName}}"
           parameters:
