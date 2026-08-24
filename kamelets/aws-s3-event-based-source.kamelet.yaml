@@ -121,7 +121,9 @@ spec:
         default: https
       queueURL:
         title: Queue URL
-        description: The full SQS Queue URL
+        description: The full SQS Queue URL. When set, it is used verbatim and every
+          other property that would otherwise determine the queue URL is ignored.
+          Intended for connecting to a mock SQS implementation.
         type: string
       uriEndpointOverride:
         title: Overwrite Endpoint URI
@@ -174,6 +176,7 @@ spec:
         amazonAWSHost: '{{?amazonAWSHost}}'
         protocol: '{{?protocol}}'
         uriEndpointOverride: '{{?uriEndpointOverride}}'
+        queueUrl: '{{?queueURL}}'
         overrideEndpoint: '{{overrideEndpoint}}'
         delay: '{{delay}}'
         greedy: '{{greedy}}'
@@ -181,7 +184,7 @@ spec:
         - choice:
             precondition: true
             when:
-              - simple: '${properties:getObject:true}'
+              - simple: '${properties:getObject:false}'
                 steps:
                   - unmarshal:
                       json:

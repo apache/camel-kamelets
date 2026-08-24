@@ -96,7 +96,7 @@ spec:
         - choice:
             precondition: true
             when:
-              - simple: '${properties:getObject:true}'
+              - simple: '${properties:getObject:false}'
                 steps:
                   - setProperty:
                       name: google-storage-event-type
