@@ -82,30 +82,6 @@ spec:
                 simple: "${header[ce-key]}"
       - choice:
           when:
-          - simple: "${header[value]}"
-            steps:
-            - setHeader:
-                name: CamelRedis.Value
-                simple: "${header[value]}"
-          - simple: "${header[ce-value]}"
-            steps:
-            - setHeader:
-                name: CamelRedis.Value
-                simple: "${header[ce-value]}"
-      - choice:
-          when:
-          - simple: "${header[message]}"
-            steps:
-            - setHeader:
-                name: CamelRedis.Message
-                simple: "${header[message]}"
-          - simple: "${header[ce-message]}"
-            steps:
-            - setHeader:
-                name: CamelRedis.Message
-                simple: "${header[ce-message]}"
-      - choice:
-          when:
           - simple: "${header[channel]}"
             steps:
             - setHeader:
@@ -115,7 +91,7 @@ spec:
             steps:
             - setHeader:
                 name: CamelRedis.Channel
-                simple: "${header[ce-channell]}"
+                simple: "${header[ce-channel]}"
       - setHeader:
           name: CamelRedis.Message
           simple: "${body}"
