@@ -179,7 +179,7 @@ spec:
         - choice:
             precondition: true
             when:
-              - simple: '${properties:deleteAfterRead:true}'
+              - simple: '${properties:deleteAfterRead:false}'
                 steps:
                   - to:
                       uri: "azure-storage-blob:{{accountName}}/{{containerName}}"

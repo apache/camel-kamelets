@@ -57,7 +57,7 @@ spec:
       - choice:
           precondition: true
           when:
-            - simple: '${properties:forceHeaderDeletion:true}'
+            - simple: '${properties:forceHeaderDeletion:false}'
               steps:
               - removeHeader:
                   name: "{{headerName}}" 

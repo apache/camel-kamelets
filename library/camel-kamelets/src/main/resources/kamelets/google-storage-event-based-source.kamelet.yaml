@@ -50,6 +50,7 @@ spec:
         title: Service Account Key
         description: The service account key to use as credentials for the Pub/Sub publisher/subscriber. You must encode this value in base64.
         type: binary
+        format: password
         x-descriptors:
         - urn:camel:group:credentials
       synchronousPull:
@@ -96,7 +97,7 @@ spec:
         - choice:
             precondition: true
             when:
-              - simple: '${properties:getObject:true}'
+              - simple: '${properties:getObject:false}'
                 steps:
                   - setProperty:
                       name: google-storage-event-type
