@@ -152,7 +152,7 @@ spec:
                   - log: "${exchangeProperty.azure-storage-blob-event-type} - ${exchangeProperty.azure-storage-blob-subject} - ${exchangeProperty.azure-storage-blob-blob-name}"
                   - choice:
                       when:
-                        - simple: '${exchangeProperty.azure-storage-blob-event-type} == "Microsoft.Storage.BlobCreated" && ${exchangeProperty.azure-storage-blob-subject} contains "{{containerName}}"'
+                        - simple: '${exchangeProperty.azure-storage-blob-event-type} == "Microsoft.Storage.BlobCreated" && ${exchangeProperty.azure-storage-blob-subject} startsWith "/blobServices/default/containers/{{containerName}}/blobs/"'
                           steps:
                             - toD: >-
                                 azure-storage-blob:{{accountName}}/{{containerName}}?accessKey=RAW({{?accessKey}})&azureClientId=RAW({{?clientId}})&azureClientSecret=RAW({{?clientSecret}})&azureTenantId=RAW({{?tenantId}})&operation=getBlob&blobName=${exchangeProperty.azure-storage-blob-blob-name}&credentialType={{credentialType}}
