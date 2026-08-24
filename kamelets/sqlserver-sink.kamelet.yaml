@@ -75,12 +75,13 @@ spec:
         title: Encrypt Connection
         description: Encrypt the connection to SQL Server.
         type: boolean
-        default: false
+        default: true
       trustServerCertificate:
         title: Trust Server Certificate
-        description: Trust Server Certificate
+        description: Trust the server certificate without validating it against a
+          certificate authority. Intended for development and test environments only.
         type: boolean
-        default: true
+        default: false
   types:
     in:
       mediaType: application/json
