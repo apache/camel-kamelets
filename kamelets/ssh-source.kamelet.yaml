@@ -61,6 +61,13 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      knownHostsResource:
+        title: Known Hosts Resource
+        description: The resource path of a known_hosts file used to verify the SSH
+          server host key. When not set, the client does not verify the server host
+          key against a known_hosts file.
+        type: string
+        pattern: "^(http|https|file|classpath|ref|bean):.*"
       delay:
         title: Delay
         description: The number of milliseconds before the next poll
@@ -80,6 +87,7 @@ spec:
       parameters:
         username: "{{username}}"
         password: "{{password}}"
+        knownHostsResource: "{{?knownHostsResource}}"
         delay: "{{delay}}"
         pollCommand: "{{pollCommand}}"
       steps:

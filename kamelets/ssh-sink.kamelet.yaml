@@ -60,6 +60,13 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      knownHostsResource:
+        title: Known Hosts Resource
+        description: The resource path of a known_hosts file used to verify the SSH
+          server host key. When not set, the client does not verify the server host
+          key against a known_hosts file.
+        type: string
+        pattern: "^(http|https|file|classpath|ref|bean):.*"
   types:
     in:
       mediaType: text/plain
@@ -78,3 +85,4 @@ spec:
           parameters:
             username: "{{username}}"
             password: "{{password}}"
+            knownHostsResource: "{{?knownHostsResource}}"

@@ -69,9 +69,19 @@ spec:
         - urn:camel:group:credentials
       strictHostKeyChecking:
         title: Strict Host Checking
-        description: Sets whether to use strict host key checking.
+        description: Sets whether to use strict host key checking. One of yes, no or
+          ask. With no, the server host key is accepted without being checked against
+          a known_hosts entry.
         type: string
-        default: no
+        enum: ["yes", "no", "ask"]
+        default: "yes"
+      knownHostsUri:
+        title: Known Hosts URI
+        description: The known_hosts file used to verify the server host key, loaded
+          from the classpath by default. Needed when the process has no
+          $HOME/.ssh/known_hosts to fall back on.
+        type: string
+        pattern: "^(http|https|file|classpath|ref|bean)://.*"
       useUserKnownHostsFile:
         title: Use User Known Hosts File
         description: If knownHostFile has not been explicit configured then use the host file from System.getProperty(user.home)/.ssh/known_hosts.
@@ -93,4 +103,5 @@ spec:
             privateKeyFile: "{{?privateKeyFile}}"
             privateKeyPassphrase: "{{?privateKeyPassphrase}}"
             strictHostKeyChecking: "{{?strictHostKeyChecking}}"
+            knownHostsUri: "{{?knownHostsUri}}"
             useUserKnownHostsFile: "{{?useUserKnownHostsFile}}"
