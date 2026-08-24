@@ -98,8 +98,9 @@ spec:
       - name: dsBean
         type: "#class:org.apache.commons.dbcp2.BasicDataSource"
         properties:
+          username: 'token'
           password: '{{accessToken}}'
-          url: 'jdbc:databricks://{{serverHostname}}:{{serverPort}};httpPath={{httpPath}};AuthMech=3;transportMode=http;ssl=1;UID=token;PWD={{accessToken}}{{extraOptions}}'
+          url: 'jdbc:databricks://{{serverHostname}}:{{serverPort}};httpPath={{httpPath}};AuthMech=3;transportMode=http;ssl=1{{extraOptions}}'
           driverClassName: 'com.databricks.client.jdbc.Driver'
     from:
       uri: "{{local-sql-databricks-source}}:{{query}}"
