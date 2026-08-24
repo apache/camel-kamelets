@@ -122,7 +122,7 @@ spec:
             brokers: "{{bootstrapServers}}"
             securityProtocol: "{{securityProtocol}}"
             saslMechanism: "{{saslMechanism}}"
-            saslJaasConfig: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password={{password}};'
+            saslJaasConfig: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password="{{password}}";'
             valueSerializer: "{{valueSerializer}}"
             additionalProperties.schema.registry.url: "{{azureRegistryUrl}}"
             additionalProperties.schema.group: avro
