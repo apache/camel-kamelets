@@ -93,6 +93,10 @@ spec:
       - unmarshal:
           json: 
             library: Jackson
+      - removeHeader:
+          name: CamelSqlQuery
+      - removeHeader:
+          name: CamelSqlParameters
       - to: 
           uri: "{{local-sql-snowflake-sink}}:{{query}}"
           parameters:

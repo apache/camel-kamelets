@@ -117,6 +117,8 @@ spec:
                     json: 
                       library: Jackson
                       useList: true
+      - removeHeader:
+          name: CamelCqlQuery
       - to: 
           uri: "{{local-sql-cassandraql-sink}}://{{connectionHost}}:{{connectionPort}}/{{keyspace}}"
           parameters:
