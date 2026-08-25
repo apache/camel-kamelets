@@ -47,13 +47,6 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      # Strip the whole camel-exec header family up-front, before this Kamelet
-      # applies its own contract below: the executable is pinned to
-      # exec:{{executable}} and args / ce-args is the only interface the
-      # definition advertises. Using a pattern also covers CamelExec* keys the
-      # component may add in the future.
-      - removeHeaders:
-          pattern: "CamelExec*"
       - choice:
           when:
           - simple: "${header[args]}"
