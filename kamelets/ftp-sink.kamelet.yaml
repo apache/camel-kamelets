@@ -101,11 +101,17 @@ spec:
             - setHeader:
                 name: CamelFileName
                 simple: "${header[file]}"
+            - setHeader:
+                name: CamelFileName
+                simple: "${file:onlyname}"
           - simple: "${header[ce-file]}"
             steps:
             - setHeader:
                 name: CamelFileName
                 simple: "${header[ce-file]}"
+            - setHeader:
+                name: CamelFileName
+                simple: "${file:onlyname}"
       - to:
           uri: "ftp:{{username}}@{{connectionHost}}:{{connectionPort}}/{{directoryName}}"
           parameters:
