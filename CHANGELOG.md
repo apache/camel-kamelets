@@ -2,7 +2,24 @@
 
 ## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.18.3...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.22.0...HEAD)
+
+**Closed issues:**
+
+- Sink Kamelets should strip the dispatch headers they do not deliberately consume [\#2973](https://github.com/apache/camel-kamelets/issues/2973)
+- Property constraint hardening: missing URL patterns, passwords without RAW\(\), unconstrained redis serializer [\#2972](https://github.com/apache/camel-kamelets/issues/2972)
+- Source Kamelets whose behaviour is not described by their schema \(dropbox-source delete, azure blob container guard\) [\#2971](https://github.com/apache/camel-kamelets/issues/2971)
+- Credential metadata: 13 properties missing format: password, and the Databricks token duplicated into the datasource URL [\#2959](https://github.com/apache/camel-kamelets/issues/2959)
+- Schema declarations that do not match template behaviour \(unused queueURL, inverted precondition fallbacks\) [\#2958](https://github.com/apache/camel-kamelets/issues/2958)
+- Inbound header mappings that never take effect \(mail-sink ce-\* mappings, redis-sink ce-channell typo\) [\#2957](https://github.com/apache/camel-kamelets/issues/2957)
+- mail-sink: no option to select a TLS-capable SMTP transport [\#2956](https://github.com/apache/camel-kamelets/issues/2956)
+- SSH-family Kamelets: strictHostKeyChecking defaults to no, and ssh-sink/ssh-source expose no host-key option [\#2955](https://github.com/apache/camel-kamelets/issues/2955)
+- opensearch Kamelets: enableSSL defaults to false while the elasticsearch siblings default to true [\#2954](https://github.com/apache/camel-kamelets/issues/2954)
+- sqlserver Kamelets: encrypt/trustServerCertificate defaults diverge from the JDBC driver defaults [\#2953](https://github.com/apache/camel-kamelets/issues/2953)
+
+## [v4.22.0](https://github.com/apache/camel-kamelets/tree/v4.22.0) (2026-08-24)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.18.3...v4.22.0)
 
 **Fixed bugs:**
 
@@ -12,6 +29,48 @@
 
 - Release 4.18.3 [\#2921](https://github.com/apache/camel-kamelets/issues/2921)
 - Citrus is misleading waiting message [\#2867](https://github.com/apache/camel-kamelets/issues/2867)
+
+**Merged pull requests:**
+
+- Upgrade to Camel 4.22.0 [\#2951](https://github.com/apache/camel-kamelets/pull/2951) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#2944](https://github.com/apache/camel-kamelets/pull/2944) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Generated sources regen [\#2943](https://github.com/apache/camel-kamelets/pull/2943) ([github-actions[bot]](https://github.com/apps/github-actions))
+- fix: Fix AWS DDB update sink test [\#2940](https://github.com/apache/camel-kamelets/pull/2940) ([christophd](https://github.com/christophd))
+- chore: Improve AWS integration tests [\#2939](https://github.com/apache/camel-kamelets/pull/2939) ([christophd](https://github.com/christophd))
+- chore\(deps\): Update to Citrus 5.0.0 [\#2938](https://github.com/apache/camel-kamelets/pull/2938) ([christophd](https://github.com/christophd))
+- chore\(deps\): bump org.messaginghub:pooled-jms from 3.2.2 to 3.2.3 [\#2937](https://github.com/apache/camel-kamelets/pull/2937) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps-dev\): bump org.cyclonedx:cyclonedx-maven-plugin from 2.9.2 to 2.9.3 [\#2936](https://github.com/apache/camel-kamelets/pull/2936) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump actions/setup-java from 5.6.0 to 5.7.0 [\#2935](https://github.com/apache/camel-kamelets/pull/2935) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2934](https://github.com/apache/camel-kamelets/pull/2934) ([github-actions[bot]](https://github.com/apps/github-actions))
+- chore\(deps\): bump org.citrusframework:citrus-bom from 4.10.2 to 4.10.3 [\#2933](https://github.com/apache/camel-kamelets/pull/2933) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump org.apache.maven.resolver:maven-resolver-api from 2.0.20 to 2.0.21 [\#2932](https://github.com/apache/camel-kamelets/pull/2932) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump actions/checkout from 7.0.0 to 7.0.1 [\#2931](https://github.com/apache/camel-kamelets/pull/2931) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen [\#2930](https://github.com/apache/camel-kamelets/pull/2930) ([github-actions[bot]](https://github.com/apps/github-actions))
+- chore\(deps\): bump actions/setup-java from 5.5.0 to 5.6.0 [\#2929](https://github.com/apache/camel-kamelets/pull/2929) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump org.citrusframework:citrus-bom from 4.10.1 to 4.10.2 [\#2928](https://github.com/apache/camel-kamelets/pull/2928) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump actions/setup-go from 6.5.0 to 7.0.0 [\#2927](https://github.com/apache/camel-kamelets/pull/2927) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump com.databricks:databricks-jdbc from 3.4.1 to 3.4.2 [\#2926](https://github.com/apache/camel-kamelets/pull/2926) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore: Add Citrus integration tests for MQTT5 and NATS kamelets [\#2925](https://github.com/apache/camel-kamelets/pull/2925) ([oscerd](https://github.com/oscerd))
+- ci: use Go 1.25.x in validate and regen workflows [\#2924](https://github.com/apache/camel-kamelets/pull/2924) ([oscerd](https://github.com/oscerd))
+- chore: Re-enable DDB integration tests with Floci [\#2923](https://github.com/apache/camel-kamelets/pull/2923) ([oscerd](https://github.com/oscerd))
+- Generated sources regen for SBOM [\#2920](https://github.com/apache/camel-kamelets/pull/2920) ([github-actions[bot]](https://github.com/apps/github-actions))
+- chore: Add Citrus integration tests for database kamelets [\#2919](https://github.com/apache/camel-kamelets/pull/2919) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#2918](https://github.com/apache/camel-kamelets/pull/2918) ([github-actions[bot]](https://github.com/apps/github-actions))
+- chore: Mark Tier 1 kamelets with integration tests as verified [\#2917](https://github.com/apache/camel-kamelets/pull/2917) ([oscerd](https://github.com/oscerd))
+- Generated sources regen [\#2916](https://github.com/apache/camel-kamelets/pull/2916) ([github-actions[bot]](https://github.com/apps/github-actions))
+- chore: Add Citrus integration tests for 10 self-contained kamelets [\#2915](https://github.com/apache/camel-kamelets/pull/2915) ([oscerd](https://github.com/oscerd))
+- chore: Mark AWS kamelets with integration tests as verified [\#2914](https://github.com/apache/camel-kamelets/pull/2914) ([oscerd](https://github.com/oscerd))
+- chore: Migrate AWS tests from LocalStack to Floci and add sink tests [\#2913](https://github.com/apache/camel-kamelets/pull/2913) ([oscerd](https://github.com/oscerd))
+- chore\(deps\): bump actions/setup-java from 5.4.0 to 5.5.0 [\#2912](https://github.com/apache/camel-kamelets/pull/2912) ([dependabot[bot]](https://github.com/apps/dependabot))
+- fix: Citrus integration tests [\#2911](https://github.com/apache/camel-kamelets/pull/2911) ([christophd](https://github.com/christophd))
+- Generated sources regen [\#2910](https://github.com/apache/camel-kamelets/pull/2910) ([github-actions[bot]](https://github.com/apps/github-actions))
+- chore\(deps\): bump golang.org/x/net from 0.40.0 to 0.55.0 in /script/generator [\#2909](https://github.com/apache/camel-kamelets/pull/2909) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump org.postgresql:postgresql from 42.7.12 to 42.7.13 [\#2908](https://github.com/apache/camel-kamelets/pull/2908) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump org.apache.maven.resolver:maven-resolver-api from 2.0.18 to 2.0.20 [\#2907](https://github.com/apache/camel-kamelets/pull/2907) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Generated sources regen for SBOM [\#2906](https://github.com/apache/camel-kamelets/pull/2906) ([github-actions[bot]](https://github.com/apps/github-actions))
+- chore: rewrite the Kamelet testing guide for Citrus \(was YAKS\) [\#2905](https://github.com/apache/camel-kamelets/pull/2905) ([oscerd](https://github.com/oscerd))
+- chore\(deps\): bump golang.org/x/net from 0.40.0 to 0.55.0 in /crds [\#2904](https://github.com/apache/camel-kamelets/pull/2904) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump golang.org/x/net from 0.40.0 to 0.55.0 in /script/validator [\#2901](https://github.com/apache/camel-kamelets/pull/2901) ([dependabot[bot]](https://github.com/apps/dependabot))
 
 ## [v4.18.3](https://github.com/apache/camel-kamelets/tree/v4.18.3) (2026-07-13)
 
