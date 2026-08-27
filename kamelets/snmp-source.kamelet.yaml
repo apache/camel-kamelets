@@ -1,0 +1,151 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: snmp-source
+  annotations:
+    camel.apache.org/kamelet.support.level: "Preview"
+    camel.apache.org/catalog.version: "4.22.1-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGcgZmlsbD0iIzRmN2Q1ZSI+PHJlY3QgeD0iNiIgeT0iMTAiIHdpZHRoPSI1MiIgaGVpZ2h0PSIxNiIgcng9IjMiLz48cmVjdCB4PSI2IiB5PSIzOCIgd2lkdGg9IjUyIiBoZWlnaHQ9IjE2IiByeD0iMyIvPjwvZz48ZyBmaWxsPSIjZmZmZmZmIj48Y2lyY2xlIGN4PSIxNCIgY3k9IjE4IiByPSIzIi8+PGNpcmNsZSBjeD0iMTQiIGN5PSI0NiIgcj0iMyIvPjxyZWN0IHg9IjIyIiB5PSIxNiIgd2lkdGg9IjI4IiBoZWlnaHQ9IjQiIHJ4PSIyIi8+PHJlY3QgeD0iMjIiIHk9IjQ0IiB3aWR0aD0iMjgiIGhlaWdodD0iNCIgcng9IjIiLz48L2c+PHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNGY3ZDVlIiBzdHJva2Utd2lkdGg9IjQiIGQ9Ik0zMiAyNnYxMiIvPjwvc3ZnPgo="
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "SNMP"
+    camel.apache.org/kamelet.namespace: "Monitoring"
+  labels:
+    camel.apache.org/kamelet.type: "source"
+spec:
+  definition:
+    title: "SNMP Source"
+    description: |-
+      Poll SNMP (Simple Network Management Protocol) capable devices, or receive SNMP traps.
+
+      Set type to POLL or GET_NEXT to query the OIDs listed in the oids property on a schedule, or to TRAP to listen for traps sent to this host and port.
+
+      SNMP v1 and v2c authenticate with a plaintext community string. Prefer snmpVersion 3 with authentication and privacy where the device supports it.
+    required:
+    - host
+    type: object
+    properties:
+      host:
+        title: Host
+        description: The hostname of the SNMP device to poll, or the address to listen on when receiving traps.
+        type: string
+        example: "192.168.1.1"
+      port:
+        title: Port
+        description: The port of the SNMP device. Polling normally uses 161 and trap listening normally uses 162.
+        type: integer
+        default: 161
+      type:
+        title: Type
+        description: Whether to poll the device (POLL), walk the OID tree (GET_NEXT), or listen for incoming traps (TRAP).
+        type: string
+        default: POLL
+        enum: ["POLL", "GET_NEXT", "TRAP"]
+      oids:
+        title: OIDs
+        description: A comma separated list of OIDs to query. Required for POLL and GET_NEXT, unused for TRAP.
+        type: string
+        example: "1.3.6.1.2.1.1.3.0,1.3.6.1.2.1.25.3.2.1.5.1"
+      protocol:
+        title: Protocol
+        description: The transport protocol to use.
+        type: string
+        default: udp
+        enum: ["udp", "tcp"]
+      delay:
+        title: Delay
+        description: The delay in milliseconds between each poll. Unused for TRAP.
+        type: integer
+        default: 60000
+      snmpVersion:
+        title: SNMP Version
+        description: The SNMP protocol version to use. 0 is v1, 1 is v2c and 3 is v3.
+        type: integer
+        default: 0
+        enum: [0, 1, 3]
+      snmpCommunity:
+        title: SNMP Community
+        description: The community string used by SNMP v1 and v2c. This is a shared secret sent in clear text, so treat it as a credential.
+        type: string
+        default: public
+        x-descriptors:
+        - urn:camel:group:credentials
+      treeList:
+        title: Tree List
+        description: Whether to walk the OID tree and return the result as a list of variable bindings. Only used with GET_NEXT.
+        type: boolean
+        default: false
+      securityName:
+        title: Security Name
+        description: The SNMP v3 security name (username).
+        type: string
+        x-descriptors:
+        - urn:camel:group:credentials
+      securityLevel:
+        title: Security Level
+        description: The SNMP v3 security level. 1 is noAuthNoPriv, 2 is authNoPriv and 3 is authPriv.
+        type: integer
+        default: 3
+        enum: [1, 2, 3]
+      authenticationProtocol:
+        title: Authentication Protocol
+        description: The SNMP v3 authentication protocol.
+        type: string
+        enum: ["MD5", "SHA1"]
+      authenticationPassphrase:
+        title: Authentication Passphrase
+        description: The SNMP v3 authentication passphrase.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      privacyProtocol:
+        title: Privacy Protocol
+        description: The SNMP v3 privacy (encryption) protocol, for example DES or AES128.
+        type: string
+        x-descriptors:
+        - urn:camel:group:credentials
+      privacyPassphrase:
+        title: Privacy Passphrase
+        description: The SNMP v3 privacy (encryption) passphrase.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+  dependencies:
+    - "camel:snmp"
+    - "camel:kamelet"
+  template:
+    from:
+      uri: "snmp:{{host}}:{{port}}"
+      parameters:
+        type: "{{type}}"
+        oids: "{{?oids}}"
+        protocol: "{{protocol}}"
+        delay: "{{delay}}"
+        snmpVersion: "{{snmpVersion}}"
+        snmpCommunity: "{{snmpCommunity}}"
+        treeList: "{{treeList}}"
+        securityName: "{{?securityName}}"
+        securityLevel: "{{securityLevel}}"
+        authenticationProtocol: "{{?authenticationProtocol}}"
+        authenticationPassphrase: "{{?authenticationPassphrase}}"
+        privacyProtocol: "{{?privacyProtocol}}"
+        privacyPassphrase: "{{?privacyPassphrase}}"
+      steps:
+      - to: "kamelet:sink"
