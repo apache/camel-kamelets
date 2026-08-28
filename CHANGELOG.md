@@ -17,6 +17,7 @@
 - opensearch Kamelets: enableSSL defaults to false while the elasticsearch siblings default to true [\#2954](https://github.com/apache/camel-kamelets/issues/2954)
 - sqlserver Kamelets: encrypt/trustServerCertificate defaults diverge from the JDBC driver defaults [\#2953](https://github.com/apache/camel-kamelets/issues/2953)
 - File-transfer sinks: enforce that the file/ce-file header is a file name, not a path [\#2952](https://github.com/apache/camel-kamelets/issues/2952)
+- Empty dependencies elements scattered around kamelets [\#2260](https://github.com/apache/camel-kamelets/issues/2260)
 
 ## [v4.22.0](https://github.com/apache/camel-kamelets/tree/v4.22.0) (2026-08-24)
 
