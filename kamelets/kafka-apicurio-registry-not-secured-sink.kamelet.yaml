@@ -56,9 +56,12 @@ spec:
         type: string
       avroDatumProvider:
         title: Avro Datum Provider
-        description: How to write data with Avro.
+        description: How to write data with Avro. Defaults to Apicurio's own DefaultAvroDatumProvider,
+          which handles GenericRecord and generated SpecificRecord classes. Set
+          io.apicurio.registry.serde.avro.ReflectAvroDatumProvider to map arbitrary POJOs onto Avro
+          by reflection instead.
         type: string
-        default: "io.apicurio.registry.serde.avro.ReflectAvroDatumProvider"
+        default: "io.apicurio.registry.serde.avro.DefaultAvroDatumProvider"
   dependencies:
     - "camel:core"
     - "camel:kamelet"
