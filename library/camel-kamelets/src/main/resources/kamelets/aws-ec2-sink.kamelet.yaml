@@ -98,6 +98,15 @@ spec:
     from:
       uri: kamelet:source
       steps:
+      # Strip the whole camel-aws2-ec2 header family up-front, before this
+      # Kamelet applies its own contract below: the operation is pinned to the
+      # read-only describeInstancesStatus and instanceIds / ce-instanceids is
+      # the only interface the definition advertises. Using a pattern also
+      # covers CamelAwsEC2* keys the component may add in the future. The
+      # pagination headers that describeInstancesStatus itself reads are kept.
+      - removeHeaders:
+          pattern: "CamelAwsEC2*"
+          excludePattern: "CamelAwsEC2(NextToken|MaxResults)"
       - choice:
           when:
           - simple: "${header[instanceIds]}"
