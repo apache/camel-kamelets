@@ -33,6 +33,11 @@ spec:
       kind: Kamelet
       name: mail-sink
     properties:
+      # The Citrus mail server this test starts is a plaintext SMTP server, so
+      # the protocol has to be pinned. mail-sink defaults to smtps (implicit
+      # TLS) since #2956, which is the right default for real deployments but
+      # cannot complete a handshake against the mock.
+      protocol: "smtp"
       connectionHost: "{{mail.host}}"
       connectionPort: "{{mail.port}}"
       username: "{{mail.username}}"

@@ -35,6 +35,8 @@
 
     <properties>
         <enable.integration.tests>*IT</enable.integration.tests>
+        <!-- The Kamelets under test: this working tree, not a released artifact. See #2984. -->
+        <kamelets.local.dir>${project.basedir}/../../kamelets</kamelets.local.dir>
     </properties>
 
     <dependencyManagement>
