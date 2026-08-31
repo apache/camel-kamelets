@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Citrus integration tests do not exercise the Kamelets built in the same run [\#2984](https://github.com/apache/camel-kamelets/issues/2984)
 - Sink Kamelets should strip the dispatch headers they do not deliberately consume [\#2973](https://github.com/apache/camel-kamelets/issues/2973)
 - Property constraint hardening: missing URL patterns, passwords without RAW\(\), unconstrained redis serializer [\#2972](https://github.com/apache/camel-kamelets/issues/2972)
 - Source Kamelets whose behaviour is not described by their schema \(dropbox-source delete, azure blob container guard\) [\#2971](https://github.com/apache/camel-kamelets/issues/2971)
