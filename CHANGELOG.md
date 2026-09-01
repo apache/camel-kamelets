@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.22.0...HEAD)
 
+**Fixed bugs:**
+
+- YAKS tests failing [\#1862](https://github.com/apache/camel-kamelets/issues/1862)
+
 **Closed issues:**
 
 - Citrus integration tests do not exercise the Kamelets built in the same run [\#2984](https://github.com/apache/camel-kamelets/issues/2984)
