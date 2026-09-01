@@ -30,23 +30,28 @@ metadata:
 spec:
   definition:
     title: "Replace Field Action"
-    description: Replace field with a different key in the message in transit.
+    description: |-
+      Replace field with a different key in the message in transit.
+
+      Only top level fields are considered. Fields nested inside an object are passed through
+      untouched, so a rename that names a nested field has no effect.
     required:
       - renames
     properties:
       enabled:
         title: Enabled
-        description: Comma separated list of fields to be enabled
+        description: Comma separated list of top level fields to be enabled
         type: string
         default: "all"
       disabled:
         title: Disabled
-        description: Comma separated list of fields to be disabled
+        description: Comma separated list of top level fields to be disabled
         type: string
         default: "none"
       renames:
         title: Renames
-        description: Comma separated list of field with new value to be renamed
+        description: Comma separated list of field with new value to be renamed. Only top level
+          fields are renamed; naming a field nested inside an object has no effect.
         type: string
         example: "foo:bar,c1:c2"
     type: object
