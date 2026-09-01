@@ -1,0 +1,98 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: smpp-source
+  annotations:
+    camel.apache.org/kamelet.support.level: "Preview"
+    camel.apache.org/catalog.version: "4.22.1-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHBhdGggZmlsbD0iIzVjOGFjNCIgZD0iTTU0IDhIMTBhNiA2IDAgMCAwLTYgNnYyNmE2IDYgMCAwIDAgNiA2aDZ2MTBsMTMtMTBoMjVhNiA2IDAgMCAwIDYtNlYxNGE2IDYgMCAwIDAtNi02eiIvPjxnIGZpbGw9IiNmZmZmZmYiPjxjaXJjbGUgY3g9IjIwIiBjeT0iMjciIHI9IjMuNSIvPjxjaXJjbGUgY3g9IjMyIiBjeT0iMjciIHI9IjMuNSIvPjxjaXJjbGUgY3g9IjQ0IiBjeT0iMjciIHI9IjMuNSIvPjwvZz48L3N2Zz4K"
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "SMPP"
+    camel.apache.org/kamelet.namespace: "Messaging"
+  labels:
+    camel.apache.org/kamelet.type: "source"
+spec:
+  definition:
+    title: "SMPP Source"
+    description: |-
+      Receive SMS messages and delivery receipts from a SMSC (Short Message Service Center) using the SMPP protocol.
+
+      The short message text is emitted as the message body. Details of the received PDU are available in the CamelSmpp* headers.
+    required:
+    - host
+    type: object
+    properties:
+      host:
+        title: Host
+        description: The hostname of the SMSC server to connect to.
+        type: string
+        example: "smsc.example.com"
+      port:
+        title: Port
+        description: The port of the SMSC server to connect to.
+        type: integer
+        default: 2775
+      systemId:
+        title: System ID
+        description: The system id (username) for connecting to the SMSC server.
+        type: string
+        default: smppclient
+        x-descriptors:
+        - urn:camel:group:credentials
+      password:
+        title: Password
+        description: The password for connecting to the SMSC server.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      systemType:
+        title: System Type
+        description: The type of ESME (External Short Message Entity) binding to the SMSC (max. 13 characters).
+        type: string
+        example: "cp"
+      addressRange:
+        title: Address Range
+        description: The address range the consumer binds with, as defined in section 5.2.7 of the SMPP 3.4 specification. The SMSC uses it to route messages to this ESME.
+        type: string
+      encoding:
+        title: Encoding
+        description: The encoding scheme of the short message user data.
+        type: string
+        default: "ISO-8859-1"
+      usingSSL:
+        title: Using SSL
+        description: Whether to secure the connection to the SMSC server with TLS (the smpps protocol).
+        type: boolean
+        default: false
+  dependencies:
+    - "camel:smpp"
+    - "camel:kamelet"
+  template:
+    from:
+      uri: "smpp:{{host}}:{{port}}"
+      parameters:
+        systemId: "{{systemId}}"
+        password: "{{?password}}"
+        systemType: "{{?systemType}}"
+        addressRange: "{{?addressRange}}"
+        encoding: "{{encoding}}"
+        usingSSL: "{{usingSSL}}"
+      steps:
+      - to: "kamelet:sink"
