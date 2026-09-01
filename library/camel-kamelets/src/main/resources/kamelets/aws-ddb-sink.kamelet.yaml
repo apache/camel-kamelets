@@ -103,8 +103,13 @@ spec:
         type: boolean
         default: false
   dataTypes:
+    # No 'default:' here on purpose. Declaring a default input type makes Camel
+    # apply the aws2-ddb:application-json transformation at the kamelet:source
+    # boundary, before any step below runs -- so the operation set by this
+    # template was never visible to it and every message was transformed as
+    # PutItem. The transformDataType step below applies the same type after the
+    # operation is set. See #2941.
     in:
-      default: json
       types:
         json:
           format: "aws2-ddb:application-json"
