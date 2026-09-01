@@ -92,9 +92,12 @@ spec:
         type: string
       avroDatumProvider:
         title: Avro Datum Provider
-        description: How to read data with Avro
+        description: How to read data with Avro. Defaults to Apicurio's own DefaultAvroDatumProvider,
+          which handles GenericRecord and generated SpecificRecord classes. Set
+          io.apicurio.registry.serde.avro.ReflectAvroDatumProvider to map Avro onto arbitrary POJOs
+          by reflection instead.
         type: string
-        default: "io.apicurio.registry.serde.avro.ReflectAvroDatumProvider"
+        default: "io.apicurio.registry.serde.avro.DefaultAvroDatumProvider"
       batchSize:
         title: Batch Dimension
         description: The maximum number of records returned in a single call to poll()
