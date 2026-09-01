@@ -77,6 +77,28 @@ spec:
         description: Specifies whether the producer should auto declare binding between exchange, queue and routing key when starting
         type: boolean
         default: false
+      publisherConfirmType:
+        title: Publisher Confirm Type
+        description: The publisher confirm mode of the underlying connection factory. Must be SIMPLE or
+          CORRELATED for the confirm option below to have anything to wait on. NONE, the default, leaves
+          publisher confirms switched off.
+        type: string
+        default: "NONE"
+        enum: ["NONE", "SIMPLE", "CORRELATED"]
+      confirm:
+        title: Confirm
+        description: Controls whether to wait for publisher confirms. auto lets Camel detect whether the
+          connection factory is configured for confirms, enabled always waits, disabled never waits.
+          Requires publisherConfirmType to be SIMPLE or CORRELATED.
+        type: string
+        default: "auto"
+        enum: ["auto", "enabled", "disabled"]
+      confirmTimeout:
+        title: Confirm Timeout
+        description: How long in milliseconds to wait for a sent message to be confirmed by RabbitMQ when
+          doing send-only (InOnly) messaging. A negative value waits indefinitely.
+        type: string
+        default: "5000"
       vhost:
         title: Virtual Host
         description: The virtual host
@@ -100,6 +122,7 @@ spec:
           password: '{{?password}}'
           uri: '{{protocol}}://{{host}}:{{port}}'
           virtualHost: "{{vhost}}"
+          publisherConfirmType: "{{publisherConfirmType}}"
     from:
       uri: "kamelet:source"
       steps:
@@ -110,3 +133,5 @@ spec:
             routingKey: "{{?routingKey}}"
             queues: "{{?queues}}"
             autoDeclareProducer: "{{autoDeclareProducer}}"
+            confirm: "{{confirm}}"
+            confirmTimeout: "{{confirmTimeout}}"
