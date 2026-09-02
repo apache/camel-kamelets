@@ -4,8 +4,13 @@
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.22.0...HEAD)
 
+**Implemented enhancements:**
+
+- spring-rabbitmq-sink: Missing options for publisher confirms [\#2790](https://github.com/apache/camel-kamelets/issues/2790)
+
 **Fixed bugs:**
 
+- AWS DDB sink Kamelet does not reliably set the DynamoDB operation [\#2941](https://github.com/apache/camel-kamelets/issues/2941)
 - YAKS tests failing [\#1862](https://github.com/apache/camel-kamelets/issues/1862)
 
 **Closed issues:**
@@ -14,6 +19,7 @@
 - Sink Kamelets should strip the dispatch headers they do not deliberately consume [\#2973](https://github.com/apache/camel-kamelets/issues/2973)
 - Property constraint hardening: missing URL patterns, passwords without RAW\(\), unconstrained redis serializer [\#2972](https://github.com/apache/camel-kamelets/issues/2972)
 - Source Kamelets whose behaviour is not described by their schema \(dropbox-source delete, azure blob container guard\) [\#2971](https://github.com/apache/camel-kamelets/issues/2971)
+- apicurio Kamelets override Apicurio's avroDatumProvider default with the reflect provider [\#2969](https://github.com/apache/camel-kamelets/issues/2969)
 - Credential metadata: 13 properties missing format: password, and the Databricks token duplicated into the datasource URL [\#2959](https://github.com/apache/camel-kamelets/issues/2959)
 - Schema declarations that do not match template behaviour \(unused queueURL, inverted precondition fallbacks\) [\#2958](https://github.com/apache/camel-kamelets/issues/2958)
 - Inbound header mappings that never take effect \(mail-sink ce-\* mappings, redis-sink ce-channell typo\) [\#2957](https://github.com/apache/camel-kamelets/issues/2957)
@@ -23,6 +29,10 @@
 - sqlserver Kamelets: encrypt/trustServerCertificate defaults diverge from the JDBC driver defaults [\#2953](https://github.com/apache/camel-kamelets/issues/2953)
 - File-transfer sinks: enforce that the file/ce-file header is a file name, not a path [\#2952](https://github.com/apache/camel-kamelets/issues/2952)
 - Empty dependencies elements scattered around kamelets [\#2260](https://github.com/apache/camel-kamelets/issues/2260)
+- Create a Kamelet SMPP Source [\#1060](https://github.com/apache/camel-kamelets/issues/1060)
+- Create a Kamelet SMPP Sink [\#1059](https://github.com/apache/camel-kamelets/issues/1059)
+- Create a camel-snmp kamelet [\#738](https://github.com/apache/camel-kamelets/issues/738)
+- replace-field-action does not replace nested fields [\#462](https://github.com/apache/camel-kamelets/issues/462)
 
 ## [v4.22.0](https://github.com/apache/camel-kamelets/tree/v4.22.0) (2026-08-24)
 
