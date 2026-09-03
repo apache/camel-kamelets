@@ -135,7 +135,7 @@ spec:
         - to:
             uri: pulsar:{{topicType}}/{{tenant}}/{{namespaceName}}/{{topic}}
             parameters:
-              serviceUrl: "{{serviceUrl}}"
+              serviceUrl: "RAW({{serviceUrl}})"
               authenticationClass: "{{?authenticationClass}}"
               authenticationParams: "{{?authenticationParams}}"
               batchingEnabled: "{{?batchingEnabled}}"
