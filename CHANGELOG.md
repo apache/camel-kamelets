@@ -29,6 +29,7 @@
 - sqlserver Kamelets: encrypt/trustServerCertificate defaults diverge from the JDBC driver defaults [\#2953](https://github.com/apache/camel-kamelets/issues/2953)
 - File-transfer sinks: enforce that the file/ce-file header is a file name, not a path [\#2952](https://github.com/apache/camel-kamelets/issues/2952)
 - Empty dependencies elements scattered around kamelets [\#2260](https://github.com/apache/camel-kamelets/issues/2260)
+- Kamelet validator prevents @BeanInject usage [\#1173](https://github.com/apache/camel-kamelets/issues/1173)
 - Create a Kamelet SMPP Source [\#1060](https://github.com/apache/camel-kamelets/issues/1060)
 - Create a Kamelet SMPP Sink [\#1059](https://github.com/apache/camel-kamelets/issues/1059)
 - Create a camel-snmp kamelet [\#738](https://github.com/apache/camel-kamelets/issues/738)
