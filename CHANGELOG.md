@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- opensearch kamelets: Advanced TLS/mTLS configuration options [\#2791](https://github.com/apache/camel-kamelets/issues/2791)
 - spring-rabbitmq-sink: Missing options for publisher confirms [\#2790](https://github.com/apache/camel-kamelets/issues/2790)
 
 **Fixed bugs:**
@@ -29,6 +30,8 @@
 - sqlserver Kamelets: encrypt/trustServerCertificate defaults diverge from the JDBC driver defaults [\#2953](https://github.com/apache/camel-kamelets/issues/2953)
 - File-transfer sinks: enforce that the file/ce-file header is a file name, not a path [\#2952](https://github.com/apache/camel-kamelets/issues/2952)
 - Empty dependencies elements scattered around kamelets [\#2260](https://github.com/apache/camel-kamelets/issues/2260)
+- pulsar-sink invalid character handling [\#2249](https://github.com/apache/camel-kamelets/issues/2249)
+- Support Camel AWS Bedrock Agent Sink and Source [\#1938](https://github.com/apache/camel-kamelets/issues/1938)
 - Kamelet validator prevents @BeanInject usage [\#1173](https://github.com/apache/camel-kamelets/issues/1173)
 - Create a Kamelet SMPP Source [\#1060](https://github.com/apache/camel-kamelets/issues/1060)
 - Create a Kamelet SMPP Sink [\#1059](https://github.com/apache/camel-kamelets/issues/1059)
