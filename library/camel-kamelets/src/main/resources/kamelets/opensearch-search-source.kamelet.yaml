@@ -77,6 +77,15 @@ spec:
         title: OpenSearch Cluster Name
         description: The name of the cluster.
         type: string
+      sslContextParameters:
+        title: SSL Context Parameters
+        description: >-
+          Reference to a registry bean of type org.apache.camel.support.jsse.SSLContextParameters,
+          written as "#bean:myBeanName". Use this for anything the certificate property cannot
+          express - mutual TLS with a client keystore, a custom trust store, a specific TLS protocol
+          version, or cipher suite selection. When set it takes precedence over certificate, so
+          configure one or the other rather than both.
+        type: string
       certificate:
         title: Certificate
         description: The Certificate for accessing the Opensearch cluster. You must encode this value in base64.
@@ -112,6 +121,7 @@ spec:
               hostAddresses: "{{hostAddresses}}"
               enableSSL: "{{enableSSL}}"
               certificatePath: "base64:{{?certificate}}"
+              sslContextParameters: "{{?sslContextParameters}}"
         - marshal:
             json:
               library: Gson
