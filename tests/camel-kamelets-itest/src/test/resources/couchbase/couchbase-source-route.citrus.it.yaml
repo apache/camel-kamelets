@@ -1,0 +1,60 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: couchbase-source-route-test
+actions:
+  # Create Couchbase infrastructure.
+  #
+  # Citrus has no built-in Couchbase container type, so this uses the generic
+  # one. The ports are bound one-to-one on purpose: the Couchbase SDK bootstraps
+  # from the management port and then reconnects using the addresses the cluster
+  # advertises, so a remapped host port makes the client unable to reach the
+  # data service.
+  - testcontainers:
+      start:
+        container:
+          name: "couchbase"
+          image: "couchbase/server:community-7.6.2"
+          startUpTimeout: 300
+          portBindings:
+            - "8091:8091"
+            - "8093:8093"
+            - "11210:11210"
+          waitFor:
+            logMessage: ".*Starting Couchbase Server.*"
+
+  # Initialise the cluster, create the bucket and seed one document
+  - groovy:
+      script:
+        file: "couchbase/initCluster.groovy"
+
+  # Create Camel JBang integration (source)
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "couchbase/couchbase-source-route.yaml"
+            systemProperties:
+              file: "couchbase/application.properties"
+
+  # Verify the Couchbase source picked up the seeded document
+  - camel:
+      cli:
+        verify:
+          integration: "couchbase-source-route"
+          logMessage: "hello-from-couchbase"
