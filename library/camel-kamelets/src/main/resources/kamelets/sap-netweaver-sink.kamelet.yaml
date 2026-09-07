@@ -1,0 +1,104 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: sap-netweaver-sink
+  annotations:
+    camel.apache.org/kamelet.support.level: "Preview"
+    camel.apache.org/catalog.version: "4.22.1-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3QgeD0iNCIgeT0iMTQiIHdpZHRoPSI1NiIgaGVpZ2h0PSIzNiIgcng9IjQiIGZpbGw9IiMzYTZlYTUiLz48cGF0aCBkPSJNMTIgNDAgTDIyIDI0IEwzMiA0MCBaIiBmaWxsPSIjZmZmZmZmIi8+PHJlY3QgeD0iMzgiIHk9IjI0IiB3aWR0aD0iMTQiIGhlaWdodD0iNCIgcng9IjIiIGZpbGw9IiNmZmZmZmYiLz48cmVjdCB4PSIzOCIgeT0iMzIiIHdpZHRoPSIxNCIgaGVpZ2h0PSI0IiByeD0iMiIgZmlsbD0iI2ZmZmZmZiIvPjxyZWN0IHg9IjM4IiB5PSI0MCIgd2lkdGg9IjkiIGhlaWdodD0iNCIgcng9IjIiIGZpbGw9IiNmZmZmZmYiLz48L3N2Zz4K"
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "SAP NetWeaver"
+    camel.apache.org/kamelet.namespace: "API"
+  labels:
+    camel.apache.org/kamelet.type: "sink"
+spec:
+  definition:
+    title: "SAP NetWeaver Sink"
+    description: |-
+      Send requests to an SAP NetWeaver Gateway over HTTP.
+
+      The command property is the OData command to run against the gateway, and is pinned by this Kamelet rather than taken from the message.
+    required:
+      - url
+      - username
+      - password
+      - command
+    type: object
+    properties:
+      url:
+        title: URL
+        description: The URL of the SAP NetWeaver Gateway server.
+        type: string
+        example: "https://gateway.example.com/sap/opu/odata/sap/ZDEMO_SRV"
+      command:
+        title: Command
+        description: The OData command to run against the gateway. It is sent as the request path.
+        type: string
+        example: "FlightCollection(carrid='AA',connid='0017',fldate=datetime'2024-01-01T00%3A00%3A00')"
+      username:
+        title: Username
+        description: The username to authenticate against the gateway.
+        type: string
+        x-descriptors:
+        - urn:camel:group:credentials
+      password:
+        title: Password
+        description: The password to authenticate against the gateway.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      json:
+        title: JSON
+        description: Return data as JSON. When false the gateway returns XML in Atom format instead.
+        type: boolean
+        default: true
+      jsonAsMap:
+        title: JSON As Map
+        description: Transform the returned JSON from a String into a Map in the message body.
+        type: boolean
+        default: true
+      flatternMap:
+        title: Flatten Map
+        description: When the returned Map holds a single entry, use that entry value as the message body.
+        type: boolean
+        default: true
+  dependencies:
+    - "camel:core"
+    - "camel:sap-netweaver"
+    - "camel:kamelet"
+  template:
+    from:
+      uri: "kamelet:source"
+      steps:
+      # The component reads the command from CamelNetWeaverCommand as a mandatory
+      # header and turns it into the request path, so it is set here from the
+      # pinned property. Setting it also overwrites any inbound value, which is
+      # what keeps a caller from choosing the request path.
+      - setHeader:
+          name: CamelNetWeaverCommand
+          constant: "{{command}}"
+      - to:
+          uri: "sap-netweaver:{{url}}"
+          parameters:
+            username: "{{username}}"
+            password: "{{password}}"
+            json: "{{json}}"
+            jsonAsMap: "{{jsonAsMap}}"
+            flatternMap: "{{flatternMap}}"
