@@ -76,9 +76,13 @@ spec:
         type: string
       statement:
         title: N1QL Statement
-        description: The N1QL query to run against the bucket on each poll. Used unless useView is true.
+        description: >-
+          The N1QL query to run against the bucket on each poll. Used unless useView is true.
+          The query runs in the bucket scope, so the keyspace is the collection - use _default
+          for the default collection rather than the bucket name. It must also alias the document
+          id as __id, because rows without that field are skipped.
         type: string
-        example: "SELECT * FROM `travel-sample` LIMIT 10"
+        example: "SELECT META().id AS __id, * FROM _default"
       useView:
         title: Use View
         description: Poll a MapReduce view instead of running the N1QL statement.
