@@ -1,0 +1,89 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: docling-convert-route-test
+actions:
+  # drain any request a previous test may have left on the shared server
+  - purge:
+      endpoints:
+        - name: "httpServer"
+      timeout: 100
+  - createVariables:
+      variables:
+        - name: "docling.serve.url"
+          value: "http://localhost:${http.server.port}"
+        - name: "report.url"
+          value: "http://localhost:${http.server.port}/result/docling"
+
+  # Run a route feeding one document through the docling-convert-action into the
+  # sink Kamelet, with the docling component pointed at the Citrus HTTP server; the
+  # route reports the IngestResult back to the same server afterwards
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          args:
+            - "--dep=camel:groovy,camel:langchain4j-ingest"
+            - "--max-seconds=60"
+          integration:
+            file: "langchain4j-ingest/docling-convert-route.yaml"
+            systemProperties:
+              properties:
+                - name: "docling.serve.url"
+                  value: "${docling.serve.url}"
+                - name: "report.url"
+                  value: "${report.url}"
+
+  # The conversion request reaches the stub
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/v1/convert/source"
+
+  # Answer the shape of a real docling-serve convert response
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          headers:
+            - name: "Content-Type"
+              value: "application/json"
+          body:
+            data: |
+              {"document":{"filename":"scan.pdf","md_content":"The EPSILON-2 valve seals at 80 bar.","json_content":null,"html_content":null,"text_content":null,"doctags_content":null},"status":"success","errors":[],"processing_time":0.01,"timings":{}}
+
+  # The reported IngestResult proves the stubbed markdown was embedded and stored
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/docling"
+          type: "plaintext"
+          body:
+            data: "@contains('documentId=scan.pdf, segmentsWritten=1, outcome=INGESTED')@"
+
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

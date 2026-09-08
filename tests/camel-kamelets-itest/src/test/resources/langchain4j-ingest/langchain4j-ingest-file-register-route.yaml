@@ -1,0 +1,57 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+# The file source's register semantics: the duplicate register is keyed on path,
+# modification time and size, so the SAME file is consumed once per version and
+# an EDITED file is re-delivered. A first seed writes v1, a second seed
+# overwrites it with v2 three seconds later - the test receives exactly v1 then
+# v2 (an unchanged-file re-delivery in between would break the v2 assertion).
+# The register is a named bean and the poll delay is set, exercising the
+# idempotentRepository and delay parameters end to end.
+- beans:
+    - name: register
+      type: org.apache.camel.support.processor.idempotent.MemoryIdempotentRepository
+- route:
+    id: seed-v1
+    from:
+      uri: "timer:seed-v1"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "version one of the document"
+        - to: "file:{{ingest.dir}}?fileName=doc.txt"
+- route:
+    id: seed-v2
+    from:
+      uri: "timer:seed-v2"
+      parameters:
+        repeatCount: 1
+        delay: 3000
+      steps:
+        - setBody:
+            constant: "version two, edited in place"
+        - to: "file:{{ingest.dir}}?fileName=doc.txt"
+- route:
+    id: langchain4j-ingest-file-register-route
+    from:
+      uri: "kamelet:langchain4j-ingest-file-source?directory={{ingest.dir}}&charset=UTF-8&idempotentRepository=#bean:register&delay=200"
+      steps:
+        - convertBodyTo:
+            type: "java.lang.String"
+        - log: "FILE-REGISTER ${body}"
+        - to: "{{report.url}}"
