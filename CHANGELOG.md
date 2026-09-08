@@ -32,10 +32,12 @@
 - Empty dependencies elements scattered around kamelets [\#2260](https://github.com/apache/camel-kamelets/issues/2260)
 - pulsar-sink invalid character handling [\#2249](https://github.com/apache/camel-kamelets/issues/2249)
 - Support Camel AWS Bedrock Agent Sink and Source [\#1938](https://github.com/apache/camel-kamelets/issues/1938)
+- Create a Camel-SAP-Netweaver Sink Kamelet [\#1585](https://github.com/apache/camel-kamelets/issues/1585)
 - Kamelet validator prevents @BeanInject usage [\#1173](https://github.com/apache/camel-kamelets/issues/1173)
 - Create a Kamelet SMPP Source [\#1060](https://github.com/apache/camel-kamelets/issues/1060)
 - Create a Kamelet SMPP Sink [\#1059](https://github.com/apache/camel-kamelets/issues/1059)
 - Create a camel-snmp kamelet [\#738](https://github.com/apache/camel-kamelets/issues/738)
+- Create Couchbase Source Kamelet [\#542](https://github.com/apache/camel-kamelets/issues/542)
 - replace-field-action does not replace nested fields [\#462](https://github.com/apache/camel-kamelets/issues/462)
 
 ## [v4.22.0](https://github.com/apache/camel-kamelets/tree/v4.22.0) (2026-08-24)
