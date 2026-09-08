@@ -1,0 +1,42 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+# The file source: a seed route drops one file into the watched directory, the
+# Kamelet picks it up, leaves it in place and stamps the document id into the
+# CamelLangChain4jIngestDocumentId header - the contract the ingest sinks read.
+- route:
+    id: seed-file
+    from:
+      uri: "timer:seed"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "Sphinx of black quartz, judge my vow"
+        - to: "file:{{ingest.dir}}?fileName=doc.txt"
+- route:
+    id: langchain4j-ingest-file-source-route
+    from:
+      uri: "kamelet:langchain4j-ingest-file-source?directory={{ingest.dir}}&charset=UTF-8"
+      steps:
+        - convertBodyTo:
+            type: "java.lang.String"
+        - log: "FILE-SOURCE ${body} id=${header.CamelLangChain4jIngestDocumentId}"
+        - setHeader:
+            name: "docId"
+            simple: "${header.CamelLangChain4jIngestDocumentId}"
+        - to: "{{report.url}}"

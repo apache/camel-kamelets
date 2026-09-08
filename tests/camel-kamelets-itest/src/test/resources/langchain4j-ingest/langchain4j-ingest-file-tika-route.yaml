@@ -1,0 +1,58 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+# The composition the Kamelets are designed for: the file source feeds the tika
+# sink with a BINARY document (a checked-in one-page PDF). The source leaves
+# charset unset on purpose, so the sink receives raw bytes - a charset
+# round-trip would corrupt the PDF before Tika ever parses it, and the INGESTED
+# outcome (not EMPTY) proves the bytes arrived intact.
+- beans:
+    - name: store
+      type: dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore
+    # a deterministic in-process stub model - the test asserts the composition
+    # and parse mechanics, not embedding quality
+    - name: model
+      type: dev.langchain4j.model.embedding.EmbeddingModel
+      scriptLanguage: groovy
+      script: |
+        def embed = { String text ->
+            def random = new java.util.Random(text.hashCode())
+            float[] vector = new float[8]
+            for (int i = 0; i < 8; i++) {
+                vector[i] = random.nextFloat()
+            }
+            return dev.langchain4j.data.embedding.Embedding.from(vector)
+        }
+        return [
+            embedAll: { segments ->
+                dev.langchain4j.model.output.Response.from(segments.collect { embed(it.text()) })
+            }
+        ] as dev.langchain4j.model.embedding.EmbeddingModel
+- route:
+    id: langchain4j-ingest-file-tika-route
+    from:
+      uri: "kamelet:langchain4j-ingest-file-source?directory=pdfs"
+      steps:
+        - to: "kamelet:tika-extract-text-action"
+        - to: "kamelet:langchain4j-ingest-sink?embeddingStore=#bean:store&embeddingModel=#bean:model"
+        - log: "INGEST ${body}"
+        - convertBodyTo:
+            type: "java.lang.String"
+        # no Content-Type cleanup needed here: the tika action itself sweeps the parsed
+        # document's non-Camel headers (this report would arrive as application/pdf otherwise,
+        # so this test doubles as the proof of that sweep)
+        - to: "{{report.url}}"

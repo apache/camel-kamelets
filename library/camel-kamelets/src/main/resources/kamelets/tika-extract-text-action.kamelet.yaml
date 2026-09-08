@@ -1,0 +1,86 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: tika-extract-text-action
+  labels:
+    camel.apache.org/kamelet.type: "action"
+  annotations:
+    camel.apache.org/kamelet.support.level: "Preview"
+    camel.apache.org/catalog.version: "4.22.1-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3QgeD0iOCIgeT0iNiIgd2lkdGg9IjI4IiBoZWlnaHQ9IjM2IiByeD0iMyIgZmlsbD0iIzhmYjRmZSIvPjxyZWN0IHg9IjEyIiB5PSIxMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjMiIGZpbGw9IiNmZmYiLz48cmVjdCB4PSIxMiIgeT0iMTkiIHdpZHRoPSIyMCIgaGVpZ2h0PSIzIiBmaWxsPSIjZmZmIi8+PHJlY3QgeD0iMTIiIHk9IjI2IiB3aWR0aD0iMTQiIGhlaWdodD0iMyIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjQ2IiBjeT0iMjAiIHI9IjQiIGZpbGw9IiM1YjdmZDYiLz48Y2lyY2xlIGN4PSI1NCIgY3k9IjMyIiByPSI0IiBmaWxsPSIjNWI3ZmQ2Ii8+PGNpcmNsZSBjeD0iNDYiIGN5PSI0NCIgcj0iNCIgZmlsbD0iIzViN2ZkNiIvPjxlbGxpcHNlIGN4PSIzMiIgY3k9IjUwIiByeD0iMTgiIHJ5PSI2IiBmaWxsPSIjNWI3ZmQ2Ii8+PHBhdGggZD0iTTE0IDUwdjZjMCAzLjMgOCA2IDE4IDZzMTgtMi43IDE4LTZ2LTYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzViN2ZkNiIgc3Ryb2tlLXdpZHRoPSIzIi8+PC9zdmc+"
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "Actions"
+    camel.apache.org/kamelet.namespace: "AI"
+spec:
+  definition:
+    title: "Tika Extract Text Action"
+    description: |-
+      Extract plain text from PDF, office and similar documents in-process with Apache Tika.
+
+      Before the parse, the value of the `documentIdHeader` header is captured into the
+      `CamelLangChain4jIngestDocumentId` exchange property - Tika copies document metadata
+      over the headers, so a crafted document could otherwise forge its own identity in steps
+      that read it later (the langchain4j-ingest sink does). The extracted text is decoded at
+      a pinned UTF-8 (a document-injected charset header is swept before the conversion), and
+      after the parse all non-Camel headers are removed: past this action, parsed document
+      metadata is indistinguishable from caller headers, so it must not travel further. Each
+      format needs its Tika parser module on the classpath; camel-tika ships the HTML and
+      text modules, PDF needs org.apache.tika:tika-parser-pdf-module.
+    type: object
+    properties:
+      documentIdHeader:
+        title: Document Id Header
+        description: Name of the header carrying the stable document id, captured into the
+          CamelLangChain4jIngestDocumentId exchange property before the parse.
+        type: string
+        default: CamelLangChain4jIngestDocumentId
+  dependencies:
+    - "camel:core"
+    - "camel:tika"
+    - "camel:kamelet"
+  template:
+    from:
+      uri: "kamelet:source"
+      steps:
+        # captured before the parse: Tika copies document metadata over the headers, so a
+        # crafted document could otherwise forge its own identity
+        - setProperty:
+            name: "CamelLangChain4jIngestDocumentId"
+            simple: "${header[{{documentIdHeader}}]}"
+        # tika answers plain text (body only, blocks newline-separated) at the pinned encoding
+        - to: "tika:parse?tikaParseOutputFormat=text&tikaParseOutputEncoding=UTF-8"
+        # a message- or document-supplied charset header outranks the charset the conversion
+        # below sets, so it is swept before the bytes are decoded at the pinned UTF-8.
+        # These three steps are the declarative twin of the camel-langchain4j-ingest
+        # component's TikaTextDecode processor, reimplemented here on purpose so a generic
+        # parse action does not depend on that component - keep the two in step
+        - removeHeaders:
+            pattern: "CamelCharsetName"
+        - convertBodyTo:
+            type: "byte[]"
+        - convertBodyTo:
+            type: "java.lang.String"
+            charset: "UTF-8"
+        # past the parse, non-Camel headers are parsed document metadata (Content-Type,
+        # dc:* and friends) - Camel-namespace names were already filtered by camel-tika,
+        # the rest must not leak into later steps as if the caller had set them
+        - removeHeaders:
+            pattern: "*"
+            excludePattern: "Camel*"

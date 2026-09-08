@@ -1,0 +1,86 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: docling-convert-action
+  labels:
+    camel.apache.org/kamelet.type: "action"
+  annotations:
+    camel.apache.org/kamelet.support.level: "Preview"
+    camel.apache.org/catalog.version: "4.22.1-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3QgeD0iOCIgeT0iNiIgd2lkdGg9IjI4IiBoZWlnaHQ9IjM2IiByeD0iMyIgZmlsbD0iIzhmYjRmZSIvPjxyZWN0IHg9IjEyIiB5PSIxMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjMiIGZpbGw9IiNmZmYiLz48cmVjdCB4PSIxMiIgeT0iMTkiIHdpZHRoPSIyMCIgaGVpZ2h0PSIzIiBmaWxsPSIjZmZmIi8+PHJlY3QgeD0iMTIiIHk9IjI2IiB3aWR0aD0iMTQiIGhlaWdodD0iMyIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjQ2IiBjeT0iMjAiIHI9IjQiIGZpbGw9IiM1YjdmZDYiLz48Y2lyY2xlIGN4PSI1NCIgY3k9IjMyIiByPSI0IiBmaWxsPSIjNWI3ZmQ2Ii8+PGNpcmNsZSBjeD0iNDYiIGN5PSI0NCIgcj0iNCIgZmlsbD0iIzViN2ZkNiIvPjxlbGxpcHNlIGN4PSIzMiIgY3k9IjUwIiByeD0iMTgiIHJ5PSI2IiBmaWxsPSIjNWI3ZmQ2Ii8+PHBhdGggZD0iTTE0IDUwdjZjMCAzLjMgOCA2IDE4IDZzMTgtMi43IDE4LTZ2LTYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzViN2ZkNiIgc3Ryb2tlLXdpZHRoPSIzIi8+PC9zdmc+"
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "Actions"
+    camel.apache.org/kamelet.namespace: "AI"
+spec:
+  definition:
+    title: "Docling Convert Action"
+    description: |-
+      Convert PDF, office and similar documents to structure-preserving markdown with
+      Docling, OCR included.
+
+      Before the conversion, the value of the `documentIdHeader` header is captured into the
+      `CamelLangChain4jIngestDocumentId` exchange property, so a converted document cannot
+      forge its own identity in steps that read it later (the langchain4j-ingest sink does);
+      the body is pinned to bytes and the `CamelDocling*` control headers are swept, because
+      none of them may be decided by a consumer-delivered payload. By default the `docling`
+      component executes a local docling CLI; set `doclingServeUrl` to use a Docling Serve
+      instance instead - the natural fit for self-contained Pipes.
+    type: object
+    properties:
+      documentIdHeader:
+        title: Document Id Header
+        description: Name of the header carrying the stable document id, captured into the
+          CamelLangChain4jIngestDocumentId exchange property before the conversion.
+        type: string
+        default: CamelLangChain4jIngestDocumentId
+      doclingServeUrl:
+        title: Docling Serve URL
+        description: Address of a Docling Serve instance to convert through, such as
+          http://docling-serve:5001; when unset, the docling component's own configuration
+          applies (a local docling CLI by default).
+        type: string
+      useDoclingServe:
+        title: Use Docling Serve
+        description: Whether to convert through a Docling Serve instance instead of a local
+          docling CLI; set together with doclingServeUrl.
+        type: boolean
+  dependencies:
+    - "camel:core"
+    - "camel:docling"
+    - "camel:kamelet"
+  template:
+    from:
+      uri: "kamelet:source"
+      steps:
+        # captured before the conversion, so a document cannot forge its own identity
+        - setProperty:
+            name: "CamelLangChain4jIngestDocumentId"
+            simple: "${header[{{documentIdHeader}}]}"
+        - convertBodyTo:
+            type: "byte[]"
+        - removeHeaders:
+            pattern: "CamelDocling*"
+        - to:
+            uri: "docling:convert"
+            parameters:
+              operation: "CONVERT_TO_MARKDOWN"
+              contentInBody: "true"
+              useDoclingServe: "{{?useDoclingServe}}"
+              doclingServeUrl: "{{?doclingServeUrl}}"
