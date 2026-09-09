@@ -29,6 +29,7 @@
 - opensearch Kamelets: enableSSL defaults to false while the elasticsearch siblings default to true [\#2954](https://github.com/apache/camel-kamelets/issues/2954)
 - sqlserver Kamelets: encrypt/trustServerCertificate defaults diverge from the JDBC driver defaults [\#2953](https://github.com/apache/camel-kamelets/issues/2953)
 - File-transfer sinks: enforce that the file/ce-file header is a file name, not a path [\#2952](https://github.com/apache/camel-kamelets/issues/2952)
+- Salesforce Publish/Subscribe Kamelet  [\#2263](https://github.com/apache/camel-kamelets/issues/2263)
 - Empty dependencies elements scattered around kamelets [\#2260](https://github.com/apache/camel-kamelets/issues/2260)
 - pulsar-sink invalid character handling [\#2249](https://github.com/apache/camel-kamelets/issues/2249)
 - Support Camel AWS Bedrock Agent Sink and Source [\#1938](https://github.com/apache/camel-kamelets/issues/1938)
