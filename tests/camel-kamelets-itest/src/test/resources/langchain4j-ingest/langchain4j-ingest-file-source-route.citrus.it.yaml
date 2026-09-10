@@ -1,0 +1,72 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: langchain4j-ingest-file-source-route-test
+actions:
+  # drain any request a previous test may have left on the shared server
+  - purge:
+      endpoints:
+        - name: "httpServer"
+      timeout: 100
+  - createVariables:
+      variables:
+        - name: "report.url"
+          value: "http://localhost:${http.server.port}/result/file-source"
+        # a fresh directory per test run: a still-terminating integration from a
+        # previous local run must not re-consume this run's seed file
+        - name: "ingest.dir"
+          value: "ingest-in-citrus:randomNumber(5)"
+
+  # Run a route seeding one file into the directory watched by the
+  # langchain4j-ingest-file-source Kamelet; the source's output is reported
+  # back to the test's HTTP server
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          args:
+            - "--max-seconds=60"
+          integration:
+            file: "langchain4j-ingest/langchain4j-ingest-file-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "report.url"
+                  value: "${report.url}"
+                - name: "ingest.dir"
+                  value: "${ingest.dir}"
+
+  # The file content flows out of the source together with the document id
+  # header the ingest sinks read
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/file-source"
+          headers:
+            - name: "docId"
+              value: "doc.txt"
+          type: "plaintext"
+          body:
+            data: "@contains('Sphinx of black quartz, judge my vow')@"
+
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

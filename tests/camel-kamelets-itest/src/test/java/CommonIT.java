@@ -95,6 +95,14 @@ public class CommonIT {
     }
 
     @CitrusTestFactory
+    public Stream<DynamicTest> langchain4jIngest() {
+        // these tests need the camel-langchain4j-ingest component (Camel 4.23+) and fail on
+        // an older Camel BY DESIGN: the red build is the guard that keeps the Kamelets from
+        // being merged into a catalog line whose Camel cannot run them
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("langchain4j-ingest");
+    }
+
+    @CitrusTestFactory
     public Stream<DynamicTest> log() {
         return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("log");
     }
