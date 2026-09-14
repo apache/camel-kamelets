@@ -52,23 +52,37 @@ spec:
   dependencies:
     - "camel:timer"
     - "camel:core"
-    - "camel:bean"
     - "camel:kamelet"
   template:
-    beans:
-      - name: counter
-        type: java.util.concurrent.atomic.AtomicInteger
-        constructors:
-          "0": "{{start}}"
     from:
       uri: timer:counter
       parameters:
         period: "{{period}}"
         repeatCount: "{{?numbers}}"
       steps:
-        - bean:
-            ref: "{{counter}}"
-            method: getAndIncrement
+        # The counter is held in a route scoped variable rather than an
+        # AtomicInteger bean. A template bean is registered under a generated
+        # name, which resolves through {{counter}} inside the template but is not
+        # addressable from a programmatically built registry, so the bean form
+        # could not be used outside Camel K and JBang. See #2771.
+        - choice:
+            when:
+              - simple: "${variable.route:counter} == null"
+                steps:
+                  - setVariable:
+                      name: route:counter
+                      simple:
+                        expression: "{{start}}"
+                        resultType: java.lang.Integer
+            otherwise:
+              steps:
+                - setVariable:
+                    name: route:counter
+                    simple:
+                      expression: "${variable.route:counter}++"
+                      resultType: java.lang.Integer
+        - setBody:
+            simple: "${variable.route:counter}"
         - setHeader:
             name: "Content-Type"
             constant: "text/plain"

@@ -30,10 +30,7 @@ metadata:
 spec:
   definition:
     title: "AWS Bedrock Agent Sink"
-    description: |-
-      Manage the data source ingestion jobs of an AWS Bedrock knowledge base.
-
-      Use startIngestionJob to kick off an ingestion of the configured data source, listIngestionJobs to list the jobs of a knowledge base, or getIngestionJob to look one up. For getIngestionJob the job id is taken from the CamelAwsBedrockAgentIngestionJobId header.
+    description: Manage the data source ingestion jobs of an AWS Bedrock knowledge base.
     required:
       - knowledgeBaseId
       - region
