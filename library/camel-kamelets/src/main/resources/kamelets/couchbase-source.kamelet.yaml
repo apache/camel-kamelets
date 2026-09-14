@@ -30,10 +30,7 @@ metadata:
 spec:
   definition:
     title: "Couchbase Source"
-    description: |-
-      Poll a Couchbase bucket and emit the results.
-
-      By default the bucket is queried with the N1QL statement given in the statement property. Set useView to true to poll a MapReduce view instead, selected with designDocumentName and viewName.
+    description: Poll a Couchbase bucket and emit the results.
     required:
       - protocol
       - couchbaseHostname

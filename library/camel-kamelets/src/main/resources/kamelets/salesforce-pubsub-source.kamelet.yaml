@@ -30,12 +30,7 @@ metadata:
 spec:
   definition:
     title: "Salesforce Pub/Sub Source"
-    description: |-
-      Receive events from the Salesforce Pub/Sub API.
-
-      This is the gRPC based Pub/Sub API, not the older streaming API that salesforce-source uses. Subscribe to a channel such as /event/MyEvent__e, /topic/MyTopic or /data/AccountChangeEvent.
-
-      The Pub/Sub API is gRPC based and needs a protobuf-java new enough for the generated stubs in camel-salesforce. Under Camel JBang an older protobuf is resolved and the route fails to start with NoClassDefFoundError on com.google.protobuf.RuntimeVersion; adding protobuf-java as an explicit dependency resolves it.
+    description: Receive events from the Salesforce Pub/Sub API.
     required:
       - topic
       - clientId
