@@ -30,12 +30,7 @@ metadata:
 spec:
   definition:
     title: "Ceph Event Based Source"
-    description: |-
-      Receive Ceph RGW bucket notifications from a Kafka topic, and optionally fetch the object each notification refers to.
-
-      Ceph pushes bucket notifications to an endpoint configured on the topic; this Kamelet consumes the Kafka flavour of that. Configuring the notification and the topic on the Ceph side is done out of band with the S3 and topic APIs, not by this Kamelet.
-
-      Set getObject to true to fetch the object body from Ceph for ObjectCreated events. The notification JSON is emitted unchanged otherwise.
+    description: Receive Ceph RGW bucket notifications from a Kafka topic, and optionally fetch the object each notification refers to.
     required:
       - topic
       - bootstrapServers
