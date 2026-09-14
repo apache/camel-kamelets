@@ -399,6 +399,7 @@ func verifyUsedParams(kamelets []KameletInfo) (errors []error) {
 	for _, k := range kamelets {
 		if k.FileName != "../../kamelets/azure-storage-blob-source.kamelet.yaml" &&
 			k.FileName != "../../kamelets/aws-s3-event-based-source.kamelet.yaml" &&
+			k.FileName != "../../kamelets/ceph-event-based-source.kamelet.yaml" &&
 			k.FileName != "../../kamelets/aws-sqs-source.kamelet.yaml" &&
 			k.FileName != "../../kamelets/set-kafka-key-action.kamelet.yaml" &&
 			k.FileName != "../../kamelets/azure-storage-blob-event-based-source.kamelet.yaml" &&
