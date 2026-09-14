@@ -24,14 +24,15 @@ consumer does not have to re-parse the body for them. Each has a `ce-` prefixed 
 counterpart as well.
 
 - `ceph-event-id` from `eventId` - identifies the event, for spotting duplicates after a
-  transport retransmit. Ceph may emit it empty, in which case deduplicating on it has no
-  effect.
+  transport retransmit. RGW populates it as `<timestamp>.<counter>.<etag>`, unique per
+  event. The event structure in the Ceph documentation shows it empty, but that is a
+  placeholder in the sample rather than what RGW emits.
 - `ceph-opaque-data` from `opaqueData` - free-form information attached to the topic by the
   user.
 - `ceph-object-metadata` from `s3.object.metadata` - user attributes on the object, sent as
   `x-amz-meta-` headers. Ceph can also filter notifications on these.
-- `ceph-object-tags` from `s3.object.tags` - object tags, in a more structured form than the
-  metadata.
+- `ceph-object-tags` from `s3.object.tags` - object tags. Both this and the metadata arrive
+  as a list of key/val entries rather than a flattened string.
 
 `s3.bucket.id` is not surfaced. It is an internal Ceph identifier, useful for debugging but
 not for routing.
@@ -41,3 +42,7 @@ not for routing.
 The topic is expected to carry only Ceph notifications. A message without a `Records` array
 fails the exchange rather than being passed through, so that a foreign message is not
 mistaken for an event with empty Ceph headers.
+
+A Ceph notification always carries the extension fields, empty when nothing is set, so the
+headers above are always populated. A payload missing them is not a Ceph event and fails the
+same way.
