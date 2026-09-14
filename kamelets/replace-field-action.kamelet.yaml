@@ -30,11 +30,7 @@ metadata:
 spec:
   definition:
     title: "Replace Field Action"
-    description: |-
-      Replace field with a different key in the message in transit.
-
-      Only top level fields are considered. Fields nested inside an object are passed through
-      untouched, so a rename that names a nested field has no effect.
+    description: Replace field with a different key in the message in transit.
     required:
       - renames
     properties:

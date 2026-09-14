@@ -1,0 +1,12 @@
+== SMPP Source Kamelet Description
+
+=== Message
+
+The short message text is emitted as the message body. Details of the received PDU stay in
+the `CamelSmpp*` headers the component sets, such as `CamelSmppMessageType`,
+`CamelSmppStatus` and `CamelSmppOptionalParameters`.
+
+=== Address Range
+
+`addressRange` is the consumer side option that tells the SMSC which messages to route to
+this ESME, as defined in section 5.2.7 of the SMPP 3.4 specification.

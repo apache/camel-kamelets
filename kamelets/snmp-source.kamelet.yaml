@@ -30,12 +30,7 @@ metadata:
 spec:
   definition:
     title: "SNMP Source"
-    description: |-
-      Poll SNMP (Simple Network Management Protocol) capable devices, or receive SNMP traps.
-
-      Set type to POLL or GET_NEXT to query the OIDs listed in the oids property on a schedule, or to TRAP to listen for traps sent to this host and port.
-
-      SNMP v1 and v2c authenticate with a plaintext community string. Prefer snmpVersion 3 with authentication and privacy where the device supports it.
+    description: Poll SNMP (Simple Network Management Protocol) capable devices, or receive SNMP traps.
     required:
     - host
     type: object

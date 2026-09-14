@@ -1,0 +1,11 @@
+== Replace Field Action Kamelet Description
+
+=== Scope
+
+Only top level fields are considered. Fields nested inside an object are passed through
+untouched, so a rename that names a nested field has no effect.
+
+The `enabled` and `disabled` properties filter on the same top level keys.
+
+For example, with a body of `{"message":{"Hola":"mundo"}}`, renaming `message` works while
+renaming `Hola` does nothing.

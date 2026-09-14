@@ -1,0 +1,21 @@
+== Couchbase Source Kamelet Description
+
+=== Query Modes
+
+The bucket is polled in one of two modes.
+
+By default the N1QL statement in the `statement` property is run against the bucket on each
+poll. Set `useView` to true to poll a MapReduce view instead, selected with
+`designDocumentName` and `viewName`.
+
+=== Writing the Statement
+
+The statement runs in the bucket scope, so the keyspace is the collection rather than the
+bucket name - use `_default` for the default collection.
+
+It must also alias the document id as `__id`, because the consumer skips any row without
+that field. A query that omits it produces a source that polls without emitting anything:
+
+----
+SELECT META().id AS __id, * FROM _default
+----
