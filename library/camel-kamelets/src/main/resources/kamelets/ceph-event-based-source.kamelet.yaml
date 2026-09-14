@@ -122,6 +122,35 @@ spec:
         saslUsername: "{{?saslUsername}}"
         saslPassword: "{{?saslPassword}}"
       steps:
+        # Ceph extension fields, surfaced as headers so a consumer does not have
+        # to re-parse the body for them. Named the way the catalog names source
+        # output headers -- a plain form plus a CloudEvents one, as
+        # infinispan-source and ftp-source do. s3.bucket.id is deliberately not
+        # surfaced: it is an internal Ceph id useful only for debugging.
+        - setHeader:
+            name: ceph-event-id
+            jsonpath: $.Records[0].eventId
+        - setHeader:
+            name: ce-cepheventid
+            simple: "${header[ceph-event-id]}"
+        - setHeader:
+            name: ceph-opaque-data
+            jsonpath: $.Records[0].opaqueData
+        - setHeader:
+            name: ce-cephopaquedata
+            simple: "${header[ceph-opaque-data]}"
+        - setHeader:
+            name: ceph-object-metadata
+            jsonpath: $.Records[0].s3.object.metadata
+        - setHeader:
+            name: ce-cephobjectmetadata
+            simple: "${header[ceph-object-metadata]}"
+        - setHeader:
+            name: ceph-object-tags
+            jsonpath: $.Records[0].s3.object.tags
+        - setHeader:
+            name: ce-cephobjecttags
+            simple: "${header[ceph-object-tags]}"
         # Ceph emits the classic S3 notification envelope -- a Records array --
         # not the EventBridge shape that aws-s3-event-based-source parses, so the
         # paths below are Records based on purpose.
