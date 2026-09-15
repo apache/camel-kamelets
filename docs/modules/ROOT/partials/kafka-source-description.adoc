@@ -18,7 +18,21 @@ The Kafka Source Kamelet supports the following configurations:
 
 === Output Format
 
-The Kamelet outputs Kafka message content and includes Kafka headers and metadata such as topic, partition, offset, and timestamp.
+The body is the Kafka record value. The record metadata is surfaced as headers under names
+that are not Camel internals, so a downstream consumer does not have to read the
+`CamelKafka*` headers directly. Each has a `ce-` prefixed CloudEvents counterpart as well.
+
+- `kafka-topic` from `CamelKafkaTopic` - the topic the record was consumed from, which is
+  worth having when the Kamelet subscribes to several topics or to a pattern.
+- `kafka-key` from `CamelKafkaKey` - the record key, absent for records produced without one.
+- `kafka-partition` from `CamelKafkaPartition` - the partition the record came from.
+- `kafka-offset` from `CamelKafkaOffset` - the offset within that partition.
+- `kafka-timestamp` from `CamelKafkaTimestamp` - the record timestamp, in milliseconds since
+  the epoch.
+
+The `CamelKafka*` headers are left on the exchange as well, so consumers already reading them
+keep working. The Kafka record headers are passed through separately, controlled by the
+`deserializeHeaders` property.
 
 === Usage Example
 
