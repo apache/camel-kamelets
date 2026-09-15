@@ -1,0 +1,56 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+# The include/exclude filters: three files are seeded, only keep.md passes
+# (skip.txt fails the include glob, draft-notes.md hits the exclude glob).
+# Every delivered id is aggregated into one report carrying the count and the
+# first id, so a leaked file changes the count and fails the assertion -
+# regardless of delivery order.
+- route:
+    id: seed-files
+    from:
+      uri: "timer:seed"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "kept document"
+        - to: "file:{{ingest.dir}}?fileName=keep.md"
+        - setBody:
+            constant: "wrong extension"
+        - to: "file:{{ingest.dir}}?fileName=skip.txt"
+        - setBody:
+            constant: "excluded draft"
+        - to: "file:{{ingest.dir}}?fileName=draft-notes.md"
+- route:
+    id: langchain4j-ingest-file-filter-route
+    from:
+      uri: "kamelet:langchain4j-ingest-file-source?directory={{ingest.dir}}&include=**/*.md&exclude=**/draft-*&charset=UTF-8"
+      steps:
+        - log: "FILE-FILTER delivered id=${header.CamelLangChain4jIngestDocumentId}"
+        - setBody:
+            simple: "${header.CamelLangChain4jIngestDocumentId}"
+        - aggregate:
+            aggregationStrategy: "#class:org.apache.camel.processor.aggregate.GroupedBodyAggregationStrategy"
+            completionTimeout: 3000
+            correlationExpression:
+              constant: "all"
+            steps:
+              # the grouped list's own toString is opaque, so the report is built explicitly
+              - setBody:
+                  simple: "${body.size()}:${body[0]}"
+              - to: "{{report.url}}"
