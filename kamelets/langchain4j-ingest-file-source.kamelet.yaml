@@ -1,0 +1,101 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: langchain4j-ingest-file-source
+  labels:
+    camel.apache.org/kamelet.type: "source"
+  annotations:
+    camel.apache.org/kamelet.support.level: "Preview"
+    camel.apache.org/catalog.version: "4.22.1-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3QgeD0iOCIgeT0iNiIgd2lkdGg9IjI4IiBoZWlnaHQ9IjM2IiByeD0iMyIgZmlsbD0iIzhmYjRmZSIvPjxyZWN0IHg9IjEyIiB5PSIxMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjMiIGZpbGw9IiNmZmYiLz48cmVjdCB4PSIxMiIgeT0iMTkiIHdpZHRoPSIyMCIgaGVpZ2h0PSIzIiBmaWxsPSIjZmZmIi8+PHJlY3QgeD0iMTIiIHk9IjI2IiB3aWR0aD0iMTQiIGhlaWdodD0iMyIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjQ2IiBjeT0iMjAiIHI9IjQiIGZpbGw9IiM1YjdmZDYiLz48Y2lyY2xlIGN4PSI1NCIgY3k9IjMyIiByPSI0IiBmaWxsPSIjNWI3ZmQ2Ii8+PGNpcmNsZSBjeD0iNDYiIGN5PSI0NCIgcj0iNCIgZmlsbD0iIzViN2ZkNiIvPjxlbGxpcHNlIGN4PSIzMiIgY3k9IjUwIiByeD0iMTgiIHJ5PSI2IiBmaWxsPSIjNWI3ZmQ2Ii8+PHBhdGggZD0iTTE0IDUwdjZjMCAzLjMgOCA2IDE4IDZzMTgtMi43IDE4LTZ2LTYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzViN2ZkNiIgc3Ryb2tlLXdpZHRoPSIzIi8+PC9zdmc+"
+    camel.apache.org/kamelet.group: "LangChain4j Ingest"
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.namespace: "AI"
+spec:
+  definition:
+    title: "LangChain4j Ingest File Source"
+    description: |-
+      Watch a directory as the source of an ingestion pipeline, with the defaults a knowledge
+      base needs: documents are left in place (noop), unchanged files are remembered in a
+      duplicate register keyed on path, modification time and size, a file still being copied
+      in is waited for (readLock=changed), and the file name is exposed as the document id in
+      the CamelLangChain4jIngestDocumentId header.
+
+      Mind the two dedup layers when composing: this source re-delivers an edited file (its
+      register key changes with the modification time), but a langchain4j-ingest-sink with an
+      idempotentRepository is first-write-wins by document id - the re-delivered edit would
+      be skipped. Use a version-aware id, or no sink repository, when documents change.
+    required:
+      - directory
+    type: object
+    properties:
+      directory:
+        title: Directory
+        description: The directory to ingest documents from.
+        type: string
+        pattern: "[^?#]+"
+      recursive:
+        title: Recursive
+        description: Whether subdirectories are ingested too.
+        type: boolean
+        default: true
+      delay:
+        title: Delay
+        description: Milliseconds between directory polls; the file endpoint's default is
+          500ms, which is aggressive for a knowledge-base directory.
+        type: integer
+      charset:
+        title: Charset
+        description: Character set for reading text documents, for example UTF-8. Leave
+          unset when the source feeds a parser action (tika-extract-text-action or
+          docling-convert-action), which must receive the raw bytes - a charset
+          conversion would corrupt a binary document such as a PDF.
+        type: string
+      idempotentRepository:
+        title: Idempotent Repository
+        description: An IdempotentRepository bean remembering already consumed files, as a
+          `#bean:name` reference; the register is keyed on path, modification time and
+          size, so an edited file is consumed again. When unset, the file endpoint's
+          default in-memory register (1000 entries) applies - eviction on a large directory
+          re-ingests files, so supply a sized or persistent repository for a real knowledge
+          base.
+        type: string
+  dependencies:
+    - "camel:core"
+    - "camel:file"
+    - "camel:kamelet"
+  template:
+    from:
+      uri: "file:{{directory}}"
+      parameters:
+        noop: "true"
+        idempotent: "true"
+        # an edited file gets a new key and re-ingests
+        idempotentKey: "${file:absolute.path}:${file:modified}:${file:size}"
+        recursive: "{{recursive}}"
+        readLock: "changed"
+        delay: "{{?delay}}"
+        charset: "{{?charset}}"
+        idempotentRepository: "{{?idempotentRepository}}"
+      steps:
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            simple: "${header.CamelFileName}"
+        - to: "kamelet:sink"

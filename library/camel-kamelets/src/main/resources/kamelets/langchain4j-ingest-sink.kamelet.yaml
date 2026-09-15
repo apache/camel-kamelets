@@ -1,0 +1,123 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: langchain4j-ingest-sink
+  labels:
+    camel.apache.org/kamelet.type: "sink"
+  annotations:
+    camel.apache.org/kamelet.support.level: "Preview"
+    camel.apache.org/catalog.version: "4.22.1-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3QgeD0iOCIgeT0iNiIgd2lkdGg9IjI4IiBoZWlnaHQ9IjM2IiByeD0iMyIgZmlsbD0iIzhmYjRmZSIvPjxyZWN0IHg9IjEyIiB5PSIxMiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjMiIGZpbGw9IiNmZmYiLz48cmVjdCB4PSIxMiIgeT0iMTkiIHdpZHRoPSIyMCIgaGVpZ2h0PSIzIiBmaWxsPSIjZmZmIi8+PHJlY3QgeD0iMTIiIHk9IjI2IiB3aWR0aD0iMTQiIGhlaWdodD0iMyIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjQ2IiBjeT0iMjAiIHI9IjQiIGZpbGw9IiM1YjdmZDYiLz48Y2lyY2xlIGN4PSI1NCIgY3k9IjMyIiByPSI0IiBmaWxsPSIjNWI3ZmQ2Ii8+PGNpcmNsZSBjeD0iNDYiIGN5PSI0NCIgcj0iNCIgZmlsbD0iIzViN2ZkNiIvPjxlbGxpcHNlIGN4PSIzMiIgY3k9IjUwIiByeD0iMTgiIHJ5PSI2IiBmaWxsPSIjNWI3ZmQ2Ii8+PHBhdGggZD0iTTE0IDUwdjZjMCAzLjMgOCA2IDE4IDZzMTgtMi43IDE4LTZ2LTYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzViN2ZkNiIgc3Ryb2tlLXdpZHRoPSIzIi8+PC9zdmc+"
+    camel.apache.org/kamelet.group: "LangChain4j Ingest"
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.namespace: "AI"
+spec:
+  definition:
+    title: "LangChain4j Ingest Sink"
+    description: |-
+      Ingest documents into a LangChain4j EmbeddingStore: the payload is split into overlapping
+      segments, embedded in batches and written to the store, each segment stamped with the
+      pipeline name and the document id.
+
+      The document id is read from the `CamelLangChain4jIngestDocumentId` exchange property
+      when a prior step captured it (the parser actions do, before the parse), else from the
+      header named by `documentIdHeader` - the property always wins, so a parsed document
+      cannot forge its own identity. Bean references are `#bean:name` values; when
+      `embeddingStore` or `embeddingModel` is not set, the single registry bean of that type is
+      used. With `idempotentRepository` set, the first write per document id wins - a
+      re-delivered edited document is skipped, so streams that carry updates need a
+      version-aware id.
+    type: object
+    properties:
+      pipelineName:
+        title: Pipeline Name
+        description: The pipeline name, stamped on every written segment.
+        type: string
+        pattern: "[A-Za-z0-9._-]+"
+        default: ingest
+      documentIdHeader:
+        title: Document Id Header
+        description: Name of the header carrying the stable document id, such as CamelAwsS3Key
+          for an S3 source or CamelKafkaKey for a Kafka one; the
+          CamelLangChain4jIngestDocumentId exchange property, when set, takes precedence.
+        type: string
+        default: CamelLangChain4jIngestDocumentId
+      maxSegmentSize:
+        title: Max Segment Size
+        description: Maximum size of one segment, in characters.
+        type: integer
+        default: 500
+      maxOverlapSize:
+        title: Max Overlap Size
+        description: How much of the previous segment each segment repeats, in characters.
+        type: integer
+        default: 50
+      embeddingBatchSize:
+        title: Embedding Batch Size
+        description: How many segments are embedded per request to the embedding model.
+        type: integer
+        default: 32
+      maxDocumentSize:
+        title: Max Document Size
+        description: Maximum size of one document in characters; unset means no limit. The
+          pipeline holds a document in memory whole, so set the cap when the source can
+          deliver oversized payloads. An oversized document fails the exchange cleanly.
+        type: integer
+      documentSplitter:
+        title: Document Splitter
+        description: A DocumentSplitter bean replacing the default recursive splitting, as a
+          `#bean:name` reference; maxSegmentSize and maxOverlapSize are then ignored.
+        type: string
+      embeddingStore:
+        title: Embedding Store
+        description: The EmbeddingStore bean to write to, as a `#bean:name` reference.
+        type: string
+      embeddingModel:
+        title: Embedding Model
+        description: The EmbeddingModel bean to embed with, as a `#bean:name` reference.
+        type: string
+      idempotentRepository:
+        title: Idempotent Repository
+        description: An IdempotentRepository bean remembering ingested document ids, as a
+          `#bean:name` reference. A duplicate delivery is answered skipped, first write wins.
+        type: string
+  dependencies:
+    - "camel:core"
+    - "camel:langchain4j-ingest"
+    - "camel:kamelet"
+  template:
+    from:
+      uri: "kamelet:source"
+      steps:
+        # the endpoint itself resolves the id - the exchange property (set pre-parse by the
+        # parser actions) wins over the header, so no re-capture happens here: reading the
+        # header after a parse could hand a crafted document its own identity
+        - to:
+            uri: "langchain4j-ingest:{{pipelineName}}"
+            parameters:
+              documentIdHeader: "{{documentIdHeader}}"
+              maxSegmentSize: "{{maxSegmentSize}}"
+              maxOverlapSize: "{{maxOverlapSize}}"
+              embeddingBatchSize: "{{embeddingBatchSize}}"
+              maxDocumentSize: "{{?maxDocumentSize}}"
+              documentSplitter: "{{?documentSplitter}}"
+              embeddingStore: "{{?embeddingStore}}"
+              embeddingModel: "{{?embeddingModel}}"
+              idempotentRepository: "{{?idempotentRepository}}"
