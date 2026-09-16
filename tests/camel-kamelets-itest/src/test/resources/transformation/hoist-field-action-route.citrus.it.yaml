@@ -15,10 +15,12 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: data-type-action-pipe-test
+name: hoist-field-action-route-test
 variables:
-  - name: "uuid"
+  - name: "id"
     value: "citrus:randomUUID()"
+  - name: "hoist.field"
+    value: "wrapped"
 actions:
   - createVariables:
       variables:
@@ -30,14 +32,16 @@ actions:
         run:
           waitForRunningState: false
           integration:
-            file: "transformation/data-type-action-pipe.yaml"
+            file: "transformation/hoist-field-action-route.yaml"
             systemProperties:
               properties:
                 - name: "http.sink.url"
                   value: "${http.server.url}"
+                - name: "hoist.field"
+                  value: "${hoist.field}"
                 - name: "input"
                   value: >-
-                    { \"id\": \"${uuid}\" }
+                    { \"id\": \"${id}\" }
 
   # Verify Http request
   - http:
@@ -45,21 +49,9 @@ actions:
       receiveRequest:
         POST:
           path: "/result"
-          contentType: "application/json;charset=UTF-8"
-          headers:
-            - name: ce-specversion
-              value: "1.0"
-            - name: ce-id
-              value: "@notEmpty()@"
-            - name: ce-source
-              value: "org.apache.camel"
-            - name: ce-type
-              value: "org.apache.camel.event"
-            - name: ce-time
-              value: "@notEmpty()@"
           body:
             data: |
-              { "id": "${uuid}" }
+              {"${hoist.field}":{"id":"${id}"}}
 
   - http:
       server: "httpServer"

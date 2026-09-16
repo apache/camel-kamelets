@@ -15,14 +15,10 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: insert-field-action-pipe-test
+name: replace-field-action-route-test
 variables:
-  - name: "id"
-    value: "citrus:randomUUID()"
   - name: "field.value"
     value: "Camel rocks!"
-  - name: "field.name"
-    value: "subject"
 actions:
   - createVariables:
       variables:
@@ -34,18 +30,16 @@ actions:
         run:
           waitForRunningState: false
           integration:
-            file: "transformation/insert-field-action-pipe.yaml"
+            file: "transformation/replace-field-action-route.yaml"
             systemProperties:
               properties:
                 - name: "http.sink.url"
                   value: "${http.server.url}"
-                - name: "field.name"
-                  value: "${field.name}"
-                - name: "field.value"
-                  value: "${field.value}"
+                - name: "renames"
+                  value: "oldName:newName"
                 - name: "input"
                   value: >-
-                    { \"id\": \"${id}\" }
+                    { \"oldName\": \"${field.value}\" }
 
   # Verify Http request
   - http:
@@ -55,7 +49,7 @@ actions:
           path: "/result"
           body:
             data: |
-              { "id": "${id}", "${field.name}": "${field.value}" }
+              {"newName":"${field.value}"}
 
   - http:
       server: "httpServer"
