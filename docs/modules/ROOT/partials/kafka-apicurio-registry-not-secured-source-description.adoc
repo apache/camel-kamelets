@@ -12,6 +12,20 @@ This Kamelet connects to Kafka using:
 
 The Kamelet consumes messages from Kafka topics with schema validation through Apicurio Registry and produces the message data in the configured format.
 
+The Kafka record metadata is surfaced as headers under names that are not Camel internals, so
+a downstream consumer does not have to read the `CamelKafka*` headers directly. Each has a
+`ce-` prefixed CloudEvents counterpart as well.
+
+- `kafka-topic` from `CamelKafkaTopic` - the topic the record was consumed from.
+- `kafka-key` from `CamelKafkaKey` - the record key, absent for records produced without one.
+- `kafka-partition` from `CamelKafkaPartition` - the partition the record came from.
+- `kafka-offset` from `CamelKafkaOffset` - the offset within that partition.
+- `kafka-timestamp` from `CamelKafkaTimestamp` - the record timestamp, in milliseconds since
+  the epoch.
+
+The `CamelKafka*` headers are left on the exchange as well, so consumers already reading them
+keep working.
+
 === Configuration
 
 The Kamelet requires Kafka and Apicurio Registry connection parameters:
