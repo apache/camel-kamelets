@@ -16,6 +16,7 @@
 
 **Closed issues:**
 
+- Add LangChain4j document ingestion Kamelets [\#3015](https://github.com/apache/camel-kamelets/issues/3015)
 - Citrus integration tests do not exercise the Kamelets built in the same run [\#2984](https://github.com/apache/camel-kamelets/issues/2984)
 - Sink Kamelets should strip the dispatch headers they do not deliberately consume [\#2973](https://github.com/apache/camel-kamelets/issues/2973)
 - Property constraint hardening: missing URL patterns, passwords without RAW\(\), unconstrained redis serializer [\#2972](https://github.com/apache/camel-kamelets/issues/2972)
@@ -36,6 +37,7 @@
 - pulsar-sink invalid character handling [\#2249](https://github.com/apache/camel-kamelets/issues/2249)
 - Support Camel AWS Bedrock Agent Sink and Source [\#1938](https://github.com/apache/camel-kamelets/issues/1938)
 - Create a Camel-SAP-Netweaver Sink Kamelet [\#1585](https://github.com/apache/camel-kamelets/issues/1585)
+- Add support for salesforce grpc pubsub api [\#1546](https://github.com/apache/camel-kamelets/issues/1546)
 - Kamelet validator prevents @BeanInject usage [\#1173](https://github.com/apache/camel-kamelets/issues/1173)
 - Create a Kamelet SMPP Source [\#1060](https://github.com/apache/camel-kamelets/issues/1060)
 - Create a Kamelet SMPP Sink [\#1059](https://github.com/apache/camel-kamelets/issues/1059)
