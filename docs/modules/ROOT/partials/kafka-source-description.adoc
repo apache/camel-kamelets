@@ -2,19 +2,45 @@
 
 === Authentication
 
-This Kamelet requires SASL/PLAIN authentication to connect to Kafka through a Plain Login Module. The credentials are configured through the `user` and `password` properties.
+Authentication is selected with `saslAuthType`, which defaults to `NONE`, so out of the box
+the Kamelet connects to an unauthenticated broker. The accepted values are `NONE`, `PLAIN`,
+`SCRAM_SHA_256`, `SCRAM_SHA_512`, `SSL`, `OAUTH`, `AWS_MSK_IAM` and `KERBEROS`.
+
+Which other properties are needed depends on that choice:
+
+- `PLAIN`, `SCRAM_SHA_256` and `SCRAM_SHA_512` take `saslUsername` and `saslPassword`.
+- `OAUTH` takes `oauthClientId`, `oauthClientSecret`, `oauthTokenEndpointUri` and
+  `oauthScope`.
+- `SSL` takes the keystore and truststore properties below.
+- `AWS_MSK_IAM` and `KERBEROS` rely on the surrounding environment rather than on Kamelet
+  properties.
+
+Resolve credentials through a Camel vault rather than plaintext properties wherever the
+deployment allows it.
 
 === Configuration
 
-The Kafka Source Kamelet supports the following configurations:
+Only `topic` and `bootstrapServers` are required. The Kamelet supports:
 
-- **Topic**: Comma-separated list of Kafka topic names to consume from (required)
-- **Bootstrap Servers**: Comma-separated list of Kafka bootstrap servers (required)
-- **User**: Username for SASL/PLAIN authentication (required)
-- **Password**: Password for SASL/PLAIN authentication (required)
-- **Consumer Group**: Kafka consumer group ID for managing offsets
-- **Auto Offset Reset**: What to do when there is no initial offset (earliest, latest, none)
-- **Allow Manual Commit**: Enable manual commit for better control over message processing
+- **topic**: Comma-separated list of Kafka topic names to consume from (required)
+- **bootstrapServers**: Comma-separated list of Kafka bootstrap servers (required)
+- **saslAuthType**: Authentication mechanism, default `NONE`
+- **saslUsername** / **saslPassword**: Credentials for the username and password mechanisms
+- **oauthClientId** / **oauthClientSecret** / **oauthTokenEndpointUri** / **oauthScope**:
+  OAuth 2.0 settings
+- **sslTruststoreLocation** / **sslTruststorePassword** / **sslKeystoreLocation** /
+  **sslKeystorePassword** / **sslKeyPassword**: TLS material
+- **consumerGroup**: Kafka consumer group ID for managing offsets
+- **autoOffsetReset**: What to do when there is no initial offset - `earliest`, `latest` or
+  `none`, default `latest`
+- **autoCommitEnable**: Commit offsets automatically, default `true`
+- **allowManualCommit**: Enable manual commit for control over when offsets advance,
+  default `false`
+- **pollOnError**: What to do when polling fails, default `ERROR_HANDLER`
+- **deserializeHeaders**: Deserialize the Kafka record headers onto the exchange, default
+  `true`
+- **topicIsPattern**: Treat `topic` as a regular expression rather than a literal list,
+  default `false`
 
 === Output Format
 
@@ -30,8 +56,9 @@ The Kamelet outputs Kafka message content and includes Kafka headers and metadat
       parameters:
         topic: "orders,payments"
         bootstrapServers: "kafka.example.com:9092"
-        user: "kafka-user"
-        password: "kafka-password"
+        saslAuthType: "PLAIN"
+        saslUsername: "kafka-user"
+        saslPassword: "kafka-password"
       steps:
         - to:
             uri: "kamelet:log-sink"
@@ -47,8 +74,9 @@ The Kamelet outputs Kafka message content and includes Kafka headers and metadat
       parameters:
         topic: "user-events"
         bootstrapServers: "kafka1.example.com:9092,kafka2.example.com:9092"
-        user: "kafka-user"
-        password: "kafka-password"
+        saslAuthType: "PLAIN"
+        saslUsername: "kafka-user"
+        saslPassword: "kafka-password"
         consumerGroup: "my-consumer-group"
         autoOffsetReset: "earliest"
       steps:
@@ -58,7 +86,10 @@ The Kamelet outputs Kafka message content and includes Kafka headers and metadat
 
 === Security
 
-This kamelet uses SASL/PLAIN authentication mechanism with TLS encryption enabled for secure communication with Kafka brokers.
+Nothing is enabled by default: `saslAuthType` is `NONE` and no TLS material is configured, so
+an unconfigured binding talks to the broker in the clear. Set `saslAuthType` and the matching
+properties for the mechanism the broker expects, and supply the truststore and keystore
+properties for a TLS listener.
 
 === Error Handling
 
