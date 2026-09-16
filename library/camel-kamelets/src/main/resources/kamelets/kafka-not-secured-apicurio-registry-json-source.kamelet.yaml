@@ -158,4 +158,39 @@ spec:
       steps:
         - process:
             ref: "{{kafkaHeaderDeserializer}}"
+        # Kafka record metadata, surfaced under names that are not Camel
+        # internals, so a downstream consumer does not have to depend on the
+        # CamelKafka* headers. Plain form plus a CloudEvents one, as
+        # infinispan-source and ftp-source do. The CamelKafka* headers are left
+        # in place, so existing consumers are unaffected.
+        - setHeader:
+            name: kafka-topic
+            simple: "${header[CamelKafkaTopic]}"
+        - setHeader:
+            name: ce-kafkatopic
+            simple: "${header[CamelKafkaTopic]}"
+        - setHeader:
+            name: kafka-key
+            simple: "${header[CamelKafkaKey]}"
+        - setHeader:
+            name: ce-kafkakey
+            simple: "${header[CamelKafkaKey]}"
+        - setHeader:
+            name: kafka-partition
+            simple: "${header[CamelKafkaPartition]}"
+        - setHeader:
+            name: ce-kafkapartition
+            simple: "${header[CamelKafkaPartition]}"
+        - setHeader:
+            name: kafka-offset
+            simple: "${header[CamelKafkaOffset]}"
+        - setHeader:
+            name: ce-kafkaoffset
+            simple: "${header[CamelKafkaOffset]}"
+        - setHeader:
+            name: kafka-timestamp
+            simple: "${header[CamelKafkaTimestamp]}"
+        - setHeader:
+            name: ce-kafkatimestamp
+            simple: "${header[CamelKafkaTimestamp]}"
         - to: "kamelet:sink"
