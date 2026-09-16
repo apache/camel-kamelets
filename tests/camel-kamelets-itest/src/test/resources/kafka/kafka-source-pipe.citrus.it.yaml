@@ -82,6 +82,20 @@ actions:
           headers:
             - name: event-source
               value: "${kafka.source}"
+            # Record metadata the Kamelet surfaces under non Camel internal
+            # names, so a consumer does not have to read CamelKafka* itself.
+            - name: kafka-topic
+              value: "${kafka.topic}"
+            - name: ce-kafkatopic
+              value: "${kafka.topic}"
+            - name: kafka-key
+              value: "@notEmpty()@"
+            - name: kafka-partition
+              value: "@notEmpty()@"
+            - name: kafka-offset
+              value: "@notEmpty()@"
+            - name: kafka-timestamp
+              value: "@notEmpty()@"
           body:
             data: |
               ${kafka.message}
