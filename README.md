@@ -24,12 +24,9 @@ $ ./mvnw clean install
 ```
 
 > [!IMPORTANT]
-> After adding or modifying a kamelet remember to generate:
-> ```bash
-> $ cd script/generator
-> $ go run . ../../kamelets/ ../../docs/modules/ROOT/
-> ```
-> and validate:
+> After adding or modifying a kamelet, `./mvnw clean install` regenerates the
+> Antora navigation for you, so there is nothing extra to run for the docs.
+> Still validate:
 > ```bash
 > $ cd script/validator
 > $ go run . ../../kamelets/
