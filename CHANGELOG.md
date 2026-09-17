@@ -30,6 +30,8 @@
 - opensearch Kamelets: enableSSL defaults to false while the elasticsearch siblings default to true [\#2954](https://github.com/apache/camel-kamelets/issues/2954)
 - sqlserver Kamelets: encrypt/trustServerCertificate defaults diverge from the JDBC driver defaults [\#2953](https://github.com/apache/camel-kamelets/issues/2953)
 - File-transfer sinks: enforce that the file/ce-file header is a file name, not a path [\#2952](https://github.com/apache/camel-kamelets/issues/2952)
+- kamelets 4.22.0 release [\#2942](https://github.com/apache/camel-kamelets/issues/2942)
+- Kafka kamelets should use kamelet properties instead of leaking Camel internal headers [\#2871](https://github.com/apache/camel-kamelets/issues/2871)
 - Can't load counter kamelet with a bean [\#2771](https://github.com/apache/camel-kamelets/issues/2771)
 - Ceph: support bucket notifications?  [\#2303](https://github.com/apache/camel-kamelets/issues/2303)
 - Salesforce Publish/Subscribe Kamelet  [\#2263](https://github.com/apache/camel-kamelets/issues/2263)
