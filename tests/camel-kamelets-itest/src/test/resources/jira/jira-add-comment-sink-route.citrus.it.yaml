@@ -15,7 +15,7 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: jira-add-comment-sink-pipe-test
+name: jira-add-comment-sink-route-test
 variables:
   - name: "timer.source.period"
     value: "10000"
@@ -54,7 +54,7 @@ actions:
         run:
           waitForRunningState: false
           integration:
-            file: "jira/jira-add-comment-sink-pipe.yaml"
+            file: "jira/jira-add-comment-sink-route.yaml"
             systemProperties:
               properties:
                 - name: "timer.source.period"
@@ -215,5 +215,5 @@ actions:
   - camel:
       cli:
         verify:
-          integration: "jira-add-comment-sink-pipe"
+          integration: "jira-add-comment-sink-route"
           logMessage: "${jira.issue.comment}"

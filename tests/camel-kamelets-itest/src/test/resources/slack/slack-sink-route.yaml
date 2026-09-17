@@ -15,20 +15,20 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: kafka-source-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: kafka-source
-    properties:
-      bootstrapServers: '{{kafka.bootstrapServers}}'
-      topic: '{{kafka.topic}}'
-      deserializeHeaders: '{{kafka.deserializeHeaders}}'
-  sink:
-    uri: "{{http.sink.url}}"
-
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: '{{timer.source.period}}'
+        message: '{{slack.message}}'
+      steps:
+        - to:
+            uri: "kamelet:log-action"
+            parameters:
+              showHeaders: true
+        - to:
+            uri: "kamelet:slack-sink"
+            parameters:
+              webhookUrl: '{{slack.server.url}}'
+              channel: '{{slack.channel}}'
+              token: '{{slack.token}}'

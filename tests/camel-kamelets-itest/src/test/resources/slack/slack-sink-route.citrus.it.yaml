@@ -15,7 +15,7 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: slack-sink-pipe-test
+name: slack-sink-route-test
 variables:
   - name: "slack.token"
     value: "xoxb-citrus:randomNumber(10)-citrus:randomNumber(13)-citrus:randomString(34)"
@@ -41,7 +41,7 @@ actions:
         run:
           waitForRunningState: false
           integration:
-            file: "slack/slack-sink-pipe.yaml"
+            file: "slack/slack-sink-route.yaml"
             systemProperties:
               file: "slack/application.properties"
               properties:
@@ -76,5 +76,5 @@ actions:
   - camel:
       cli:
         verify:
-          integration: "slack-sink-pipe"
+          integration: "slack-sink-route"
           logMessage: "${slack.message}"

@@ -15,24 +15,13 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: slack-source-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: slack-source
-    properties:
-      serverUrl: "{{slack.server.url}}"
-      channel: "{{slack.channel}}"
-      token: "{{slack.token}}"
-  sink:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: log-sink
-      properties:
-        showHeaders: true
+- route:
+    from:
+      uri: "kamelet:slack-source"
+      parameters:
+        serverUrl: '{{slack.server.url}}'
+        channel: '{{slack.channel}}'
+        token: '{{slack.token}}'
+      steps:
+        - to:
+            uri: "kamelet:log-sink"

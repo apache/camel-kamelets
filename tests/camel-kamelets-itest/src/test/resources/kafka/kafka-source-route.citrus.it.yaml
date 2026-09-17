@@ -15,12 +15,14 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: kafka-sink-pipe-test
+name: kafka-source-route-test
 variables:
   - name: "kafka.deserializeHeaders"
     value: "true"
   - name: "kafka.topic"
-    value: "my-topic-2"
+    value: "my-topic-1"
+  - name: "kafka.source"
+    value: "Kafka Kamelet source"
   - name: "kafka.message.key"
     value: "citrus:randomNumber(4)"
   - name: "kafka.message"
@@ -36,28 +38,64 @@ actions:
       cli:
         run:
           integration:
-            file: "kafka/kafka-sink-pipe.yaml"
+            file: "kafka/kafka-source-route.yaml"
             systemProperties:
               file: "kafka/application.properties"
               properties:
-                - name: "kafka.message"
-                  value: "${kafka.message}"
+                - name: http.sink.url
+                  value: "http://localhost:${kafka.sink.server.port}/result"
 
-  # Kafka consumer endpoint
+  # Verify topic subscription
+  - camel:
+      cli:
+        verify:
+          integration: "kafka-source-route"
+          logMessage: "Subscribed to topic(s): ${kafka.topic}"
+
+  # Kafka producer endpoint
   - createEndpoint:
-      name: kafkaSinkConsumer
+      name: kafkaProducer
       type: "kafka"
       properties:
         topic: "${kafka.topic}"
         server: "${CITRUS_TESTCONTAINERS_REDPANDA_BOOTSTRAP_SERVERS}"
-        consumerGroup: "consumer-1"
-        offsetReset: "earliest"
 
-  # Verify Kafka event
-  - receive:
-      endpoint: kafkaSinkConsumer
-      timeout: 30000
+  # Push event to Kafka
+  - send:
+      endpoint: kafkaProducer
       message:
+        headers:
+          - name: "event-source"
+            value: "${kafka.source}"
+          - name: "citrus_kafka_messageKey"
+            value: "${kafka.message.key}"
         body:
           data: |
             ${kafka.message}
+
+  # Verify Http request
+  - http:
+      server: "kafkaSinkServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: event-source
+              value: "${kafka.source}"
+            # Record metadata the Kamelet surfaces under non Camel internal
+            # names, so a consumer does not have to read CamelKafka* itself.
+            - name: kafka-topic
+              value: "${kafka.topic}"
+            - name: ce-kafkatopic
+              value: "${kafka.topic}"
+            - name: kafka-key
+              value: "@notEmpty()@"
+            - name: kafka-partition
+              value: "@notEmpty()@"
+            - name: kafka-offset
+              value: "@notEmpty()@"
+            - name: kafka-timestamp
+              value: "@notEmpty()@"
+          body:
+            data: |
+              ${kafka.message}
