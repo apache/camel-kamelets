@@ -11,8 +11,8 @@ Camel, Camel K, Camel Quarkus and Camel Spring Boot.
 - Version: 4.20.0
 - Camel: 4.20.0
 - Java: 17+
-- Build: Maven (`mvn verify`); Go is required for the `script/` and `crds/`
-  generators
+- Build: Maven (`mvn verify`); Go is required for the `script/` validator and
+  the `crds/` generator
 - Issue tracker: GitHub — https://github.com/apache/camel-kamelets/issues
 - Related repository: `apache/camel` (Camel core — the Kamelet **runtime**
   lives there, not here)
@@ -290,7 +290,7 @@ camel-kamelets/
 │   ├── camel-kamelets-crds/     # Fabric8-generated K8s CRD POJOs (Java)
 │   └── kamelets-maven-plugin/   # build-time validation plugin
 ├── crds/                        # Go CRD client generator (build/CI)
-├── script/                      # Go doc generator + YAML validator (build/CI)
+├── script/                      # Go YAML validator (build/CI)
 ├── templates/                   # init .vm template + Pipe examples
 ├── tests/camel-kamelets-itest/  # Citrus integration tests
 └── docs/modules/ROOT/           # Antora AsciiDoc (security-model.adoc lives here)
