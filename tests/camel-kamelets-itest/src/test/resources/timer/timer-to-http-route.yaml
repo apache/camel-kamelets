@@ -15,26 +15,12 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: insert-header-action-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: timer-source
-    properties:
-      period: 10000
-      message: "{{input}}"
-  steps:
-    - ref:
-        kind: Kamelet
-        apiVersion: camel.apache.org/v1
-        name: insert-header-action
-      properties:
-        name: "{{header.name}}"
-        value: "{{header.value}}"
-  sink:
-    uri: "{{http.sink.url}}/result"
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 10000
+        message: '{{timer.message}}'
+      steps:
+        - to:
+            uri: "{{http.sink.url}}/events"

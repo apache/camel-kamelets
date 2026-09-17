@@ -15,19 +15,13 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: http-source-to-http
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: http-source
-    properties:
-      url: "{{http.source.url}}/data"
-      period: 10000
-      contentType: application/json
-  sink:
-    uri: "{{http.sink.url}}/result"
+- route:
+    from:
+      uri: "kamelet:http-source"
+      parameters:
+        url: '{{http.source.url}}/data'
+        period: 10000
+        contentType: application/json
+      steps:
+        - to:
+            uri: "{{http.sink.url}}/result"

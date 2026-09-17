@@ -15,24 +15,21 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: log-sink-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: timer-source
-    properties:
-      period: 10000
-      message: "{{message}}"
-  sink:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: log-sink
-    properties:
-      loggerName: "test-log-sink"
-      showHeaders: false
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 10000
+        message: '{{input}}'
+      steps:
+        - to:
+            uri: "kamelet:insert-header-action"
+            parameters:
+              name: '{{header.name}}'
+              value: '{{header.value}}'
+        - to:
+            uri: "kamelet:has-header-filter-action"
+            parameters:
+              name: '{{header.name}}'
+        - to:
+            uri: "{{http.sink.url}}/result"

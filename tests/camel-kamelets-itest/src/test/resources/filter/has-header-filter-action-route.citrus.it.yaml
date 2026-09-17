@@ -15,14 +15,14 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: crypto-action-pipe-test
+name: has-header-filter-action-route-test
 variables:
-  - name: "crypto.algorithm"
-    value: "AES"
-  - name: "crypto.key"
-    value: "0123456789abcdef"
-  - name: "plaintext"
-    value: "Camel Kamelets crypto rocks!"
+  - name: "id"
+    value: "citrus:randomUUID()"
+  - name: "header.name"
+    value: "myTestHeader"
+  - name: "header.value"
+    value: "myTestValue"
 actions:
   - createVariables:
       variables:
@@ -34,27 +34,28 @@ actions:
         run:
           waitForRunningState: false
           integration:
-            file: "crypto/crypto-action-pipe.yaml"
+            file: "filter/has-header-filter-action-route.yaml"
             systemProperties:
               properties:
                 - name: "http.sink.url"
                   value: "${http.server.url}"
-                - name: "crypto.algorithm"
-                  value: "${crypto.algorithm}"
-                - name: "crypto.key"
-                  value: "${crypto.key}"
+                - name: "header.name"
+                  value: "${header.name}"
+                - name: "header.value"
+                  value: "${header.value}"
                 - name: "input"
-                  value: "${plaintext}"
+                  value: >-
+                    { \"id\": \"${id}\" }
 
-  # Verify Http request receives the decrypted plaintext
+  # Verify Http request - message should pass through because header exists
   - http:
       server: "httpServer"
       receiveRequest:
         POST:
           path: "/result"
-          body:
-            data: |
-              ${plaintext}
+          headers:
+            - name: "${header.name}"
+              value: "${header.value}"
 
   - http:
       server: "httpServer"

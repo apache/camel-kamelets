@@ -15,18 +15,20 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: timer-to-http-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: timer-source
-    properties:
-      period: 10000
-      message: "{{timer.message}}"
-  sink:
-    uri: "{{http.sink.url}}/events"
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: '{{mail.message}}'
+      steps:
+        - to:
+            uri: "kamelet:mail-sink"
+            parameters:
+              protocol: smtp
+              connectionHost: '{{mail.host}}'
+              connectionPort: '{{mail.port}}'
+              username: '{{mail.username}}'
+              password: '{{mail.password}}'
+              from: '{{mail.from}}'
+              to: '{{mail.to}}'
+              subject: '{{mail.subject}}'

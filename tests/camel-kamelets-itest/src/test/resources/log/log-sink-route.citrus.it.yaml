@@ -15,25 +15,26 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: counter-source-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: counter-source
-    properties:
-      period: 1000
-      start: 777777
-      numbers: 1
-  sink:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: log-sink
-    properties:
-      loggerName: "test-counter-source"
-      showHeaders: false
+name: log-sink-route-test
+variables:
+  - name: "log.message"
+    value: "Hello from log-sink test!"
+actions:
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "log/log-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "message"
+                  value: "${log.message}"
+
+  # Verify the log output contains the message
+  - camel:
+      cli:
+        verify:
+          integration: "log-sink-route"
+          logMessage: "${log.message}"

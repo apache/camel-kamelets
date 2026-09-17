@@ -15,26 +15,16 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: predicate-filter-action-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: timer-source
-    properties:
-      period: 10000
-      contentType: application/json
-      message: "{{input}}"
-  steps:
-    - ref:
-        kind: Kamelet
-        apiVersion: camel.apache.org/v1
-        name: predicate-filter-action
-      properties:
-        expression: "{{filter.expression}}"
-  sink:
-    uri: "{{http.sink.url}}/result"
+- route:
+    from:
+      uri: "kamelet:counter-source"
+      parameters:
+        period: 1000
+        start: 777777
+        numbers: 1
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+            parameters:
+              loggerName: test-counter-source
+              showHeaders: false

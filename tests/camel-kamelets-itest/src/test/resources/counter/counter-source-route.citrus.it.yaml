@@ -15,46 +15,19 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: http-sink-pipe-test
-variables:
-  - name: "id"
-    value: "citrus:randomUUID()"
+name: counter-source-route-test
 actions:
-  - createVariables:
-      variables:
-        - name: "http.server.url"
-          value: "http://localhost:${http.server.port}"
-  # Create Camel JBang integration
+  # Run the counter-source -> log-sink Pipe via Camel JBang
   - camel:
       cli:
         run:
           waitForRunningState: false
           integration:
-            file: "http/http-sink-pipe.yaml"
-            systemProperties:
-              properties:
-                - name: "http.sink.url"
-                  value: "${http.server.url}"
-                - name: "input"
-                  value: >-
-                    { \"id\": \"${id}\", \"message\": \"Hello from http-sink\" }
+            file: "counter/counter-source-route.yaml"
 
-  # Verify Http request received by the mock server
-  - http:
-      server: "httpServer"
-      receiveRequest:
-        POST:
-          path: "/result"
-          body:
-            data: |
-              { "id": "${id}", "message": "Hello from http-sink" }
-
-  - http:
-      server: "httpServer"
-      sendResponse:
-        response:
-          status: 200
-          reasonPhrase: "OK"
-          version: "HTTP/1.1"
-          body:
-            data: "Thank You!"
+  # Verify the generated sequential number reaches the log sink
+  - camel:
+      cli:
+        verify:
+          integration: "counter-source-route"
+          logMessage: "777777"

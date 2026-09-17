@@ -15,24 +15,24 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: http-sink-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: timer-source
-    properties:
-      period: 10000
-      message: "{{input}}"
-  sink:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: http-sink
-    properties:
-      url: "{{http.sink.url}}/result"
-      method: "POST"
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 10000
+        contentType: text/plain
+        message: >
+          {{input}}
+      steps:
+        - to:
+            uri: "kamelet:crypto-encrypt-action"
+            parameters:
+              algorithm: '{{crypto.algorithm}}'
+              key: '{{crypto.key}}'
+        - to:
+            uri: "kamelet:crypto-decrypt-action"
+            parameters:
+              algorithm: '{{crypto.algorithm}}'
+              key: '{{crypto.key}}'
+        - to:
+            uri: "{{http.sink.url}}/result"
