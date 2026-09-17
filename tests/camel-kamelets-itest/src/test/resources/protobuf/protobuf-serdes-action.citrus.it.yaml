@@ -27,12 +27,12 @@ actions:
             - "--port"
             - "${protobuf.webhook.server.port}"
           integration:
-            file: "protobuf/protobuf-deserialize-pipe.yaml"
+            file: "protobuf/protobuf-deserialize-route.yaml"
   - camel:
       cli:
         run:
           integration:
-            file: "protobuf/protobuf-serialize-pipe.yaml"
+            file: "protobuf/protobuf-serialize-route.yaml"
             systemProperties:
               properties:
                 - name: "http.sink.url"
@@ -43,6 +43,6 @@ actions:
   - camel:
       cli:
         verify:
-          integration: "protobuf-deserialize-pipe"
+          integration: "protobuf-deserialize-route"
           logMessage: |
             Body: {  "id" : "${uuid}",  "firstname" : "Sheldon",  "lastname" : "Cooper",  "age" : 28}

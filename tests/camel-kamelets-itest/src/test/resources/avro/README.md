@@ -6,11 +6,11 @@ This test verifies the Avro serialization/deserialization actions
 
 The test verifies the proper Avro serialization and deserialization of Avro.
 
-The test uses two Pipes that interact with each other. The first binding `avro-binary-source-pipe` periodically creates a test data event as Json and applies the `avro/binary` data type using the schema in [User.avsc](User.avsc). 
+The test uses two routes that interact with each other. The first route `avro-binary-source-route` periodically creates a test data event as Json and applies the `avro/binary` data type using the schema in [User.avsc](User.avsc). 
 
-The binary Avro data is then sent to a Http webhook sink that references a Http endpoint that is provided by the 2nd binding `avro-deserialize-pipe`. The `avro-deserialize-pipe` binding provides the Http service and deserializes the binary Avro data using the same User schema. The deserialized data is printed to the log output.
+The binary Avro data is then sent to a Http webhook sink that references a Http endpoint that is provided by the 2nd route `avro-deserialize-route`. The `avro-deserialize-route` route provides the Http service and deserializes the binary Avro data using the same User schema. The deserialized data is printed to the log output.
 
-The test starts both Pipes and is able to verify the proper log output as an expected outcome.
+The test starts both routes and is able to verify the proper log output as an expected outcome.
 
 ### Citrus Test
 
@@ -18,9 +18,9 @@ The test performs the following high level steps:
 
 *Avro data type feature*
 - Create test data based on the User.avsc Avro schema
-- Load and run the `avro-deserialize-pipe` Pipe
-- Load and run the `avro-binary-source-pipe` Pipe
-- Verify that the bindings do interact with each other and the proper test data is logged in the binding output
+- Load and run the `avro-deserialize-route` route
+- Load and run the `avro-binary-source-route` route
+- Verify that the routes do interact with each other and the proper test data is logged in the route output
 
 ## Installation
 

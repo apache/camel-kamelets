@@ -6,11 +6,11 @@ This test verifies the Protobuf serialization/deserialization actions
 
 The test verifies the proper Protobuf serialization and deserialization of Protobuf.
 
-The test uses two Pipes that interact with each other. The first binding `protobuf-binary-source-pipe` periodically creates a test data event as Json and applies the `protobuf/binary` data type using the schema in [User.proto](User.proto). 
+The test uses two routes that interact with each other. The first route `protobuf-binary-source-route` periodically creates a test data event as Json and applies the `protobuf/binary` data type using the schema in [User.proto](User.proto). 
 
-The binary Protobuf data is then sent to a Http webhook sink that references a Http endpoint that is provided by the 2nd binding `protobuf-deserialize-pipe`. The `protobuf-deserialize-pipe` binding provides the Http service and deserializes the binary Protobuf data using the same User schema. The deserialized data is printed to the log output.
+The binary Protobuf data is then sent to a Http webhook sink that references a Http endpoint that is provided by the 2nd route `protobuf-deserialize-route`. The `protobuf-deserialize-route` route provides the Http service and deserializes the binary Protobuf data using the same User schema. The deserialized data is printed to the log output.
 
-The test starts both Pipes and is able to verify the proper log output as an expected outcome.
+The test starts both routes and is able to verify the proper log output as an expected outcome.
 
 ### Citrus Test
 
@@ -18,9 +18,9 @@ The test performs the following high level steps:
 
 *Protobuf data type feature*
 - Create test data based on the User.proto Protobuf schema
-- Load and run the `protobuf-deserialize-pipe` Pipe
-- Load and run the `protobuf-binary-source-pipe` Pipe
-- Verify that the bindings do interact with each other and the proper test data is logged in the binding output
+- Load and run the `protobuf-deserialize-route` route
+- Load and run the `protobuf-binary-source-route` route
+- Verify that the routes do interact with each other and the proper test data is logged in the route output
 
 ## Installation
 
