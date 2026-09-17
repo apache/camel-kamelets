@@ -35,12 +35,12 @@ actions:
             - "--port"
             - "${avro.webhook.server.port}"
           integration:
-            file: "avro/avro-deserialize-pipe.yaml"
+            file: "avro/avro-deserialize-route.yaml"
   - camel:
       cli:
         run:
           integration:
-            file: "avro/avro-serialize-pipe.yaml"
+            file: "avro/avro-serialize-route.yaml"
             systemProperties:
               properties:
                 - name: "http.sink.url"
@@ -51,6 +51,6 @@ actions:
   - camel:
       cli:
         verify:
-          integration: "avro-deserialize-pipe"
+          integration: "avro-deserialize-route"
           logMessage: |
             Body: {  "id" : "${uuid}",  "firstname" : "Sheldon",  "lastname" : "Cooper",  "age" : 28}
