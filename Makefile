@@ -28,5 +28,4 @@ generate:
 	./gen_crd/gen_crd_api.sh
 
 validate:
-	cd script/validator && \
-	go run . ../../kamelets/
+	./mvnw -pl library/camel-kamelets-bom -am compile

@@ -50,13 +50,14 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-    - name: Install Go
-      uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+    - name: Set up JDK
+      uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
       with:
-        go-version: 1.25.x
+        distribution: 'temurin'
+        java-version: 17
+        cache: 'maven'
     - name: Run Validator
       run: |
         echo "Running Kamelet validator..."
 
-        cd script/validator
-        go run . ../../kamelets/
+        ./mvnw -V -ntp -pl library/camel-kamelets-bom -am compile
