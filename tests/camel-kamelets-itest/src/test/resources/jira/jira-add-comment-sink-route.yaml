@@ -15,39 +15,25 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: jira-add-comment-sink-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: timer-source
-    properties:
-      period: "{{timer.source.period}}"
-      message: "{{jira.issue.comment}}"
-  steps:
-    - ref:
-        kind: Kamelet
-        apiVersion: camel.apache.org/v1
-        name: insert-header-action
-      properties:
-        name: CamelJiraIssueKey
-        value: "{{jira.issue.key}}"
-    - ref:
-        kind: Kamelet
-        apiVersion: camel.apache.org/v1
-        name: log-action
-      properties:
-        showHeaders: true
-  sink:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: jira-add-comment-sink
-    properties:
-      jiraUrl: "{{jira.url}}"
-      username: "{{jira.username}}"
-      password: "{{jira.password}}"
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: '{{timer.source.period}}'
+        message: '{{jira.issue.comment}}'
+      steps:
+        - to:
+            uri: "kamelet:insert-header-action"
+            parameters:
+              name: CamelJiraIssueKey
+              value: '{{jira.issue.key}}'
+        - to:
+            uri: "kamelet:log-action"
+            parameters:
+              showHeaders: true
+        - to:
+            uri: "kamelet:jira-add-comment-sink"
+            parameters:
+              jiraUrl: '{{jira.url}}'
+              username: '{{jira.username}}'
+              password: '{{jira.password}}'

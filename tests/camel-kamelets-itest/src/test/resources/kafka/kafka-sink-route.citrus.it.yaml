@@ -15,18 +15,16 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: kafka-router-pipe-test
+name: kafka-sink-route-test
 variables:
   - name: "kafka.deserializeHeaders"
     value: "true"
   - name: "kafka.topic"
-    value: "my-topic-3"
+    value: "my-topic-2"
+  - name: "kafka.message.key"
+    value: "citrus:randomNumber(4)"
   - name: "kafka.message"
     value: "Camel rocks!"
-  - name: "timestamp"
-    value: "citrus:unixTimestamp()000"
-  - name: "topic"
-    value: "${kafka.topic}_citrus:currentDate('YYYY-MM-dd')"
 actions:
   # Create Kafka infrastructure
   - testcontainers:
@@ -37,50 +35,29 @@ actions:
   - camel:
       cli:
         run:
-          args:
-            - "--port"
-            - "${kafka.webhook.server.port}"
           integration:
-            file: "kafka/kafka-router-pipe.yaml"
+            file: "kafka/kafka-sink-route.yaml"
             systemProperties:
               file: "kafka/application.properties"
-
-  # Invoke Http webhook endpoint
-  - http:
-      client: "http://localhost:${kafka.webhook.server.port}/messages"
-      sendRequest:
-        fork: true
-        GET:
-          parameters:
-            - name: "kafka.TOPIC"
-              value: "${kafka.topic}"
-            - name: "kafka.TIMESTAMP"
-              value: "${timestamp}"
-            - name: "message"
-              value: "citrus:urlEncode(${kafka.message})"
+              properties:
+                - name: "kafka.message"
+                  value: "${kafka.message}"
 
   # Kafka consumer endpoint
   - createEndpoint:
-      name: kafkaRouterConsumer
+      name: kafkaSinkConsumer
       type: "kafka"
       properties:
-        topic: "${topic}"
+        topic: "${kafka.topic}"
         server: "${CITRUS_TESTCONTAINERS_REDPANDA_BOOTSTRAP_SERVERS}"
         consumerGroup: "consumer-1"
         offsetReset: "earliest"
 
   # Verify Kafka event
   - receive:
-      endpoint: kafkaRouterConsumer
+      endpoint: kafkaSinkConsumer
       timeout: 30000
       message:
         body:
           data: |
             ${kafka.message}
-
-  # Verify Http webhook response
-  - http:
-      client: "http://localhost:${kafka.webhook.server.port}/messages"
-      receiveResponse:
-        response:
-          status: 200

@@ -15,7 +15,7 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: jira-add-issue-sink-pipe-test
+name: jira-add-issue-sink-route-test
 variables:
   - name: "timer.source.period"
     value: "10000"
@@ -50,7 +50,7 @@ actions:
         run:
           waitForRunningState: false
           integration:
-            file: "jira/jira-add-issue-sink-pipe.yaml"
+            file: "jira/jira-add-issue-sink-route.yaml"
             systemProperties:
               properties:
                 - name: "timer.source.period"
@@ -163,5 +163,5 @@ actions:
   - camel:
       cli:
         verify:
-          integration: "jira-add-issue-sink-pipe"
+          integration: "jira-add-issue-sink-route"
           logMessage: "${jira.issue.summary}"

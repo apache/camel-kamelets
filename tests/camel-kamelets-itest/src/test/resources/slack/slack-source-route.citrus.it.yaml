@@ -15,7 +15,7 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: slack-source-pipe-test
+name: slack-source-route-test
 variables:
   - name: "slack.token"
     value: "xoxb-citrus:randomNumber(10)-citrus:randomNumber(13)-citrus:randomString(34)"
@@ -39,7 +39,7 @@ actions:
         run:
           waitForRunningState: false
           integration:
-            file: "slack/slack-source-pipe.yaml"
+            file: "slack/slack-source-route.yaml"
             systemProperties:
               file: "slack/application.properties"
               properties:
@@ -124,5 +124,5 @@ actions:
   - camel:
       cli:
         verify:
-          integration: "slack-source-pipe"
+          integration: "slack-source-route"
           logMessage: "${slack.message}"

@@ -15,20 +15,14 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: jira-source-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: jira-source
-    properties:
-      jiraUrl: "{{jira.url}}"
-      username: "{{jira.username}}"
-      password: "{{jira.password}}"
-      jql: "{{jira.jql}}"
-  sink:
-    uri: log:info
+- route:
+    from:
+      uri: "kamelet:jira-source"
+      parameters:
+        jiraUrl: '{{jira.url}}'
+        username: '{{jira.username}}'
+        password: '{{jira.password}}'
+        jql: '{{jira.jql}}'
+      steps:
+        - to:
+            uri: "log:info"

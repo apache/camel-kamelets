@@ -1,0 +1,86 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: kafka-router-route-test
+variables:
+  - name: "kafka.deserializeHeaders"
+    value: "true"
+  - name: "kafka.topic"
+    value: "my-topic-3"
+  - name: "kafka.message"
+    value: "Camel rocks!"
+  - name: "timestamp"
+    value: "citrus:unixTimestamp()000"
+  - name: "topic"
+    value: "${kafka.topic}_citrus:currentDate('YYYY-MM-dd')"
+actions:
+  # Create Kafka infrastructure
+  - testcontainers:
+      start:
+        redpanda: {}
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          args:
+            - "--port"
+            - "${kafka.webhook.server.port}"
+          integration:
+            file: "kafka/kafka-router-route.yaml"
+            systemProperties:
+              file: "kafka/application.properties"
+
+  # Invoke Http webhook endpoint
+  - http:
+      client: "http://localhost:${kafka.webhook.server.port}/messages"
+      sendRequest:
+        fork: true
+        GET:
+          parameters:
+            - name: "kafka.TOPIC"
+              value: "${kafka.topic}"
+            - name: "kafka.TIMESTAMP"
+              value: "${timestamp}"
+            - name: "message"
+              value: "citrus:urlEncode(${kafka.message})"
+
+  # Kafka consumer endpoint
+  - createEndpoint:
+      name: kafkaRouterConsumer
+      type: "kafka"
+      properties:
+        topic: "${topic}"
+        server: "${CITRUS_TESTCONTAINERS_REDPANDA_BOOTSTRAP_SERVERS}"
+        consumerGroup: "consumer-1"
+        offsetReset: "earliest"
+
+  # Verify Kafka event
+  - receive:
+      endpoint: kafkaRouterConsumer
+      timeout: 30000
+      message:
+        body:
+          data: |
+            ${kafka.message}
+
+  # Verify Http webhook response
+  - http:
+      client: "http://localhost:${kafka.webhook.server.port}/messages"
+      receiveResponse:
+        response:
+          status: 200
