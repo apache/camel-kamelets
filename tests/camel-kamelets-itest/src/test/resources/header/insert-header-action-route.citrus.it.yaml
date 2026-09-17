@@ -15,7 +15,7 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: insert-header-action-pipe-test
+name: insert-header-action-route-test
 variables:
   - name: "id"
     value: "citrus:randomUUID()"
@@ -34,7 +34,7 @@ actions:
         run:
           waitForRunningState: false
           integration:
-            file: "header/insert-header-action-pipe.yaml"
+            file: "header/insert-header-action-route.yaml"
             systemProperties:
               properties:
                 - name: "http.sink.url"

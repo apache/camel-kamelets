@@ -15,26 +15,15 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: log-sink-pipe-test
-variables:
-  - name: "log.message"
-    value: "Hello from log-sink test!"
-actions:
-  # Create Camel JBang integration
-  - camel:
-      cli:
-        run:
-          waitForRunningState: false
-          integration:
-            file: "log/log-sink-pipe.yaml"
-            systemProperties:
-              properties:
-                - name: "message"
-                  value: "${log.message}"
-
-  # Verify the log output contains the message
-  - camel:
-      cli:
-        verify:
-          integration: "log-sink-pipe"
-          logMessage: "${log.message}"
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 10000
+        message: '{{message}}'
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+            parameters:
+              loggerName: test-log-sink
+              showHeaders: false

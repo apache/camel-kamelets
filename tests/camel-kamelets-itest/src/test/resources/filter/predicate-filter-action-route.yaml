@@ -15,32 +15,17 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: has-header-filter-action-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: timer-source
-    properties:
-      period: 10000
-      message: "{{input}}"
-  steps:
-    - ref:
-        kind: Kamelet
-        apiVersion: camel.apache.org/v1
-        name: insert-header-action
-      properties:
-        name: "{{header.name}}"
-        value: "{{header.value}}"
-    - ref:
-        kind: Kamelet
-        apiVersion: camel.apache.org/v1
-        name: has-header-filter-action
-      properties:
-        name: "{{header.name}}"
-  sink:
-    uri: "{{http.sink.url}}/result"
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 10000
+        contentType: application/json
+        message: '{{input}}'
+      steps:
+        - to:
+            uri: "kamelet:predicate-filter-action"
+            parameters:
+              expression: '{{filter.expression}}'
+        - to:
+            uri: "{{http.sink.url}}/result"

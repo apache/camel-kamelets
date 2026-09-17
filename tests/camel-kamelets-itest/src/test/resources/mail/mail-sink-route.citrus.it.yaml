@@ -15,7 +15,7 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: mail-sink-pipe-test
+name: mail-sink-route-test
 variables:
   - name: "mail.host"
     value: "localhost"
@@ -44,7 +44,7 @@ actions:
       cli:
         run:
           integration:
-            file: "mail/mail-sink-pipe.yaml"
+            file: "mail/mail-sink-route.yaml"
             systemProperties:
               file: "mail/application.properties"
               properties:

@@ -15,33 +15,17 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: timer-to-mail
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: timer-source
-    properties:
-      message: "{{mail.message}}"
-  sink:
-    ref:
-      apiVersion: camel.apache.org/v1
-      kind: Kamelet
-      name: mail-sink
-    properties:
-      # The Citrus mail server this test starts is a plaintext SMTP server, so
-      # the protocol has to be pinned. mail-sink defaults to smtps (implicit
-      # TLS) since #2956, which is the right default for real deployments but
-      # cannot complete a handshake against the mock.
-      protocol: "smtp"
-      connectionHost: "{{mail.host}}"
-      connectionPort: "{{mail.port}}"
-      username: "{{mail.username}}"
-      password: "{{mail.password}}"
-      from: "{{mail.from}}"
-      to: "{{mail.to}}"
-      subject: "{{mail.subject}}"
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 10000
+        message: '{{input}}'
+      steps:
+        - to:
+            uri: "kamelet:insert-header-action"
+            parameters:
+              name: '{{header.name}}'
+              value: '{{header.value}}'
+        - to:
+            uri: "{{http.sink.url}}/result"

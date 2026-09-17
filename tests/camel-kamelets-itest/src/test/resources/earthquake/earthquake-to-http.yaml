@@ -15,15 +15,9 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: earthquake-to-http
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: earthquake-source
-  sink:
-    uri: "{{http.sink.url}}"
+- route:
+    from:
+      uri: "kamelet:earthquake-source"
+      steps:
+        - to:
+            uri: "{{http.sink.url}}"

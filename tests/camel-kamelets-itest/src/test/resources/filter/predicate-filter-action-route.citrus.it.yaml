@@ -15,10 +15,10 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: timer-to-http-pipe-test
+name: predicate-filter-action-route-test
 variables:
-  - name: "timer.message"
-    value: "Camel rocks!"
+  - name: "name.value"
+    value: "Camel"
 actions:
   - createVariables:
       variables:
@@ -30,22 +30,26 @@ actions:
         run:
           waitForRunningState: false
           integration:
-            file: "timer/timer-to-http-pipe.yaml"
+            file: "filter/predicate-filter-action-route.yaml"
             systemProperties:
               properties:
                 - name: "http.sink.url"
                   value: "${http.server.url}"
-                - name: "timer.message"
-                  value: "${timer.message}"
+                - name: "filter.expression"
+                  value: "@.name =~ /.*Camel.*/"
+                - name: "input"
+                  value: >-
+                    { \"name\": \"${name.value}\" }
 
-  # Verify Http request
+  # Verify Http request - message should pass through because expression matches
   - http:
       server: "httpServer"
       receiveRequest:
         POST:
-          path: "/events"
+          path: "/result"
           body:
-            data: "${timer.message}"
+            data: |
+              { "name": "${name.value}" }
 
   - http:
       server: "httpServer"
