@@ -15,26 +15,18 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: extract-field-action-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: timer-source
-    properties:
-      period: 10000
-      contentType: application/json
-      message: "{{input}}"
-  steps:
-    - ref:
-        kind: Kamelet
-        apiVersion: camel.apache.org/v1
-        name: extract-field-action
-      properties:
-        field: "{{field.name}}"
-  sink:
-    uri: "{{http.sink.url}}/result"
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 10000
+        contentType: "application/json"
+        message: "{{input}}"
+      steps:
+        - to:
+            uri: "kamelet:mask-field-action"
+            parameters:
+              fields: "{{mask.fields}}"
+              replacement: "{{mask.replacement}}"
+        - to:
+            uri: "{{http.sink.url}}/result"

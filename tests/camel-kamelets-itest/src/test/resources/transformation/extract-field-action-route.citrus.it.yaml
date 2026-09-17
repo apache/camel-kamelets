@@ -15,12 +15,12 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: drop-field-action-pipe-test
+name: extract-field-action-route-test
 variables:
   - name: "field.name"
     value: "subject"
-  - name: "id"
-    value: "citrus:randomUUID()"
+  - name: "field.value"
+    value: "Camel rocks!"
 actions:
   - createVariables:
       variables:
@@ -32,7 +32,7 @@ actions:
         run:
           waitForRunningState: false
           integration:
-            file: "transformation/drop-field-action-pipe.yaml"
+            file: "transformation/extract-field-action-route.yaml"
             systemProperties:
               properties:
                 - name: "http.sink.url"
@@ -41,7 +41,7 @@ actions:
                   value: "${field.name}"
                 - name: "input"
                   value: >-
-                    { \"id\": \"${id}\", \"${field.name}\": \"Camel rocks!\" }
+                    { \"id\": \"citrus:randomUUID()\", \"${field.name}\": \"${field.value}\" }
 
   # Verify Http request
   - http:
@@ -51,7 +51,7 @@ actions:
           path: "/result"
           body:
             data: |
-              {"id":"${id}"}
+              "${field.value}"
 
   - http:
       server: "httpServer"

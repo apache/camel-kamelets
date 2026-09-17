@@ -15,27 +15,22 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1
-kind: Pipe
-metadata:
-  name: insert-field-action-pipe
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1
-      name: timer-source
-    properties:
-      period: 10000
-      contentType: application/json
-      message: "{{input}}"
-  steps:
-    - ref:
-        kind: Kamelet
-        apiVersion: camel.apache.org/v1
-        name: insert-field-action
-      properties:
-        field: "{{field.name}}"
-        value: "{{field.value}}"
-  sink:
-    uri: "{{http.sink.url}}/result"
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 10000
+        contentType: "application/json"
+        message: "{{input}}"
+      steps:
+        - to:
+            uri: "kamelet:data-type-action"
+            parameters:
+              scheme: "http"
+              format: "application-cloudevents"
+        - to:
+            uri: "kamelet:log-action"
+            parameters:
+              showHeaders: true
+        - to:
+            uri: "{{http.sink.url}}/result"

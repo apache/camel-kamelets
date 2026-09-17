@@ -15,14 +15,14 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: mask-field-action-pipe-test
+name: insert-field-action-route-test
 variables:
   - name: "id"
     value: "citrus:randomUUID()"
-  - name: "mask.fields"
-    value: "password"
-  - name: "mask.replacement"
-    value: "***"
+  - name: "field.value"
+    value: "Camel rocks!"
+  - name: "field.name"
+    value: "subject"
 actions:
   - createVariables:
       variables:
@@ -34,18 +34,18 @@ actions:
         run:
           waitForRunningState: false
           integration:
-            file: "transformation/mask-field-action-pipe.yaml"
+            file: "transformation/insert-field-action-route.yaml"
             systemProperties:
               properties:
                 - name: "http.sink.url"
                   value: "${http.server.url}"
-                - name: "mask.fields"
-                  value: "${mask.fields}"
-                - name: "mask.replacement"
-                  value: "${mask.replacement}"
+                - name: "field.name"
+                  value: "${field.name}"
+                - name: "field.value"
+                  value: "${field.value}"
                 - name: "input"
                   value: >-
-                    { \"id\": \"${id}\", \"password\": \"secret123\" }
+                    { \"id\": \"${id}\" }
 
   # Verify Http request
   - http:
@@ -55,7 +55,7 @@ actions:
           path: "/result"
           body:
             data: |
-              {"id":"${id}","password":"${mask.replacement}"}
+              { "id": "${id}", "${field.name}": "${field.value}" }
 
   - http:
       server: "httpServer"
