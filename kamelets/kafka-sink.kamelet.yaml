@@ -126,11 +126,21 @@ spec:
             - setHeader:
                 name: CamelKafkaKey
                 simple: "${header[key]}"
+          - simple: "${header[kafka-key]}"
+            steps:
+            - setHeader:
+                name: CamelKafkaKey
+                simple: "${header[kafka-key]}"
           - simple: "${header[ce-key]}"
             steps:
             - setHeader:
                 name: CamelKafkaKey
                 simple: "${header[ce-key]}"
+          - simple: "${header[ce-kafkakey]}"
+            steps:
+            - setHeader:
+                name: CamelKafkaKey
+                simple: "${header[ce-kafkakey]}"
       - choice:
           when:
           - simple: "${header[partition-key]}"
