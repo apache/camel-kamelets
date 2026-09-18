@@ -42,6 +42,7 @@ OSV_QUERYBATCH = "https://api.osv.dev/v1/querybatch"
 OSV_VULN = "https://api.osv.dev/v1/vulns/"
 CAMEL_METADATA = "https://repo1.maven.org/maven2/org/apache/camel/camel-core/maven-metadata.xml"
 VERSIONED_BY_RUNTIME = "runtime"
+KAMELET_REF_PREFIX = "kamelet:"
 TIMEOUT = 30
 
 
@@ -58,15 +59,35 @@ def get(url):
 
 
 def read_components(sbom_path):
+    """Artifacts to scan, each carrying the Kamelets that reach it in the graph."""
     with open(sbom_path) as handle:
         sbom = json.load(handle)
+
+    kamelet_names = {
+        c["bom-ref"]: c["name"]
+        for c in sbom.get("components", [])
+        if c["bom-ref"].startswith(KAMELET_REF_PREFIX)
+    }
+
+    # artifact ref -> kamelets depending on it, the reverse of the graph
+    declared_by = {}
+    for entry in sbom.get("dependencies", []):
+        name = kamelet_names.get(entry.get("ref"))
+        if not name:
+            continue
+        for ref in entry.get("dependsOn", []):
+            declared_by.setdefault(ref, []).append(name)
+
     components = []
     for component in sbom.get("components", []):
+        ref = component["bom-ref"]
+        if ref.startswith(KAMELET_REF_PREFIX):
+            continue
         props = {p.get("name"): p.get("value", "") for p in component.get("properties", [])}
         components.append({
             "coordinate": f"{component['group']}:{component['name']}",
             "version": component["version"],
-            "declared_by": props.get("camel.apache.org/declared-by", ""),
+            "declared_by": ",".join(sorted(declared_by.get(ref, []))),
             "runtime_versioned": props.get("camel.apache.org/versioned-by") == VERSIONED_BY_RUNTIME,
         })
     return components

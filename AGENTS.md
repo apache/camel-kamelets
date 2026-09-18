@@ -106,10 +106,12 @@ relevant committers:
   lists everything `spec.dependencies` declares, so it can be scanned without
   building anything. The `Catalog Dependency Scan` workflow queries
   https://osv.dev against it weekly, because Dependabot reads poms and cannot see
-  versions embedded in Kamelet YAML. The two kinds of entry are marked apart: an
-  `mvn:` coordinate is pinned by the catalog and fixed here, while a `camel:`
-  component is versioned by the runtime and scanned at the newest Camel release,
-  since OSV answers nothing for a SNAPSHOT.
+  versions embedded in Kamelet YAML. Every Kamelet is a component linked to its
+  artifacts through the CycloneDX dependency graph, so a finding is attributed to
+  the Kamelets it affects. The two kinds of entry are marked apart: an `mvn:`
+  coordinate is pinned by the catalog and fixed here, while a `camel:` component
+  is versioned by the runtime and scanned at the newest Camel release, since OSV
+  answers nothing for a SNAPSHOT.
 - A full `mvn verify` from the repository root must pass before pushing.
 
 ### Asynchronous Testing
