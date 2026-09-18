@@ -46,15 +46,19 @@ import org.apache.maven.plugins.annotations.Parameter;
  * cyclonedx-maven-plugin aggregates from the Maven reactor and which therefore
  * describes what builds the catalog rather than what a Kamelet pulls in at runtime.
  *
- * "camel:<component>" dependencies are left out on purpose: the catalog does not
- * choose their version, the runtime does, so pinning one here would attribute
- * advisories to the catalog that belong to whichever Camel release is in use.
+ * Both kinds of dependency are listed, but they are marked differently.
+ * "mvn:" coordinates are pinned by the catalog, so an advisory against one is
+ * fixed here. "camel:<component>" artifacts are versioned by the runtime, not by
+ * the catalog; they carry the version this catalog builds against and a property
+ * saying so, because an advisory against one is fixed by moving Camel.
  */
 @Mojo(name = "generate-catalog-sbom", defaultPhase = LifecyclePhase.COMPILE, threadSafe = true)
 public class GenerateCatalogSbomMojo extends AbstractMojo {
 
     private static final String MVN_PREFIX = "mvn:";
+    private static final String CAMEL_PREFIX = "camel:";
     private static final String DECLARED_BY = "camel.apache.org/declared-by";
+    private static final String VERSIONED_BY = "camel.apache.org/versioned-by";
 
     @Parameter(property = "kamelets.dir", defaultValue = "${project.basedir}/../../kamelets")
     private File kameletsDir;
@@ -64,6 +68,9 @@ public class GenerateCatalogSbomMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project.version}", readonly = true)
     private String projectVersion;
+
+    @Parameter(defaultValue = "${camel.version}", readonly = true)
+    private String camelVersion;
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -76,10 +83,13 @@ public class GenerateCatalogSbomMojo extends AbstractMojo {
 
         // coordinate -> kamelets declaring it, both sorted so the file is stable
         Map<String, TreeSet<String>> pinned = new TreeMap<>();
+        Map<String, TreeSet<String>> camel = new TreeMap<>();
         for (CatalogValidator.KameletInfo k : kamelets) {
             for (String dep : k.dependencies()) {
                 if (dep.startsWith(MVN_PREFIX)) {
                     pinned.computeIfAbsent(dep.substring(MVN_PREFIX.length()), c -> new TreeSet<>()).add(k.name);
+                } else if (dep.startsWith(CAMEL_PREFIX)) {
+                    camel.computeIfAbsent(dep.substring(CAMEL_PREFIX.length()), c -> new TreeSet<>()).add(k.name);
                 }
             }
         }
@@ -87,6 +97,9 @@ public class GenerateCatalogSbomMojo extends AbstractMojo {
         List<Map<String, Object>> components = new ArrayList<>();
         for (Map.Entry<String, TreeSet<String>> e : pinned.entrySet()) {
             components.add(component(e.getKey(), e.getValue()));
+        }
+        for (Map.Entry<String, TreeSet<String>> e : camel.entrySet()) {
+            components.add(camelComponent(e.getKey(), e.getValue()));
         }
 
         Map<String, Object> bom = new LinkedHashMap<>();
@@ -104,8 +117,8 @@ public class GenerateCatalogSbomMojo extends AbstractMojo {
         } catch (IOException e) {
             throw new MojoExecutionException("Cannot write " + dest, e);
         }
-        getLog().info(String.format("\"%s\" written (%d pinned artifacts from %d kamelets)",
-                dest, components.size(), kamelets.size()));
+        getLog().info(String.format("\"%s\" written (%d pinned artifacts, %d camel components, from %d kamelets)",
+                dest, pinned.size(), camel.size(), kamelets.size()));
     }
 
     /**
@@ -145,6 +158,34 @@ public class GenerateCatalogSbomMojo extends AbstractMojo {
         component.put("purl", purl(group, artifact, version));
         component.put("properties", List.of(property));
         return component;
+    }
+
+    /**
+     * A Camel artifact, carried at the version this catalog builds against. That
+     * version is not a catalog decision, so it is labelled: a scanner should treat
+     * it as "the Camel this catalog targets" rather than something fixable here.
+     */
+    private Map<String, Object> camelComponent(String component, TreeSet<String> declaredBy) {
+        String artifact = "camel-" + component;
+
+        List<Map<String, Object>> properties = new ArrayList<>();
+        Map<String, Object> declared = new LinkedHashMap<>();
+        declared.put("name", DECLARED_BY);
+        declared.put("value", String.join(",", declaredBy));
+        properties.add(declared);
+        Map<String, Object> versioned = new LinkedHashMap<>();
+        versioned.put("name", VERSIONED_BY);
+        versioned.put("value", "runtime");
+        properties.add(versioned);
+
+        Map<String, Object> out = new LinkedHashMap<>();
+        out.put("type", "library");
+        out.put("group", "org.apache.camel");
+        out.put("name", artifact);
+        out.put("version", camelVersion);
+        out.put("purl", purl("org.apache.camel", artifact, camelVersion));
+        out.put("properties", properties);
+        return out;
     }
 
     private static String purl(String group, String artifact, String version) {

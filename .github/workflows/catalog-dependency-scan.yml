@@ -18,7 +18,9 @@
 name: Catalog Dependency Scan
 
 # The artifacts pinned in spec.dependencies are not visible to Dependabot, which
-# reads poms rather than Kamelet YAML, so nothing else watches these versions.
+# reads poms rather than Kamelet YAML, so nothing else watches these versions. The
+# camel: components are scanned too, at the newest Camel release, since OSV answers
+# nothing for the SNAPSHOT the catalog builds against.
 on:
   schedule:
     # Mondays, deliberately away from the Sunday SBOM job
@@ -68,8 +70,9 @@ jobs:
             echo
             echo "Raised by the \`Catalog Dependency Scan\` workflow, which reads"
             echo "\`camel-kamelets-sbom/camel-kamelets-catalog-sbom.json\` and queries https://osv.dev."
-            echo "Only artifacts the catalog pins itself are checked; \`camel:\` dependencies are"
-            echo "versioned by the runtime and are not in scope here."
+            echo "Artifacts the catalog pins are fixed by editing the Kamelet. Camel components are"
+            echo "versioned by the runtime, so they are scanned at the newest Camel release and an"
+            echo "advisory there is addressed by moving Camel rather than by changing this catalog."
           } > body.md
 
           if [ -n "$existing" ]; then

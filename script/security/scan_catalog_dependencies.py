@@ -21,9 +21,11 @@ Reads camel-kamelets-catalog-sbom.json, which lists the
 "mvn:group:artifact:version" entries declared in spec.dependencies, and asks
 https://osv.dev whether any of those exact versions has a known advisory.
 
-Only the pinned artifacts are checked. "camel:<component>" dependencies are not
-in the SBOM by design: the catalog does not choose their version, so advisories
-against them belong to the Camel release in use rather than to this catalog.
+Two groups are checked and reported apart. Artifacts the catalog pins are fixed
+here by editing the Kamelet. Camel artifacts are versioned by the runtime, so an
+advisory against one is fixed by moving Camel, and the version scanned is the
+newest Camel release rather than the SNAPSHOT the catalog builds against -- OSV
+answers nothing at all for a SNAPSHOT, which would read as an all-clear.
 
 Writes a Markdown report to the path given by --report and exits 1 when
 something is found, so a workflow can decide whether to raise an issue.
@@ -31,12 +33,15 @@ something is found, so a workflow can decide whether to raise an issue.
 
 import argparse
 import json
+import re
 import sys
 import urllib.error
 import urllib.request
 
 OSV_QUERYBATCH = "https://api.osv.dev/v1/querybatch"
 OSV_VULN = "https://api.osv.dev/v1/vulns/"
+CAMEL_METADATA = "https://repo1.maven.org/maven2/org/apache/camel/camel-core/maven-metadata.xml"
+VERSIONED_BY_RUNTIME = "runtime"
 TIMEOUT = 30
 
 
@@ -57,22 +62,42 @@ def read_components(sbom_path):
         sbom = json.load(handle)
     components = []
     for component in sbom.get("components", []):
-        declared_by = ""
-        for prop in component.get("properties", []):
-            if prop.get("name") == "camel.apache.org/declared-by":
-                declared_by = prop.get("value", "")
+        props = {p.get("name"): p.get("value", "") for p in component.get("properties", [])}
         components.append({
             "coordinate": f"{component['group']}:{component['name']}",
             "version": component["version"],
-            "declared_by": declared_by,
+            "declared_by": props.get("camel.apache.org/declared-by", ""),
+            "runtime_versioned": props.get("camel.apache.org/versioned-by") == VERSIONED_BY_RUNTIME,
         })
     return components
+
+
+def latest_camel_release():
+    """OSV knows nothing about a SNAPSHOT, so scan the newest real release."""
+    with urllib.request.urlopen(CAMEL_METADATA, timeout=TIMEOUT) as response:
+        xml = response.read().decode()
+    match = re.search(r"<release>([^<]+)</release>", xml)
+    if not match:
+        raise RuntimeError("no <release> in camel-core maven-metadata.xml")
+    return match.group(1)
+
+
+def resolve_runtime_versions(components):
+    """Point the runtime-versioned entries at a version OSV can actually answer for."""
+    if not any(c["runtime_versioned"] for c in components):
+        return None
+    release = latest_camel_release()
+    for component in components:
+        if component["runtime_versioned"]:
+            component["scanned_version"] = release
+    return release
 
 
 def query(components):
     """One batch call, then fetch the details of whatever came back."""
     queries = [
-        {"package": {"ecosystem": "Maven", "name": c["coordinate"]}, "version": c["version"]}
+        {"package": {"ecosystem": "Maven", "name": c["coordinate"]},
+         "version": c.get("scanned_version", c["version"])}
         for c in components
     ]
     results = post(OSV_QUERYBATCH, {"queries": queries}).get("results", [])
@@ -106,27 +131,50 @@ def severity_of(detail):
     return "unrated"
 
 
-def render(findings, checked):
-    lines = []
-    if not findings:
-        lines.append(f"No known advisories against the {checked} artifacts the catalog pins.")
-        return "\n".join(lines) + "\n"
-
-    lines.append(f"OSV reports advisories against {len({f['component']['coordinate'] for f in findings})} "
-                 f"of the {checked} artifacts the catalog pins.\n")
-    lines.append("| artifact | version | advisory | severity | declared by |")
-    lines.append("|---|---|---|---|---|")
+def table(findings):
+    lines = ["| artifact | version | advisory | severity | declared by |",
+             "|---|---|---|---|---|"]
     for finding in sorted(findings, key=lambda f: (f["component"]["coordinate"], f["id"])):
         component = finding["component"]
         aliases = ", ".join(a for a in finding["aliases"] if a.startswith("CVE-"))
         advisory = f"[{finding['id']}](https://osv.dev/vulnerability/{finding['id']})"
         if aliases:
             advisory += f" ({aliases})"
-        lines.append(f"| `{component['coordinate']}` | `{component['version']}` | {advisory} "
+        version = component.get("scanned_version", component["version"])
+        lines.append(f"| `{component['coordinate']}` | `{version}` | {advisory} "
                      f"| {finding['severity']} | {component['declared_by']} |")
+    return lines
 
-    lines.append("\nEach of these versions is pinned in `spec.dependencies` of the Kamelets named above, "
-                 "so bumping one is a change to this repository rather than to Camel.")
+
+def render(findings, components, camel_release):
+    pinned_total = sum(1 for c in components if not c["runtime_versioned"])
+    camel_total = sum(1 for c in components if c["runtime_versioned"])
+
+    pinned = [f for f in findings if not f["component"]["runtime_versioned"]]
+    camel = [f for f in findings if f["component"]["runtime_versioned"]]
+
+    lines = []
+
+    lines.append(f"## Artifacts the catalog pins ({pinned_total})\n")
+    if pinned:
+        lines.append("Each version below is pinned in `spec.dependencies` of the Kamelets named, "
+                     "so bumping one is a change to this repository.\n")
+        lines += table(pinned)
+    else:
+        lines.append("No known advisories.")
+    lines.append("")
+
+    lines.append(f"## Camel components ({camel_total}), scanned at {camel_release or 'n/a'}\n")
+    if camel:
+        lines.append("These are versioned by the runtime rather than by the catalog, so an advisory "
+                     "here is addressed by moving Camel, not by editing a Kamelet. The version scanned "
+                     "is the newest Camel release, which is not necessarily the one any given "
+                     "deployment runs.\n")
+        lines += table(camel)
+    else:
+        lines.append("No known advisories.")
+    lines.append("")
+
     return "\n".join(lines) + "\n"
 
 
@@ -142,12 +190,19 @@ def main():
         return 2
 
     try:
+        camel_release = resolve_runtime_versions(components)
+    except (urllib.error.URLError, OSError, RuntimeError) as err:
+        # Never fall through to a scan that would report these as clean.
+        print(f"Could not resolve the Camel release to scan: {err}", file=sys.stderr)
+        return 2
+
+    try:
         findings = query(components)
     except (urllib.error.URLError, OSError) as err:
         print(f"Could not reach OSV: {err}", file=sys.stderr)
         return 2
 
-    report = render(findings, len(components))
+    report = render(findings, components, camel_release)
     with open(args.report, "w") as handle:
         handle.write(report)
     print(report)
