@@ -47,20 +47,10 @@ jobs:
           distribution: 'temurin'
           java-version: 17
           cache: 'maven'
-      - name: Install Go
-        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
-        with:
-          go-version: 1.25.x
       - name: Build catalog 1st Run
         run: ./mvnw clean install -DskipTests
       - name: Build catalog 2nd Run
         run: ./mvnw clean install
-      - name: Run Generator
-        run: |
-          echo "Running Kamelet Generator..."
-
-          cd script/generator
-          go run . ../../kamelets/ ../../docs/modules/ROOT/
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
