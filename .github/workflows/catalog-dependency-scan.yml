@@ -1,0 +1,79 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+name: Catalog Dependency Scan
+
+# The artifacts pinned in spec.dependencies are not visible to Dependabot, which
+# reads poms rather than Kamelet YAML, so nothing else watches these versions.
+on:
+  schedule:
+    # Mondays, deliberately away from the Sunday SBOM job
+    - cron: '15 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  scan:
+    if: github.repository == 'apache/camel-kamelets'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Query OSV for the pinned artifacts
+        id: scan
+        run: |
+          set +e
+          python3 script/security/scan_catalog_dependencies.py --report report.md
+          echo "found=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Fail the run if OSV could not be reached
+        if: steps.scan.outputs.found == '2'
+        run: |
+          echo "The scan could not complete; see the step above."
+          exit 1
+
+      - name: Raise an issue for the findings
+        if: steps.scan.outputs.found == '1'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          title="Catalog dependency scan: advisories against pinned artifacts"
+
+          # Reuse the open issue if there is one, so a finding that persists
+          # across weeks does not open a new issue every Monday.
+          existing=$(gh issue list --state open --search "\"$title\" in:title" \
+                       --json number --jq '.[0].number // empty')
+
+          {
+            cat report.md
+            echo
+            echo "Raised by the \`Catalog Dependency Scan\` workflow, which reads"
+            echo "\`camel-kamelets-sbom/camel-kamelets-catalog-sbom.json\` and queries https://osv.dev."
+            echo "Only artifacts the catalog pins itself are checked; \`camel:\` dependencies are"
+            echo "versioned by the runtime and are not in scope here."
+          } > body.md
+
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file body.md
+          else
+            gh issue create --title "$title" --body-file body.md --label dependencies --label "automated pr"
+          fi

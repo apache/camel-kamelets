@@ -1,0 +1,184 @@
+{
+  "bomFormat" : "CycloneDX",
+  "specVersion" : "1.6",
+  "version" : 1,
+  "metadata" : {
+    "component" : {
+      "type" : "library",
+      "group" : "org.apache.camel.kamelets",
+      "name" : "camel-kamelets",
+      "version" : "4.23.0-SNAPSHOT"
+    }
+  },
+  "components" : [ {
+    "type" : "library",
+    "group" : "ai.djl.pytorch",
+    "name" : "pytorch-engine",
+    "version" : "0.29.0",
+    "purl" : "pkg:maven/ai.djl.pytorch/pytorch-engine@0.29.0",
+    "properties" : [ {
+      "name" : "camel.apache.org/declared-by",
+      "value" : "djl-image-to-text-action"
+    } ]
+  }, {
+    "type" : "library",
+    "group" : "ai.djl.pytorch",
+    "name" : "pytorch-model-zoo",
+    "version" : "0.29.0",
+    "purl" : "pkg:maven/ai.djl.pytorch/pytorch-model-zoo@0.29.0",
+    "properties" : [ {
+      "name" : "camel.apache.org/declared-by",
+      "value" : "djl-image-to-text-action"
+    } ]
+  }, {
+    "type" : "library",
+    "group" : "com.amazon.redshift",
+    "name" : "redshift-jdbc42",
+    "version" : "2.2.8",
+    "purl" : "pkg:maven/com.amazon.redshift/redshift-jdbc42@2.2.8",
+    "properties" : [ {
+      "name" : "camel.apache.org/declared-by",
+      "value" : "aws-redshift-sink,aws-redshift-source"
+    } ]
+  }, {
+    "type" : "library",
+    "group" : "com.azure",
+    "name" : "azure-data-schemaregistry-apacheavro",
+    "version" : "1.1.30",
+    "purl" : "pkg:maven/com.azure/azure-data-schemaregistry-apacheavro@1.1.30",
+    "properties" : [ {
+      "name" : "camel.apache.org/declared-by",
+      "value" : "kafka-azure-schema-registry-sink,kafka-azure-schema-registry-source,kafka-batch-azure-schema-registry-source"
+    } ]
+  }, {
+    "type" : "library",
+    "group" : "com.azure",
+    "name" : "azure-identity",
+    "version" : "1.18.1",
+    "purl" : "pkg:maven/com.azure/azure-identity@1.18.1",
+    "properties" : [ {
+      "name" : "camel.apache.org/declared-by",
+      "value" : "kafka-azure-schema-registry-sink,kafka-azure-schema-registry-source,kafka-batch-azure-schema-registry-source"
+    } ]
+  }, {
+    "type" : "library",
+    "group" : "com.databricks",
+    "name" : "databricks-jdbc",
+    "version" : "3.4.2",
+    "purl" : "pkg:maven/com.databricks/databricks-jdbc@3.4.2",
+    "properties" : [ {
+      "name" : "camel.apache.org/declared-by",
+      "value" : "databricks-sink,databricks-source"
+    } ]
+  }, {
+    "type" : "library",
+    "group" : "com.fasterxml.jackson.datatype",
+    "name" : "jackson-datatype-joda",
+    "version" : "2.12.5",
+    "purl" : "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-joda@2.12.5",
+    "properties" : [ {
+      "name" : "camel.apache.org/declared-by",
+      "value" : "jira-add-comment-sink,jira-add-issue-sink,jira-oauth-source,jira-source,jira-transition-issue-sink,jira-update-issue-sink,splunk-source"
+    } ]
+  }, {
+    "type" : "library",
+    "group" : "com.microsoft.azure",
+    "name" : "azure-schemaregistry-kafka-avro",
+    "version" : "1.1.4",
+    "purl" : "pkg:maven/com.microsoft.azure/azure-schemaregistry-kafka-avro@1.1.4",
+    "properties" : [ {
+      "name" : "camel.apache.org/declared-by",
+      "value" : "kafka-azure-schema-registry-sink,kafka-azure-schema-registry-source,kafka-batch-azure-schema-registry-source"
+    } ]
+  }, {
+    "type" : "library",
+    "group" : "io.apicurio",
+    "name" : "apicurio-registry-serdes-avro-serde",
+    "version" : "2.4.14.Final",
+    "purl" : "pkg:maven/io.apicurio/apicurio-registry-serdes-avro-serde@2.4.14.Final",
+    "properties" : [ {
+      "name" : "camel.apache.org/declared-by",
+      "value" : "kafka-apicurio-registry-not-secured-sink,kafka-not-secured-apicurio-registry-sink"
+    } ]
+  }, {
+    "type" : "library",
+    "group" : "io.apicurio",
+    "name" : "apicurio-registry-serdes-jsonschema-serde",
+    "version" : "2.5.11.Final",
+    "purl" : "pkg:maven/io.apicurio/apicurio-registry-serdes-jsonschema-serde@2.5.11.Final",
+    "properties" : [ {
+      "name" : "camel.apache.org/declared-by",
+      "value" : "kafka-not-secured-apicurio-registry-json-source"
+    } ]
+  }, {
+    "type" : "library",
+    "group" : "io.quarkus",
+    "name" : "quarkus-apicurio-registry-avro",
+    "version" : "3.24.2",
+    "purl" : "pkg:maven/io.quarkus/quarkus-apicurio-registry-avro@3.24.2",
+    "properties" : [ {
+      "name" : "camel.apache.org/declared-by",
+      "value" : "kafka-batch-apicurio-registry-not-secured-source,kafka-batch-apicurio-registry-source,kafka-not-secured-apicurio-registry-source"
+    } ]
+  }, {
+    "type" : "library",
+    "group" : "io.quarkus",
+    "name" : "quarkus-apicurio-registry-json-schema",
+    "version" : "3.15.1",
+    "purl" : "pkg:maven/io.quarkus/quarkus-apicurio-registry-json-schema@3.15.1",
+    "properties" : [ {
+      "name" : "camel.apache.org/declared-by",
+      "value" : "kafka-apicurio-registry-not-secured-source"
+    } ]
+  }, {
+    "type" : "library",
+    "group" : "net.snowflake",
+    "name" : "snowflake-jdbc",
+    "version" : "3.24.2",
+    "purl" : "pkg:maven/net.snowflake/snowflake-jdbc@3.24.2",
+    "properties" : [ {
+      "name" : "camel.apache.org/declared-by",
+      "value" : "snowflake-sink,snowflake-source"
+    } ]
+  }, {
+    "type" : "library",
+    "group" : "org.apache.activemq",
+    "name" : "artemis-jakarta-client-all",
+    "version" : "2.57.0",
+    "purl" : "pkg:maven/org.apache.activemq/artemis-jakarta-client-all@2.57.0",
+    "properties" : [ {
+      "name" : "camel.apache.org/declared-by",
+      "value" : "jms-apache-artemis-sink,jms-apache-artemis-source,jms-pooled-apache-artemis-sink,jms-pooled-apache-artemis-source"
+    } ]
+  }, {
+    "type" : "library",
+    "group" : "org.apache.commons",
+    "name" : "commons-dbcp2",
+    "version" : "2.14.0",
+    "purl" : "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0",
+    "properties" : [ {
+      "name" : "camel.apache.org/declared-by",
+      "value" : "aws-redshift-sink,aws-redshift-source,databricks-sink,databricks-source,mariadb-sink,mariadb-source,mysql-sink,mysql-source,oracle-database-sink,oracle-database-source,postgresql-sink,postgresql-source,snowflake-sink,snowflake-source,sqlserver-sink,sqlserver-source"
+    } ]
+  }, {
+    "type" : "library",
+    "group" : "org.messaginghub",
+    "name" : "pooled-jms",
+    "version" : "3.2.4",
+    "purl" : "pkg:maven/org.messaginghub/pooled-jms@3.2.4",
+    "properties" : [ {
+      "name" : "camel.apache.org/declared-by",
+      "value" : "jms-pooled-apache-artemis-sink,jms-pooled-apache-artemis-source"
+    } ]
+  }, {
+    "type" : "library",
+    "group" : "org.postgresql",
+    "name" : "postgresql",
+    "version" : "42.7.13",
+    "purl" : "pkg:maven/org.postgresql/postgresql@42.7.13",
+    "properties" : [ {
+      "name" : "camel.apache.org/declared-by",
+      "value" : "postgresql-sink,postgresql-source"
+    } ]
+  } ]
+}

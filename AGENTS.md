@@ -102,6 +102,13 @@ relevant committers:
   ```
 - `nav.adoc` and the per-Kamelet doc pages are **generated** — do not hand-edit
   them.
+- `camel-kamelets-sbom/camel-kamelets-catalog-sbom.json` is **generated** too: it
+  lists the `mvn:group:artifact:version` entries the catalog pins in
+  `spec.dependencies`, so they can be scanned without building anything. The
+  `Catalog Dependency Scan` workflow queries https://osv.dev against it weekly,
+  because Dependabot reads poms and cannot see versions embedded in Kamelet YAML.
+  `camel:` dependencies are deliberately excluded: the runtime picks their
+  version, not the catalog.
 - A full `mvn verify` from the repository root must pass before pushing.
 
 ### Asynchronous Testing
@@ -288,7 +295,7 @@ camel-kamelets/
 │   ├── camel-kamelets-crds/     # Fabric8-generated K8s CRD POJOs (Java)
 │   └── kamelets-maven-plugin/   # build-time validation plugin
 ├── crds/                        # Go CRD client generator (build/CI)
-├── script/                      # version-bump helper script
+├── script/                      # version-bump helper + catalog dependency scan
 ├── templates/                   # init .vm template + Pipe examples
 ├── tests/camel-kamelets-itest/  # Citrus integration tests
 └── docs/modules/ROOT/           # Antora AsciiDoc (security-model.adoc lives here)
