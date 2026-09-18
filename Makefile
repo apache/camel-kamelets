@@ -28,4 +28,4 @@ generate:
 	./gen_crd/gen_crd_api.sh
 
 validate:
-	./mvnw -pl library/camel-kamelets-bom -am compile
+	./mvnw -pl library/camel-kamelets-bom -am install -DskipTests

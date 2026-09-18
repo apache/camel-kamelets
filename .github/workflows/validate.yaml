@@ -60,4 +60,7 @@ jobs:
       run: |
         echo "Running Kamelet validator..."
 
-        ./mvnw -V -ntp -pl library/camel-kamelets-bom -am compile
+        # install, not compile: with -am the plugin is built from source in the
+        # same reactor, and its descriptor is only generated from process-classes
+        # onwards, so an earlier phase leaves the bom unable to invoke it
+        ./mvnw -V -ntp -pl library/camel-kamelets-bom -am install -DskipTests
