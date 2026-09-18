@@ -61,8 +61,17 @@ public class ValidateKameletsMojo extends AbstractMojo {
     @Parameter(property = "kamelets.failOnError", defaultValue = "true")
     private boolean failOnError = true;
 
+    /**
+     * Directory holding the *.kamelet.yaml files, validated against the catalog
+     * conventions ported from the Go validator.
+     */
+    @Parameter(property = "kamelets.dir", defaultValue = "${project.basedir}/../../kamelets")
+    private File kameletsDir;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        validateCatalogConventions();
+
         String[] bannedDeps = {"mvn:", "camel:gson", "camel:core", "camel:kamelet"};
         List<String> bannedDepsList = Arrays.asList(bannedDeps);
         KameletsCatalog catalog = new KameletsCatalog();
@@ -134,4 +143,34 @@ public class ValidateKameletsMojo extends AbstractMojo {
             }
             getLog().info("Validation passed");
         }
+    
+    /**
+     * Catalog-wide conventions over the Kamelet YAML files: naming, annotations,
+     * descriptors, declared versus used parameters and so on. Ported from the Go
+     * validator that used to live in script/validator.
+     */
+    private void validateCatalogConventions() throws MojoExecutionException {
+        if (!kameletsDir.isDirectory()) {
+            throw new MojoExecutionException("Cannot list dir " + kameletsDir);
+        }
+        List<CatalogValidator.KameletInfo> kamelets;
+        try {
+            kamelets = CatalogValidator.listKamelets(kameletsDir);
+        } catch (java.io.IOException e) {
+            throw new MojoExecutionException("Cannot read the Kamelets in " + kameletsDir, e);
+        }
+        if (kamelets.isEmpty()) {
+            throw new MojoExecutionException("Directory " + kameletsDir + " has no Kamelets");
+        }
+
+        List<String> errors = CatalogValidator.validate(kamelets);
+        for (String error : errors) {
+            getLog().error("ERROR: " + error);
+        }
+        if (!errors.isEmpty() && failOnError) {
+            throw new MojoExecutionException(
+                    "The Kamelets Validation failed with " + errors.size() + " error(s). See logs for more information.\n");
+        }
+        getLog().info("Catalog conventions validated over " + kamelets.size() + " kamelets");
     }
+}

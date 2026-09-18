@@ -25,13 +25,8 @@ $ ./mvnw clean install
 
 > [!IMPORTANT]
 > After adding or modifying a kamelet, `./mvnw clean install` regenerates the
-> Antora navigation for you, so there is nothing extra to run for the docs.
-> Still validate:
-> ```bash
-> $ cd script/validator
-> $ go run . ../../kamelets/
-> ```
-> be sure that there aren't reported ERRORS.
+> Antora navigation and validates the catalog, so there is nothing extra to run.
+> Be sure that there aren't reported ERRORS.
 
 ### General Format
 
