@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+## [v4.22.1](https://github.com/apache/camel-kamelets/tree/v4.22.1) (2026-09-17)
 
-[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.22.0...HEAD)
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.22.0...v4.22.1)
 
 **Implemented enhancements:**
 
@@ -16,6 +16,7 @@
 
 **Closed issues:**
 
+- kafka-sink should accept kafka-key, so the record key survives a transport hop [\#3038](https://github.com/apache/camel-kamelets/issues/3038)
 - Add LangChain4j document ingestion Kamelets [\#3015](https://github.com/apache/camel-kamelets/issues/3015)
 - Citrus integration tests do not exercise the Kamelets built in the same run [\#2984](https://github.com/apache/camel-kamelets/issues/2984)
 - Sink Kamelets should strip the dispatch headers they do not deliberately consume [\#2973](https://github.com/apache/camel-kamelets/issues/2973)
@@ -31,6 +32,7 @@
 - sqlserver Kamelets: encrypt/trustServerCertificate defaults diverge from the JDBC driver defaults [\#2953](https://github.com/apache/camel-kamelets/issues/2953)
 - File-transfer sinks: enforce that the file/ce-file header is a file name, not a path [\#2952](https://github.com/apache/camel-kamelets/issues/2952)
 - kamelets 4.22.0 release [\#2942](https://github.com/apache/camel-kamelets/issues/2942)
+- Migrate kamelet tests to not use pipes but camel routes [\#2873](https://github.com/apache/camel-kamelets/issues/2873)
 - Kafka kamelets should use kamelet properties instead of leaking Camel internal headers [\#2871](https://github.com/apache/camel-kamelets/issues/2871)
 - Can't load counter kamelet with a bean [\#2771](https://github.com/apache/camel-kamelets/issues/2771)
 - Ceph: support bucket notifications?  [\#2303](https://github.com/apache/camel-kamelets/issues/2303)
