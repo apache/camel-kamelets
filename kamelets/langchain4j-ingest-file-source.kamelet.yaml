@@ -56,6 +56,17 @@ spec:
         description: Whether subdirectories are ingested too.
         type: boolean
         default: true
+      include:
+        title: Include
+        description: Comma-separated Ant-style patterns for files to ingest, matched on
+          the path relative to the directory, for example `**/*.pdf,**/*.md`. When
+          unset, every file is ingested.
+        type: string
+      exclude:
+        title: Exclude
+        description: Comma-separated Ant-style patterns for files to skip, for example
+          `**/draft-*`. Exclusion wins over inclusion.
+        type: string
       delay:
         title: Delay
         description: Milliseconds between directory polls; the file endpoint's default is
@@ -90,6 +101,8 @@ spec:
         # an edited file gets a new key and re-ingests
         idempotentKey: "${file:absolute.path}:${file:modified}:${file:size}"
         recursive: "{{recursive}}"
+        antInclude: "{{?include}}"
+        antExclude: "{{?exclude}}"
         readLock: "changed"
         delay: "{{?delay}}"
         charset: "{{?charset}}"
