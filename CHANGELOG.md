@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.22.1...HEAD)
+
+**Closed issues:**
+
+- Rework the scripts as maven plugin [\#1888](https://github.com/apache/camel-kamelets/issues/1888)
+- Detect Vulnerabilities in Kamelets / Containers [\#558](https://github.com/apache/camel-kamelets/issues/558)
+
 ## [v4.22.1](https://github.com/apache/camel-kamelets/tree/v4.22.1) (2026-09-17)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.22.0...v4.22.1)
