@@ -1406,12 +1406,12 @@
     "version" : "3.15.1",
     "purl" : "pkg:maven/io.quarkus/quarkus-apicurio-registry-json-schema@3.15.1"
   }, {
-    "bom-ref" : "pkg:maven/net.snowflake/snowflake-jdbc@3.24.2",
+    "bom-ref" : "pkg:maven/net.snowflake/snowflake-jdbc@4.3.4",
     "type" : "library",
     "group" : "net.snowflake",
     "name" : "snowflake-jdbc",
-    "version" : "3.24.2",
-    "purl" : "pkg:maven/net.snowflake/snowflake-jdbc@3.24.2"
+    "version" : "4.3.4",
+    "purl" : "pkg:maven/net.snowflake/snowflake-jdbc@4.3.4"
   }, {
     "bom-ref" : "pkg:maven/org.apache.activemq/artemis-jakarta-client-all@2.57.0",
     "type" : "library",
@@ -3407,10 +3407,10 @@
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-snmp@4.23.0-SNAPSHOT" ]
   }, {
     "ref" : "kamelet:snowflake-sink",
-    "dependsOn" : [ "pkg:maven/net.snowflake/snowflake-jdbc@3.24.2", "pkg:maven/org.apache.camel/camel-jackson@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-sql@4.23.0-SNAPSHOT", "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0" ]
+    "dependsOn" : [ "pkg:maven/net.snowflake/snowflake-jdbc@4.3.4", "pkg:maven/org.apache.camel/camel-jackson@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-sql@4.23.0-SNAPSHOT", "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0" ]
   }, {
     "ref" : "kamelet:snowflake-source",
-    "dependsOn" : [ "pkg:maven/net.snowflake/snowflake-jdbc@3.24.2", "pkg:maven/org.apache.camel/camel-jackson@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-sql@4.23.0-SNAPSHOT", "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0" ]
+    "dependsOn" : [ "pkg:maven/net.snowflake/snowflake-jdbc@4.3.4", "pkg:maven/org.apache.camel/camel-jackson@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-sql@4.23.0-SNAPSHOT", "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0" ]
   }, {
     "ref" : "kamelet:solr-sink",
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-core@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-jackson@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-solr@4.23.0-SNAPSHOT" ]
@@ -3532,7 +3532,7 @@
     "ref" : "pkg:maven/io.quarkus/quarkus-apicurio-registry-json-schema@3.15.1",
     "dependsOn" : [ ]
   }, {
-    "ref" : "pkg:maven/net.snowflake/snowflake-jdbc@3.24.2",
+    "ref" : "pkg:maven/net.snowflake/snowflake-jdbc@4.3.4",
     "dependsOn" : [ ]
   }, {
     "ref" : "pkg:maven/org.apache.activemq/artemis-jakarta-client-all@2.57.0",
