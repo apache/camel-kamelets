@@ -72,7 +72,7 @@ spec:
   - "camel:jackson"
   - "camel:kamelet"
   - "camel:sql"
-  - "mvn:net.snowflake:snowflake-jdbc:3.24.2"
+  - "mvn:net.snowflake:snowflake-jdbc:4.3.4"
   - "mvn:org.apache.commons:commons-dbcp2:2.14.0"
   template:
     beans:
@@ -81,7 +81,8 @@ spec:
         properties:
           autowiredEnabled: "false"
       - name: dsBean
-        type: "#class:net.snowflake.client.jdbc.SnowflakeBasicDataSource"
+        type: "#class:net.snowflake.client.api.datasource.SnowflakeDataSourceFactory"
+        factoryMethod: "createDataSource"
         properties:
           user: '{{username}}'
           password: '{{password}}'
