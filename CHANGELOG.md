@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Catalog dependency scan: advisories against pinned artifacts [\#3054](https://github.com/apache/camel-kamelets/issues/3054)
 - Rework the scripts as maven plugin [\#1888](https://github.com/apache/camel-kamelets/issues/1888)
 - Detect Vulnerabilities in Kamelets / Containers [\#558](https://github.com/apache/camel-kamelets/issues/558)
 
