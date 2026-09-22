@@ -19,6 +19,9 @@
     from:
       uri: "kamelet:timer-source"
       parameters:
+        # exactly one message: the test asserts a single spec fetch followed by a
+        # single operation call, and a second firing races those two assertions
+        repeatCount: 1
         period: 10000
         message: '{{pet}}'
       steps:
