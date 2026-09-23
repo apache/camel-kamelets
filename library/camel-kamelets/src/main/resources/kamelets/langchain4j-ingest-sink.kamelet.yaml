@@ -43,7 +43,9 @@ spec:
       `embeddingStore` or `embeddingModel` is not set, the single registry bean of that type is
       used. With `idempotentRepository` set, the first write per document id wins - a
       re-delivered edited document is skipped, so streams that carry updates need a
-      version-aware id.
+      version-aware id. The filter options (`includeId`, `excludeId`, `minDocumentSize`,
+      `documentFilter`) answer rejected deliveries with a filtered outcome that never keeps
+      a dedup claim.
     type: object
     properties:
       pipelineName:
@@ -80,6 +82,28 @@ spec:
           pipeline holds a document in memory whole, so set the cap when the source can
           deliver oversized payloads. An oversized document fails the exchange cleanly.
         type: integer
+      includeId:
+        title: Include Id
+        description: Comma-separated Ant-style patterns the document id must match to be
+          ingested, for example `docs/**,*.md`. A non-matching delivery is answered filtered,
+          before the dedup claim and without reading the body.
+        type: string
+      excludeId:
+        title: Exclude Id
+        description: Comma-separated Ant-style patterns for document ids to skip, for example
+          `**/draft-*`. Exclusion wins over includeId.
+        type: string
+      minDocumentSize:
+        title: Min Document Size
+        description: Minimum size of one document in characters; unset means no minimum. A
+          shorter document is answered filtered and releases its dedup claim.
+        type: integer
+      documentFilter:
+        title: Document Filter
+        description: A Predicate bean deciding whether a delivery is ingested, as a
+          `#bean:name` reference; a rejected delivery is answered filtered and releases its
+          dedup claim.
+        type: string
       documentSplitter:
         title: Document Splitter
         description: A DocumentSplitter bean replacing the default recursive splitting, as a
@@ -117,6 +141,10 @@ spec:
               maxOverlapSize: "{{maxOverlapSize}}"
               embeddingBatchSize: "{{embeddingBatchSize}}"
               maxDocumentSize: "{{?maxDocumentSize}}"
+              includeId: "{{?includeId}}"
+              excludeId: "{{?excludeId}}"
+              minDocumentSize: "{{?minDocumentSize}}"
+              documentFilter: "{{?documentFilter}}"
               documentSplitter: "{{?documentSplitter}}"
               embeddingStore: "{{?embeddingStore}}"
               embeddingModel: "{{?embeddingModel}}"
