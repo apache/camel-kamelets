@@ -2692,12 +2692,12 @@
     "version" : "2.14.0",
     "purl" : "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0"
   }, {
-    "bom-ref" : "pkg:maven/org.messaginghub/pooled-jms@3.2.4",
+    "bom-ref" : "pkg:maven/org.messaginghub/pooled-jms@3.2.5",
     "type" : "library",
     "group" : "org.messaginghub",
     "name" : "pooled-jms",
-    "version" : "3.2.4",
-    "purl" : "pkg:maven/org.messaginghub/pooled-jms@3.2.4"
+    "version" : "3.2.5",
+    "purl" : "pkg:maven/org.messaginghub/pooled-jms@3.2.5"
   }, {
     "bom-ref" : "pkg:maven/org.postgresql/postgresql@42.7.13",
     "type" : "library",
@@ -3128,10 +3128,10 @@
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-jms@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT" ]
   }, {
     "ref" : "kamelet:jms-pooled-apache-artemis-sink",
-    "dependsOn" : [ "pkg:maven/org.apache.activemq/artemis-jakarta-client-all@2.57.0", "pkg:maven/org.apache.camel/camel-jms@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.messaginghub/pooled-jms@3.2.4" ]
+    "dependsOn" : [ "pkg:maven/org.apache.activemq/artemis-jakarta-client-all@2.57.0", "pkg:maven/org.apache.camel/camel-jms@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.messaginghub/pooled-jms@3.2.5" ]
   }, {
     "ref" : "kamelet:jms-pooled-apache-artemis-source",
-    "dependsOn" : [ "pkg:maven/org.apache.activemq/artemis-jakarta-client-all@2.57.0", "pkg:maven/org.apache.camel/camel-jms@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.messaginghub/pooled-jms@3.2.4" ]
+    "dependsOn" : [ "pkg:maven/org.apache.activemq/artemis-jakarta-client-all@2.57.0", "pkg:maven/org.apache.camel/camel-jms@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.messaginghub/pooled-jms@3.2.5" ]
   }, {
     "ref" : "kamelet:jolt-transformation-action",
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-jolt@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT" ]
@@ -3886,7 +3886,7 @@
     "ref" : "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0",
     "dependsOn" : [ ]
   }, {
-    "ref" : "pkg:maven/org.messaginghub/pooled-jms@3.2.4",
+    "ref" : "pkg:maven/org.messaginghub/pooled-jms@3.2.5",
     "dependsOn" : [ ]
   }, {
     "ref" : "pkg:maven/org.postgresql/postgresql@42.7.13",
