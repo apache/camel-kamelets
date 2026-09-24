@@ -177,7 +177,7 @@ public class KameletsCatalogTest {
 
     @Test
     void testSupportedHeaders() throws Exception {
-        verifyHeaders("aws-s3-source", 26);
+        verifyHeaders("aws-s3-source", 4);
         verifyHeaders("aws-s3-sink", 51);
         verifyHeaders("aws-cloudtrail-source", 4);
         verifyHeaders("aws-redshift-source", 0);
@@ -185,10 +185,10 @@ public class KameletsCatalogTest {
         verifyHeaders("azure-eventhubs-sink", 2);
         verifyHeaders("azure-functions-sink", 8);
         verifyHeaders("azure-servicebus-source", 21);
-        verifyHeaders("azure-storage-blob-source", 39);
+        verifyHeaders("azure-storage-blob-source", 8);
         verifyHeaders("azure-storage-blob-sink", 46);
         verifyHeaders("azure-storage-blob-changefeed-source", 39);
-        verifyHeaders("azure-storage-datalake-source", 25);
+        verifyHeaders("azure-storage-datalake-source", 26);
         verifyHeaders("azure-storage-datalake-sink", 37);
         verifyHeaders("azure-storage-queue-source", 6);
         verifyHeaders("azure-storage-queue-sink", 16);
@@ -214,11 +214,11 @@ public class KameletsCatalogTest {
         verifyHeaders("google-bigquery-sink", 4);
         verifyHeaders("google-calendar-source", 1);
         verifyHeaders("google-functions-sink", 5);
-        verifyHeaders("google-mail-source", 9);
+        verifyHeaders("google-mail-source", 6);
         verifyHeaders("google-pubsub-sink", 3);
         verifyHeaders("google-pubsub-source", 6);
-        verifyHeaders("google-sheets-source", 6);
-        verifyHeaders("google-storage-source", 21);
+        verifyHeaders("google-sheets-source", 5);
+        verifyHeaders("google-storage-source", 4);
         verifyHeaders("google-storage-sink", 15);
         verifyHeaders("http-source", 5);
         verifyHeaders("http-sink", 14);
@@ -319,6 +319,25 @@ public class KameletsCatalogTest {
         }
         String scheme = catalog.getKameletScheme(name.substring(0, lastDash));
         return scheme != null && new DefaultCamelCatalog().componentModel(scheme) != null;
+    }
+
+    @Test
+    void testDeclaredHeadersWinOverTheComponent() throws Exception {
+        // aws-s3-source declares four headers under spec.dataTypes. The aws2-s3
+        // component reports twenty six, most of which this template never emits,
+        // so the declaration is what callers should see.
+        List<ComponentModel.EndpointHeaderModel> headers = catalog.getKameletSupportedHeaders("aws-s3-source");
+        List<String> names = headers.stream().map(ComponentModel.EndpointHeaderModel::getName).sorted().toList();
+        assertEquals(List.of("CamelAwsS3BucketName", "CamelAwsS3ContentType", "CamelAwsS3ETag", "CamelAwsS3Key"), names);
+
+        // The title and description travel with it, so a consumer gets the
+        // Kamelet's own wording rather than the component's.
+        ComponentModel.EndpointHeaderModel key = headers.stream()
+                .filter(h -> "CamelAwsS3Key".equals(h.getName())).findFirst().orElseThrow();
+        assertEquals("S3 Key", key.getDisplayName());
+
+        // A Kamelet that declares nothing still falls back to its component.
+        assertFalse(catalog.getKameletSupportedHeaders("timer-source").isEmpty());
     }
 
     @Test
