@@ -35,8 +35,6 @@ spec:
       - topic
       - clientId
       - clientSecret
-      - userName
-      - password
     type: object
     properties:
       topic:
@@ -75,6 +73,24 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      authenticationType:
+        title: Authentication Type
+        description: Authentication type to use. USERNAME_PASSWORD needs userName and password, CLIENT_CREDENTIALS needs only the consumer key and secret, REFRESH_TOKEN needs refreshToken.
+        type: string
+        default: USERNAME_PASSWORD
+        enum: ["USERNAME_PASSWORD", "CLIENT_CREDENTIALS", "REFRESH_TOKEN"]
+      refreshToken:
+        title: Refresh Token
+        description: Refresh token used by the REFRESH_TOKEN authentication type.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      instanceUrl:
+        title: Instance URL
+        description: Salesforce instance URL, needed when the authentication response does not carry one.
+        type: string
+        example: "https://myinstance.my.salesforce.com"
       deserializeType:
         title: Deserialize Type
         description: >-
@@ -114,9 +130,12 @@ spec:
         properties:
           clientId: "{{clientId}}"
           clientSecret: "{{clientSecret}}"
-          userName: "{{userName}}"
-          password: "{{password}}"
+          authenticationType: "{{authenticationType}}"
+          userName: "{{?userName}}"
+          password: "{{?password}}"
+          refreshToken: "{{?refreshToken}}"
           loginUrl: "{{loginUrl}}"
+          instanceUrl: "{{?instanceUrl}}"
     from:
       uri: "{{local-salesforce-pubsub}}:pubSubSubscribe:{{topic}}"
       parameters:
