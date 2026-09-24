@@ -34,8 +34,6 @@ spec:
     required:
       - clientId
       - clientSecret
-      - userName
-      - password
     type: object
     properties:
       sObjectName:
@@ -74,6 +72,37 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      authenticationType:
+        title: Authentication Type
+        description: Authentication type to use. USERNAME_PASSWORD needs userName and password, CLIENT_CREDENTIALS needs only the consumer key and secret, REFRESH_TOKEN needs refreshToken, JWT needs keystore and jwtAudience.
+        type: string
+        default: USERNAME_PASSWORD
+        enum: ["USERNAME_PASSWORD", "CLIENT_CREDENTIALS", "REFRESH_TOKEN", "JWT"]
+      refreshToken:
+        title: Refresh Token
+        description: Refresh token used by the REFRESH_TOKEN authentication type.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      instanceUrl:
+        title: Instance URL
+        description: Salesforce instance URL, needed when the authentication response does not carry one.
+        type: string
+        example: "https://myinstance.my.salesforce.com"
+      jwtAudience:
+        title: JWT Audience
+        description: Audience claim for the JWT authentication type, usually the login URL of the target org.
+        type: string
+        example: "https://login.salesforce.com"
+      keystore:
+        title: Keystore
+        description: >-
+          Reference to a registry bean of type org.apache.camel.support.jsse.KeyStoreParameters,
+          written as "#bean:myBeanName", holding the certificate that signs the JWT. Required by
+          the JWT authentication type and ignored by the others.
+        type: string
+        example: "#bean:myKeystore"
   types:
     in:
       mediaType: application/json
@@ -87,9 +116,14 @@ spec:
         properties:
           clientId: "{{clientId}}"
           clientSecret: "{{clientSecret}}"
-          userName: "{{userName}}"
-          password: "{{password}}"
+          authenticationType: "{{authenticationType}}"
+          userName: "{{?userName}}"
+          password: "{{?password}}"
+          refreshToken: "{{?refreshToken}}"
           loginUrl: "{{loginUrl}}"
+          instanceUrl: "{{?instanceUrl}}"
+          jwtAudience: "{{?jwtAudience}}"
+          keystore: "{{?keystore}}"
     from:
       uri: kamelet:source
       steps:
