@@ -41,6 +41,7 @@ import org.apache.camel.kamelets.catalog.model.KameletTypeEnum;
 import org.apache.camel.tooling.model.ComponentModel;
 import org.apache.camel.util.ObjectHelper;
 import org.apache.camel.v1.Kamelet;
+import org.apache.camel.v1.kameletspec.datatypes.Headers;
 import org.apache.camel.v1.kameletspec.DataTypes;
 import org.apache.camel.v1.kameletspec.Definition;
 import org.apache.camel.v1.kameletspec.Template;
@@ -243,6 +244,13 @@ public class KameletsCatalog {
         List<ComponentModel.EndpointHeaderModel> resultingHeaders = new ArrayList<>();
         Kamelet local = kameletModels.get(name);
         if (ObjectHelper.isNotEmpty(local)) {
+            // What the Kamelet declares about itself wins. The component list describes
+            // everything the component can emit, which both over-reports headers this
+            // template never surfaces and misses the ones the template adds itself.
+            List<ComponentModel.EndpointHeaderModel> declared = getDeclaredHeaders(local);
+            if (!declared.isEmpty()) {
+                return declared;
+            }
             String camelType = determineCamelType(local);
             String kameletName = local.getMetadata().getName();
             int lastIndex = kameletName.lastIndexOf("-");
@@ -261,6 +269,40 @@ public class KameletsCatalog {
             }
         }
         return resultingHeaders;
+    }
+
+    /**
+     * Headers the Kamelet declares under spec.dataTypes, which describe what this
+     * template actually emits or consumes rather than what its component supports.
+     */
+    private List<ComponentModel.EndpointHeaderModel> getDeclaredHeaders(Kamelet kamelet) {
+        List<ComponentModel.EndpointHeaderModel> declared = new ArrayList<>();
+        if (kamelet.getSpec() == null || kamelet.getSpec().getDataTypes() == null) {
+            return declared;
+        }
+        for (DataTypes dataType : kamelet.getSpec().getDataTypes().values()) {
+            if (dataType == null || dataType.getHeaders() == null) {
+                continue;
+            }
+            for (Map.Entry<String, Headers> entry : dataType.getHeaders().entrySet()) {
+                declared.add(toHeaderModel(entry.getKey(), entry.getValue()));
+            }
+        }
+        return declared;
+    }
+
+    private ComponentModel.EndpointHeaderModel toHeaderModel(String name, Headers header) {
+        ComponentModel.EndpointHeaderModel model = new ComponentModel.EndpointHeaderModel();
+        model.setName(name);
+        if (header != null) {
+            model.setDisplayName(header.getTitle());
+            model.setDescription(header.getDescription());
+            model.setType(header.getType());
+            model.setJavaType(header.getType());
+            model.setDefaultValue(header.get_default());
+            model.setRequired(Boolean.TRUE.equals(header.getRequired()));
+        }
+        return model;
     }
 
     public String getKameletScheme(String prefix) {
