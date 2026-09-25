@@ -76,8 +76,9 @@ spec:
         title: Charset
         description: Character set for reading text documents, for example UTF-8. Leave
           unset when the source feeds a parser action (tika-extract-text-action or
-          docling-convert-action), which must receive the raw bytes - a charset
-          conversion would corrupt a binary document such as a PDF.
+          docling-convert-action) or the langchain4j-ingest-sink in media mode, which must
+          receive the raw bytes - a charset conversion would corrupt a binary document
+          such as a PDF.
         type: string
       idempotentRepository:
         title: Idempotent Repository
