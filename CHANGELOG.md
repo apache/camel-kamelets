@@ -10,6 +10,7 @@
 - Release Camel-Kamelets 4.22.1 [\#3042](https://github.com/apache/camel-kamelets/issues/3042)
 - Salesforce Kamelets only support username/password authentication \(no JWT/keystore\) [\#3014](https://github.com/apache/camel-kamelets/issues/3014)
 - Rework the scripts as maven plugin [\#1888](https://github.com/apache/camel-kamelets/issues/1888)
+- A kamelet should define which headers are supported as input and output [\#929](https://github.com/apache/camel-kamelets/issues/929)
 - Detect Vulnerabilities in Kamelets / Containers [\#558](https://github.com/apache/camel-kamelets/issues/558)
 
 ## [v4.22.1](https://github.com/apache/camel-kamelets/tree/v4.22.1) (2026-09-17)
