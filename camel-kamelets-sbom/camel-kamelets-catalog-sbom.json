@@ -1357,12 +1357,12 @@
     "version" : "1.18.1",
     "purl" : "pkg:maven/com.azure/azure-identity@1.18.1"
   }, {
-    "bom-ref" : "pkg:maven/com.databricks/databricks-jdbc@3.4.2",
+    "bom-ref" : "pkg:maven/com.databricks/databricks-jdbc@3.4.3",
     "type" : "library",
     "group" : "com.databricks",
     "name" : "databricks-jdbc",
-    "version" : "3.4.2",
-    "purl" : "pkg:maven/com.databricks/databricks-jdbc@3.4.2"
+    "version" : "3.4.3",
+    "purl" : "pkg:maven/com.databricks/databricks-jdbc@3.4.3"
   }, {
     "bom-ref" : "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-joda@2.12.5",
     "type" : "library",
@@ -2915,10 +2915,10 @@
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-core@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT" ]
   }, {
     "ref" : "kamelet:databricks-sink",
-    "dependsOn" : [ "pkg:maven/com.databricks/databricks-jdbc@3.4.2", "pkg:maven/org.apache.camel/camel-jackson@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-sql@4.23.0-SNAPSHOT", "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0" ]
+    "dependsOn" : [ "pkg:maven/com.databricks/databricks-jdbc@3.4.3", "pkg:maven/org.apache.camel/camel-jackson@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-sql@4.23.0-SNAPSHOT", "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0" ]
   }, {
     "ref" : "kamelet:databricks-source",
-    "dependsOn" : [ "pkg:maven/com.databricks/databricks-jdbc@3.4.2", "pkg:maven/org.apache.camel/camel-jackson@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-sql@4.23.0-SNAPSHOT", "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0" ]
+    "dependsOn" : [ "pkg:maven/com.databricks/databricks-jdbc@3.4.3", "pkg:maven/org.apache.camel/camel-jackson@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-sql@4.23.0-SNAPSHOT", "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0" ]
   }, {
     "ref" : "kamelet:delay-action",
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-core@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT" ]
@@ -3511,7 +3511,7 @@
     "ref" : "pkg:maven/com.azure/azure-identity@1.18.1",
     "dependsOn" : [ ]
   }, {
-    "ref" : "pkg:maven/com.databricks/databricks-jdbc@3.4.2",
+    "ref" : "pkg:maven/com.databricks/databricks-jdbc@3.4.3",
     "dependsOn" : [ ]
   }, {
     "ref" : "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-joda@2.12.5",
