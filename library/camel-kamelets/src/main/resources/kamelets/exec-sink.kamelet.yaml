@@ -47,18 +47,6 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[args]}"
-            steps:
-            - setHeader:
-                name: CamelExecCommandArgs
-                simple: "${header[args]}"
-          - simple: "${header[ce-args]}"
-            steps:
-            - setHeader:
-                name: CamelExecCommandArgs
-                simple: "${header[ce-args]}"
       - to:
           uri: "exec:{{executable}}"
       - setBody:

@@ -301,12 +301,12 @@ such, with a reference to this page.
   operator-bound property. Wiring an untrusted source into that property is
   route-author error, exactly as in the Camel model.
 * *A Kamelet doing, by design, the dangerous thing it is named for.*
-  `exec-sink` ("Execute system commands") deliberately maps an inbound `args` /
-  `ce-args` header into `CamelExecCommandArgs` and runs `exec:{\{executable}}`;
-  `ssh-sink`, `scp-sink`, `ssh-source` run remote commands/transfers. Placing
-  such a Kamelet downstream of untrusted input is operator responsibility - the
-  behaviour is the Kamelet's documented contract, analogous to Camel's
-  "bean-based dispatch via internal headers is intentional" limitation.
+  `exec-sink` ("Execute system commands") runs `exec:{\{executable}}` with the
+  executable bound by the operator; `ssh-sink`, `scp-sink`, `ssh-source` run
+  remote commands/transfers. Placing such a Kamelet downstream of untrusted
+  input is operator responsibility - the behaviour is the Kamelet's documented
+  contract, analogous to Camel's "bean-based dispatch via internal headers is
+  intentional" limitation.
 * *Network exposure of a source Kamelet.* `webhook-source`, `http-source`,
   `http-secured-source` and similar open a `platform-http` listener. The catalog
   does not add authentication except where a Kamelet's name and properties say
