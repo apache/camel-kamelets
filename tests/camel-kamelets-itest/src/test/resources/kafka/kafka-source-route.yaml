@@ -21,6 +21,7 @@
       parameters:
         bootstrapServers: '{{kafka.bootstrapServers}}'
         topic: '{{kafka.topic}}'
+        saslAuthType: 'NONE'
         deserializeHeaders: '{{kafka.deserializeHeaders}}'
       steps:
         - to:
