@@ -9,6 +9,8 @@
 - Catalog dependency scan: advisories against pinned artifacts [\#3054](https://github.com/apache/camel-kamelets/issues/3054)
 - Release Camel-Kamelets 4.22.1 [\#3042](https://github.com/apache/camel-kamelets/issues/3042)
 - Salesforce Kamelets only support username/password authentication \(no JWT/keystore\) [\#3014](https://github.com/apache/camel-kamelets/issues/3014)
+- exec-sink: the documented args / ce-args header interface has no effect \(camel-exec gates control headers behind allowControlHeaders\) [\#2980](https://github.com/apache/camel-kamelets/issues/2980)
+- Migrate DDB integration tests away from LocalStack [\#2872](https://github.com/apache/camel-kamelets/issues/2872)
 - Rework the scripts as maven plugin [\#1888](https://github.com/apache/camel-kamelets/issues/1888)
 - A kamelet should define which headers are supported as input and output [\#929](https://github.com/apache/camel-kamelets/issues/929)
 - Detect Vulnerabilities in Kamelets / Containers [\#558](https://github.com/apache/camel-kamelets/issues/558)
