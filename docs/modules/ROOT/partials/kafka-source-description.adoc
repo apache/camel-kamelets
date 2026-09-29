@@ -2,9 +2,11 @@
 
 === Authentication
 
-Authentication is selected with `saslAuthType`, which defaults to `NONE`, so out of the box
-the Kamelet connects to an unauthenticated broker. The accepted values are `NONE`, `PLAIN`,
-`SCRAM_SHA_256`, `SCRAM_SHA_512`, `SSL`, `OAUTH`, `AWS_MSK_IAM` and `KERBEROS`.
+Authentication is selected with `saslAuthType`, which is required and has no default, so the
+choice is always explicit. The accepted values are `NONE`, `PLAIN`, `SCRAM_SHA_256`,
+`SCRAM_SHA_512`, `SSL`, `OAUTH`, `AWS_MSK_IAM` and `KERBEROS`. `NONE` is a valid choice and
+connects to an unauthenticated broker over a plaintext connection -- it just has to be asked
+for rather than inherited.
 
 Which other properties are needed depends on that choice:
 
@@ -20,11 +22,11 @@ deployment allows it.
 
 === Configuration
 
-Only `topic` and `bootstrapServers` are required. The Kamelet supports:
+`topic`, `bootstrapServers` and `saslAuthType` are required. The Kamelet supports:
 
 - **topic**: Comma-separated list of Kafka topic names to consume from (required)
 - **bootstrapServers**: Comma-separated list of Kafka bootstrap servers (required)
-- **saslAuthType**: Authentication mechanism, default `NONE`
+- **saslAuthType**: Authentication mechanism, no default (required)
 - **saslUsername** / **saslPassword**: Credentials for the username and password mechanisms
 - **oauthClientId** / **oauthClientSecret** / **oauthTokenEndpointUri** / **oauthScope**:
   OAuth 2.0 settings

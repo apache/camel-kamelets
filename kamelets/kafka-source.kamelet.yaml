@@ -34,6 +34,7 @@ spec:
     required:
       - topic
       - bootstrapServers
+      - saslAuthType
     type: object
     properties:
       topic:
@@ -46,9 +47,8 @@ spec:
         type: string
       saslAuthType:
         title: Authentication Type
-        description: Authentication type to use. Use NONE for no authentication, PLAIN or SCRAM_SHA_256/SCRAM_SHA_512 for username/password, SSL for certificate-based, OAUTH for OAuth 2.0, AWS_MSK_IAM for MSK, or KERBEROS for Kerberos.
+        description: Authentication type to use. This has no default and must be set explicitly. Use NONE for no authentication, which leaves the broker connection plaintext and unauthenticated, PLAIN or SCRAM_SHA_256/SCRAM_SHA_512 for username/password, SSL for certificate-based, OAUTH for OAuth 2.0, AWS_MSK_IAM for MSK, or KERBEROS for Kerberos.
         type: string
-        default: NONE
         enum: ["NONE", "PLAIN", "SCRAM_SHA_256", "SCRAM_SHA_512", "SSL", "OAUTH", "AWS_MSK_IAM", "KERBEROS"]
       saslUsername:
         title: Username
