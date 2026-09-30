@@ -2421,6 +2421,17 @@
       "value" : "runtime"
     } ]
   }, {
+    "bom-ref" : "pkg:maven/org.apache.camel/camel-pqc@4.23.0-SNAPSHOT",
+    "type" : "library",
+    "group" : "org.apache.camel",
+    "name" : "camel-pqc",
+    "version" : "4.23.0-SNAPSHOT",
+    "purl" : "pkg:maven/org.apache.camel/camel-pqc@4.23.0-SNAPSHOT",
+    "properties" : [ {
+      "name" : "camel.apache.org/versioned-by",
+      "value" : "runtime"
+    } ]
+  }, {
     "bom-ref" : "pkg:maven/org.apache.camel/camel-pulsar@4.23.0-SNAPSHOT",
     "type" : "library",
     "group" : "org.apache.camel",
@@ -3314,10 +3325,10 @@
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-jackson@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-sql@4.23.0-SNAPSHOT", "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0", "pkg:maven/org.postgresql/postgresql@42.7.13" ]
   }, {
     "ref" : "kamelet:pqc-kem-action",
-    "dependsOn" : [ "pkg:maven/org.apache.camel/camel-core@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-http@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT" ]
+    "dependsOn" : [ "pkg:maven/org.apache.camel/camel-core@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-pqc@4.23.0-SNAPSHOT" ]
   }, {
     "ref" : "kamelet:pqc-signature-action",
-    "dependsOn" : [ "pkg:maven/org.apache.camel/camel-core@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-http@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT" ]
+    "dependsOn" : [ "pkg:maven/org.apache.camel/camel-core@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-pqc@4.23.0-SNAPSHOT" ]
   }, {
     "ref" : "kamelet:predicate-filter-action",
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-core@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-jsonpath@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT" ]
@@ -3809,6 +3820,9 @@
     "dependsOn" : [ ]
   }, {
     "ref" : "pkg:maven/org.apache.camel/camel-platform-http@4.23.0-SNAPSHOT",
+    "dependsOn" : [ ]
+  }, {
+    "ref" : "pkg:maven/org.apache.camel/camel-pqc@4.23.0-SNAPSHOT",
     "dependsOn" : [ ]
   }, {
     "ref" : "pkg:maven/org.apache.camel/camel-pulsar@4.23.0-SNAPSHOT",
