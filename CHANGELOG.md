@@ -10,8 +10,11 @@
 - Release Camel-Kamelets 4.22.1 [\#3042](https://github.com/apache/camel-kamelets/issues/3042)
 - Salesforce Kamelets only support username/password authentication \(no JWT/keystore\) [\#3014](https://github.com/apache/camel-kamelets/issues/3014)
 - exec-sink: the documented args / ce-args header interface has no effect \(camel-exec gates control headers behind allowControlHeaders\) [\#2980](https://github.com/apache/camel-kamelets/issues/2980)
+- kafka-source defaults saslAuthType to NONE without the not-secured naming its siblings use [\#2970](https://github.com/apache/camel-kamelets/issues/2970)
 - Migrate DDB integration tests away from LocalStack [\#2872](https://github.com/apache/camel-kamelets/issues/2872)
 - Rework the scripts as maven plugin [\#1888](https://github.com/apache/camel-kamelets/issues/1888)
+- Support DataRef cloudevent extension [\#1872](https://github.com/apache/camel-kamelets/issues/1872)
+- Docs template should edit the content [\#1615](https://github.com/apache/camel-kamelets/issues/1615)
 - A kamelet should define which headers are supported as input and output [\#929](https://github.com/apache/camel-kamelets/issues/929)
 - Detect Vulnerabilities in Kamelets / Containers [\#558](https://github.com/apache/camel-kamelets/issues/558)
 
