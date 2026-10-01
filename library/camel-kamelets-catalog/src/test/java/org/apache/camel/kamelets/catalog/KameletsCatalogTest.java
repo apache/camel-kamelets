@@ -277,7 +277,12 @@ public class KameletsCatalogTest {
         verifyHeaders("sftp-sink", 6);
         verifyHeaders("sftp-source", 15);
         verifyHeaders("slack-sink", 0);
-        verifyHeaders("slack-source", 0);
+        // Declares five CloudEvent headers under spec.dataTypes.out.types.cloudevents.headers,
+        // so it reports those rather than falling back to the camel-slack component.
+        verifyHeaders("slack-source", 5);
+        verifyHeaders("azure-cosmosdb-source", 5);
+        verifyHeaders("google-sheets-sink", 5);
+        verifyHeaders("aws-ddb-sink", 2);
         verifyHeaders("splunk-hec-sink", 1);
         verifyHeaders("splunk-sink", 0);
         verifyHeaders("splunk-source", 0);

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -42,6 +43,7 @@ import org.apache.camel.tooling.model.ComponentModel;
 import org.apache.camel.util.ObjectHelper;
 import org.apache.camel.v1.Kamelet;
 import org.apache.camel.v1.kameletspec.datatypes.Headers;
+import org.apache.camel.v1.kameletspec.datatypes.Types;
 import org.apache.camel.v1.kameletspec.DataTypes;
 import org.apache.camel.v1.kameletspec.Definition;
 import org.apache.camel.v1.kameletspec.Template;
@@ -276,32 +278,73 @@ public class KameletsCatalog {
      * template actually emits or consumes rather than what its component supports.
      */
     private List<ComponentModel.EndpointHeaderModel> getDeclaredHeaders(Kamelet kamelet) {
-        List<ComponentModel.EndpointHeaderModel> declared = new ArrayList<>();
         if (kamelet.getSpec() == null || kamelet.getSpec().getDataTypes() == null) {
-            return declared;
+            return new ArrayList<>();
         }
+        // Keyed by name, because the same header commonly repeats across the data types
+        // of one side.
+        Map<String, ComponentModel.EndpointHeaderModel> declared = new LinkedHashMap<>();
         for (DataTypes dataType : kamelet.getSpec().getDataTypes().values()) {
-            if (dataType == null || dataType.getHeaders() == null) {
+            if (dataType == null) {
                 continue;
             }
-            for (Map.Entry<String, Headers> entry : dataType.getHeaders().entrySet()) {
-                declared.add(toHeaderModel(entry.getKey(), entry.getValue()));
+            if (dataType.getHeaders() != null && !dataType.getHeaders().isEmpty()) {
+                // The side-level block is the authoritative summary for that side: it is
+                // what the Kamelet always emits or consumes, whichever data type is in
+                // use. Where it exists it is the answer, and the per-type blocks below
+                // are deliberately not merged into it -- those headers appear only when
+                // their type is selected, so adding them would over-report exactly the
+                // way the component list does.
+                for (Map.Entry<String, Headers> entry : dataType.getHeaders().entrySet()) {
+                    Headers header = entry.getValue();
+                    declared.computeIfAbsent(entry.getKey(), n -> toHeaderModel(n,
+                            header == null ? null : header.getTitle(),
+                            header == null ? null : header.getDescription(),
+                            header == null ? null : header.getType(),
+                            header == null ? null : header.get_default(),
+                            header == null ? null : header.getRequired()));
+                }
+                continue;
+            }
+            // No side-level block, so fall back to what its data types declare before
+            // falling back to the component. A Kamelet that only transforms its payload
+            // puts its headers there, and reading nothing made the catalog report that
+            // such a Kamelet supports no headers at all.
+            if (dataType.getTypes() != null) {
+                for (Types type : dataType.getTypes().values()) {
+                    if (type == null || type.getHeaders() == null) {
+                        continue;
+                    }
+                    for (Map.Entry<String, org.apache.camel.v1.kameletspec.datatypes.types.Headers> entry
+                            : type.getHeaders().entrySet()) {
+                        org.apache.camel.v1.kameletspec.datatypes.types.Headers header = entry.getValue();
+                        declared.computeIfAbsent(entry.getKey(), n -> toHeaderModel(n,
+                                header == null ? null : header.getTitle(),
+                                header == null ? null : header.getDescription(),
+                                header == null ? null : header.getType(),
+                                header == null ? null : header.get_default(),
+                                header == null ? null : header.getRequired()));
+                    }
+                }
             }
         }
-        return declared;
+        return new ArrayList<>(declared.values());
     }
 
-    private ComponentModel.EndpointHeaderModel toHeaderModel(String name, Headers header) {
+    /**
+     * The side-level and type-level header POJOs are generated separately and share no
+     * supertype, so the fields are passed in rather than the object.
+     */
+    private ComponentModel.EndpointHeaderModel toHeaderModel(
+            String name, String title, String description, String type, String defaultValue, Boolean required) {
         ComponentModel.EndpointHeaderModel model = new ComponentModel.EndpointHeaderModel();
         model.setName(name);
-        if (header != null) {
-            model.setDisplayName(header.getTitle());
-            model.setDescription(header.getDescription());
-            model.setType(header.getType());
-            model.setJavaType(header.getType());
-            model.setDefaultValue(header.get_default());
-            model.setRequired(Boolean.TRUE.equals(header.getRequired()));
-        }
+        model.setDisplayName(title);
+        model.setDescription(description);
+        model.setType(type);
+        model.setJavaType(type);
+        model.setDefaultValue(defaultValue);
+        model.setRequired(Boolean.TRUE.equals(required));
         return model;
     }
 
