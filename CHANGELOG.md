@@ -6,6 +6,8 @@
 
 **Closed issues:**
 
+- PQC Kamelets declare camel:http instead of camel:pqc [\#3073](https://github.com/apache/camel-kamelets/issues/3073)
+- pqc-signature-action: drop PICNIC and fix the malformed MLDSA enum value [\#3070](https://github.com/apache/camel-kamelets/issues/3070)
 - Catalog dependency scan: advisories against pinned artifacts [\#3054](https://github.com/apache/camel-kamelets/issues/3054)
 - Release Camel-Kamelets 4.22.1 [\#3042](https://github.com/apache/camel-kamelets/issues/3042)
 - Salesforce Kamelets only support username/password authentication \(no JWT/keystore\) [\#3014](https://github.com/apache/camel-kamelets/issues/3014)
