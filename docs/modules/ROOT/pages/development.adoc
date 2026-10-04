@@ -466,6 +466,48 @@ The Pipe in the sample above uses a combination of Kamelet output data type, Jso
 
 All referenced data types are backed by a specific transformer implementation either provided by the Kamelet itself or by pure Apache Camel functionality.
 
+=== Declaring headers without a transformation
+
+The `dataTypes` block above exists to offer a choice of formats, each one backed by a transformer.
+A Kamelet that transforms nothing still has a contract worth declaring: the headers it puts on
+every message, or the ones it reads. The `headers` block may be declared on its own for that,
+with no `types` and no `default`.
+
+.my-plain-source.kamelet.yaml
+[source,yaml]
+----
+spec:
+  definition:
+# ...
+  dataTypes:
+    out: # <1>
+      headers:
+        MyHeaderName:
+          type: string
+          description: What this source puts on every message
+----
+<1> A `headers` block with no `types` and no `default`. Nothing is transformed; this only
+describes what the Kamelet emits.
+
+A source declares the headers it emits under `out`; a sink or action declares the ones it
+consumes under `in`.
+
+Declaring them is worth the few lines for two reasons:
+
+* `KameletsCatalog.getKameletSupportedHeaders` answers from the declaration wherever there is
+  one, and falls back to the headers of the underlying Camel component only where there is not.
+  The component list answers a different question -- everything that component can emit -- so it
+  both over-reports headers a template never surfaces and misses the ones the template sets
+  itself.
+* Because that fallback follows the component, the catalog's own header test has to track
+  upstream Apache Camel: a header added to a component upstream changes what the catalog reports
+  for every Kamelet that does not declare its own. Declaring them takes a Kamelet out of that
+  dependency.
+
+Where a side declares both a top-level `headers` block and headers inside its `types`, the
+top-level block is the answer. Those are the headers present whichever data type is in use, while
+a type's headers appear only when that type is selected.
+
 == Creating a complex Kamelet
 
 We're now going to create a Kamelet with a high degree of complexity, to show how the Kamelet model can be used also to go over the
