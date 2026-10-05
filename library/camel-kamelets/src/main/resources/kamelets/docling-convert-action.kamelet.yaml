@@ -41,7 +41,8 @@ spec:
       the body is pinned to bytes and the `CamelDocling*` control headers are swept, because
       none of them may be decided by a consumer-delivered payload. By default the `docling`
       component executes a local docling CLI; set `doclingServeUrl` to use a Docling Serve
-      instance instead - the natural fit for self-contained Pipes.
+      instance instead - the natural fit for self-contained Pipes. With `maxDocumentSize`
+      set, a payload larger than that many bytes fails the exchange before the conversion.
     type: object
     properties:
       documentIdHeader:
@@ -50,6 +51,13 @@ spec:
           CamelLangChain4jIngestDocumentId exchange property before the conversion.
         type: string
         default: CamelLangChain4jIngestDocumentId
+      maxDocumentSize:
+        title: Max Document Size
+        description: Maximum size of the payload in bytes, checked before the conversion; a
+          larger document fails the exchange without being converted. 0, the default, means no
+          limit.
+        type: integer
+        default: 0
       doclingServeUrl:
         title: Docling Serve URL
         description: Address of a Docling Serve instance to convert through, such as
@@ -74,6 +82,26 @@ spec:
             expression:
               simple:
                 expression: "${header[{{documentIdHeader}}]}"
+        # the size cap, present only when maxDocumentSize is set: the conversion materializes
+        # the document, so an oversized one is rejected first. length() is free for byte arrays
+        # and cached streams and a streamed count otherwise, so the guard adds no copy of the
+        # payload
+        - choice:
+            precondition: true
+            when:
+              - expression:
+                  simple:
+                    expression: "${properties:maxDocumentSize:0} > 0"
+                steps:
+                  - choice:
+                      when:
+                        - expression:
+                            simple:
+                              expression: "${length()} > {{maxDocumentSize}}"
+                          steps:
+                            - throwException:
+                                exceptionType: java.lang.IllegalArgumentException
+                                message: "Document '${exchangeProperty.CamelLangChain4jIngestDocumentId}' exceeds maxDocumentSize (${length()} > {{maxDocumentSize}} bytes)"
         - convertBodyTo:
             type: byte[]
         - removeHeaders:
