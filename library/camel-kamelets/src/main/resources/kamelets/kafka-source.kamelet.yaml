@@ -155,28 +155,29 @@ spec:
       - name: kafkaHeaderDeserializer
         type: "#class:org.apache.camel.component.kafka.KafkaHeaderDeserializer"
         properties:
-          enabled: '{{deserializeHeaders}}'
+          enabled: "{{deserializeHeaders}}"
     from:
-      uri: "kafka:{{topic}}"
+      uri: kafka
       parameters:
-        brokers: "{{bootstrapServers}}"
-        saslAuthType: "{{saslAuthType}}"
-        saslUsername: "{{?saslUsername}}"
-        saslPassword: "{{?saslPassword}}"
-        oauthClientId: "{{?oauthClientId}}"
-        oauthClientSecret: "{{?oauthClientSecret}}"
-        oauthTokenEndpointUri: "{{?oauthTokenEndpointUri}}"
-        oauthScope: "{{?oauthScope}}"
-        sslTruststoreLocation: "{{?sslTruststoreLocation}}"
-        sslTruststorePassword: "{{?sslTruststorePassword}}"
-        sslKeystoreLocation: "{{?sslKeystoreLocation}}"
-        sslKeystorePassword: "{{?sslKeystorePassword}}"
-        sslKeyPassword: "{{?sslKeyPassword}}"
-        autoCommitEnable: "{{autoCommitEnable}}"
+        topic: "{{topic}}"
         allowManualCommit: "{{allowManualCommit}}"
-        pollOnError: "{{pollOnError}}"
+        autoCommitEnable: "{{autoCommitEnable}}"
         autoOffsetReset: "{{autoOffsetReset}}"
+        brokers: "{{bootstrapServers}}"
         groupId: "{{?consumerGroup}}"
+        oauthClientId: "{{?oauthClientId}}"
+        oauthClientSecret: "RAW({{?oauthClientSecret}})"
+        oauthScope: "{{?oauthScope}}"
+        oauthTokenEndpointUri: "{{?oauthTokenEndpointUri}}"
+        pollOnError: "{{pollOnError}}"
+        saslAuthType: "{{saslAuthType}}"
+        saslPassword: "RAW({{?saslPassword}})"
+        saslUsername: "{{?saslUsername}}"
+        sslKeyPassword: "RAW({{?sslKeyPassword}})"
+        sslKeystoreLocation: "{{?sslKeystoreLocation}}"
+        sslKeystorePassword: "RAW({{?sslKeystorePassword}})"
+        sslTruststoreLocation: "{{?sslTruststoreLocation}}"
+        sslTruststorePassword: "RAW({{?sslTruststorePassword}})"
         topicIsPattern: "{{topicIsPattern}}"
       steps:
         - process:
@@ -188,32 +189,53 @@ spec:
         # in place, so existing consumers are unaffected.
         - setHeader:
             name: kafka-topic
-            simple: "${header[CamelKafkaTopic]}"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaTopic]}"
         - setHeader:
             name: ce-kafkatopic
-            simple: "${header[CamelKafkaTopic]}"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaTopic]}"
         - setHeader:
             name: kafka-key
-            simple: "${header[CamelKafkaKey]}"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaKey]}"
         - setHeader:
             name: ce-kafkakey
-            simple: "${header[CamelKafkaKey]}"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaKey]}"
         - setHeader:
             name: kafka-partition
-            simple: "${header[CamelKafkaPartition]}"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaPartition]}"
         - setHeader:
             name: ce-kafkapartition
-            simple: "${header[CamelKafkaPartition]}"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaPartition]}"
         - setHeader:
             name: kafka-offset
-            simple: "${header[CamelKafkaOffset]}"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaOffset]}"
         - setHeader:
             name: ce-kafkaoffset
-            simple: "${header[CamelKafkaOffset]}"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaOffset]}"
         - setHeader:
             name: kafka-timestamp
-            simple: "${header[CamelKafkaTimestamp]}"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaTimestamp]}"
         - setHeader:
             name: ce-kafkatimestamp
-            simple: "${header[CamelKafkaTimestamp]}"
-        - to: "kamelet:sink"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaTimestamp]}"
+        - to:
+            uri: kamelet:sink

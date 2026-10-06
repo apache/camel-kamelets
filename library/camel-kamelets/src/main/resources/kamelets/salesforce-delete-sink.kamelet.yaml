@@ -143,7 +143,9 @@ spec:
               jsonpath:
                 expression: "$['sObjectName']"
         - setBody:
-            simple: "${null}"
+            expression:
+              simple:
+                expression: "${null}"
         - to:
             uri: "{{local-delete-salesforce}}:deleteSObject"
         - removeHeader:

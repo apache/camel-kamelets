@@ -92,31 +92,46 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[file]}"
-            steps:
-            - setHeader:
-                name: CamelFileName
-                simple: "${header[file]}"
-            - setHeader:
-                name: CamelFileName
-                simple: "${file:onlyname}"
-          - simple: "${header[ce-file]}"
-            steps:
-            - setHeader:
-                name: CamelFileName
-                simple: "${header[ce-file]}"
-            - setHeader:
-                name: CamelFileName
-                simple: "${file:onlyname}"
-      - to:
-          uri: "ftps:{{username}}@{{connectionHost}}:{{connectionPort}}/{{directoryName}}"
-          parameters:
-            password: "{{password}}"
-            passiveMode: "{{passiveMode}}"
-            fileExist: "{{fileExist}}"
-            binary: "{{binary}}"
-            autoCreate: "{{autoCreate}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[file]}"
+                steps:
+                  - setHeader:
+                      name: CamelFileName
+                      expression:
+                        simple:
+                          expression: "${header[file]}"
+                  - setHeader:
+                      name: CamelFileName
+                      expression:
+                        simple:
+                          expression: "${file:onlyname}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-file]}"
+                steps:
+                  - setHeader:
+                      name: CamelFileName
+                      expression:
+                        simple:
+                          expression: "${header[ce-file]}"
+                  - setHeader:
+                      name: CamelFileName
+                      expression:
+                        simple:
+                          expression: "${file:onlyname}"
+        - to:
+            uri: ftps
+            parameters:
+              host: "{{username}}@{{connectionHost}}"
+              port: "{{connectionPort}}"
+              directoryName: "{{directoryName}}"
+              autoCreate: "{{autoCreate}}"
+              binary: "{{binary}}"
+              fileExist: "{{fileExist}}"
+              passiveMode: "{{passiveMode}}"
+              password: "RAW({{password}})"

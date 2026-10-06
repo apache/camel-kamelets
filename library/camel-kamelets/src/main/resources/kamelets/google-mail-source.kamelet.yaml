@@ -161,18 +161,9 @@ spec:
   - "camel:google-mail"
   template:
     from:
-      uri: "google-mail-stream://{{index}}"
-      parameters:
-        clientId: "{{clientId}}"
-        accessToken: "{{accessToken}}"
-        refreshToken: "{{refreshToken}}"
-        clientSecret: "{{clientSecret}}"
-        delay: "{{delay}}"
-        applicationName: "{{applicationName}}"
-        markAsRead: "{{markAsRead}}"
-        labels: "{{labels}}"
-        query: "{{query}}"
+      uri: "google-mail-stream://{{index}}?accessToken=RAW({{accessToken}})&applicationName={{applicationName}}&clientId={{clientId}}&clientSecret=RAW({{clientSecret}})&delay={{delay}}&labels={{labels}}&markAsRead={{markAsRead}}&query={{query}}&refreshToken=RAW({{refreshToken}})"
       steps:
-      - marshal:
-          json: {}
-      - to: "kamelet:sink"
+        - marshal:
+            json: {}
+        - to:
+            uri: kamelet:sink

@@ -113,73 +113,97 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[subject]}"
-            steps:
-            - setHeader:
-                name: CamelAwsSnsSubject
-                simple: "${header[subject]}"
-          - simple: "${header[ce-subject]}"
-            steps:
-            - setHeader:
-                name: CamelAwsSnsSubject
-                simple: "${header[ce-subject]}"
-      - setProperty:
-          name: contentBasedDeduplication
-          constant: "{{contentBasedDeduplication}}"
-      - choice:
-          when:
-          - simple: "${header[group]}"
-            steps:
-            - setProperty:
-                name: CamelAwsSnsMessageGroupId
-                simple: "${header[group]}"
-          - simple: "${header[ce-group]}"
-            steps:
-            - setProperty:
-                name: CamelAwsSnsMessageGroupId
-                simple: "${header[ce-group]}"
-          otherwise:
-            steps:
-            - setProperty:
-                name: CamelAwsSnsMessageGroupId
-                simple: "${exchangeId}"
-      - choice:
-          when:
-          - simple: "${exchangeProperty.contentBasedDeduplication} == 'true'"
-            steps:
-            - to:
-                uri: "aws2-sns:{{topicNameOrArn}}"
-                parameters:
-                  autoCreateTopic: "{{autoCreateTopic}}"
-                  accessKey: "{{?accessKey}}"
-                  secretKey: "{{?secretKey}}"
-                  region: "{{region}}"
-                  useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-                  useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-                  useSessionCredentials: "{{useSessionCredentials}}"
-                  messageGroupIdStrategy: "usePropertyValue"
-                  messageDeduplicationIdStrategy: "useContentBasedDeduplication"
-                  profileCredentialsName: "{{?profileCredentialsName}}"
-                  sessionToken: "{{?sessionToken}}"
-                  uriEndpointOverride: "{{?uriEndpointOverride}}"
-                  overrideEndpoint: "{{overrideEndpoint}}"
-          otherwise:
-            steps:
-            - to:
-                uri: "aws2-sns:{{topicNameOrArn}}"
-                parameters:
-                  autoCreateTopic: "{{autoCreateTopic}}"
-                  accessKey: "{{?accessKey}}"
-                  secretKey: "{{?secretKey}}"
-                  region: "{{region}}"
-                  useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-                  useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-                  useSessionCredentials: "{{useSessionCredentials}}"
-                  messageGroupIdStrategy: "usePropertyValue"
-                  messageDeduplicationIdStrategy: "useExchangeId"
-                  profileCredentialsName: "{{?profileCredentialsName}}"
-                  sessionToken: "{{?sessionToken}}"
-                  uriEndpointOverride: "{{?uriEndpointOverride}}"
-                  overrideEndpoint: "{{overrideEndpoint}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[subject]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsSnsSubject
+                      expression:
+                        simple:
+                          expression: "${header[subject]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-subject]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsSnsSubject
+                      expression:
+                        simple:
+                          expression: "${header[ce-subject]}"
+        - setProperty:
+            name: contentBasedDeduplication
+            expression:
+              constant:
+                expression: "{{contentBasedDeduplication}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[group]}"
+                steps:
+                  - setProperty:
+                      name: CamelAwsSnsMessageGroupId
+                      expression:
+                        simple:
+                          expression: "${header[group]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-group]}"
+                steps:
+                  - setProperty:
+                      name: CamelAwsSnsMessageGroupId
+                      expression:
+                        simple:
+                          expression: "${header[ce-group]}"
+            otherwise:
+              steps:
+                - setProperty:
+                    name: CamelAwsSnsMessageGroupId
+                    expression:
+                      simple:
+                        expression: "${exchangeId}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${exchangeProperty.contentBasedDeduplication} == 'true'"
+                steps:
+                  - to:
+                      uri: aws2-sns
+                      parameters:
+                        topicNameOrArn: "{{topicNameOrArn}}"
+                        accessKey: "RAW({{?accessKey}})"
+                        autoCreateTopic: "{{autoCreateTopic}}"
+                        messageDeduplicationIdStrategy: useContentBasedDeduplication
+                        messageGroupIdStrategy: usePropertyValue
+                        overrideEndpoint: "{{overrideEndpoint}}"
+                        profileCredentialsName: "{{?profileCredentialsName}}"
+                        region: "{{region}}"
+                        secretKey: "RAW({{?secretKey}})"
+                        sessionToken: "RAW({{?sessionToken}})"
+                        uriEndpointOverride: "{{?uriEndpointOverride}}"
+                        useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+                        useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
+                        useSessionCredentials: "{{useSessionCredentials}}"
+            otherwise:
+              steps:
+                - to:
+                    uri: aws2-sns
+                    parameters:
+                      topicNameOrArn: "{{topicNameOrArn}}"
+                      accessKey: "RAW({{?accessKey}})"
+                      autoCreateTopic: "{{autoCreateTopic}}"
+                      messageDeduplicationIdStrategy: useExchangeId
+                      messageGroupIdStrategy: usePropertyValue
+                      overrideEndpoint: "{{overrideEndpoint}}"
+                      profileCredentialsName: "{{?profileCredentialsName}}"
+                      region: "{{region}}"
+                      secretKey: "RAW({{?secretKey}})"
+                      sessionToken: "RAW({{?sessionToken}})"
+                      uriEndpointOverride: "{{?uriEndpointOverride}}"
+                      useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+                      useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
+                      useSessionCredentials: "{{useSessionCredentials}}"

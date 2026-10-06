@@ -66,12 +66,13 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "nats:{{topic}}"
-          parameters:
-            servers: "{{servers}}"
-            jetstreamEnabled: "{{?jetstreamEnabled}}"
-            jetstreamName: "{{?jetstreamName}}"
-            jetstreamAsync: "{{?jetstreamAsync}}"
+        - to:
+            uri: nats
+            parameters:
+              topic: "{{topic}}"
+              jetstreamAsync: "{{?jetstreamAsync}}"
+              jetstreamEnabled: "{{?jetstreamEnabled}}"
+              jetstreamName: "{{?jetstreamName}}"
+              servers: "{{servers}}"

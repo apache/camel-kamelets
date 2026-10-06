@@ -90,41 +90,58 @@ spec:
       - name: defaultAzureCredential
         type: "#class:org.apache.camel.component.azure.schema.registry.DefaultAzureCredentialWrapper"
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[key]}"
-            steps:
-            - setHeader:
-                name: CamelKafkaKey
-                simple: "${header[key]}"
-          - simple: "${header[ce-key]}"
-            steps:
-            - setHeader:
-                name: CamelKafkaKey
-                simple: "${header[ce-key]}"
-      - choice:
-          when:
-          - simple: "${header[partition-key]}"
-            steps:
-            - setHeader:
-                name: CamelKafkaPartitionKey
-                simple: "${header[partition-key]}"
-          - simple: "${header[ce-partitionkey]}"
-            steps:
-            - setHeader:
-                name: CamelKafkaPartitionKey
-                simple: "${header[ce-partitionkey]}"
-      - to:
-          uri: "kafka:{{topic}}"
-          parameters:
-            brokers: "{{bootstrapServers}}"
-            securityProtocol: "{{securityProtocol}}"
-            saslMechanism: "{{saslMechanism}}"
-            saslJaasConfig: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password="{{password}}";'
-            valueSerializer: "{{valueSerializer}}"
-            additionalProperties.schema.registry.url: "{{azureRegistryUrl}}"
-            additionalProperties.schema.group: avro
-            additionalProperties.schema.registry.credential: '#bean:defaultAzureCredential'
-            additionalProperties.specific.avro.value.type: '#valueAs(java.lang.Class):{{specificAvroValueType}}'
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[key]}"
+                steps:
+                  - setHeader:
+                      name: CamelKafkaKey
+                      expression:
+                        simple:
+                          expression: "${header[key]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-key]}"
+                steps:
+                  - setHeader:
+                      name: CamelKafkaKey
+                      expression:
+                        simple:
+                          expression: "${header[ce-key]}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[partition-key]}"
+                steps:
+                  - setHeader:
+                      name: CamelKafkaPartitionKey
+                      expression:
+                        simple:
+                          expression: "${header[partition-key]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-partitionkey]}"
+                steps:
+                  - setHeader:
+                      name: CamelKafkaPartitionKey
+                      expression:
+                        simple:
+                          expression: "${header[ce-partitionkey]}"
+        - to:
+            uri: kafka
+            parameters:
+              topic: "{{topic}}"
+              additionalProperties.schema.group: avro
+              additionalProperties.schema.registry.credential: "#bean:defaultAzureCredential"
+              additionalProperties.schema.registry.url: "{{azureRegistryUrl}}"
+              additionalProperties.specific.avro.value.type: "#valueAs(java.lang.Class):{{specificAvroValueType}}"
+              brokers: "{{bootstrapServers}}"
+              saslJaasConfig: "RAW(org.apache.kafka.common.security.plain.PlainLoginModule required username=\"$ConnectionString\" password=\"{{password}}\";)"
+              saslMechanism: "{{saslMechanism}}"
+              securityProtocol: "{{securityProtocol}}"
+              valueSerializer: "{{valueSerializer}}"

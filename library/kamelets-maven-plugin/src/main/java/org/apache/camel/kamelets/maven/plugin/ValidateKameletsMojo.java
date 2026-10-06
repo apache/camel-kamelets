@@ -111,6 +111,15 @@ public class ValidateKameletsMojo extends AbstractMojo {
                 if (cleanName.equalsIgnoreCase("google-calendar") && name.equals("google-calendar-source")) {
                     cleanName = "google-calendar-stream";
                 }
+                // the parameters of from: are options of the component of its uri; the dependency is only a guess
+                // of it, wrong for a source that polls with timer: (azure-storage-blob-changefeed-source)
+                Object fromUri = f.get("uri");
+                if (fromUri instanceof String u && !u.startsWith("kamelet:")) {
+                    String fromScheme = u.contains(":") ? u.substring(0, u.indexOf(':')) : u;
+                    if (cc.componentModel(fromScheme) != null) {
+                        cleanName = fromScheme;
+                    }
+                }
                 if (p != null && !p.isEmpty()) {
                     ComponentModel componentModel = cc.componentModel(cleanName);
                     if (componentModel != null) {
@@ -124,7 +133,10 @@ public class ValidateKameletsMojo extends AbstractMojo {
                         ceInternal.forEach(_param -> availableParams.append(_param).append(" "));
                         for (Map.Entry<String, Object> entry : p.entrySet()) {
                             if (!entry.getKey().equals("period") && (!name.equals("set-kafka-key-action") && !name.equals("sftp-source") && !name.equals("timer-source") && !name.equals("cron-source") && !name.equals("fhir-source") && !name.equals("beer-source") && !name.equals("cassandra-source") && !name.equals("cassandra-sink") && !name.equals("kafka-azure-schema-registry-source" ) && !name.equals("kafka-azure-schema-registy-sink") && !name.equals("aws-kinesis-source") && !name.equals("kafka-apicurio-registry-not-secured-source") && !name.equals("kafka-batch-apicurio-registry-not-secured-source") && !name.equals("kafka-batch-azure-schema-registry-source") && !name.equals("kafka-batch-apicurio-registry-source") && !name.equals("kafka-not-secured-apicurio-registry-json-source") && !name.equals("kafka-not-secured-apicurio-registry-source"))) {
-                                if (!ceInternal.contains(entry.getKey())) {
+                                // a multi value option takes its entries by prefix: mail.imaps.auth.mechanisms on imaps
+                                boolean prefixed = ce.stream().anyMatch(o -> o.isMultiValue() && o.getPrefix() != null
+                                        && !o.getPrefix().isEmpty() && entry.getKey().startsWith(o.getPrefix()));
+                                if (!ceInternal.contains(entry.getKey()) && !prefixed) {
                                     getLog().error("Kamelet Name: " + name);
                                     getLog().error("Scheme Name: " + cleanName);
                                     getLog().error("Parameter: " + entry.getKey());

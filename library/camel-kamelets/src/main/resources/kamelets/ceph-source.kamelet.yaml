@@ -102,18 +102,7 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "aws2-s3:{{bucketName}}"
-      parameters:
-        autoCreateBucket: "{{autoCreateBucket}}"
-        secretKey: "{{?secretKey}}"
-        accessKey: "{{?accessKey}}"
-        region: "{{zoneGroup}}"
-        includeBody: "{{includeBody}}"
-        ignoreBody: "{{ignoreBody}}"
-        deleteAfterRead: "{{deleteAfterRead}}"
-        prefix: "{{?prefix}}"
-        uriEndpointOverride: "{{cephUrl}}"
-        overrideEndpoint: "true"
-        delay: "{{delay}}"
+      uri: "aws2-s3:{{bucketName}}?accessKey=RAW({{?accessKey}})&autoCreateBucket={{autoCreateBucket}}&delay={{delay}}&deleteAfterRead={{deleteAfterRead}}&ignoreBody={{ignoreBody}}&includeBody={{includeBody}}&overrideEndpoint=true&prefix={{?prefix}}&region={{zoneGroup}}&secretKey=RAW({{?secretKey}})&uriEndpointOverride={{cephUrl}}"
       steps:
-      - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

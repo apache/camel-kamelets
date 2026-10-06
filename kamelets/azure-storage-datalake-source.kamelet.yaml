@@ -229,12 +229,15 @@ spec:
     - "camel:timer"
   template:
     from:
-      uri: "azure-storage-datalake:{{accountName}}/{{fileSystemName}}"
+      uri: azure-storage-datalake
       parameters:
+        accountName: "{{accountName}}"
+        fileSystemName: "{{fileSystemName}}"
         clientId: "{{clientId}}"
-        clientSecret: "{{clientSecret}}"
-        tenantId: "{{tenantId}}"
-        delay: "{{delay}}"
+        clientSecret: "RAW({{clientSecret}})"
         credentialType: "{{credentialType}}"
+        delay: "{{delay}}"
+        tenantId: "{{tenantId}}"
       steps:
-        - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

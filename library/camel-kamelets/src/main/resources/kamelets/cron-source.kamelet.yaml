@@ -57,10 +57,14 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "cron:tick"
+      uri: cron
       parameters:
+        name: tick
         schedule: "{{schedule}}"
       steps:
-      - setBody:
-          constant: "{{message}}"
-      - to: "kamelet:sink"
+        - setBody:
+            expression:
+              constant:
+                expression: "{{message}}"
+        - to:
+            uri: kamelet:sink

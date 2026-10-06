@@ -61,16 +61,25 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - setProperty:
-          name: "topicFormat"
-          constant: "{{topicFormat}}"
-      - setProperty:
-          name: "timestampFormat"
-          constant: "{{timestampFormat}}"
-      - setProperty:
-          name: "timestampHeaderName"
-          constant: "{{timestampHeaderName}}"
-      - setProperty:
-          name: "topicHeaderName"
-          constant: "{{?topicHeaderName}}"
-      - bean: "org.apache.camel.component.kafka.transform.TimestampRouter"
+        - setProperty:
+            name: topicFormat
+            expression:
+              constant:
+                expression: "{{topicFormat}}"
+        - setProperty:
+            name: timestampFormat
+            expression:
+              constant:
+                expression: "{{timestampFormat}}"
+        - setProperty:
+            name: timestampHeaderName
+            expression:
+              constant:
+                expression: "{{timestampHeaderName}}"
+        - setProperty:
+            name: topicHeaderName
+            expression:
+              constant:
+                expression: "{{?topicHeaderName}}"
+        - bean:
+            ref: org.apache.camel.component.kafka.transform.TimestampRouter

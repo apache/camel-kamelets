@@ -69,11 +69,13 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: paho-mqtt5:{{topic}}
+      uri: paho-mqtt5
       parameters:
+        topic: "{{topic}}"
         brokerUrl: "{{brokerUrl}}"
         clientId: "{{clientId}}"
-        userName: "{{?username}}"
-        password: "{{?password}}"
+        password: "RAW({{?password}})"
+        userName: "RAW({{?username}})"
       steps:
-      - to: kamelet:sink
+        - to:
+            uri: kamelet:sink

@@ -86,30 +86,42 @@ spec:
     - "camel:timer"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[file]}"
-            steps:
-            - setHeader:
-                name: CamelAzureStorageDataLakeFileName
-                simple: "${header[file]}"
-          - simple: "${header[ce-file]}"
-            steps:
-            - setHeader:
-                name: CamelAzureStorageDataLakeFileName
-                simple: "${header[ce-file]}"
-          otherwise:
-            steps:
-            - setHeader:
-                name: CamelAzureStorageDataLakeFileName
-                simple: "${exchangeId}"
-      - to:
-          uri: "azure-storage-datalake:{{accountName}}/{{fileSystemName}}"
-          parameters:
-            clientId: "{{clientId}}"
-            clientSecret: "{{clientSecret}}"
-            tenantId: "{{tenantId}}"
-            operation: "upload"
-            credentialType: "{{credentialType}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[file]}"
+                steps:
+                  - setHeader:
+                      name: CamelAzureStorageDataLakeFileName
+                      expression:
+                        simple:
+                          expression: "${header[file]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-file]}"
+                steps:
+                  - setHeader:
+                      name: CamelAzureStorageDataLakeFileName
+                      expression:
+                        simple:
+                          expression: "${header[ce-file]}"
+            otherwise:
+              steps:
+                - setHeader:
+                    name: CamelAzureStorageDataLakeFileName
+                    expression:
+                      simple:
+                        expression: "${exchangeId}"
+        - to:
+            uri: azure-storage-datalake
+            parameters:
+              accountName: "{{accountName}}"
+              fileSystemName: "{{fileSystemName}}"
+              clientId: "{{clientId}}"
+              clientSecret: "RAW({{clientSecret}})"
+              credentialType: "{{credentialType}}"
+              operation: upload
+              tenantId: "{{tenantId}}"

@@ -62,14 +62,20 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: timer:tick
+      uri: timer
       parameters:
+        timerName: tick
         period: "{{period}}"
         repeatCount: "{{?repeatCount}}"
       steps:
         - setBody:
-            constant: "{{message}}"
+            expression:
+              constant:
+                expression: "{{message}}"
         - setHeader:
-            name: "Content-Type"
-            constant: "{{contentType}}"
-        - to: kamelet:sink
+            name: Content-Type
+            expression:
+              constant:
+                expression: "{{contentType}}"
+        - to:
+            uri: kamelet:sink

@@ -70,9 +70,11 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - to:
-          uri: "rest-openapi:{{specification}}#{{operation}}"
-          parameters:
-            host: "{{?host}}"
-            basePath: "{{?basePath}}"
-            clientRequestValidation: "{{clientRequestValidation}}"
+        - to:
+            uri: rest-openapi
+            parameters:
+              specificationUri: "{{specification}}"
+              operationId: "{{operation}}"
+              basePath: "{{?basePath}}"
+              clientRequestValidation: "{{clientRequestValidation}}"
+              host: "{{?host}}"

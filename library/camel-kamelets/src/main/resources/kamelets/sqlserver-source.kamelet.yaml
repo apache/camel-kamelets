@@ -109,18 +109,14 @@ spec:
       - name: dsBean
         type: "#class:org.apache.commons.dbcp2.BasicDataSource"
         properties:
-          username: '{{username}}'
-          password: '{{password}}'
-          url: 'jdbc:sqlserver://{{serverName}}:{{serverPort}};databaseName={{databaseName}};encrypt={{encrypt}};trustServerCertificate={{trustServerCertificate}};'
-          driverClassName: 'com.microsoft.sqlserver.jdbc.SQLServerDriver'
+          username: "{{username}}"
+          password: "{{password}}"
+          url: "jdbc:sqlserver://{{serverName}}:{{serverPort}};databaseName={{databaseName}};encrypt={{encrypt}};trustServerCertificate={{trustServerCertificate}};"
+          driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
     from:
-      uri: "{{local-sqlserver-source}}:{{query}}"
-      parameters:
-        dataSource: "#bean:{{dsBean}}"
-        onConsume: "{{?consumedQuery}}"
-        delay: "{{delay}}"
+      uri: "{{local-sqlserver-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume={{?consumedQuery}}&delay={{delay}}"
       steps:
-      - marshal:
-          json:
-            library: Jackson
-      - to: "kamelet:sink"
+        - marshal:
+            json: {}
+        - to:
+            uri: kamelet:sink

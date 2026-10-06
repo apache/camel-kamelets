@@ -126,38 +126,53 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[file]}"
-            steps:
-            - setHeader:
-                name: CamelFileName
-                simple: "${header[file]}"
-            - setHeader:
-                name: CamelFileName
-                simple: "${file:onlyname}"
-          - simple: "${header[ce-file]}"
-            steps:
-            - setHeader:
-                name: CamelFileName
-                simple: "${header[ce-file]}"
-            - setHeader:
-                name: CamelFileName
-                simple: "${file:onlyname}"
-      - to:
-          uri: "sftp:{{connectionHost}}:{{connectionPort}}/{{directoryName}}"
-          parameters:
-            username: "{{?username}}"
-            password: "{{?password}}"
-            privateKeyFile: "{{?privateKeyFile}}"
-            privateKeyPassphrase: "{{?privateKeyPassphrase}}"
-            privateKeyUri: "{{?privateKeyUri}}"
-            strictHostKeyChecking: "{{?strictHostKeyChecking}}"
-            knownHostsUri: "{{?knownHostsUri}}"
-            useUserKnownHostsFile: "{{?useUserKnownHostsFile}}"
-            passiveMode: "{{passiveMode}}"
-            fileExist: "{{fileExist}}"
-            binary: "{{binary}}"
-            autoCreate: "{{autoCreate}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[file]}"
+                steps:
+                  - setHeader:
+                      name: CamelFileName
+                      expression:
+                        simple:
+                          expression: "${header[file]}"
+                  - setHeader:
+                      name: CamelFileName
+                      expression:
+                        simple:
+                          expression: "${file:onlyname}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-file]}"
+                steps:
+                  - setHeader:
+                      name: CamelFileName
+                      expression:
+                        simple:
+                          expression: "${header[ce-file]}"
+                  - setHeader:
+                      name: CamelFileName
+                      expression:
+                        simple:
+                          expression: "${file:onlyname}"
+        - to:
+            uri: sftp
+            parameters:
+              host: "{{connectionHost}}"
+              port: "{{connectionPort}}"
+              directoryName: "{{directoryName}}"
+              autoCreate: "{{autoCreate}}"
+              binary: "{{binary}}"
+              fileExist: "{{fileExist}}"
+              knownHostsUri: "RAW({{?knownHostsUri}})"
+              passiveMode: "{{passiveMode}}"
+              password: "RAW({{?password}})"
+              privateKeyFile: "RAW({{?privateKeyFile}})"
+              privateKeyPassphrase: "RAW({{?privateKeyPassphrase}})"
+              privateKeyUri: "RAW({{?privateKeyUri}})"
+              strictHostKeyChecking: "{{?strictHostKeyChecking}}"
+              useUserKnownHostsFile: "{{?useUserKnownHostsFile}}"
+              username: "RAW({{?username}})"

@@ -81,37 +81,48 @@ spec:
     - "camel:jackson"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - setHeader:
-          name: "Accept"
-          constant: "application/geo+json"
-      - setHeader:
-          name: "CamelHttpQuery"
-          simple: "limit={{limit}}&bbox={{bbox}}&{{?query}}&${body}"
-      - setBody:
-          simple: ""
-      - to: 
-          uri: "{{url}}/collections/{{collection}}/items"
-      - removeHeader:
-          name: "Accept"
-      - removeHeader:
-          name: "CamelHttpQuery"
-      - convertBodyTo:
-          type: "java.lang.String"
-      - choice:
-          when:
-          - simple: "{{split}}"
-            steps:
-            - split:
-                jsonpath: "$.features[*]"
+        - setHeader:
+            name: Accept
+            expression:
+              constant:
+                expression: application/geo+json
+        - setHeader:
+            name: CamelHttpQuery
+            expression:
+              simple:
+                expression: "limit={{limit}}&bbox={{bbox}}&{{?query}}&${body}"
+        - setBody:
+            expression:
+              simple: {}
+        - to:
+            uri: "{{url}}/collections/{{collection}}/items"
+        - removeHeader:
+            name: Accept
+        - removeHeader:
+            name: CamelHttpQuery
+        - convertBodyTo:
+            type: java.lang.String
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "{{split}}"
                 steps:
-                  - marshal:
-                      json: {}
-                  - to: "kamelet:sink"
-          otherwise:
-            steps:
-            - to: "kamelet:sink"
+                  - split:
+                      expression:
+                        jsonpath:
+                          expression: "$.features[*]"
+                      steps:
+                        - marshal:
+                            json: {}
+                        - to:
+                            uri: kamelet:sink
+            otherwise:
+              steps:
+                - to:
+                    uri: kamelet:sink
 
 
 

@@ -57,30 +57,37 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
         # captured before the parse: Tika copies document metadata over the headers, so a
         # crafted document could otherwise forge its own identity
         - setProperty:
-            name: "CamelLangChain4jIngestDocumentId"
-            simple: "${header[{{documentIdHeader}}]}"
+            name: CamelLangChain4jIngestDocumentId
+            expression:
+              simple:
+                expression: "${header[{{documentIdHeader}}]}"
         # tika answers plain text (body only, blocks newline-separated) at the pinned encoding
-        - to: "tika:parse?tikaParseOutputFormat=text&tikaParseOutputEncoding=UTF-8"
+        - to:
+            uri: tika
+            parameters:
+              operation: parse
+              tikaParseOutputEncoding: UTF-8
+              tikaParseOutputFormat: text
         # a message- or document-supplied charset header outranks the charset the conversion
         # below sets, so it is swept before the bytes are decoded at the pinned UTF-8.
         # These three steps are the declarative twin of the camel-langchain4j-ingest
         # component's TikaTextDecode processor, reimplemented here on purpose so a generic
         # parse action does not depend on that component - keep the two in step
         - removeHeaders:
-            pattern: "CamelCharsetName"
+            pattern: CamelCharsetName
         - convertBodyTo:
-            type: "byte[]"
+            type: byte[]
         - convertBodyTo:
-            type: "java.lang.String"
-            charset: "UTF-8"
+            type: java.lang.String
+            charset: UTF-8
         # past the parse, non-Camel headers are parsed document metadata (Content-Type,
         # dc:* and friends) - Camel-namespace names were already filtered by camel-tika,
         # the rest must not leak into later steps as if the caller had set them
         - removeHeaders:
             pattern: "*"
-            excludePattern: "Camel*"
+            excludePattern: Camel*

@@ -98,18 +98,19 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "splunk-hec:{{splunkUrl}}"
-          parameters:
-            host: "{{?hostPayload}}"
-            token: "{{token}}"
-            bodyOnly: "{{?bodyOnly}}"
-            headersOnly: "{{?headersOnly}}"
-            index: "{{?index}}"
-            source: "{{?source}}"
-            sourceType: "{{?sourceType}}"
-            skipTlsVerify: "{{?skipTlsVerify}}"
-            https: "{{?https}}"
-            time: "{{?time}}"
+        - to:
+            uri: splunk-hec
+            parameters:
+              splunkURL: "{{splunkUrl}}"
+              bodyOnly: "{{?bodyOnly}}"
+              headersOnly: "{{?headersOnly}}"
+              host: "{{?hostPayload}}"
+              https: "{{?https}}"
+              index: "{{?index}}"
+              skipTlsVerify: "{{?skipTlsVerify}}"
+              source: "{{?source}}"
+              sourceType: "{{?sourceType}}"
+              time: "{{?time}}"
+              token: "RAW({{token}})"

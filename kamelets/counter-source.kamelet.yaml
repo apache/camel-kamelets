@@ -55,8 +55,9 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: timer:counter
+      uri: timer
       parameters:
+        timerName: counter
         period: "{{period}}"
         repeatCount: "{{?numbers}}"
       steps:
@@ -67,23 +68,32 @@ spec:
         # could not be used outside Camel K and JBang. See #2771.
         - choice:
             when:
-              - simple: "${variable.route:counter} == null"
+              - expression:
+                  simple:
+                    expression: "${variable.route:counter} == null"
                 steps:
                   - setVariable:
                       name: route:counter
-                      simple:
-                        expression: "{{start}}"
-                        resultType: java.lang.Integer
+                      expression:
+                        simple:
+                          resultType: java.lang.Integer
+                          expression: "{{start}}"
             otherwise:
               steps:
                 - setVariable:
                     name: route:counter
-                    simple:
-                      expression: "${variable.route:counter}++"
-                      resultType: java.lang.Integer
+                    expression:
+                      simple:
+                        resultType: java.lang.Integer
+                        expression: "${variable.route:counter}++"
         - setBody:
-            simple: "${variable.route:counter}"
+            expression:
+              simple:
+                expression: "${variable.route:counter}"
         - setHeader:
-            name: "Content-Type"
-            constant: "text/plain"
-        - to: kamelet:sink
+            name: Content-Type
+            expression:
+              constant:
+                expression: text/plain
+        - to:
+            uri: kamelet:sink

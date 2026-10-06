@@ -102,26 +102,31 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - setHeader:
-          name: "CamelAwsBedrockContentType"
-          constant: "application/json"
-      - setHeader:
-          name: "CamelAwsBedrockAcceptContentType"
-          constant: "application/json"       
-      - to:
-          uri: "aws-bedrock:bedrock-text"
-          parameters:
-            secretKey: "{{?secretKey}}"
-            accessKey: "{{?accessKey}}"
-            region: "{{region}}"
-            modelId: "{{modelId}}"
-            operation: invokeTextModel
-            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-            useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-            useSessionCredentials: "{{useSessionCredentials}}"
-            uriEndpointOverride: "{{?uriEndpointOverride}}"
-            profileCredentialsName: "{{?profileCredentialsName}}"
-            sessionToken: "{{?sessionToken}}"
-            overrideEndpoint: "{{overrideEndpoint}}"
+        - setHeader:
+            name: CamelAwsBedrockContentType
+            expression:
+              constant:
+                expression: application/json
+        - setHeader:
+            name: CamelAwsBedrockAcceptContentType
+            expression:
+              constant:
+                expression: application/json
+        - to:
+            uri: aws-bedrock
+            parameters:
+              label: bedrock-text
+              accessKey: "RAW({{?accessKey}})"
+              modelId: "{{modelId}}"
+              operation: invokeTextModel
+              overrideEndpoint: "{{overrideEndpoint}}"
+              profileCredentialsName: "{{?profileCredentialsName}}"
+              region: "{{region}}"
+              secretKey: "RAW({{?secretKey}})"
+              sessionToken: "RAW({{?sessionToken}})"
+              uriEndpointOverride: "{{?uriEndpointOverride}}"
+              useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+              useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
+              useSessionCredentials: "{{useSessionCredentials}}"

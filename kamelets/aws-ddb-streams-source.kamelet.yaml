@@ -153,21 +153,23 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "aws2-ddbstream:{{table}}"
+      uri: aws2-ddbstream
       parameters:
-        secretKey: "{{?secretKey}}"
-        accessKey: "{{?accessKey}}"
+        tableName: "{{table}}"
+        accessKey: "RAW({{?accessKey}})"
+        delay: "{{delay}}"
+        overrideEndpoint: "{{overrideEndpoint}}"
+        profileCredentialsName: "{{?profileCredentialsName}}"
         region: "{{region}}"
+        secretKey: "RAW({{?secretKey}})"
+        sessionToken: "RAW({{?sessionToken}})"
         streamIteratorType: "{{streamIteratorType}}"
+        uriEndpointOverride: "{{?uriEndpointOverride}}"
         useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
         useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
         useSessionCredentials: "{{useSessionCredentials}}"
-        uriEndpointOverride: "{{?uriEndpointOverride}}"
-        profileCredentialsName: "{{?profileCredentialsName}}"
-        sessionToken: "{{?sessionToken}}"
-        overrideEndpoint: "{{overrideEndpoint}}"
-        delay: "{{delay}}"
       steps:
-      - transformDataType:
-          toType: "aws2-ddb:application-x-struct"
-      - to: "kamelet:sink"
+        - transformDataType:
+            toType: aws2-ddb:application-x-struct
+        - to:
+            uri: kamelet:sink

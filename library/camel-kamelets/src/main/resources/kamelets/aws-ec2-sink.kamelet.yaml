@@ -98,38 +98,47 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      # Strip the whole camel-aws2-ec2 header family up-front, before this
-      # Kamelet applies its own contract below: the operation is pinned to the
-      # read-only describeInstancesStatus and instanceIds / ce-instanceids is
-      # the only interface the definition advertises. Using a pattern also
-      # covers CamelAwsEC2* keys the component may add in the future. The
-      # pagination headers that describeInstancesStatus itself reads are kept.
-      - removeHeaders:
-          pattern: "CamelAwsEC2*"
-          excludePattern: "CamelAwsEC2(NextToken|MaxResults)"
-      - choice:
-          when:
-          - simple: "${header[instanceIds]}"
-            steps:
-            - setHeader:
-                name: CamelAwsEC2InstancesIds
-                simple: "${header[instanceIds]}"
-          - simple: "${header[ce-instanceids]}"
-            steps:
-            - setHeader:
-                name: CamelAwsEC2InstancesIds
-                simple: "${header[ce-instanceids]}"
-      - to:
-          uri: "aws2-ec2:ec2-route"
-          parameters:
-            accessKey: "{{?accessKey}}"
-            secretKey: "{{?secretKey}}"
-            region: "{{region}}"
-            operation: "describeInstancesStatus"
-            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-            useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-            useSessionCredentials: "{{useSessionCredentials}}"
-            uriEndpointOverride: "{{?uriEndpointOverride}}"
-            profileCredentialsName: "{{?profileCredentialsName}}"
-            sessionToken: "{{?sessionToken}}"
-            overrideEndpoint: "{{overrideEndpoint}}"
+        # Strip the whole camel-aws2-ec2 header family up-front, before this
+        # Kamelet applies its own contract below: the operation is pinned to the
+        # read-only describeInstancesStatus and instanceIds / ce-instanceids is
+        # the only interface the definition advertises. Using a pattern also
+        # covers CamelAwsEC2* keys the component may add in the future. The
+        # pagination headers that describeInstancesStatus itself reads are kept.
+        - removeHeaders:
+            pattern: CamelAwsEC2*
+            excludePattern: CamelAwsEC2(NextToken|MaxResults)
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[instanceIds]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsEC2InstancesIds
+                      expression:
+                        simple:
+                          expression: "${header[instanceIds]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-instanceids]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsEC2InstancesIds
+                      expression:
+                        simple:
+                          expression: "${header[ce-instanceids]}"
+        - to:
+            uri: aws2-ec2
+            parameters:
+              label: ec2-route
+              accessKey: "RAW({{?accessKey}})"
+              operation: describeInstancesStatus
+              overrideEndpoint: "{{overrideEndpoint}}"
+              profileCredentialsName: "{{?profileCredentialsName}}"
+              region: "{{region}}"
+              secretKey: "RAW({{?secretKey}})"
+              sessionToken: "RAW({{?sessionToken}})"
+              uriEndpointOverride: "{{?uriEndpointOverride}}"
+              useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+              useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
+              useSessionCredentials: "{{useSessionCredentials}}"

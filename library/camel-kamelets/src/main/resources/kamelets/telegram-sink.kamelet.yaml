@@ -56,56 +56,81 @@ spec:
     - "camel:telegram"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[Content-Type]} == 'image/png'"
-            steps:
-            - convertBodyTo:
-                type: "byte[]"
-            - setHeader:
-                name: CamelTelegramMediaType
-                constant: PHOTO_PNG
-          - simple: "${header[Content-Type]} == 'image/jpeg'"
-            steps:
-            - convertBodyTo:
-                type: "byte[]"
-            - setHeader:
-                name: CamelTelegramMediaType
-                constant: PHOTO_JPG
-          otherwise:
-            steps:
-            - convertBodyTo:
-                type: "java.lang.String"
-      - choice:
-          when:
-          - simple: "${header[text]}"
-            steps:
-            - setHeader:
-                name: CamelTelegramMediaTitleCaption
-                simple: "${header[text]}"
-          - simple: "${header[ce-text]}"
-            steps:
-            - setHeader:
-                name: CamelTelegramMediaTitleCaption
-                simple: "${header[ce-text]}"
-      - choice:
-          when:
-          - simple: "${header[chat-id]}"
-            steps:
-            - setHeader:
-                name: CamelTelegramChatId
-                simple: "${header[chat-id]}"
-          - simple: "${header[ce-chatid]}"
-            steps:
-            - setHeader:
-                name: CamelTelegramChatId
-                simple: "${header[ce-chatid]}"
-      - to:
-          uri: "telegram:bots"
-          parameters:
-            authorizationToken: "{{authorizationToken}}"
-            chatId: "{{?chatId}}"
-      - marshal:
-          json: {}
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[Content-Type]} == 'image/png'"
+                steps:
+                  - convertBodyTo:
+                      type: byte[]
+                  - setHeader:
+                      name: CamelTelegramMediaType
+                      expression:
+                        constant:
+                          expression: PHOTO_PNG
+              - expression:
+                  simple:
+                    expression: "${header[Content-Type]} == 'image/jpeg'"
+                steps:
+                  - convertBodyTo:
+                      type: byte[]
+                  - setHeader:
+                      name: CamelTelegramMediaType
+                      expression:
+                        constant:
+                          expression: PHOTO_JPG
+            otherwise:
+              steps:
+                - convertBodyTo:
+                    type: java.lang.String
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[text]}"
+                steps:
+                  - setHeader:
+                      name: CamelTelegramMediaTitleCaption
+                      expression:
+                        simple:
+                          expression: "${header[text]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-text]}"
+                steps:
+                  - setHeader:
+                      name: CamelTelegramMediaTitleCaption
+                      expression:
+                        simple:
+                          expression: "${header[ce-text]}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[chat-id]}"
+                steps:
+                  - setHeader:
+                      name: CamelTelegramChatId
+                      expression:
+                        simple:
+                          expression: "${header[chat-id]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-chatid]}"
+                steps:
+                  - setHeader:
+                      name: CamelTelegramChatId
+                      expression:
+                        simple:
+                          expression: "${header[ce-chatid]}"
+        - to:
+            uri: telegram
+            parameters:
+              type: bots
+              authorizationToken: "RAW({{authorizationToken}})"
+              chatId: "{{?chatId}}"
+        - marshal:
+            json: {}

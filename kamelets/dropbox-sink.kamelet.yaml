@@ -66,25 +66,34 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[file]}"
-            steps:
-            - setHeader:
-                name: CamelDropboxPutFileName
-                simple: "${header[file]}"
-          - simple: "${header[ce-file]}"
-            steps:
-            - setHeader:
-                name: CamelDropboxPutFileName
-                simple: "${header[ce-file]}"
-      - to:
-          uri: 'dropbox:put'
-          parameters:
-            accessToken: '{{accessToken}}'
-            remotePath: '{{remotePath}}'
-            clientIdentifier: '{{clientIdentifier}}'
-            uploadMode: '{{uploadMode}}'
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[file]}"
+                steps:
+                  - setHeader:
+                      name: CamelDropboxPutFileName
+                      expression:
+                        simple:
+                          expression: "${header[file]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-file]}"
+                steps:
+                  - setHeader:
+                      name: CamelDropboxPutFileName
+                      expression:
+                        simple:
+                          expression: "${header[ce-file]}"
+        - to:
+            uri: dropbox
+            parameters:
+              operation: put
+              accessToken: "RAW({{accessToken}})"
+              clientIdentifier: "{{clientIdentifier}}"
+              remotePath: "{{remotePath}}"
+              uploadMode: "{{uploadMode}}"
 

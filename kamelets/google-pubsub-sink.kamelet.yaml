@@ -59,7 +59,5 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - to:
-          uri: "google-pubsub://{{projectId}}:{{destinationName}}"
-          parameters:
-            serviceAccountKey: "base64:{{?serviceAccountKey}}"
+        - to:
+            uri: "google-pubsub://{{projectId}}:{{destinationName}}?serviceAccountKey=base64:{{?serviceAccountKey}}"

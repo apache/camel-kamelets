@@ -102,16 +102,17 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - to:
-          uri: "aws2-kinesis-firehose:{{streamName}}"
-          parameters:
-            accessKey: "{{?accessKey}}"
-            secretKey: "{{?secretKey}}"
-            region: "{{region}}"
-            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-            useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-            useSessionCredentials: "{{useSessionCredentials}}"
-            uriEndpointOverride: "{{?uriEndpointOverride}}"
-            profileCredentialsName: "{{?profileCredentialsName}}"
-            sessionToken: "{{?sessionToken}}"
-            overrideEndpoint: "{{overrideEndpoint}}"
+        - to:
+            uri: aws2-kinesis-firehose
+            parameters:
+              streamName: "{{streamName}}"
+              accessKey: "RAW({{?accessKey}})"
+              overrideEndpoint: "{{overrideEndpoint}}"
+              profileCredentialsName: "{{?profileCredentialsName}}"
+              region: "{{region}}"
+              secretKey: "RAW({{?secretKey}})"
+              sessionToken: "RAW({{?sessionToken}})"
+              uriEndpointOverride: "{{?uriEndpointOverride}}"
+              useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+              useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
+              useSessionCredentials: "{{useSessionCredentials}}"

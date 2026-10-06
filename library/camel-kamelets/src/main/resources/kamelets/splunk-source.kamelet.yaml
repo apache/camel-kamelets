@@ -129,29 +129,30 @@ spec:
   - "mvn:com.fasterxml.jackson.datatype:jackson-datatype-joda:2.12.5"
   template:
     from:
-      uri: "splunk:normal"
+      uri: splunk
       parameters:
-        host: "{{serverHostname}}"
-        port: "{{serverPort}}"
-        username: "{{username}}"
-        password: "{{password}}"
-        index: "{{?index}}"
-        scheme: "{{?protocol}}"
-        source: "{{?source}}"
-        sourceType: "{{?sourceType}}"
+        name: normal
         app: "{{?app}}"
         connectionTimeout: "{{?connectionTimeout}}"
         count: "{{?count}}"
-        repeatCount: "{{?repeat}}"
         delay: "{{?delay}}"
-        search: "{{?query}}"
         earliestTime: "{{?earliestTime}}"
+        host: "{{serverHostname}}"
+        index: "{{?index}}"
         initEarliestTime: "{{initEarliestTime}}"
         latestTime: "{{?latestTime}}"
+        password: "RAW({{password}})"
+        port: "{{serverPort}}"
         raw: true
+        repeatCount: "{{?repeat}}"
+        scheme: "{{?protocol}}"
+        search: "{{?query}}"
+        source: "{{?source}}"
+        sourceType: "{{?sourceType}}"
+        username: "RAW({{username}})"
       steps:
-      - marshal:
-          json:
-            library: Jackson
-            moduleClassNames: com.fasterxml.jackson.datatype.joda.JodaModule
-      - to: "kamelet:sink"
+        - marshal:
+            json:
+              moduleClassNames: com.fasterxml.jackson.datatype.joda.JodaModule
+        - to:
+            uri: kamelet:sink

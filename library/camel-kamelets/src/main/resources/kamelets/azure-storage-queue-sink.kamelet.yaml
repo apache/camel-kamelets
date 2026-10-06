@@ -67,22 +67,27 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[expiration]}"
-            steps:
-            - setHeader:
-                name: CamelAzureStorageQueueTimeToLive
-                simple: "${header[expiration]}"
-          - simple: "${header[ce-expiration]}"
-            steps:
-            - setHeader:
-                name: CamelAzureStorageQueueTimeToLive
-                simple: "${header[ce-expiration]}"
-      - to:
-          uri: "azure-storage-queue://{{accountName}}/{{queueName}}"
-          parameters:
-            accessKey: "{{accessKey}}"
-            credentialType: "{{credentialType}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[expiration]}"
+                steps:
+                  - setHeader:
+                      name: CamelAzureStorageQueueTimeToLive
+                      expression:
+                        simple:
+                          expression: "${header[expiration]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-expiration]}"
+                steps:
+                  - setHeader:
+                      name: CamelAzureStorageQueueTimeToLive
+                      expression:
+                        simple:
+                          expression: "${header[ce-expiration]}"
+        - to:
+            uri: "azure-storage-queue://{{accountName}}/{{queueName}}?accessKey=RAW({{accessKey}})&credentialType={{credentialType}}"

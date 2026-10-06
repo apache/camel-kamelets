@@ -107,45 +107,64 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[partition]}"
-            steps:
-            - setHeader:
-                name: CamelAwsKinesisPartitionKey
-                simple: "${header[partition]}"
-          - simple: "${header[ce-partition]}"
-            steps:
-            - setHeader:
-                name: CamelAwsKinesisPartitionKey
-                simple: "${header[ce-partition]}"
-          otherwise:
-            steps:
-            - setHeader:
-                name: CamelAwsKinesisPartitionKey
-                simple: "${exchangeId}"
-      - choice:
-          when:
-          - simple: "${header[sequence-number]}"
-            steps:
-            - setHeader:
-                name: CamelAwsKinesisSequenceNumber
-                simple: "${header[sequence-number]}"
-          - simple: "${header[ce-sequencenumber]}"
-            steps:
-            - setHeader:
-                name: CamelAwsKinesisSequenceNumber
-                simple: "${header[ce-sequencenumber]}"
-      - to:
-          uri: "aws2-kinesis:{{stream}}"
-          parameters:
-            secretKey: "{{?secretKey}}"
-            accessKey: "{{?accessKey}}"
-            region: "{{region}}"
-            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-            useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-            useSessionCredentials: "{{useSessionCredentials}}"
-            uriEndpointOverride: "{{?uriEndpointOverride}}"
-            profileCredentialsName: "{{?profileCredentialsName}}"
-            sessionToken: "{{?sessionToken}}"
-            overrideEndpoint: "{{overrideEndpoint}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[partition]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsKinesisPartitionKey
+                      expression:
+                        simple:
+                          expression: "${header[partition]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-partition]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsKinesisPartitionKey
+                      expression:
+                        simple:
+                          expression: "${header[ce-partition]}"
+            otherwise:
+              steps:
+                - setHeader:
+                    name: CamelAwsKinesisPartitionKey
+                    expression:
+                      simple:
+                        expression: "${exchangeId}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[sequence-number]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsKinesisSequenceNumber
+                      expression:
+                        simple:
+                          expression: "${header[sequence-number]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-sequencenumber]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsKinesisSequenceNumber
+                      expression:
+                        simple:
+                          expression: "${header[ce-sequencenumber]}"
+        - to:
+            uri: aws2-kinesis
+            parameters:
+              streamName: "{{stream}}"
+              accessKey: "RAW({{?accessKey}})"
+              overrideEndpoint: "{{overrideEndpoint}}"
+              profileCredentialsName: "{{?profileCredentialsName}}"
+              region: "{{region}}"
+              secretKey: "RAW({{?secretKey}})"
+              sessionToken: "RAW({{?sessionToken}})"
+              uriEndpointOverride: "{{?uriEndpointOverride}}"
+              useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+              useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
+              useSessionCredentials: "{{useSessionCredentials}}"

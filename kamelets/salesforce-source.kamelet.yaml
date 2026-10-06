@@ -173,18 +173,9 @@ spec:
           jwtAudience: "{{?jwtAudience}}"
           keystore: "{{?keystore}}"
     from:
-      uri: "{{local-salesforce}}:{{operation}}:{{topicName}}"
-      parameters:
-        notifyForFields: "{{notifyForFields}}"
-        updateTopic: "true"
-        notifyForOperationCreate: "{{notifyForOperationCreate}}"
-        notifyForOperationUpdate: "{{notifyForOperationUpdate}}"
-        notifyForOperationDelete: "{{notifyForOperationDelete}}"
-        notifyForOperationUndelete: "{{notifyForOperationUndelete}}"
-        sObjectQuery: "{{query}}"
-        rawPayload: "{{rawPayload}}"
-        replayId: "{{?replayId}}"
+      uri: "{{local-salesforce}}:{{operation}}:{{topicName}}?notifyForFields={{notifyForFields}}&updateTopic=true&notifyForOperationCreate={{notifyForOperationCreate}}&notifyForOperationUpdate={{notifyForOperationUpdate}}&notifyForOperationDelete={{notifyForOperationDelete}}&notifyForOperationUndelete={{notifyForOperationUndelete}}&sObjectQuery={{query}}&rawPayload={{rawPayload}}&replayId={{?replayId}}"
       steps:
-      - marshal:
-          json: {}
-      - to: "kamelet:sink"
+        - marshal:
+            json: {}
+        - to:
+            uri: kamelet:sink

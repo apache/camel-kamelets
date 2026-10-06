@@ -55,10 +55,10 @@ spec:
   template:
     beans:
       - name: cryptoKey
-        type: "javax.crypto.spec.SecretKeySpec"
+        type: javax.crypto.spec.SecretKeySpec
         constructors:
-          "0": "{{key}}"
-          "1": "{{algorithm}}"
+          0: "{{key}}"
+          1: "{{algorithm}}"
     from:
       uri: kamelet:source
       steps:

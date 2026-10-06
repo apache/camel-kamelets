@@ -108,14 +108,16 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "slack:{{channel}}"
+      uri: slack
       parameters:
-        serverUrl: "{{serverUrl}}"
-        token: "{{token}}"
+        channel: "{{channel}}"
         delay: "{{delay}}"
         naturalOrder: "{{naturalOrder}}"
+        serverUrl: "{{serverUrl}}"
+        token: "RAW({{token}})"
       steps:
-      - marshal:
-          json:
-            library: "Gson"
-      - to: "kamelet:sink"
+        - marshal:
+            json:
+              library: Gson
+        - to:
+            uri: kamelet:sink

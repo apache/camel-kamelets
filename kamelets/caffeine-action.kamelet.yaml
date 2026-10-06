@@ -46,41 +46,63 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[caffeine-key]}"
-            steps:
-            - setHeader:
-                name: CamelCaffeineKey
-                simple: "${header[caffeine-key]}"
-          - simple: "${header[ce-caffeinekey]}"
-            steps:
-            - setHeader:
-                name: CamelCaffeineKey
-                simple: "${header[ce-caffeinekey]}"
-          otherwise:
-            steps:
-            - setHeader:
-                name: CamelCaffeineKey
-                simple: "${body}"
-      - choice:
-          when:
-          - simple: "${header[caffeine-operation]}"
-            steps:
-            - setHeader:
-                name: CamelCaffeineAction
-                simple: "${header[caffeine-operation]}"
-          - simple: "${header[ce-caffeineoperation]}"
-            steps:
-            - setHeader:
-                name: CamelCaffeineAction
-                simple: "${header[ce-caffeineoperation]}"
-          otherwise:
-            steps:
-            - setHeader:
-                name: CamelCaffeineAction
-                constant: "GET"
-      - to:
-          uri: "caffeine-cache:{{cacheName}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[caffeine-key]}"
+                steps:
+                  - setHeader:
+                      name: CamelCaffeineKey
+                      expression:
+                        simple:
+                          expression: "${header[caffeine-key]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-caffeinekey]}"
+                steps:
+                  - setHeader:
+                      name: CamelCaffeineKey
+                      expression:
+                        simple:
+                          expression: "${header[ce-caffeinekey]}"
+            otherwise:
+              steps:
+                - setHeader:
+                    name: CamelCaffeineKey
+                    expression:
+                      simple:
+                        expression: "${body}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[caffeine-operation]}"
+                steps:
+                  - setHeader:
+                      name: CamelCaffeineAction
+                      expression:
+                        simple:
+                          expression: "${header[caffeine-operation]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-caffeineoperation]}"
+                steps:
+                  - setHeader:
+                      name: CamelCaffeineAction
+                      expression:
+                        simple:
+                          expression: "${header[ce-caffeineoperation]}"
+            otherwise:
+              steps:
+                - setHeader:
+                    name: CamelCaffeineAction
+                    expression:
+                      constant:
+                        expression: GET
+        - to:
+            uri: caffeine-cache
+            parameters:
+              cacheName: "{{cacheName}}"

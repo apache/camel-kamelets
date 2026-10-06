@@ -57,9 +57,10 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "slack:{{channel}}"
-          parameters:
-            webhookUrl: "{{webhookUrl}}"
+        - to:
+            uri: slack
+            parameters:
+              channel: "{{channel}}"
+              webhookUrl: "{{webhookUrl}}"

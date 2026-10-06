@@ -173,38 +173,40 @@ spec:
       - name: kafkaHeaderDeserializer
         type: "#class:org.apache.camel.component.kafka.KafkaHeaderDeserializer"
         properties:
-          enabled: '{{deserializeHeaders}}'
+          enabled: "{{deserializeHeaders}}"
       - name: manualCommitFactory
         type: "#class:org.apache.camel.component.kafka.consumer.DefaultKafkaManualCommitFactory"
     from:
-      uri: "kafka:{{topic}}"
+      uri: kafka
       parameters:
-        brokers: "{{bootstrapServers}}"
-        saslAuthType: "{{saslAuthType}}"
-        saslUsername: "{{?saslUsername}}"
-        saslPassword: "{{?saslPassword}}"
-        oauthClientId: "{{?oauthClientId}}"
-        oauthClientSecret: "{{?oauthClientSecret}}"
-        oauthTokenEndpointUri: "{{?oauthTokenEndpointUri}}"
-        oauthScope: "{{?oauthScope}}"
-        sslTruststoreLocation: "{{?sslTruststoreLocation}}"
-        sslTruststorePassword: "{{?sslTruststorePassword}}"
-        sslKeystoreLocation: "{{?sslKeystoreLocation}}"
-        sslKeystorePassword: "{{?sslKeystorePassword}}"
-        sslKeyPassword: "{{?sslKeyPassword}}"
-        autoCommitEnable: "{{autoCommitEnable}}"
+        topic: "{{topic}}"
         allowManualCommit: "{{allowManualCommit}}"
-        pollOnError: "{{pollOnError}}"
+        autoCommitEnable: "{{autoCommitEnable}}"
         autoOffsetReset: "{{autoOffsetReset}}"
-        groupId: "{{?consumerGroup}}"
-        maxPollRecords: "{{batchSize}}"
-        pollTimeoutMs: "{{pollTimeout}}"
-        maxPollIntervalMs: "{{?maxPollIntervalMs}}"
-        batchingIntervalMs: "{{?batchingIntervalMs}}"
         batching: true
+        batchingIntervalMs: "{{?batchingIntervalMs}}"
+        brokers: "{{bootstrapServers}}"
+        groupId: "{{?consumerGroup}}"
         kafkaManualCommitFactory: "#bean:{{manualCommitFactory}}"
+        maxPollIntervalMs: "{{?maxPollIntervalMs}}"
+        maxPollRecords: "{{batchSize}}"
+        oauthClientId: "{{?oauthClientId}}"
+        oauthClientSecret: "RAW({{?oauthClientSecret}})"
+        oauthScope: "{{?oauthScope}}"
+        oauthTokenEndpointUri: "{{?oauthTokenEndpointUri}}"
+        pollOnError: "{{pollOnError}}"
+        pollTimeoutMs: "{{pollTimeout}}"
+        saslAuthType: "{{saslAuthType}}"
+        saslPassword: "RAW({{?saslPassword}})"
+        saslUsername: "{{?saslUsername}}"
+        sslKeyPassword: "RAW({{?sslKeyPassword}})"
+        sslKeystoreLocation: "{{?sslKeystoreLocation}}"
+        sslKeystorePassword: "RAW({{?sslKeystorePassword}})"
+        sslTruststoreLocation: "{{?sslTruststoreLocation}}"
+        sslTruststorePassword: "RAW({{?sslTruststorePassword}})"
         topicIsPattern: "{{topicIsPattern}}"
       steps:
         - process:
             ref: "{{kafkaHeaderDeserializer}}"
-        - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

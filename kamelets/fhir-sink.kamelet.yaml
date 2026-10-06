@@ -125,35 +125,24 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - choice:
-          precondition: true
-          when:
-            - simple: "${properties:encoding} =~ 'JSON'"
-              steps:
-                - unmarshal:
-                    fhirJson:
-                      fhirVersion: "{{fhirVersion}}"
-                      prettyPrint: "{{prettyPrint}}"
-            - simple: "${properties:encoding} =~ 'XML'"
-              steps:
-                - unmarshal:
-                    fhirXml:
-                      fhirVersion: "{{fhirVersion}}"
-                      prettyPrint: "{{prettyPrint}}"
-      - to:
-          uri: "fhir://{{apiName}}/{{methodName}}"
-          parameters:
-            serverUrl: "{{serverUrl}}"
-            inBody: "resource"
-            encoding: "{{encoding}}"
-            fhirVersion: "{{fhirVersion}}"
-            log: "{{log}}"
-            prettyPrint: "{{prettyPrint}}"
-            lazyStartProducer: "{{lazyStartProducer}}"
-            proxyHost: "{{?proxyHost}}"
-            proxyPassword: "{{?proxyPassword}}"
-            proxyPort: "{{?proxyPort}}"
-            proxyUser: "{{?proxyUser}}"
-            accessToken: "{{?accessToken}}"
-            username: "{{?username}}"
-            password: "{{?password}}"
+        - choice:
+            precondition: true
+            when:
+              - expression:
+                  simple:
+                    expression: "${properties:encoding} =~ 'JSON'"
+                steps:
+                  - unmarshal:
+                      fhirJson:
+                        prettyPrint: "{{prettyPrint}}"
+                        fhirVersion: "{{fhirVersion}}"
+              - expression:
+                  simple:
+                    expression: "${properties:encoding} =~ 'XML'"
+                steps:
+                  - unmarshal:
+                      fhirXml:
+                        prettyPrint: "{{prettyPrint}}"
+                        fhirVersion: "{{fhirVersion}}"
+        - to:
+            uri: "fhir://{{apiName}}/{{methodName}}?accessToken=RAW({{?accessToken}})&encoding={{encoding}}&fhirVersion={{fhirVersion}}&inBody=resource&lazyStartProducer={{lazyStartProducer}}&log={{log}}&password=RAW({{?password}})&prettyPrint={{prettyPrint}}&proxyHost={{?proxyHost}}&proxyPassword=RAW({{?proxyPassword}})&proxyPort={{?proxyPort}}&proxyUser=RAW({{?proxyUser}})&serverUrl={{serverUrl}}&username=RAW({{?username}})"

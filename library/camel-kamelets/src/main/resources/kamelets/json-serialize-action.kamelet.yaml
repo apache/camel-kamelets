@@ -40,10 +40,11 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - marshal:
-          json: 
-            library: Jackson
-            unmarshalType: com.fasterxml.jackson.databind.JsonNode
-      - setHeader:
-          name: "Content-Type"
-          constant: "application/json"
+        - marshal:
+            json:
+              unmarshalType: com.fasterxml.jackson.databind.JsonNode
+        - setHeader:
+            name: Content-Type
+            expression:
+              constant:
+                expression: application/json

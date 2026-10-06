@@ -113,17 +113,18 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "ibm-watson-language:analyze"
-          parameters:
-            apiKey: "RAW({{apiKey}})"
-            serviceUrl: "{{?serviceUrl}}"
-            operation: "{{operation}}"
-            analyzeSentiment: "{{analyzeSentiment}}"
-            analyzeEmotion: "{{analyzeEmotion}}"
-            analyzeEntities: "{{analyzeEntities}}"
-            analyzeKeywords: "{{analyzeKeywords}}"
-            analyzeConcepts: "{{analyzeConcepts}}"
-            analyzeCategories: "{{analyzeCategories}}"
+        - to:
+            uri: ibm-watson-language
+            parameters:
+              label: analyze
+              analyzeCategories: "{{analyzeCategories}}"
+              analyzeConcepts: "{{analyzeConcepts}}"
+              analyzeEmotion: "{{analyzeEmotion}}"
+              analyzeEntities: "{{analyzeEntities}}"
+              analyzeKeywords: "{{analyzeKeywords}}"
+              analyzeSentiment: "{{analyzeSentiment}}"
+              apiKey: "RAW({{apiKey}})"
+              operation: "{{operation}}"
+              serviceUrl: "{{?serviceUrl}}"

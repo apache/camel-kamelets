@@ -44,9 +44,7 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "chunk:"
-          parameters:
-            resourceUri: "base64:{{template}}"
+        - to:
+            uri: "chunk:?resourceUri=base64:{{template}}"

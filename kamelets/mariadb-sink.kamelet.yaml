@@ -88,21 +88,18 @@ spec:
       - name: dsBean
         type: "#class:org.apache.commons.dbcp2.BasicDataSource"
         properties:
-          username: '{{username}}'
-          password: '{{password}}'
-          url: 'jdbc:mariadb://{{serverName}}:{{serverPort}}/{{databaseName}}'
-          driverClassName: 'org.mariadb.jdbc.Driver'
+          username: "{{username}}"
+          password: "{{password}}"
+          url: "jdbc:mariadb://{{serverName}}:{{serverPort}}/{{databaseName}}"
+          driverClassName: org.mariadb.jdbc.Driver
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - unmarshal:
-          json: 
-            library: Jackson
-      - removeHeader:
-          name: CamelSqlQuery
-      - removeHeader:
-          name: CamelSqlParameters
-      - to: 
-          uri: "{{local-sql-mariadb-sink}}:{{query}}"
-          parameters:
-            dataSource: "#bean:{{dsBean}}"
+        - unmarshal:
+            json: {}
+        - removeHeader:
+            name: CamelSqlQuery
+        - removeHeader:
+            name: CamelSqlParameters
+        - to:
+            uri: "{{local-sql-mariadb-sink}}:{{query}}?dataSource=#bean:{{dsBean}}"

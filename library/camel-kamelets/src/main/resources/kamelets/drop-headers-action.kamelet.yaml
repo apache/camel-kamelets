@@ -52,6 +52,6 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - removeHeaders:
-          pattern: "{{pattern}}"
-          excludePattern: "{{?excludePattern}}"
+        - removeHeaders:
+            pattern: "{{pattern}}"
+            excludePattern: "{{?excludePattern}}"

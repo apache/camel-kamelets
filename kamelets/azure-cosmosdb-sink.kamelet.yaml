@@ -77,34 +77,45 @@ spec:
     - "camel:core"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          precondition: true
-          when:
-            - simple: '${propertiesExist:!itemPartitionKey}'
-              steps:
-                - choice:   
-                    when:
-                      - simple: "${header[itemPartitionKey]}"
-                        steps:
-                          - setHeader:
-                              name: CamelAzureCosmosDbItemPartitionKey
-                              simple: "${header[itemPartitionKey]}"
-                      - simple: "${header[ce-itemPartitionKey]}"
-                        steps:
-                          - setHeader:
-                              name: CamelAzureCosmosDbItemPartitionKey
-                              simple: "${header[ce-itemPartitionKey]}"
-      - unmarshal:
-          json: 
-            library: Jackson
-      - to:
-          uri: "azure-cosmosdb:{{databaseName}}/{{containerName}}"
-          parameters:
-            accountKey: "{{?accountKey}}"
-            databaseEndpoint: "{{databaseEndpoint}}"
-            itemPartitionKey: "{{?itemPartitionKey}}"
-            operation: createItem
-            credentialType: "{{credentialType}}"
+        - choice:
+            precondition: true
+            when:
+              - expression:
+                  simple:
+                    expression: "${propertiesExist:!itemPartitionKey}"
+                steps:
+                  - choice:
+                      when:
+                        - expression:
+                            simple:
+                              expression: "${header[itemPartitionKey]}"
+                          steps:
+                            - setHeader:
+                                name: CamelAzureCosmosDbItemPartitionKey
+                                expression:
+                                  simple:
+                                    expression: "${header[itemPartitionKey]}"
+                        - expression:
+                            simple:
+                              expression: "${header[ce-itemPartitionKey]}"
+                          steps:
+                            - setHeader:
+                                name: CamelAzureCosmosDbItemPartitionKey
+                                expression:
+                                  simple:
+                                    expression: "${header[ce-itemPartitionKey]}"
+        - unmarshal:
+            json: {}
+        - to:
+            uri: azure-cosmosdb
+            parameters:
+              databaseName: "{{databaseName}}"
+              containerName: "{{containerName}}"
+              accountKey: "RAW({{?accountKey}})"
+              credentialType: "{{credentialType}}"
+              databaseEndpoint: "{{databaseEndpoint}}"
+              itemPartitionKey: "{{?itemPartitionKey}}"
+              operation: createItem
 

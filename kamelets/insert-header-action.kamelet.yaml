@@ -52,6 +52,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - setHeader:
-          name: "{{name}}"
-          simple: "{{value}}"
+        - setHeader:
+            name: "{{name}}"
+            expression:
+              simple:
+                expression: "{{value}}"

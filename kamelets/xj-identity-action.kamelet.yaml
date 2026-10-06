@@ -46,9 +46,10 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "xj:identity"
-          parameters:
-            transformDirection: "{{direction}}"
+        - to:
+            uri: xj
+            parameters:
+              resourceUri: identity
+              transformDirection: "{{direction}}"

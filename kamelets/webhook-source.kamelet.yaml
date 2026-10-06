@@ -46,4 +46,5 @@ spec:
     from:
       uri: "platform-http:///{{subpath}}"
       steps:
-      - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

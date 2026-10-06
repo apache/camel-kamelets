@@ -47,7 +47,9 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - filter:
-          simple: "${header[CamelKafkaTopic]} !regex '{{regex}}'"
-          steps:
-            - stop: {}
+        - filter:
+            expression:
+              simple:
+                expression: "${header[CamelKafkaTopic]} !regex '{{regex}}'"
+            steps:
+              - stop: {}

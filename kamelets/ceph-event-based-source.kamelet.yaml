@@ -113,14 +113,15 @@ spec:
     - "camel:aws2-s3"
   template:
     from:
-      uri: "kafka:{{topic}}"
+      uri: kafka
       parameters:
+        topic: "{{topic}}"
+        autoOffsetReset: "{{autoOffsetReset}}"
         brokers: "{{bootstrapServers}}"
         groupId: "{{?consumerGroup}}"
-        autoOffsetReset: "{{autoOffsetReset}}"
         saslAuthType: "{{saslAuthType}}"
+        saslPassword: "RAW({{?saslPassword}})"
         saslUsername: "{{?saslUsername}}"
-        saslPassword: "{{?saslPassword}}"
       steps:
         # Ceph extension fields, surfaced as headers so a consumer does not have
         # to re-parse the body for them. Named the way the catalog names source
@@ -129,53 +130,79 @@ spec:
         # surfaced: it is an internal Ceph id useful only for debugging.
         - setHeader:
             name: ceph-event-id
-            jsonpath: $.Records[0].eventId
+            expression:
+              jsonpath:
+                expression: "$.Records[0].eventId"
         - setHeader:
             name: ce-cepheventid
-            simple: "${header[ceph-event-id]}"
+            expression:
+              simple:
+                expression: "${header[ceph-event-id]}"
         - setHeader:
             name: ceph-opaque-data
-            jsonpath: $.Records[0].opaqueData
+            expression:
+              jsonpath:
+                expression: "$.Records[0].opaqueData"
         - setHeader:
             name: ce-cephopaquedata
-            simple: "${header[ceph-opaque-data]}"
+            expression:
+              simple:
+                expression: "${header[ceph-opaque-data]}"
         - setHeader:
             name: ceph-object-metadata
-            jsonpath: $.Records[0].s3.object.metadata
+            expression:
+              jsonpath:
+                expression: "$.Records[0].s3.object.metadata"
         - setHeader:
             name: ce-cephobjectmetadata
-            simple: "${header[ceph-object-metadata]}"
+            expression:
+              simple:
+                expression: "${header[ceph-object-metadata]}"
         - setHeader:
             name: ceph-object-tags
-            jsonpath: $.Records[0].s3.object.tags
+            expression:
+              jsonpath:
+                expression: "$.Records[0].s3.object.tags"
         - setHeader:
             name: ce-cephobjecttags
-            simple: "${header[ceph-object-tags]}"
+            expression:
+              simple:
+                expression: "${header[ceph-object-tags]}"
         # Ceph emits the classic S3 notification envelope -- a Records array --
         # not the EventBridge shape that aws-s3-event-based-source parses, so the
         # paths below are Records based on purpose.
         - choice:
             precondition: true
             when:
-              - simple: '${properties:getObject:false}'
+              - expression:
+                  simple:
+                    expression: "${properties:getObject:false}"
                 steps:
                   - unmarshal:
                       json:
-                        library: Jackson
                         unmarshalType: com.fasterxml.jackson.databind.JsonNode
                   - setProperty:
                       name: ceph-event-name
-                      jsonpath: $.Records[0].eventName
+                      expression:
+                        jsonpath:
+                          expression: "$.Records[0].eventName"
                   - choice:
                       when:
-                        - simple: '${exchangeProperty.ceph-event-name} startsWith "ObjectCreated"'
+                        - expression:
+                            simple:
+                              expression: "${exchangeProperty.ceph-event-name} startsWith \"ObjectCreated\""
                           steps:
                             - setProperty:
                                 name: ceph-object-key
-                                jsonpath: $.Records[0].s3.object.key
+                                expression:
+                                  jsonpath:
+                                    expression: "$.Records[0].s3.object.key"
                             - setProperty:
                                 name: ceph-bucket-name
-                                jsonpath: $.Records[0].s3.bucket.name
-                            - toD: >-
-                                aws2-s3:${exchangeProperty.ceph-bucket-name}?accessKey={{accessKey}}&secretKey={{secretKey}}&region={{zoneGroup}}&operation=getObject&keyName=${exchangeProperty.ceph-object-key}&uriEndpointOverride={{cephUrl}}&overrideEndpoint=true
-        - to: "kamelet:sink"
+                                expression:
+                                  jsonpath:
+                                    expression: "$.Records[0].s3.bucket.name"
+                            - toD:
+                                uri: "aws2-s3:${exchangeProperty.ceph-bucket-name}?accessKey={{accessKey}}&secretKey={{secretKey}}&region={{zoneGroup}}&operation=getObject&keyName=${exchangeProperty.ceph-object-key}&uriEndpointOverride={{cephUrl}}&overrideEndpoint=true"
+        - to:
+            uri: kamelet:sink

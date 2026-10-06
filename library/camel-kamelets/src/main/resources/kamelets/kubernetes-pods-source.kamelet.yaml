@@ -60,12 +60,10 @@ spec:
     - "camel:jackson"
   template:
     from:
-      uri: "kubernetes-pods://{{masterUrl}}"
-      parameters:
-        oauthToken: "{{token}}"
-        resourceName: "{{?resourceName}}"
+      uri: "kubernetes-pods://{{masterUrl}}?oauthToken=RAW({{token}})&resourceName={{?resourceName}}"
       steps:
-      - marshal:
-          json: {}
-      - to: "kamelet:sink"
+        - marshal:
+            json: {}
+        - to:
+            uri: kamelet:sink
 

@@ -78,18 +78,22 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - setHeader:
-          name: CamelGeoCoderAddress
-          simple: "${body}"
-      - to: 
-          uri: "geocoder:address:toOverride"
-          parameters:
-            type: "NOMINATIM"
-            serverUrl: "RAW({{serverUrl}})"
-      - marshal:
-          json: {}
+        - setHeader:
+            name: CamelGeoCoderAddress
+            expression:
+              simple:
+                expression: "${body}"
+        - to:
+            uri: geocoder
+            parameters:
+              address: address
+              latlng: toOverride
+              serverUrl: "RAW({{serverUrl}})"
+              type: NOMINATIM
+        - marshal:
+            json: {}
 
 
 

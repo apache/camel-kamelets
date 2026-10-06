@@ -118,20 +118,13 @@ spec:
       - name: connectionFactory
         type: "#class:org.springframework.amqp.rabbit.connection.CachingConnectionFactory"
         properties:
-          username: '{{?username}}'
-          password: '{{?password}}'
-          uri: '{{protocol}}://{{host}}:{{port}}'
+          username: "{{?username}}"
+          password: "{{?password}}"
+          uri: "{{protocol}}://{{host}}:{{port}}"
           virtualHost: "{{vhost}}"
           publisherConfirmType: "{{publisherConfirmType}}"
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "spring-rabbitmq://{{exchangeName}}"
-          parameters:
-            connectionFactory: "#bean:{{connectionFactory}}"
-            routingKey: "{{?routingKey}}"
-            queues: "{{?queues}}"
-            autoDeclareProducer: "{{autoDeclareProducer}}"
-            confirm: "{{confirm}}"
-            confirmTimeout: "{{confirmTimeout}}"
+        - to:
+            uri: "spring-rabbitmq://{{exchangeName}}?autoDeclareProducer={{autoDeclareProducer}}&confirm={{confirm}}&confirmTimeout={{confirmTimeout}}&connectionFactory=#bean:{{connectionFactory}}&queues={{?queues}}&routingKey={{?routingKey}}"

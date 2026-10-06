@@ -51,19 +51,25 @@ spec:
       - name: dataTypeProcessor
         type: "#class:org.apache.camel.processor.transformer.DelegatingDataTypeProcessor"
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "'{{?scheme}}' != ''"
-            steps:
-            - setProperty:
-                name: CamelDataType
-                simple: "{{?scheme}}:{{format}}"
-          otherwise:
-            steps:
-            - setProperty:
-                name: CamelDataType
-                simple: "{{format}}"
-      - process:
-          ref: "dataTypeProcessor"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{?scheme}}' != ''"
+                steps:
+                  - setProperty:
+                      name: CamelDataType
+                      expression:
+                        simple:
+                          expression: "{{?scheme}}:{{format}}"
+            otherwise:
+              steps:
+                - setProperty:
+                    name: CamelDataType
+                    expression:
+                      simple:
+                        expression: "{{format}}"
+        - process:
+            ref: dataTypeProcessor

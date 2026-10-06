@@ -67,20 +67,23 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
         # captured before the conversion, so a document cannot forge its own identity
         - setProperty:
-            name: "CamelLangChain4jIngestDocumentId"
-            simple: "${header[{{documentIdHeader}}]}"
+            name: CamelLangChain4jIngestDocumentId
+            expression:
+              simple:
+                expression: "${header[{{documentIdHeader}}]}"
         - convertBodyTo:
-            type: "byte[]"
+            type: byte[]
         - removeHeaders:
-            pattern: "CamelDocling*"
+            pattern: CamelDocling*
         - to:
-            uri: "docling:convert"
+            uri: docling
             parameters:
-              operation: "CONVERT_TO_MARKDOWN"
-              contentInBody: "true"
-              useDoclingServe: "{{?useDoclingServe}}"
+              operationId: convert
+              contentInBody: true
               doclingServeUrl: "{{?doclingServeUrl}}"
+              operation: CONVERT_TO_MARKDOWN
+              useDoclingServe: "{{?useDoclingServe}}"

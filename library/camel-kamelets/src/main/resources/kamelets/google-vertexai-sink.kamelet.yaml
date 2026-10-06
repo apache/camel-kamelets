@@ -84,14 +84,17 @@ spec:
     - "camel:google-vertexai"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "google-vertexai:{{projectId}}:{{location}}:{{modelId}}"
-          parameters:
-            serviceAccountKey: "{{?serviceAccountKey}}"
-            operation: "{{operation}}"
-            temperature: "{{?temperature}}"
-            maxOutputTokens: "{{?maxOutputTokens}}"
-            topP: "{{?topP}}"
-            topK: "{{?topK}}"
+        - to:
+            uri: google-vertexai
+            parameters:
+              projectId: "{{projectId}}"
+              location: "{{location}}"
+              modelId: "{{modelId}}"
+              maxOutputTokens: "{{?maxOutputTokens}}"
+              operation: "{{operation}}"
+              serviceAccountKey: "{{?serviceAccountKey}}"
+              temperature: "{{?temperature}}"
+              topK: "{{?topK}}"
+              topP: "{{?topP}}"

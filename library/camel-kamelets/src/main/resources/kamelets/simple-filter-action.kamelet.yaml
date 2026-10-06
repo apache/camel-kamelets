@@ -47,7 +47,9 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - filter:
-          simple: "{{expression}}"
-          steps:
-            - stop: {}
+        - filter:
+            expression:
+              simple:
+                expression: "{{expression}}"
+            steps:
+              - stop: {}

@@ -56,7 +56,5 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - to:
-          uri: "graphql://{{url}}"
-          parameters:
-            accessToken: "{{?accessToken}}"
+        - to:
+            uri: "graphql://{{url}}?accessToken=RAW({{?accessToken}})"

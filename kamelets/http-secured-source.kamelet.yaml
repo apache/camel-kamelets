@@ -106,22 +106,26 @@ spec:
     - "camel:timer"
   template:
     from:
-      uri: "timer:fetch"
+      uri: timer
       parameters:
+        timerName: fetch
         period: "{{period}}"
       steps:
-      - setHeader:
-          name: "Accept"
-          constant: "{{contentType}}"
-      - to:
-          uri: "{{url}}"
-          parameters: 
-            authMethod: "{{?authMethod}}"
-            authUsername: "{{?authUsername}}"
-            authPassword: "{{?authPassword}}"
-            oauth2ClientId: "{{?oauth2ClientId}}"
-            oauth2ClientSecret: "{{?oauth2ClientSecret}}"
-            oauth2Scope: "{{?oauth2Scope}}"
-            oauth2TokenEndpoint: "{{?oauth2TokenEndpoint}}"
-            authenticationPreemptive: "{{authenticationPreemptive}}"
-      - to: "kamelet:sink"
+        - setHeader:
+            name: Accept
+            expression:
+              constant:
+                expression: "{{contentType}}"
+        - to:
+            uri: "{{url}}"
+            parameters:
+              authMethod: "{{?authMethod}}"
+              authUsername: "{{?authUsername}}"
+              authPassword: "{{?authPassword}}"
+              oauth2ClientId: "{{?oauth2ClientId}}"
+              oauth2ClientSecret: "{{?oauth2ClientSecret}}"
+              oauth2Scope: "{{?oauth2Scope}}"
+              oauth2TokenEndpoint: "{{?oauth2TokenEndpoint}}"
+              authenticationPreemptive: "{{authenticationPreemptive}}"
+        - to:
+            uri: kamelet:sink

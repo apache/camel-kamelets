@@ -88,35 +88,39 @@ spec:
       - name: local-infinispan
         type: "#class:org.apache.camel.component.infinispan.remote.InfinispanRemoteComponent"
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[key]}"
-            steps:
-            - setHeader:
-                name: CamelInfinispanKey
-                simple: "${header[key]}"
-          - simple: "${header[ce-key]}"
-            steps:
-            - setHeader:
-                name: CamelInfinispanKey
-                simple: "${header[ce-key]}"
-          otherwise:
-            steps:
-            - setHeader:
-                name: CamelInfinispanKey
-                simple: "${exchangeId}"
-      - setHeader:
-          name: CamelInfinispanValue
-          simple: "${body}"
-      - to:
-          uri: "{{local-infinispan}}:{{cacheName}}"
-          parameters:
-            hosts: "{{hosts}}"
-            secure: "{{secure}}"
-            username: "{{username}}"
-            password: "{{password}}"
-            saslMechanism: "{{saslMechanism}}"
-            securityRealm: "{{securityRealm}}"
-            securityServerName: "{{securityServerName}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[key]}"
+                steps:
+                  - setHeader:
+                      name: CamelInfinispanKey
+                      expression:
+                        simple:
+                          expression: "${header[key]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-key]}"
+                steps:
+                  - setHeader:
+                      name: CamelInfinispanKey
+                      expression:
+                        simple:
+                          expression: "${header[ce-key]}"
+            otherwise:
+              steps:
+                - setHeader:
+                    name: CamelInfinispanKey
+                    expression:
+                      simple:
+                        expression: "${exchangeId}"
+        - setHeader:
+            name: CamelInfinispanValue
+            expression:
+              simple:
+                expression: "${body}"
+        - to:
+            uri: "{{local-infinispan}}:{{cacheName}}?hosts={{hosts}}&secure={{secure}}&username={{username}}&password={{password}}&saslMechanism={{saslMechanism}}&securityRealm={{securityRealm}}&securityServerName={{securityServerName}}"

@@ -150,13 +150,7 @@ spec:
   - "camel:jackson"
   template:
     from:
-      uri: 'azure-eventhubs://{{namespaceName}}/{{eventhubName}}'
-      parameters:
-        sharedAccessName: "{{?sharedAccessName}}"
-        sharedAccessKey: "{{?sharedAccessKey}}"
-        blobAccountName: "{{blobAccountName}}"
-        blobAccessKey: "{{blobAccessKey}}"
-        blobContainerName: "{{blobContainerName}}"
-        credentialType: "{{credentialType}}"
+      uri: "azure-eventhubs://{{namespaceName}}/{{eventhubName}}?blobAccessKey=RAW({{blobAccessKey}})&blobAccountName={{blobAccountName}}&blobContainerName={{blobContainerName}}&credentialType={{credentialType}}&sharedAccessKey=RAW({{?sharedAccessKey}})&sharedAccessName={{?sharedAccessName}}"
       steps:
-      - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

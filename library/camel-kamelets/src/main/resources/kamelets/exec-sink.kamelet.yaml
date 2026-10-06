@@ -47,7 +47,11 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - to:
-          uri: "exec:{{executable}}"
-      - setBody:
-          simple: "${body.stdout}"
+        - to:
+            uri: exec
+            parameters:
+              executable: "{{executable}}"
+        - setBody:
+            expression:
+              simple:
+                expression: "${body.stdout}"

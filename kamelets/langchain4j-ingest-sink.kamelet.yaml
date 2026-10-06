@@ -128,24 +128,25 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
         # the endpoint itself resolves the id - the exchange property (set pre-parse by the
         # parser actions) wins over the header, so no re-capture happens here: reading the
         # header after a parse could hand a crafted document its own identity
         - to:
-            uri: "langchain4j-ingest:{{pipelineName}}"
+            uri: langchain4j-ingest
             parameters:
-              documentIdHeader: "{{documentIdHeader}}"
-              maxSegmentSize: "{{maxSegmentSize}}"
-              maxOverlapSize: "{{maxOverlapSize}}"
-              embeddingBatchSize: "{{embeddingBatchSize}}"
-              maxDocumentSize: "{{?maxDocumentSize}}"
-              includeId: "{{?includeId}}"
-              excludeId: "{{?excludeId}}"
-              minDocumentSize: "{{?minDocumentSize}}"
+              pipelineName: "{{pipelineName}}"
               documentFilter: "{{?documentFilter}}"
+              documentIdHeader: "{{documentIdHeader}}"
               documentSplitter: "{{?documentSplitter}}"
-              embeddingStore: "{{?embeddingStore}}"
+              embeddingBatchSize: "{{embeddingBatchSize}}"
               embeddingModel: "{{?embeddingModel}}"
+              embeddingStore: "{{?embeddingStore}}"
+              excludeId: "{{?excludeId}}"
               idempotentRepository: "{{?idempotentRepository}}"
+              includeId: "{{?includeId}}"
+              maxDocumentSize: "{{?maxDocumentSize}}"
+              maxOverlapSize: "{{maxOverlapSize}}"
+              maxSegmentSize: "{{maxSegmentSize}}"
+              minDocumentSize: "{{?minDocumentSize}}"

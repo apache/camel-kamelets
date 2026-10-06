@@ -93,57 +93,74 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[subject]}"
-            steps:
-            - setHeader:
-                name: CamelAwsSesSubject
-                simple: "${header[subject]}"
-          - simple: "${header[ce-subject]}"
-            steps:
-            - setHeader:
-                name: CamelAwsSesSubject
-                simple: "${header[ce-subject]}"
-          otherwise:
-            steps:
-            - setHeader:
-                name: CamelAwsSesSubject
-                simple: "${exchangeId}"
-      - choice:
-          when:
-          - simple: "${header[to]}"
-            steps:
-            - setHeader:
-                name: CamelAwsSesTo
-                simple: "${header[to]}"
-          - simple: "${header[ce-to]}"
-            steps:
-            - setHeader:
-                name: CamelAwsSesTo
-                simple: "${header[ce-to]}"
-      - choice:
-          when:
-          - simple: "${header[reply-to-addresses]}"
-            steps:
-            - setHeader:
-                name: CamelAwsSesReplyToAddresses
-                simple: "${header[reply-to-addresses]}"
-          - simple: "${header[ce-reply-to-addresses]}"
-            steps:
-            - setHeader:
-                name: CamelAwsSesReplyToAddresses
-                simple: "${header[ce-reply-to-addresses]}"
-      - to:
-          uri: "aws2-ses://{{from}}"
-          parameters:
-            secretKey: "{{?secretKey}}"
-            accessKey: "{{?accessKey}}"
-            region: "{{region}}"
-            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-            useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-            useSessionCredentials: "{{useSessionCredentials}}"
-            profileCredentialsName: "{{?profileCredentialsName}}"
-            sessionToken: "{{?sessionToken}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[subject]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsSesSubject
+                      expression:
+                        simple:
+                          expression: "${header[subject]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-subject]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsSesSubject
+                      expression:
+                        simple:
+                          expression: "${header[ce-subject]}"
+            otherwise:
+              steps:
+                - setHeader:
+                    name: CamelAwsSesSubject
+                    expression:
+                      simple:
+                        expression: "${exchangeId}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[to]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsSesTo
+                      expression:
+                        simple:
+                          expression: "${header[to]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-to]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsSesTo
+                      expression:
+                        simple:
+                          expression: "${header[ce-to]}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[reply-to-addresses]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsSesReplyToAddresses
+                      expression:
+                        simple:
+                          expression: "${header[reply-to-addresses]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-reply-to-addresses]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsSesReplyToAddresses
+                      expression:
+                        simple:
+                          expression: "${header[ce-reply-to-addresses]}"
+        - to:
+            uri: "aws2-ses://{{from}}?accessKey=RAW({{?accessKey}})&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}"

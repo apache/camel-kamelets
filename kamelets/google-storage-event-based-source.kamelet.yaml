@@ -87,31 +87,42 @@ spec:
     - "camel:core"
   template:
     from:
-      uri: "google-pubsub://{{projectId}}:{{subscriptionName}}"
-      parameters:
-        serviceAccountKey: "base64:{{serviceAccountKey}}"
-        synchronousPull: "{{synchronousPull}}"
-        maxMessagesPerPoll: "{{maxMessagesPerPoll}}"
-        concurrentConsumers: "{{concurrentConsumers}}"
+      uri: "google-pubsub://{{projectId}}:{{subscriptionName}}?concurrentConsumers={{concurrentConsumers}}&maxMessagesPerPoll={{maxMessagesPerPoll}}&serviceAccountKey=base64:{{serviceAccountKey}}&synchronousPull={{synchronousPull}}"
       steps:
         - choice:
             precondition: true
             when:
-              - simple: '${properties:getObject:false}'
+              - expression:
+                  simple:
+                    expression: "${properties:getObject:false}"
                 steps:
                   - setProperty:
                       name: google-storage-event-type
-                      simple: "${headers.CamelGooglePubsubAttributes[eventType]}"
+                      expression:
+                        simple:
+                          expression: "${headers.CamelGooglePubsubAttributes[eventType]}"
                   - setProperty:
                       name: google-storage-object-id
-                      simple: "${headers.CamelGooglePubsubAttributes[objectId]}"
+                      expression:
+                        simple:
+                          expression: "${headers.CamelGooglePubsubAttributes[objectId]}"
                   - setProperty:
                       name: google-storage-bucket-id
-                      simple: "${headers.CamelGooglePubsubAttributes[bucketId]}"
+                      expression:
+                        simple:
+                          expression: "${headers.CamelGooglePubsubAttributes[bucketId]}"
                   - choice:
                       when:
-                        - simple: '${exchangeProperty.google-storage-event-type} == "OBJECT_FINALIZE" && ${exchangeProperty.google-storage-bucket-id} == "{{bucketNameOrArn}}"'
+                        - expression:
+                            simple:
+                              expression: "${exchangeProperty.google-storage-event-type} == \"OBJECT_FINALIZE\" && ${exchangeProperty.google-storage-bucket-id} == \"{{bucketNameOrArn}}\""
                           steps:
-                            - toD: >-
-                                google-storage:{{bucketNameOrArn}}?serviceAccountKey=base64:{{serviceAccountKey}}&operation=getObject&objectName=${exchangeProperty.google-storage-object-id}
-        - to: 'kamelet:sink'
+                            - toD:
+                                uri: google-storage
+                                parameters:
+                                  bucketName: "{{bucketNameOrArn}}"
+                                  objectName: "${exchangeProperty.google-storage-object-id}"
+                                  operation: getObject
+                                  serviceAccountKey: "base64:{{serviceAccountKey}}"
+        - to:
+            uri: kamelet:sink

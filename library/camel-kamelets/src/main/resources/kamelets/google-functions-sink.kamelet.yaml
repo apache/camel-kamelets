@@ -65,9 +65,5 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - to:
-          uri: "google-functions://{{functionName}}"
-          parameters:
-            serviceAccountKey: "base64:{{serviceAccountKey}}"
-            project: "{{projectId}}"
-            location: "{{region}}"
+        - to:
+            uri: "google-functions://{{functionName}}?location={{region}}&project={{projectId}}&serviceAccountKey=base64:{{serviceAccountKey}}"

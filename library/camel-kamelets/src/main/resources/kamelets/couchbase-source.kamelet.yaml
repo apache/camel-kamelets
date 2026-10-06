@@ -126,20 +126,24 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "couchbase:{{protocol}}://{{couchbaseHostname}}:{{couchbasePort}}"
+      uri: couchbase
       parameters:
+        protocol: "{{protocol}}"
+        hostname: "{{couchbaseHostname}}"
+        port: "{{couchbasePort}}"
         bucket: "{{bucket}}"
-        username: "{{username}}"
-        password: "{{password}}"
         connectionString: "{{?connectionString}}"
-        statement: "{{?statement}}"
-        useView: "{{useView}}"
+        delay: "{{delay}}"
+        descending: "{{descending}}"
         designDocumentName: "{{designDocumentName}}"
-        viewName: "{{viewName}}"
         fullDocument: "{{fullDocument}}"
         limit: "{{limit}}"
+        password: "RAW({{password}})"
         skip: "{{skip}}"
-        descending: "{{descending}}"
-        delay: "{{delay}}"
+        statement: "{{?statement}}"
+        useView: "{{useView}}"
+        username: "RAW({{username}})"
+        viewName: "{{viewName}}"
       steps:
-      - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

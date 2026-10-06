@@ -86,14 +86,17 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "couchbase:{{protocol}}://{{couchbaseHostname}}:{{couchbasePort}}"
-          parameters:
-            bucket: "{{bucket}}"
-            autoStartIdForInserts: "{{autoStartId}}"
-            startingIdForInsertsFrom: "{{startingId}}"
-            username: "{{username}}"
-            password: "{{password}}"
-            connectionString: "{{?connectionString}}"
+        - to:
+            uri: couchbase
+            parameters:
+              protocol: "{{protocol}}"
+              hostname: "{{couchbaseHostname}}"
+              port: "{{couchbasePort}}"
+              autoStartIdForInserts: "{{autoStartId}}"
+              bucket: "{{bucket}}"
+              connectionString: "{{?connectionString}}"
+              password: "RAW({{password}})"
+              startingIdForInsertsFrom: "{{startingId}}"
+              username: "RAW({{username}})"

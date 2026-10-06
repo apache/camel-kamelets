@@ -170,13 +170,8 @@ spec:
     - "camel:timer"
   template:
     from:
-      uri: "azure-files:{{accountName}}/{{shareName}}/{{directoryName}}"
-      parameters:
-        sharedKey: "{{?sharedKey}}"
-        credentialType: "{{credentialType}}"
-        delay: "{{delay}}"
-        delete: "{{deleteAfterRead}}"
-        recursive: "{{recursive}}"
+      uri: "azure-files:{{accountName}}/{{shareName}}/{{directoryName}}?credentialType={{credentialType}}&delay={{delay}}&delete={{deleteAfterRead}}&recursive={{recursive}}&sharedKey=RAW({{?sharedKey}})"
       steps:
-        - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink
 

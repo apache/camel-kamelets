@@ -53,6 +53,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - throttle:
-          constant: "{{messages}}"
-          timePeriodMillis: "{{timePeriod}}"
+        - throttle:
+            timePeriodMillis: "{{timePeriod}}"
+            expression:
+              constant:
+                expression: "{{messages}}"

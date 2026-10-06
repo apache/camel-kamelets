@@ -46,9 +46,7 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "json-patch:"
-          parameters:
-            resourceUri: "{{template}}"
+        - to:
+            uri: "json-patch:?resourceUri={{template}}"

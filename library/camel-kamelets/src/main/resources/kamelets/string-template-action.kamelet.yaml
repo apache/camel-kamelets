@@ -46,9 +46,7 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "string-template:"
-          parameters:
-            resourceUri: "{{template}}"
+        - to:
+            uri: "string-template:?resourceUri={{template}}"

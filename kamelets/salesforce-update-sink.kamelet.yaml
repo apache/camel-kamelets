@@ -143,9 +143,7 @@ spec:
         - marshal:
             json: {}
         - to:
-            uri: "{{local-salesforce}}:updateSObject"
-            parameters:
-              rawPayload: "true"
+            uri: "{{local-salesforce}}:updateSObject?rawPayload=true"
         - removeHeader:
             name: CamelSalesforceSObjectId
         - removeHeader:

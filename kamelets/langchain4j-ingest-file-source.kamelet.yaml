@@ -94,21 +94,25 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "file:{{directory}}"
+      uri: file
       parameters:
-        noop: "true"
-        idempotent: "true"
+        directoryName: "{{directory}}"
+        antExclude: "{{?exclude}}"
+        antInclude: "{{?include}}"
+        charset: "{{?charset}}"
+        delay: "{{?delay}}"
+        idempotent: true
         # an edited file gets a new key and re-ingests
         idempotentKey: "${file:absolute.path}:${file:modified}:${file:size}"
-        recursive: "{{recursive}}"
-        antInclude: "{{?include}}"
-        antExclude: "{{?exclude}}"
-        readLock: "changed"
-        delay: "{{?delay}}"
-        charset: "{{?charset}}"
         idempotentRepository: "{{?idempotentRepository}}"
+        noop: true
+        readLock: changed
+        recursive: "{{recursive}}"
       steps:
         - setHeader:
-            name: "CamelLangChain4jIngestDocumentId"
-            simple: "${header.CamelFileName}"
-        - to: "kamelet:sink"
+            name: CamelLangChain4jIngestDocumentId
+            expression:
+              simple:
+                expression: "${header.CamelFileName}"
+        - to:
+            uri: kamelet:sink

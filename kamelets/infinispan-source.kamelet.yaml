@@ -95,39 +95,47 @@ spec:
       - name: local-infinispan
         type: "#class:org.apache.camel.component.infinispan.remote.InfinispanRemoteComponent"
     from:
-      uri: "{{local-infinispan}}:{{cacheName}}"
-      parameters:
-        hosts: "{{hosts}}"
-        secure: "{{secure}}"
-        username: "{{username}}"
-        password: "{{password}}"
-        saslMechanism: "{{saslMechanism}}"
-        securityRealm: "{{securityRealm}}"
-        securityServerName: "{{securityServerName}}"
-        eventTypes: "{{eventTypes}}"
+      uri: "{{local-infinispan}}:{{cacheName}}?hosts={{hosts}}&secure={{secure}}&username={{username}}&password={{password}}&saslMechanism={{saslMechanism}}&securityRealm={{securityRealm}}&securityServerName={{securityServerName}}&eventTypes={{eventTypes}}"
       steps:
-      - setHeader:
-          name: infinispan-cache-name
-          simple: "${header[CamelInfinispanCacheName]}"
-      - setHeader:
-          name: ce-infinispancachename
-          simple: "${header[CamelInfinispanCacheName]}"
-      - setHeader:
-          name: infinispan-entry-version
-          simple: "${header[CamelInfinispanEntryVersion]}"
-      - setHeader:
-          name: ce-infinispanentryversion
-          simple: "${header[CamelInfinispanEntryVersion]}"
-      - setHeader:
-          name: infinispan-event-type
-          simple: "${header[CamelInfinispanEventType]}"
-      - setHeader:
-          name: ce-infinispaneventtype
-          simple: "${header[CamelInfinispanEventType]}"
-      - setHeader:
-          name: infinispan-key
-          simple: "${header[CamelInfinispanKey]}"
-      - setHeader:
-          name: ce-infinispankey
-          simple: "${header[CamelInfinispanKey]}"
-      - to: kamelet:sink
+        - setHeader:
+            name: infinispan-cache-name
+            expression:
+              simple:
+                expression: "${header[CamelInfinispanCacheName]}"
+        - setHeader:
+            name: ce-infinispancachename
+            expression:
+              simple:
+                expression: "${header[CamelInfinispanCacheName]}"
+        - setHeader:
+            name: infinispan-entry-version
+            expression:
+              simple:
+                expression: "${header[CamelInfinispanEntryVersion]}"
+        - setHeader:
+            name: ce-infinispanentryversion
+            expression:
+              simple:
+                expression: "${header[CamelInfinispanEntryVersion]}"
+        - setHeader:
+            name: infinispan-event-type
+            expression:
+              simple:
+                expression: "${header[CamelInfinispanEventType]}"
+        - setHeader:
+            name: ce-infinispaneventtype
+            expression:
+              simple:
+                expression: "${header[CamelInfinispanEventType]}"
+        - setHeader:
+            name: infinispan-key
+            expression:
+              simple:
+                expression: "${header[CamelInfinispanKey]}"
+        - setHeader:
+            name: ce-infinispankey
+            expression:
+              simple:
+                expression: "${header[CamelInfinispanKey]}"
+        - to:
+            uri: kamelet:sink

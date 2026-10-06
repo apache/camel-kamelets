@@ -52,20 +52,28 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - setProperty:
-          name: hasHeaderFilterActionValue
-          constant: "{{value:}}"
-      - choice:
-          when:
-          - simple: "${exchangeProperty[hasHeaderFilterActionValue]} != ''"
-            steps:
-            - filter:
-                simple: "${header[{{name}}]} != ${exchangeProperty[hasHeaderFilterActionValue]}"
+        - setProperty:
+            name: hasHeaderFilterActionValue
+            expression:
+              constant:
+                expression: "{{value:}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${exchangeProperty[hasHeaderFilterActionValue]} != ''"
                 steps:
-                  - stop: {}
-          otherwise:
-            steps:
-            - filter:
-                simple: "${header[{{name}}]} == null"
-                steps:
-                  - stop: {}
+                  - filter:
+                      expression:
+                        simple:
+                          expression: "${header[{{name}}]} != ${exchangeProperty[hasHeaderFilterActionValue]}"
+                      steps:
+                        - stop: {}
+            otherwise:
+              steps:
+                - filter:
+                    expression:
+                      simple:
+                        expression: "${header[{{name}}]} == null"
+                    steps:
+                      - stop: {}

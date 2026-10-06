@@ -51,13 +51,17 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - setHeader:
-          name: CamelKafkaKey
-          simple: "${header.{{headerName}}}"
-      - choice:
-          precondition: true
-          when:
-            - simple: '${properties:forceHeaderDeletion:false}'
-              steps:
-              - removeHeader:
-                  name: "{{headerName}}" 
+        - setHeader:
+            name: CamelKafkaKey
+            expression:
+              simple:
+                expression: "${header.{{headerName}}}"
+        - choice:
+            precondition: true
+            when:
+              - expression:
+                  simple:
+                    expression: "${properties:forceHeaderDeletion:false}"
+                steps:
+                  - removeHeader:
+                      name: "{{headerName}}"

@@ -89,21 +89,18 @@ spec:
       - name: dsBean
         type: "#class:org.apache.commons.dbcp2.BasicDataSource"
         properties:
-          username: '{{username}}'
-          password: '{{password}}'
-          url: 'jdbc:redshift://{{serverName}}:{{serverPort}}/{{databaseName}}'
-          driverClassName: 'com.amazon.redshift.jdbc.Driver'
+          username: "{{username}}"
+          password: "{{password}}"
+          url: "jdbc:redshift://{{serverName}}:{{serverPort}}/{{databaseName}}"
+          driverClassName: com.amazon.redshift.jdbc.Driver
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - unmarshal:
-          json: 
-            library: Jackson
-      - removeHeader:
-          name: CamelSqlQuery
-      - removeHeader:
-          name: CamelSqlParameters
-      - to: 
-          uri: "{{local-sql-redshift-sink}}:{{query}}"
-          parameters:
-            dataSource: "#bean:{{dsBean}}"
+        - unmarshal:
+            json: {}
+        - removeHeader:
+            name: CamelSqlQuery
+        - removeHeader:
+            name: CamelSqlParameters
+        - to:
+            uri: "{{local-sql-redshift-sink}}:{{query}}?dataSource=#bean:{{dsBean}}"

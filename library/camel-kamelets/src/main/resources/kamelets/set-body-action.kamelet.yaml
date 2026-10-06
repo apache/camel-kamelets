@@ -47,5 +47,7 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - setBody:
-          simple: "{{value}}"
+        - setBody:
+            expression:
+              simple:
+                expression: "{{value}}"

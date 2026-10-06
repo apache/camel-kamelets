@@ -66,10 +66,13 @@ spec:
     - "camel:spring-redis"
   template:
     from:
-      uri: "spring-redis:{{redisHost}}:{{redisPort}}"
+      uri: spring-redis
       parameters:
-        command: "{{command}}"
+        host: "{{redisHost}}"
+        port: "{{redisPort}}"
         channels: "{{channels}}"
+        command: "{{command}}"
         serializer: "#class:{{serializer}}"
       steps:
-      - to: kamelet:sink
+        - to:
+            uri: kamelet:sink

@@ -71,33 +71,44 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[file]}"
-            steps:
-            - setHeader:
-                name: CamelFileName
-                simple: "${header[file]}"
-            - setHeader:
-                name: CamelFileName
-                simple: "${file:onlyname}"
-          - simple: "${header[ce-file]}"
-            steps:
-            - setHeader:
-                name: CamelFileName
-                simple: "${header[ce-file]}"
-            - setHeader:
-                name: CamelFileName
-                simple: "${file:onlyname}"
-          otherwise:
-            steps:
-            - setHeader:
-                name: CamelFileName
-                simple: "${exchangeId}"
-      - to:
-          uri: "azure-files://{{accountName}}/{{shareName}}/{{directoryName}}"
-          parameters:
-            sharedKey: "{{?sharedKey}}"
-            credentialType: "{{credentialType}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[file]}"
+                steps:
+                  - setHeader:
+                      name: CamelFileName
+                      expression:
+                        simple:
+                          expression: "${header[file]}"
+                  - setHeader:
+                      name: CamelFileName
+                      expression:
+                        simple:
+                          expression: "${file:onlyname}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-file]}"
+                steps:
+                  - setHeader:
+                      name: CamelFileName
+                      expression:
+                        simple:
+                          expression: "${header[ce-file]}"
+                  - setHeader:
+                      name: CamelFileName
+                      expression:
+                        simple:
+                          expression: "${file:onlyname}"
+            otherwise:
+              steps:
+                - setHeader:
+                    name: CamelFileName
+                    expression:
+                      simple:
+                        expression: "${exchangeId}"
+        - to:
+            uri: "azure-files://{{accountName}}/{{shareName}}/{{directoryName}}?credentialType={{credentialType}}&sharedKey=RAW({{?sharedKey}})"

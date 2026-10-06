@@ -140,30 +140,40 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "sftp:{{connectionHost}}:{{connectionPort}}/{{directoryName}}"
+      uri: sftp
       parameters:
-        username: "{{?username}}"
-        password: "{{?password}}"
-        privateKeyFile: "{{?privateKeyFile}}"
-        privateKeyPassphrase: "{{?privateKeyPassphrase}}"
-        privateKeyUri: "{{?privateKeyUri}}"
-        strictHostKeyChecking: "{{?strictHostKeyChecking}}"
-        knownHostsUri: "{{?knownHostsUri}}"
-        useUserKnownHostsFile: "{{?useUserKnownHostsFile}}"
-        passiveMode: "{{passiveMode}}"
-        recursive: "{{recursive}}"
+        host: "{{connectionHost}}"
+        port: "{{connectionPort}}"
+        directoryName: "{{directoryName}}"
+        autoCreate: "{{autoCreate}}"
+        binary: "{{binary}}"
+        delete: "{{delete}}"
         idempotent: "{{idempotent}}"
         ignoreFileNotFoundOrPermissionError: "{{ignoreFileNotFoundOrPermissionError}}"
-        binary: "{{binary}}"
-        autoCreate: "{{autoCreate}}"
-        delete: "{{delete}}"
+        knownHostsUri: "RAW({{?knownHostsUri}})"
+        passiveMode: "{{passiveMode}}"
+        password: "RAW({{?password}})"
+        privateKeyFile: "RAW({{?privateKeyFile}})"
+        privateKeyPassphrase: "RAW({{?privateKeyPassphrase}})"
+        privateKeyUri: "RAW({{?privateKeyUri}})"
+        recursive: "{{recursive}}"
+        strictHostKeyChecking: "{{?strictHostKeyChecking}}"
+        useUserKnownHostsFile: "{{?useUserKnownHostsFile}}"
+        username: "RAW({{?username}})"
       steps:
-      - setBody:
-          simple: "${body.getBody()}"
-      - setHeader:
-          name: file
-          simple: "${header[CamelFileName]}"
-      - setHeader:
-          name: ce-file
-          simple: "${header[CamelFileName]}"
-      - to: "kamelet:sink"
+        - setBody:
+            expression:
+              simple:
+                expression: "${body.getBody()}"
+        - setHeader:
+            name: file
+            expression:
+              simple:
+                expression: "${header[CamelFileName]}"
+        - setHeader:
+            name: ce-file
+            expression:
+              simple:
+                expression: "${header[CamelFileName]}"
+        - to:
+            uri: kamelet:sink

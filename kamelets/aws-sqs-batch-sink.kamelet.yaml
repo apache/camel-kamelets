@@ -124,21 +124,22 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - to:
-          uri: "aws2-sqs:{{queueNameOrArn}}"
-          parameters:
-            autoCreateQueue: "{{autoCreateQueue}}"
-            accessKey: "{{?accessKey}}"
-            secretKey: "{{?secretKey}}"
-            region: "{{region}}"
-            batchSeparator: "{{batchSeparator}}"
-            operation: "sendBatchMessage"
-            amazonAWSHost: "{{?amazonAWSHost}}"
-            protocol: "{{?protocol}}"
-            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-            useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-            useSessionCredentials: "{{useSessionCredentials}}"
-            uriEndpointOverride: "{{?uriEndpointOverride}}"
-            profileCredentialsName: "{{?profileCredentialsName}}"
-            sessionToken: "{{?sessionToken}}"
-            overrideEndpoint: "{{overrideEndpoint}}"            
+        - to:
+            uri: aws2-sqs
+            parameters:
+              queueNameOrArn: "{{queueNameOrArn}}"
+              accessKey: "RAW({{?accessKey}})"
+              amazonAWSHost: "{{?amazonAWSHost}}"
+              autoCreateQueue: "{{autoCreateQueue}}"
+              batchSeparator: "{{batchSeparator}}"
+              operation: sendBatchMessage
+              overrideEndpoint: "{{overrideEndpoint}}"
+              profileCredentialsName: "{{?profileCredentialsName}}"
+              protocol: "{{?protocol}}"
+              region: "{{region}}"
+              secretKey: "RAW({{?secretKey}})"
+              sessionToken: "RAW({{?sessionToken}})"
+              uriEndpointOverride: "{{?uriEndpointOverride}}"
+              useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+              useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
+              useSessionCredentials: "{{useSessionCredentials}}"

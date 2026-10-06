@@ -90,20 +90,22 @@ spec:
       - name: connectionFactoryBean
         type: "#class:org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory"
         properties:
-          brokerURL: '{{brokerURL}}'
-          user: '{{?username}}'
-          password: '{{?password}}'
+          brokerURL: "{{brokerURL}}"
+          user: "{{?username}}"
+          password: "{{?password}}"
       - name: pooledFactoryBean
         type: "#class:org.messaginghub.pooled.jms.JmsPoolConnectionFactory"
         properties:
-          connectionFactory: '#bean:{{connectionFactoryBean}}'
+          connectionFactory: "#bean:{{connectionFactoryBean}}"
           maxSessionsPerConnection: "{{maxSessionsPerConnection}}"
           maxIdleSessionsPerConnection: "{{maxIdleSessionsPerConnection}}"
           connectionIdleTimeout: "{{connectionIdleTimeout}}"
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "jms:{{destinationType}}:{{destinationName}}"
-          parameters:
-            connectionFactory: "#bean:{{pooledFactoryBean}}"
+        - to:
+            uri: jms
+            parameters:
+              destinationType: "{{destinationType}}"
+              destinationName: "{{destinationName}}"
+              connectionFactory: "#bean:{{pooledFactoryBean}}"

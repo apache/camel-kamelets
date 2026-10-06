@@ -125,29 +125,31 @@ spec:
       - name: kafkaHeaderDeserializer
         type: "#class:org.apache.camel.component.kafka.KafkaHeaderDeserializer"
         properties:
-          enabled: '{{deserializeHeaders}}'
+          enabled: "{{deserializeHeaders}}"
       - name: manualCommitFactory
         type: "#class:org.apache.camel.component.kafka.consumer.DefaultKafkaManualCommitFactory"
     from:
-      uri: "kafka:{{topic}}"
+      uri: kafka
       parameters:
-        brokers: "{{bootstrapServers}}"
-        autoCommitEnable: "{{autoCommitEnable}}"
-        allowManualCommit: "{{allowManualCommit}}"
-        pollOnError: "{{pollOnError}}"
-        autoOffsetReset: "{{autoOffsetReset}}"
-        groupId: "{{?consumerGroup}}"
-        valueDeserializer: "{{valueDeserializer}}"
+        topic: "{{topic}}"
+        additionalProperties.apicurio.registry.avroDatumProvider: "{{avroDatumProvider}}"
         additionalProperties.apicurio.registry.url: "{{apicurioRegistryUrl}}"
-        additionalProperties.apicurio.registry.avro-datum-provider: "{{avroDatumProvider}}"
-        maxPollRecords: "{{batchSize}}"
-        pollTimeoutMs: "{{pollTimeout}}"
-        maxPollIntervalMs: "{{?maxPollIntervalMs}}"
-        batchingIntervalMs: "{{?batchingIntervalMs}}"
+        allowManualCommit: "{{allowManualCommit}}"
+        autoCommitEnable: "{{autoCommitEnable}}"
+        autoOffsetReset: "{{autoOffsetReset}}"
         batching: true
+        batchingIntervalMs: "{{?batchingIntervalMs}}"
+        brokers: "{{bootstrapServers}}"
+        groupId: "{{?consumerGroup}}"
         kafkaManualCommitFactory: "#bean:{{manualCommitFactory}}"
+        maxPollIntervalMs: "{{?maxPollIntervalMs}}"
+        maxPollRecords: "{{batchSize}}"
+        pollOnError: "{{pollOnError}}"
+        pollTimeoutMs: "{{pollTimeout}}"
         topicIsPattern: "{{topicIsPattern}}"
+        valueDeserializer: "{{valueDeserializer}}"
       steps:
         - process:
             ref: "{{kafkaHeaderDeserializer}}"
-        - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

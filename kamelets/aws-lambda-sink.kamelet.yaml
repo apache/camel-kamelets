@@ -93,14 +93,15 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - to:
-          uri: "aws2-lambda:{{function}}"
-          parameters:
-            accessKey: "{{?accessKey}}"
-            secretKey: "{{?secretKey}}"
-            region: "{{region}}"
-            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-            useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-            useSessionCredentials: "{{useSessionCredentials}}"
-            profileCredentialsName: "{{?profileCredentialsName}}"
-            sessionToken: "{{?sessionToken}}"
+        - to:
+            uri: aws2-lambda
+            parameters:
+              function: "{{function}}"
+              accessKey: "RAW({{?accessKey}})"
+              profileCredentialsName: "{{?profileCredentialsName}}"
+              region: "{{region}}"
+              secretKey: "RAW({{?secretKey}})"
+              sessionToken: "RAW({{?sessionToken}})"
+              useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+              useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
+              useSessionCredentials: "{{useSessionCredentials}}"

@@ -71,10 +71,11 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - to:
-          uri: "azure-servicebus:{{topicOrQueueName}}"
-          parameters:
-            connectionString: "{{connectionString}}"
-            serviceBusType: "{{serviceBusType}}"
-            producerOperation: "sendMessages"
-            credentialType: "{{credentialType}}"
+        - to:
+            uri: azure-servicebus
+            parameters:
+              topicOrQueueName: "{{topicOrQueueName}}"
+              connectionString: "RAW({{connectionString}})"
+              credentialType: "{{credentialType}}"
+              producerOperation: sendMessages
+              serviceBusType: "{{serviceBusType}}"

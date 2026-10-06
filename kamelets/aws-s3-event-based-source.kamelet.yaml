@@ -166,44 +166,55 @@ spec:
     - 'camel:jackson'
   template:
     from:
-      uri: 'aws2-sqs:{{queueNameOrArn}}'
+      uri: aws2-sqs
       parameters:
-        autoCreateQueue: '{{autoCreateQueue}}'
-        secretKey: '{{?secretKey}}'
-        accessKey: '{{?accessKey}}'
-        region: '{{region}}'
-        deleteAfterRead: '{{deleteAfterRead}}'
-        amazonAWSHost: '{{?amazonAWSHost}}'
-        protocol: '{{?protocol}}'
-        uriEndpointOverride: '{{?uriEndpointOverride}}'
-        queueUrl: '{{?queueURL}}'
-        overrideEndpoint: '{{overrideEndpoint}}'
-        delay: '{{delay}}'
-        greedy: '{{greedy}}'
+        queueNameOrArn: "{{queueNameOrArn}}"
+        accessKey: "RAW({{?accessKey}})"
+        amazonAWSHost: "{{?amazonAWSHost}}"
+        autoCreateQueue: "{{autoCreateQueue}}"
+        delay: "{{delay}}"
+        deleteAfterRead: "{{deleteAfterRead}}"
+        greedy: "{{greedy}}"
+        overrideEndpoint: "{{overrideEndpoint}}"
+        protocol: "{{?protocol}}"
+        queueUrl: "{{?queueURL}}"
+        region: "{{region}}"
+        secretKey: "RAW({{?secretKey}})"
+        uriEndpointOverride: "{{?uriEndpointOverride}}"
       steps:
         - choice:
             precondition: true
             when:
-              - simple: '${properties:getObject:false}'
+              - expression:
+                  simple:
+                    expression: "${properties:getObject:false}"
                 steps:
                   - unmarshal:
                       json:
-                        library: Jackson
                         unmarshalType: com.fasterxml.jackson.databind.JsonNode
                   - setProperty:
                       name: s3-event-name
-                      jsonpath: $.detail.reason
+                      expression:
+                        jsonpath:
+                          expression: "$.detail.reason"
                   - choice:
                       when:
-                        - simple: '${exchangeProperty.s3-event-name} == "PutObject"'
+                        - expression:
+                            simple:
+                              expression: "${exchangeProperty.s3-event-name} == \"PutObject\""
                           steps:
                             - setProperty:
                                 name: aws-s3-name
-                                jsonpath: $.detail.object.key
+                                expression:
+                                  jsonpath:
+                                    expression: "$.detail.object.key"
                             - setProperty:
                                 name: aws-s3-bucket
-                                jsonpath: $.detail.bucket.name
-                            - toD: >-
-                                aws2-s3:${exchangeProperty.aws-s3-bucket}?accessKey={{accessKey}}&secretKey={{secretKey}}&region={{region}}&operation=getObject&keyName=${exchangeProperty.aws-s3-name}
-        - to: 'kamelet:sink'
+                                expression:
+                                  jsonpath:
+                                    expression: "$.detail.bucket.name"
+                            - toD:
+                                uri: "aws2-s3:${exchangeProperty.aws-s3-bucket}?accessKey={{accessKey}}&secretKey={{secretKey}}&region={{region}}&operation=getObject&keyName=${exchangeProperty.aws-s3-name}"
+        - to:
+            uri: kamelet:sink
 
