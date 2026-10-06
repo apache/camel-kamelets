@@ -56,11 +56,11 @@ jobs:
       uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
       with:
         distribution: 'temurin'
-        # 21 for the Camel JBang launcher the tests run (//JAVA 21+ since CAMEL-23112), linked into JBang below instead
+        # 25 for the Camel JBang launcher the tests run (//JAVA 21+ since CAMEL-23112), linked into JBang below instead
         # of downloaded (that download fails now and then); 17, listed last, stays the default for the Maven build and
-        # the Citrus tests (JiraIT times out on 21)
+        # the Citrus tests. With the Camel apps on 21 JiraIT failed in every run; it passed when JBang downloaded 27
         java-version: |
-          21
+          25
           17
         cache: 'maven'
     - name: Build Kamelet libraries
@@ -77,8 +77,8 @@ jobs:
         source "/home/runner/.sdkman/bin/sdkman-init.sh"
         sdk install jbang
 
-        # the Camel JBang launcher needs Java 21: link the one setup-java installed, so JBang does not download one
-        jbang jdk install 21 "$JAVA_HOME_21_X64"
+        # the Camel JBang launcher needs Java 21 or newer: link the 25 setup-java installed, so JBang does not download one
+        jbang jdk install 25 "$JAVA_HOME_25_X64"
         
         jbang trust add https://github.com/citrusframework/citrus/
         jbang trust add https://github.com/apache/camel/
