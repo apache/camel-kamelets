@@ -111,6 +111,19 @@
             <scope>test</scope>
             <version>${junit-jupiter-version}</version>
         </dependency>
+        <!-- KameletsCanonicalTest: loads every Kamelet with the YAML DSL to find the compact notation -->
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core-engine</artifactId>
+            <version>${camel.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-yaml-dsl</artifactId>
+            <version>${camel.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-tooling-model</artifactId>
