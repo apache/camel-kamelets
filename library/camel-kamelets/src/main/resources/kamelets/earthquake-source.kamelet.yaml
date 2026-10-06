@@ -57,53 +57,89 @@ spec:
     - "camel:timer"
   template:
     from:
-      uri: "timer:earthquake"
+      uri: timer
       parameters:
+        timerName: earthquake
         period: "{{period}}"
       steps:
-      - setHeader:
-          name: CamelCaffeineAction
-          constant: GET
-      - toD: "caffeine-cache:cache-${routeId}?key=lastUpdate"
-      - choice:
-          when:
-          - simple: "${header.CamelCaffeineActionHasResult}"
+        - setHeader:
+            name: CamelCaffeineAction
+            expression:
+              constant:
+                expression: GET
+        - toD:
+            uri: caffeine-cache
+            parameters:
+              cacheName: "cache-${routeId}"
+              key: lastUpdate
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header.CamelCaffeineActionHasResult}"
+                steps:
+                  - setProperty:
+                      name: lastUpdate
+                      expression:
+                        simple:
+                          expression: "${body}"
+            otherwise:
+              steps:
+                - setProperty:
+                    name: lastUpdate
+                    expression:
+                      simple:
+                        expression: "${date-with-timezone:now-{{lookAhead}}m:UTC:yyyy-MM-dd'T'HH:mm:ss.SSS}"
+        - setHeader:
+            name: CamelHttpMethod
+            expression:
+              constant:
+                expression: GET
+        - toD:
+            uri: https
+            parameters:
+              httpUri: earthquake.usgs.gov/fdsnws/event/1/query
+              format: geojson
+              updatedafter: "${exchangeProperty.lastUpdate}"
+              orderby: time-asc
+        - removeHeader:
+            name: CamelHttpMethod
+        - unmarshal:
+            json: {}
+        - setProperty:
+            name: generated
+            expression:
+              simple:
+                expression: "${body[metadata][generated]}"
+        - setProperty:
+            name: lastUpdate
+            expression:
+              simple:
+                expression: "${date-with-timezone:exchangeProperty.generated:UTC:yyyy-MM-dd'T'HH:mm:ss.SSS}"
+        - claimCheck:
+            operation: Push
+        - setBody:
+            expression:
+              exchangeProperty:
+                expression: lastUpdate
+        - setHeader:
+            name: CamelCaffeineAction
+            expression:
+              constant:
+                expression: PUT
+        - toD:
+            uri: caffeine-cache
+            parameters:
+              cacheName: "cache-${routeId}"
+              key: lastUpdate
+        - claimCheck:
+            operation: Pop
+        - split:
+            expression:
+              jsonpath:
+                expression: "$.features[*]"
             steps:
-            - setProperty:
-                name: lastUpdate
-                simple: "${body}"
-          otherwise:
-            steps:
-            - setProperty:
-                name: lastUpdate
-                simple: "${date-with-timezone:now-{{lookAhead}}m:UTC:yyyy-MM-dd'T'HH:mm:ss.SSS}"
-      - setHeader:
-          name: CamelHttpMethod
-          constant: GET
-      - toD: "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&updatedafter=${exchangeProperty.lastUpdate}&orderby=time-asc"
-      - removeHeader:
-          name: CamelHttpMethod
-      - unmarshal:
-          json: {}
-      - setProperty:
-          name: generated
-          simple: "${body[metadata][generated]}"
-      - setProperty:
-          name: lastUpdate
-          simple: "${date-with-timezone:exchangeProperty.generated:UTC:yyyy-MM-dd'T'HH:mm:ss.SSS}"
-      - claimCheck:
-          operation: Push
-      - setBody:
-          exchangeProperty: lastUpdate
-      - setHeader:
-          name: CamelCaffeineAction
-          constant: PUT
-      - toD: "caffeine-cache:cache-${routeId}?key=lastUpdate"
-      - claimCheck:
-          operation: Pop
-      - split:
-          jsonpath: "$.features[*]"
-          steps:
-            - marshal:
-                json: {}
-            - to: "kamelet:sink"
+              - marshal:
+                  json: {}
+              - to:
+                  uri: kamelet:sink

@@ -93,17 +93,14 @@ spec:
       - name: dsBean
         type: "#class:org.apache.commons.dbcp2.BasicDataSource"
         properties:
-          username: '{{username}}'
-          password: '{{password}}'
-          url: 'jdbc:oracle:thin:@{{serverName}}:{{serverPort}}/{{databaseName}}'
-          driverClassName: 'oracle.jdbc.driver.OracleDriver'
+          username: "{{username}}"
+          password: "{{password}}"
+          url: "jdbc:oracle:thin:@{{serverName}}:{{serverPort}}/{{databaseName}}"
+          driverClassName: oracle.jdbc.driver.OracleDriver
     from:
-      uri: "{{local-sql-oracle-source}}:{{query}}"
-      parameters:
-        dataSource: "#bean:{{dsBean}}"
-        onConsume: "{{?consumedQuery}}"
+      uri: "{{local-sql-oracle-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume={{?consumedQuery}}"
       steps:
-      - marshal:
-          json: 
-            library: Jackson
-      - to: "kamelet:sink"
+        - marshal:
+            json: {}
+        - to:
+            uri: kamelet:sink

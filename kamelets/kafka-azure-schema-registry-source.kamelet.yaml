@@ -127,62 +127,79 @@ spec:
       - name: kafkaHeaderDeserializer
         type: "#class:org.apache.camel.component.kafka.KafkaHeaderDeserializer"
         properties:
-          enabled: '{{deserializeHeaders}}'
+          enabled: "{{deserializeHeaders}}"
     from:
-      uri: "kafka:{{topic}}"
+      uri: kafka
       parameters:
-        brokers: "{{bootstrapServers}}"
-        securityProtocol: "{{securityProtocol}}"
-        saslMechanism: "{{saslMechanism}}"
-        saslJaasConfig: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password="{{password}}";'
-        autoCommitEnable: "{{autoCommitEnable}}"
-        allowManualCommit: "{{allowManualCommit}}"
-        pollOnError: "{{pollOnError}}"
-        autoOffsetReset: "{{autoOffsetReset}}"
-        groupId: "{{?consumerGroup}}"
-        valueDeserializer: "{{valueDeserializer}}"
-        topicIsPattern: "{{topicIsPattern}}"
-        additionalProperties.schema.registry.url: "{{azureRegistryUrl}}"
+        topic: "{{topic}}"
         additionalProperties.schema.group: avro
-        additionalProperties.schema.registry.credential: '#bean:defaultAzureCredential'
-        additionalProperties.specific.avro.value.type: '#valueAs(java.lang.Class):{{specificAvroValueType}}'
-        additionalProperties.specific.avro.reader: '#valueAs(boolean):true'
+        additionalProperties.schema.registry.credential: "#bean:defaultAzureCredential"
+        additionalProperties.schema.registry.url: "{{azureRegistryUrl}}"
+        additionalProperties.specific.avro.reader: "#valueAs(boolean):true"
+        additionalProperties.specific.avro.value.type: "#valueAs(java.lang.Class):{{specificAvroValueType}}"
+        allowManualCommit: "{{allowManualCommit}}"
+        autoCommitEnable: "{{autoCommitEnable}}"
+        autoOffsetReset: "{{autoOffsetReset}}"
+        brokers: "{{bootstrapServers}}"
+        groupId: "{{?consumerGroup}}"
+        pollOnError: "{{pollOnError}}"
+        saslJaasConfig: "RAW(org.apache.kafka.common.security.plain.PlainLoginModule required username=\"$ConnectionString\" password=\"{{password}}\";)"
+        saslMechanism: "{{saslMechanism}}"
+        securityProtocol: "{{securityProtocol}}"
+        topicIsPattern: "{{topicIsPattern}}"
+        valueDeserializer: "{{valueDeserializer}}"
       steps:
         - process:
             ref: "{{kafkaHeaderDeserializer}}"
-        # Kafka record metadata, surfaced under names that are not Camel
-        # internals, so a downstream consumer does not have to depend on the
-        # CamelKafka* headers. Plain form plus a CloudEvents one, as
-        # infinispan-source and ftp-source do. The CamelKafka* headers are left
-        # in place, so existing consumers are unaffected.
         - setHeader:
             name: kafka-topic
-            simple: "${header[CamelKafkaTopic]}"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaTopic]}"
         - setHeader:
             name: ce-kafkatopic
-            simple: "${header[CamelKafkaTopic]}"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaTopic]}"
         - setHeader:
             name: kafka-key
-            simple: "${header[CamelKafkaKey]}"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaKey]}"
         - setHeader:
             name: ce-kafkakey
-            simple: "${header[CamelKafkaKey]}"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaKey]}"
         - setHeader:
             name: kafka-partition
-            simple: "${header[CamelKafkaPartition]}"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaPartition]}"
         - setHeader:
             name: ce-kafkapartition
-            simple: "${header[CamelKafkaPartition]}"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaPartition]}"
         - setHeader:
             name: kafka-offset
-            simple: "${header[CamelKafkaOffset]}"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaOffset]}"
         - setHeader:
             name: ce-kafkaoffset
-            simple: "${header[CamelKafkaOffset]}"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaOffset]}"
         - setHeader:
             name: kafka-timestamp
-            simple: "${header[CamelKafkaTimestamp]}"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaTimestamp]}"
         - setHeader:
             name: ce-kafkatimestamp
-            simple: "${header[CamelKafkaTimestamp]}"
-        - to: "kamelet:sink"
+            expression:
+              simple:
+                expression: "${header[CamelKafkaTimestamp]}"
+        - to:
+            uri: kamelet:sink

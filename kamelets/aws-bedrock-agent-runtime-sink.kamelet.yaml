@@ -107,21 +107,22 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
-      steps:      
-      - to:
-          uri: "aws-bedrock-agent-runtime:bedrock-knowledge"
-          parameters:
-            secretKey: "{{?secretKey}}"
-            accessKey: "{{?accessKey}}"
-            region: "{{region}}"
-            modelId: "{{modelId}}"
-            knowledgeBaseId: "{{knowledgeBaseId}}"
-            operation: retrieveAndGenerate
-            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-            useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-            useSessionCredentials: "{{useSessionCredentials}}" 
-            uriEndpointOverride: "{{?uriEndpointOverride}}"
-            profileCredentialsName: "{{?profileCredentialsName}}"
-            sessionToken: "{{?sessionToken}}"
-            overrideEndpoint: "{{overrideEndpoint}}"
+      uri: kamelet:source
+      steps:
+        - to:
+            uri: aws-bedrock-agent-runtime
+            parameters:
+              label: bedrock-knowledge
+              accessKey: "RAW({{?accessKey}})"
+              knowledgeBaseId: "{{knowledgeBaseId}}"
+              modelId: "{{modelId}}"
+              operation: retrieveAndGenerate
+              overrideEndpoint: "{{overrideEndpoint}}"
+              profileCredentialsName: "{{?profileCredentialsName}}"
+              region: "{{region}}"
+              secretKey: "RAW({{?secretKey}})"
+              sessionToken: "RAW({{?sessionToken}})"
+              uriEndpointOverride: "{{?uriEndpointOverride}}"
+              useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+              useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
+              useSessionCredentials: "{{useSessionCredentials}}"

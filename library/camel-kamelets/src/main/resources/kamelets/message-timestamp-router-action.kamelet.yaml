@@ -63,31 +63,42 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[Content-Type]} == 'application/json'"
-            steps:
-            - unmarshal:
-                json:
-                  library: Jackson
-                  unmarshalType: com.fasterxml.jackson.databind.JsonNode
-      - setProperty:
-          name: "topicFormat"
-          constant: "{{topicFormat}}"
-      - setProperty:
-          name: "timestampFormat"
-          constant: "{{timestampFormat}}"
-      - setProperty:
-          name: "timestampKeys"
-          constant: "{{timestampKeys}}"
-      - setProperty:
-          name: "timestampKeyFormat"
-          constant: "{{timestampKeyFormat}}"
-      - bean: "org.apache.camel.component.kafka.transform.MessageTimestampRouter"
-      - marshal:
-          json:
-            library: Jackson
-            unmarshalType: com.fasterxml.jackson.databind.JsonNode
-      - setHeader:
-          name: "Content-Type"
-          constant: "application/json"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[Content-Type]} == 'application/json'"
+                steps:
+                  - unmarshal:
+                      json:
+                        unmarshalType: com.fasterxml.jackson.databind.JsonNode
+        - setProperty:
+            name: topicFormat
+            expression:
+              constant:
+                expression: "{{topicFormat}}"
+        - setProperty:
+            name: timestampFormat
+            expression:
+              constant:
+                expression: "{{timestampFormat}}"
+        - setProperty:
+            name: timestampKeys
+            expression:
+              constant:
+                expression: "{{timestampKeys}}"
+        - setProperty:
+            name: timestampKeyFormat
+            expression:
+              constant:
+                expression: "{{timestampKeyFormat}}"
+        - bean:
+            ref: org.apache.camel.component.kafka.transform.MessageTimestampRouter
+        - marshal:
+            json:
+              unmarshalType: com.fasterxml.jackson.databind.JsonNode
+        - setHeader:
+            name: Content-Type
+            expression:
+              constant:
+                expression: application/json

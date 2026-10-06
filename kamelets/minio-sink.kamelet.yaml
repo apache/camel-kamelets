@@ -76,35 +76,48 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          precondition: true
-          when:
-            - simple: '${propertiesExist:!keyName}'
-              steps:
-                - choice:
-                    when:
-                      - simple: "${header[file]}"
+        - choice:
+            precondition: true
+            when:
+              - expression:
+                  simple:
+                    expression: "${propertiesExist:!keyName}"
+                steps:
+                  - choice:
+                      when:
+                        - expression:
+                            simple:
+                              expression: "${header[file]}"
+                          steps:
+                            - setHeader:
+                                name: CamelMinioObjectName
+                                expression:
+                                  simple:
+                                    expression: "${header[file]}"
+                        - expression:
+                            simple:
+                              expression: "${header[ce-file]}"
+                          steps:
+                            - setHeader:
+                                name: CamelMinioObjectName
+                                expression:
+                                  simple:
+                                    expression: "${header[ce-file]}"
+                      otherwise:
                         steps:
                           - setHeader:
                               name: CamelMinioObjectName
-                              simple: "${header[file]}"
-                      - simple: "${header[ce-file]}"
-                        steps:
-                          - setHeader:
-                              name: CamelMinioObjectName
-                              simple: "${header[ce-file]}"
-                    otherwise:
-                      steps:
-                        - setHeader:
-                            name: CamelMinioObjectName
-                            simple: "${exchangeId}"
-      - to:
-          uri: "minio:{{bucketName}}"
-          parameters:
-            autoCreateBucket: "{{autoCreateBucket}}"
-            secretKey: "{{secretKey}}"
-            accessKey: "{{accessKey}}"
-            endpoint: "{{endpoint}}"
-            keyName: "{{?keyName}}"
+                              expression:
+                                simple:
+                                  expression: "${exchangeId}"
+        - to:
+            uri: minio
+            parameters:
+              bucketName: "{{bucketName}}"
+              accessKey: "RAW({{accessKey}})"
+              autoCreateBucket: "{{autoCreateBucket}}"
+              endpoint: "{{endpoint}}"
+              keyName: "{{?keyName}}"
+              secretKey: "RAW({{secretKey}})"

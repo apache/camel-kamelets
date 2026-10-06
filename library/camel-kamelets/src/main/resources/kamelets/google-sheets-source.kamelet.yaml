@@ -175,33 +175,34 @@ spec:
   - "camel:google-sheets"
   template:
     from:
-      uri: "google-sheets-stream://{{spreadsheetId}}"
-      parameters:
-        clientId: "{{clientId}}"
-        accessToken: "{{accessToken}}"
-        refreshToken: "{{refreshToken}}"
-        clientSecret: "{{clientSecret}}"
-        delay: "{{delay}}"
-        applicationName: "{{?applicationName}}"
-        splitResults: "{{splitResults}}"
-        range: "{{?range}}"
-        repeatCount: "{{?repeatCount}}"
+      uri: "google-sheets-stream://{{spreadsheetId}}?accessToken=RAW({{accessToken}})&applicationName={{?applicationName}}&clientId={{clientId}}&clientSecret=RAW({{clientSecret}})&delay={{delay}}&range={{?range}}&refreshToken=RAW({{refreshToken}})&repeatCount={{?repeatCount}}&splitResults={{splitResults}}"
       steps:
-      - marshal:
-          json: {}
-      - setHeader:
-          name: CamelGoogleSheets.spreadsheetId
-          simple: "{{spreadsheetId}}"
-      - setHeader:
-          name: CamelGoogleSheets.range
-          simple: "{{?range}}"
-      - setHeader:
-          name: CamelGoogleSheets.majorDimension
-          simple: "{{?majorDimension}}"
-      - setHeader:
-          name: CamelGoogleSheets.columnNames
-          simple: "{{?columnNames}}"
-      - setHeader:
-          name: CamelGoogleSheets.splitResults
-          simple: "{{?splitResults}}"
-      - to: "kamelet:sink"
+        - marshal:
+            json: {}
+        - setHeader:
+            name: CamelGoogleSheets.spreadsheetId
+            expression:
+              simple:
+                expression: "{{spreadsheetId}}"
+        - setHeader:
+            name: CamelGoogleSheets.range
+            expression:
+              simple:
+                expression: "{{?range}}"
+        - setHeader:
+            name: CamelGoogleSheets.majorDimension
+            expression:
+              simple:
+                expression: "{{?majorDimension}}"
+        - setHeader:
+            name: CamelGoogleSheets.columnNames
+            expression:
+              simple:
+                expression: "{{?columnNames}}"
+        - setHeader:
+            name: CamelGoogleSheets.splitResults
+            expression:
+              simple:
+                expression: "{{?splitResults}}"
+        - to:
+            uri: kamelet:sink

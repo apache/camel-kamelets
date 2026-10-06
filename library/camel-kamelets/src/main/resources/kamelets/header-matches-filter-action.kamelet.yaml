@@ -51,7 +51,9 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - filter:
-          simple: "${header[{{headerName}}]} !regex '{{regex}}'"
-          steps:
-            - stop: {}
+        - filter:
+            expression:
+              simple:
+                expression: "${header[{{headerName}}]} !regex '{{regex}}'"
+            steps:
+              - stop: {}

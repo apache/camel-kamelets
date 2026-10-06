@@ -166,28 +166,35 @@ spec:
     - "camel:timer"
   template:
     from:
-      uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
+      uri: azure-storage-blob
       parameters:
-        accessKey: "{{?accessKey}}"
-        azureClientId: "{{?clientId}}"
-        azureClientSecret: "{{?clientSecret}}"
+        accountName: "{{accountName}}"
+        containerName: "{{containerName}}"
+        accessKey: "RAW({{?accessKey}})"
+        azureClientId: "RAW({{?clientId}})"
+        azureClientSecret: "RAW({{?clientSecret}})"
         azureTenantId: "{{?tenantId}}"
         credentialType: "{{credentialType}}"
         delay: "{{delay}}"
       steps:
-        - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink
         - choice:
             precondition: true
             when:
-              - simple: '${properties:deleteAfterRead:false}'
+              - expression:
+                  simple:
+                    expression: "${properties:deleteAfterRead:false}"
                 steps:
                   - to:
-                      uri: "azure-storage-blob:{{accountName}}/{{containerName}}"
+                      uri: azure-storage-blob
                       parameters:
-                        operation: "deleteBlob"
-                        accessKey: "{{?accessKey}}"
-                        azureClientId: "{{?clientId}}"
-                        azureClientSecret: "{{?clientSecret}}"
+                        accountName: "{{accountName}}"
+                        containerName: "{{containerName}}"
+                        accessKey: "RAW({{?accessKey}})"
+                        azureClientId: "RAW({{?clientId}})"
+                        azureClientSecret: "RAW({{?clientSecret}})"
                         azureTenantId: "{{?tenantId}}"
                         credentialType: "{{credentialType}}"
+                        operation: deleteBlob
 

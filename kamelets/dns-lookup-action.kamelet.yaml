@@ -42,26 +42,38 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[domain-name]}"
-            steps:
-            - setHeader:
-                name: CamelDnsDomain
-                simple: "${header[domain-name]}"
-          - simple: "${header[ce-domainname]}"
-            steps:
-            - setHeader:
-                name: CamelDnsDomain
-                simple: "${header[ce-domainname]}"
-          otherwise:
-            steps:
-            - setHeader:
-                name: CamelDnsDomain
-                simple: "${body}"
-      - to:
-          uri: "dns:lookup"
-      - marshal:
-          json: {}
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[domain-name]}"
+                steps:
+                  - setHeader:
+                      name: CamelDnsDomain
+                      expression:
+                        simple:
+                          expression: "${header[domain-name]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-domainname]}"
+                steps:
+                  - setHeader:
+                      name: CamelDnsDomain
+                      expression:
+                        simple:
+                          expression: "${header[ce-domainname]}"
+            otherwise:
+              steps:
+                - setHeader:
+                    name: CamelDnsDomain
+                    expression:
+                      simple:
+                        expression: "${body}"
+        - to:
+            uri: dns
+            parameters:
+              dnsType: lookup
+        - marshal:
+            json: {}

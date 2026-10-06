@@ -82,32 +82,36 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[file]}"
-            steps:
-            - setHeader:
-                name: CamelAwsS3Key
-                simple: "${header[file]}"
-          - simple: "${header[ce-file]}"
-            steps:
-            - setHeader:
-                name: CamelAwsS3Key
-                simple: "${header[ce-file]}"
-          - simple: "'{{?keyName}}' == ''"
-            steps:
-            - setHeader:
-                name: CamelAwsS3Key
-                simple: "${exchangeId}"
-      - to:
-          uri: "aws2-s3:{{bucketName}}"
-          parameters:
-            secretKey: "{{?secretKey}}"
-            accessKey: "{{?accessKey}}"
-            region: "{{zoneGroup}}"
-            autoCreateBucket: "{{autoCreateBucket}}"
-            uriEndpointOverride: "{{?cephUrl}}"
-            overrideEndpoint: "true"
-            keyName: "{{?keyName}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[file]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsS3Key
+                      expression:
+                        simple:
+                          expression: "${header[file]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-file]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsS3Key
+                      expression:
+                        simple:
+                          expression: "${header[ce-file]}"
+              - expression:
+                  simple:
+                    expression: "'{{?keyName}}' == ''"
+                steps:
+                  - setHeader:
+                      name: CamelAwsS3Key
+                      expression:
+                        simple:
+                          expression: "${exchangeId}"
+        - to:
+            uri: "aws2-s3:{{bucketName}}?accessKey=RAW({{?accessKey}})&autoCreateBucket={{autoCreateBucket}}&keyName={{?keyName}}&overrideEndpoint=true&region={{zoneGroup}}&secretKey=RAW({{?secretKey}})&uriEndpointOverride={{?cephUrl}}"

@@ -75,11 +75,19 @@ spec:
     - "camel:timer"
   template:
     from:
-      uri: "timer:update"
+      uri: timer
       parameters:
+        timerName: update
         period: "{{period}}"
       steps:
-      - to: "xchange:binance?service=marketdata&method=ticker&currencyPair=BTC/USDT"
-      - marshal:
-          json: {}
-      - to: "kamelet:sink"
+        - to:
+            uri: xchange
+            parameters:
+              name: binance
+              service: marketdata
+              method: ticker
+              currencyPair: BTC/USDT
+        - marshal:
+            json: {}
+        - to:
+            uri: kamelet:sink

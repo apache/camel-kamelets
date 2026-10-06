@@ -95,13 +95,5 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - to:
-          uri: "scp:{{serverName}}:{{serverPort}}"
-          parameters:
-            username: "{{?username}}"
-            password: "{{?password}}"
-            privateKeyFile: "{{?privateKeyFile}}"
-            privateKeyPassphrase: "{{?privateKeyPassphrase}}"
-            strictHostKeyChecking: "{{?strictHostKeyChecking}}"
-            knownHostsUri: "{{?knownHostsUri}}"
-            useUserKnownHostsFile: "{{?useUserKnownHostsFile}}"
+        - to:
+            uri: "scp:{{serverName}}:{{serverPort}}?knownHostsUri={{?knownHostsUri}}&password=RAW({{?password}})&privateKeyFile=RAW({{?privateKeyFile}})&privateKeyPassphrase={{?privateKeyPassphrase}}&strictHostKeyChecking={{?strictHostKeyChecking}}&useUserKnownHostsFile={{?useUserKnownHostsFile}}&username=RAW({{?username}})"

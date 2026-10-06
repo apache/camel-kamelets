@@ -81,13 +81,15 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "twitter-directmessage:{{user}}"
+      uri: twitter-directmessage
       parameters:
-        accessToken: "{{accessToken}}"
-        accessTokenSecret: "{{accessTokenSecret}}"
-        consumerKey: "{{apiKey}}"
-        consumerSecret: "{{apiKeySecret}}"
+        user: "{{user}}"
+        accessToken: "RAW({{accessToken}})"
+        accessTokenSecret: "RAW({{accessTokenSecret}})"
+        consumerKey: "RAW({{apiKey}})"
+        consumerSecret: "RAW({{apiKeySecret}})"
       steps:
-      - marshal:
-          json: {}
-      - to: "kamelet:sink"
+        - marshal:
+            json: {}
+        - to:
+            uri: kamelet:sink

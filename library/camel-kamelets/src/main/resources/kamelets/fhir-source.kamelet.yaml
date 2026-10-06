@@ -84,18 +84,11 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "fhir://search/searchByUrl"
-      parameters:
-        serverUrl: "{{serverUrl}}"
-        url: "{{url}}"
-        encoding: "{{encoding}}"
-        fhirVersion: "{{fhirVersion}}"
-        prettyPrint: "{{prettyPrint}}"
-        username: "{{username}}"
-        password: "{{password}}"
+      uri: "fhir://search/searchByUrl?encoding={{encoding}}&fhirVersion={{fhirVersion}}&password=RAW({{password}})&prettyPrint={{prettyPrint}}&serverUrl={{serverUrl}}&url={{url}}&username=RAW({{username}})"
       steps:
-      - marshal:
-          fhirJson:
-            fhirVersion: "{{fhirVersion}}"
-            prettyPrint: "{{prettyPrint}}" 
-      - to: "kamelet:sink"
+        - marshal:
+            fhirJson:
+              prettyPrint: "{{prettyPrint}}"
+              fhirVersion: "{{fhirVersion}}"
+        - to:
+            uri: kamelet:sink

@@ -66,41 +66,63 @@ spec:
     - "camel:spring-redis"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[key]}"
-            steps:
-            - setHeader:
-                name: CamelRedis.Key
-                simple: "${header[key]}"
-          - simple: "${header[ce-key]}"
-            steps:
-            - setHeader:
-                name: CamelRedis.Key
-                simple: "${header[ce-key]}"
-      - choice:
-          when:
-          - simple: "${header[channel]}"
-            steps:
-            - setHeader:
-                name: CamelRedis.Channel
-                simple: "${header[channel]}"
-          - simple: "${header[ce-channel]}"
-            steps:
-            - setHeader:
-                name: CamelRedis.Channel
-                simple: "${header[ce-channel]}"
-      - setHeader:
-          name: CamelRedis.Message
-          simple: "${body}"
-      - setHeader:
-          name: CamelRedis.Value
-          simple: "${body}"
-      - to:
-          uri: "spring-redis:{{redisHost}}:{{redisPort}}"
-          parameters:
-            command: "{{command}}"
-            channels: "{{channels}}"
-            serializer: "#class:{{serializer}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[key]}"
+                steps:
+                  - setHeader:
+                      name: CamelRedis.Key
+                      expression:
+                        simple:
+                          expression: "${header[key]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-key]}"
+                steps:
+                  - setHeader:
+                      name: CamelRedis.Key
+                      expression:
+                        simple:
+                          expression: "${header[ce-key]}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[channel]}"
+                steps:
+                  - setHeader:
+                      name: CamelRedis.Channel
+                      expression:
+                        simple:
+                          expression: "${header[channel]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-channel]}"
+                steps:
+                  - setHeader:
+                      name: CamelRedis.Channel
+                      expression:
+                        simple:
+                          expression: "${header[ce-channel]}"
+        - setHeader:
+            name: CamelRedis.Message
+            expression:
+              simple:
+                expression: "${body}"
+        - setHeader:
+            name: CamelRedis.Value
+            expression:
+              simple:
+                expression: "${body}"
+        - to:
+            uri: spring-redis
+            parameters:
+              host: "{{redisHost}}"
+              port: "{{redisPort}}"
+              channels: "{{channels}}"
+              command: "{{command}}"
+              serializer: "#class:{{serializer}}"

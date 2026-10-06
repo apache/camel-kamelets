@@ -86,11 +86,8 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-        # Drop any mail headers arriving from upstream. Only the documented
-        # ce-* interface below is allowed to set them, and Bcc / Reply-To are
-        # not part of that interface at all.
         - removeHeader:
             name: Subject
         - removeHeader:
@@ -105,47 +102,50 @@ spec:
             name: Reply-To
         - choice:
             when:
-            - simple: "${header[ce-subject]}"
-              steps:
-                - setHeader:
-                    name: Subject
-                    simple: "${header[ce-subject]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-subject]}"
+                steps:
+                  - setHeader:
+                      name: Subject
+                      expression:
+                        simple:
+                          expression: "${header[ce-subject]}"
         - choice:
             when:
-            - simple: "${header[ce-from]}"
-              steps:
-                - setHeader:
-                    name: From
-                    simple: "${header[ce-from]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-from]}"
+                steps:
+                  - setHeader:
+                      name: From
+                      expression:
+                        simple:
+                          expression: "${header[ce-from]}"
         - choice:
             when:
-            - simple: "${header[ce-to]}"
-              steps:
-                - setHeader:
-                    name: To
-                    simple: "${header[ce-to]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-to]}"
+                steps:
+                  - setHeader:
+                      name: To
+                      expression:
+                        simple:
+                          expression: "${header[ce-to]}"
         - choice:
             when:
-            - simple: "${header[ce-cc]}"
-              steps:
-                - setHeader:
-                    name: Cc
-                    simple: "${header[ce-cc]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-cc]}"
+                steps:
+                  - setHeader:
+                      name: Cc
+                      expression:
+                        simple:
+                          expression: "${header[ce-cc]}"
         - removeHeaders:
-            pattern: "ce-*"
+            pattern: ce-*
         - to:
-            uri: "{{protocol}}:{{connectionHost}}:{{connectionPort}}"
-            parameters:
-              subject: "{{subject}}"
-              from: "{{from}}"
-              to: "{{to}}"
-              username: "{{username}}"
-              password: "{{password}}"
-              # camel-mail ignores the Subject / From / To / Cc headers unless
-              # these are enabled; without them the ce-* mappings above are
-              # dead code. Reply-To stays disabled - it is not part of the
-              # documented interface.
-              useHeaderSubject: true
-              useHeaderFrom: true
-              useHeaderRecipients: true
+            uri: "{{protocol}}:{{connectionHost}}:{{connectionPort}}?subject={{subject}}&from={{from}}&to={{to}}&username={{username}}&password={{password}}&useHeaderSubject=true&useHeaderFrom=true&useHeaderRecipients=true"
 

@@ -76,12 +76,14 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "minio:{{bucketName}}"
+      uri: minio
       parameters:
+        bucketName: "{{bucketName}}"
+        accessKey: "RAW({{accessKey}})"
         autoCreateBucket: "{{autoCreateBucket}}"
-        secretKey: "{{secretKey}}"
-        accessKey: "{{accessKey}}"
-        endpoint: "{{endpoint}}"
         deleteAfterRead: "{{deleteAfterRead}}"
+        endpoint: "{{endpoint}}"
+        secretKey: "RAW({{secretKey}})"
       steps:
-      - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

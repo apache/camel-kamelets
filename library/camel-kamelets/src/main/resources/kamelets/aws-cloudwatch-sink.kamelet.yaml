@@ -103,88 +103,137 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[metric-name]}"
-            steps:
-            - setHeader:
-                name: CamelAwsCwMetricName
-                simple: "${header[metric-name]}"             
-          - simple: "${header[ce-metricname]}"
-            steps:
-            - setHeader:
-                name: CamelAwsCwMetricName
-                simple: "${header[ce-metricname]}"
-      - choice:
-          when:                
-          - simple: "${header[metric-value]}"
-            steps:
-            - setHeader:
-                name: CamelAwsCwMetricValue
-                simple: "${header[metric-value]}"              
-          - simple: "${header[ce-metricvalue]}"
-            steps:
-            - setHeader:
-                name: CamelAwsCwMetricValue
-                simple: "${header[ce-metricvalue]}"
-      - choice:
-          when:                
-          - simple: "${header[metric-unit]}"
-            steps:
-            - setHeader:
-                name: CamelAwsCwMetricUnit
-                simple: "${header[metric-unit]}"              
-          - simple: "${header[ce-metricunit]}"
-            steps:
-            - setHeader:
-                name: CamelAwsCwMetricUnit
-                simple: "${header[ce-metricunit]}"
-      - choice:
-          when:                
-          - simple: "${header[metric-timestamp]}"
-            steps:
-            - setHeader:
-                name: CamelAwsCwMetricTimestamp
-                simple: "${header[metric-timestamp]}"               
-          - simple: "${header[ce-metrictimestamp]}"
-            steps:
-            - setHeader:
-                name: CamelAwsCwMetricTimestamp
-                simple: "${header[ce-metrictimestamp]}"
-      - choice:
-          when:                
-          - simple: "${header[metric-dimension-name]}"
-            steps:
-            - setHeader:
-                name: CamelAwsCwMetricDimensionName
-                simple: "${header[metric-dimension-name]}"
-          - simple: "${header[ce-metricdimensionname]}"
-            steps:
-            - setHeader:
-                name: CamelAwsCwMetricDimensionName
-                simple: "${header[ce-metricdimensionname]}"
-      - choice:
-          when:                
-          - simple: "${header[metric-dimension-value]}"
-            steps:
-            - setHeader:
-                name: CamelAwsCwMetricDimensionValue
-                simple: "${header[metric-dimension-value]}"
-          - simple: "${header[ce-metricdimensionvalue]}"
-            steps:
-            - setHeader:
-                name: CamelAwsCwMetricDimensionValue
-                simple: "${header[ce-metricdimensionvalue]}"
-      - to:
-          uri: "aws2-cw:{{cwNamespace}}"
-          parameters:
-            secretKey: "{{?secretKey}}"
-            accessKey: "{{?accessKey}}"
-            region: "{{region}}"
-            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-            useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-            useSessionCredentials: "{{useSessionCredentials}}"
-            uriEndpointOverride: "{{?uriEndpointOverride}}"
-            profileCredentialsName: "{{?profileCredentialsName}}"
-            sessionToken: "{{?sessionToken}}"
-            overrideEndpoint: "{{overrideEndpoint}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[metric-name]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsCwMetricName
+                      expression:
+                        simple:
+                          expression: "${header[metric-name]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-metricname]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsCwMetricName
+                      expression:
+                        simple:
+                          expression: "${header[ce-metricname]}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[metric-value]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsCwMetricValue
+                      expression:
+                        simple:
+                          expression: "${header[metric-value]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-metricvalue]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsCwMetricValue
+                      expression:
+                        simple:
+                          expression: "${header[ce-metricvalue]}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[metric-unit]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsCwMetricUnit
+                      expression:
+                        simple:
+                          expression: "${header[metric-unit]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-metricunit]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsCwMetricUnit
+                      expression:
+                        simple:
+                          expression: "${header[ce-metricunit]}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[metric-timestamp]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsCwMetricTimestamp
+                      expression:
+                        simple:
+                          expression: "${header[metric-timestamp]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-metrictimestamp]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsCwMetricTimestamp
+                      expression:
+                        simple:
+                          expression: "${header[ce-metrictimestamp]}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[metric-dimension-name]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsCwMetricDimensionName
+                      expression:
+                        simple:
+                          expression: "${header[metric-dimension-name]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-metricdimensionname]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsCwMetricDimensionName
+                      expression:
+                        simple:
+                          expression: "${header[ce-metricdimensionname]}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[metric-dimension-value]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsCwMetricDimensionValue
+                      expression:
+                        simple:
+                          expression: "${header[metric-dimension-value]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-metricdimensionvalue]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsCwMetricDimensionValue
+                      expression:
+                        simple:
+                          expression: "${header[ce-metricdimensionvalue]}"
+        - to:
+            uri: aws2-cw
+            parameters:
+              namespace: "{{cwNamespace}}"
+              accessKey: "RAW({{?accessKey}})"
+              overrideEndpoint: "{{overrideEndpoint}}"
+              profileCredentialsName: "{{?profileCredentialsName}}"
+              region: "{{region}}"
+              secretKey: "RAW({{?secretKey}})"
+              sessionToken: "RAW({{?sessionToken}})"
+              uriEndpointOverride: "{{?uriEndpointOverride}}"
+              useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+              useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
+              useSessionCredentials: "{{useSessionCredentials}}"

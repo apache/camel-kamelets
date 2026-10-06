@@ -145,24 +145,7 @@ spec:
     type: object
   template:
     from:
-      uri: pulsar:{{topicType}}/{{tenant}}/{{namespaceName}}/{{topic}}
-      parameters:
-        serviceUrl: "RAW({{serviceUrl}})"
-        authenticationClass: "{{?authenticationClass}}"
-        authenticationParams: "{{?authenticationParams}}"
-        consumerNamePrefix: "{{?consumerNamePrefix}}"
-        consumerQueueSize: "{{?consumerQueueSize}}"
-        deadLetterTopic: "{{?deadLetterTopic}}"
-        maxRedeliverCount: "{{?maxRedeliverCount}}"
-        negativeAckRedeliveryDelayMicros: "{{?negativeAckRedeliveryDelayMicros}}"
-        messageListener: "{{?messageListener}}"
-        numberOfConsumers: "{{?numberOfConsumers}}"   
-        numberOfConsumerThreads: "{{?numberOfConsumerThreads}}"
-        readCompacted: "{{?readCompacted}}"
-        subscriptionInitialPosition: "{{?subscriptionInitialPosition}}"
-        subscriptionName: "{{?subscriptionName}}"
-        subscriptionTopicsMode: "{{?subscriptionTopicsMode}}"
-        subscriptionType: "{{?subscriptionType}}"
-        topicsPattern: "{{?topicsPattern}}"
+      uri: "pulsar:{{topicType}}/{{tenant}}/{{namespaceName}}/{{topic}}?authenticationClass={{?authenticationClass}}&authenticationParams={{?authenticationParams}}&consumerNamePrefix={{?consumerNamePrefix}}&consumerQueueSize={{?consumerQueueSize}}&deadLetterTopic={{?deadLetterTopic}}&maxRedeliverCount={{?maxRedeliverCount}}&messageListener={{?messageListener}}&negativeAckRedeliveryDelayMicros={{?negativeAckRedeliveryDelayMicros}}&numberOfConsumerThreads={{?numberOfConsumerThreads}}&numberOfConsumers={{?numberOfConsumers}}&readCompacted={{?readCompacted}}&serviceUrl=RAW({{serviceUrl}})&subscriptionInitialPosition={{?subscriptionInitialPosition}}&subscriptionName={{?subscriptionName}}&subscriptionTopicsMode={{?subscriptionTopicsMode}}&subscriptionType={{?subscriptionType}}&topicsPattern={{?topicsPattern}}"
       steps:
-        - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

@@ -96,39 +96,52 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          precondition: true
-          when:
-            - simple: '${propertiesExist:!keyName}'
-              steps:
-                - choice:
-                    when:
-                      - simple: "${header[file]}"
+        - choice:
+            precondition: true
+            when:
+              - expression:
+                  simple:
+                    expression: "${propertiesExist:!keyName}"
+                steps:
+                  - choice:
+                      when:
+                        - expression:
+                            simple:
+                              expression: "${header[file]}"
+                          steps:
+                            - setHeader:
+                                name: CamelIbmCosKey
+                                expression:
+                                  simple:
+                                    expression: "${header[file]}"
+                        - expression:
+                            simple:
+                              expression: "${header[ce-file]}"
+                          steps:
+                            - setHeader:
+                                name: CamelIbmCosKey
+                                expression:
+                                  simple:
+                                    expression: "${header[ce-file]}"
+                      otherwise:
                         steps:
                           - setHeader:
                               name: CamelIbmCosKey
-                              simple: "${header[file]}"
-                      - simple: "${header[ce-file]}"
-                        steps:
-                          - setHeader:
-                              name: CamelIbmCosKey
-                              simple: "${header[ce-file]}"
-                    otherwise:
-                      steps:
-                        - setHeader:
-                            name: CamelIbmCosKey
-                            simple: "${exchangeId}"
-      - to:
-          uri: "ibm-cos:{{bucketName}}"
-          parameters:
-            apiKey: "{{apiKey}}"
-            serviceInstanceId: "{{serviceInstanceId}}"
-            endpointUrl: "{{endpointUrl}}"
-            location: "{{?location}}"
-            autoCreateBucket: "{{autoCreateBucket}}"
-            keyName: "{{?keyName}}"
-            multiPartUpload: "{{multiPartUpload}}"
-            partSize: "{{partSize}}"
-            storageClass: "{{?storageClass}}"
+                              expression:
+                                simple:
+                                  expression: "${exchangeId}"
+        - to:
+            uri: ibm-cos
+            parameters:
+              bucketName: "{{bucketName}}"
+              apiKey: "RAW({{apiKey}})"
+              autoCreateBucket: "{{autoCreateBucket}}"
+              endpointUrl: "{{endpointUrl}}"
+              keyName: "{{?keyName}}"
+              location: "{{?location}}"
+              multiPartUpload: "{{multiPartUpload}}"
+              partSize: "{{partSize}}"
+              serviceInstanceId: "RAW({{serviceInstanceId}})"
+              storageClass: "{{?storageClass}}"

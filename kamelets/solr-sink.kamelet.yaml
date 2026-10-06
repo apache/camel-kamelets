@@ -72,22 +72,21 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - setHeader:
-          name: "CamelSolrOperation"
-          constant: "INSERT"
-      - setHeader:
-          name: "CamelSolrCollection"
-          constant: "{{collection}}"
-      - unmarshal:
-          json:
-            library: Jackson
-      - removeHeader:
-          name: "content-type"
-      - to:
-          uri: "solr:{{servers}}/solr/"
-          parameters:
-            autocommit: "{{autocommit}}"
-            username: "{{?username}}"
-            password: "{{?password}}"
+        - setHeader:
+            name: CamelSolrOperation
+            expression:
+              constant:
+                expression: INSERT
+        - setHeader:
+            name: CamelSolrCollection
+            expression:
+              constant:
+                expression: "{{collection}}"
+        - unmarshal:
+            json: {}
+        - removeHeader:
+            name: content-type
+        - to:
+            uri: "solr:{{servers}}/solr/?autocommit={{autocommit}}&password=RAW({{?password}})&username=RAW({{?username}})"

@@ -95,24 +95,22 @@ spec:
       - name: local-es
         type: "#class:org.apache.camel.component.es.ElasticsearchComponent"
         properties:
-            user: "{{?user}}"
-            password: "{{?password}}"
+          user: "{{?user}}"
+          password: "{{?password}}"
     from:
-      uri: timer:tick
+      uri: timer
       parameters:
+        timerName: tick
         period: "{{period}}"
       steps:
         - setBody:
-            constant: "{{query?nested=false}}"
+            expression:
+              constant:
+                expression: "{{query?nested=false}}"
         - to:
-            uri: "{{local-es}}:{{clusterName}}"
-            parameters:
-              operation: "SEARCH"
-              indexName: "{{indexName}}"
-              hostAddresses: "{{hostAddresses}}"
-              enableSSL: "{{enableSSL}}"
-              certificatePath: "base64:{{?certificate}}"
+            uri: "{{local-es}}:{{clusterName}}?operation=SEARCH&indexName={{indexName}}&hostAddresses={{hostAddresses}}&enableSSL={{enableSSL}}&certificatePath=base64:{{?certificate}}"
         - marshal:
             json:
               library: Gson
-        - to: kamelet:sink
+        - to:
+            uri: kamelet:sink

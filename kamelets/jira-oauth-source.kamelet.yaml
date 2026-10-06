@@ -88,17 +88,18 @@ spec:
   - "mvn:com.fasterxml.jackson.datatype:jackson-datatype-joda:2.12.5"
   template:
     from:
-      uri: "jira:newIssues"
+      uri: jira
       parameters:
+        type: newIssues
+        accessToken: "RAW({{accessToken}})"
+        consumerKey: "RAW({{consumerKey}})"
         jiraUrl: "{{jiraUrl}}"
-        accessToken: "{{accessToken}}"
-        verificationCode: "{{verificationCode}}"
-        privateKey: "RAW({{privateKey}})"
-        consumerKey: "{{consumerKey}}"
         jql: "{{jql}}"
+        privateKey: "RAW({{privateKey}})"
+        verificationCode: "RAW({{verificationCode}})"
       steps:
-      - marshal:
-          json: 
-            library: Jackson
-            moduleClassNames: com.fasterxml.jackson.datatype.joda.JodaModule
-      - to: "kamelet:sink"
+        - marshal:
+            json:
+              moduleClassNames: com.fasterxml.jackson.datatype.joda.JodaModule
+        - to:
+            uri: kamelet:sink

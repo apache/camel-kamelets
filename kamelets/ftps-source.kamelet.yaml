@@ -101,22 +101,30 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "ftps:{{username}}@{{connectionHost}}:{{connectionPort}}/{{directoryName}}"
+      uri: ftps
       parameters:
-        password: "{{password}}"
-        passiveMode: "{{passiveMode}}"
-        recursive: "{{recursive}}"
-        idempotent: "{{idempotent}}"
-        binary: "{{binary}}"
+        host: "{{username}}@{{connectionHost}}"
+        port: "{{connectionPort}}"
+        directoryName: "{{directoryName}}"
         autoCreate: "{{autoCreate}}"
+        binary: "{{binary}}"
         delete: "{{delete}}"
+        idempotent: "{{idempotent}}"
+        passiveMode: "{{passiveMode}}"
+        password: "RAW({{password}})"
+        recursive: "{{recursive}}"
       steps:
-      - setHeader:
-          name: file
-          simple: "${header[CamelFileName]}"
-      - setHeader:
-          name: ce-file
-          simple: "${header[CamelFileName]}"
-      - convertBodyTo:
-          type: "java.io.InputStream"
-      - to: "kamelet:sink"
+        - setHeader:
+            name: file
+            expression:
+              simple:
+                expression: "${header[CamelFileName]}"
+        - setHeader:
+            name: ce-file
+            expression:
+              simple:
+                expression: "${header[CamelFileName]}"
+        - convertBodyTo:
+            type: java.io.InputStream
+        - to:
+            uri: kamelet:sink

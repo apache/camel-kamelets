@@ -54,32 +54,38 @@ spec:
       - name: insertField
         type: "#class:org.apache.camel.component.kafka.transform.InsertField"
         properties:
-          field: '{{field}}'
-          value: '{{value}}'
+          field: "{{field}}"
+          value: "{{value}}"
     from:
       uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[Content-Type]} == 'application/json'"
-            steps:
-            - setProperty:
-                name: deserialized
-                constant: "true"
-            - unmarshal:
-                json:
-                  library: Jackson
-                  unmarshalType: com.fasterxml.jackson.databind.JsonNode
-      - process:
-          ref: "{{insertField}}"
-      - choice:
-          when:
-          - simple: "${exchangeProperty[deserialized]} == 'true'"
-            steps:
-            - marshal:
-                json:
-                  library: Jackson
-                  unmarshalType: com.fasterxml.jackson.databind.JsonNode
-            - setHeader:
-                name: "Content-Type"
-                constant: "application/json"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[Content-Type]} == 'application/json'"
+                steps:
+                  - setProperty:
+                      name: deserialized
+                      expression:
+                        constant:
+                          expression: "true"
+                  - unmarshal:
+                      json:
+                        unmarshalType: com.fasterxml.jackson.databind.JsonNode
+        - process:
+            ref: "{{insertField}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${exchangeProperty[deserialized]} == 'true'"
+                steps:
+                  - marshal:
+                      json:
+                        unmarshalType: com.fasterxml.jackson.databind.JsonNode
+                  - setHeader:
+                      name: Content-Type
+                      expression:
+                        constant:
+                          expression: application/json

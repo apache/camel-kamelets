@@ -205,28 +205,7 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "aws2-s3:{{bucketNameOrArn}}"
-      parameters:
-        autoCreateBucket: "{{autoCreateBucket}}"
-        secretKey: "{{?secretKey}}"
-        accessKey: "{{?accessKey}}"
-        region: "{{region}}"
-        ignoreBody: "{{ignoreBody}}"
-        deleteAfterRead: "{{deleteAfterRead}}"
-        moveAfterRead: "{{moveAfterRead}}"
-        destinationBucket: "{{?destinationBucket}}"
-        destinationBucketPrefix: "{{?destinationBucketPrefix}}"
-        destinationBucketSuffix: "{{?destinationBucketSuffix}}"
-        prefix: "{{?prefix}}"
-        useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-        useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-        useSessionCredentials: "{{useSessionCredentials}}"
-        uriEndpointOverride: "{{?uriEndpointOverride}}"
-        profileCredentialsName: "{{?profileCredentialsName}}"
-        sessionToken: "{{?sessionToken}}"
-        overrideEndpoint: "{{overrideEndpoint}}"
-        forcePathStyle: "{{forcePathStyle}}"
-        delay: "{{delay}}"
-        maxMessagesPerPoll: "{{maxMessagesPerPoll}}"
+      uri: "aws2-s3:{{bucketNameOrArn}}?accessKey=RAW({{?accessKey}})&autoCreateBucket={{autoCreateBucket}}&delay={{delay}}&deleteAfterRead={{deleteAfterRead}}&destinationBucket={{?destinationBucket}}&destinationBucketPrefix={{?destinationBucketPrefix}}&destinationBucketSuffix={{?destinationBucketSuffix}}&forcePathStyle={{forcePathStyle}}&ignoreBody={{ignoreBody}}&maxMessagesPerPoll={{maxMessagesPerPoll}}&moveAfterRead={{moveAfterRead}}&overrideEndpoint={{overrideEndpoint}}&prefix={{?prefix}}&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&uriEndpointOverride={{?uriEndpointOverride}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}"
       steps:
-      - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

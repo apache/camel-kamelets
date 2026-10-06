@@ -125,25 +125,26 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "aws2-polly:polly"
-          parameters:
-            secretKey: "{{?secretKey}}"
-            accessKey: "{{?accessKey}}"
-            region: "{{region}}"
-            operation: synthesizeSpeech
-            voiceId: "{{?voiceId}}"
-            outputFormat: "{{outputFormat}}"
-            textType: "{{textType}}"
-            engine: "{{?engine}}"
-            sampleRate: "{{?sampleRate}}"
-            languageCode: "{{?languageCode}}"
-            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-            useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-            useSessionCredentials: "{{useSessionCredentials}}"
-            uriEndpointOverride: "{{?uriEndpointOverride}}"
-            profileCredentialsName: "{{?profileCredentialsName}}"
-            sessionToken: "{{?sessionToken}}"
-            overrideEndpoint: "{{overrideEndpoint}}"
+        - to:
+            uri: aws2-polly
+            parameters:
+              label: polly
+              accessKey: "RAW({{?accessKey}})"
+              engine: "{{?engine}}"
+              languageCode: "{{?languageCode}}"
+              operation: synthesizeSpeech
+              outputFormat: "{{outputFormat}}"
+              overrideEndpoint: "{{overrideEndpoint}}"
+              profileCredentialsName: "{{?profileCredentialsName}}"
+              region: "{{region}}"
+              sampleRate: "{{?sampleRate}}"
+              secretKey: "RAW({{?secretKey}})"
+              sessionToken: "RAW({{?sessionToken}})"
+              textType: "{{textType}}"
+              uriEndpointOverride: "{{?uriEndpointOverride}}"
+              useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+              useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
+              useSessionCredentials: "{{useSessionCredentials}}"
+              voiceId: "{{?voiceId}}"

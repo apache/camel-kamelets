@@ -127,75 +127,97 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[resources-arn]}"
-            steps:
-            - setHeader:
-                name: CamelAwsEventbridgeResourcesArn
-                simple: "${header[resources-arn]}"
-          - simple: "${header[ce-resources-arn]}"
-            steps:
-            - setHeader:
-                name: CamelAwsEventbridgeResourcesArn
-                simple: "${header[ce-resources-arn]}"
-          otherwise:
-            steps:
-            - setHeader:
-                name: CamelAwsEventbridgeResourcesArn
-                simple: "{{?resourcesArn}}"
-      - choice:
-          when:
-          - simple: "${header[detail-type]}"
-            steps:
-            - setHeader:
-                name: CamelAwsEventbridgeDetailType
-                simple: "${header[detail-type]}"
-          - simple: "${header[ce-detail-type]}"
-            steps:
-            - setHeader:
-                name: CamelAwsEventbridgeDetailType
-                simple: "${header[ce-detail-type]}"
-          otherwise:
-            steps:
-            - setHeader:
-                name: CamelAwsEventbridgeDetailType
-                simple: "{{?detailType}}"
-      - choice:
-          when:
-          - simple: "${header[event-source]}"
-            steps:
-            - setHeader:
-                name: CamelAwsEventbridgeSource
-                simple: "{{?eventSourcePrefix}}${header[event-source]}"
-          - simple: "${header[ce-event-source]}"
-            steps:
-            - setHeader:
-                name: CamelAwsEventbridgeSource
-                simple: "{{?eventSourcePrefix}}${header[ce-event-source]}"
-          - simple: "${header[ce-source]}"
-            steps:
-            - setHeader:
-                name: CamelAwsEventbridgeSource
-                simple: "{{?eventSourcePrefix}}${header[ce-source]}"
-          otherwise:
-            steps:
-            - setHeader:
-                name: CamelAwsEventbridgeSource
-                simple: "{{?eventSourcePrefix}}{{?eventSource}}"
-      - to:
-          uri: "aws2-eventbridge:{{eventbusNameOrArn}}"
-          parameters:
-            secretKey: "{{?secretKey}}"
-            accessKey: "{{?accessKey}}"
-            region: "{{region}}"
-            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-            useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-            useSessionCredentials: "{{useSessionCredentials}}"
-            uriEndpointOverride: "{{?uriEndpointOverride}}"
-            profileCredentialsName: "{{?profileCredentialsName}}"
-            sessionToken: "{{?sessionToken}}"
-            overrideEndpoint: "{{overrideEndpoint}}"
-            operation: "putEvent"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[resources-arn]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsEventbridgeResourcesArn
+                      expression:
+                        simple:
+                          expression: "${header[resources-arn]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-resources-arn]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsEventbridgeResourcesArn
+                      expression:
+                        simple:
+                          expression: "${header[ce-resources-arn]}"
+            otherwise:
+              steps:
+                - setHeader:
+                    name: CamelAwsEventbridgeResourcesArn
+                    expression:
+                      simple:
+                        expression: "{{?resourcesArn}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[detail-type]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsEventbridgeDetailType
+                      expression:
+                        simple:
+                          expression: "${header[detail-type]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-detail-type]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsEventbridgeDetailType
+                      expression:
+                        simple:
+                          expression: "${header[ce-detail-type]}"
+            otherwise:
+              steps:
+                - setHeader:
+                    name: CamelAwsEventbridgeDetailType
+                    expression:
+                      simple:
+                        expression: "{{?detailType}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[event-source]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsEventbridgeSource
+                      expression:
+                        simple:
+                          expression: "{{?eventSourcePrefix}}${header[event-source]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-event-source]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsEventbridgeSource
+                      expression:
+                        simple:
+                          expression: "{{?eventSourcePrefix}}${header[ce-event-source]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-source]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsEventbridgeSource
+                      expression:
+                        simple:
+                          expression: "{{?eventSourcePrefix}}${header[ce-source]}"
+            otherwise:
+              steps:
+                - setHeader:
+                    name: CamelAwsEventbridgeSource
+                    expression:
+                      simple:
+                        expression: "{{?eventSourcePrefix}}{{?eventSource}}"
+        - to:
+            uri: "aws2-eventbridge:{{eventbusNameOrArn}}?accessKey=RAW({{?accessKey}})&operation=putEvent&overrideEndpoint={{overrideEndpoint}}&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&uriEndpointOverride={{?uriEndpointOverride}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}"

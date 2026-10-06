@@ -128,7 +128,4 @@ spec:
       uri: kamelet:source
       steps:
         - to:
-            uri: "{{local-salesforce}}:createSObject"
-            parameters:
-              sObjectName: "{{sObjectName}}"
-              rawPayload: "true"
+            uri: "{{local-salesforce}}:createSObject?sObjectName={{sObjectName}}&rawPayload=true"

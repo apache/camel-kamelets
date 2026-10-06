@@ -70,23 +70,27 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[partition-id]}"
-            steps:
-            - setHeader:
-                name: CamelAzureEventHubsPartitionId
-                simple: "${header[partition-id]}"
-          - simple: "${header[ce-partition-id]}"
-            steps:
-            - setHeader:
-                name: CamelAzureEventHubsPartitionId
-                simple: "${header[ce-partition-id]}"
-      - to:
-          uri: "azure-eventhubs://{{namespaceName}}/{{eventhubName}}"
-          parameters:
-            sharedAccessName: "{{?sharedAccessName}}"
-            sharedAccessKey: "{{?sharedAccessKey}}"
-            credentialType: "{{credentialType}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[partition-id]}"
+                steps:
+                  - setHeader:
+                      name: CamelAzureEventHubsPartitionId
+                      expression:
+                        simple:
+                          expression: "${header[partition-id]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-partition-id]}"
+                steps:
+                  - setHeader:
+                      name: CamelAzureEventHubsPartitionId
+                      expression:
+                        simple:
+                          expression: "${header[ce-partition-id]}"
+        - to:
+            uri: "azure-eventhubs://{{namespaceName}}/{{eventhubName}}?credentialType={{credentialType}}&sharedAccessKey=RAW({{?sharedAccessKey}})&sharedAccessName={{?sharedAccessName}}"

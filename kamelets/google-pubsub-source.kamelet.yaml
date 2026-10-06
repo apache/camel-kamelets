@@ -72,11 +72,7 @@ spec:
     - "camel:jackson"
   template:
     from:
-      uri: "google-pubsub://{{projectId}}:{{subscriptionName}}"
-      parameters:
-        serviceAccountKey: "base64:{{?serviceAccountKey}}"
-        synchronousPull: "{{synchronousPull}}"
-        maxMessagesPerPoll: "{{maxMessagesPerPoll}}"
-        concurrentConsumers: "{{concurrentConsumers}}"
+      uri: "google-pubsub://{{projectId}}:{{subscriptionName}}?concurrentConsumers={{concurrentConsumers}}&maxMessagesPerPoll={{maxMessagesPerPoll}}&serviceAccountKey=base64:{{?serviceAccountKey}}&synchronousPull={{synchronousPull}}"
       steps:
-      - to: kamelet:sink
+        - to:
+            uri: kamelet:sink

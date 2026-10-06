@@ -140,18 +140,9 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "google-calendar-stream://{{index}}"
-      parameters:
-        clientId: "{{clientId}}"
-        calendarId: "{{calendarId}}"
-        accessToken: "{{accessToken}}"
-        refreshToken: "{{refreshToken}}"
-        clientSecret: "{{clientSecret}}"
-        delay: "{{delay}}"
-        applicationName: "{{applicationName}}"
-        syncFlow: "{{syncFlow}}"
-        consumeFromNow: "{{consumeFromNow}}"
+      uri: "google-calendar-stream://{{index}}?accessToken=RAW({{accessToken}})&applicationName={{applicationName}}&calendarId={{calendarId}}&clientId={{clientId}}&clientSecret=RAW({{clientSecret}})&consumeFromNow={{consumeFromNow}}&delay={{delay}}&refreshToken=RAW({{refreshToken}})&syncFlow={{syncFlow}}"
       steps:
-      - marshal:
-          json: {}
-      - to: "kamelet:sink"
+        - marshal:
+            json: {}
+        - to:
+            uri: kamelet:sink

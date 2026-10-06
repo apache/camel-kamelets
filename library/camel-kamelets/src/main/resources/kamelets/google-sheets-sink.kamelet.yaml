@@ -146,32 +146,44 @@ spec:
     - "camel:google-sheets"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
         - setHeader:
             name: CamelGoogleSheets.spreadsheetId
-            simple: "{{spreadsheetId}}"
+            expression:
+              simple:
+                expression: "{{spreadsheetId}}"
         - setHeader:
             name: CamelGoogleSheets.range
-            simple: "{{?range}}"
+            expression:
+              simple:
+                expression: "{{?range}}"
         - setHeader:
             name: CamelGoogleSheets.majorDimension
-            simple: "{{?majorDimension}}"
+            expression:
+              simple:
+                expression: "{{?majorDimension}}"
         - setHeader:
             name: CamelGoogleSheets.columnNames
-            simple: "{{?columnNames}}"
+            expression:
+              simple:
+                expression: "{{?columnNames}}"
         - setHeader:
             name: CamelGoogleSheets.valueInputOption
-            simple: "{{?valueInputOption}}"
+            expression:
+              simple:
+                expression: "{{?valueInputOption}}"
         - transformDataType:
-            toType: "google-sheets:application-x-struct"
+            toType: google-sheets:application-x-struct
         - to:
-            uri: "google-sheets:data/{{operation}}"
+            uri: google-sheets
             parameters:
-              spreadsheetId: "{{spreadsheetId}}"
-              clientId: "{{clientId}}"
-              accessToken: "{{accessToken}}"
-              refreshToken: "{{refreshToken}}"
-              clientSecret: "{{clientSecret}}"
+              apiName: data
+              methodName: "{{operation}}"
+              accessToken: "RAW({{accessToken}})"
               applicationName: "{{?applicationName}}"
+              clientId: "{{clientId}}"
+              clientSecret: "RAW({{clientSecret}})"
               range: "{{?range}}"
+              refreshToken: "RAW({{refreshToken}})"
+              spreadsheetId: "{{spreadsheetId}}"

@@ -94,14 +94,9 @@ spec:
           ssl: "{{ssl}}"
           sslValidationEnabled: "{{sslValidationEnabled}}"
     from:
-      uri: "{{local-mongodb}}:test"
-      parameters:
-        collection: "{{collection}}"
-        database: "{{database}}"
-        consumerType: "changeStreams"
-        streamFilter: "{{?streamFilter}}"
-        mongoConnection: "#{{mongo-client}}"
+      uri: "{{local-mongodb}}:test?collection={{collection}}&database={{database}}&consumerType=changeStreams&streamFilter={{?streamFilter}}&mongoConnection=#{{mongo-client}}"
       steps:
-      - marshal:
-          json: {}
-      - to: kamelet:sink
+        - marshal:
+            json: {}
+        - to:
+            uri: kamelet:sink

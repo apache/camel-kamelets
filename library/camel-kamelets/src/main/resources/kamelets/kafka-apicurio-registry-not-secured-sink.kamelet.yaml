@@ -69,36 +69,53 @@ spec:
     - "mvn:io.apicurio:apicurio-registry-serdes-avro-serde:2.4.14.Final"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[key]}"
-            steps:
-            - setHeader:
-                name: CamelKafkaKey
-                simple: "${header[key]}"
-          - simple: "${header[ce-key]}"
-            steps:
-            - setHeader:
-                name: CamelKafkaKey
-                simple: "${header[ce-key]}"
-      - choice:
-          when:
-          - simple: "${header[partition-key]}"
-            steps:
-            - setHeader:
-                name: CamelKafkaPartitionKey
-                simple: "${header[partition-key]}"
-          - simple: "${header[ce-partitionkey]}"
-            steps:
-            - setHeader:
-                name: CamelKafkaPartitionKey
-                simple: "${header[ce-partitionkey]}"
-      - to:
-          uri: "kafka:{{topic}}"
-          parameters:
-            brokers: "{{bootstrapServers}}"
-            valueSerializer: "{{valueSerializer}}"
-            additionalProperties.apicurio.registry.url: "{{apicurioRegistryUrl}}"
-            additionalProperties.apicurio.registry.avro-datum-provider: "{{avroDatumProvider}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[key]}"
+                steps:
+                  - setHeader:
+                      name: CamelKafkaKey
+                      expression:
+                        simple:
+                          expression: "${header[key]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-key]}"
+                steps:
+                  - setHeader:
+                      name: CamelKafkaKey
+                      expression:
+                        simple:
+                          expression: "${header[ce-key]}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[partition-key]}"
+                steps:
+                  - setHeader:
+                      name: CamelKafkaPartitionKey
+                      expression:
+                        simple:
+                          expression: "${header[partition-key]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-partitionkey]}"
+                steps:
+                  - setHeader:
+                      name: CamelKafkaPartitionKey
+                      expression:
+                        simple:
+                          expression: "${header[ce-partitionkey]}"
+        - to:
+            uri: kafka
+            parameters:
+              topic: "{{topic}}"
+              additionalProperties.apicurio.registry.avroDatumProvider: "{{avroDatumProvider}}"
+              additionalProperties.apicurio.registry.url: "{{apicurioRegistryUrl}}"
+              brokers: "{{bootstrapServers}}"
+              valueSerializer: "{{valueSerializer}}"

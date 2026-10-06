@@ -78,11 +78,7 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to: 
-          uri: "ssh://{{connectionHost}}:{{connectionPort}}"
-          parameters:
-            username: "{{username}}"
-            password: "{{password}}"
-            knownHostsResource: "{{?knownHostsResource}}"
+        - to:
+            uri: "ssh://{{connectionHost}}:{{connectionPort}}?knownHostsResource={{?knownHostsResource}}&password=RAW({{password}})&username=RAW({{username}})"

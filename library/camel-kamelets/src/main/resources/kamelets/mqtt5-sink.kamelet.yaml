@@ -66,9 +66,10 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - to:
-          uri: paho-mqtt5:{{topic}}
-          parameters:
-            brokerUrl: "{{brokerUrl}}"
-            userName: "{{?username}}"
-            password: "{{?password}}"
+        - to:
+            uri: paho-mqtt5
+            parameters:
+              topic: "{{topic}}"
+              brokerUrl: "{{brokerUrl}}"
+              password: "RAW({{?password}})"
+              userName: "RAW({{?username}})"

@@ -162,35 +162,37 @@ spec:
       - name: kafkaHeaderDeserializer
         type: "#class:org.apache.camel.component.kafka.KafkaHeaderDeserializer"
         properties:
-          enabled: '{{deserializeHeaders}}'
+          enabled: "{{deserializeHeaders}}"
       - name: manualCommitFactory
         type: "#class:org.apache.camel.component.kafka.consumer.DefaultKafkaManualCommitFactory"
     from:
-      uri: "kafka:{{topic}}"
+      uri: kafka
       parameters:
-        brokers: "{{bootstrapServers}}"
-        autoCommitEnable: "{{autoCommitEnable}}"
-        allowManualCommit: "{{allowManualCommit}}"
-        pollOnError: "{{pollOnError}}"
-        autoOffsetReset: "{{autoOffsetReset}}"
-        groupId: "{{?consumerGroup}}"
-        valueDeserializer: "{{valueDeserializer}}"
-        additionalProperties.apicurio.registry.url: "{{apicurioRegistryUrl}}"
-        additionalProperties.apicurio.registry.avro-datum-provider: "{{avroDatumProvider}}"
-        additionalProperties.apicurio.auth.service.url: "{{apicurioAuthServiceUrl}}"
-        additionalProperties.apicurio.auth.realm: "{{apicurioAuthRealm}}"
+        topic: "{{topic}}"
         additionalProperties.apicurio.auth.client.id: "{{apicurioAuthClientId}}"
         additionalProperties.apicurio.auth.client.secret: "{{apicurioAuthClientSecret}}"
-        additionalProperties.apicurio.auth.username: "{{apicurioAuthUsername}}"
         additionalProperties.apicurio.auth.password: "{{apicurioAuthPassword}}"
-        maxPollRecords: "{{batchSize}}"
-        pollTimeoutMs: "{{pollTimeout}}"
-        maxPollIntervalMs: "{{?maxPollIntervalMs}}"
-        batchingIntervalMs: "{{?batchingIntervalMs}}"
+        additionalProperties.apicurio.auth.realm: "{{apicurioAuthRealm}}"
+        additionalProperties.apicurio.auth.service.url: "{{apicurioAuthServiceUrl}}"
+        additionalProperties.apicurio.auth.username: "{{apicurioAuthUsername}}"
+        additionalProperties.apicurio.registry.avroDatumProvider: "{{avroDatumProvider}}"
+        additionalProperties.apicurio.registry.url: "{{apicurioRegistryUrl}}"
+        allowManualCommit: "{{allowManualCommit}}"
+        autoCommitEnable: "{{autoCommitEnable}}"
+        autoOffsetReset: "{{autoOffsetReset}}"
         batching: true
+        batchingIntervalMs: "{{?batchingIntervalMs}}"
+        brokers: "{{bootstrapServers}}"
+        groupId: "{{?consumerGroup}}"
         kafkaManualCommitFactory: "#bean:{{manualCommitFactory}}"
+        maxPollIntervalMs: "{{?maxPollIntervalMs}}"
+        maxPollRecords: "{{batchSize}}"
+        pollOnError: "{{pollOnError}}"
+        pollTimeoutMs: "{{pollTimeout}}"
         topicIsPattern: "{{topicIsPattern}}"
+        valueDeserializer: "{{valueDeserializer}}"
       steps:
         - process:
             ref: "{{kafkaHeaderDeserializer}}"
-        - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

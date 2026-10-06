@@ -110,30 +110,25 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      # Strip the camel-aws-bedrock-agent header family up-front, before the
-      # endpoint below is reached: the operation, knowledge base and data source
-      # are all pinned by the properties above, and every one of them is
-      # overridable by an inbound CamelAwsBedrockAgent* header. The ingestion job
-      # id is the one input this Kamelet deliberately takes from the message, so
-      # it is excluded. A pattern also covers keys the component may add later.
-      - removeHeaders:
-          pattern: "CamelAwsBedrockAgent*"
-          excludePattern: "CamelAwsBedrockAgentIngestionJobId"
-      - to:
-          uri: "aws-bedrock-agent:bedrock-agent"
-          parameters:
-            secretKey: "{{?secretKey}}"
-            accessKey: "{{?accessKey}}"
-            region: "{{region}}"
-            operation: "{{operation}}"
-            knowledgeBaseId: "{{knowledgeBaseId}}"
-            dataSourceId: "{{?dataSourceId}}"
-            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-            useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-            useSessionCredentials: "{{useSessionCredentials}}"
-            uriEndpointOverride: "{{?uriEndpointOverride}}"
-            profileCredentialsName: "{{?profileCredentialsName}}"
-            sessionToken: "{{?sessionToken}}"
-            overrideEndpoint: "{{overrideEndpoint}}"
+        - removeHeaders:
+            pattern: CamelAwsBedrockAgent*
+            excludePattern: CamelAwsBedrockAgentIngestionJobId
+        - to:
+            uri: aws-bedrock-agent
+            parameters:
+              label: bedrock-agent
+              accessKey: "RAW({{?accessKey}})"
+              dataSourceId: "{{?dataSourceId}}"
+              knowledgeBaseId: "{{knowledgeBaseId}}"
+              operation: "{{operation}}"
+              overrideEndpoint: "{{overrideEndpoint}}"
+              profileCredentialsName: "{{?profileCredentialsName}}"
+              region: "{{region}}"
+              secretKey: "RAW({{?secretKey}})"
+              sessionToken: "RAW({{?sessionToken}})"
+              uriEndpointOverride: "{{?uriEndpointOverride}}"
+              useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+              useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
+              useSessionCredentials: "{{useSessionCredentials}}"

@@ -58,11 +58,13 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - marshal:
-          avro:
-            library: Jackson
-            unmarshalType: com.fasterxml.jackson.databind.JsonNode
-            schemaResolver: "#bean:{{schemaResolver}}"
-      - setHeader:
-          name: "Content-Type"
-          constant: "application/avro"
+        - marshal:
+            avro:
+              unmarshalType: com.fasterxml.jackson.databind.JsonNode
+              library: Jackson
+              schemaResolver: "#bean:{{schemaResolver}}"
+        - setHeader:
+            name: Content-Type
+            expression:
+              constant:
+                expression: application/avro

@@ -50,8 +50,10 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "file-watch:{{filePath}}"
+      uri: file-watch
       parameters:
+        path: "{{filePath}}"
         events: "{{events}}"
       steps:
-      - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

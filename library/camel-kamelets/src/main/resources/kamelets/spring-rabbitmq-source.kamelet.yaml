@@ -96,16 +96,12 @@ spec:
       - name: connectionFactory
         type: "#class:org.springframework.amqp.rabbit.connection.CachingConnectionFactory"
         properties:
-          username: '{{?username}}'
-          password: '{{?password}}'
-          uri: '{{protocol}}://{{host}}:{{port}}'
+          username: "{{?username}}"
+          password: "{{?password}}"
+          uri: "{{protocol}}://{{host}}:{{port}}"
           virtualHost: "{{vhost}}"
     from:
-      uri: "spring-rabbitmq://{{exchangeName}}"
-      parameters:
-        connectionFactory: "#bean:{{connectionFactory}}"
-        routingKey: "{{?routingKey}}"
-        queues: "{{?queues}}"
-        autoDeclare: "{{autoDeclare}}"
+      uri: "spring-rabbitmq://{{exchangeName}}?autoDeclare={{autoDeclare}}&connectionFactory=#bean:{{connectionFactory}}&queues={{?queues}}&routingKey={{?routingKey}}"
       steps:
-      - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

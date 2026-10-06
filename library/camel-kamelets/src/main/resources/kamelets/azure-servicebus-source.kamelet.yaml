@@ -79,15 +79,19 @@ spec:
     - "camel:core"
   template:
     from:
-      uri: "azure-servicebus:{{topicOrQueueName}}"
+      uri: azure-servicebus
       parameters:
-        connectionString: "{{connectionString}}"
-        serviceBusReceiveMode: "{{serviceBusReceiveMode}}"
-        subscriptionName: "{{?subscriptionName}}"
-        serviceBusType: "{{serviceBusType}}"
+        topicOrQueueName: "{{topicOrQueueName}}"
+        connectionString: "RAW({{connectionString}})"
         credentialType: "{{credentialType}}"
+        serviceBusReceiveMode: "{{serviceBusReceiveMode}}"
+        serviceBusType: "{{serviceBusType}}"
+        subscriptionName: "{{?subscriptionName}}"
       steps:
-      - setBody:
-          simple: "${body.toBytes()}"
-      - to: "kamelet:sink"
+        - setBody:
+            expression:
+              simple:
+                expression: "${body.toBytes()}"
+        - to:
+            uri: kamelet:sink
 

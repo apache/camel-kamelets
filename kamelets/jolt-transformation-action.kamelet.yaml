@@ -52,10 +52,7 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "jolt:"
-          parameters:
-            resourceUri: "{{template}}"
-            transformDsl: "{{transform}}"
+        - to:
+            uri: "jolt:?resourceUri={{template}}&transformDsl={{transform}}"

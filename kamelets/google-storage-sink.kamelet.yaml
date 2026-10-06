@@ -58,27 +58,34 @@ spec:
     - "camel:jackson"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[file]}"
-            steps:
-            - setHeader:
-                name: CamelGoogleCloudStorageObjectName
-                simple: "${header[file]}"
-          - simple: "${header[ce-file]}"
-            steps:
-            - setHeader:
-                name: CamelGoogleCloudStorageObjectName
-                simple: "${header[ce-file]}"
-          otherwise:
-            steps:
-            - setHeader:
-                name: CamelGoogleCloudStorageObjectName
-                simple: "${exchangeId}"
-      - to:
-          uri: "google-storage://{{bucketNameOrArn}}"
-          parameters:
-            autoCreateBucket: "{{autoCreateBucket}}"
-            serviceAccountKey: "base64:{{?serviceAccountKey}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[file]}"
+                steps:
+                  - setHeader:
+                      name: CamelGoogleCloudStorageObjectName
+                      expression:
+                        simple:
+                          expression: "${header[file]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-file]}"
+                steps:
+                  - setHeader:
+                      name: CamelGoogleCloudStorageObjectName
+                      expression:
+                        simple:
+                          expression: "${header[ce-file]}"
+            otherwise:
+              steps:
+                - setHeader:
+                    name: CamelGoogleCloudStorageObjectName
+                    expression:
+                      simple:
+                        expression: "${exchangeId}"
+        - to:
+            uri: "google-storage://{{bucketNameOrArn}}?autoCreateBucket={{autoCreateBucket}}&serviceAccountKey=base64:{{?serviceAccountKey}}"

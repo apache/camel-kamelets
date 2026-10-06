@@ -156,19 +156,21 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "aws-cloudtrail:cloudtrail"
+      uri: aws-cloudtrail
       parameters:
-        secretKey: "{{?secretKey}}"
-        accessKey: "{{?accessKey}}"
-        region: "{{region}}"
+        label: cloudtrail
+        accessKey: "RAW({{?accessKey}})"
         eventSource: "{{?eventSource}}"
+        maxResults: "{{maxResults}}"
+        overrideEndpoint: "{{overrideEndpoint}}"
+        profileCredentialsName: "{{?profileCredentialsName}}"
+        region: "{{region}}"
+        secretKey: "RAW({{?secretKey}})"
+        sessionToken: "RAW({{?sessionToken}})"
+        uriEndpointOverride: "{{?uriEndpointOverride}}"
         useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
         useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
         useSessionCredentials: "{{useSessionCredentials}}"
-        uriEndpointOverride: "{{?uriEndpointOverride}}"
-        profileCredentialsName: "{{?profileCredentialsName}}"
-        sessionToken: "{{?sessionToken}}"
-        overrideEndpoint: "{{overrideEndpoint}}"
-        maxResults: "{{maxResults}}"
       steps:
-      - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

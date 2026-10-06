@@ -87,41 +87,47 @@ spec:
     - "camel:aws2-sts"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[role-arn]}"
-            steps:
-            - setHeader:
-                name: CamelAwsStsRoleArn
-                simple: "${header[role-arn]}"
-          - simple: "${header[ce-role-arn]}"
-            steps:
-            - setHeader:
-                name: CamelAwsStsRoleArn
-                simple: "${header[ce-role-arn]}"
-      - choice:
-          when:
-          - simple: "${header[role-session-name]}"
-            steps:
-            - setHeader:
-                name: CamelAwsStsRoleSessionName
-                simple: "${header[role-session-name]}"
-          - simple: "${header[ce-role-session-name]}"
-            steps:
-            - setHeader:
-                name: CamelAwsStsRoleSessionName
-                simple: "${header[ce-role-session-name]}"
-      - to:
-          uri: "aws2-sts://default"
-          parameters:
-            secretKey: "{{?secretKey}}"
-            accessKey: "{{?accessKey}}"
-            region: "{{region}}"
-            operation: "assumeRole"
-            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-            useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-            useSessionCredentials: "{{useSessionCredentials}}"
-            profileCredentialsName: "{{?profileCredentialsName}}"
-            sessionToken: "{{?sessionToken}}"            
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[role-arn]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsStsRoleArn
+                      expression:
+                        simple:
+                          expression: "${header[role-arn]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-role-arn]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsStsRoleArn
+                      expression:
+                        simple:
+                          expression: "${header[ce-role-arn]}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[role-session-name]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsStsRoleSessionName
+                      expression:
+                        simple:
+                          expression: "${header[role-session-name]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-role-session-name]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsStsRoleSessionName
+                      expression:
+                        simple:
+                          expression: "${header[ce-role-session-name]}"
+        - to:
+            uri: "aws2-sts://default?accessKey=RAW({{?accessKey}})&operation=assumeRole&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&secretKey=RAW({{?secretKey}})&sessionToken={{?sessionToken}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}"

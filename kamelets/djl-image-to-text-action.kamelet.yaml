@@ -47,21 +47,26 @@ spec:
       - name: imageNetUtil
         type: "#class:org.apache.camel.component.djl.ImageNetUtil"
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-        - to: "djl:cv/object_detection?artifactId=ssd"
-        - convertBodyTo: "ai.djl.modality.cv.Image[]"
+        - to:
+            uri: djl
+            parameters:
+              application: cv/object_detection
+              artifactId: ssd
+        - convertBodyTo:
+            type: ai.djl.modality.cv.Image[]
         - split:
-            expression:
-              simple: "${body}"
             aggregationStrategy: "#class:org.apache.camel.processor.aggregate.GroupedBodyAggregationStrategy"
+            expression:
+              simple:
+                expression: "${body}"
             steps:
-              - to: "djl:cv/image_classification?artifactId=resnet"
-              # The output from the image classification model is classified
-              # as one of 1000 labels from WordNet.
-              # Since it's too fine-grained, we want to find the higher-level
-              # group (= hypernym) for the classification using the WordNet
-              # dictionary.
+              - to:
+                  uri: djl
+                  parameters:
+                    application: cv/image_classification
+                    artifactId: resnet
               - bean:
                   ref: "{{imageNetUtil}}"
                   method: extractClassName

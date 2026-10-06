@@ -52,10 +52,7 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "xj:"
-          parameters:
-            resourceUri: "{{template}}"
-            transformDirection: "{{direction}}"
+        - to:
+            uri: "xj:?resourceUri={{template}}&transformDirection={{direction}}"

@@ -81,13 +81,15 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "twitter-search:{{keywords}}"
+      uri: twitter-search
       parameters:
-        accessToken: "{{accessToken}}"
-        accessTokenSecret: "{{accessTokenSecret}}"
-        consumerKey: "{{apiKey}}"
-        consumerSecret: "{{apiKeySecret}}"
+        keywords: "{{keywords}}"
+        accessToken: "RAW({{accessToken}})"
+        accessTokenSecret: "RAW({{accessTokenSecret}})"
+        consumerKey: "RAW({{apiKey}})"
+        consumerSecret: "RAW({{apiKeySecret}})"
       steps:
-      - marshal:
-          json: {}
-      - to: "kamelet:sink"
+        - marshal:
+            json: {}
+        - to:
+            uri: kamelet:sink

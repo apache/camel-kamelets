@@ -101,19 +101,20 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "splunk:{{mode}}"
-          parameters:
-            host: "{{serverHostname}}"
-            port: "{{serverPort}}"
-            username: "{{username}}"
-            password: "{{password}}"
-            source: "{{?source}}"
-            sourceType: "{{?sourceType}}"
-            scheme: "{{?protocol}}"
-            index: "{{?index}}"
-            app: "{{?app}}"
-            connectionTimeout: "{{?connectionTimeout}}"
-            raw: true
+        - to:
+            uri: splunk
+            parameters:
+              name: "{{mode}}"
+              host: "{{serverHostname}}"
+              port: "{{serverPort}}"
+              username: "{{username}}"
+              password: "{{password}}"
+              source: "{{?source}}"
+              sourceType: "{{?sourceType}}"
+              scheme: "{{?protocol}}"
+              index: "{{?index}}"
+              app: "{{?app}}"
+              connectionTimeout: "{{?connectionTimeout}}"
+              raw: true

@@ -99,43 +99,52 @@ spec:
       - name: local-opensearch
         type: "#class:org.apache.camel.component.opensearch.OpensearchComponent"
         properties:
-            user: "{{?user}}"
-            password: "{{?password}}"
+          user: "{{?user}}"
+          password: "{{?password}}"
     from:
       uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[indexId]}"
-            steps:
-            - setHeader:
-                name: "CamelOpensearchIndexId"
-                simple: "${header[indexId]}"
-          - simple: "${header[ce-indexid]}"
-            steps:
-            - setHeader:
-                name: "CamelOpensearchIndexId"
-                simple: "${header[ce-indexid]}"
-      - choice:
-          when:
-          - simple: "${header[indexName]}"
-            steps:
-            - setHeader:
-                name: "CamelOpensearchIndexName"
-                simple: "${header[indexName]}"
-          - simple: "${header[ce-indexname]}"
-            steps:
-            - setHeader:
-                name: "CamelOpensearchIndexName"
-                simple: "${header[ce-indexname]}"
-      - unmarshal:
-          json: {}
-      - to:
-          uri: "{{local-opensearch}}:{{clusterName}}"
-          parameters:
-            operation: "INDEX"
-            hostAddresses: "{{hostAddresses}}"
-            enableSSL: "{{enableSSL}}"
-            indexName: "{{?indexName}}"
-            certificatePath: "base64:{{?certificate}}"
-            sslContextParameters: "{{?sslContextParameters}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[indexId]}"
+                steps:
+                  - setHeader:
+                      name: CamelOpensearchIndexId
+                      expression:
+                        simple:
+                          expression: "${header[indexId]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-indexid]}"
+                steps:
+                  - setHeader:
+                      name: CamelOpensearchIndexId
+                      expression:
+                        simple:
+                          expression: "${header[ce-indexid]}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[indexName]}"
+                steps:
+                  - setHeader:
+                      name: CamelOpensearchIndexName
+                      expression:
+                        simple:
+                          expression: "${header[indexName]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-indexname]}"
+                steps:
+                  - setHeader:
+                      name: CamelOpensearchIndexName
+                      expression:
+                        simple:
+                          expression: "${header[ce-indexname]}"
+        - unmarshal:
+            json: {}
+        - to:
+            uri: "{{local-opensearch}}:{{clusterName}}?operation=INDEX&hostAddresses={{hostAddresses}}&enableSSL={{enableSSL}}&indexName={{?indexName}}&certificatePath=base64:{{?certificate}}&sslContextParameters={{?sslContextParameters}}"

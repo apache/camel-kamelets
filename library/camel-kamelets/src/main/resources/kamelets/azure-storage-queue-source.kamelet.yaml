@@ -130,10 +130,7 @@ spec:
     - "camel:core"
   template:
     from:
-      uri: "azure-storage-queue://{{accountName}}/{{queueName}}"
-      parameters:
-        accessKey: "{{accessKey}}"
-        maxMessages: "{{maxMessages}}"
-        credentialType: "{{credentialType}}"
+      uri: "azure-storage-queue://{{accountName}}/{{queueName}}?accessKey=RAW({{accessKey}})&credentialType={{credentialType}}&maxMessages={{maxMessages}}"
       steps:
-      - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

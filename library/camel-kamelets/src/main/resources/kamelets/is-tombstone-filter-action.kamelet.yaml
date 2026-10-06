@@ -39,7 +39,9 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - filter:
-          simple: "${body} == null || ${body} == ''"
-          steps:
-            - stop: {}
+        - filter:
+            expression:
+              simple:
+                expression: "${body} == null || ${body} == ''"
+            steps:
+              - stop: {}

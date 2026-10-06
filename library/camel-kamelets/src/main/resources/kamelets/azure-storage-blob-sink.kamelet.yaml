@@ -87,31 +87,34 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[file]}"
-            steps:
-            - setHeader:
-                name: CamelAzureStorageBlobBlobName
-                simple: "${header[file]}"
-          - simple: "${header[ce-file]}"
-            steps:
-            - setHeader:
-                name: CamelAzureStorageBlobBlobName
-                simple: "${header[ce-file]}"
-          otherwise:
-            steps:
-            - setHeader:
-                name: CamelAzureStorageBlobBlobName
-                simple: "${exchangeId}"
-      - to:
-          uri: "azure-storage-blob://{{accountName}}/{{containerName}}"
-          parameters:
-            accessKey: "{{?accessKey}}"
-            azureClientId: "{{?clientId}}"
-            azureClientSecret: "{{?clientSecret}}"
-            azureTenantId: "{{?tenantId}}"
-            operation: "uploadBlockBlob"
-            credentialType: "{{credentialType}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[file]}"
+                steps:
+                  - setHeader:
+                      name: CamelAzureStorageBlobBlobName
+                      expression:
+                        simple:
+                          expression: "${header[file]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-file]}"
+                steps:
+                  - setHeader:
+                      name: CamelAzureStorageBlobBlobName
+                      expression:
+                        simple:
+                          expression: "${header[ce-file]}"
+            otherwise:
+              steps:
+                - setHeader:
+                    name: CamelAzureStorageBlobBlobName
+                    expression:
+                      simple:
+                        expression: "${exchangeId}"
+        - to:
+            uri: "azure-storage-blob://{{accountName}}/{{containerName}}?accessKey=RAW({{?accessKey}})&azureClientId=RAW({{?clientId}})&azureClientSecret=RAW({{?clientSecret}})&azureTenantId={{?tenantId}}&credentialType={{credentialType}}&operation=uploadBlockBlob"

@@ -58,12 +58,17 @@ spec:
     - "camel:timer"
   template:
     from:
-      uri: "timer:fetch"
+      uri: timer
       parameters:
+        timerName: fetch
         period: "{{period}}"
       steps:
-      - setHeader:
-          name: "Accept"
-          constant: "{{contentType}}"
-      - to: "{{url}}"
-      - to: "kamelet:sink"
+        - setHeader:
+            name: Accept
+            expression:
+              constant:
+                expression: "{{contentType}}"
+        - to:
+            uri: "{{url}}"
+        - to:
+            uri: kamelet:sink

@@ -96,19 +96,21 @@ spec:
       - name: wmqConnectionFactory
         type: "#class:com.ibm.mq.jakarta.jms.MQConnectionFactory"
         properties:
-          XMSC_WMQ_HOST_NAME: '{{serverName}}'
-          XMSC_WMQ_PORT: '{{serverPort}}'
-          XMSC_WMQ_CHANNEL: '{{channel}}'
-          XMSC_WMQ_QUEUE_MANAGER: '{{queueManager}}'
-          XMSC_WMQ_CONNECTION_MODE: 1
-          XMSC_USERID: '{{username}}'
-          XMSC_PASSWORD: '{{password}}'
-          XMSC_CLIENT_ID: '{{?clientId}}'
-          XMSC_WMQ_SSL_CIPHER_SUITE: '{{?sslCipherSuite}}'
+          XMSC_WMQ_HOST_NAME: "{{serverName}}"
+          XMSC_WMQ_PORT: "{{serverPort}}"
+          XMSC_WMQ_CHANNEL: "{{channel}}"
+          XMSC_WMQ_QUEUE_MANAGER: "{{queueManager}}"
+          XMSC_WMQ_CONNECTION_MODE: "1"
+          XMSC_USERID: "{{username}}"
+          XMSC_PASSWORD: "{{password}}"
+          XMSC_CLIENT_ID: "{{?clientId}}"
+          XMSC_WMQ_SSL_CIPHER_SUITE: "{{?sslCipherSuite}}"
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "jms:{{destinationType}}:{{destinationName}}"
-          parameters:
-            connectionFactory: "#bean:{{wmqConnectionFactory}}"
+        - to:
+            uri: jms
+            parameters:
+              destinationType: "{{destinationType}}"
+              destinationName: "{{destinationName}}"
+              connectionFactory: "#bean:{{wmqConnectionFactory}}"

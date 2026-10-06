@@ -98,29 +98,25 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[query]}"
-            steps:
-            - setHeader:
-                name: CamelAwsTimestreamQueryString
-                simple: "${header[query]}"
-          - simple: "${header[ce-query]}"
-            steps:
-            - setHeader:
-                name: CamelAwsTimestreamQueryString
-                simple: "${header[ce-query]}"
-      - to:
-          uri: "aws2-timestream:query"
-          parameters:
-            accessKey: "{{?accessKey}}"
-            secretKey: "{{?secretKey}}"
-            region: "{{region}}"
-            operation: "query"
-            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-            useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-            useSessionCredentials: "{{useSessionCredentials}}"  
-            uriEndpointOverride: "{{?uriEndpointOverride}}"
-            profileCredentialsName: "{{?profileCredentialsName}}"
-            sessionToken: "{{?sessionToken}}"
-            overrideEndpoint: "{{overrideEndpoint}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[query]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsTimestreamQueryString
+                      expression:
+                        simple:
+                          expression: "${header[query]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-query]}"
+                steps:
+                  - setHeader:
+                      name: CamelAwsTimestreamQueryString
+                      expression:
+                        simple:
+                          expression: "${header[ce-query]}"
+        - to:
+            uri: "aws2-timestream:query?accessKey=RAW({{?accessKey}})&operation=query&overrideEndpoint={{overrideEndpoint}}&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&uriEndpointOverride={{?uriEndpointOverride}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}"

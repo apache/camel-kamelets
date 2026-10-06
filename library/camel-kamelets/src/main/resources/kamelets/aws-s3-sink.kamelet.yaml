@@ -116,43 +116,41 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          precondition: true
-          when:
-            - simple: '${propertiesExist:!keyName}'
-              steps:
-                - choice:
-                    when:
-                      - simple: "${header[file]}"
+        - choice:
+            precondition: true
+            when:
+              - expression:
+                  simple:
+                    expression: "${propertiesExist:!keyName}"
+                steps:
+                  - choice:
+                      when:
+                        - expression:
+                            simple:
+                              expression: "${header[file]}"
+                          steps:
+                            - setHeader:
+                                name: CamelAwsS3Key
+                                expression:
+                                  simple:
+                                    expression: "${header[file]}"
+                        - expression:
+                            simple:
+                              expression: "${header[ce-file]}"
+                          steps:
+                            - setHeader:
+                                name: CamelAwsS3Key
+                                expression:
+                                  simple:
+                                    expression: "${header[ce-file]}"
+                      otherwise:
                         steps:
                           - setHeader:
                               name: CamelAwsS3Key
-                              simple: "${header[file]}"
-                      - simple: "${header[ce-file]}"
-                        steps:
-                          - setHeader:
-                              name: CamelAwsS3Key
-                              simple: "${header[ce-file]}"
-                    otherwise:
-                      steps:
-                        - setHeader:
-                            name: CamelAwsS3Key
-                            simple: "${exchangeId}"
-      - to:
-          uri: "aws2-s3:{{bucketNameOrArn}}"
-          parameters:
-            secretKey: "{{?secretKey}}"
-            accessKey: "{{?accessKey}}"
-            region: "{{region}}"
-            autoCreateBucket: "{{autoCreateBucket}}"
-            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-            useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-            useSessionCredentials: "{{useSessionCredentials}}"
-            uriEndpointOverride: "{{?uriEndpointOverride}}"
-            profileCredentialsName: "{{?profileCredentialsName}}"
-            sessionToken: "{{?sessionToken}}"
-            overrideEndpoint: "{{overrideEndpoint}}"
-            forcePathStyle: "{{forcePathStyle}}"
-            keyName: "{{?keyName}}"
+                              expression:
+                                simple:
+                                  expression: "${exchangeId}"
+        - to:
+            uri: "aws2-s3:{{bucketNameOrArn}}?accessKey=RAW({{?accessKey}})&autoCreateBucket={{autoCreateBucket}}&forcePathStyle={{forcePathStyle}}&keyName={{?keyName}}&overrideEndpoint={{overrideEndpoint}}&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&uriEndpointOverride={{?uriEndpointOverride}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}"

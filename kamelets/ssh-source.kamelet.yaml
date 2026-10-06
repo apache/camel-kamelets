@@ -83,14 +83,9 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "ssh://{{connectionHost}}:{{connectionPort}}"
-      parameters:
-        username: "{{username}}"
-        password: "{{password}}"
-        knownHostsResource: "{{?knownHostsResource}}"
-        delay: "{{delay}}"
-        pollCommand: "{{pollCommand}}"
+      uri: "ssh://{{connectionHost}}:{{connectionPort}}?delay={{delay}}&knownHostsResource={{?knownHostsResource}}&password=RAW({{password}})&pollCommand={{pollCommand}}&username=RAW({{username}})"
       steps:
-      - convertBodyTo:
-          type: "java.lang.String"
-      - to: "kamelet:sink"
+        - convertBodyTo:
+            type: java.lang.String
+        - to:
+            uri: kamelet:sink

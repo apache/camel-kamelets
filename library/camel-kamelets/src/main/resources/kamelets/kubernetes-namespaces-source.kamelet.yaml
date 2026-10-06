@@ -56,11 +56,10 @@ spec:
     - "camel:jackson"
   template:
     from:
-      uri: "kubernetes-namespaces://{{masterUrl}}"
-      parameters:
-        oauthToken: "{{token}}"
+      uri: "kubernetes-namespaces://{{masterUrl}}?oauthToken=RAW({{token}})"
       steps:
-      - marshal:
-          json: {}
-      - to: "kamelet:sink"
+        - marshal:
+            json: {}
+        - to:
+            uri: kamelet:sink
 

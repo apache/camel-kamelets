@@ -55,19 +55,22 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - removeHeader:
-          name: CamelHttpUri
-      - removeHeader:
-          name: CamelHttpPath
-      - removeHeader:
-          name: CamelHttpQuery
-      - removeHeader:
-          name: CamelHttpRawQuery
-      - removeHeader:
-          name: CamelRestHttpUri
-      - removeHeader:
-          name: CamelRestHttpQuery
-      - setHeader:
-          name: CamelHttpMethod
-          constant: "{{method}}"
-      - to: "{{url}}"
+        - removeHeader:
+            name: CamelHttpUri
+        - removeHeader:
+            name: CamelHttpPath
+        - removeHeader:
+            name: CamelHttpQuery
+        - removeHeader:
+            name: CamelHttpRawQuery
+        - removeHeader:
+            name: CamelRestHttpUri
+        - removeHeader:
+            name: CamelRestHttpQuery
+        - setHeader:
+            name: CamelHttpMethod
+            expression:
+              constant:
+                expression: "{{method}}"
+        - to:
+            uri: "{{url}}"

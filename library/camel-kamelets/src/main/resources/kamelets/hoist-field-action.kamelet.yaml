@@ -48,22 +48,27 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[Content-Type]} == 'application/json'"
-            steps:
-            - unmarshal:
-                json:
-                  library: Jackson
-                  unmarshalType: com.fasterxml.jackson.databind.JsonNode
-      - setProperty:
-          name: "field"
-          constant: "{{field}}"
-      - bean: "org.apache.camel.component.kafka.transform.HoistField"
-      - marshal:
-          json:
-            library: Jackson
-            unmarshalType: com.fasterxml.jackson.databind.JsonNode
-      - setHeader:
-          name: "Content-Type"
-          constant: "application/json"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[Content-Type]} == 'application/json'"
+                steps:
+                  - unmarshal:
+                      json:
+                        unmarshalType: com.fasterxml.jackson.databind.JsonNode
+        - setProperty:
+            name: field
+            expression:
+              constant:
+                expression: "{{field}}"
+        - bean:
+            ref: org.apache.camel.component.kafka.transform.HoistField
+        - marshal:
+            json:
+              unmarshalType: com.fasterxml.jackson.databind.JsonNode
+        - setHeader:
+            name: Content-Type
+            expression:
+              constant:
+                expression: application/json

@@ -46,7 +46,9 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - delay:
-          constant: "{{milliseconds}}"
+        - delay:
+            expression:
+              constant:
+                expression: "{{milliseconds}}"

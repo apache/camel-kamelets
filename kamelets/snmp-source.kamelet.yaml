@@ -127,20 +127,23 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "snmp:{{host}}:{{port}}"
+      uri: snmp
       parameters:
-        type: "{{type}}"
-        oids: "{{?oids}}"
-        protocol: "{{protocol}}"
-        delay: "{{delay}}"
-        snmpVersion: "{{snmpVersion}}"
-        snmpCommunity: "{{snmpCommunity}}"
-        treeList: "{{treeList}}"
-        securityName: "{{?securityName}}"
-        securityLevel: "{{securityLevel}}"
+        host: "{{host}}"
+        port: "{{port}}"
+        authenticationPassphrase: "RAW({{?authenticationPassphrase}})"
         authenticationProtocol: "{{?authenticationProtocol}}"
-        authenticationPassphrase: "{{?authenticationPassphrase}}"
-        privacyProtocol: "{{?privacyProtocol}}"
-        privacyPassphrase: "{{?privacyPassphrase}}"
+        delay: "{{delay}}"
+        oids: "{{?oids}}"
+        privacyPassphrase: "RAW({{?privacyPassphrase}})"
+        privacyProtocol: "RAW({{?privacyProtocol}})"
+        protocol: "{{protocol}}"
+        securityLevel: "{{securityLevel}}"
+        securityName: "RAW({{?securityName}})"
+        snmpCommunity: "{{snmpCommunity}}"
+        snmpVersion: "{{snmpVersion}}"
+        treeList: "{{treeList}}"
+        type: "{{type}}"
       steps:
-      - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

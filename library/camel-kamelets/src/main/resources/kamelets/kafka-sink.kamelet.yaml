@@ -117,55 +117,80 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[key]}"
-            steps:
-            - setHeader:
-                name: CamelKafkaKey
-                simple: "${header[key]}"
-          - simple: "${header[kafka-key]}"
-            steps:
-            - setHeader:
-                name: CamelKafkaKey
-                simple: "${header[kafka-key]}"
-          - simple: "${header[ce-key]}"
-            steps:
-            - setHeader:
-                name: CamelKafkaKey
-                simple: "${header[ce-key]}"
-          - simple: "${header[ce-kafkakey]}"
-            steps:
-            - setHeader:
-                name: CamelKafkaKey
-                simple: "${header[ce-kafkakey]}"
-      - choice:
-          when:
-          - simple: "${header[partition-key]}"
-            steps:
-            - setHeader:
-                name: CamelKafkaPartitionKey
-                simple: "${header[partition-key]}"
-          - simple: "${header[ce-partitionkey]}"
-            steps:
-            - setHeader:
-                name: CamelKafkaPartitionKey
-                simple: "${header[ce-partitionkey]}"
-      - to:
-          uri: "kafka:{{topic}}"
-          parameters:
-            brokers: "{{bootstrapServers}}"
-            saslAuthType: "{{saslAuthType}}"
-            saslUsername: "{{?saslUsername}}"
-            saslPassword: "{{?saslPassword}}"
-            oauthClientId: "{{?oauthClientId}}"
-            oauthClientSecret: "{{?oauthClientSecret}}"
-            oauthTokenEndpointUri: "{{?oauthTokenEndpointUri}}"
-            oauthScope: "{{?oauthScope}}"
-            sslTruststoreLocation: "{{?sslTruststoreLocation}}"
-            sslTruststorePassword: "{{?sslTruststorePassword}}"
-            sslKeystoreLocation: "{{?sslKeystoreLocation}}"
-            sslKeystorePassword: "{{?sslKeystorePassword}}"
-            sslKeyPassword: "{{?sslKeyPassword}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[key]}"
+                steps:
+                  - setHeader:
+                      name: CamelKafkaKey
+                      expression:
+                        simple:
+                          expression: "${header[key]}"
+              - expression:
+                  simple:
+                    expression: "${header[kafka-key]}"
+                steps:
+                  - setHeader:
+                      name: CamelKafkaKey
+                      expression:
+                        simple:
+                          expression: "${header[kafka-key]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-key]}"
+                steps:
+                  - setHeader:
+                      name: CamelKafkaKey
+                      expression:
+                        simple:
+                          expression: "${header[ce-key]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-kafkakey]}"
+                steps:
+                  - setHeader:
+                      name: CamelKafkaKey
+                      expression:
+                        simple:
+                          expression: "${header[ce-kafkakey]}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[partition-key]}"
+                steps:
+                  - setHeader:
+                      name: CamelKafkaPartitionKey
+                      expression:
+                        simple:
+                          expression: "${header[partition-key]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-partitionkey]}"
+                steps:
+                  - setHeader:
+                      name: CamelKafkaPartitionKey
+                      expression:
+                        simple:
+                          expression: "${header[ce-partitionkey]}"
+        - to:
+            uri: kafka
+            parameters:
+              topic: "{{topic}}"
+              brokers: "{{bootstrapServers}}"
+              oauthClientId: "{{?oauthClientId}}"
+              oauthClientSecret: "RAW({{?oauthClientSecret}})"
+              oauthScope: "{{?oauthScope}}"
+              oauthTokenEndpointUri: "{{?oauthTokenEndpointUri}}"
+              saslAuthType: "{{saslAuthType}}"
+              saslPassword: "RAW({{?saslPassword}})"
+              saslUsername: "{{?saslUsername}}"
+              sslKeyPassword: "RAW({{?sslKeyPassword}})"
+              sslKeystoreLocation: "{{?sslKeystoreLocation}}"
+              sslKeystorePassword: "RAW({{?sslKeystorePassword}})"
+              sslTruststoreLocation: "{{?sslTruststoreLocation}}"
+              sslTruststorePassword: "RAW({{?sslTruststorePassword}})"

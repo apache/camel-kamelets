@@ -70,13 +70,15 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "nats:{{topic}}"
+      uri: nats
       parameters:
-        servers: "{{servers}}"
+        topic: "{{topic}}"
+        jetstreamAsync: "{{?jetstreamAsync}}"
         jetstreamEnabled: "{{?jetstreamEnabled}}"
         jetstreamName: "{{?jetstreamName}}"
-        jetstreamAsync: "{{?jetstreamAsync}}"
+        servers: "{{servers}}"
       steps:
-      - marshal:
-          json: {}
-      - to: "kamelet:sink"
+        - marshal:
+            json: {}
+        - to:
+            uri: kamelet:sink

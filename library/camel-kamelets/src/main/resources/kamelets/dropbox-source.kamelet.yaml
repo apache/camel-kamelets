@@ -81,28 +81,49 @@ spec:
     - "camel:timer"
   template:
     from:
-      uri: "timer:dropbox-stream"
+      uri: timer
       parameters:
+        timerName: dropbox-stream
         period: "{{period}}"
       steps:
-      - to:
-          uri: "dropbox:search"
-          parameters:
-            accessToken: "{{accessToken}}"
-            remotePath: "{{remotePath}}"
-            clientIdentifier: "{{clientIdentifier}}"
-            query: "{{query}}"
-      - split:
-          jsonpath: "$.*"
-          steps:
-          - setProperty:
-              name: dropboxFileName
-              simple: ${body.metadata.pathDisplay}
-          - toD: "dropbox:get?accessToken={{accessToken}}&clientIdentifier={{clientIdentifier}}&remotePath=${exchangeProperty.dropboxFileName}"
-          - to: "kamelet:sink"
-          - choice:
-              when:
-                - simple: '{{deleteAfterRead}}'
-                  steps:
-                    - toD: "dropbox:del?accessToken={{accessToken}}&clientIdentifier={{clientIdentifier}}&remotePath=${exchangeProperty.dropboxFileName}"
+        - to:
+            uri: dropbox
+            parameters:
+              operation: search
+              accessToken: "RAW({{accessToken}})"
+              clientIdentifier: "{{clientIdentifier}}"
+              query: "{{query}}"
+              remotePath: "{{remotePath}}"
+        - split:
+            expression:
+              jsonpath:
+                expression: "$.*"
+            steps:
+              - setProperty:
+                  name: dropboxFileName
+                  expression:
+                    simple:
+                      expression: "${body.metadata.pathDisplay}"
+              - toD:
+                  uri: dropbox
+                  parameters:
+                    operation: get
+                    accessToken: "{{accessToken}}"
+                    clientIdentifier: "{{clientIdentifier}}"
+                    remotePath: "${exchangeProperty.dropboxFileName}"
+              - to:
+                  uri: kamelet:sink
+              - choice:
+                  when:
+                    - expression:
+                        simple:
+                          expression: "{{deleteAfterRead}}"
+                      steps:
+                        - toD:
+                            uri: dropbox
+                            parameters:
+                              operation: del
+                              accessToken: "{{accessToken}}"
+                              clientIdentifier: "{{clientIdentifier}}"
+                              remotePath: "${exchangeProperty.dropboxFileName}"
 

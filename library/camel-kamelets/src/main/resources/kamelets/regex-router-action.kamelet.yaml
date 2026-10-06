@@ -53,10 +53,15 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - setProperty:
-          name: "regex"
-          constant: "{{regex}}"
-      - setProperty:
-          name: "replacement"
-          constant: "{{replacement}}"
-      - bean: "org.apache.camel.component.kafka.transform.RegexRouter"
+        - setProperty:
+            name: regex
+            expression:
+              constant:
+                expression: "{{regex}}"
+        - setProperty:
+            name: replacement
+            expression:
+              constant:
+                expression: "{{replacement}}"
+        - bean:
+            ref: org.apache.camel.component.kafka.transform.RegexRouter

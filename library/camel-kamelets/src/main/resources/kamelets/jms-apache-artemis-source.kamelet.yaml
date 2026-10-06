@@ -60,11 +60,13 @@ spec:
       - name: connectionFactoryBean
         type: "#class:org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory"
         properties:
-          brokerURL: '{{brokerURL}}'
+          brokerURL: "{{brokerURL}}"
     from:
-      uri: "jms:{{destinationType}}:{{destinationName}}"
+      uri: jms
       parameters:
+        destinationType: "{{destinationType}}"
+        destinationName: "{{destinationName}}"
         connectionFactory: "#bean:{{connectionFactoryBean}}"
       steps:
-      - to:
-          uri: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

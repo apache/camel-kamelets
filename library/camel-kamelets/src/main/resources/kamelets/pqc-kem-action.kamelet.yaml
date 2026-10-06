@@ -60,9 +60,10 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - to:
-          uri: "pqc:kem"
-          parameters:
-            keyEncapsulationAlgorithm: "{{keyEncapsulationAlgorithm}}"
-            operation: "{{operation}}"
-            symmetricKeyAlgorithm: "{{symmetricKeyAlgorithm}}"
+        - to:
+            uri: pqc
+            parameters:
+              label: kem
+              keyEncapsulationAlgorithm: "{{keyEncapsulationAlgorithm}}"
+              operation: "{{operation}}"
+              symmetricKeyAlgorithm: "{{symmetricKeyAlgorithm}}"

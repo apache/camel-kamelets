@@ -92,12 +92,15 @@ spec:
       - name: exchangeAuthenticator
         type: "#class:org.apache.camel.component.mail.microsoft.authenticator.MicrosoftExchangeOnlineOAuth2MailAuthenticator({{tenantId}}, {{clientId}}, {{clientSecret}}, {{username}})"
     from:
-      uri: "imaps:{{connectionHost}}:{{connectionPort}}"
+      uri: imaps
       parameters:
-        mail.imaps.auth.mechanisms: "XOAUTH2"
-        username: "{{username}}"
-        fetchSize: "{{fetchSize}}"
-        delay: "{{delay}}"
+        host: "{{connectionHost}}"
+        port: "{{connectionPort}}"
         authenticator: "#bean:{{exchangeAuthenticator}}"
+        delay: "{{delay}}"
+        fetchSize: "{{fetchSize}}"
+        mail.imaps.auth.mechanisms: XOAUTH2
+        username: "RAW({{username}})"
       steps:
-        - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

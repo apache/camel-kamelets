@@ -90,42 +90,52 @@ spec:
       - name: local-es
         type: "#class:org.apache.camel.component.es.ElasticsearchComponent"
         properties:
-            user: "{{?user}}"
-            password: "{{?password}}"
+          user: "{{?user}}"
+          password: "{{?password}}"
     from:
       uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[indexId]}"
-            steps:
-            - setHeader:
-                name: "CamelElasticsearchIndexId"
-                simple: "${header[indexId]}"
-          - simple: "${header[ce-indexid]}"
-            steps:
-            - setHeader:
-                name: "CamelElasticsearchIndexId"
-                simple: "${header[ce-indexid]}"
-      - choice:
-          when:
-          - simple: "${header[indexName]}"
-            steps:
-            - setHeader:
-                name: "CamelElasticsearchIndexName"
-                simple: "${header[indexName]}"
-          - simple: "${header[ce-indexname]}"
-            steps:
-            - setHeader:
-                name: "CamelElasticsearchIndexName"
-                simple: "${header[ce-indexname]}"
-      - unmarshal:
-          json: {}
-      - to:
-          uri: "{{local-es}}:{{clusterName}}"
-          parameters:
-            operation: "INDEX"
-            hostAddresses: "{{hostAddresses}}"
-            enableSSL: "{{enableSSL}}"
-            indexName: "{{?indexName}}"
-            certificatePath: "base64:{{?certificate}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[indexId]}"
+                steps:
+                  - setHeader:
+                      name: CamelElasticsearchIndexId
+                      expression:
+                        simple:
+                          expression: "${header[indexId]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-indexid]}"
+                steps:
+                  - setHeader:
+                      name: CamelElasticsearchIndexId
+                      expression:
+                        simple:
+                          expression: "${header[ce-indexid]}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[indexName]}"
+                steps:
+                  - setHeader:
+                      name: CamelElasticsearchIndexName
+                      expression:
+                        simple:
+                          expression: "${header[indexName]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-indexname]}"
+                steps:
+                  - setHeader:
+                      name: CamelElasticsearchIndexName
+                      expression:
+                        simple:
+                          expression: "${header[ce-indexname]}"
+        - unmarshal:
+            json: {}
+        - to:
+            uri: "{{local-es}}:{{clusterName}}?operation=INDEX&hostAddresses={{hostAddresses}}&enableSSL={{enableSSL}}&indexName={{?indexName}}&certificatePath=base64:{{?certificate}}"

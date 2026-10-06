@@ -139,27 +139,7 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "aws2-s3:{{bucketNameOrArn}}"
-          parameters:
-            secretKey: "{{?secretKey}}"
-            accessKey: "{{?accessKey}}"
-            region: "{{region}}"
-            autoCreateBucket: "{{autoCreateBucket}}"
-            streamingUploadMode: "true"
-            restartingPolicy: "{{restartingPolicy}}"
-            batchMessageNumber: "{{batchMessageNumber}}"
-            batchSize: "{{batchSize}}"
-            namingStrategy: "{{namingStrategy}}"
-            keyName: "{{keyName}}"
-            streamingUploadTimeout: "{{?streamingUploadTimeout}}"
-            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-            useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-            useSessionCredentials: "{{useSessionCredentials}}"
-            uriEndpointOverride: "{{?uriEndpointOverride}}"
-            profileCredentialsName: "{{?profileCredentialsName}}"
-            sessionToken: "{{?sessionToken}}"
-            overrideEndpoint: "{{overrideEndpoint}}"
-            forcePathStyle: "{{forcePathStyle}}"
+        - to:
+            uri: "aws2-s3:{{bucketNameOrArn}}?accessKey=RAW({{?accessKey}})&autoCreateBucket={{autoCreateBucket}}&batchMessageNumber={{batchMessageNumber}}&batchSize={{batchSize}}&forcePathStyle={{forcePathStyle}}&keyName={{keyName}}&namingStrategy={{namingStrategy}}&overrideEndpoint={{overrideEndpoint}}&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&restartingPolicy={{restartingPolicy}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&streamingUploadMode=true&streamingUploadTimeout={{?streamingUploadTimeout}}&uriEndpointOverride={{?uriEndpointOverride}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}"

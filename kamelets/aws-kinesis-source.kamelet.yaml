@@ -125,21 +125,23 @@ spec:
     - "camel:core"
   template:
     from:
-      uri: aws2-kinesis:{{stream}}
+      uri: aws2-kinesis
       parameters:
-        secretKey: "{{?secretKey}}"
-        accessKey: "{{?accessKey}}"
+        streamName: "{{stream}}"
+        accessKey: "RAW({{?accessKey}})"
+        asyncClient: "{{asyncClient}}"
+        delay: "{{delay}}"
+        kclDisableCloudwatchMetricsExport: "{{kclDisableCloudwatchMetricsExport}}"
+        overrideEndpoint: "{{overrideEndpoint}}"
+        profileCredentialsName: "{{?profileCredentialsName}}"
         region: "{{region}}"
+        secretKey: "RAW({{?secretKey}})"
+        sessionToken: "RAW({{?sessionToken}})"
+        uriEndpointOverride: "{{?uriEndpointOverride}}"
         useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+        useKclConsumers: "{{useKclConsumers}}"
         useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
         useSessionCredentials: "{{useSessionCredentials}}"
-        uriEndpointOverride: "{{?uriEndpointOverride}}"
-        profileCredentialsName: "{{?profileCredentialsName}}"
-        sessionToken: "{{?sessionToken}}"
-        overrideEndpoint: "{{overrideEndpoint}}"
-        delay: "{{delay}}"
-        useKclConsumers: "{{useKclConsumers}}"
-        asyncClient: "{{asyncClient}}"
-        kclDisableCloudwatchMetricsExport: "{{kclDisableCloudwatchMetricsExport}}"
       steps:
-      - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

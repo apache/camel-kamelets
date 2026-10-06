@@ -152,12 +152,7 @@ spec:
           jwtAudience: "{{?jwtAudience}}"
           keystore: "{{?keystore}}"
     from:
-      uri: "{{local-salesforce-pubsub}}:pubSubSubscribe:{{topic}}"
-      parameters:
-        pubSubDeserializeType: "{{deserializeType}}"
-        pubSubPojoClass: "{{?pojoClass}}"
-        replayPreset: "{{replayPreset}}"
-        pubSubReplayId: "{{?replayId}}"
-        pubSubBatchSize: "{{batchSize}}"
+      uri: "{{local-salesforce-pubsub}}:pubSubSubscribe:{{topic}}?pubSubDeserializeType={{deserializeType}}&pubSubPojoClass={{?pojoClass}}&replayPreset={{replayPreset}}&pubSubReplayId={{?replayId}}&pubSubBatchSize={{batchSize}}"
       steps:
-      - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

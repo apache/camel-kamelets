@@ -48,13 +48,20 @@ spec:
     - "camel:jsonpath"
   template:
     from:
-      uri: "timer:chuck"
+      uri: timer
       parameters:
+        timerName: chuck
         period: "{{period}}"
       steps:
-        - to: "https://api.chucknorris.io/jokes/random"
+        - to:
+            uri: https
+            parameters:
+              httpUri: api.chucknorris.io/jokes/random
         - removeHeaders:
-            pattern: '*'
+            pattern: "*"
         - setBody:
-            jsonpath: "$.value"
-        - to: "kamelet:sink"
+            expression:
+              jsonpath:
+                expression: "$.value"
+        - to:
+            uri: kamelet:sink

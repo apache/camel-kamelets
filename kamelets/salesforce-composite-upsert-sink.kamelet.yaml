@@ -140,11 +140,8 @@ spec:
       uri: kamelet:source
       steps:
         - transform:
-            jsonpath: "$['records']"
+            expression:
+              jsonpath:
+                expression: "$['records']"
         - to:
-            uri: "{{salesforce}}:compositeUpsertSObjectCollections"
-            parameters:
-              sObjectName: "{{sObjectName}}"
-              sObjectIdName: "{{sObjectIdName}}"
-              rawPayload: "true"
-              allOrNone: "false"
+            uri: "{{salesforce}}:compositeUpsertSObjectCollections?sObjectName={{sObjectName}}&sObjectIdName={{sObjectIdName}}&rawPayload=true&allOrNone=false"

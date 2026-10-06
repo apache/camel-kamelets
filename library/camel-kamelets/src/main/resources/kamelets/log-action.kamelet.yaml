@@ -103,20 +103,21 @@ spec:
   - "camel:log"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "log:{{loggerName}}"
-          parameters:
-            level: "{{?level}}"
-            logMask: "{{?logMask}}"
-            marker: "{{?marker}}"
-            multiline: "{{?multiline}}"
-            showAllProperties: "{{?showAllProperties}}"
-            showBody: "{{?showBody}}"
-            showBodyType: "{{?showBodyType}}"
-            showExchangePattern: "{{?showExchangePattern}}"
-            showHeaders: "{{?showHeaders}}"
-            showProperties: "{{?showProperties}}"
-            showStreams: "{{?showStreams}}"
-            showCachedStreams: "{{?showCachedStreams}}"
+        - to:
+            uri: log
+            parameters:
+              loggerName: "{{loggerName}}"
+              level: "{{?level}}"
+              logMask: "{{?logMask}}"
+              marker: "{{?marker}}"
+              multiline: "{{?multiline}}"
+              showAllProperties: "{{?showAllProperties}}"
+              showBody: "{{?showBody}}"
+              showBodyType: "{{?showBodyType}}"
+              showCachedStreams: "{{?showCachedStreams}}"
+              showExchangePattern: "{{?showExchangePattern}}"
+              showHeaders: "{{?showHeaders}}"
+              showProperties: "{{?showProperties}}"
+              showStreams: "{{?showStreams}}"

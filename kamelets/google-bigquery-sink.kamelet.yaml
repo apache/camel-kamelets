@@ -67,12 +67,14 @@ spec:
     - "camel:jackson"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - unmarshal:
-          json:
-              library: Jackson
-      - to:
-          uri: "google-bigquery:{{projectId}}:{{dataset}}:{{table}}"
-          parameters:
-            serviceAccountKey: "base64:{{serviceAccountKey}}"
+        - unmarshal:
+            json: {}
+        - to:
+            uri: google-bigquery
+            parameters:
+              projectId: "{{projectId}}"
+              datasetId: "{{dataset}}"
+              tableId: "{{table}}"
+              serviceAccountKey: "base64:{{serviceAccountKey}}"

@@ -123,17 +123,20 @@ spec:
     - "camel:jackson"
   template:
     from:
-      uri: "azure-cosmosdb:{{databaseName}}/{{containerName}}"
+      uri: azure-cosmosdb
       parameters:
-        leaseDatabaseName: "{{?leaseDatabaseName}}"
-        leaseContainerName: "{{?leaseContainerName}}"
-        accountKey: "{{?accountKey}}"
-        createLeaseDatabaseIfNotExists: "{{createLeaseDatabaseIfNotExists}}"
+        databaseName: "{{databaseName}}"
+        containerName: "{{containerName}}"
+        accountKey: "RAW({{?accountKey}})"
         createLeaseContainerIfNotExists: "{{createLeaseContainerIfNotExists}}"
-        databaseEndpoint: "{{databaseEndpoint}}"
+        createLeaseDatabaseIfNotExists: "{{createLeaseDatabaseIfNotExists}}"
         credentialType: "{{credentialType}}"
+        databaseEndpoint: "{{databaseEndpoint}}"
+        leaseContainerName: "{{?leaseContainerName}}"
+        leaseDatabaseName: "{{?leaseDatabaseName}}"
       steps:
-      - marshal:
-          json: {}
-      - to: "kamelet:sink"
+        - marshal:
+            json: {}
+        - to:
+            uri: kamelet:sink
 

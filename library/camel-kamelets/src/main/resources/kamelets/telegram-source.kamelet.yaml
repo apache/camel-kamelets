@@ -53,16 +53,22 @@ spec:
     - "camel:core"
   template:
     from:
-      uri: telegram:bots
+      uri: telegram
       parameters:
-        authorizationToken: "{{authorizationToken}}"
+        type: bots
+        authorizationToken: "RAW({{authorizationToken}})"
       steps:
-      - setHeader:
-          name: chat-id
-          simple: "${header[CamelTelegramChatId]}"
-      - setHeader:
-          name: ce-chatid
-          simple: "${header[CamelTelegramChatId]}"
-      - marshal:
-          json: {}
-      - to: "kamelet:sink"
+        - setHeader:
+            name: chat-id
+            expression:
+              simple:
+                expression: "${header[CamelTelegramChatId]}"
+        - setHeader:
+            name: ce-chatid
+            expression:
+              simple:
+                expression: "${header[CamelTelegramChatId]}"
+        - marshal:
+            json: {}
+        - to:
+            uri: kamelet:sink

@@ -81,14 +81,16 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "twitter-timeline:user"
+      uri: twitter-timeline
       parameters:
+        timelineType: user
+        accessToken: "RAW({{accessToken}})"
+        accessTokenSecret: "RAW({{accessTokenSecret}})"
+        consumerKey: "RAW({{apiKey}})"
+        consumerSecret: "RAW({{apiKeySecret}})"
         user: "{{user}}"
-        accessToken: "{{accessToken}}"
-        accessTokenSecret: "{{accessTokenSecret}}"
-        consumerKey: "{{apiKey}}"
-        consumerSecret: "{{apiKeySecret}}"
       steps:
-      - marshal:
-          json: {}
-      - to: "kamelet:sink"
+        - marshal:
+            json: {}
+        - to:
+            uri: kamelet:sink

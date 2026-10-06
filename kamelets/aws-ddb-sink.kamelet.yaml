@@ -145,24 +145,27 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - setProperty:
-          name: operation
-          constant: "{{operation}}"
-      - transformDataType:
-          toType: "aws2-ddb:application-json"
-      - to:
-          uri: "aws2-ddb:{{table}}"
-          parameters:
-            secretKey: "{{?secretKey}}"
-            accessKey: "{{?accessKey}}"
-            region: "{{region}}"
-            operation: "{{operation}}"
-            useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-            useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-            useSessionCredentials: "{{useSessionCredentials}}"
-            uriEndpointOverride: "{{?uriEndpointOverride}}"
-            profileCredentialsName: "{{?profileCredentialsName}}"
-            sessionToken: "{{?sessionToken}}"
-            overrideEndpoint: "{{overrideEndpoint}}"
+        - setProperty:
+            name: operation
+            expression:
+              constant:
+                expression: "{{operation}}"
+        - transformDataType:
+            toType: aws2-ddb:application-json
+        - to:
+            uri: aws2-ddb
+            parameters:
+              tableName: "{{table}}"
+              accessKey: "RAW({{?accessKey}})"
+              operation: "{{operation}}"
+              overrideEndpoint: "{{overrideEndpoint}}"
+              profileCredentialsName: "{{?profileCredentialsName}}"
+              region: "{{region}}"
+              secretKey: "RAW({{?secretKey}})"
+              sessionToken: "RAW({{?sessionToken}})"
+              uriEndpointOverride: "{{?uriEndpointOverride}}"
+              useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+              useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
+              useSessionCredentials: "{{useSessionCredentials}}"

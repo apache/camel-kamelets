@@ -124,65 +124,81 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - setProperty:
-          name: contentBasedDeduplication
-          constant: "{{contentBasedDeduplication}}"
-      - choice:
-          when:
-          - simple: "${header[group]}"
-            steps:
-            - setProperty:
-                name: CamelAwsMessageGroupId
-                simple: "${header[group]}"
-          - simple: "${header[ce-group]}"
-            steps:
-            - setProperty:
-                name: CamelAwsMessageGroupId
-                simple: "${header[ce-group]}"
-          otherwise:
-            steps:
-            - setProperty:
-                name: CamelAwsMessageGroupId
-                simple: "${exchangeId}"
-      - choice:
-          when:
-          - simple: "${exchangeProperty.contentBasedDeduplication} == 'true'"
-            steps:
-            - to:
-                uri: "aws2-sqs:{{queueNameOrArn}}"
-                parameters:
-                  autoCreateQueue: "{{autoCreateQueue}}"
-                  accessKey: "{{?accessKey}}"
-                  secretKey: "{{?secretKey}}"
-                  region: "{{region}}"
-                  useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-                  useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-                  useSessionCredentials: "{{useSessionCredentials}}" 
-                  messageGroupIdStrategy: "usePropertyValue"
-                  messageDeduplicationIdStrategy: "useContentBasedDeduplication"
-                  amazonAWSHost: "{{?amazonAWSHost}}"
-                  protocol: "{{?protocol}}"
-                  uriEndpointOverride: "{{?uriEndpointOverride}}"
-                  profileCredentialsName: "{{?profileCredentialsName}}"
-                  sessionToken: "{{?sessionToken}}"
-                  overrideEndpoint: "{{overrideEndpoint}}"
-          otherwise:
-            steps:
-            - to:
-                uri: "aws2-sqs:{{queueNameOrArn}}"
-                parameters:
-                  autoCreateQueue: "{{autoCreateQueue}}"
-                  accessKey: "{{?accessKey}}"
-                  secretKey: "{{?secretKey}}"
-                  region: "{{region}}"
-                  useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
-                  useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
-                  useSessionCredentials: "{{useSessionCredentials}}"  
-                  messageGroupIdStrategy: "usePropertyValue"
-                  messageDeduplicationIdStrategy: "useExchangeId"
-                  amazonAWSHost: "{{?amazonAWSHost}}"
-                  protocol: "{{?protocol}}"
-                  uriEndpointOverride: "{{?uriEndpointOverride}}"
-                  profileCredentialsName: "{{?profileCredentialsName}}"
-                  sessionToken: "{{?sessionToken}}"
-                  overrideEndpoint: "{{overrideEndpoint}}"
+        - setProperty:
+            name: contentBasedDeduplication
+            expression:
+              constant:
+                expression: "{{contentBasedDeduplication}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[group]}"
+                steps:
+                  - setProperty:
+                      name: CamelAwsMessageGroupId
+                      expression:
+                        simple:
+                          expression: "${header[group]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-group]}"
+                steps:
+                  - setProperty:
+                      name: CamelAwsMessageGroupId
+                      expression:
+                        simple:
+                          expression: "${header[ce-group]}"
+            otherwise:
+              steps:
+                - setProperty:
+                    name: CamelAwsMessageGroupId
+                    expression:
+                      simple:
+                        expression: "${exchangeId}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${exchangeProperty.contentBasedDeduplication} == 'true'"
+                steps:
+                  - to:
+                      uri: aws2-sqs
+                      parameters:
+                        queueNameOrArn: "{{queueNameOrArn}}"
+                        accessKey: "RAW({{?accessKey}})"
+                        amazonAWSHost: "{{?amazonAWSHost}}"
+                        autoCreateQueue: "{{autoCreateQueue}}"
+                        messageDeduplicationIdStrategy: useContentBasedDeduplication
+                        messageGroupIdStrategy: usePropertyValue
+                        overrideEndpoint: "{{overrideEndpoint}}"
+                        profileCredentialsName: "{{?profileCredentialsName}}"
+                        protocol: "{{?protocol}}"
+                        region: "{{region}}"
+                        secretKey: "RAW({{?secretKey}})"
+                        sessionToken: "RAW({{?sessionToken}})"
+                        uriEndpointOverride: "{{?uriEndpointOverride}}"
+                        useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+                        useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
+                        useSessionCredentials: "{{useSessionCredentials}}"
+            otherwise:
+              steps:
+                - to:
+                    uri: aws2-sqs
+                    parameters:
+                      queueNameOrArn: "{{queueNameOrArn}}"
+                      accessKey: "RAW({{?accessKey}})"
+                      amazonAWSHost: "{{?amazonAWSHost}}"
+                      autoCreateQueue: "{{autoCreateQueue}}"
+                      messageDeduplicationIdStrategy: useExchangeId
+                      messageGroupIdStrategy: usePropertyValue
+                      overrideEndpoint: "{{overrideEndpoint}}"
+                      profileCredentialsName: "{{?profileCredentialsName}}"
+                      protocol: "{{?protocol}}"
+                      region: "{{region}}"
+                      secretKey: "RAW({{?secretKey}})"
+                      sessionToken: "RAW({{?sessionToken}})"
+                      uriEndpointOverride: "{{?uriEndpointOverride}}"
+                      useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+                      useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
+                      useSessionCredentials: "{{useSessionCredentials}}"

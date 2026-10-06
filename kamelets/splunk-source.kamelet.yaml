@@ -129,8 +129,9 @@ spec:
   - "mvn:com.fasterxml.jackson.datatype:jackson-datatype-joda:2.12.5"
   template:
     from:
-      uri: "splunk:normal"
+      uri: splunk
       parameters:
+        name: normal
         host: "{{serverHostname}}"
         port: "{{serverPort}}"
         username: "{{username}}"
@@ -150,8 +151,8 @@ spec:
         latestTime: "{{?latestTime}}"
         raw: true
       steps:
-      - marshal:
-          json:
-            library: Jackson
-            moduleClassNames: com.fasterxml.jackson.datatype.joda.JodaModule
-      - to: "kamelet:sink"
+        - marshal:
+            json:
+              moduleClassNames: com.fasterxml.jackson.datatype.joda.JodaModule
+        - to:
+            uri: kamelet:sink

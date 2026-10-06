@@ -66,23 +66,34 @@ spec:
     - "camel:timer"
   template:
     from:
-      uri: timer:wttr.in
+      uri: timer
       parameters:
+        timerName: wttr.in
         period: "{{period}}"
       steps:
-        - to: "https://wttr.in/{{?wttrLocation}}?format=j1&lang={{?wttrLanguage}}"
+        - to:
+            uri: "https://wttr.in/{{?wttrLocation}}?format=j1&lang={{?wttrLanguage}}"
         - choice:
             when:
-              - simple: "'{{output}}' == 'current'"
+              - expression:
+                  simple:
+                    expression: "'{{output}}' == 'current'"
                 steps:
                   - transform:
-                      jsonpath: "$.current_condition[0]"
+                      expression:
+                        jsonpath:
+                          expression: "$.current_condition[0]"
                   - marshal:
                       json: {}
-              - simple: "'{{output}}' == 'weather'"
+              - expression:
+                  simple:
+                    expression: "'{{output}}' == 'weather'"
                 steps:
                   - transform:
-                      jsonpath: "$.weather"
+                      expression:
+                        jsonpath:
+                          expression: "$.weather"
                   - marshal:
                       json: {}
-        - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

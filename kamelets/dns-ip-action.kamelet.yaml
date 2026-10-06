@@ -39,26 +39,38 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[domain]}"
-            steps:
-            - setHeader:
-                name: CamelDnsDomain
-                simple: "${header[domain]}"
-          - simple: "${header[ce-domain]}"
-            steps:
-            - setHeader:
-                name: CamelDnsDomain
-                simple: "${header[ce-domain]}"
-          otherwise:
-            steps:
-            - setHeader:
-                name: CamelDnsDomain
-                simple: "${body}"
-      - to:
-          uri: "dns:ip"
-      - convertBodyTo:
-          type: "java.lang.String"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[domain]}"
+                steps:
+                  - setHeader:
+                      name: CamelDnsDomain
+                      expression:
+                        simple:
+                          expression: "${header[domain]}"
+              - expression:
+                  simple:
+                    expression: "${header[ce-domain]}"
+                steps:
+                  - setHeader:
+                      name: CamelDnsDomain
+                      expression:
+                        simple:
+                          expression: "${header[ce-domain]}"
+            otherwise:
+              steps:
+                - setHeader:
+                    name: CamelDnsDomain
+                    expression:
+                      simple:
+                        expression: "${body}"
+        - to:
+            uri: dns
+            parameters:
+              dnsType: ip
+        - convertBodyTo:
+            type: java.lang.String

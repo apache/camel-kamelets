@@ -72,13 +72,9 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "github2://commit/{{branch}}"
-      parameters:
-        repoName: "{{repoName}}"
-        repoOwner: "{{repoOwner}}"
-        oauthToken: "{{oauthToken}}"
-        startingSha: "{{startingSha}}"
+      uri: "github2://commit/{{branch}}?oauthToken=RAW({{oauthToken}})&repoName={{repoName}}&repoOwner={{repoOwner}}&startingSha={{startingSha}}"
       steps:
-      - marshal:
-          json: {}
-      - to: "kamelet:sink"
+        - marshal:
+            json: {}
+        - to:
+            uri: kamelet:sink

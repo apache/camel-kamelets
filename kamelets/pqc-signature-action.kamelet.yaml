@@ -54,8 +54,9 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - to:
-          uri: "pqc:sign"
-          parameters:
-            signatureAlgorithm: "{{signatureAlgorithm}}"
-            operation: "{{operation}}"
+        - to:
+            uri: pqc
+            parameters:
+              label: sign
+              operation: "{{operation}}"
+              signatureAlgorithm: "{{signatureAlgorithm}}"

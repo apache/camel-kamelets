@@ -88,21 +88,18 @@ spec:
       - name: dsBean
         type: "#class:org.apache.commons.dbcp2.BasicDataSource"
         properties:
-          username: 'token'
-          password: '{{accessToken}}'
-          url: 'jdbc:databricks://{{serverHostname}}:{{serverPort}};httpPath={{httpPath}};AuthMech=3;transportMode=http;ssl=1{{extraOptions}}'
-          driverClassName: 'com.databricks.client.jdbc.Driver'
+          username: token
+          password: "{{accessToken}}"
+          url: "jdbc:databricks://{{serverHostname}}:{{serverPort}};httpPath={{httpPath}};AuthMech=3;transportMode=http;ssl=1{{extraOptions}}"
+          driverClassName: com.databricks.client.jdbc.Driver
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - unmarshal:
-          json:
-            library: Jackson
-      - removeHeader:
-          name: CamelSqlQuery
-      - removeHeader:
-          name: CamelSqlParameters
-      - to:
-          uri: "{{local-sql-databricks-sink}}:{{query}}"
-          parameters:
-            dataSource: "#bean:{{dsBean}}"
+        - unmarshal:
+            json: {}
+        - removeHeader:
+            name: CamelSqlQuery
+        - removeHeader:
+            name: CamelSqlParameters
+        - to:
+            uri: "{{local-sql-databricks-sink}}:{{query}}?dataSource=#bean:{{dsBean}}"

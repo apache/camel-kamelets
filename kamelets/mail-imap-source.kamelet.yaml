@@ -78,25 +78,36 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "imaps:{{connectionHost}}:{{connectionPort}}"
+      uri: imaps
       parameters:
-        username: "{{username}}"
-        password: "{{password}}"
-        fetchSize: "{{fetchSize}}"
+        host: "{{connectionHost}}"
+        port: "{{connectionPort}}"
         delay: "{{delay}}"
+        fetchSize: "{{fetchSize}}"
+        password: "RAW({{password}})"
+        username: "RAW({{username}})"
       steps:
-      - setHeader:
-          name: "ce-subject"
-          simple: "${header.Subject}"
-      - setHeader:
-          name: "ce-from"
-          simple: "${header.From}"
-      - setHeader:
-          name: "ce-to"
-          simple: "${header.To}"
-      - setHeader:
-          name: "ce-cc"
-          simple: "${header.Cc}"
-      - convertBodyTo:
-          type: "java.lang.String"
-      - to: "kamelet:sink"
+        - setHeader:
+            name: ce-subject
+            expression:
+              simple:
+                expression: "${header.Subject}"
+        - setHeader:
+            name: ce-from
+            expression:
+              simple:
+                expression: "${header.From}"
+        - setHeader:
+            name: ce-to
+            expression:
+              simple:
+                expression: "${header.To}"
+        - setHeader:
+            name: ce-cc
+            expression:
+              simple:
+                expression: "${header.Cc}"
+        - convertBodyTo:
+            type: java.lang.String
+        - to:
+            uri: kamelet:sink

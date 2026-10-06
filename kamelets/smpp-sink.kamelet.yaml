@@ -95,16 +95,18 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "kamelet:source"
+      uri: kamelet:source
       steps:
-      - to:
-          uri: "smpp:{{host}}:{{port}}"
-          parameters:
-            systemId: "{{systemId}}"
-            password: "{{?password}}"
-            systemType: "{{?systemType}}"
-            sourceAddr: "{{sourceAddr}}"
-            destAddr: "{{destAddr}}"
-            encoding: "{{encoding}}"
-            splittingPolicy: "{{splittingPolicy}}"
-            usingSSL: "{{usingSSL}}"
+        - to:
+            uri: smpp
+            parameters:
+              host: "{{host}}"
+              port: "{{port}}"
+              destAddr: "{{destAddr}}"
+              encoding: "{{encoding}}"
+              password: "RAW({{?password}})"
+              sourceAddr: "{{sourceAddr}}"
+              splittingPolicy: "{{splittingPolicy}}"
+              systemId: "RAW({{systemId}})"
+              systemType: "{{?systemType}}"
+              usingSSL: "{{usingSSL}}"

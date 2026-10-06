@@ -38,4 +38,5 @@ spec:
     from:
       uri: kamelet:source
       steps:
-      - bean: "org.apache.camel.component.kafka.BatchManualCommit"
+        - bean:
+            ref: org.apache.camel.component.kafka.BatchManualCommit

@@ -79,24 +79,29 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "timer:solr-stream"
+      uri: timer
       parameters:
+        timerName: solr-stream
         period: "{{period}}"
       steps:
-      - setHeader:
-          name: "CamelSolrOperation"
-          constant: "QUERY"
-      - setHeader:
-          name: "CamelSolrQueryString"
-          constant: "{{query}}"
-      - setHeader:
-          name: "CamelSolrCollection"
-          constant: "{{collection}}"
-      - removeHeader:
-          name: "content-type"
-      - to:
-          uri: "solr:{{servers}}/solr/"
-          parameters:
-            username: "{{?username}}"
-            password: "{{?password}}"
-      - to: "kamelet:sink"
+        - setHeader:
+            name: CamelSolrOperation
+            expression:
+              constant:
+                expression: QUERY
+        - setHeader:
+            name: CamelSolrQueryString
+            expression:
+              constant:
+                expression: "{{query}}"
+        - setHeader:
+            name: CamelSolrCollection
+            expression:
+              constant:
+                expression: "{{collection}}"
+        - removeHeader:
+            name: content-type
+        - to:
+            uri: "solr:{{servers}}/solr/?password=RAW({{?password}})&username=RAW({{?username}})"
+        - to:
+            uri: kamelet:sink

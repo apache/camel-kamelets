@@ -69,39 +69,47 @@ spec:
       - name: extractField
         type: "#class:org.apache.camel.component.kafka.transform.ExtractField"
         properties:
-          field: '{{field}}'
-          headerOutput: '{{headerOutput}}'
-          headerOutputName: '{{headerOutputName}}'
-          strictHeaderCheck: '{{strictHeaderCheck}}'
-          trimField: '{{trimField}}'
+          field: "{{field}}"
+          headerOutput: "{{headerOutput}}"
+          headerOutputName: "{{headerOutputName}}"
+          strictHeaderCheck: "{{strictHeaderCheck}}"
+          trimField: "{{trimField}}"
     from:
       uri: kamelet:source
       steps:
-      - choice:
-          when:
-          - simple: "${header[Content-Type]} == 'application/json'"
-            steps:
-            - setProperty:
-                name: deserialized
-                constant: "true"
-            - unmarshal:
-                json:
-                  library: Jackson
-                  unmarshalType: com.fasterxml.jackson.databind.JsonNode
-      - process:
-          ref: "{{extractField}}"
-      - choice:
-          when:
-          - simple: "${exchangeProperty[trimField]} == 'false'"
-            steps:
-            - choice:
-                when:
-                - simple: "${exchangeProperty[deserialized]} == 'true'"
-                  steps:
-                  - marshal:
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[Content-Type]} == 'application/json'"
+                steps:
+                  - setProperty:
+                      name: deserialized
+                      expression:
+                        constant:
+                          expression: "true"
+                  - unmarshal:
                       json:
-                        library: Jackson
                         unmarshalType: com.fasterxml.jackson.databind.JsonNode
-                  - setHeader:
-                      name: "Content-Type"
-                      constant: "application/json"
+        - process:
+            ref: "{{extractField}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${exchangeProperty[trimField]} == 'false'"
+                steps:
+                  - choice:
+                      when:
+                        - expression:
+                            simple:
+                              expression: "${exchangeProperty[deserialized]} == 'true'"
+                          steps:
+                            - marshal:
+                                json:
+                                  unmarshalType: com.fasterxml.jackson.databind.JsonNode
+                            - setHeader:
+                                name: Content-Type
+                                expression:
+                                  constant:
+                                    expression: application/json

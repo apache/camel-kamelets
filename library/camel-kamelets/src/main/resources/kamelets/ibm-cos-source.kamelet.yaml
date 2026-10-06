@@ -155,23 +155,25 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "ibm-cos:{{bucketName}}"
+      uri: ibm-cos
       parameters:
-        apiKey: "{{apiKey}}"
-        serviceInstanceId: "{{serviceInstanceId}}"
-        endpointUrl: "{{endpointUrl}}"
-        location: "{{?location}}"
+        bucketName: "{{bucketName}}"
+        apiKey: "RAW({{apiKey}})"
+        autoCreateBucket: "{{autoCreateBucket}}"
+        delay: "{{delay}}"
         deleteAfterRead: "{{deleteAfterRead}}"
-        moveAfterRead: "{{moveAfterRead}}"
+        delimiter: "{{?delimiter}}"
         destinationBucket: "{{?destinationBucket}}"
         destinationBucketPrefix: "{{?destinationBucketPrefix}}"
         destinationBucketSuffix: "{{?destinationBucketSuffix}}"
-        autoCreateBucket: "{{autoCreateBucket}}"
-        prefix: "{{?prefix}}"
-        delimiter: "{{?delimiter}}"
+        endpointUrl: "{{endpointUrl}}"
         includeBody: "{{includeBody}}"
         includeFolders: "{{includeFolders}}"
-        delay: "{{delay}}"
+        location: "{{?location}}"
         maxMessagesPerPoll: "{{maxMessagesPerPoll}}"
+        moveAfterRead: "{{moveAfterRead}}"
+        prefix: "{{?prefix}}"
+        serviceInstanceId: "RAW({{serviceInstanceId}})"
       steps:
-      - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink

@@ -83,13 +83,16 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "smpp:{{host}}:{{port}}"
+      uri: smpp
       parameters:
-        systemId: "{{systemId}}"
-        password: "{{?password}}"
-        systemType: "{{?systemType}}"
+        host: "{{host}}"
+        port: "{{port}}"
         addressRange: "{{?addressRange}}"
         encoding: "{{encoding}}"
+        password: "RAW({{?password}})"
+        systemId: "RAW({{systemId}})"
+        systemType: "{{?systemType}}"
         usingSSL: "{{usingSSL}}"
       steps:
-      - to: "kamelet:sink"
+        - to:
+            uri: kamelet:sink
