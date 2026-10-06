@@ -84,7 +84,7 @@ spec:
           model does not declare, fails the exchange. Only valid with modality media, else the
           sink fails to start.
         type: string
-        pattern: "[^/ ;]+/[^/ ;]+(;.*)?"
+        pattern: "^[^/ ;]+/[^/ ;]+(;.*)?$"
       maxSegmentSize:
         title: Max Segment Size
         description: Maximum size of one segment, in characters.
