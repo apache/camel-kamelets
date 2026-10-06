@@ -73,9 +73,10 @@ spec:
               simple:
                 expression: "${header[{{documentIdHeader}}]}"
         # the size cap, present only when maxDocumentSize is set: the parse materializes the
-        # document, so an oversized one is rejected first. length() is free for byte arrays and
-        # cached streams and a streamed count otherwise, so the guard adds no copy of the
-        # payload
+        # document, so an oversized one is rejected first. The precondition is evaluated once,
+        # when the Kamelet is instantiated - only then does ${properties:maxDocumentSize:0} see
+        # the parameter, at runtime it resolves to 0 - so the check must stay a precondition,
+        # and the comparison below uses {{maxDocumentSize}}
         - choice:
             precondition: true
             when:
@@ -83,6 +84,17 @@ spec:
                   simple:
                     expression: "${properties:maxDocumentSize:0} > 0"
                 steps:
+                  # length() reads a stream to its end and closes it, so a stream body that
+                  # stream caching (on by default) left uncached is read into bytes first; files,
+                  # byte arrays and cached streams are measured in place, without a copy
+                  - choice:
+                      when:
+                        - expression:
+                            simple:
+                              expression: "${body} is 'java.io.InputStream' && ${body} !is 'org.apache.camel.StreamCache'"
+                          steps:
+                            - convertBodyTo:
+                                type: byte[]
                   - choice:
                       when:
                         - expression:

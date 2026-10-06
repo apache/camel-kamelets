@@ -1,0 +1,66 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+# maxDocumentSize with stream caching switched off, so a stream body reaches the action raw
+# instead of cached. A raw stream under the cap must still be parsed whole - the measurement
+# must not drain it - and one over the cap is rejected with its exact size.
+- route:
+    id: parser-max-size-stream-route
+    from:
+      uri: "timer:stream"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "Short text."
+        - setBody:
+            simple: "${bodyAs(java.io.InputStream)}"
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            constant: "short.txt"
+        - doTry:
+            steps:
+              - to: "kamelet:tika-extract-text-action?maxDocumentSize=40"
+              - setBody:
+                  simple: "parsed: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}"
+        - to: "{{report.url}}"
+        # 100 bytes, over the cap of 40
+        - setBody:
+            constant: "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
+        - setBody:
+            simple: "${bodyAs(java.io.InputStream)}"
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            constant: "long.txt"
+        - doTry:
+            steps:
+              - to: "kamelet:tika-extract-text-action?maxDocumentSize=40"
+              - setBody:
+                  simple: "parsed: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}"
+        - to: "{{report.url}}"
