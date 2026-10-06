@@ -56,8 +56,12 @@ jobs:
       uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
       with:
         distribution: 'temurin'
-        # the Camel JBang launcher the tests run needs Java 21 (CAMEL-23112)
-        java-version: 21
+        # 21 for the Camel JBang launcher the tests run (//JAVA 21+ since CAMEL-23112), which JBang finds installed
+        # instead of downloading it (that download failed now and then); 17, listed last, stays the default for the
+        # Maven build and the Citrus tests (JiraIT times out on 21)
+        java-version: |
+          21
+          17
         cache: 'maven'
     - name: Build Kamelet libraries
       run: |
