@@ -56,7 +56,8 @@ jobs:
       uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
       with:
         distribution: 'temurin'
-        java-version: 17
+        # the Camel JBang launcher the tests run needs Java 21 (CAMEL-23112)
+        java-version: 21
         cache: 'maven'
     - name: Build Kamelet libraries
       run: |
