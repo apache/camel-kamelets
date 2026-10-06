@@ -732,11 +732,6 @@
     "name" : "json-deserialize-action",
     "version" : "4.23.0-SNAPSHOT"
   }, {
-    "bom-ref" : "kamelet:json-patch-action",
-    "type" : "library",
-    "name" : "json-patch-action",
-    "version" : "4.23.0-SNAPSHOT"
-  }, {
     "bom-ref" : "kamelet:json-schema-validator-action",
     "type" : "library",
     "name" : "json-schema-validator-action",
@@ -1195,16 +1190,6 @@
     "bom-ref" : "kamelet:splunk-hec-sink",
     "type" : "library",
     "name" : "splunk-hec-sink",
-    "version" : "4.23.0-SNAPSHOT"
-  }, {
-    "bom-ref" : "kamelet:splunk-sink",
-    "type" : "library",
-    "name" : "splunk-sink",
-    "version" : "4.23.0-SNAPSHOT"
-  }, {
-    "bom-ref" : "kamelet:splunk-source",
-    "type" : "library",
-    "name" : "splunk-source",
     "version" : "4.23.0-SNAPSHOT"
   }, {
     "bom-ref" : "kamelet:spring-rabbitmq-sink",
@@ -2190,17 +2175,6 @@
       "value" : "runtime"
     } ]
   }, {
-    "bom-ref" : "pkg:maven/org.apache.camel/camel-json-patch@4.23.0-SNAPSHOT",
-    "type" : "library",
-    "group" : "org.apache.camel",
-    "name" : "camel-json-patch",
-    "version" : "4.23.0-SNAPSHOT",
-    "purl" : "pkg:maven/org.apache.camel/camel-json-patch@4.23.0-SNAPSHOT",
-    "properties" : [ {
-      "name" : "camel.apache.org/versioned-by",
-      "value" : "runtime"
-    } ]
-  }, {
     "bom-ref" : "pkg:maven/org.apache.camel/camel-json-validator@4.23.0-SNAPSHOT",
     "type" : "library",
     "group" : "org.apache.camel",
@@ -2542,17 +2516,6 @@
       "value" : "runtime"
     } ]
   }, {
-    "bom-ref" : "pkg:maven/org.apache.camel/camel-splunk@4.23.0-SNAPSHOT",
-    "type" : "library",
-    "group" : "org.apache.camel",
-    "name" : "camel-splunk",
-    "version" : "4.23.0-SNAPSHOT",
-    "purl" : "pkg:maven/org.apache.camel/camel-splunk@4.23.0-SNAPSHOT",
-    "properties" : [ {
-      "name" : "camel.apache.org/versioned-by",
-      "value" : "runtime"
-    } ]
-  }, {
     "bom-ref" : "pkg:maven/org.apache.camel/camel-spring-rabbitmq@4.23.0-SNAPSHOT",
     "type" : "library",
     "group" : "org.apache.camel",
@@ -2719,7 +2682,7 @@
   } ],
   "dependencies" : [ {
     "ref" : "camel-kamelets-catalog",
-    "dependsOn" : [ "kamelet:avro-deserialize-action", "kamelet:avro-serialize-action", "kamelet:aws-bedrock-agent-runtime-sink", "kamelet:aws-bedrock-agent-sink", "kamelet:aws-bedrock-text-sink", "kamelet:aws-cloudtrail-source", "kamelet:aws-cloudwatch-sink", "kamelet:aws-comprehend-sink", "kamelet:aws-ddb-sink", "kamelet:aws-ddb-streams-source", "kamelet:aws-ec2-sink", "kamelet:aws-eventbridge-sink", "kamelet:aws-kinesis-firehose-sink", "kamelet:aws-kinesis-sink", "kamelet:aws-kinesis-source", "kamelet:aws-lambda-sink", "kamelet:aws-polly-sink", "kamelet:aws-redshift-sink", "kamelet:aws-redshift-source", "kamelet:aws-s3-event-based-source", "kamelet:aws-s3-sink", "kamelet:aws-s3-source", "kamelet:aws-s3-streaming-upload-sink", "kamelet:aws-secrets-manager-sink", "kamelet:aws-ses-sink", "kamelet:aws-sns-fifo-sink", "kamelet:aws-sns-sink", "kamelet:aws-sqs-batch-sink", "kamelet:aws-sqs-fifo-sink", "kamelet:aws-sqs-sink", "kamelet:aws-sqs-source", "kamelet:aws-sts-assume-role-action", "kamelet:aws-timestream-query-sink", "kamelet:aws-translate-action", "kamelet:azure-cosmosdb-sink", "kamelet:azure-cosmosdb-source", "kamelet:azure-eventhubs-sink", "kamelet:azure-eventhubs-source", "kamelet:azure-functions-sink", "kamelet:azure-servicebus-sink", "kamelet:azure-servicebus-source", "kamelet:azure-storage-blob-append-sink", "kamelet:azure-storage-blob-changefeed-source", "kamelet:azure-storage-blob-event-based-source", "kamelet:azure-storage-blob-sink", "kamelet:azure-storage-blob-source", "kamelet:azure-storage-datalake-sink", "kamelet:azure-storage-datalake-source", "kamelet:azure-storage-files-sink", "kamelet:azure-storage-files-source", "kamelet:azure-storage-queue-sink", "kamelet:azure-storage-queue-source", "kamelet:bitcoin-source", "kamelet:caffeine-action", "kamelet:cassandra-sink", "kamelet:cassandra-source", "kamelet:ceph-event-based-source", "kamelet:ceph-sink", "kamelet:ceph-source", "kamelet:chuck-norris-source", "kamelet:chunk-template-action", "kamelet:couchbase-sink", "kamelet:couchbase-source", "kamelet:counter-source", "kamelet:cron-source", "kamelet:crypto-decrypt-action", "kamelet:crypto-encrypt-action", "kamelet:data-type-action", "kamelet:databricks-sink", "kamelet:databricks-source", "kamelet:delay-action", "kamelet:djl-image-to-text-action", "kamelet:dns-dig-action", "kamelet:dns-ip-action", "kamelet:dns-lookup-action", "kamelet:docling-convert-action", "kamelet:drop-field-action", "kamelet:drop-header-action", "kamelet:drop-headers-action", "kamelet:dropbox-sink", "kamelet:dropbox-source", "kamelet:earthquake-source", "kamelet:elasticsearch-index-sink", "kamelet:elasticsearch-search-source", "kamelet:exec-sink", "kamelet:extract-field-action", "kamelet:fhir-sink", "kamelet:fhir-source", "kamelet:file-watch-source", "kamelet:freemarker-template-action", "kamelet:ftp-sink", "kamelet:ftp-source", "kamelet:ftps-sink", "kamelet:ftps-source", "kamelet:github-commit-source", "kamelet:github-event-source", "kamelet:github-pullrequest-comment-source", "kamelet:github-pullrequest-source", "kamelet:github-tag-source", "kamelet:google-bigquery-sink", "kamelet:google-calendar-source", "kamelet:google-functions-sink", "kamelet:google-mail-source", "kamelet:google-pubsub-sink", "kamelet:google-pubsub-source", "kamelet:google-sheets-sink", "kamelet:google-sheets-source", "kamelet:google-storage-event-based-source", "kamelet:google-storage-sink", "kamelet:google-storage-source", "kamelet:google-vertexai-sink", "kamelet:graphql-sink", "kamelet:has-header-filter-action", "kamelet:header-matches-filter-action", "kamelet:hoist-field-action", "kamelet:http-secured-sink", "kamelet:http-secured-source", "kamelet:http-sink", "kamelet:http-source", "kamelet:ibm-cos-sink", "kamelet:ibm-cos-source", "kamelet:ibm-watson-language-sink", "kamelet:infinispan-sink", "kamelet:infinispan-source", "kamelet:insert-field-action", "kamelet:insert-header-action", "kamelet:is-tombstone-filter-action", "kamelet:jira-add-comment-sink", "kamelet:jira-add-issue-sink", "kamelet:jira-oauth-source", "kamelet:jira-source", "kamelet:jira-transition-issue-sink", "kamelet:jira-update-issue-sink", "kamelet:jms-amqp-10-sink", "kamelet:jms-amqp-10-source", "kamelet:jms-apache-artemis-sink", "kamelet:jms-apache-artemis-source", "kamelet:jms-ibm-mq-sink", "kamelet:jms-ibm-mq-source", "kamelet:jms-pooled-apache-artemis-sink", "kamelet:jms-pooled-apache-artemis-source", "kamelet:jolt-transformation-action", "kamelet:jslt-action", "kamelet:json-deserialize-action", "kamelet:json-patch-action", "kamelet:json-schema-validator-action", "kamelet:json-serialize-action", "kamelet:jsonata-action", "kamelet:kafka-apicurio-registry-not-secured-sink", "kamelet:kafka-apicurio-registry-not-secured-source", "kamelet:kafka-azure-schema-registry-sink", "kamelet:kafka-azure-schema-registry-source", "kamelet:kafka-batch-apicurio-registry-not-secured-source", "kamelet:kafka-batch-apicurio-registry-source", "kamelet:kafka-batch-azure-schema-registry-source", "kamelet:kafka-batch-manual-commit-action", "kamelet:kafka-batch-source", "kamelet:kafka-manual-commit-action", "kamelet:kafka-not-secured-apicurio-registry-json-source", "kamelet:kafka-not-secured-apicurio-registry-sink", "kamelet:kafka-not-secured-apicurio-registry-source", "kamelet:kafka-sink", "kamelet:kafka-source", "kamelet:kubernetes-namespaces-source", "kamelet:kubernetes-nodes-source", "kamelet:kubernetes-pods-source", "kamelet:langchain4j-ingest-file-source", "kamelet:langchain4j-ingest-sink", "kamelet:log-action", "kamelet:log-sink", "kamelet:mail-imap-source", "kamelet:mail-sink", "kamelet:mariadb-sink", "kamelet:mariadb-source", "kamelet:mask-field-action", "kamelet:message-timestamp-router-action", "kamelet:minio-sink", "kamelet:minio-source", "kamelet:mongodb-changes-stream-source", "kamelet:mongodb-sink", "kamelet:mongodb-source", "kamelet:mqtt-sink", "kamelet:mqtt-source", "kamelet:mqtt5-sink", "kamelet:mqtt5-source", "kamelet:ms-exchange-online-imap-oauth-source", "kamelet:mustache-template-action", "kamelet:mvel-template-action", "kamelet:mysql-sink", "kamelet:mysql-source", "kamelet:nats-sink", "kamelet:nats-source", "kamelet:nominatim-geocode-action", "kamelet:ogcapi-features-action", "kamelet:opensearch-index-sink", "kamelet:opensearch-search-source", "kamelet:oracle-database-sink", "kamelet:oracle-database-source", "kamelet:pdf-action", "kamelet:postgresql-sink", "kamelet:postgresql-source", "kamelet:pqc-kem-action", "kamelet:pqc-signature-action", "kamelet:predicate-filter-action", "kamelet:protobuf-deserialize-action", "kamelet:protobuf-serialize-action", "kamelet:pulsar-sink", "kamelet:pulsar-source", "kamelet:redis-sink", "kamelet:redis-source", "kamelet:regex-router-action", "kamelet:replace-field-action", "kamelet:resolve-pojo-schema-action", "kamelet:rest-openapi-sink", "kamelet:salesforce-composite-upsert-sink", "kamelet:salesforce-create-sink", "kamelet:salesforce-delete-sink", "kamelet:salesforce-pubsub-source", "kamelet:salesforce-source", "kamelet:salesforce-update-sink", "kamelet:sap-netweaver-sink", "kamelet:scp-sink", "kamelet:set-body-action", "kamelet:set-kafka-key-action", "kamelet:sftp-sink", "kamelet:sftp-source", "kamelet:simple-filter-action", "kamelet:slack-sink", "kamelet:slack-source", "kamelet:smpp-sink", "kamelet:smpp-source", "kamelet:snmp-source", "kamelet:snowflake-sink", "kamelet:snowflake-source", "kamelet:solr-sink", "kamelet:solr-source", "kamelet:splunk-hec-sink", "kamelet:splunk-sink", "kamelet:splunk-source", "kamelet:spring-rabbitmq-sink", "kamelet:spring-rabbitmq-source", "kamelet:sqlserver-sink", "kamelet:sqlserver-source", "kamelet:ssh-sink", "kamelet:ssh-source", "kamelet:string-template-action", "kamelet:telegram-sink", "kamelet:telegram-source", "kamelet:throttle-action", "kamelet:tika-extract-text-action", "kamelet:timer-source", "kamelet:timestamp-router-action", "kamelet:topic-name-matches-filter-action", "kamelet:twitter-directmessage-source", "kamelet:twitter-search-source", "kamelet:twitter-timeline-source", "kamelet:value-to-key-action", "kamelet:velocity-template-action", "kamelet:webhook-source", "kamelet:wttrin-source", "kamelet:xj-identity-action", "kamelet:xj-template-action" ]
+    "dependsOn" : [ "kamelet:avro-deserialize-action", "kamelet:avro-serialize-action", "kamelet:aws-bedrock-agent-runtime-sink", "kamelet:aws-bedrock-agent-sink", "kamelet:aws-bedrock-text-sink", "kamelet:aws-cloudtrail-source", "kamelet:aws-cloudwatch-sink", "kamelet:aws-comprehend-sink", "kamelet:aws-ddb-sink", "kamelet:aws-ddb-streams-source", "kamelet:aws-ec2-sink", "kamelet:aws-eventbridge-sink", "kamelet:aws-kinesis-firehose-sink", "kamelet:aws-kinesis-sink", "kamelet:aws-kinesis-source", "kamelet:aws-lambda-sink", "kamelet:aws-polly-sink", "kamelet:aws-redshift-sink", "kamelet:aws-redshift-source", "kamelet:aws-s3-event-based-source", "kamelet:aws-s3-sink", "kamelet:aws-s3-source", "kamelet:aws-s3-streaming-upload-sink", "kamelet:aws-secrets-manager-sink", "kamelet:aws-ses-sink", "kamelet:aws-sns-fifo-sink", "kamelet:aws-sns-sink", "kamelet:aws-sqs-batch-sink", "kamelet:aws-sqs-fifo-sink", "kamelet:aws-sqs-sink", "kamelet:aws-sqs-source", "kamelet:aws-sts-assume-role-action", "kamelet:aws-timestream-query-sink", "kamelet:aws-translate-action", "kamelet:azure-cosmosdb-sink", "kamelet:azure-cosmosdb-source", "kamelet:azure-eventhubs-sink", "kamelet:azure-eventhubs-source", "kamelet:azure-functions-sink", "kamelet:azure-servicebus-sink", "kamelet:azure-servicebus-source", "kamelet:azure-storage-blob-append-sink", "kamelet:azure-storage-blob-changefeed-source", "kamelet:azure-storage-blob-event-based-source", "kamelet:azure-storage-blob-sink", "kamelet:azure-storage-blob-source", "kamelet:azure-storage-datalake-sink", "kamelet:azure-storage-datalake-source", "kamelet:azure-storage-files-sink", "kamelet:azure-storage-files-source", "kamelet:azure-storage-queue-sink", "kamelet:azure-storage-queue-source", "kamelet:bitcoin-source", "kamelet:caffeine-action", "kamelet:cassandra-sink", "kamelet:cassandra-source", "kamelet:ceph-event-based-source", "kamelet:ceph-sink", "kamelet:ceph-source", "kamelet:chuck-norris-source", "kamelet:chunk-template-action", "kamelet:couchbase-sink", "kamelet:couchbase-source", "kamelet:counter-source", "kamelet:cron-source", "kamelet:crypto-decrypt-action", "kamelet:crypto-encrypt-action", "kamelet:data-type-action", "kamelet:databricks-sink", "kamelet:databricks-source", "kamelet:delay-action", "kamelet:djl-image-to-text-action", "kamelet:dns-dig-action", "kamelet:dns-ip-action", "kamelet:dns-lookup-action", "kamelet:docling-convert-action", "kamelet:drop-field-action", "kamelet:drop-header-action", "kamelet:drop-headers-action", "kamelet:dropbox-sink", "kamelet:dropbox-source", "kamelet:earthquake-source", "kamelet:elasticsearch-index-sink", "kamelet:elasticsearch-search-source", "kamelet:exec-sink", "kamelet:extract-field-action", "kamelet:fhir-sink", "kamelet:fhir-source", "kamelet:file-watch-source", "kamelet:freemarker-template-action", "kamelet:ftp-sink", "kamelet:ftp-source", "kamelet:ftps-sink", "kamelet:ftps-source", "kamelet:github-commit-source", "kamelet:github-event-source", "kamelet:github-pullrequest-comment-source", "kamelet:github-pullrequest-source", "kamelet:github-tag-source", "kamelet:google-bigquery-sink", "kamelet:google-calendar-source", "kamelet:google-functions-sink", "kamelet:google-mail-source", "kamelet:google-pubsub-sink", "kamelet:google-pubsub-source", "kamelet:google-sheets-sink", "kamelet:google-sheets-source", "kamelet:google-storage-event-based-source", "kamelet:google-storage-sink", "kamelet:google-storage-source", "kamelet:google-vertexai-sink", "kamelet:graphql-sink", "kamelet:has-header-filter-action", "kamelet:header-matches-filter-action", "kamelet:hoist-field-action", "kamelet:http-secured-sink", "kamelet:http-secured-source", "kamelet:http-sink", "kamelet:http-source", "kamelet:ibm-cos-sink", "kamelet:ibm-cos-source", "kamelet:ibm-watson-language-sink", "kamelet:infinispan-sink", "kamelet:infinispan-source", "kamelet:insert-field-action", "kamelet:insert-header-action", "kamelet:is-tombstone-filter-action", "kamelet:jira-add-comment-sink", "kamelet:jira-add-issue-sink", "kamelet:jira-oauth-source", "kamelet:jira-source", "kamelet:jira-transition-issue-sink", "kamelet:jira-update-issue-sink", "kamelet:jms-amqp-10-sink", "kamelet:jms-amqp-10-source", "kamelet:jms-apache-artemis-sink", "kamelet:jms-apache-artemis-source", "kamelet:jms-ibm-mq-sink", "kamelet:jms-ibm-mq-source", "kamelet:jms-pooled-apache-artemis-sink", "kamelet:jms-pooled-apache-artemis-source", "kamelet:jolt-transformation-action", "kamelet:jslt-action", "kamelet:json-deserialize-action", "kamelet:json-schema-validator-action", "kamelet:json-serialize-action", "kamelet:jsonata-action", "kamelet:kafka-apicurio-registry-not-secured-sink", "kamelet:kafka-apicurio-registry-not-secured-source", "kamelet:kafka-azure-schema-registry-sink", "kamelet:kafka-azure-schema-registry-source", "kamelet:kafka-batch-apicurio-registry-not-secured-source", "kamelet:kafka-batch-apicurio-registry-source", "kamelet:kafka-batch-azure-schema-registry-source", "kamelet:kafka-batch-manual-commit-action", "kamelet:kafka-batch-source", "kamelet:kafka-manual-commit-action", "kamelet:kafka-not-secured-apicurio-registry-json-source", "kamelet:kafka-not-secured-apicurio-registry-sink", "kamelet:kafka-not-secured-apicurio-registry-source", "kamelet:kafka-sink", "kamelet:kafka-source", "kamelet:kubernetes-namespaces-source", "kamelet:kubernetes-nodes-source", "kamelet:kubernetes-pods-source", "kamelet:langchain4j-ingest-file-source", "kamelet:langchain4j-ingest-sink", "kamelet:log-action", "kamelet:log-sink", "kamelet:mail-imap-source", "kamelet:mail-sink", "kamelet:mariadb-sink", "kamelet:mariadb-source", "kamelet:mask-field-action", "kamelet:message-timestamp-router-action", "kamelet:minio-sink", "kamelet:minio-source", "kamelet:mongodb-changes-stream-source", "kamelet:mongodb-sink", "kamelet:mongodb-source", "kamelet:mqtt-sink", "kamelet:mqtt-source", "kamelet:mqtt5-sink", "kamelet:mqtt5-source", "kamelet:ms-exchange-online-imap-oauth-source", "kamelet:mustache-template-action", "kamelet:mvel-template-action", "kamelet:mysql-sink", "kamelet:mysql-source", "kamelet:nats-sink", "kamelet:nats-source", "kamelet:nominatim-geocode-action", "kamelet:ogcapi-features-action", "kamelet:opensearch-index-sink", "kamelet:opensearch-search-source", "kamelet:oracle-database-sink", "kamelet:oracle-database-source", "kamelet:pdf-action", "kamelet:postgresql-sink", "kamelet:postgresql-source", "kamelet:pqc-kem-action", "kamelet:pqc-signature-action", "kamelet:predicate-filter-action", "kamelet:protobuf-deserialize-action", "kamelet:protobuf-serialize-action", "kamelet:pulsar-sink", "kamelet:pulsar-source", "kamelet:redis-sink", "kamelet:redis-source", "kamelet:regex-router-action", "kamelet:replace-field-action", "kamelet:resolve-pojo-schema-action", "kamelet:rest-openapi-sink", "kamelet:salesforce-composite-upsert-sink", "kamelet:salesforce-create-sink", "kamelet:salesforce-delete-sink", "kamelet:salesforce-pubsub-source", "kamelet:salesforce-source", "kamelet:salesforce-update-sink", "kamelet:sap-netweaver-sink", "kamelet:scp-sink", "kamelet:set-body-action", "kamelet:set-kafka-key-action", "kamelet:sftp-sink", "kamelet:sftp-source", "kamelet:simple-filter-action", "kamelet:slack-sink", "kamelet:slack-source", "kamelet:smpp-sink", "kamelet:smpp-source", "kamelet:snmp-source", "kamelet:snowflake-sink", "kamelet:snowflake-source", "kamelet:solr-sink", "kamelet:solr-source", "kamelet:splunk-hec-sink", "kamelet:spring-rabbitmq-sink", "kamelet:spring-rabbitmq-source", "kamelet:sqlserver-sink", "kamelet:sqlserver-source", "kamelet:ssh-sink", "kamelet:ssh-source", "kamelet:string-template-action", "kamelet:telegram-sink", "kamelet:telegram-source", "kamelet:throttle-action", "kamelet:tika-extract-text-action", "kamelet:timer-source", "kamelet:timestamp-router-action", "kamelet:topic-name-matches-filter-action", "kamelet:twitter-directmessage-source", "kamelet:twitter-search-source", "kamelet:twitter-timeline-source", "kamelet:value-to-key-action", "kamelet:velocity-template-action", "kamelet:webhook-source", "kamelet:wttrin-source", "kamelet:xj-identity-action", "kamelet:xj-template-action" ]
   }, {
     "ref" : "kamelet:avro-deserialize-action",
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-core@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-jackson-avro@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT" ]
@@ -3153,9 +3116,6 @@
     "ref" : "kamelet:json-deserialize-action",
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-core@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-jackson@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT" ]
   }, {
-    "ref" : "kamelet:json-patch-action",
-    "dependsOn" : [ "pkg:maven/org.apache.camel/camel-json-patch@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT" ]
-  }, {
     "ref" : "kamelet:json-schema-validator-action",
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-json-validator@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT" ]
   }, {
@@ -3431,12 +3391,6 @@
   }, {
     "ref" : "kamelet:splunk-hec-sink",
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-core@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-splunk-hec@4.23.0-SNAPSHOT" ]
-  }, {
-    "ref" : "kamelet:splunk-sink",
-    "dependsOn" : [ "pkg:maven/org.apache.camel/camel-core@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-splunk@4.23.0-SNAPSHOT" ]
-  }, {
-    "ref" : "kamelet:splunk-source",
-    "dependsOn" : [ "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-joda@2.12.5", "pkg:maven/org.apache.camel/camel-core@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-jackson@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-splunk@4.23.0-SNAPSHOT" ]
   }, {
     "ref" : "kamelet:spring-rabbitmq-sink",
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-kamelet@4.23.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-spring-rabbitmq@4.23.0-SNAPSHOT" ]
@@ -3759,9 +3713,6 @@
     "ref" : "pkg:maven/org.apache.camel/camel-jslt@4.23.0-SNAPSHOT",
     "dependsOn" : [ ]
   }, {
-    "ref" : "pkg:maven/org.apache.camel/camel-json-patch@4.23.0-SNAPSHOT",
-    "dependsOn" : [ ]
-  }, {
     "ref" : "pkg:maven/org.apache.camel/camel-json-validator@4.23.0-SNAPSHOT",
     "dependsOn" : [ ]
   }, {
@@ -3853,9 +3804,6 @@
     "dependsOn" : [ ]
   }, {
     "ref" : "pkg:maven/org.apache.camel/camel-splunk-hec@4.23.0-SNAPSHOT",
-    "dependsOn" : [ ]
-  }, {
-    "ref" : "pkg:maven/org.apache.camel/camel-splunk@4.23.0-SNAPSHOT",
     "dependsOn" : [ ]
   }, {
     "ref" : "pkg:maven/org.apache.camel/camel-spring-rabbitmq@4.23.0-SNAPSHOT",

@@ -284,8 +284,6 @@ public class KameletsCatalogTest {
         verifyHeaders("google-sheets-sink", 5);
         verifyHeaders("aws-ddb-sink", 2);
         verifyHeaders("splunk-hec-sink", 1);
-        verifyHeaders("splunk-sink", 0);
-        verifyHeaders("splunk-source", 0);
         verifyHeaders("sqlserver-sink", 9);
         verifyHeaders("sqlserver-source", 0);
         verifyHeaders("ssh-sink", 4);
