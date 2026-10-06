@@ -121,8 +121,8 @@ spec:
                                 uri: google-storage
                                 parameters:
                                   bucketName: "{{bucketNameOrArn}}"
-                                  serviceAccountKey: "base64:{{serviceAccountKey}}"
-                                  operation: getObject
                                   objectName: "${exchangeProperty.google-storage-object-id}"
+                                  operation: getObject
+                                  serviceAccountKey: "base64:{{serviceAccountKey}}"
         - to:
             uri: kamelet:sink

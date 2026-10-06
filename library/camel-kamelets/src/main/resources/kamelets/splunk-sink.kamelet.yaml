@@ -107,14 +107,14 @@ spec:
             uri: splunk
             parameters:
               name: "{{mode}}"
-              host: "{{serverHostname}}"
-              port: "{{serverPort}}"
-              username: "{{username}}"
-              password: "{{password}}"
-              source: "{{?source}}"
-              sourceType: "{{?sourceType}}"
-              scheme: "{{?protocol}}"
-              index: "{{?index}}"
               app: "{{?app}}"
               connectionTimeout: "{{?connectionTimeout}}"
+              host: "{{serverHostname}}"
+              index: "{{?index}}"
+              password: "RAW({{password}})"
+              port: "{{serverPort}}"
               raw: true
+              scheme: "{{?protocol}}"
+              source: "{{?source}}"
+              sourceType: "{{?sourceType}}"
+              username: "RAW({{username}})"

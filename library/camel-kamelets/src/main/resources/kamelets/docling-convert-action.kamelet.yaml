@@ -69,6 +69,7 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        # captured before the conversion, so a document cannot forge its own identity
         - setProperty:
             name: CamelLangChain4jIngestDocumentId
             expression:

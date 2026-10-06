@@ -112,6 +112,12 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        # Strip the camel-aws-bedrock-agent header family up-front, before the
+        # endpoint below is reached: the operation, knowledge base and data source
+        # are all pinned by the properties above, and every one of them is
+        # overridable by an inbound CamelAwsBedrockAgent* header. The ingestion job
+        # id is the one input this Kamelet deliberately takes from the message, so
+        # it is excluded. A pattern also covers keys the component may add later.
         - removeHeaders:
             pattern: CamelAwsBedrockAgent*
             excludePattern: CamelAwsBedrockAgentIngestionJobId

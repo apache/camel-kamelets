@@ -132,24 +132,24 @@ spec:
       uri: splunk
       parameters:
         name: normal
-        host: "{{serverHostname}}"
-        port: "{{serverPort}}"
-        username: "{{username}}"
-        password: "{{password}}"
-        index: "{{?index}}"
-        scheme: "{{?protocol}}"
-        source: "{{?source}}"
-        sourceType: "{{?sourceType}}"
         app: "{{?app}}"
         connectionTimeout: "{{?connectionTimeout}}"
         count: "{{?count}}"
-        repeatCount: "{{?repeat}}"
         delay: "{{?delay}}"
-        search: "{{?query}}"
         earliestTime: "{{?earliestTime}}"
+        host: "{{serverHostname}}"
+        index: "{{?index}}"
         initEarliestTime: "{{initEarliestTime}}"
         latestTime: "{{?latestTime}}"
+        password: "RAW({{password}})"
+        port: "{{serverPort}}"
         raw: true
+        repeatCount: "{{?repeat}}"
+        scheme: "{{?protocol}}"
+        search: "{{?query}}"
+        source: "{{?source}}"
+        sourceType: "{{?sourceType}}"
+        username: "RAW({{username}})"
       steps:
         - marshal:
             json:

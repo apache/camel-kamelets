@@ -100,8 +100,8 @@ spec:
             parameters:
               httpUri: earthquake.usgs.gov/fdsnws/event/1/query
               format: geojson
-              updatedafter: "${exchangeProperty.lastUpdate}"
               orderby: time-asc
+              updatedafter: "${exchangeProperty.lastUpdate}"
         - removeHeader:
             name: CamelHttpMethod
         - unmarshal:

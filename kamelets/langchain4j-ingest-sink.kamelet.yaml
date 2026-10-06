@@ -130,6 +130,9 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        # the endpoint itself resolves the id - the exchange property (set pre-parse by the
+        # parser actions) wins over the header, so no re-capture happens here: reading the
+        # header after a parse could hand a crafted document its own identity
         - to:
             uri: langchain4j-ingest
             parameters:

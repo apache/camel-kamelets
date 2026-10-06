@@ -121,4 +121,13 @@ spec:
               constant:
                 expression: "{{method}}"
         - to:
-            uri: "{{url}}?authMethod={{?authMethod}}&authUsername={{?authUsername}}&authPassword={{?authPassword}}&oauth2ClientId={{?oauth2ClientId}}&oauth2ClientSecret={{?oauth2ClientSecret}}&oauth2Scope={{?oauth2Scope}}&oauth2TokenEndpoint={{?oauth2TokenEndpoint}}&authenticationPreemptive={{authenticationPreemptive}}"
+            uri: "{{url}}"
+            parameters:
+              authMethod: "{{?authMethod}}"
+              authUsername: "{{?authUsername}}"
+              authPassword: "{{?authPassword}}"
+              oauth2ClientId: "{{?oauth2ClientId}}"
+              oauth2ClientSecret: "{{?oauth2ClientSecret}}"
+              oauth2Scope: "{{?oauth2Scope}}"
+              oauth2TokenEndpoint: "{{?oauth2TokenEndpoint}}"
+              authenticationPreemptive: "{{authenticationPreemptive}}"

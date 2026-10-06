@@ -176,9 +176,9 @@ spec:
                                   azureClientId: "RAW({{?clientId}})"
                                   azureClientSecret: "RAW({{?clientSecret}})"
                                   azureTenantId: "RAW({{?tenantId}})"
-                                  operation: getBlob
                                   blobName: "${exchangeProperty.azure-storage-blob-blob-name}"
                                   credentialType: "{{credentialType}}"
+                                  operation: getBlob
         - to:
             uri: kamelet:sink
 

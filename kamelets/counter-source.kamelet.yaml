@@ -61,6 +61,11 @@ spec:
         period: "{{period}}"
         repeatCount: "{{?numbers}}"
       steps:
+        # The counter is held in a route scoped variable rather than an
+        # AtomicInteger bean. A template bean is registered under a generated
+        # name, which resolves through {{counter}} inside the template but is not
+        # addressable from a programmatically built registry, so the bean form
+        # could not be used outside Camel K and JBang. See #2771.
         - choice:
             when:
               - expression:

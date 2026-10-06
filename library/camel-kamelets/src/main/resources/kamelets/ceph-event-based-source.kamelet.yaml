@@ -123,6 +123,11 @@ spec:
         saslPassword: "RAW({{?saslPassword}})"
         saslUsername: "{{?saslUsername}}"
       steps:
+        # Ceph extension fields, surfaced as headers so a consumer does not have
+        # to re-parse the body for them. Named the way the catalog names source
+        # output headers -- a plain form plus a CloudEvents one, as
+        # infinispan-source and ftp-source do. s3.bucket.id is deliberately not
+        # surfaced: it is an internal Ceph id useful only for debugging.
         - setHeader:
             name: ceph-event-id
             expression:
@@ -163,6 +168,9 @@ spec:
             expression:
               simple:
                 expression: "${header[ceph-object-tags]}"
+        # Ceph emits the classic S3 notification envelope -- a Records array --
+        # not the EventBridge shape that aws-s3-event-based-source parses, so the
+        # paths below are Records based on purpose.
         - choice:
             precondition: true
             when:

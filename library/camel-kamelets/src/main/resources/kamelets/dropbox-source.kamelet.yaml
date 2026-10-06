@@ -108,7 +108,7 @@ spec:
                   uri: dropbox
                   parameters:
                     operation: get
-                    accessToken: "{{accessToken}}"
+                    accessToken: "RAW({{accessToken}})"
                     clientIdentifier: "{{clientIdentifier}}"
                     remotePath: "${exchangeProperty.dropboxFileName}"
               - to:
@@ -123,7 +123,7 @@ spec:
                             uri: dropbox
                             parameters:
                               operation: del
-                              accessToken: "{{accessToken}}"
+                              accessToken: "RAW({{accessToken}})"
                               clientIdentifier: "{{clientIdentifier}}"
                               remotePath: "${exchangeProperty.dropboxFileName}"
 

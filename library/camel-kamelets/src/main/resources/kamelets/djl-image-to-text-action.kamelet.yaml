@@ -67,6 +67,11 @@ spec:
                   parameters:
                     application: cv/image_classification
                     artifactId: resnet
+              # The output from the image classification model is classified
+              # as one of 1000 labels from WordNet.
+              # Since it's too fine-grained, we want to find the higher-level
+              # group (= hypernym) for the classification using the WordNet
+              # dictionary.
               - bean:
                   ref: "{{imageNetUtil}}"
                   method: extractClassName

@@ -84,6 +84,10 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        # The component reads the command from CamelNetWeaverCommand as a mandatory
+        # header and turns it into the request path, so it is set here from the
+        # pinned property. Setting it also overwrites any inbound value, which is
+        # what keeps a caller from choosing the request path.
         - setHeader:
             name: CamelNetWeaverCommand
             expression:

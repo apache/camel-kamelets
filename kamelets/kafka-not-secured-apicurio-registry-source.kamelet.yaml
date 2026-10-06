@@ -168,6 +168,11 @@ spec:
       steps:
         - process:
             ref: "{{kafkaHeaderDeserializer}}"
+        # Kafka record metadata, surfaced under names that are not Camel
+        # internals, so a downstream consumer does not have to depend on the
+        # CamelKafka* headers. Plain form plus a CloudEvents one, as
+        # infinispan-source and ftp-source do. The CamelKafka* headers are left
+        # in place, so existing consumers are unaffected.
         - setHeader:
             name: kafka-topic
             expression:

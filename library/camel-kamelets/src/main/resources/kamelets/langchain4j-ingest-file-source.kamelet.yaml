@@ -102,6 +102,7 @@ spec:
         charset: "{{?charset}}"
         delay: "{{?delay}}"
         idempotent: true
+        # an edited file gets a new key and re-ingests
         idempotentKey: "${file:absolute.path}:${file:modified}:${file:size}"
         idempotentRepository: "{{?idempotentRepository}}"
         noop: true
