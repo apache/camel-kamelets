@@ -127,7 +127,6 @@ spec:
   dependencies:
     - "camel:azure-storage-queue"
     - "camel:kamelet"
-    - "camel:core"
   template:
     from:
       uri: "azure-storage-queue://{{accountName}}/{{queueName}}?accessKey=RAW({{accessKey}})&credentialType={{credentialType}}&maxMessages={{maxMessages}}"
