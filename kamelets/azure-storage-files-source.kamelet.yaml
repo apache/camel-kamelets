@@ -166,7 +166,6 @@ spec:
   dependencies:
     - "camel:azure-files"
     - "camel:kamelet"
-    - "camel:core"
   template:
     from:
       uri: "azure-files:{{accountName}}/{{shareName}}/{{directoryName}}?credentialType={{credentialType}}&delay={{delay}}&delete={{deleteAfterRead}}&recursive={{recursive}}&sharedKey=RAW({{?sharedKey}})"
