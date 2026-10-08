@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Remove camel:core from the Kamelet dependencies: every Camel runtime has it [\#3096](https://github.com/apache/camel-kamelets/issues/3096)
 - Remove splunk-sink, splunk-source and json-patch-action for 4.23.0: Camel removed camel-splunk and camel-json-patch [\#3092](https://github.com/apache/camel-kamelets/issues/3092)
 - PQC Kamelets declare camel:http instead of camel:pqc [\#3073](https://github.com/apache/camel-kamelets/issues/3073)
 - pqc-signature-action: drop PICNIC and fix the malformed MLDSA enum value [\#3070](https://github.com/apache/camel-kamelets/issues/3070)
