@@ -1,0 +1,78 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: parser-max-size-stream-route-test
+actions:
+  # drain any request a previous test may have left on the shared server
+  - purge:
+      endpoints:
+        - name: "httpServer"
+      timeout: 100
+  - createVariables:
+      variables:
+        - name: "report.url"
+          value: "http://localhost:${http.server.port}/result/parser-size-stream"
+
+  # stream caching off: the actions see raw streams, not cached ones
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          args:
+            - "--max-seconds=60"
+          integration:
+            file: "langchain4j-ingest/parser-max-size-stream-route.yaml"
+            systemProperties:
+              properties:
+                - name: "report.url"
+                  value: "${report.url}"
+                - name: "camel.main.streamCachingEnabled"
+                  value: "false"
+
+  # under the cap: the whole stream reaches the parser
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/parser-size-stream"
+          type: "plaintext"
+          body:
+            data: "@contains('parsed: Short text.')@"
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # over the cap: rejected, the size measured once and reported right
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/parser-size-stream"
+          type: "plaintext"
+          body:
+            data: "@matches('rejected: Document .long.txt. exceeds maxDocumentSize .100 > 40 bytes.')@"
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

@@ -1,0 +1,84 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+# maxDocumentSize on the parser actions: the cap is checked before the parse or conversion.
+# One route feeds three documents in turn, each report waiting for the test's answer, so
+# the order is fixed: a short text through Tika under the cap, an oversized payload through
+# Docling (pointed at the test's HTTP server, so a payload leaking past the cap would show up
+# there as a conversion request), and an oversized file through the file source and Tika.
+- route:
+    id: parser-max-size-route
+    from:
+      uri: "timer:size"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "Short text."
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            constant: "short.txt"
+        - doTry:
+            steps:
+              - to: "kamelet:tika-extract-text-action?maxDocumentSize=40"
+              - setBody:
+                  simple: "parsed: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}"
+        - to: "{{report.url}}"
+        # 100 bytes, over the cap of 40
+        - setBody:
+            constant: "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            constant: "long.pdf"
+        - doTry:
+            steps:
+              - to: "kamelet:docling-convert-action?maxDocumentSize=40&useDoclingServe=true&doclingServeUrl={{docling.serve.url}}"
+              - setBody:
+                  simple: "converted: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}"
+        - to: "{{report.url}}"
+        - setBody:
+            constant: "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
+        - to: "file:{{ingest.dir}}?fileName=big.txt"
+- route:
+    id: parser-max-size-file-route
+    from:
+      uri: "kamelet:langchain4j-ingest-file-source?directory={{ingest.dir}}"
+      steps:
+        - doTry:
+            steps:
+              - to: "kamelet:tika-extract-text-action?maxDocumentSize=40"
+              - setBody:
+                  simple: "parsed: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}"
+        - to: "{{report.url}}"
