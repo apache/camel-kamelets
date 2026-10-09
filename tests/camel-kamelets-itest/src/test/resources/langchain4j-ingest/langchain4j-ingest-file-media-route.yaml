@@ -1,0 +1,68 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+# The media composition: the file source feeds the sink with modality=media. The seed
+# route writes the eight-byte PNG signature, whose first byte is invalid UTF-8, under a
+# name without extension; the source delivers it raw (charset unset, its default), only
+# the forwarded contentType can type it, and the stub model fails unless the bytes arrive
+# unchanged - a charset conversion anywhere on the way fails the test instead of passing.
+- beans:
+    - name: store
+      type: dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore
+    # an in-process stub accepting images only, so the media path is the only one that can succeed;
+    # it keys doEmbed, the extension point the default embed(request) delegates to
+    - name: model
+      type: dev.langchain4j.model.embedding.EmbeddingModel
+      scriptLanguage: groovy
+      script: |
+        def expected = "iVBORw0KGgo=" // base64 of the PNG signature 89 50 4E 47 0D 0A 1A 0A
+        return [
+            supportedContentTypes: {
+                [dev.langchain4j.data.message.ContentType.IMAGE] as Set
+            },
+            doEmbed: { request ->
+                def image = request.inputs()[0].contents()
+                    .find { it instanceof dev.langchain4j.data.message.ImageContent }
+                def received = image?.image()?.base64Data()
+                if (received != expected) {
+                    throw new IllegalStateException("model received " + received + ", expected " + expected)
+                }
+                dev.langchain4j.model.embedding.response.EmbeddingResponse.builder()
+                    .embeddings([dev.langchain4j.data.embedding.Embedding.from([1f, 0f, 0f, 1f] as float[])])
+                    .build()
+            }
+        ] as dev.langchain4j.model.embedding.EmbeddingModel
+- route:
+    id: seed-media
+    from:
+      uri: "timer:seed"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            groovy: "[0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A] as byte[]"
+        - to: "file:{{ingest.dir}}?fileName=img-42"
+- route:
+    id: langchain4j-ingest-file-media-route
+    from:
+      uri: "kamelet:langchain4j-ingest-file-source?directory={{ingest.dir}}"
+      steps:
+        - to: "kamelet:langchain4j-ingest-sink?modality=media&contentType=image/png&embeddingStore=#bean:store&embeddingModel=#bean:model"
+        - log: "INGEST ${body}"
+        - convertBodyTo:
+            type: "java.lang.String"
+        - to: "{{report.url}}"
