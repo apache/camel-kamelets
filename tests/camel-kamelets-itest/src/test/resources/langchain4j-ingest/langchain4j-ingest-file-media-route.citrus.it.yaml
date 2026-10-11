@@ -1,0 +1,68 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: langchain4j-ingest-file-media-route-test
+actions:
+  # drain any request a previous test may have left on the shared server
+  - purge:
+      endpoints:
+        - name: "httpServer"
+      timeout: 100
+  - createVariables:
+      variables:
+        - name: "report.url"
+          value: "http://localhost:${http.server.port}/result/file-media"
+        # a fresh directory per test run, see the file-source test
+        - name: "ingest.dir"
+          value: "ingest-media-citrus:randomNumber(5)"
+
+  # Run the file-source -> sink composition in media mode over a byte fixture under an id
+  # without extension; the sink's IngestResult is reported back to the test
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          args:
+            - "--dep=camel:groovy,camel:langchain4j-ingest"
+            - "--max-seconds=60"
+          integration:
+            file: "langchain4j-ingest/langchain4j-ingest-file-media-route.yaml"
+            systemProperties:
+              properties:
+                - name: "report.url"
+                  value: "${report.url}"
+                - name: "ingest.dir"
+                  value: "${ingest.dir}"
+
+  # one vector for the whole file, under the file name as the id; the stub model has
+  # already failed the exchange if the bytes did not arrive unchanged
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/file-media"
+          type: "plaintext"
+          body:
+            data: "@contains('documentId=img-42, segmentsWritten=1, outcome=INGESTED')@"
+
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
