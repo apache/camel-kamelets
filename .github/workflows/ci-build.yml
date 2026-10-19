@@ -59,7 +59,7 @@ jobs:
       uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
       with:
         distribution: 'temurin'
-        java-version: 17
+        java-version: 21
         cache: 'maven'
     - name: Build camel-kamelets
       run: ./mvnw -V -ntp clean install
@@ -87,7 +87,7 @@ jobs:
       uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
       with:
         distribution: 'temurin'
-        java-version: 17
+        java-version: 21
     - name: Deploy to ASF Snapshots Repository
       # Deploy both artifacts and sources (maybe required by Camel K)
       run: |
