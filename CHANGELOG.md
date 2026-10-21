@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.22.1...v4.23.0)
 
+**Breaking changes:**
+
+- Raise the minimal Java version from 17 to 21, following Camel core \(CAMEL-22996\): the Kamelet libraries are now built for Java 21 and can no longer be used with Java 17
+
 **Closed issues:**
 
 - Remove camel:core from the Kamelet dependencies: every Camel runtime has it [\#3096](https://github.com/apache/camel-kamelets/issues/3096)

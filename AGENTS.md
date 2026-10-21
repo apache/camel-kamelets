@@ -10,7 +10,7 @@ Camel, Camel K, Camel Quarkus and Camel Spring Boot.
 
 - Version: 4.20.0
 - Camel: 4.20.0
-- Java: 17+
+- Java: 21+
 - Build: Maven (`mvn verify`); Go is required for the `crds/` generator
 - Issue tracker: GitHub — https://github.com/apache/camel-kamelets/issues
 - Related repository: `apache/camel` (Camel core — the Kamelet **runtime**

@@ -56,12 +56,12 @@ jobs:
       uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
       with:
         distribution: 'temurin'
-        # 25 for the Camel JBang launcher the tests run (//JAVA 21+ since CAMEL-23112), linked into JBang below instead
-        # of downloaded (that download fails now and then); 17, listed last, stays the default for the Maven build and
-        # the Citrus tests. With the Camel apps on 21 JiraIT failed in every run; it passed when JBang downloaded 27
+        # 25 for the Camel JBang launcher the tests run, linked into JBang below instead of downloaded (that download
+        # fails now and then); 21, listed last, stays the default for the Maven build (the Java baseline) and the Citrus
+        # tests. With the Camel apps on 21 JiraIT failed in every run; it passed when JBang downloaded 27
         java-version: |
           25
-          17
+          21
         cache: 'maven'
     - name: Build Kamelet libraries
       run: |
