@@ -52,9 +52,9 @@ actions:
         fork: true
         GET:
           parameters:
-            - name: "kafka.TOPIC"
+            - name: "topic"
               value: "${kafka.topic}"
-            - name: "kafka.TIMESTAMP"
+            - name: "timestamp"
               value: "${timestamp}"
             - name: "message"
               value: "citrus:urlEncode(${kafka.message})"

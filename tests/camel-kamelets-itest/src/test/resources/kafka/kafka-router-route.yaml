@@ -26,8 +26,8 @@
             parameters:
               topicFormat: $[topic]_$[timestamp]
               timestampFormat: YYYY-MM-dd
-              timestampHeaderName: kafka.TIMESTAMP
-              topicHeaderName: kafka.TOPIC
+              timestampHeaderName: timestamp
+              topicHeaderName: topic
         - to:
             uri: "kamelet:set-body-action"
             parameters:
