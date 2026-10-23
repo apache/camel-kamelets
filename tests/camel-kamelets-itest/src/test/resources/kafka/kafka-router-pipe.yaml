@@ -35,8 +35,8 @@ spec:
       properties:
         topicFormat: $[topic]_$[timestamp]
         timestampFormat: YYYY-MM-dd
-        timestampHeaderName: kafka.TIMESTAMP
-        topicHeaderName: kafka.TOPIC
+        timestampHeaderName: timestamp
+        topicHeaderName: topic
     - ref:
         kind: Kamelet
         apiVersion: camel.apache.org/v1
