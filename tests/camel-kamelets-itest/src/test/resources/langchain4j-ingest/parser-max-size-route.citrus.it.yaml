@@ -74,7 +74,7 @@ actions:
           path: "/result/parser-size"
           type: "plaintext"
           body:
-            data: "@matches('rejected: Document .long.pdf. exceeds maxDocumentSize .100 > 40 bytes.')@"
+            data: "@matches('rejected: Document .long.pdf. exceeds maxDocumentSize .more than 40 bytes.')@"
   - http:
       server: "httpServer"
       sendResponse:
@@ -83,7 +83,177 @@ actions:
           reasonPhrase: "OK"
           version: "HTTP/1.1"
 
-  # a file over the cap: rejected before the parse
+  # a CamelFileLength header without the file it describes: not believed, the payload is measured
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/parser-size"
+          type: "plaintext"
+          body:
+            data: "@matches('rejected: Document .forged.txt. exceeds maxDocumentSize .more than 40 bytes.')@"
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # a polled file under the cap: sized by its header and parsed
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/parser-size"
+          type: "plaintext"
+          body:
+            data: "@contains('parsed: Short text.')@"
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # a polled file whose header puts it past 4 GiB: rejected by that size, the file not read
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/parser-size"
+          type: "plaintext"
+          body:
+            data: "@matches('rejected: Document .huge.pdf. exceeds maxDocumentSize .4294967306 > 40 bytes.')@"
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # a spooled cache under the cap: sized by its long length() and parsed
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/parser-size"
+          type: "plaintext"
+          body:
+            data: "@contains('parsed: Short text.')@"
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # a spooled cache past 4 GiB: rejected by its long length(), not wrapped to an int
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/parser-size"
+          type: "plaintext"
+          body:
+            data: "@matches('rejected: Document .huge.cache. exceeds maxDocumentSize .4294967306 > 40 bytes.')@"
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # a plain java.io.File under the cap: sized by its long length() and parsed
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/parser-size"
+          type: "plaintext"
+          body:
+            data: "@contains('parsed: Short text.')@"
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # a plain java.io.File past 4 GiB: rejected by its long length(), not read and counted in an
+  # int - by Tika, then by Docling
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/parser-size"
+          type: "plaintext"
+          body:
+            data: "@matches('rejected: Document .huge.file. exceeds maxDocumentSize .4294967306 > 40 bytes.')@"
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/parser-size"
+          type: "plaintext"
+          body:
+            data: "@matches('rejected: Document .huge-file.pdf. exceeds maxDocumentSize .4294967306 > 40 bytes.')@"
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # an uncached stream with caching on but off for the exchange: under the cap, parsed - not
+  # failed by stream-caching it on the side
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/parser-size"
+          type: "plaintext"
+          body:
+            data: "@contains('parsed: Short text.')@"
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # the same over the cap, through Docling: rejected by the cap
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/parser-size"
+          type: "plaintext"
+          body:
+            data: "@matches('rejected: Document .uncached.pdf. exceeds maxDocumentSize .more than 40 bytes.')@"
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # a file over the cap from the file source: rejected by the header the consumer set
   - http:
       server: "httpServer"
       receiveRequest:
