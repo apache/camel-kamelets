@@ -72,6 +72,7 @@ spec:
   dependencies:
     - "camel:docling"
     - "camel:kamelet"
+    - "camel:bean"
   template:
     from:
       uri: kamelet:source
@@ -86,7 +87,7 @@ spec:
         # the document, so an oversized one is rejected first. The precondition is evaluated
         # once, when the Kamelet is instantiated - only then does ${properties:maxDocumentSize:0}
         # see the parameter, at runtime it resolves to 0 - so the check must stay a
-        # precondition, and the comparison below uses {{maxDocumentSize}}
+        # precondition, and the comparisons below use {{maxDocumentSize}}
         - choice:
             precondition: true
             when:
@@ -94,26 +95,72 @@ spec:
                   simple:
                     expression: "${properties:maxDocumentSize:0} > 0"
                 steps:
-                  # length() reads a stream to its end and closes it, so a stream body that
-                  # stream caching (on by default) left uncached is read into bytes first; files,
-                  # byte arrays and cached streams are measured in place, without a copy
+                  # length() would read a stream to its end, so one that stream caching (on by
+                  # default) left uncached is read at most one byte past the cap, within the int
+                  # readNBytes takes, and closed: that byte rejects it below, else the bytes are
+                  # the document. The stream is held in a property: a variable is stream-cached,
+                  # which fails on an exchange that turned caching off for itself
                   - choice:
                       when:
                         - expression:
                             simple:
                               expression: "${body} is 'java.io.InputStream' && ${body} !is 'org.apache.camel.StreamCache'"
                           steps:
-                            - convertBodyTo:
-                                type: byte[]
+                            - setProperty:
+                                name: documentStream
+                                expression:
+                                  simple:
+                                    expression: "${body}"
+                            - setBody:
+                                expression:
+                                  simple:
+                                    expression: "${body.readNBytes(${min({{maxDocumentSize}},2147483646)}++)}"
+                            - script:
+                                expression:
+                                  simple:
+                                    expression: "${exchangeProperty.documentStream.close()}"
+                            - removeProperty:
+                                name: documentStream
+                  # a file is sized by the CamelFileLength header its consumer set, without a read;
+                  # the header is believed only next to that file, elsewhere it may be stale or
+                  # caller-supplied. A plain java.io.File, and a cache spooled to disk, the only one
+                  # past an int, are sized by their long length(). Other bodies are measured; a
+                  # capped stream's size is unknown
                   - choice:
                       when:
+                        - expression:
+                            simple:
+                              expression: "${body} is 'org.apache.camel.WrappedFile' && ${header.CamelFileLength} != null"
+                          steps:
+                            - choice:
+                                when:
+                                  - expression:
+                                      simple:
+                                        expression: "${header.CamelFileLength} > {{maxDocumentSize}}"
+                                    steps:
+                                      - throwException:
+                                          exceptionType: java.lang.IllegalArgumentException
+                                          message: "Document '${exchangeProperty.CamelLangChain4jIngestDocumentId}' exceeds maxDocumentSize (${header.CamelFileLength} > {{maxDocumentSize}} bytes)"
+                        - expression:
+                            simple:
+                              expression: "${body} is 'java.io.File' || ${body} is 'org.apache.camel.converter.stream.FileInputStreamCache'"
+                          steps:
+                            - choice:
+                                when:
+                                  - expression:
+                                      simple:
+                                        expression: "${body.length()} > {{maxDocumentSize}}"
+                                    steps:
+                                      - throwException:
+                                          exceptionType: java.lang.IllegalArgumentException
+                                          message: "Document '${exchangeProperty.CamelLangChain4jIngestDocumentId}' exceeds maxDocumentSize (${body.length()} > {{maxDocumentSize}} bytes)"
                         - expression:
                             simple:
                               expression: "${length()} > {{maxDocumentSize}}"
                           steps:
                             - throwException:
                                 exceptionType: java.lang.IllegalArgumentException
-                                message: "Document '${exchangeProperty.CamelLangChain4jIngestDocumentId}' exceeds maxDocumentSize (${length()} > {{maxDocumentSize}} bytes)"
+                                message: "Document '${exchangeProperty.CamelLangChain4jIngestDocumentId}' exceeds maxDocumentSize (more than {{maxDocumentSize}} bytes)"
         - convertBodyTo:
             type: byte[]
         - removeHeaders:

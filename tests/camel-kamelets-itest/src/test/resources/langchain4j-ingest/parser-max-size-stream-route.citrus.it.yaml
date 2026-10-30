@@ -24,6 +24,8 @@ actions:
       timeout: 100
   - createVariables:
       variables:
+        - name: "docling.serve.url"
+          value: "http://localhost:${http.server.port}"
         - name: "report.url"
           value: "http://localhost:${http.server.port}/result/parser-size-stream"
 
@@ -38,6 +40,8 @@ actions:
             file: "langchain4j-ingest/parser-max-size-stream-route.yaml"
             systemProperties:
               properties:
+                - name: "docling.serve.url"
+                  value: "${docling.serve.url}"
                 - name: "report.url"
                   value: "${report.url}"
                 - name: "camel.main.streamCachingEnabled"
@@ -60,7 +64,7 @@ actions:
           reasonPhrase: "OK"
           version: "HTTP/1.1"
 
-  # over the cap: rejected, the size measured once and reported right
+  # over the cap: rejected after one byte past the cap, the other 59 left unread
   - http:
       server: "httpServer"
       receiveRequest:
@@ -68,7 +72,76 @@ actions:
           path: "/result/parser-size-stream"
           type: "plaintext"
           body:
-            data: "@matches('rejected: Document .long.txt. exceeds maxDocumentSize .100 > 40 bytes.')@"
+            data: "@matches('rejected: Document .long.txt. exceeds maxDocumentSize .more than 40 bytes., left 59')@"
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # under a cap past the int range: the whole stream reaches the parser, not a cut of it
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/parser-size-stream"
+          type: "plaintext"
+          body:
+            data: "@contains('parsed: Short text.')@"
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # over the cap through Docling: rejected before the conversion, 59 bytes left unread; a
+  # conversion request instead would fail here
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/parser-size-stream"
+          type: "plaintext"
+          body:
+            data: "@matches('rejected: Document .long.pdf. exceeds maxDocumentSize .more than 40 bytes., left 59')@"
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # rejected by Tika, which closed the stream it read: available() on it then fails
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/parser-size-stream"
+          type: "plaintext"
+          body:
+            data: "@matches('rejected: Document .closed.txt. exceeds maxDocumentSize .more than 40 bytes., .*IOException: Stream closed')@"
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # rejected by Docling, which closed the stream it read: available() on it then fails
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result/parser-size-stream"
+          type: "plaintext"
+          body:
+            data: "@matches('rejected: Document .closed.pdf. exceeds maxDocumentSize .more than 40 bytes., .*IOException: Stream closed')@"
   - http:
       server: "httpServer"
       sendResponse:

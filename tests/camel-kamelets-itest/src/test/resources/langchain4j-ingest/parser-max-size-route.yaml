@@ -16,10 +16,16 @@
 # ---------------------------------------------------------------------------
 
 # maxDocumentSize on the parser actions: the cap is checked before the parse or conversion.
-# One route feeds three documents in turn, each report waiting for the test's answer, so
-# the order is fixed: a short text through Tika under the cap, an oversized payload through
+# One route feeds the documents in turn, each report waiting for the test's answer, so the
+# order is fixed: a short text through Tika under the cap, an oversized payload through
 # Docling (pointed at the test's HTTP server, so a payload leaking past the cap would show up
-# there as a conversion request), and an oversized file through the file source and Tika.
+# there as a conversion request), an oversized payload whose CamelFileLength header claims a
+# small file, two polled files - one under the cap, one whose CamelFileLength header puts it
+# past 4 GiB - two caches spooled to disk, one under the cap, one past 4 GiB, three plain
+# java.io.File bodies, one under the cap, two past 4 GiB through Tika and Docling, two
+# uncached streams on an exchange that turned stream caching off for itself, one under the cap
+# through Tika, one over it through Docling, and an oversized file through the file source and
+# Tika.
 - route:
     id: parser-max-size-route
     from:
@@ -50,6 +56,236 @@
         - setHeader:
             name: "CamelLangChain4jIngestDocumentId"
             constant: "long.pdf"
+        - doTry:
+            steps:
+              - to: "kamelet:docling-convert-action?maxDocumentSize=40&useDoclingServe=true&doclingServeUrl={{docling.serve.url}}"
+              - setBody:
+                  simple: "converted: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}"
+        - to: "{{report.url}}"
+        # 100 bytes again, with a CamelFileLength header claiming 10: without the file it
+        # describes, the header is not believed
+        - setBody:
+            constant: "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
+        - setHeader:
+            name: "CamelFileLength"
+            constant: "10"
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            constant: "forged.txt"
+        - doTry:
+            steps:
+              - to: "kamelet:tika-extract-text-action?maxDocumentSize=40"
+              - setBody:
+                  simple: "parsed: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}"
+        - removeHeader:
+            name: "CamelFileLength"
+        - to: "{{report.url}}"
+        # a file under the cap, polled into the body as a file consumer delivers it: sized by
+        # its CamelFileLength header and parsed. Polled from a directory the file source does
+        # not watch
+        - setBody:
+            constant: "Short text."
+        - to: "file:{{ingest.dir}}-poll?fileName=small.txt"
+        - pollEnrich:
+            expression:
+              constant: "file:{{ingest.dir}}-poll?fileName=small.txt&noop=true"
+            timeout: "10000"
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            constant: "small.txt"
+        - doTry:
+            steps:
+              - to: "kamelet:tika-extract-text-action?maxDocumentSize=40"
+              - setBody:
+                  simple: "parsed: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}"
+        - to: "{{report.url}}"
+        # a file whose CamelFileLength header puts it past 4 GiB, beyond an int: believed next
+        # to the file, so the file is rejected without being read - through Docling, where a
+        # leak past the cap would show up as a conversion request
+        - setBody:
+            constant: "Short text."
+        - to: "file:{{ingest.dir}}-poll?fileName=huge.pdf"
+        - pollEnrich:
+            expression:
+              constant: "file:{{ingest.dir}}-poll?fileName=huge.pdf&noop=true"
+            timeout: "10000"
+        - setHeader:
+            name: "CamelFileLength"
+            expression:
+              constant:
+                expression: "4294967306"
+                resultType: "java.lang.Long"
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            constant: "huge.pdf"
+        - doTry:
+            steps:
+              - to: "kamelet:docling-convert-action?maxDocumentSize=40&useDoclingServe=true&doclingServeUrl={{docling.serve.url}}"
+              - setBody:
+                  simple: "converted: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}"
+        - to: "{{report.url}}"
+        - removeHeader:
+            name: "CamelFileLength"
+        # a cache spooled to disk under the cap: sized by its long length(), and parsed
+        - setBody:
+            constant: "Short text."
+        - to: "file:{{ingest.dir}}-poll?fileName=small.cache"
+        - setBody:
+            groovy: "new org.apache.camel.converter.stream.FileInputStreamCache(new File(headers.CamelFileNameProduced))"
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            constant: "small.cache"
+        - doTry:
+            steps:
+              - to: "kamelet:tika-extract-text-action?maxDocumentSize=40"
+              - setBody:
+                  simple: "parsed: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}"
+        - to: "{{report.url}}"
+        # a cache spooled to disk whose file reports past 4 GiB, which length() would cut to an
+        # int: rejected by its long length() - through Docling, where a leak past the cap would
+        # show up as a conversion request
+        - setBody:
+            constant: "Short text."
+        - to: "file:{{ingest.dir}}-poll?fileName=huge.cache"
+        - setBody:
+            groovy: "new org.apache.camel.converter.stream.FileInputStreamCache(new File(headers.CamelFileNameProduced) { long length() { 4294967306L } })"
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            constant: "huge.cache"
+        - doTry:
+            steps:
+              - to: "kamelet:docling-convert-action?maxDocumentSize=40&useDoclingServe=true&doclingServeUrl={{docling.serve.url}}"
+              - setBody:
+                  simple: "converted: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}"
+        - to: "{{report.url}}"
+        # a plain java.io.File under the cap, as file-watch delivers it: sized by its long
+        # length(), and parsed
+        - setBody:
+            constant: "Short text."
+        - to: "file:{{ingest.dir}}-poll?fileName=small.file"
+        - setBody:
+            groovy: "new File(headers.CamelFileNameProduced)"
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            constant: "small.file"
+        - doTry:
+            steps:
+              - to: "kamelet:tika-extract-text-action?maxDocumentSize=40"
+              - setBody:
+                  simple: "parsed: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}"
+        - to: "{{report.url}}"
+        # a plain java.io.File reporting past 4 GiB, which length() would read through and count
+        # in an int: rejected by its long length(), by Tika and by Docling
+        - setBody:
+            constant: "Short text."
+        - to: "file:{{ingest.dir}}-poll?fileName=huge.file"
+        - setBody:
+            groovy: "new File(headers.CamelFileNameProduced) { long length() { 4294967306L } }"
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            constant: "huge.file"
+        - doTry:
+            steps:
+              - to: "kamelet:tika-extract-text-action?maxDocumentSize=40"
+              - setBody:
+                  simple: "parsed: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}"
+        - to: "{{report.url}}"
+        - setBody:
+            constant: "Short text."
+        - to: "file:{{ingest.dir}}-poll?fileName=huge-file.pdf"
+        - setBody:
+            groovy: "new File(headers.CamelFileNameProduced) { long length() { 4294967306L } }"
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            constant: "huge-file.pdf"
+        - doTry:
+            steps:
+              - to: "kamelet:docling-convert-action?maxDocumentSize=40&useDoclingServe=true&doclingServeUrl={{docling.serve.url}}"
+              - setBody:
+                  simple: "converted: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}"
+        - to: "{{report.url}}"
+        # an uncached stream on an exchange that turned stream caching off for itself, as
+        # netty-http and the platform-http-vertx proxy do, while caching stays on: under the cap
+        # parsed whole, over it rejected. Wrapped, as a bare ByteArrayInputStream caches in place
+        - script:
+            groovy: "exchange.exchangeExtension.setStreamCacheDisabled(true)"
+        - setBody:
+            groovy: "new java.io.PushbackInputStream(new java.io.ByteArrayInputStream('Short text.'.bytes))"
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            constant: "uncached.txt"
+        - doTry:
+            steps:
+              - to: "kamelet:tika-extract-text-action?maxDocumentSize=40"
+              - setBody:
+                  simple: "parsed: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}"
+        - to: "{{report.url}}"
+        # 100 bytes, over the cap of 40, through Docling
+        - setBody:
+            groovy: "new java.io.PushbackInputStream(new java.io.ByteArrayInputStream(('0123456789' * 10).bytes))"
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            constant: "uncached.pdf"
         - doTry:
             steps:
               - to: "kamelet:docling-convert-action?maxDocumentSize=40&useDoclingServe=true&doclingServeUrl={{docling.serve.url}}"

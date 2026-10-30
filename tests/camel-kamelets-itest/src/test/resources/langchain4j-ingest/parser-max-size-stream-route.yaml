@@ -16,8 +16,10 @@
 # ---------------------------------------------------------------------------
 
 # maxDocumentSize with stream caching switched off, so a stream body reaches the action raw
-# instead of cached. A raw stream under the cap must still be parsed whole - the measurement
-# must not drain it - and one over the cap is rejected with its exact size.
+# instead of cached. The action reads a raw stream only one byte past the cap and closes it:
+# one under the cap is still parsed whole, also under a cap past the int range, and one over
+# the cap is rejected with the rest left unread, by Tika and by Docling (pointed at the test's
+# HTTP server, so a payload leaking past the cap would show up there as a conversion request).
 - route:
     id: parser-max-size-stream-route
     from:
@@ -52,6 +54,74 @@
         - setHeader:
             name: "CamelLangChain4jIngestDocumentId"
             constant: "long.txt"
+        - setProperty:
+            name: "rawStream"
+            simple: "${body}"
+        - doTry:
+            steps:
+              - to: "kamelet:tika-extract-text-action?maxDocumentSize=40"
+              - setBody:
+                  simple: "parsed: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}, left ${exchangeProperty.rawStream.available()}"
+        - to: "{{report.url}}"
+        # a cap past the int range readNBytes takes: the stream is still read whole
+        - setBody:
+            constant: "Short text."
+        - setBody:
+            simple: "${bodyAs(java.io.InputStream)}"
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            constant: "short.txt"
+        - doTry:
+            steps:
+              - to: "kamelet:tika-extract-text-action?maxDocumentSize=4294967296"
+              - setBody:
+                  simple: "parsed: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}"
+        - to: "{{report.url}}"
+        # 100 bytes, over the cap of 40, through Docling
+        - setBody:
+            constant: "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
+        - setBody:
+            simple: "${bodyAs(java.io.InputStream)}"
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            constant: "long.pdf"
+        - setProperty:
+            name: "rawStream"
+            simple: "${body}"
+        - doTry:
+            steps:
+              - to: "kamelet:docling-convert-action?maxDocumentSize=40&useDoclingServe=true&doclingServeUrl={{docling.serve.url}}"
+              - setBody:
+                  simple: "converted: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}, left ${exchangeProperty.rawStream.available()}"
+        - to: "{{report.url}}"
+        # 100 bytes over the cap of 40, in a stream whose available() fails once closed: the
+        # action closes the stream it read
+        - setBody:
+            groovy: "new java.io.PushbackInputStream(new java.io.ByteArrayInputStream(('0123456789' * 10).bytes))"
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            constant: "closed.txt"
+        - setProperty:
+            name: "rawStream"
+            simple: "${body}"
         - doTry:
             steps:
               - to: "kamelet:tika-extract-text-action?maxDocumentSize=40"
@@ -63,4 +133,45 @@
                 steps:
                   - setBody:
                       simple: "rejected: ${exception.message}"
+        - doTry:
+            steps:
+              - setBody:
+                  simple: "${body}, open with ${exchangeProperty.rawStream.available()} left"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - setBody:
+                      simple: "${body}, ${exception.message}"
+        - to: "{{report.url}}"
+        # the same through Docling
+        - setBody:
+            groovy: "new java.io.PushbackInputStream(new java.io.ByteArrayInputStream(('0123456789' * 10).bytes))"
+        - setHeader:
+            name: "CamelLangChain4jIngestDocumentId"
+            constant: "closed.pdf"
+        - setProperty:
+            name: "rawStream"
+            simple: "${body}"
+        - doTry:
+            steps:
+              - to: "kamelet:docling-convert-action?maxDocumentSize=40&useDoclingServe=true&doclingServeUrl={{docling.serve.url}}"
+              - setBody:
+                  simple: "converted: ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.IllegalArgumentException"
+                steps:
+                  - setBody:
+                      simple: "rejected: ${exception.message}"
+        - doTry:
+            steps:
+              - setBody:
+                  simple: "${body}, open with ${exchangeProperty.rawStream.available()} left"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - setBody:
+                      simple: "${body}, ${exception.message}"
         - to: "{{report.url}}"
