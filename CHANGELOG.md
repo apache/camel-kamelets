@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Parser actions: size limit is checked only after the whole file is read [\#3121](https://github.com/apache/camel-kamelets/issues/3121)
 - Release Camel-Kamelets 4.23.0 [\#3100](https://github.com/apache/camel-kamelets/issues/3100)
 
 ## [v4.23.0](https://github.com/apache/camel-kamelets/tree/v4.23.0) (2026-10-20)
