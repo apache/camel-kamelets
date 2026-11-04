@@ -93,7 +93,7 @@ spec:
   dependencies:
     - "camel:kamelet"
     - "camel:google-pubsub"
-    - "camel:jackson"
+    - "camel:jackson3"
   template:
     from:
       uri: "google-pubsub://{{projectId}}:{{subscriptionName}}?concurrentConsumers={{concurrentConsumers}}&maxMessagesPerPoll={{maxMessagesPerPoll}}&serviceAccountKey=base64:{{?serviceAccountKey}}&synchronousPull={{synchronousPull}}"

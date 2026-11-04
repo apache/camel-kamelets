@@ -90,7 +90,7 @@ public class ValidateKameletsMojo extends AbstractMojo {
             String cleanName = "";
             if (!deps.isEmpty()) {
                 if (deps.get(0) != null) {
-                if (deps.get(0).equals("camel:jackson") && deps.size() > 1) {
+                if ((deps.get(0).equals("camel:jackson3") || deps.get(0).equals("camel:jackson")) && deps.size() > 1) {
                     cleanName = deps.get(1).replace("camel:", "");
                 } else {
                     cleanName = deps.get(0).replace("camel:", "");

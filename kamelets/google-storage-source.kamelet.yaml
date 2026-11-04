@@ -128,7 +128,7 @@ spec:
   dependencies:
     - "camel:kamelet"
     - "camel:google-storage"
-    - "camel:jackson"
+    - "camel:jackson3"
   template:
     from:
       uri: "google-storage://{{bucketNameOrArn}}?autoCreateBucket={{autoCreateBucket}}&deleteAfterRead={{deleteAfterRead}}&filter={{?filter}}&prefix={{?prefix}}&serviceAccountKey=base64:{{?serviceAccountKey}}"

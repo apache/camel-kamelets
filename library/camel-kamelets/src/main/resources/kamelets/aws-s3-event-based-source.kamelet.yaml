@@ -178,7 +178,7 @@ spec:
     - 'camel:aws2-s3'
     - 'camel:jsonpath'
     - 'camel:kamelet'
-    - 'camel:jackson'
+    - 'camel:jackson3'
   template:
     from:
       uri: aws2-sqs
@@ -206,7 +206,7 @@ spec:
                 steps:
                   - unmarshal:
                       json:
-                        unmarshalType: com.fasterxml.jackson.databind.JsonNode
+                        unmarshalType: tools.jackson.databind.JsonNode
                   - setProperty:
                       name: s3-event-name
                       expression:

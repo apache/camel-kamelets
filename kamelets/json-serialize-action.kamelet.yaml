@@ -50,14 +50,14 @@ spec:
           type: string
   dependencies:
   - "camel:kamelet"
-  - "camel:jackson"
+  - "camel:jackson3"
   template:
     from:
       uri: kamelet:source
       steps:
         - marshal:
             json:
-              unmarshalType: com.fasterxml.jackson.databind.JsonNode
+              unmarshalType: tools.jackson.databind.JsonNode
         - setHeader:
             name: Content-Type
             expression:

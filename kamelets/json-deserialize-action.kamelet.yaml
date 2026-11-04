@@ -43,13 +43,13 @@ spec:
     type: object
   dependencies:
   - "camel:kamelet"
-  - "camel:jackson"
+  - "camel:jackson3"
   template:
     from:
       uri: kamelet:source
       steps:
         - unmarshal:
             json:
-              unmarshalType: com.fasterxml.jackson.databind.JsonNode
+              unmarshalType: tools.jackson.databind.JsonNode
         - removeHeader:
             name: Content-Type

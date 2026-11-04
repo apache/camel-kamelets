@@ -85,7 +85,7 @@ spec:
           type: string
   dependencies:
   - "camel:kamelet"
-  - "camel:jackson"
+  - "camel:jackson3"
   - "camel:kafka"
   template:
     beans:
@@ -113,7 +113,7 @@ spec:
                           expression: "true"
                   - unmarshal:
                       json:
-                        unmarshalType: com.fasterxml.jackson.databind.JsonNode
+                        unmarshalType: tools.jackson.databind.JsonNode
         - process:
             ref: "{{extractField}}"
         - choice:
@@ -130,7 +130,7 @@ spec:
                           steps:
                             - marshal:
                                 json:
-                                  unmarshalType: com.fasterxml.jackson.databind.JsonNode
+                                  unmarshalType: tools.jackson.databind.JsonNode
                             - setHeader:
                                 name: Content-Type
                                 expression:
