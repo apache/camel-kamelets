@@ -89,7 +89,7 @@ spec:
           description: "Always `application/json`."
           type: string
   dependencies:
-  - "camel:jackson"
+  - "camel:jackson3"
   - "camel:kamelet"
   - "camel:kafka"
   template:
@@ -104,7 +104,7 @@ spec:
                 steps:
                   - unmarshal:
                       json:
-                        unmarshalType: com.fasterxml.jackson.databind.JsonNode
+                        unmarshalType: tools.jackson.databind.JsonNode
         - setProperty:
             name: topicFormat
             expression:
@@ -129,7 +129,7 @@ spec:
             ref: org.apache.camel.component.kafka.transform.MessageTimestampRouter
         - marshal:
             json:
-              unmarshalType: com.fasterxml.jackson.databind.JsonNode
+              unmarshalType: tools.jackson.databind.JsonNode
         - setHeader:
             name: Content-Type
             expression:

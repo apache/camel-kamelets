@@ -105,10 +105,10 @@ spec:
           description: The new description of the issue, used only when the body is empty.
           type: string
   dependencies:
-  - "camel:jackson"
+  - "camel:jackson3"
   - "camel:jira"
   - "camel:kamelet"
-  - "mvn:com.fasterxml.jackson.datatype:jackson-datatype-joda:2.12.5"
+  - "mvn:tools.jackson.datatype:jackson-datatype-joda:3.2.4"
   template:
     from:
       uri: kamelet:source

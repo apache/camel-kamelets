@@ -134,7 +134,7 @@ spec:
   dependencies:
     - "camel:kafka"
     - "camel:jsonpath"
-    - "camel:jackson"
+    - "camel:jackson3"
     - "camel:kamelet"
     - "camel:aws2-s3"
   template:
@@ -206,7 +206,7 @@ spec:
                 steps:
                   - unmarshal:
                       json:
-                        unmarshalType: com.fasterxml.jackson.databind.JsonNode
+                        unmarshalType: tools.jackson.databind.JsonNode
                   - setProperty:
                       name: ceph-event-name
                       expression:

@@ -72,7 +72,7 @@ spec:
     in:
       mediaType: application/json
   dependencies:
-  - "camel:jackson"
+  - "camel:jackson3"
   - "camel:kamelet"
   - "camel:kafka"
   template:
@@ -92,7 +92,7 @@ spec:
                           expression: "true"
                   - unmarshal:
                       json:
-                        unmarshalType: com.fasterxml.jackson.databind.JsonNode
+                        unmarshalType: tools.jackson.databind.JsonNode
         - setProperty:
             name: enabled
             expression:
@@ -118,7 +118,7 @@ spec:
                 steps:
                   - marshal:
                       json:
-                        unmarshalType: com.fasterxml.jackson.databind.JsonNode
+                        unmarshalType: tools.jackson.databind.JsonNode
                   - setHeader:
                       name: Content-Type
                       expression:

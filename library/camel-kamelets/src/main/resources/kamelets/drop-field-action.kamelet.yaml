@@ -57,7 +57,7 @@ spec:
           description: When it is `application/json`, the body is read as JSON text and written back as JSON text. Otherwise the body comes out as parsed JSON.
           type: string
   dependencies:
-  - "camel:jackson"
+  - "camel:jackson3"
   - "camel:kamelet"
   - "camel:kafka"
   template:
@@ -82,7 +82,7 @@ spec:
                           expression: "true"
                   - unmarshal:
                       json:
-                        unmarshalType: com.fasterxml.jackson.databind.JsonNode
+                        unmarshalType: tools.jackson.databind.JsonNode
         - process:
             ref: "{{dropField}}"
         - choice:
@@ -93,7 +93,7 @@ spec:
                 steps:
                   - marshal:
                       json:
-                        unmarshalType: com.fasterxml.jackson.databind.JsonNode
+                        unmarshalType: tools.jackson.databind.JsonNode
                   - setHeader:
                       name: Content-Type
                       expression:
