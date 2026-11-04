@@ -175,7 +175,7 @@ public class KameletsCatalogTest {
         assertEquals(2, deps.size());
         deps = catalog.getKameletDependencies("cassandra-sink");
         assertEquals(3, deps.size());
-        assertEquals("camel:jackson", deps.get(0));
+        assertEquals("camel:jackson3", deps.get(0));
     }
 
     @Test

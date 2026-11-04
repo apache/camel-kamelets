@@ -127,7 +127,7 @@ spec:
     - "camel:azure-storage-blob"
     - "camel:kamelet"
     - 'camel:jsonpath'
-    - 'camel:jackson'
+    - 'camel:jackson3'
   template:
     from:
       uri: azure-servicebus
@@ -150,7 +150,7 @@ spec:
                           expression: "${body.toString()}"
                   - unmarshal:
                       json:
-                        unmarshalType: com.fasterxml.jackson.databind.JsonNode
+                        unmarshalType: tools.jackson.databind.JsonNode
                   - setProperty:
                       name: azure-storage-blob-event-type
                       expression:

@@ -85,10 +85,10 @@ spec:
           description: The ID number of the transition to run, such as `31`. Not the name of the status. Required.
           type: string
   dependencies:
-  - "camel:jackson"
+  - "camel:jackson3"
   - "camel:jira"
   - "camel:kamelet"
-  - "mvn:com.fasterxml.jackson.datatype:jackson-datatype-joda:2.12.5"
+  - "mvn:tools.jackson.datatype:jackson-datatype-joda:3.2.4"
   template:
     from:
       uri: kamelet:source

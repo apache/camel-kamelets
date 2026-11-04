@@ -89,10 +89,10 @@ spec:
     out:
       mediaType: application/json
   dependencies:
-  - "camel:jackson"
+  - "camel:jackson3"
   - "camel:jira"
   - "camel:kamelet"
-  - "mvn:com.fasterxml.jackson.datatype:jackson-datatype-joda:2.12.5"
+  - "mvn:tools.jackson.datatype:jackson-datatype-joda:3.2.4"
   template:
     from:
       uri: jira
@@ -107,6 +107,6 @@ spec:
       steps:
         - marshal:
             json:
-              moduleClassNames: com.fasterxml.jackson.datatype.joda.JodaModule
+              moduleClassNames: tools.jackson.datatype.joda.JodaModule
         - to:
             uri: kamelet:sink

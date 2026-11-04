@@ -159,7 +159,7 @@ spec:
   dependencies:
   - "camel:azure-eventhubs"
   - "camel:kamelet"
-  - "camel:jackson"
+  - "camel:jackson3"
   template:
     from:
       uri: "azure-eventhubs://{{namespaceName}}/{{eventhubName}}?blobAccessKey=RAW({{blobAccessKey}})&blobAccountName={{blobAccountName}}&blobContainerName={{blobContainerName}}&credentialType={{credentialType}}&sharedAccessKey=RAW({{?sharedAccessKey}})&sharedAccessName={{?sharedAccessName}}"

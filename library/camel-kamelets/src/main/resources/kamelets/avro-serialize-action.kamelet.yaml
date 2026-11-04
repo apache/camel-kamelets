@@ -62,11 +62,11 @@ spec:
           type: string
   dependencies:
   - "camel:kamelet"
-  - "camel:jackson-avro"
+  - "camel:jackson3-avro"
   template:
     beans:
       - name: schemaResolver
-        type: "#class:org.apache.camel.component.jackson.avro.transform.AvroSchemaResolver"
+        type: "#class:org.apache.camel.component.jackson3.avro.transform.AvroSchemaResolver"
         properties:
           validate: "{{validate}}"
           schema: "{{schema:}}"
@@ -75,7 +75,7 @@ spec:
       steps:
         - marshal:
             avro:
-              unmarshalType: com.fasterxml.jackson.databind.JsonNode
+              unmarshalType: tools.jackson.databind.JsonNode
               library: Jackson
               schemaResolver: "#bean:{{schemaResolver}}"
         - setHeader:
