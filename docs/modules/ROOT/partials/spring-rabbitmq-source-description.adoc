@@ -1,43 +1,38 @@
-== Spring Rabbitmq Source Kamelet Description
+== Spring RabbitMQ Source Kamelet Description
 
 === Authentication methods
 
-This Kamelet connects to Spring Rabbitmq using appropriate authentication mechanisms:
-
-- Service-specific authentication methods
-- API keys, tokens, or credential-based authentication
-- Connection configuration
+The Kamelet logs in to RabbitMQ with `username` and `password`; when they are not set, it uses `guest`. Set
+`protocol` to `amqps` for a connection with TLS.
 
 === Output format
 
-The Kamelet consumes data from Spring Rabbitmq and produces the data in JSON format.
+The body is text when the content type of the message starts with `text`, and bytes otherwise; it is not turned into
+JSON. The headers of the RabbitMQ message become headers.
 
-=== Configuration
+=== Queues, exchanges and bindings
 
-The Kamelet requires connection parameters specific to Spring Rabbitmq:
-
-- Service connection details
-- Authentication credentials
-- Query or consumption parameters
+With `autoDeclare` set to false (the default), the queue in `queues` must already exist and be bound to the exchange.
+With `autoDeclare` set to true, the Kamelet creates a `direct` exchange named `exchangeName`, the queue, and the
+binding with `routingKey` when it starts.
 
 === Usage example
 
-```yaml
-apiVersion: camel.apache.org/v1alpha1
-kind: KameletBinding
-metadata:
-  name: spring-rabbitmq-source-binding
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
-      name: spring-rabbitmq-source
-    properties:
-      # Add service-specific properties here
-  sink:
-    ref:
-      kind: Service
-      apiVersion: v1
-      name: my-service
-```
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:spring-rabbitmq-source"
+      parameters:
+        host: "localhost"
+        port: 5672
+        username: "guest"
+        password: "guest"
+        exchangeName: "orders"
+        queues: "orders"
+        routingKey: "new-order"
+        autoDeclare: true
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

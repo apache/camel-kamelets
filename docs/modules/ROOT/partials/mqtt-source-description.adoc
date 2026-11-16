@@ -8,18 +8,17 @@ This Kamelet supports MQTT authentication using username and password credential
 
 The MQTT Source Kamelet supports the following configurations:
 
-- **Topic**: MQTT topic to subscribe to (required)
-- **Broker URL**: MQTT broker URL (required, e.g., tcp://broker.example.com:1883)
+- **Topic**: MQTT topic to subscribe to, with the `+` and `#` wildcards (required)
+- **Broker URL**: MQTT broker URL (required, e.g., tcp://broker.example.com:1883, or ssl://broker.example.com:8883 for TLS)
 - **Username**: Username for MQTT authentication (optional)
 - **Password**: Password for MQTT authentication (optional)
-- **Client ID**: MQTT client identifier (optional)
-- **Quality of Service**: QoS level (0, 1, or 2)
-- **Retain**: Whether to retain messages
-- **Clean Session**: Whether to start a clean session
+- **Client ID**: MQTT client identifier (default: `mqtt-source`). Give each running copy its own: two clients with the same ID push each other off the broker.
+
+The Kamelet subscribes with QoS 2 and a clean session, so it receives only the messages published while it is connected. It has no options to change the QoS or the session.
 
 === Output Format
 
-The Kamelet outputs MQTT message payload along with MQTT headers including topic, QoS level, and message properties.
+The Kamelet outputs the MQTT message payload as bytes, with the `CamelMqttTopic` and `CamelMqttQoS` headers.
 
 === Usage Example
 
@@ -38,7 +37,7 @@ The Kamelet outputs MQTT message payload along with MQTT headers including topic
             uri: "kamelet:log-sink"
 ----
 
-=== Example with QoS Configuration
+=== Example with a Wildcard and a Client ID
 
 [source,yaml,subs='+attributes,macros']
 ----
@@ -46,11 +45,10 @@ The Kamelet outputs MQTT message payload along with MQTT headers including topic
     from:
       uri: "kamelet:mqtt-source"
       parameters:
-        topic: "critical/alerts"
+        topic: "critical/#"
         brokerUrl: "tcp://mqtt.example.com:1883"
         username: "mqttuser"
         password: "mqttpass"
-        qualityOfService: "2"
         clientId: "camel-consumer-1"
       steps:
         - to:
@@ -69,7 +67,6 @@ The Kamelet outputs MQTT message payload along with MQTT headers including topic
         brokerUrl: "ssl://mqtt.example.com:8883"
         username: "mqttuser"
         password: "mqttpass"
-        qualityOfService: "1"
       steps:
         - to:
             uri: "kamelet:log-sink"
@@ -81,4 +78,4 @@ The Kamelet outputs MQTT message payload along with MQTT headers including topic
 - **QoS 1**: At least once delivery (acknowledged delivery)
 - **QoS 2**: Exactly once delivery (assured delivery)
 
-Choose the appropriate QoS level based on your reliability requirements.
+The Kamelet subscribes with QoS 2; a message is received with the lower of that and the QoS it was published with.

@@ -2,42 +2,36 @@
 
 === Authentication methods
 
-This Kamelet connects to Pulsar using appropriate authentication mechanisms:
-
-- Service-specific authentication methods
-- API keys, tokens, or credential-based authentication
-- Connection configuration
+With no `authenticationClass`, the Kamelet connects without a login. For a token, set `authenticationClass` to
+`org.apache.pulsar.client.impl.auth.AuthenticationToken` and `authenticationParams` to `token:` followed by the token.
+For TLS, use a `pulsar+ssl://` address in `serviceUrl`.
 
 === Output format
 
-The Kamelet consumes data from Pulsar and produces the data in JSON format.
+The body is the Pulsar payload, as bytes; it is not turned into JSON. The headers give the topic, the key, the
+properties, the message ID and the publish time of the message.
 
 === Configuration
 
-The Kamelet requires connection parameters specific to Pulsar:
-
-- Service connection details
-- Authentication credentials
-- Query or consumption parameters
+The topic is named by `topicType` (`persistent` or `non-persistent`), `tenant`, `namespaceName` and `topic`, which
+make up `persistent://public/default/orders`, for example. With `topicsPattern` set to true, `topic` is a regular
+expression, and the Kamelet reads from every matching topic of the namespace.
 
 === Usage example
 
-```yaml
-apiVersion: camel.apache.org/v1alpha1
-kind: KameletBinding
-metadata:
-  name: pulsar-source-binding
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
-      name: pulsar-source
-    properties:
-      # Add service-specific properties here
-  sink:
-    ref:
-      kind: Service
-      apiVersion: v1
-      name: my-service
-```
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:pulsar-source"
+      parameters:
+        serviceUrl: "pulsar://localhost:6650"
+        topicType: "persistent"
+        tenant: "public"
+        namespaceName: "default"
+        topic: "orders"
+        subscriptionName: "orders-processor"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

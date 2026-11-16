@@ -31,8 +31,14 @@ metadata:
 spec:
   definition:
     title: "JMS - IBM MQ Source"
-    description: A Kamelet that can read events from an IBM MQ message queue using JMS.
-      
+    description: |-
+      Receives each message from a queue or a topic of an IBM MQ queue manager, through JMS.
+
+      Use it to process work or events that other applications put on IBM MQ, such as an existing enterprise or mainframe system. Use `jms-ibm-mq-sink` to send to IBM MQ.
+
+      Output: the body is text for a JMS text message, and bytes for a bytes message. The JMS properties of the message become headers, along with the JMS headers such as `JMSMessageID` and `JMSTimestamp`, and IBM MQ details such as `JMSXUserID`, `JMS_IBM_PutDate` and `JMS_IBM_Format`.
+
+      Good to know: the IBM MQ client library is not included, as its licence is not the Apache one: add `mvn:com.ibm.mq:com.ibm.mq.jakarta.client` with a version to the dependencies of the integration (Camel JBang adds it by itself). From a queue, each message is removed when it is received, even when the rest of the flow then fails, and several copies of this source share the messages. From a topic (`destinationType` set to `topic`), it receives only the messages sent while it is connected, as the subscription is not durable. It connects with no TLS unless `sslCipherSuite` is set. When the queue manager cannot be reached, it starts anyway and tries again every 5 seconds.
     required:
       - serverName
       - serverPort
@@ -44,50 +50,74 @@ spec:
     type: object
     properties:
       serverName:
-        title: "IBM MQ Server name"
-        description: "IBM MQ Server name or address."
+        title: "Server Host"
+        description: "The host name or IP address of the IBM MQ server that runs the queue manager."
+        example: "mq.example.com"
         type: string
       serverPort:
-        title: "IBM MQ Server Port"
-        description: "IBM MQ Server port."
+        title: "Server Port"
+        description: "The port of the listener of the queue manager on the server. The IBM MQ default is 1414."
         type: integer
         default: 1414
       destinationType:
-        title: "Destination Type"
-        description: "The JMS destination type (queue or topic)."
+        title: "Queue or Topic"
+        description: "Whether `destinationName` is a queue (`queue`) or a topic (`topic`). A queue keeps each message until one receiver takes it; a topic hands each message to every receiver subscribed at that moment."
         type: string
         default: queue
       destinationName:
-        title: "Destination Name"
-        description: "The destination name."
+        title: "Queue or Topic Name"
+        description: "The name of the queue or topic to receive the messages from, as defined in the queue manager."
+        example: "DEV.QUEUE.1"
         type: string
       queueManager:
-        title: "IBM MQ Queue Manager"
-        description: "Name of the IBM MQ Queue Manager."
+        title: "Queue Manager"
+        description: "The name of the queue manager to connect to."
+        example: "QM1"
         type: string
       channel:
-        title: "IBM MQ Channel"
-        description: "Name of the IBM MQ Channel."
+        title: "Channel"
+        description: "The name of the server-connection channel of the queue manager to connect through."
+        example: "DEV.APP.SVRCONN"
         type: string
       clientId:
-        title: "IBM MQ Client ID"
-        description: "Name of the IBM MQ Client ID."
+        title: "Client ID"
+        description: "An optional JMS client ID for the connection, which names this application to the queue manager. Leave it empty unless your IBM MQ administrator asks for one."
         type: string
       username:
         title: "Username"
-        description: "Username to authenticate to IBM MQ server."
+        description: "The user name to log in to the queue manager with."
         type: string
       password:
         title: "Password"
-        description: "Password to authenticate to IBM MQ server."
+        description: "The password to log in to the queue manager with, for the user `username`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       sslCipherSuite:
-        title: "CipherSuite"
-        description: "CipherSuite to use for enabling TLS."
+        title: "TLS Cipher Suite"
+        description: "The TLS cipher suite to connect with, which must match the cipher spec of the channel on the queue manager. When it is set, the connection uses TLS; when it is not set, it does not."
+        example: "TLS_RSA_WITH_AES_128_CBC_SHA256"
         type: string
+  dataTypes:
+    out:
+      headers:
+        JMSMessageID:
+          title: "Message ID"
+          description: "The ID the broker gave the message."
+          type: string
+        JMSDestination:
+          title: "Queue or Topic"
+          description: "The queue or topic the message was received from."
+          type: string
+        JMSTimestamp:
+          title: "Timestamp"
+          description: "When the message was sent, in milliseconds since 1970-01-01 UTC."
+          type: integer
+        JMSRedelivered:
+          title: "Redelivered"
+          description: "True when the broker delivers the message again, after an earlier delivery was not acknowledged."
+          type: boolean
   dependencies:
   - "camel:jms"
   - "camel:kamelet"

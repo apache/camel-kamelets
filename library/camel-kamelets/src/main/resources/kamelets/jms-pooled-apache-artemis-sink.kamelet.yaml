@@ -31,53 +31,62 @@ metadata:
 spec:
   definition:
     title: "JMS Pooled - Apache Artemis Sink"
-    description: "Send data to an Apache Artemis message broker by using JMS Pooled."
+    description: |-
+      Sends each message to a queue or a topic in an Apache ActiveMQ Artemis broker, through JMS, reusing a pool of connections to the broker.
+
+      Use it to hand work to another application through a queue, or to publish events on a topic, when messages flow steadily: it reuses its connections, where `jms-apache-artemis-sink` connects anew for each message. Use it also for a broker that needs a login, which goes in `username` and `password`.
+
+      Input: text is sent as a JMS text message, bytes as a JMS bytes message, and a Map as a JMS map message. The headers of the message, except the Camel ones, are sent along as JMS properties of the message.
+
+      Output: the message is unchanged.
+
+      Good to know: Messages go to a queue unless `destinationType` is `topic`, and a message sent to a topic reaches only the receivers subscribed at that moment. It connects with no TLS unless `brokerURL` asks for it. When the incoming message expects a reply, as one from `webhook-source` does, the sink waits up to 20 seconds for a reply message and then fails.
     required:
       - destinationName
       - brokerURL
     type: object
     properties:
       destinationType:
-        title: "Destination Type"
-        description: "The JMS destination type (queue or topic)."
+        title: "Queue or Topic"
+        description: "Whether `destinationName` is a queue (`queue`) or a topic (`topic`). A queue keeps each message until one receiver takes it; a topic hands each message to every receiver subscribed at that moment."
         type: string
         default: queue
       destinationName:
-        title: "Destination Name"
-        description: "The JMS destination name."
+        title: "Queue or Topic Name"
+        description: "The name of the queue or topic to send the messages to."
         type: string
-        example: person
+        example: "orders"
       brokerURL:
         title: "Broker URL"
-        description: "The JMS URL."
+        description: "The address of the Artemis broker, as `tcp://host:port`; the usual port is 61616. Add `?sslEnabled=true` for TLS."
         type: string
-        example: "tcp://my-host:61616"
+        example: "tcp://localhost:61616"
       username:
         title: "Broker Username"
-        description: "The JMS Broker Username."
+        description: "The user name to log in to the broker with. Leave it empty for a broker that accepts clients without a login."
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: "Broker Password"
-        description: "The JMS Broker Password."
+        description: "The password to log in to the broker with, for the user `username`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       maxSessionsPerConnection:
         title: "Max Sessions Per Connection"
-        description: "The maximum number of pooled sessions per connection in the pool."
+        description: "The most sessions that can be open at the same time on each connection of the pool. Each message being sent or received uses one session."
         type: integer
         default: 500
       maxIdleSessionsPerConnection:
         title: "Max Idle Sessions Per Connection"
-        description: "The number of idle sessions allowed per connection before they are closed."
+        description: "How many unused sessions each connection of the pool keeps open for reuse. Unused sessions beyond this number are closed."
         type: integer
         default: 500
       connectionIdleTimeout:
         title: "Connection Idle Timeout"
-        description: "The maximum time a pooled Connection can sit unused before it is eligible for removal (in milliseconds)."
+        description: "How long a connection of the pool can stay unused before it is closed, in milliseconds. For example, 30000 is 30 seconds."
         type: integer
         default: 30000
   dependencies:

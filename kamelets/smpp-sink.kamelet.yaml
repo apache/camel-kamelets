@@ -30,66 +30,84 @@ metadata:
 spec:
   definition:
     title: "SMPP Sink"
-    description: Send SMS messages through a SMSC (Short Message Service Center) using the SMPP protocol.
+    description: |-
+      Sends each message as an SMS text message to a mobile phone, through an SMS center (SMSC) that speaks the SMPP protocol.
+
+      Use it to send alerts, one-time codes or notifications by SMS, through an SMS provider or operator that offers SMPP access. Use `smpp-source` to receive SMS replies and delivery receipts.
+
+      Input: the body is the text of the SMS. The phone number to send it to comes from the `CamelSmppDestAddr` header when it is set, and from `destAddr` otherwise. A text longer than one SMS (140 bytes) is split, cut or refused, as `splittingPolicy` says.
+
+      Output: the message is unchanged, with the IDs that the SMSC gave the SMS in the `CamelSmppId` header (a List), and how many SMS were sent in `CamelSmppSentMessageCount`.
+
+      Good to know: the defaults of `sourceAddr` (1616) and `destAddr` (1717) are test numbers: set them, or set `CamelSmppDestAddr` on each message. It logs in to the SMSC when the integration starts, and the integration fails to start when the SMSC cannot be reached. It connects with no TLS unless `usingSSL` is true.
     required:
     - host
     type: object
     properties:
       host:
-        title: Host
-        description: The hostname of the SMSC server to connect to.
+        title: "Host"
+        description: "The host name or IP address of the SMSC (the SMS center of your SMS provider or operator)."
         type: string
         example: "smsc.example.com"
       port:
-        title: Port
-        description: The port of the SMSC server to connect to.
+        title: "Port"
+        description: "The port of the SMSC. 2775 is the usual SMPP port."
         type: integer
         default: 2775
       systemId:
-        title: System ID
-        description: The system id (username) for connecting to the SMSC server.
+        title: "System ID"
+        description: "The user name, called system ID in SMPP, to log in to the SMSC with. Your SMS provider gives it."
         type: string
         default: smppclient
         x-descriptors:
         - urn:camel:group:credentials
       password:
-        title: Password
-        description: The password for connecting to the SMSC server.
+        title: "Password"
+        description: "The password to log in to the SMSC with. Your SMS provider gives it."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       systemType:
-        title: System Type
-        description: The type of ESME (External Short Message Entity) binding to the SMSC (max. 13 characters).
+        title: "System Type"
+        description: "A short label of at most 13 characters that some SMSCs ask for when logging in. Leave it empty unless your SMS provider gives one."
         type: string
         example: "cp"
       sourceAddr:
-        title: Source Address
-        description: The address of the SME (Short Message Entity) which originated the message.
+        title: "Sender Address"
+        description: "The sender of the SMS, as the recipient sees it: a phone number, a short code or, when the SMSC allows it, a name. The default, 1616, is a test value."
+        example: "4512345678"
         type: string
         default: "1616"
       destAddr:
-        title: Destination Address
-        description: The destination SME address. For mobile terminated messages this is the directory number of the recipient.
+        title: "Recipient Address"
+        description: "The phone number to send the SMS to, used when the message has no `CamelSmppDestAddr` header. The default, 1717, is a test value."
+        example: "4598765432"
         type: string
         default: "1717"
       encoding:
-        title: Encoding
-        description: The encoding scheme of the short message user data.
+        title: "Encoding"
+        description: "The character set of the text of the SMS, such as `ISO-8859-1` or `UTF-8`."
         type: string
         default: "ISO-8859-1"
       splittingPolicy:
-        title: Splitting Policy
-        description: The policy for handling long messages. ALLOW splits long messages into 140 byte parts, TRUNCATE cuts them at 140 bytes, REJECT fails the exchange.
+        title: "Splitting Policy"
+        description: "What to do with a text longer than one SMS (140 bytes): `ALLOW` splits it into several SMS, `TRUNCATE` cuts it at 140 bytes, and `REJECT` fails the message."
         type: string
         default: ALLOW
         enum: ["ALLOW", "TRUNCATE", "REJECT"]
       usingSSL:
-        title: Using SSL
-        description: Whether to secure the connection to the SMSC server with TLS (the smpps protocol).
+        title: "Use TLS"
+        description: "Whether to secure the connection to the SMSC with TLS (the smpps protocol). The SMSC must support it, usually on another port."
         type: boolean
         default: false
+  dataTypes:
+    in:
+      headers:
+        CamelSmppDestAddr:
+          title: "Recipient Address"
+          description: "Optional. The phone number to send this SMS to, instead of `destAddr`."
+          type: string
   dependencies:
     - "camel:smpp"
     - "camel:kamelet"

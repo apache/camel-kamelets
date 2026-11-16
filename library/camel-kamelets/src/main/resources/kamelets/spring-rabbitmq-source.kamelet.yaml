@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "RabbitMQ Source"
-    description: Receive data from a RabbitMQ Broker.
+    description: |-
+      Receives each message from a queue in a RabbitMQ broker, and can create that queue and bind it to an exchange with a routing key.
+
+      Use it to process work or events that other applications publish to RabbitMQ. Use `spring-rabbitmq-sink` to publish them.
+
+      Output: the body is text when the content type of the message starts with `text`, and bytes otherwise. The headers of the RabbitMQ message become headers, along with `CamelSpringRabbitmqExchangeName`, `CamelSpringRabbitmqRoutingKey` and `CamelSpringRabbitmqContentType`.
+
+      Good to know: with `autoDeclare` false, the default, the queue must exist already, bound to the exchange; until it does, the source keeps trying again. With `autoDeclare` true, it creates the exchange as a `direct` exchange, the queue in `queues` and the binding with `routingKey`. Without `queues`, it reads from a new queue with a generated name. A message whose processing fails is tried 5 times, one second apart, and then dropped, or sent to the dead letter exchange of the queue when RabbitMQ has one. It connects with no TLS unless `protocol` is `amqps`.
     required:
       - host
       - port
@@ -38,56 +45,74 @@ spec:
     type: object
     properties:
       host:
-        title: Server Address
-        description: RabbitMQ broker address
+        title: "Server Address"
+        description: "The host name or IP address of the RabbitMQ broker."
         type: string
         example: "localhost"
       port:
-        title: Server Port
-        description: RabbitMQ broker port
+        title: "Server Port"
+        description: "The port of the RabbitMQ broker: usually 5672, or 5671 for `amqps`."
         type: integer
         example: 5672
       routingKey:
-        title: Routing Key
-        description: The routing key to use when binding a consumer queue to the exchange
+        title: "Routing Key"
+        description: "The routing key that binds the queue to the exchange, when `autoDeclare` is true. A `direct` exchange then routes to the queue the messages sent with this key."
+        example: "new-order"
         type: string
       username:
-        title: Username
-        description: The username to access the RabbitMQ server
+        title: "Username"
+        description: "The user name to log in to RabbitMQ with. When it is not set, `guest` is used."
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
-        title: Password
-        description: The password to access the RabbitMQ server
+        title: "Password"
+        description: "The password to log in to RabbitMQ with, for the user `username`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       exchangeName:
-        title: Exchange name
-        description: The exchange name determines the exchange the queue is bound to.
+        title: "Exchange Name"
+        description: "The name of the exchange that the queue is bound to."
+        example: "orders"
         type: string
       queues:
-        title: Queue name
-        description: The queue to receive messages from
+        title: "Queue Name"
+        description: "The queue to receive the messages from. When it is not set, a new queue with a generated name is used, which only makes sense with `autoDeclare` true."
+        example: "orders"
         type: string
       autoDeclare:
-        title: Auto Declare
-        description: The routing key to use when binding a consumer queue to the exchange
+        title: "Create Exchange and Queue"
+        description: "If true, the source creates the exchange (as a `direct` exchange) and the queue in `queues`, and binds them with `routingKey`, when it starts. If false, they must exist already."
         type: boolean
         default: false
       vhost:
-        title: Virtual Host
-        description: The virtual host
+        title: "Virtual Host"
+        description: "The virtual host of the broker to connect to, which holds the exchanges and queues. RabbitMQ has the virtual host `/` from the start."
         type: string
         default: "/"
       protocol:
-        title:  Protocol
-        description: The AMQP protocol to use.
+        title: "Protocol"
+        description: "`amqp` for a plain connection, or `amqps` for a connection encrypted with TLS."
         type: string
         enum: ["amqp", "amqps"]
         default: "amqp"
+  dataTypes:
+    out:
+      headers:
+        CamelSpringRabbitmqExchangeName:
+          title: "Exchange Name"
+          description: "The exchange the message was published to."
+          type: string
+        CamelSpringRabbitmqRoutingKey:
+          title: "Routing Key"
+          description: "The routing key the message was published with."
+          type: string
+        CamelSpringRabbitmqContentType:
+          title: "Content Type"
+          description: "The content type of the message, such as `text/plain`."
+          type: string
   dependencies:
     - "camel:spring-rabbitmq"
     - "camel:kamelet"

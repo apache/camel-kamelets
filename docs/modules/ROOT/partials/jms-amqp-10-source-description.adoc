@@ -1,46 +1,38 @@
 == JMS AMQP 1.0 Source Kamelet Description
 
-=== Authentication methods
+=== Login and TLS
 
-This Kamelet supports AMQP 1.0 authentication mechanisms including:
+The Kamelet has no separate options for the login or TLS: they go in `remoteURI`, as settings of the Apache Qpid JMS
+client after `?`.
 
-- SASL authentication with username and password
-- Connection to AMQP 1.0 brokers
+- A login: `amqp://broker.example.com:5672?jms.username=app&jms.password=secret`
+- TLS: the `amqps://` scheme, with `transport.trustStoreLocation` and `transport.trustStorePassword` when the broker
+  certificate is not trusted by the Java runtime.
 
 === Output format
 
-The Kamelet consumes messages from JMS AMQP 1.0 queues and produces the message data in the configured format.
+The body is text for a JMS text message, bytes for a bytes message, and a Map for a map message. The JMS properties of
+the message become headers.
 
 === Configuration
 
 The Kamelet requires connection parameters for the AMQP 1.0 broker:
 
-- `remoteURI`: The AMQP broker URI
-- `username`: Username for authentication
-- `password`: Password for authentication
-- `destinationName`: The destination queue or topic name
+- `remoteURI`: the address of the broker, with the login when the broker needs one
+- `destinationName`: the name of the queue or topic
+- `destinationType`: `queue` (the default) or `topic`
 
 === Usage example
 
-```yaml
-apiVersion: camel.apache.org/v1alpha1
-kind: KameletBinding
-metadata:
-  name: jms-amqp-10-source-binding
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
-      name: jms-amqp-10-source
-    properties:
-      remoteURI: "amqp://broker.example.com:5672"
-      username: "{{username}}"
-      password: "{{password}}"
-      destinationName: "my-queue"
-  sink:
-    ref:
-      kind: Service
-      apiVersion: v1
-      name: my-service
-```
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:jms-amqp-10-source"
+      parameters:
+        remoteURI: "amqp://broker.example.com:5672?jms.username=app&jms.password=secret"
+        destinationName: "my-queue"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

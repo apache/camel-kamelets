@@ -28,12 +28,42 @@ metadata:
   labels:
     camel.apache.org/kamelet.type: "source"
 spec:
+  dataTypes:
+    out:
+      headers:
+        topic_name:
+          title: "Topic Name"
+          description: "The full name of the topic the message came from, such as `persistent://public/default/orders`."
+          type: string
+        key:
+          title: "Message Key"
+          description: "The key of the message, when it has one."
+          type: string
+        properties:
+          title: "Properties"
+          description: "The Pulsar properties of the message, as a Map."
+          type: object
+        message_id:
+          title: "Message ID"
+          description: "The ID Pulsar gave the message."
+          type: string
+        publish_time:
+          title: "Publish Time"
+          description: "When the message was published, in milliseconds since 1970-01-01 UTC."
+          type: integer
   dependencies:
     - "camel:pulsar"
     - "camel:kamelet"
   definition:
     title: "Pulsar Source"
-    description: "Receive data from Pulsar topics."
+    description: |-
+      Receives each message from a topic in Apache Pulsar, or from every topic whose name matches a pattern, through a named subscription.
+
+      Use it to process events or data that other applications publish to Pulsar. Several copies can share the work with a `SHARED` or `KEY_SHARED` subscription.
+
+      Output: the body is the payload, as bytes. The headers give the topic (`topic_name`), the key (`key`), the Pulsar properties as a Map (`properties`), the `message_id`, the `publish_time` and the `producer_name`.
+
+      Good to know: the subscription (`subscriptionName`, `subs` by default) remembers what was read, so messages sent while the source is stopped are read when it starts again. A new subscription starts at the newest message, unless `subscriptionInitialPosition` is `EARLIEST`. A message whose processing fails is delivered again after one minute, again and again, unless `maxRedeliverCount` is set. It connects with no TLS and no login, unless `serviceUrl` starts with `pulsar+ssl://` and `authenticationClass` is set.
     required:
       - topicType
       - topic
@@ -42,103 +72,108 @@ spec:
       - serviceUrl
     properties:
       topic:
-        title: Topic Name
-        description: The topic name or regexp
+        title: "Topic Name"
+        description: "The name of the topic within the namespace to receive the messages from. When `topicsPattern` is true, a regular expression for the names of the topics instead, such as `orders-.*`."
+        example: "orders"
         type: string
       tenant:
-        title: Tenant Name
-        description: The Tenant Name
+        title: "Tenant Name"
+        description: "The Pulsar tenant that the namespace belongs to. A new Pulsar has the tenant `public`."
+        example: "public"
         type: string
       topicType:
-        title: Topic Type
-        description: "The topic type."
+        title: "Topic Type"
+        description: "Whether the topic is `persistent`, which stores the messages until they are read, or `non-persistent`, which stores nothing and drops the messages that no one is subscribed to."
         type: string
         enum: ["persistent", "non-persistent"]
       namespaceName:
-        title: Pulsar Namespace Name
-        description: The Pulsar Namespace Name
+        title: "Namespace Name"
+        description: "The namespace within the tenant that holds the topic. A new Pulsar has the namespace `default` in the tenant `public`."
+        example: "default"
         type: string
       serviceUrl:
-        title: Service URL
-        description: The Pulsar Service URL to point while creating the client from URI.
+        title: "Service URL"
+        description: "The address of the Pulsar broker, as `pulsar://host:port` (the usual port is 6650), or `pulsar+ssl://host:port` for TLS (usually 6651)."
+        example: "pulsar://localhost:6650"
         type: string        
       authenticationClass:
-        title: Authentication Class
-        description: The Authentication FQCN to be used while creating the client from URI.
+        title: "Authentication Class"
+        description: "The Java class of the Pulsar authentication plugin to log in with, such as `org.apache.pulsar.client.impl.auth.AuthenticationToken` for a token. Leave it empty for a Pulsar without login."
+        example: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
         type: string
       authenticationParams:
-        title: Authentication Params
-        description: The Authentication Parameters to be used while creating the client from URI.
+        title: "Authentication Params"
+        description: "The settings of the plugin in `authenticationClass`, in the form that plugin expects: for `AuthenticationToken`, `token:` followed by the token."
         type: string
       consumerNamePrefix:
-        title: Consumer Name Prefix
-        description: Prefix to add to consumer names when a SHARED or FAILOVER subscription is used
+        title: "Consumer Name Prefix"
+        description: "The start of the name of each receiver of a `SHARED` or `FAILOVER` subscription; a number is added to it."
         type: string
         default: cons
       consumerQueueSize:
-        title: Consumer Queue Size
-        description: Size of the consumer queue
+        title: "Consumer Queue Size"
+        description: "How many messages each receiver fetches from Pulsar ahead of time."
         type: integer
         default: 10
       deadLetterTopic:
-        title: Dead Letter Topic
-        description: "Name of the topic where the messages which fail `maxRedeliverCount` times are sent. Note: if not set, default topic name is topicName-subscriptionName-DLQ."
+        title: "Dead Letter Topic"
+        description: "The topic that gets the messages that failed `maxRedeliverCount` times. When it is not set, it is the topic name followed by `-`, the subscription name and `-DLQ`. Only used when `maxRedeliverCount` is set."
         type: integer
       maxRedeliverCount:
-        title: Maximum Redelivery Count
-        description: "Maximum number of times that a message is redelivered before being sent to the dead letter queue. If this value is not set, no Dead Letter Policy is created."
+        title: "Maximum Redelivery Count"
+        description: "How many times a message whose processing fails is delivered again before it goes to `deadLetterTopic`. When it is not set, a failing message is delivered again forever."
         type: integer
       negativeAckRedeliveryDelayMicros:
-        title: Negative Ack Redelivery Delay in Microseconds
-        description: "Set the negative acknowledgement delay."
+        title: "Redelivery Delay"
+        description: "How long to wait before a message whose processing failed is delivered again, in microseconds. For example, 60000000 is one minute."
         type: integer
         default: 60000000
       messageListener:
-        title: Message Listener
-        description: "Whether to use the messageListener interface, or to receive messages using a separate thread pool."
+        title: "Message Listener"
+        description: "If true, Pulsar hands each message to the source as it arrives. If false, `numberOfConsumerThreads` threads fetch the messages."
         type: boolean
         default: true
       numberOfConsumers:
-        title: Number Of Consumers
-        description: "Number of consumers."
+        title: "Number of Consumers"
+        description: "How many receivers to open on the subscription. More than one only helps with a `SHARED`, `KEY_SHARED` or `FAILOVER` `subscriptionType`."
         type: integer
         default: 1        
       numberOfConsumerThreads:
-        title: Number Of Consumer Threads
-        description: "Number of threads to receive and handle messages when using a separate thread pool."
+        title: "Number of Consumer Threads"
+        description: "How many threads fetch and handle the messages when `messageListener` is false."
         type: integer
         default: 1
       readCompacted:
-        title: Read Compacted
-        description: "Enable compacted topic reading."
+        title: "Read Compacted"
+        description: "If true, reads the compacted topic, which keeps only the newest message for each key. Only for a persistent topic with an `EXCLUSIVE` or `FAILOVER` subscription."
         type: boolean
         default: false
       subscriptionInitialPosition:
-        title: Subscription Initial Position
-        description: "Control the initial position in the topic of a newly created subscription. Default is latest message."
+        title: "Subscription Initial Position"
+        description: "Where a new subscription starts reading: `LATEST` reads only the messages sent from then on, `EARLIEST` also reads the messages already in the topic. An existing subscription goes on where it stopped."
         type: string
         default: LATEST
         enum: ["EARLIEST", "LATEST"]
       subscriptionName:
-        title: Subscription Name
-        description: "Name of the subscription to use."
+        title: "Subscription Name"
+        description: "The name of the subscription. Pulsar remembers for each subscription which messages were read, so keep the name across restarts. Two sources with different names each get every message."
         type: string
         default: subs
       subscriptionTopicsMode:
-        title: Subscription Topics Mode
-        description: "Determines to which topics this consumer should be subscribed to - Persistent, Non-Persistent, or both. Only used with pattern subscriptions."
+        title: "Subscription Topics Mode"
+        description: "Which topics a pattern subscription covers: persistent ones, non-persistent ones, or both. Only used when `topicsPattern` is true."
         type: string
         default: PersistentOnly
         enum: ["PersistentOnly", "NonPersistentOnly", "AllTopics"]
       subscriptionType:
-        title: Subscription Type
-        description: "Type of the subscription."
+        title: "Subscription Type"
+        description: "How the receivers of the subscription share the messages: `EXCLUSIVE` allows one receiver only, `SHARED` spreads the messages over all receivers, `FAILOVER` sends them all to one receiver and moves to another when it goes away, and `KEY_SHARED` spreads them while keeping the messages with the same key on one receiver."
         type: string
         default: EXCLUSIVE
         enum: ["EXCLUSIVE", "SHARED", "FAILOVER", "KEY_SHARED"]
       topicsPattern:
-        title: Topic Pattern
-        description: "Whether the topic is a pattern (regular expression) that allows the consumer to subscribe to all matching topics in the namespace."
+        title: "Topic Pattern"
+        description: "If true, `topic` is a regular expression, and the source subscribes to every topic of the namespace whose name matches it."
         type: boolean
         default: false
     type: object

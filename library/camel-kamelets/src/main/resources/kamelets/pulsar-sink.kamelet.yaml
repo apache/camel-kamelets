@@ -28,12 +28,32 @@ metadata:
   labels:
     camel.apache.org/kamelet.type: "sink"
 spec:
+  dataTypes:
+    in:
+      headers:
+        CamelPulsarProducerMessageKey:
+          title: "Message Key"
+          description: "Optional. The key of the message, which keeps the messages with the same key in order on one partition."
+          type: string
+        CamelPulsarProducerMessageProperties:
+          title: "Message Properties"
+          description: "Optional. A Map of the properties to set on the message."
+          type: object
   dependencies:
     - "camel:pulsar"
     - "camel:kamelet"
   definition:
     title: "Pulsar Sink"
-    description: "Send documents to Pulsar."
+    description: |-
+      Sends each message to a topic in Apache Pulsar, named by its tenant, namespace and topic name.
+
+      Use it to publish events or data for other applications to read from Pulsar, such as orders or sensor readings. Use `pulsar-source` to read them.
+
+      Input: the body is the payload, as text or bytes. A Map fails: turn it into JSON text first, for example with `json-serialize-action`. The headers of the message are not sent as Pulsar properties; to set properties, put a Map in the `CamelPulsarProducerMessageProperties` header. The optional `CamelPulsarProducerMessageKey` header becomes the key of the message.
+
+      Output: the message is unchanged.
+
+      Good to know: it connects with no TLS and no login, unless `serviceUrl` starts with `pulsar+ssl://` and `authenticationClass` is set. It connects when the integration starts, and the integration fails to start when Pulsar cannot be reached, unless `lazyStartProducer` is true.
     required:
       - topicType
       - topic
@@ -42,88 +62,93 @@ spec:
       - serviceUrl
     properties:
       topic:
-        title: Topic Name
-        description: The topic name or regexp.
+        title: "Topic Name"
+        description: "The name of the topic within the namespace to send the messages to."
+        example: "orders"
         type: string
       tenant:
-        title: Tenant Name
-        description: The Tenant Name.
+        title: "Tenant Name"
+        description: "The Pulsar tenant that the namespace belongs to. A new Pulsar has the tenant `public`."
+        example: "public"
         type: string
       topicType:
-        title: Topic Type
-        description: "The topic type."
+        title: "Topic Type"
+        description: "Whether the topic is `persistent`, which stores the messages until they are read, or `non-persistent`, which stores nothing and drops the messages that no one is subscribed to."
         type: string 
         enum: ["persistent", "non-persistent"]
       namespaceName:
-        title: Pulsar Namespace Name
-        description: The Pulsar Namespace Name.
+        title: "Namespace Name"
+        description: "The namespace within the tenant that holds the topic. A new Pulsar has the namespace `default` in the tenant `public`."
+        example: "default"
         type: string
       serviceUrl:
-        title: Service URL
-        description: The Pulsar Service URL to point while creating the client from URI.
+        title: "Service URL"
+        description: "The address of the Pulsar broker, as `pulsar://host:port` (the usual port is 6650), or `pulsar+ssl://host:port` for TLS (usually 6651)."
+        example: "pulsar://localhost:6650"
         type: string        
       authenticationClass:
-        title: Authentication Class
-        description: The Authentication FQCN to be used while creating the client from URI.
+        title: "Authentication Class"
+        description: "The Java class of the Pulsar authentication plugin to log in with, such as `org.apache.pulsar.client.impl.auth.AuthenticationToken` for a token. Leave it empty for a Pulsar without login."
+        example: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
         type: string
       authenticationParams:
-        title: Authentication Params
-        description: The Authentication Parameters to be used while creating the client from URI.
+        title: "Authentication Params"
+        description: "The settings of the plugin in `authenticationClass`, in the form that plugin expects: for `AuthenticationToken`, `token:` followed by the token."
         type: string
       batchingEnabled:
-        title: Enable Batching
-        description: Control whether automatic batching of messages is enabled for the producer.
+        title: "Enable Batching"
+        description: "If true, messages sent close together are grouped and sent to Pulsar in one batch."
         type: boolean
         default: true
       batchingMaxMessages:
-        title: Batching Maximum Messages
-        description: "The maximum size to batch messages."
+        title: "Batching Maximum Messages"
+        description: "The most messages in one batch. Only used when `batchingEnabled` is true."
         type: integer
         default: 1000
       batchingMaxPublishDelayMicros:
-        title: Batching Maximum Publish Delay in Microsecond
-        description: "Used if `batchingEnabled` is `true`. Sets the maximum time period within which the messages sent are batched."
+        title: "Batch Publish Delay"
+        description: "How long to wait for more messages to fill a batch before sending it, in microseconds. For example, 1000 is one millisecond. Only used when `batchingEnabled` is true."
         type: integer
         default: 1000
       blockIfQueueFull:
-        title: Block If Queue Full
-        description: "Whether to block the producing thread if pending messages queue is full or to throw a ProducerQueueIsFullError."
+        title: "Block If Queue Full"
+        description: "What happens when `maxPendingMessages` messages are already waiting for Pulsar to confirm them: if true, sending waits until there is room; if false, the message fails."
         type: boolean
         default: false
       compressionType:
-        title: Compression Type
-        description: "Compression type to use."
+        title: "Compression Type"
+        description: "How to compress the messages on the way to Pulsar. The readers decompress them by themselves."
         type: string
         default: "NONE"
         enum: ["NONE", "LZ4", "ZLIB", "ZSTD", "SNAPPY"]
       initialSequenceId:
-        title: Initial SequenceId
-        description: "The first message published will have a sequence Id of initialSequenceId 1."
+        title: "Initial Sequence ID"
+        description: "The sequence ID to count from: the first message gets this number plus one. With the default, -1, the first message gets 0. Pulsar uses sequence IDs to drop duplicates when deduplication is on."
         type: integer
         default: -1
       lazyStartProducer:
-        title: Number Of Consumer Threads
-        description: "Whether the producer should be started lazy (on the first message). By starting lazy you can use this to allow CamelContext and routes to startup in situations where a producer may otherwise fail during starting and cause the route to fail being started. By deferring this startup to be lazy then the startup failure can be handled during routing messages via Camel’s routing error handlers. Beware that when the first message is processed then creating and starting the producer may take a little time and prolong the total processing time of the processing."
+        title: "Lazy Start"
+        description: "If true, the connection to Pulsar is made when the first message is sent, not when the integration starts. The integration then starts even when Pulsar cannot be reached, and the first message takes longer."
         type: boolean
         default: false
       maxPendingMessages:
-        title: Maximum Pending Messages
-        description: "Size of the pending massages queue. When the queue is full, by default, any further sends will fail unless blockIfQueueFull=true."
+        title: "Maximum Pending Messages"
+        description: "The most messages that can wait at the same time for Pulsar to confirm them. See `blockIfQueueFull` for what happens to more."
         type: integer
         default: 1000
       messageRoutingMode:
-        title: Message Routing Mode
-        description: "Message Routing Mode to use."
+        title: "Message Routing Mode"
+        description: "How messages are spread over the partitions of a partitioned topic: `RoundRobinPartition` spreads them in turn, `SinglePartition` sends them all to one partition, and in both a message with a key always goes to the partition of its key. `CustomPartition` needs a custom router, which this Kamelet cannot set."
         type: string
         default: "RoundRobinPartition"
         enum: ["SinglePartition", "RoundRobinPartition", "CustomPartition"]
       producerName:
-        title: Producer Name
-        description: "Name of the producer. If unset, lets Pulsar select a unique identifier."
+        title: "Producer Name"
+        description: "The name of this sender in Pulsar, shown in the topic statistics and set on each message. When it is not set, Pulsar picks a unique name."
         type: string
       sendTimeoutMs:
-        title: Send Timeout in Milliseconds
-        description: "Send timeout in milliseconds."
+        title: "Send Timeout"
+        description: "How long Pulsar may take to confirm a message before the message fails, in milliseconds. For example, 30000 is 30 seconds."
         type: integer
         default: 30000
     type: object

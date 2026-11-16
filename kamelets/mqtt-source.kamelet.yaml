@@ -30,39 +30,58 @@ metadata:
 spec:
   definition:
     title: "MQTT Source"
-    description: Allows receiving messages from any endpoint that supports the MQTT protocol, such as a message broker.
+    description: |-
+      Receives each message published to a topic on an MQTT broker, such as Eclipse Mosquitto or HiveMQ, with MQTT 3.1.1.
+
+      Use it to collect readings and events from IoT devices and other MQTT clients. A topic with wildcards, such as `sensors/#`, receives from many topics at once. For a broker or clients that use MQTT 5, use `mqtt5-source`.
+
+      Output: the body is the payload, as bytes. The `CamelMqttTopic` header is the topic the message was published to, and `CamelMqttQoS` its quality of service.
+
+      Good to know: it receives only the messages published while it is connected. Each running copy needs its own `clientId`: two clients with the same ID, such as the default `mqtt-source`, keep pushing each other off the broker and lose messages. It connects with no TLS unless `brokerUrl` starts with `ssl://`, and the integration fails to start when the broker cannot be reached.
     required:
     - topic
     - brokerUrl
     type: object
     properties:
       topic:
-        title: Topic
-        description: The topic to subscribe to
+        title: "Topic"
+        description: "The topic to subscribe to. `+` matches one level of the topic and `#` all the levels below, as in `sensors/+/temperature` or `sensors/#`."
         type: string
-        example: "mytopic"
+        example: "sensors/#"
       brokerUrl:
-        title: Broker URL
-        description: The URL of the broker where to establish the connection
+        title: "Broker URL"
+        description: "The address of the MQTT broker, as `tcp://host:port` (usually port 1883), or `ssl://host:port` for TLS (usually port 8883)."
         type: string
         example: "tcp://mosquitto:1883"
       clientId:
-        title: Client ID
-        description: The client ID to use when connecting to the resource
+        title: "Client ID"
+        description: "The client ID that names this connection to the broker. It must be unique on the broker: a second client with the same ID pushes the first one off. The default is the same for every copy of `mqtt-source` and `mqtt5-source`, so give each running copy its own."
+        example: "sensor-reader-1"
         type: string
       username:
-        title: Username
-        description: Username to use when connecting to the MQTT broker
+        title: "Username"
+        description: "The user name to log in to the broker with. Leave it empty for a broker that accepts clients without a login."
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
-        title: Password
-        description: Password to use when connecting to the MQTT broker
+        title: "Password"
+        description: "The password to log in to the broker with, for the user `username`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+  dataTypes:
+    out:
+      headers:
+        CamelMqttTopic:
+          title: "Topic"
+          description: "The topic the message was published to. With a wildcard in `topic`, it tells which topic matched."
+          type: string
+        CamelMqttQoS:
+          title: "Quality of Service"
+          description: "The quality of service of the message as received: 0, 1 or 2."
+          type: integer
   dependencies:
     - "camel:paho"
     - "camel:kamelet"

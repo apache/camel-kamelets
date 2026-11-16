@@ -18,7 +18,7 @@ Supports both persistent messaging (with data durability) and non-persistent mes
 
 === Schema Registry Integration
 
-Pulsar includes built-in schema registry support for schema evolution and validation, ensuring data compatibility across producers and consumers.
+Pulsar includes built-in schema registry support for schema evolution and validation. This Kamelet does not use it: it sends the body as bytes, so turn structured data into JSON text first.
 
 === Cloud-Native Architecture
 

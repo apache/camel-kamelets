@@ -1,43 +1,32 @@
-== Nats Source Kamelet Description
+== NATS Source Kamelet Description
 
-=== Authentication methods
+=== Authentication
 
-This Kamelet connects to Nats using appropriate authentication mechanisms:
-
-- Service-specific authentication methods
-- API keys, tokens, or credential-based authentication
-- Connection configuration
+The Kamelet has no login options. For a server that needs a user and password, put them in the address in `servers`,
+as `nats://user:password@host:4222`. The Kamelet has no TLS options.
 
 === Output format
 
-The Kamelet consumes data from Nats and produces the data in JSON format.
+The body is the NATS payload, unchanged, as a stream of bytes; it is not turned into JSON, although the `Content-Type`
+header is always `application/json`. The `CamelNatsSubject` header is the subject, and the NATS headers of the message
+become headers too.
 
-=== Configuration
+=== JetStream
 
-The Kamelet requires connection parameters specific to Nats:
-
-- Service connection details
-- Authentication credentials
-- Query or consumption parameters
+With `jetstreamEnabled` set to true, the Kamelet reads from the JetStream stream `jetstreamName`, and creates it for
+the subject in `topic` when it does not exist. Each time it starts, it reads the stream from the beginning.
 
 === Usage example
 
-```yaml
-apiVersion: camel.apache.org/v1alpha1
-kind: KameletBinding
-metadata:
-  name: nats-source-binding
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
-      name: nats-source
-    properties:
-      # Add service-specific properties here
-  sink:
-    ref:
-      kind: Service
-      apiVersion: v1
-      name: my-service
-```
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:nats-source"
+      parameters:
+        servers: "nats://localhost:4222"
+        topic: "orders.created"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
