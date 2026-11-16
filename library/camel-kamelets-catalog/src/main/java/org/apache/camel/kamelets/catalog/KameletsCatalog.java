@@ -18,15 +18,26 @@ package org.apache.camel.kamelets.catalog;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.JarURLConnection;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,7 +70,8 @@ public class KameletsCatalog {
 
     private final Map<String, Kamelet> kameletModels;
     private final List<String> kameletNames;
-    private final DefaultCamelCatalog cc = new DefaultCamelCatalog();
+    // created when a method needs it
+    private volatile DefaultCamelCatalog cc;
 
     public KameletsCatalog() {
         kameletModels = initCatalog();
@@ -68,27 +80,113 @@ public class KameletsCatalog {
 
     private static Map<String, Kamelet> initCatalog() {
         Map<String, Kamelet> kameletModels = new HashMap<>();
+        try {
+            if (loadFromKameletsDirectories(kameletModels)) {
+                return Collections.unmodifiableMap(kameletModels);
+            }
+        } catch (IOException | URISyntaxException | RuntimeException e) {
+            LOG.debug("Cannot list the Kamelets of the class path, scanning it instead", e);
+        }
+        kameletModels.clear();
+        ClassGraphScan.load(kameletModels);
+        return Collections.unmodifiableMap(kameletModels);
+    }
 
-        try (ScanResult scanResult = new ClassGraph().acceptPaths("/" + KAMELETS_DIR + "/").scan()) {
-            for (Resource resource : scanResult.getAllResources()) {
-
-                try (InputStream is = resource.open()) {
-                    String name = sanitizeFileName(resource.getPath());
-                    Kamelet kamelet = MAPPER.readValue(is, Kamelet.class);
-
-                    LOG.debug("Loading kamelet from: {}, path: {}, name: {}",
-                            resource.getClasspathElementFile(),
-                            resource.getPath(),
-                            name);
-
-                    kameletModels.put(name, kamelet);
-                } catch (IOException e) {
-                    LOG.warn("Cannot init Kamelet Catalog with content of " + resource.getPath(), e);
+    /**
+     * Loads the Kamelets of the {@code kamelets} directories that the class loader has: the entries of each JAR under
+     * {@code kamelets/}, or the files of each directory. Listing these takes a fraction of a scan of the whole class
+     * path with ClassGraph (about 50 ms against 250 ms with the 340 JARs of the Camel CLI), which looks at every JAR.
+     *
+     * @return {@code false} when it found no Kamelets this way (such as a class loader whose JARs have no directory
+     *         entries), so the class path is scanned instead
+     */
+    static boolean loadFromKameletsDirectories(Map<String, Kamelet> kameletModels)
+            throws IOException, URISyntaxException {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        if (cl == null) {
+            cl = KameletsCatalog.class.getClassLoader();
+        }
+        Enumeration<URL> urls = cl.getResources(KAMELETS_DIR + "/");
+        while (urls.hasMoreElements()) {
+            URL url = urls.nextElement();
+            if ("file".equals(url.getProtocol())) {
+                Path dir = Paths.get(url.toURI());
+                List<Path> files;
+                try (Stream<Path> walk = Files.walk(dir)) {
+                    files = walk.filter(p -> p.getFileName().toString().endsWith(KAMELETS_FILE_SUFFIX)).sorted()
+                            .collect(Collectors.toList());
+                }
+                for (Path file : files) {
+                    String path = KAMELETS_DIR + "/" + dir.relativize(file).toString().replace('\\', '/');
+                    try (InputStream is = Files.newInputStream(file)) {
+                        put(kameletModels, path, dir, is);
+                    } catch (IOException e) {
+                        LOG.warn("Cannot init Kamelet Catalog with content of " + path, e);
+                    }
+                }
+            } else {
+                URLConnection connection = url.openConnection();
+                if (!(connection instanceof JarURLConnection)) {
+                    // not a JAR or a directory: ClassGraph scans the class path
+                    return false;
+                }
+                JarURLConnection jar = (JarURLConnection) connection;
+                // a JarFile of its own, closed below
+                jar.setUseCaches(false);
+                try (JarFile file = jar.getJarFile()) {
+                    Enumeration<JarEntry> entries = file.entries();
+                    while (entries.hasMoreElements()) {
+                        JarEntry entry = entries.nextElement();
+                        String path = entry.getName();
+                        if (path.startsWith(KAMELETS_DIR + "/") && path.endsWith(KAMELETS_FILE_SUFFIX)) {
+                            try (InputStream is = file.getInputStream(entry)) {
+                                put(kameletModels, path, file.getName(), is);
+                            } catch (IOException e) {
+                                LOG.warn("Cannot init Kamelet Catalog with content of " + path, e);
+                            }
+                        }
+                    }
                 }
             }
         }
+        return !kameletModels.isEmpty();
+    }
 
-        return Collections.unmodifiableMap(kameletModels);
+    private static void put(Map<String, Kamelet> kameletModels, String path, Object source, InputStream is)
+            throws IOException {
+        String name = sanitizeFileName(path);
+        Kamelet kamelet = MAPPER.readValue(is, Kamelet.class);
+        LOG.debug("Loading kamelet from: {}, path: {}, name: {}", source, path, name);
+        kameletModels.put(name, kamelet);
+    }
+
+    /**
+     * The scan of the class path with ClassGraph, when the class loader cannot list its {@code kamelets} directories. In
+     * a class of its own, so the classes of ClassGraph are loaded only when it is used.
+     */
+    static final class ClassGraphScan {
+
+        static void load(Map<String, Kamelet> kameletModels) {
+            try (ScanResult scanResult = new ClassGraph().acceptPaths("/" + KAMELETS_DIR + "/").scan()) {
+                for (Resource resource : scanResult.getAllResources()) {
+                    try (InputStream is = resource.open()) {
+                        put(kameletModels, resource.getPath(), resource.getClasspathElementFile(), is);
+                    } catch (IOException e) {
+                        LOG.warn("Cannot init Kamelet Catalog with content of " + resource.getPath(), e);
+                    }
+                }
+            }
+        }
+    }
+
+    private DefaultCamelCatalog camelCatalog() {
+        DefaultCamelCatalog answer = cc;
+        if (answer == null) {
+            // two threads may each create one: the same content
+            answer = new DefaultCamelCatalog();
+            cc = answer;
+        }
+        return answer;
     }
 
     private static String sanitizeFileName(String fileName) {
@@ -259,7 +357,7 @@ public class KameletsCatalog {
             String prefixName = local.getMetadata().getName().substring(0, lastIndex);
             String schemeName = enumValue(prefixName);
             if (schemeName != null) {
-                ComponentModel componentModel = cc.componentModel(schemeName);
+                ComponentModel componentModel = camelCatalog().componentModel(schemeName);
                 if (componentModel != null && ObjectHelper.isNotEmpty(componentModel.getEndpointHeaders())) {
                     List<ComponentModel.EndpointHeaderModel> headers = componentModel.getEndpointHeaders();
                     for (ComponentModel.EndpointHeaderModel e : headers) {
