@@ -67,7 +67,7 @@ actions:
               "to": "${mail.to}",
               "subject": "${mail.subject}",
               "body": {
-                "contentType": "text/plain",
+                "contentType": "@startsWith('text/plain')@",
                 "content": "${mail.message}",
               }
             }
