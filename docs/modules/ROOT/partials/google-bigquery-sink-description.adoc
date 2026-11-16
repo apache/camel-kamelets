@@ -6,7 +6,7 @@ This Kamelet uses Google Cloud service account authentication. You must provide 
 
 === Input Format
 
-This Kamelet expects JSON-formatted data as input for insertion into BigQuery tables.
+This Kamelet expects JSON text as input: a JSON object for one row, or a JSON array of objects for several rows. The names of the fields are the names of the columns of the table, for example `{"id": 1, "item": "book"}`. A field that is not a column of the table fails the message.
 
 === Required Configuration
 

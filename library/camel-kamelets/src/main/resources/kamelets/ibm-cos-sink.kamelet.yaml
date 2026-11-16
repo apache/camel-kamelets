@@ -31,7 +31,16 @@ metadata:
 spec:
   definition:
     title: "IBM Cloud Object Storage Sink"
-    description: Upload data to an IBM Cloud Object Storage Bucket.
+    description: |-
+      Uploads each message as a file (object) to a bucket in IBM Cloud Object Storage.
+
+      Use it to store data for later use or for other systems, such as exported reports, archived events or files received from another system. To read the files of a bucket, use `ibm-cos-source`.
+
+      Input: the body is the content of the file, as text, bytes, a stream or a file. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The name of the file (its key) is `keyName` when it is set; otherwise the optional `file` header (or `ce-file`), with its folders, such as `reports/2024-06-01.csv`; otherwise a generated unique name.
+
+      Output: the message is unchanged, with the ETag of the uploaded file in the `CamelIBMCOSETag` header.
+
+      Good to know: a file with the same name is overwritten. The bucket must exist, unless `autoCreateBucket` is true. It logs in with an IBM Cloud API key.
     required:
       - bucketName
       - apiKey
@@ -41,55 +50,75 @@ spec:
     properties:
       bucketName:
         title: Bucket Name
-        description: The IBM COS Bucket name.
+        description: The name of the bucket to upload the files to.
         type: string
+        example: my-bucket
       apiKey:
         title: API Key
-        description: IBM Cloud API Key for authentication.
+        description: An IBM Cloud API key that may write to the bucket. Create it in the IBM Cloud console under Manage > Access (IAM) > API keys, or use the `apikey` of a service credential of the Cloud Object Storage instance.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       serviceInstanceId:
         title: Service Instance ID
-        description: IBM COS Service Instance ID (CRN).
+        description: The CRN (Cloud Resource Name) of the Cloud Object Storage instance, shown in the details of the instance in the IBM Cloud console. It starts with `crn:v1:bluemix:public:cloud-object-storage:`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       endpointUrl:
         title: Endpoint URL
-        description: IBM COS Endpoint URL (e.g., https://s3.us-south.cloud-object-storage.appdomain.cloud).
+        description: The address of Cloud Object Storage for the region of the bucket, starting with `https://`, as listed under Endpoints in the Cloud Object Storage instance.
         type: string
         example: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
       location:
         title: Location
-        description: IBM COS Location/Region (e.g., us-south, eu-gb).
+        description: The region of the bucket, such as `us-south` or `eu-gb`. It is information only; the region used is the one of `endpointUrl`.
         type: string
         example: "us-south"
       autoCreateBucket:
         title: Autocreate Bucket
-        description: Specifies to automatically create the IBM COS bucket.
+        description: If true, the bucket is created when it does not exist yet.
         type: boolean
         default: false
       keyName:
         title: Key Name
-        description: The key name for saving an element in the bucket.
+        description: The name of the file in the bucket, the same for every message, so each message overwrites the previous file. When it is not set, the name comes from the `file` or `ce-file` header, or is generated. A `CamelIBMCOSKey` header on the message, as `ibm-cos-source` sets, is used instead of it.
         type: string
+        example: reports/latest.csv
       multiPartUpload:
         title: Multi-Part Upload
-        description: Use multi-part upload for large files.
+        description: If true, a file larger than `partSize` is uploaded in several parts, which suits large files.
         type: boolean
         default: false
       partSize:
         title: Part Size
-        description: Part size for multi-part uploads (default 25MB).
+        description: The size of each part of a multi-part upload, in bytes. For example, 26214400 is 25 MB. Only used when `multiPartUpload` is true.
         type: integer
         default: 26214400
       storageClass:
         title: Storage Class
-        description: The storage class to use when storing objects (e.g., STANDARD, VAULT, COLD, FLEX).
+        description: The storage class to store the files with, such as `STANDARD`, `VAULT`, `COLD` or `FLEX`.
         type: string
+        example: STANDARD
+  dataTypes:
+    in:
+      headers:
+        file:
+          title: File Name
+          description: The name of the file in the bucket, with its folders, such as `reports/2024-06-01.csv`. Not used when `keyName` is set.
+          type: string
+        ce-file:
+          title: File Name
+          description: The name of the file in the bucket, as a CloudEvents extension. Used when neither `keyName` nor `file` is set.
+          type: string
+    out:
+      headers:
+        CamelIBMCOSETag:
+          title: ETag
+          description: The ETag of the uploaded file.
+          type: string
   dependencies:
     - "camel:ibm-cos"
     - "camel:kamelet"

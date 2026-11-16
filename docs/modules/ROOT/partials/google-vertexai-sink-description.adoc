@@ -4,17 +4,17 @@
 
 This Kamelet uses Google Cloud service account authentication. The service account key is optional - if not provided, the Kamelet will use Application Default Credentials (ADC).
 
-If you provide a service account key, it must be base64-encoded. Ensure that the service account has the `aiplatform.endpoints.predict` permission (typically granted through the `Vertex AI User` role).
+If you provide a service account key, give its location: `file:` followed by the path of the JSON key file, or `base64:` followed by the Base64 encoding of its content. Ensure that the service account has the `aiplatform.endpoints.predict` permission (typically granted through the `Vertex AI User` role).
 
 === Required Configuration
 
 - **Project ID**: The Google Cloud Project ID
-- **Location**: The Google Cloud region where Vertex AI models are available (e.g., `us-central1`)
+- **Location**: The Google Cloud region where Vertex AI models are available (e.g., `us-central1`). When the Kamelet is used from a route as `kamelet:google-vertexai-sink?location=...`, the `location` is taken as the place to load the Kamelet from; set it as the property `camel.kamelet.google-vertexai-sink.location` instead
 - **Model ID**: The model identifier to use for predictions (e.g., `gemini-2.5-pro`)
 
 === Optional Configuration
 
-- **Service Account Key**: Base64-encoded service account credentials
+- **Service Account Key**: The location of the service account key, as `file:<path>` or `base64:<Base64 of the key file>`
 - **Operation**: The operation to perform (default: `generateText`). Supported operations are `generateText`, `generateChat`, `generateImage`, `generateEmbeddings`, `generateCode`, `generateMultimodal`, and `rawPredict`
 - **Temperature**: Controls randomness in generation (0.0 to 1.0)
 - **Max Output Tokens**: Maximum number of tokens to generate in the response
@@ -23,4 +23,4 @@ If you provide a service account key, it must be base64-encoded. Ensure that the
 
 === Content Generation
 
-The Kamelet sends the message body as a prompt to the specified Google Vertex AI model and returns the generated content. It supports Google native models (Gemini, Imagen) as well as partner models (Claude, Llama, Mistral) through the `rawPredict` operation.
+The Kamelet sends the message body as a prompt to the specified Google Vertex AI model and returns the generated content. It supports Google native models, such as Gemini and Imagen. The `rawPredict` operation for partner models needs a publisher, which this Kamelet cannot set, so it fails.

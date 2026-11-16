@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Google Vertex AI Sink"
-    description: Send data to Google Vertex AI for generating content with generative AI models.
+    description: |-
+      Sends each message as a prompt to a generative AI model in Google Vertex AI, such as Gemini, and replaces the body with the answer of the model.
+
+      Use it to summarize, classify, translate or answer questions about text as it flows, for example to summarize support tickets or extract the topic of an email.
+
+      Input: the body is the prompt, as text; bytes and streams are read as text. The optional `CamelGoogleVertexAIPrompt` header gives the prompt instead of the body.
+
+      Output: when it is used inside a route, the body afterwards is the answer of the model, as text, for the default `generateText` operation. The `CamelGoogleVertexAIFinishReason` header says why the model stopped, and the token counts are in the `CamelGoogleVertexAIPromptTokenCount`, `CamelGoogleVertexAICandidatesTokenCount` and `CamelGoogleVertexAITotalTokenCount` headers.
+
+      Good to know: used from a route as `kamelet:google-vertexai-sink?location=...`, the `location` option is taken as the place to load the Kamelet from and the Kamelet fails to start; set it as the property `camel.kamelet.google-vertexai-sink.location` instead.
     required:
       - projectId
       - location
@@ -38,46 +47,78 @@ spec:
     type: object
     properties:
       projectId:
-        title: Google Cloud Project Id
-        description: The Google Cloud Project ID.
+        title: Google Cloud Project ID
+        description: The ID of the Google Cloud project where Vertex AI is enabled, as shown in the Google Cloud console. It is the project ID, not the project name or number.
         type: string
+        example: my-project-123
       location:
         title: Google Cloud Location
-        description: The Google Cloud region (e.g., us-central1).
+        description: The Google Cloud region to call the model in, where the model is available.
         type: string
+        example: us-central1
       modelId:
-        title: Model Id
-        description: The Model ID to use for predictions (e.g., gemini-2.5-pro).
+        title: Model ID
+        description: The ID of the model to use, as listed in the Model Garden of the Vertex AI console.
         type: string
+        example: gemini-2.5-flash
       serviceAccountKey:
         title: Service Account Key
-        description: The service account key to use as credentials for the Vertex AI client. You must encode this value in base64.
+        description: "Where to read the JSON key of a service account that may call Vertex AI, such as one with the Vertex AI User role: `file:` followed by the path of the key file, or `base64:` followed by the Base64 encoding of its content. Create the key in the Google Cloud console under IAM & Admin > Service Accounts > Keys. When it is not set, the Application Default Credentials are used: the key file named in the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, or the service account of the Google Cloud machine it runs on."
         type: binary
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       operation:
         title: Operation
-        description: The operation to perform.
+        description: What to ask the model for. `generateText` (the default), `generateChat` and `generateCode` answer the prompt with text, `generateImage` gives a List of images, `generateEmbeddings` gives one vector of numbers per text, and `generateMultimodal` sends media together with the prompt. `rawPredict` fails, as it needs a publisher that this Kamelet cannot set.
         type: string
         default: generateText
         enum: ["generateText", "generateChat", "generateImage", "generateEmbeddings", "generateCode", "generateMultimodal", "rawPredict"]
       temperature:
         title: Temperature
-        description: Controls randomness in generation. Lower values make output more deterministic. Range 0.0 to 1.0.
+        description: How random the answer is, a number from 0.0 to 1.0, such as `0.2`. Lower values give more predictable answers. When it is not set, 0.7 is used.
         type: string
+        example: "0.2"
       maxOutputTokens:
         title: Max Output Tokens
-        description: Maximum number of tokens to generate in the response.
+        description: The most tokens (pieces of words) the answer may have, a whole number. When it is not set, 1024 is used.
         type: string
+        example: "2048"
       topP:
         title: Top P
-        description: Nucleus sampling parameter. Considers tokens with top_p probability mass. Range 0.0 to 1.0.
+        description: Only choose each next word among the most likely ones whose probabilities add up to this number, from 0.0 to 1.0. When it is not set, 0.95 is used.
         type: string
+        example: "0.95"
       topK:
         title: Top K
-        description: Only sample from the top K options for each subsequent token.
+        description: Only choose each next word among this many most likely ones, a whole number. When it is not set, 40 is used.
         type: string
+        example: "40"
+  dataTypes:
+    in:
+      headers:
+        CamelGoogleVertexAIPrompt:
+          title: Prompt
+          description: The prompt to send. When it is set, it is used instead of the body.
+          type: string
+    out:
+      headers:
+        CamelGoogleVertexAIFinishReason:
+          title: Finish Reason
+          description: Why the model stopped answering, such as `STOP` or `MAX_TOKENS`.
+          type: string
+        CamelGoogleVertexAIPromptTokenCount:
+          title: Prompt Token Count
+          description: The number of tokens of the prompt.
+          type: integer
+        CamelGoogleVertexAICandidatesTokenCount:
+          title: Answer Token Count
+          description: The number of tokens of the answer.
+          type: integer
+        CamelGoogleVertexAITotalTokenCount:
+          title: Total Token Count
+          description: The number of tokens of the prompt and the answer together.
+          type: integer
   dependencies:
     - "camel:kamelet"
     - "camel:google-vertexai"

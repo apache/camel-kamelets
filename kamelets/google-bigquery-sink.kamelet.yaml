@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Google Big Query Sink"
-    description: Send data to a Google Big Query table.
+    description: |-
+      Inserts each message as one or more rows into a table in Google BigQuery.
+
+      Use it to load events or records into BigQuery for analytics and reports, such as orders, page views or sensor readings, as they happen.
+
+      Input: the body is JSON text: a JSON object for one row, or a JSON array of objects for several rows. The names of the fields are the names of the columns of the table, such as `{"id": 1, "item": "book"}`.
+
+      Output: when it is used inside a route, the body afterwards is the parsed JSON: a Map for one row, or a List of Maps.
+
+      Good to know: the table must exist with its columns. A message with a field that is not a column of the table, or with a body that is not JSON, fails, and none of its rows are inserted.
     required:
       - projectId
       - dataset
@@ -39,20 +48,23 @@ spec:
     type: object
     properties:
       projectId:
-        title: Google Cloud Project Id
-        description: The Google Cloud Project ID.
+        title: Google Cloud Project ID
+        description: The ID of the Google Cloud project that holds the dataset, as shown in the Google Cloud console. It is the project ID, not the project name or number.
         type: string
+        example: my-project-123
       dataset:
-        title: Big Query Dataset Id
-        description: The Big Query Dataset ID.
+        title: BigQuery Dataset ID
+        description: The ID of the dataset that holds the table, as shown in the BigQuery console.
         type: string
+        example: shop
       table:
-        title: Big Query Table Id
-        description: The Big Query Table ID.
+        title: BigQuery Table ID
+        description: The ID of the table to insert the rows into, without the project and dataset.
         type: string
+        example: orders
       serviceAccountKey:
         title: Service Account Key
-        description: The service account key to use as credentials for the BigQuery Service. You must encode this value in base64.
+        description: "The JSON key of a service account that may insert rows into the table, such as one with the BigQuery Data Editor role, encoded in Base64: create the key in the Google Cloud console under IAM & Admin > Service Accounts > Keys, then encode the downloaded file, for example with `base64 -w0 key.json`."
         type: binary
         format: password
         x-descriptors:

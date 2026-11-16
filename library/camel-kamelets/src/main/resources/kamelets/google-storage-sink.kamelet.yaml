@@ -30,27 +30,54 @@ metadata:
 spec:
   definition:
     title: "Google Storage Sink"
-    description: Upload objects to Google Cloud Storage.
+    description: |-
+      Uploads each message as a file (object) to a Google Cloud Storage bucket.
+
+      Use it to store data for later use or for other systems, such as exported reports, archived events or files received from another system. To read the files of a bucket, use `google-storage-source`.
+
+      Input: the body is the content of the file, as text, bytes, a stream or a file. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The optional `file` header (or `ce-file`) is the name of the file in the bucket, with its folders, such as `reports/2024-06-01.csv`; without it, the file gets a generated unique name.
+
+      Output: when it is used inside a route, the body afterwards describes the uploaded file (its bucket, name, size and generation), not its content, and the `CamelGoogleCloudStorageObjectName` header holds the name of the file.
+
+      Good to know: a file with the same name is overwritten. The bucket must exist, unless `autoCreateBucket` is true. Without `serviceAccountKey`, it logs in with the Application Default Credentials of the environment where it runs.
     required:
       - bucketNameOrArn
     type: object
     properties:
       bucketNameOrArn:
-        title: Bucket Name Or ARN
-        description: The Google Cloud Storage bucket name or Bucket Amazon Resource Name (ARN).
+        title: Bucket Name
+        description: The name of the bucket to upload the files to, without `gs://`.
         type: string
+        example: my-bucket
       serviceAccountKey:
         title: Service Account Key
-        description: The service account key to use as credentials for Google Cloud Storage access. You must encode this value in base64.
+        description: "The JSON key of a service account that may write to the bucket, encoded in Base64: create the key in the Google Cloud console under IAM & Admin > Service Accounts > Keys, then encode the downloaded file, for example with `base64 -w0 key.json`. When it is not set, the Application Default Credentials are used: the key file named in the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, or the service account of the Google Cloud machine it runs on."
         type: binary
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       autoCreateBucket:
         title: Autocreate Bucket
-        description: Specifies to automatically create the Google Cloud Storage bucket.
+        description: If true, the bucket is created when it does not exist yet. The service account then needs the permission to create buckets in the project.
         type: boolean
         default: false
+  dataTypes:
+    in:
+      headers:
+        file:
+          title: File Name
+          description: The name of the file in the bucket, with its folders, such as `reports/2024-06-01.csv`. When neither it nor `ce-file` is set, the file gets a generated unique name.
+          type: string
+        ce-file:
+          title: File Name
+          description: The name of the file in the bucket, as a CloudEvents extension. Used when `file` is not set.
+          type: string
+    out:
+      headers:
+        CamelGoogleCloudStorageObjectName:
+          title: Object Name
+          description: The name the file was uploaded with.
+          type: string
   dependencies:
     - "camel:kamelet"
     - "camel:google-storage"

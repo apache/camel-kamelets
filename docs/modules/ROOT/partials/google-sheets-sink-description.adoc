@@ -9,7 +9,7 @@ This Kamelet uses OAuth 2.0 authentication with Google Sheets API. You need to p
 
 === Input Format
 
-This Kamelet expects JSON data that will be transformed into Google Sheets ValueRange format.
+This Kamelet expects JSON text: a JSON object for one row, or a JSON array of objects for several rows. The keys are the column letters, such as `{"A": "Alice", "B": 3}`, or the names set in `columnNames`. Only the columns of `range` are written, so set `range` to cover them, such as `A:B`; without it, only column A is written.
 
 === Operation Modes
 
@@ -24,11 +24,12 @@ This Kamelet expects JSON data that will be transformed into Google Sheets Value
 - **Column Names**: Custom column mappings
 - **Value Input Option**: USER_ENTERED (default) or RAW
 
-=== Headers Support
+=== Headers
 
-The Kamelet supports various headers to override configuration:
-- `CamelGoogleSheets.range`: Override the cell range
-- `CamelGoogleSheets.spreadsheetId`: Override spreadsheet ID
-- `CamelGoogleSheets.majorDimension`: Override major dimension
-- `CamelGoogleSheets.columnNames`: Override column names
-- `CamelGoogleSheets.valueInputOption`: Override value input option
+The Kamelet sets these headers from its options before it writes, so headers that the message already has are replaced:
+
+- `CamelGoogleSheets.range`: the `range` option
+- `CamelGoogleSheets.spreadsheetId`: the `spreadsheetId` option
+- `CamelGoogleSheets.majorDimension`: the `majorDimension` option
+- `CamelGoogleSheets.columnNames`: the `columnNames` option
+- `CamelGoogleSheets.valueInputOption`: the `valueInputOption` option

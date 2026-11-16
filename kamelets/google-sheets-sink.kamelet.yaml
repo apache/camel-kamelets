@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Google Sheets Sink"
-    description: Send data to Google Sheets and update/append values on a spreadsheet.
+    description: |-
+      Writes each message as one or more rows to a Google Sheets spreadsheet, either appended after the last row or written over a given range of cells.
+
+      Use it to collect data in a spreadsheet that people can read and share, such as form submissions, orders or daily figures. To read the rows of a spreadsheet, use `google-sheets-source`.
+
+      Input: the body is JSON text: a JSON object for one row, or a JSON array of objects for several rows. The keys are the column letters of the cells to write, such as `{"A": "Alice", "B": 3}`, or the names set in `columnNames`. Only the columns of `range` are written, so set `range` to cover them, such as `A:B`.
+
+      Output: when it is used inside a route, the body afterwards is the response of Google Sheets, which says which cells were written.
+
+      Good to know: without `range`, only column `A` is written. With the default `operation` of `append`, the rows are added after the last row of the table found in `range`; with `update`, they overwrite the cells of `range`. It logs in to Google with OAuth: an OAuth client of a Google Cloud project, and an access token and a refresh token of the Google account that owns or may edit the spreadsheet.
     required:
       - spreadsheetId
       - clientId
@@ -41,67 +50,70 @@ spec:
     properties:
       spreadsheetId:
         title: Spreadsheet ID
-        description: The Spreadsheet ID to be used as identifier
+        description: The ID of the spreadsheet, the long part of its address between `/d/` and `/edit`, as in `https://docs.google.com/spreadsheets/d/<ID>/edit`.
         type: string
+        example: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms
       clientId:
-        title: Client Id
-        description: Client ID of the sheets application
+        title: Client ID
+        description: The client ID of an OAuth client, created in the Google Cloud console under APIs & Services > Credentials, in a project where the Google Sheets API is enabled.
         type: string
         format: password
         x-descriptors:
           - urn:camel:group:credentials
       clientSecret:
         title: Client Secret
-        description: Client Secret of the sheets application
+        description: The client secret of the OAuth client of `clientId`.
         type: string
         format: password
         x-descriptors:
           - urn:camel:group:credentials
       accessToken:
         title: Access Token
-        description: OAuth 2 access token for google sheets application. This typically expires after an hour so refreshToken is recommended for long term usage.
+        description: An OAuth 2 access token of the Google account, with access to Google Sheets. It expires after about an hour; the Kamelet then gets a new one with `refreshToken`.
         type: string
         format: password
         x-descriptors:
           - urn:camel:group:credentials
       refreshToken:
         title: Refresh Token
-        description: OAuth 2 refresh token for google sheets application. Using this, the Google Calendar component can obtain a new accessToken whenever the current one expires - a necessity if the application is long-lived.
+        description: An OAuth 2 refresh token of the Google account, which the Kamelet uses to get a new access token when the current one expires. You get it together with the access token, for example from the Google OAuth 2.0 Playground.
         type: string
         format: password
         x-descriptors:
           - urn:camel:group:credentials
       applicationName:
         title: Application Name
-        description: Google Sheets application name
+        description: A name for your application, sent to Google with each call, such as `my-company-sheets/1.0`.
         type: string
+        example: my-company-sheets/1.0
       operation:
         title: Operation Mode
-        description: Operation to execute (update or append)
+        description: "`append` adds the rows after the last row of the table found in `range`; `update` writes them over the cells of `range`."
         type: string
         enum: [ "update", "append" ]
         default: append
         example: append
       range:
         title: Cells Range
-        description: The cell range of rows and columns to write data to.
+        description: The cells to write to, in A1 notation, optionally with the name of the sheet, such as `Sheet1!A:C` or `A1:B3`. Its columns decide which keys of each JSON object are written.
         type: string
-        example: "A1:B3"
+        example: "Sheet1!A:C"
       majorDimension:
         title: Major Dimension
-        description: Specifies the major dimension that the given values should use (ROWS or COLUMNS).
+        description: "`ROWS` writes each JSON object as a row; `COLUMNS` writes each JSON object as a column, with the keys `#1`, `#2` and so on for the row numbers."
         type: string
         enum: [ "COLUMNS", "ROWS" ]
         default: "ROWS"
         example: "ROWS"
       columnNames:
         title: Column Names
-        description: Optional custom column names that map to cell coordinates based on their position.
+        description: Names to use as keys in the JSON objects instead of the column letters, separated by commas, in the order of the columns of `range`. For example, with `range` `A:B`, `name,qty` reads the key `name` into column A and `qty` into column B.
         type: string
         default: "A"
+        example: name,qty
       valueInputOption:
         title: Value Input Option
-        description: Controls how the entered values should be be interpreted when adding them.
+        description: "`USER_ENTERED` reads each value as if a person typed it, so `=SUM(A1:A3)` becomes a formula and `3` a number; `RAW` stores each value as it is."
         type: string
         enum: [ "USER_ENTERED", "RAW" ]
         default: "USER_ENTERED"

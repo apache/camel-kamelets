@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "Google Storage Event-based Source"
-    description: Receive data from Google Pubsub reporting events related to a Google Storage bucket.
+    description: |-
+      Receives the change notifications of a Google Cloud Storage bucket from a Pub/Sub subscription, one message per change, and can download each new file.
+
+      Use it to react as soon as a file is uploaded to, changed in or deleted from a bucket, without reading the whole bucket over and over. It needs a Pub/Sub notification on the bucket, created for example with `gcloud storage buckets notifications create gs://my-bucket --topic=my-topic`, and a subscription on that topic. To read and delete the files of a bucket instead, use `google-storage-source`.
+
+      Output: by default, the body is the notification as JSON text (bytes): the metadata of the file, such as its name, size and content type. The `eventType` header says what happened (`OBJECT_FINALIZE` for a new or replaced file, `OBJECT_DELETE` for a deleted one), and the `objectId` and `bucketId` headers give the name of the file and of its bucket. With `getObject` set to true, the body of a new file in `bucketNameOrArn` is the content of the file, as bytes, with the `CamelGoogleCloudStorage...` headers of the file.
+
+      Good to know: every notification of the subscription comes out, also for other events and other buckets; `bucketNameOrArn` is only used to choose which new files to download. Downloading does not delete the file. A notification whose processing fails is not acknowledged, so Pub/Sub delivers it again.
     required:
       - projectId
       - subscriptionName
@@ -39,46 +46,70 @@ spec:
     type: object
     properties:
       projectId:
-        title: Project Id
-        description: The Google Cloud Pub/Sub Project ID.
+        title: Project ID
+        description: The ID of the Google Cloud project that holds the subscription, as shown in the Google Cloud console. It is the project ID, not the project name or number.
         type: string
+        example: my-project-123
       subscriptionName:
         title: Subscription Name
-        description: The subscription name.
+        description: The name of the Pub/Sub subscription that receives the notifications of the bucket, without the `projects/.../subscriptions/` part.
         type: string
+        example: bucket-events-sub
       serviceAccountKey:
         title: Service Account Key
-        description: The service account key to use as credentials for the Pub/Sub publisher/subscriber. You must encode this value in base64.
+        description: "The JSON key of a service account that may read the subscription (and, with `getObject`, the files of the bucket), encoded in Base64: create the key in the Google Cloud console under IAM & Admin > Service Accounts > Keys, then encode the downloaded file, for example with `base64 -w0 key.json`."
         type: binary
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       synchronousPull:
         title: Synchronous Pull
-        description: Specifies to synchronously pull batches of messages.
+        description: If true, it asks Pub/Sub for notifications in batches of up to `maxMessagesPerPoll`, instead of keeping a stream open that Pub/Sub pushes them through.
         type: boolean
         default: false
       maxMessagesPerPoll:
         title: Max Messages Per Poll
-        description: The maximum number of messages to receive from the server in a single API call.
+        description: The most notifications to ask Pub/Sub for at once. Only used when `synchronousPull` is true.
         type: integer
         default: 1
       concurrentConsumers:
         title: Concurrent Consumers
-        description: The number of parallel streams to consume from the subscription.
+        description: How many notifications to receive and process in parallel, each in its own stream from the subscription.
         type: integer
         default: 1
       bucketNameOrArn:
-        title: Bucket Name Or ARN
-        description: The Google Cloud Storage bucket name or Bucket Amazon Resource Name (ARN).
+        title: Bucket Name
+        description: The name of the bucket whose new files are downloaded when `getObject` is true, without `gs://`. Notifications of other buckets come out unchanged.
         type: string
+        example: my-bucket
       getObject:
         title: Get Object in Bucket
-        description: >-
-          If `getObject` is enabled, then the file created in the Bucket is
-          retreived and returned as body, if not only the event is returned as body.
+        description: If true, the body of a notification for a new or replaced file (`OBJECT_FINALIZE`) in `bucketNameOrArn` is replaced by the content of the file. If false, the body is the notification itself.
         type: boolean
         default: false
+  dataTypes:
+    out:
+      headers:
+        eventType:
+          title: Event Type
+          description: What happened to the file, such as `OBJECT_FINALIZE` for a new or replaced file, `OBJECT_DELETE` for a deleted one, or `OBJECT_METADATA_UPDATE`.
+          type: string
+        objectId:
+          title: Object Name
+          description: The name of the file in the bucket, with its folders, such as `inbox/orders.csv`.
+          type: string
+        bucketId:
+          title: Bucket Name
+          description: The name of the bucket of the file.
+          type: string
+        CamelGooglePubsubAttributes:
+          title: Attributes
+          description: All the attributes of the notification, as a Map, such as `eventType`, `objectId`, `bucketId` and `objectGeneration`.
+          type: object
+        CamelGooglePubsubMessageId:
+          title: Message ID
+          description: The ID of the Pub/Sub message of the notification.
+          type: string
   dependencies:
     - "camel:kamelet"
     - "camel:google-pubsub"
