@@ -31,20 +31,52 @@ metadata:
 spec:
   definition:
     title: "Regex Router Action"
-    description: "Update the destination using the configured regular expression and replacement string."
+    description: |-
+      Changes the topic that `kafka-sink` writes a record to, by applying a regular expression and a replacement to the name of the topic it was read from.
+
+      Use it to copy records, in a flow from `kafka-source` to `kafka-sink`, to topics with related names, for example from `orders-eu` to `archive-eu`. To add the date to the name use `timestamp-router-action`.
+
+      Input: a message from `kafka-source`, with the name of the topic in the `CamelKafkaTopic` header. The same expression is also applied to the `ce-type` header, when there is one.
+
+      Output: the same body. When `regex` matches the whole topic name, the `CamelKafkaOverrideTopic` header is set to the name with the match replaced by `replacement`, and `kafka-sink` writes the record to that topic instead of its own `topic`. When `regex` matches the whole `ce-type` header, that header is replaced in the same way.
+
+      Good to know: the expression must match the whole name, not a part of it. When it does not match, nothing changes.
     required:
       - regex
       - replacement
     properties:
       regex:
-        title: Regex
-        description: Regular Expression for destination
+        title: Regular Expression
+        description: "A Java regular expression that the whole topic name must match. Groups in parentheses capture parts of the name for `replacement`."
         type: string
+        example: "orders-(.*)"
       replacement:
         title: Replacement
-        description: Replacement when matching
+        description: "The new topic name. `$1`, `$2` and so on insert the text that the groups of `regex` captured."
         type: string
+        example: "archive-$1"
     type: object
+  dataTypes:
+    in:
+      headers:
+        CamelKafkaTopic:
+          title: Kafka Topic
+          description: "The topic the record was read from, as `kafka-source` sets it."
+          type: string
+        ce-type:
+          title: CloudEvents Type
+          description: "Optional. Replaced too when `regex` matches it."
+          type: string
+    out:
+      headers:
+        CamelKafkaOverrideTopic:
+          title: Kafka Override Topic
+          description: "The new topic, which `kafka-sink` writes the record to instead of its own `topic`."
+          type: string
+        ce-type:
+          title: CloudEvents Type
+          description: "The `ce-type` header, with the match replaced, when `regex` matches it."
+          type: string
   dependencies:
   - "camel:kamelet"
   - "camel:kafka"

@@ -6,7 +6,9 @@ This Kamelet integrates with Apicurio Registry for schema management and seriali
 
 === Avro Serialization
 
-The Kamelet uses Avro serialization with configurable datum providers for efficient data serialization. The default serializer is configured for Avro data format with reflect-based datum provider.
+The Kamelet uses Avro serialization with configurable datum providers. The default datum provider, `DefaultAvroDatumProvider`, takes an Avro `GenericRecord` or an object of a class generated from the schema; set `avroDatumProvider` to `io.apicurio.registry.serde.avro.ReflectAvroDatumProvider` to map any Java object by reflection.
+
+The schema must already be in the registry, as the artifact `<topic>-value` in the default group: the Kamelet does not register it.
 
 === Message Headers
 
