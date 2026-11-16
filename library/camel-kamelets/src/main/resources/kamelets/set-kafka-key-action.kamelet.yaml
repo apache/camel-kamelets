@@ -30,20 +30,37 @@ metadata:
 spec:
   definition:
     title: "Set Kafka Key Action"
-    description: Set Kafka Key based on a specific incoming header value from the message body.
+    description: |-
+      Sets the key of the Kafka record to the value of a header of the message.
+
+      Use it before `kafka-sink` when the records need a key, for example so that all the records of one customer go to the same partition and stay in order.
+
+      Input: any message with the header named by `headerName`.
+
+      Output: the same body. The `CamelKafkaKey` header, which `kafka-sink` uses as the record key, is set to the value of that header.
+
+      Good to know: to build the key from fields of the body instead, use `value-to-key-action`.
     required:
       - headerName
     properties:
       headerName:
-        title: Field
-        description: The name of the header to set as Kafka Key
+        title: Header Name
+        description: The name of the header whose value becomes the key of the Kafka record.
+        example: customerId
         type: string
       forceHeaderDeletion:
         title: Force Header Deletion
-        description: If true, it will remove the header with name headerName from the Exchange after setting it as Kafka Key
+        description: If true, the header named by `headerName` is removed from the message after its value is copied to the key.
         type: boolean
         default: false
     type: object
+  dataTypes:
+    out:
+      headers:
+        CamelKafkaKey:
+          title: Kafka Key
+          description: The value of the header named by `headerName`, which `kafka-sink` uses as the key of the record.
+          type: string
   dependencies:
   - "camel:kamelet"
   template:

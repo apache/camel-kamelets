@@ -30,20 +30,31 @@ metadata:
 spec:
   definition:
     title: "Kafka Sink"
-    description: Send data to Kafka topics.
+    description: |-
+      Sends each message as a record to a topic in Apache Kafka, or in a Kafka-compatible service such as Amazon MSK, Confluent Cloud or Redpanda.
+
+      Use it to publish events or data for other applications to read, such as orders, sensor readings or changes from a database. When the records must follow a schema kept in a schema registry, use one of the `kafka-*-registry-*` sinks instead.
+
+      Input: the body becomes the value of the record, as text. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The optional `key` header (or `kafka-key`, `ce-key`, `ce-kafkakey`) becomes the key of the record, and the optional `partition-key` header (or `ce-partitionkey`) is the number of the partition to write to. The other headers of the message, except the Camel ones, are sent as record headers.
+
+      Output: the message is unchanged.
+
+      Good to know: with the default `saslAuthType` of `NONE`, it connects with no login and no TLS, as a local Kafka expects. A managed Kafka service needs one of the other types.
     required:
       - topic
       - bootstrapServers
     type: object
     properties:
       topic:
-        title: Topic Names
-        description: Comma separated list of Kafka topic names
+        title: Topic Name
+        description: The name of the topic to write the records to.
         type: string
+        example: orders
       bootstrapServers:
         title: Bootstrap Servers
-        description: Comma separated list of Kafka Broker URLs
+        description: The address of one or more Kafka brokers to connect to first, as `host:port`, separated by commas. The other brokers of the cluster are found from them.
         type: string
+        example: "broker1:9092,broker2:9092"
       saslAuthType:
         title: Authentication Type
         description: Authentication type to use. Use NONE for no authentication, PLAIN or SCRAM_SHA_256/SCRAM_SHA_512 for username/password, SSL for certificate-based, OAUTH for OAuth 2.0, AWS_MSK_IAM for MSK, or KERBEROS for Kerberos.

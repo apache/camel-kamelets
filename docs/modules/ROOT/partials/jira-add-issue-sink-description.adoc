@@ -1,34 +1,40 @@
 == Jira Add Issue Sink Kamelet Description
 
-=== JIRA Operations
-
-This Kamelet creates new issues in JIRA.
-
-=== Input Format
-
-Expects JSON-formatted data containing the issue information.
-
 === Authentication
 
-Supports multiple authentication methods:
-- **Username and Password**: Basic authentication
-- **Personal Token**: API token authentication
+Use one of the two ways to log in:
 
-=== Required Configuration
+- **Jira Cloud**: set `username` to the email address of the account, and `password` to an API token of that account.
+- **Jira Server and Jira Data Center**: set `personal-token` to a personal access token, and leave `username` and `password` empty.
 
-- **JIRA URL**: The URL of your JIRA instance
+=== Usage example
 
-=== Issue Configuration Headers
+The route below creates a bug in the `SHOP` project for every message. The body becomes the description of the issue,
+and the headers give the other fields.
 
-The Kamelet supports various headers to configure issue details:
-- `ce-projectKey`: JIRA project key
-- `ce-issueTypeName`: Type of issue to create
-- `ce-issueSummary`: Issue summary/title
-- `ce-issueAssignee`: Assignee for the issue
-- `ce-issuePriorityName`: Priority level
-- `ce-issueComponents`: Issue components
-- `ce-issueDescription`: Detailed description
-
-=== Usage
-
-The Kamelet creates new JIRA issues with the specified details, enabling automated issue creation based on events or data processing workflows.
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 60000
+        repeatCount: 1
+        message: "The checkout page returns an error for orders above 1000 EUR."
+      steps:
+        - setHeader:
+            name: ce-projectKey
+            constant: SHOP
+        - setHeader:
+            name: ce-issueTypeName
+            constant: Bug
+        - setHeader:
+            name: ce-issueSummary
+            constant: Checkout fails for large orders
+        - to:
+            uri: "kamelet:jira-add-issue-sink"
+            parameters:
+              jiraUrl: "https://mycompany.atlassian.net"
+              username: "me@mycompany.com"
+              password: "{{jira.apiToken}}"
+----

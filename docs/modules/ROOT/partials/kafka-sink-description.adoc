@@ -1,24 +1,41 @@
 == Kafka Sink Kamelet Description
 
-=== Headers Support
-
-The Kamelet is able to understand the following headers to be set:
-
-- `key` / `kafka-key` / `ce-key` / `ce-kafkakey`: as message key
-- `partition-key` / `ce-partitionkey`: as message partition key
-
-Both headers are optional.
-
 === Authentication
 
-This Kamelet uses Plain Login Module for authentication with username and password.
+The `saslAuthType` option chooses how the Kamelet logs in to Kafka. The options that each type needs are listed below;
+leave the others empty.
 
-=== Security Protocols
+[width="100%",cols="1,3",options="header"]
+|===
+| `saslAuthType` | Options to set
+| `NONE` (default) | None. No login and no TLS, as a local Kafka expects.
+| `PLAIN`, `SCRAM_SHA_256`, `SCRAM_SHA_512` | `saslUsername` and `saslPassword`.
+| `SSL` | `sslTruststoreLocation` and `sslTruststorePassword`; for mutual TLS also `sslKeystoreLocation`, `sslKeystorePassword` and `sslKeyPassword`.
+| `OAUTH` | `oauthClientId`, `oauthClientSecret` and `oauthTokenEndpointUri`; `oauthScope` when the provider asks for one.
+| `AWS_MSK_IAM` | None in the Kamelet: the AWS credentials are taken from the environment the integration runs in.
+| `KERBEROS` | None in the Kamelet: Kerberos is configured in the environment the integration runs in.
+|===
 
-Supports multiple security protocols:
-- SASL_PLAINTEXT
-- PLAINTEXT
-- SASL_SSL
-- SSL
+=== Usage example
 
-Default security protocol is SASL_SSL with PLAIN SASL mechanism.
+The route below sends a JSON order every ten seconds to the `orders` topic, with the order number as the record key.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 10000
+        message: '{"id": 42, "item": "book"}'
+        contentType: application/json
+      steps:
+        - setHeader:
+            name: key
+            constant: "42"
+        - to:
+            uri: "kamelet:kafka-sink"
+            parameters:
+              bootstrapServers: "localhost:9092"
+              topic: orders
+----

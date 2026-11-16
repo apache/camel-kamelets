@@ -227,7 +227,7 @@ public class KameletsCatalogTest {
         verifyHeaders("infinispan-source", 6);
         verifyHeaders("infinispan-sink", 14);
         verifyHeaders("jira-add-comment-sink", 17);
-        verifyHeaders("jira-add-issue-sink", 17);
+        verifyHeaders("jira-add-issue-sink", 6);
         verifyHeaders("jira-source", 3);
         verifyHeaders("jira-oauth-source", 3);
         verifyHeaders("jms-amqp-10-source", 15);
@@ -290,7 +290,7 @@ public class KameletsCatalogTest {
         verifyHeaders("ssh-source", 4);
         verifyHeaders("telegram-sink", 6);
         verifyHeaders("telegram-source", 5);
-        verifyHeaders("timer-source", 2);
+        verifyHeaders("timer-source", 1);
         verifyHeaders("twitter-directmessage-source", 2);
         verifyHeaders("twitter-timeline-source", 1);
         verifyHeaders("twitter-search-source", 7);

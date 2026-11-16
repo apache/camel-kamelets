@@ -326,6 +326,13 @@ mvn verify -Pcoverage                        # with coverage
   `github:apache/...` source only).
 - Properties are declared as JSON-schema in `spec.definition`; mark secrets
   `format: password` + `x-descriptors: [urn:camel:group:credentials]`.
+- Descriptions follow
+  [`docs/modules/ROOT/pages/documenting.adoc`](docs/modules/ROOT/pages/documenting.adoc):
+  written for integrators who do not know Camel and for AI assistants, which
+  read only the YAML. A one-sentence summary that stands alone, then `Use it to`,
+  `Input:`, `Output:` and `Good to know:` paragraphs; every fact checked by
+  running the Kamelet. A `spec.dataTypes` `default` is not documentation:
+  Camel runs its transformer on every message, so adding one changes behaviour.
 
 ## Links
 

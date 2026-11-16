@@ -193,7 +193,7 @@
     "type" : "source",
     "supportLevel" : "Stable",
     "title" : "AWS S3 Source",
-    "description" : "Receive data from an Amazon S3 Bucket.",
+    "description" : "Reads the files (objects) in an Amazon S3 bucket, one message per file, and by default deletes each file once it has been read.\n\nUse it to process files that another system drops into a bucket, such as uploaded documents, exported reports or log files. To react to new files through S3 event notifications instead of reading the bucket over and over, use `aws-s3-event-based-source`.\n\nOutput: the body is the content of the file, as bytes. The headers give the bucket name, the key (the path of the file in the bucket), the content type and the ETag of the file.\n\nGood to know: files are deleted from the bucket after they are read, unless `deleteAfterRead` is set to false; then the same files are read again on every poll. `moveAfterRead` moves them to another bucket instead. It also works with S3-compatible storage, such as MinIO, through `overrideEndpoint` and `uriEndpointOverride`.",
     "group" : "AWS S3",
     "namespace" : "AWS",
     "provider" : "Apache Software Foundation"
@@ -670,7 +670,7 @@
     "type" : "action",
     "supportLevel" : "Stable",
     "title" : "DNS Lookup Action",
-    "description" : "Lookup for a domain",
+    "description" : "Asks the DNS for the address records of a host name, such as `apache.org`, and gives them as JSON.\n\nUse it to check that a name exists in the DNS, or to see its records and how long they may be cached, for example to monitor a domain. To get the IP address of a name, use `dns-ip-action` instead, and to ask for other kinds of record, such as mail (MX) records, use `dns-dig-action`.\n\nInput: the name to look up, taken from the `domain-name` header, else from the `ce-domainname` header, else from the body as text.\n\nOutput: the body is a JSON array with one entry per record found. Each entry has the type, the class and the time to live of the record.\n\nGood to know: a name the DNS does not know fails the message with \"host not found\". The Kamelet has no options; it asks the DNS servers of the machine it runs on.",
     "group" : "DNS",
     "namespace" : "Networking",
     "provider" : "Apache Software Foundation"
@@ -1057,7 +1057,7 @@
     "type" : "sink",
     "supportLevel" : "Stable",
     "title" : "HTTP Sink",
-    "description" : "Forward data to a HTTP or HTTPS endpoint.",
+    "description" : "Sends each message to a web service or REST API as an HTTP or HTTPS request, for example a POST of JSON to a webhook.\n\nUse it to push data to any service that accepts HTTP calls, such as a webhook, a REST API or a serverless function. If the service needs a login (Basic or OAuth), use `http-secured-sink` instead.\n\nInput: the body is sent as the request body, as text, bytes or a stream. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The `Content-Type` header is sent as the content type of the request, and the other headers of the message, except the Camel ones, are sent as HTTP headers.\n\nOutput: when it is used inside a route, the body afterwards is the response of the service.\n\nGood to know: a response with a status code of 300 or higher fails the message. The address and the method come only from the options; headers on the message cannot change where it is sent.",
     "group" : "HTTP",
     "namespace" : "HTTP",
     "provider" : "Apache Software Foundation"
@@ -1156,7 +1156,7 @@
     "type" : "sink",
     "supportLevel" : "Stable",
     "title" : "Jira Add Issue Sink",
-    "description" : "Add a new issue to Jira.",
+    "description" : "Creates a new issue, such as a bug or a task, in a Jira project for each message.\n\nUse it to open a ticket automatically when something happens, for example when a monitoring alert fires, a form is submitted or an order fails.\n\nInput: the body is the description of the issue, as text. The other fields come from headers. `ce-projectKey` (the key of the project, such as `SHOP`), `ce-issueTypeName` (such as `Bug` or `Task`) and `ce-issueSummary` (the title) are required. `ce-issueAssignee`, `ce-issuePriorityName` (such as `High`) and `ce-issueComponents` (a comma-separated list) are optional. Set them before this sink, for example with `insert-header-action`.\n\nOutput: when it is used inside a route, the body afterwards is the issue that was created.\n\nGood to know: a message without a project key, an issue type or a summary fails. Log in either with `username` and `password`, or with `personal-token`.",
     "group" : "JIRA",
     "namespace" : "JIRA",
     "provider" : "Apache Software Foundation"
@@ -1444,7 +1444,7 @@
     "type" : "sink",
     "supportLevel" : "Stable",
     "title" : "Kafka Sink",
-    "description" : "Send data to Kafka topics.",
+    "description" : "Sends each message as a record to a topic in Apache Kafka, or in a Kafka-compatible service such as Amazon MSK, Confluent Cloud or Redpanda.\n\nUse it to publish events or data for other applications to read, such as orders, sensor readings or changes from a database. When the records must follow a schema kept in a schema registry, use one of the `kafka-*-registry-*` sinks instead.\n\nInput: the body becomes the value of the record, as text. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The optional `key` header (or `kafka-key`, `ce-key`, `ce-kafkakey`) becomes the key of the record, and the optional `partition-key` header (or `ce-partitionkey`) is the number of the partition to write to. The other headers of the message, except the Camel ones, are sent as record headers.\n\nOutput: the message is unchanged.\n\nGood to know: with the default `saslAuthType` of `NONE`, it connects with no login and no TLS, as a local Kafka expects. A managed Kafka service needs one of the other types.",
     "group" : "Kafka",
     "namespace" : "Kafka",
     "provider" : "Apache Software Foundation"
@@ -1669,7 +1669,7 @@
     "type" : "action",
     "supportLevel" : "Stable",
     "title" : "Mustache Template Action",
-    "description" : "Apply a Mustache Template.",
+    "description" : "Builds a new message body from a Mustache template, filling in values from the incoming message.\n\nUse it to turn data into text for people or for another system, such as the text of an email or a chat message, or a small JSON or XML document, without writing code. To reshape JSON into other JSON, `jsonata-action` or `jslt-action` is often simpler.\n\nInput: any body. The template sees the body as `{{body}}` and a header as `{{headers.name}}`.\n\nOutput: the body is the text the template produced. The headers are kept.\n\nGood to know: the template is loaded from a file, the classpath or a URL given by the `template` option; it cannot come from the message.",
     "group" : "Actions",
     "namespace" : "Transformation",
     "provider" : "Apache Software Foundation"
@@ -1822,7 +1822,7 @@
     "type" : "action",
     "supportLevel" : "Stable",
     "title" : "Predicate Filter Action",
-    "description" : "Filter based on a JSONPath Expression. Since this is a filter, the expression is a negation. This means that if the `foo` field of the example is equal to `John`, the message goes ahead. Otherwise it is filtered out.",
+    "description" : "Keeps only the JSON messages that match a condition, written as a JSONPath expression, and drops all others.\n\nUse it to pass on only the messages you care about, for example only the orders above a certain amount, or only the events of one customer. To keep or drop messages by a header, use `header-matches-filter-action` or `has-header-filter-action` instead.\n\nInput: a JSON object, as JSON text or as parsed JSON.\n\nOutput: the same message, unchanged, when the condition is true. When it is false, the message is dropped and nothing is sent on.\n\nGood to know: a message that does not have the field the condition looks at is dropped too.",
     "group" : "Actions",
     "namespace" : "Transformation",
     "provider" : "Apache Software Foundation"
@@ -2002,7 +2002,7 @@
     "type" : "action",
     "supportLevel" : "Stable",
     "title" : "Set Kafka Key Action",
-    "description" : "Set Kafka Key based on a specific incoming header value from the message body.",
+    "description" : "Sets the key of the Kafka record to the value of a header of the message.\n\nUse it before `kafka-sink` when the records need a key, for example so that all the records of one customer go to the same partition and stay in order.\n\nInput: any message with the header named by `headerName`.\n\nOutput: the same body. The `CamelKafkaKey` header, which `kafka-sink` uses as the record key, is set to the value of that header.\n\nGood to know: to build the key from fields of the body instead, use `value-to-key-action`.",
     "group" : "Actions",
     "namespace" : "Kafka",
     "provider" : "Apache Software Foundation"
@@ -2227,7 +2227,7 @@
     "type" : "source",
     "supportLevel" : "Stable",
     "title" : "Timer Source",
-    "description" : "Produces periodic messages with a custom payload.",
+    "description" : "Sends the same fixed message again and again at a regular interval, such as once every second.\n\nUse it to try out a sink or an action without a real system behind it, to trigger a flow on a schedule (for example, call an HTTP service every minute), or to send a heartbeat. For a calendar schedule such as \"every weekday at 9:00\" use `cron-source` instead, and for a message that counts up use `counter-source`.\n\nOutput: the body is the `message` option as text, the same on every message. The `Content-Type` header is set to the `contentType` option.\n\nGood to know: it keeps sending until the integration is stopped, unless `repeatCount` is set.",
     "group" : "Timer",
     "namespace" : "Scheduling",
     "provider" : "Apache Software Foundation"
