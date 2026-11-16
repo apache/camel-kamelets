@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Slack Sink"
-    description: Send messages to a Slack channel.
+    description: |-
+      Posts each message as a text message to a Slack channel, through an incoming webhook of a Slack app.
+
+      Use it to tell a team in Slack when something happens, such as a monitoring alert, a failed build, a new order or a daily report. To read the messages of a channel instead, use `slack-source`.
+
+      Input: the body is the text of the Slack message, as text; another kind of body is turned into text first. JSON text is posted as it is, as the text of the message, not as a Slack message structure. The text can use Slack's own formatting, such as `*bold*`. Headers are not read.
+
+      Output: the message is unchanged.
+
+      Good to know: the webhook decides where the message goes. The webhook of a Slack app posts only to the channel chosen when the webhook was created, whatever `channel` says. When Slack does not answer with a success status, the message fails.
     required:
       - channel
       - webhookUrl
@@ -38,12 +47,12 @@ spec:
     properties:
       channel:
         title: Channel
-        description: The Slack channel to send messages to.
+        description: The channel to post to, with a leading `#`. It is sent along with each message, but the webhook of a Slack app always posts to the channel it was created for, so set the same channel here.
         type: string
-        example: "#myroom"
+        example: "#alerts"
       webhookUrl:
         title: Webhook URL
-        description: The webhook URL used by the Slack channel to handle incoming messages.
+        description: The incoming webhook URL of your Slack app, which starts with `https://hooks.slack.com/services/`. Create it on the Incoming Webhooks page of your app at api.slack.com/apps, with Add New Webhook to Workspace, and choose the channel there. Anyone who has it can post to that channel.
         type: string
         format: password
         x-descriptors:

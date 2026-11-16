@@ -2,11 +2,25 @@
 
 === Salesforce CRM Integration
 
-This Kamelet integrates with Salesforce CRM to delete records from Salesforce objects. It provides secure record deletion capabilities through Salesforce's REST API.
+This Kamelet integrates with Salesforce CRM to delete records. It provides record deletion through Salesforce's REST
+API.
 
 === Record Deletion
 
-Deletes records from specified Salesforce objects using record IDs or external ID fields. Supports deletion of records from any accessible Salesforce object.
+Each message names the record to delete, as JSON text:
+
+[source,json]
+----
+{
+  "sObjectName": "Contact",
+  "sObjectId": "003XXXXXXXXXXXXXXX"
+}
+----
+
+- `sObjectName`: the API name of the kind of record
+- `sObjectId`: the Salesforce ID of the record
+
+Because the message decides which record is deleted, place this Kamelet only after a source you trust.
 
 === Safety and Recovery
 
@@ -18,12 +32,16 @@ Salesforce provides safety mechanisms for deleted records:
 
 === Cascade Effects
 
-Considers Salesforce's cascade deletion rules and relationships when deleting records, ensuring referential integrity and proper handling of related data.
+Salesforce's cascade deletion rules apply: deleting a record can also delete related records, as the relationships of
+your org define.
 
-=== Bulk Operations
+=== API Authentication
 
-Can be used for both individual record deletions and bulk deletion operations, depending on the integration requirements and data volume.
+The Kamelet logs in through a connected app of your org. Create one in Salesforce Setup, under App Manager, with OAuth
+enabled, and copy its consumer key and secret into `clientId` and `clientSecret`. `authenticationType` chooses how the
+Kamelet logs in, and which other options it needs.
 
 === Permission Controls
 
-Respects Salesforce's object-level and field-level security settings, ensuring that only authorized operations are performed based on user permissions.
+Respects Salesforce's object-level security settings: the user the Kamelet logs in as must be allowed to delete the
+records.

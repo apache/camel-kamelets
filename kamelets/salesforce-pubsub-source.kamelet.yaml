@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "Salesforce Pub/Sub Source"
-    description: Receive events from the Salesforce Pub/Sub API.
+    description: |-
+      Receives the events of a Salesforce channel, such as a Platform Event or the Change Data Capture events of a kind of record, through the Pub/Sub API, one message per event.
+
+      Use it to react to what happens in Salesforce, for example to an `Order_Shipped__e` Platform Event that a Flow publishes, or to every change of an account through `/data/AccountChangeEvent`. To be told about records that match a SOQL query, through a PushTopic, use `salesforce-source`.
+
+      Output: by default (`deserializeType` `JSON`) the body is the event as JSON text, with the fields of the event. The `CamelSalesforcePubSubReplayId` header holds the replay ID of the event, and `CamelSalesforcePubSubEventId` its ID.
+
+      Good to know: by default only the events published after the start are received. The Kamelet does not remember where it stopped: to go on after a restart, set `replayPreset` to `CUSTOM` and `replayId` to the replay ID of the last event processed.
     required:
       - topic
       - clientId
@@ -39,99 +46,106 @@ spec:
     properties:
       topic:
         title: Topic
-        description: The Pub/Sub channel to subscribe to.
+        description: "The channel to subscribe to: `/event/` and the API name of a Platform Event, such as `/event/Order_Shipped__e`, or `/data/` and the name of a change event of Change Data Capture, such as `/data/AccountChangeEvent`."
         type: string
         example: "/event/BatchApexErrorEvent"
       loginUrl:
         title: Login URL
-        description: The Salesforce instance used to authenticate.
+        description: "The address the Kamelet logs in to. Keep the default for a production org, use `https://test.salesforce.com` for a sandbox, or the My Domain address of your org."
         type: string
         default: "https://login.salesforce.com"
+        example: "https://test.salesforce.com"
       clientId:
         title: Consumer Key
-        description: The Salesforce application consumer key.
+        description: "The consumer key of the connected app that the Kamelet logs in through. In Salesforce Setup, open App Manager, choose View on the app, then Manage Consumer Details."
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       clientSecret:
         title: Consumer Secret
-        description: The Salesforce application consumer secret.
+        description: "The consumer secret of the same connected app, shown next to the consumer key under Manage Consumer Details."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       userName:
         title: Username
-        description: The Salesforce username.
+        description: "The user name of the Salesforce user to log in as, which looks like an email address. Used by the `USERNAME_PASSWORD` and `JWT` authentication types."
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The Salesforce user password.
+        description: "The password of `userName`. When Salesforce asks for a security token, such as from outside the trusted IP ranges of the org, add the token of the user at the end of the password; the user gets a new one from Reset My Security Token in their personal settings. Only used by `USERNAME_PASSWORD`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       authenticationType:
         title: Authentication Type
-        description: Authentication type to use. USERNAME_PASSWORD needs userName and password, CLIENT_CREDENTIALS needs only the consumer key and secret, REFRESH_TOKEN needs refreshToken, JWT needs keystore and jwtAudience.
+        description: "How the Kamelet logs in. `USERNAME_PASSWORD` needs `userName` and `password`; `CLIENT_CREDENTIALS` needs only the consumer key and secret, and a run-as user set for the client credentials flow in the connected app; `REFRESH_TOKEN` needs `refreshToken`; `JWT` needs `userName`, `keystore` and `jwtAudience`."
         type: string
         default: USERNAME_PASSWORD
         enum: ["USERNAME_PASSWORD", "CLIENT_CREDENTIALS", "REFRESH_TOKEN", "JWT"]
       refreshToken:
         title: Refresh Token
-        description: Refresh token used by the REFRESH_TOKEN authentication type.
+        description: "A refresh token of the connected app for the user to act as, obtained once through an OAuth login in a browser with the `refresh_token` scope. Only used by `REFRESH_TOKEN`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       instanceUrl:
         title: Instance URL
-        description: Salesforce instance URL, needed when the authentication response does not carry one.
+        description: "The address of your org, such as `https://mycompany.my.salesforce.com`. Only needed when the answer to the login does not give it."
         type: string
         example: "https://myinstance.my.salesforce.com"
       jwtAudience:
         title: JWT Audience
-        description: Audience claim for the JWT authentication type, usually the login URL of the target org.
+        description: "The audience of the JWT that the Kamelet signs to log in: `https://login.salesforce.com` for a production org, or `https://test.salesforce.com` for a sandbox. Only used by `JWT`."
         type: string
         example: "https://login.salesforce.com"
       keystore:
         title: Keystore
-        description: >-
-          Reference to a registry bean of type org.apache.camel.support.jsse.KeyStoreParameters,
-          written as "#bean:myBeanName", holding the certificate that signs the JWT. Required by
-          the JWT authentication type and ignored by the others.
+        description: "A reference to a bean of type `org.apache.camel.support.jsse.KeyStoreParameters`, written as `#bean:` and the name of the bean, holding the private key that signs the JWT. Its certificate must be uploaded to the connected app, under Use Digital Signatures. Only used by `JWT`."
         type: string
         example: "#bean:myKeystore"
       deserializeType:
         title: Deserialize Type
-        description: >-
-          How to deserialise the received events. This Kamelet defaults to JSON so the body is
-          usable downstream without further decoding; the component's own default is AVRO, which
-          emits binary. Use POJO together with pojoClass to deserialise into a generated class.
+        description: "What the body of each event is: `JSON` gives JSON text, which any other Kamelet can read. `GENERIC_RECORD` gives an Avro record object, `SPECIFIC_RECORD` an object of a generated Avro class, `AVRO` the one or the other, and `POJO` an object of `pojoClass`: these objects are for Java code that follows the Kamelet."
         type: string
         default: "JSON"
         enum: ["AVRO", "SPECIFIC_RECORD", "GENERIC_RECORD", "POJO", "JSON"]
       pojoClass:
         title: POJO Class
-        description: The fully qualified class name to deserialise into. Only used when deserializeType is POJO.
+        description: The fully qualified name of the Java class to turn each event into. Only used when `deserializeType` is `POJO`.
         type: string
+        example: com.example.events.OrderShipped
       replayPreset:
         title: Replay Preset
-        description: Where to start reading the channel. LATEST receives only new events, EARLIEST replays from the retention window, CUSTOM starts from replayId.
+        description: "Where to start reading the channel: `LATEST` receives only the events published after the start, `EARLIEST` also the older events that Salesforce still keeps, and `CUSTOM` the events after `replayId`."
         type: string
         default: "LATEST"
         enum: ["LATEST", "EARLIEST", "CUSTOM"]
       replayId:
         title: Replay Id
-        description: The replay id to resume from. Only used when replayPreset is CUSTOM.
+        description: The replay ID of the last event already processed, as its `CamelSalesforcePubSubReplayId` header gave it, to receive the events after it. Only used when `replayPreset` is `CUSTOM`.
         type: string
       batchSize:
         title: Batch Size
-        description: The number of events requested from the Pub/Sub API in a single fetch.
+        description: How many events to ask the Pub/Sub API for at a time.
         type: integer
         default: 100
+  dataTypes:
+    out:
+      headers:
+        CamelSalesforcePubSubReplayId:
+          title: Replay ID
+          description: The replay ID of the event, as text. Set it in `replayId`, with `replayPreset` `CUSTOM`, to receive the events after this one.
+          type: string
+        CamelSalesforcePubSubEventId:
+          title: Event ID
+          description: The ID of the event.
+          type: string
   dependencies:
     - "camel:salesforce"
     - "camel:kamelet"

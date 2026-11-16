@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Jira Update Issue Sink"
-    description: Update fields of an existing issue in Jira.
+    description: |-
+      Changes the fields of an existing Jira issue, such as its summary, description, assignee or priority, for each message.
+
+      Use it to keep a ticket in step with another system, for example to assign an issue to the person on call or to raise its priority when an alert repeats. To change the status use `jira-transition-issue-sink`, and to create issues `jira-add-issue-sink`.
+
+      Input: the body becomes the new description of the issue, as text, and replaces the old one. The `ce-issueKey` header (the key of the issue, such as `SHOP-42`) is required. The other fields come from optional headers, and a field without a header is left as it is: `ce-issueSummary` (the title), `ce-issueTypeName` (such as `Bug`), `ce-issueAssignee`, `ce-issuePriorityName` (such as `High`) and `ce-issueComponents` (a comma-separated list, which replaces the components).
+
+      Output: the message is unchanged.
+
+      Good to know: every message replaces the description with its body; the `ce-issueDescription` header is not used. An issue type or a priority whose name Jira does not know is ignored. A message without `ce-issueKey` fails. Log in either with `username` and `password`, or with `personal-token`.
 
     required:
       - jiraUrl
@@ -38,25 +47,25 @@ spec:
     properties:
       jiraUrl:
         title: Jira URL
-        description: The URL of your instance of Jira
+        description: The address of your Jira, as you open it in a browser, without a path.
         type: string
-        example: http://my_jira.com:8081
+        example: https://mycompany.atlassian.net
       username:
         title: Username
-        description: The username to access Jira
+        description: The user to log in as, together with `password`. For Jira Cloud, this is the email address of the account. When it is set, `personal-token` is not used.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access Jira
+        description: The password of `username`. For Jira Cloud, use an API token of the account here, not its password; create one at id.atlassian.com, under Security, API tokens.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       personal-token:
         title: Personal Token
-        description: Personal Token
+        description: A personal access token, for Jira Server and Jira Data Center; create one in Jira under your profile, Personal Access Tokens. Use it instead of `username` and `password`.
         type: string
         format: password
         x-descriptors:
@@ -64,6 +73,33 @@ spec:
   types:
     in:
       mediaType: application/json
+  dataTypes:
+    in:
+      headers:
+        ce-issueKey:
+          title: Issue Key
+          description: The key of the issue to change, such as `SHOP-42`. Required.
+          type: string
+        ce-issueSummary:
+          title: Summary
+          description: The new title of the issue.
+          type: string
+        ce-issueTypeName:
+          title: Issue Type
+          description: The name of the new issue type, such as `Bug` or `Task`. A name Jira does not know is ignored.
+          type: string
+        ce-issueAssignee:
+          title: Assignee
+          description: The user name of the person to assign the issue to.
+          type: string
+        ce-issuePriorityName:
+          title: Priority
+          description: The name of the new priority, such as `High`. A name Jira does not know is ignored.
+          type: string
+        ce-issueComponents:
+          title: Components
+          description: A comma-separated list of the names of the components, which replaces the components of the issue.
+          type: string
   dependencies:
   - "camel:jackson"
   - "camel:jira"

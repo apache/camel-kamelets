@@ -2,28 +2,52 @@
 
 === Salesforce CRM Integration
 
-This Kamelet integrates with Salesforce CRM to create new records in Salesforce objects. It provides direct integration with Salesforce's REST API for record creation operations.
-
-=== Record Creation
-
-Creates new records in specified Salesforce objects (such as Accounts, Contacts, Leads, Opportunities, or custom objects) using the Salesforce REST API.
+This Kamelet integrates with Salesforce CRM to create a new record for each message. It provides direct integration
+with Salesforce's REST API for record creation operations.
 
 === Object Flexibility
 
-Supports creation of records in any Salesforce object, including:
+The `sObjectName` option names the kind of record to create, by its API name. It supports any Salesforce object,
+including:
 
-- Standard objects (Account, Contact, Lead, etc.)
-- Custom objects specific to your organization
+- Standard objects (`Account`, `Contact`, `Lead`, etc.)
+- Custom objects specific to your organization, such as `Invoice__c`
 - Junction objects for many-to-many relationships
 
 === Field Mapping
 
-Maps incoming data fields to Salesforce object fields, enabling seamless data transformation and integration between external systems and Salesforce.
+The body is the fields of the new record as JSON text, with the API names of the fields. It is sent to Salesforce as it
+is, so turn the data of other systems into these names before this Kamelet.
 
 === API Authentication
 
-Uses Salesforce OAuth or other supported authentication mechanisms for secure API access and operation authorization.
+The Kamelet logs in through a connected app of your org. Create one in Salesforce Setup, under App Manager, with OAuth
+enabled, and copy its consumer key and secret into `clientId` and `clientSecret`. `authenticationType` chooses how the
+Kamelet logs in, and which other options it needs.
 
 === Data Validation
 
-Leverages Salesforce's built-in data validation rules, field requirements, and business logic to ensure data quality and consistency during record creation.
+Salesforce's validation rules, field requirements, and business logic apply to the new records. A record that
+Salesforce refuses fails the message.
+
+=== Usage Example
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: '{"LastName": "Lovelace", "Email": "ada@example.com"}'
+        contentType: application/json
+        repeatCount: 1
+      steps:
+        - to:
+            uri: "kamelet:salesforce-create-sink"
+            parameters:
+              sObjectName: Contact
+              clientId: "{{salesforce.clientId}}"
+              clientSecret: "{{salesforce.clientSecret}}"
+              userName: "{{salesforce.userName}}"
+              password: "{{salesforce.password}}"
+----

@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "Jira Source"
-    description: Receive notifications about new issues from Jira.
+    description: |-
+      Receives each new Jira issue that matches a JQL query, such as every new bug of a project, by asking Jira at a regular interval.
+
+      Use it to react when a ticket is opened, for example to tell a team chat about a new bug or to copy new issues into another tracker. To log in with OAuth 1.0a instead of a password or a token, use `jira-oauth-source`.
+
+      Output: the body is the issue as JSON text, with fields such as `key`, `summary`, `description`, `status`, `issueType`, `project`, `reporter`, `assignee` and `priority`.
+
+      Good to know: only the issues created after the Kamelet starts are sent; the issues that already exist are not, and neither are changes to an issue. It checks every 6 seconds. `jql` must be set, or the Kamelet does not start. Log in either with `username` and `password`, or with `personal-token`.
 
     required:
       - jiraUrl
@@ -39,34 +46,34 @@ spec:
     properties:
       jiraUrl:
         title: Jira URL
-        description: The URL of your instance of Jira.
+        description: The address of your Jira, as you open it in a browser, without a path.
         type: string
-        example: http://my_jira.com:8081
+        example: https://mycompany.atlassian.net
       username:
         title: Username
-        description: The username to access Jira.
+        description: The user to log in as, together with `password`. For Jira Cloud, this is the email address of the account. When it is set, `personal-token` is not used.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access Jira.
+        description: The password of `username`. For Jira Cloud, use an API token of the account here, not its password; create one at id.atlassian.com, under Security, API tokens.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       personal-token:
         title: Personal Token
-        description: Personal Token
+        description: A personal access token, for Jira Server and Jira Data Center; create one in Jira under your profile, Personal Access Tokens. Use it instead of `username` and `password`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       jql:
         title: JQL
-        description: A query to filter issues.
+        description: The JQL query that selects the issues to send, as in the advanced issue search of Jira, without `ORDER BY`. It must be set, or the Kamelet does not start.
         type: string
-        example: project=MyProject
+        example: project = SHOP AND issuetype = Bug
 
   types:
     out:

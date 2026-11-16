@@ -2,28 +2,33 @@
 
 === Authentication
 
-This Kamelet requires a Slack app token for authentication. You need to create a Slack app and obtain the necessary permissions to access channels and messages.
+This Kamelet requires the OAuth token of a Slack app. You need to create a Slack app and give it the permissions
+(scopes) to read channels and their messages.
 
 === Configuration
 
 The Slack Source Kamelet supports the following configurations:
 
-- **Token**: Slack app token for authentication (required)
-- **Channel**: Slack channel to monitor (required)
-- **Server URL**: Slack API server URL (optional, defaults to Slack's API)
-- **Delay**: Polling interval in milliseconds for checking new messages
-- **Max Results**: Maximum number of messages to retrieve per poll
+- **Token**: OAuth token of the Slack app (required)
+- **Channel**: the name of the public channel to read, without the leading `#` (required)
+- **Server URL**: Slack API server URL (optional, defaults to `https://slack.com`)
+- **Delay**: how long to wait between two checks for new messages, in milliseconds or with a unit such as `30s`
+- **Natural Order**: whether the new messages of a check are sent oldest first
 
 === Output Format
 
-The Kamelet outputs Slack messages as JSON objects containing message content, user information, timestamp, and channel details.
+The Kamelet outputs each Slack message as JSON text, with fields such as `text` (the content), `user` (the ID of the
+author) and `ts` (the time stamp of the message). The message does not say in which channel it was posted.
+
+When it starts, the Kamelet also sends the most recent message already in the channel. After that it sends only the
+messages posted since the last check.
 
 === Setup Requirements
 
-1. Create a Slack app in your workspace
-2. Add necessary OAuth scopes (channels:history, channels:read)
+1. Create a Slack app in your workspace at https://api.slack.com/apps
+2. Add the necessary OAuth scopes (`channels:history`, `channels:read`, and the others listed for the `token` option)
 3. Install the app to your workspace
-4. Copy the OAuth access token
+4. Copy the OAuth token from the *OAuth & Permissions* page of the app
 
 === Usage Example
 
@@ -33,15 +38,15 @@ The Kamelet outputs Slack messages as JSON objects containing message content, u
     from:
       uri: "kamelet:slack-source"
       parameters:
-        token: "xoxb-your-slack-bot-token"
-        channel: "#general"
+        token: "{{slack.token}}"
+        channel: "general"
         delay: 10000
       steps:
         - to:
             uri: "kamelet:log-sink"
 ----
 
-=== Example with Specific Channel ID
+=== Example Filtering the Messages
 
 [source,yaml,subs='+attributes,macros']
 ----
@@ -49,31 +54,15 @@ The Kamelet outputs Slack messages as JSON objects containing message content, u
     from:
       uri: "kamelet:slack-source"
       parameters:
-        token: "xoxb-your-slack-bot-token"
-        channel: "C1234567890"
-        delay: 5000
-        maxResults: 50
-      steps:
-        - to:
-            uri: "kamelet:log-sink"
-----
-
-=== Example Monitoring Multiple Aspects
-
-[source,yaml,subs='+attributes,macros']
-----
-- route:
-    from:
-      uri: "kamelet:slack-source"
-      parameters:
-        token: "xoxb-your-slack-bot-token"
-        channel: "#alerts"
+        token: "{{slack.token}}"
+        channel: "alerts"
         delay: 30000
       steps:
         - filter:
-            simple: "${body.contains('ERROR')}"
-        - to:
-            uri: "kamelet:log-sink"
+            simple: "${body} contains 'ERROR'"
+            steps:
+              - to:
+                  uri: "kamelet:log-sink"
 ----
 
 === Security Considerations

@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "Twitter Search Source"
-    description: Allows to get all tweets on particular keywords from Twitter.
+    description: |-
+      Reads the new tweets that match a search, such as a word, a hashtag or a mention, by asking Twitter (X) at a regular interval, one message per tweet.
+
+      Use it to follow what people say about a brand, a product or an event, for example to collect mentions for analysis or to alert a team. To follow the tweets of one account, use `twitter-timeline-source`.
+
+      Output: the body is the tweet as JSON text, with its `text`, its `id`, its `lang`, the time it was created and the `user` who wrote it. The `CamelTwitterEventType` header is `STATUS`.
+
+      Good to know: it searches every 30 seconds. The first search sends up to 5 matching tweets, and each later search sends at most 5 tweets newer than the last one it saw, so on a busy search some tweets are missed. It does not remember what it read: after a restart, it starts over as on the first search. It uses the standard search of version 1.1 of the Twitter API.
     required:
     - keywords
     - apiKey
@@ -41,33 +48,33 @@ spec:
     properties:
       keywords:
         title: Keywords
-        description: The keywords to use in the Twitter search (Supports Twitter standard operators)
+        description: What to search for, as you would type it in the Twitter search box. Words must all appear, and the standard search operators work, such as `OR`, `#hashtag`, `from:user` and `-word` to exclude a word.
         type: string
-        example: "Apache Camel"
+        example: "#ApacheCamel OR \"Apache Camel\""
       apiKey:
         title: API Key
-        description: The API Key from the Twitter application in the developer portal
+        description: The API key (consumer key) of your app, from the Keys and Tokens page of the app in the Twitter (X) developer portal at developer.x.com. Used together with `apiKeySecret`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       apiKeySecret:
         title: API Key Secret
-        description: The API Key Secret from the Twitter application in the developer portal
+        description: The API key secret (consumer secret) of your app, shown with the API key on the Keys and Tokens page of the app in the developer portal.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       accessToken:
         title: Access Token
-        description: The Access Token from the Twitter application in the developer portal
+        description: The access token of the account to read with, generated on the Keys and Tokens page of the app in the developer portal. The Kamelet acts as that account. Used together with `accessTokenSecret`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       accessTokenSecret:
         title: Access Token Secret
-        description: The Access Token Secret from the Twitter application in the developer portal
+        description: The access token secret, shown with the access token on the Keys and Tokens page of the app in the developer portal.
         type: string
         format: password
         x-descriptors:
@@ -75,6 +82,13 @@ spec:
   types:
     out:
       mediaType: application/json
+  dataTypes:
+    out:
+      headers:
+        CamelTwitterEventType:
+          title: Event Type
+          description: The kind of item in the body, `STATUS` for a tweet.
+          type: string
   dependencies:
     - "camel:jackson"
     - "camel:twitter"

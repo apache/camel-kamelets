@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "Salesforce Source"
-    description: Receive updates from Salesforce.
+    description: |-
+      Receives an event each time a Salesforce record that matches a SOQL query is created, updated, deleted or undeleted, through a PushTopic of the Streaming API.
+
+      Use it to react to changes in Salesforce, for example to copy each new contact to a mailing tool or to alert a team when an opportunity is won. For Platform Events and Change Data Capture through the newer Pub/Sub API, use `salesforce-pubsub-source`.
+
+      Output: the body is the record as JSON text, with the fields that the query selects. The `CamelSalesforceEventType` header says what happened: `created`, `updated`, `deleted` or `undeleted`. The `CamelSalesforceReplayId` header identifies the event.
+
+      Good to know: when it starts, it creates the PushTopic `topicName` in Salesforce with `query` and the notify options, or updates it when it exists, so the user needs the permission to create PushTopics. By default only new records send an event; turn on `notifyForOperationUpdate` and the others for more. Only the events after the start are received, unless `replayId` is set.
     required:
       - query
       - topicName
@@ -40,119 +47,136 @@ spec:
     properties:
       query:
         title: Query
-        description: The query to execute on Salesforce.
+        description: The SOQL query of the PushTopic. It chooses the kind of record, the fields to send, and with an optional `WHERE` the records to watch. It must select `Id`.
         type: string
         example: SELECT Id, Name, Email, Phone FROM Contact
       topicName:
         title: Topic Name
-        description: The name of the topic or channel.
+        description: The name of the PushTopic that the Kamelet creates or updates in Salesforce with `query`, and listens to.
         type: string
         example: ContactTopic
       loginUrl:
         title: Login URL
-        description: The Salesforce instance login URL.
+        description: "The address the Kamelet logs in to. Keep the default for a production org, use `https://test.salesforce.com` for a sandbox, or the My Domain address of your org."
         type: string
         default: https://login.salesforce.com
+        example: "https://test.salesforce.com"
       notifyForFields:
         title: Notify For Fields
-        description: Notify for fields.
+        description: "Which changed fields make an update send an event: `ALL` any field, `REFERENCED` a field of the `SELECT` or the `WHERE` of `query`, `SELECT` a field of the `SELECT`, `WHERE` a field of the `WHERE`."
         type: string
         default: ALL
         enum: [ "ALL", "REFERENCED", "SELECT", "WHERE"]
       clientId:
         title: Consumer Key
-        description: The Salesforce application consumer key.
+        description: "The consumer key of the connected app that the Kamelet logs in through. In Salesforce Setup, open App Manager, choose View on the app, then Manage Consumer Details."
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       clientSecret:
         title: Consumer Secret
-        description: The Salesforce application consumer secret.
+        description: "The consumer secret of the same connected app, shown next to the consumer key under Manage Consumer Details."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       userName:
         title: Username
-        description: The Salesforce username.
+        description: "The user name of the Salesforce user to log in as, which looks like an email address. Used by the `USERNAME_PASSWORD` and `JWT` authentication types."
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The Salesforce user password.
+        description: "The password of `userName`. When Salesforce asks for a security token, such as from outside the trusted IP ranges of the org, add the token of the user at the end of the password; the user gets a new one from Reset My Security Token in their personal settings. Only used by `USERNAME_PASSWORD`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       authenticationType:
         title: Authentication Type
-        description: Authentication type to use. USERNAME_PASSWORD needs userName and password, CLIENT_CREDENTIALS needs only the consumer key and secret, REFRESH_TOKEN needs refreshToken, JWT needs keystore and jwtAudience.
+        description: "How the Kamelet logs in. `USERNAME_PASSWORD` needs `userName` and `password`; `CLIENT_CREDENTIALS` needs only the consumer key and secret, and a run-as user set for the client credentials flow in the connected app; `REFRESH_TOKEN` needs `refreshToken`; `JWT` needs `userName`, `keystore` and `jwtAudience`."
         type: string
         default: USERNAME_PASSWORD
         enum: ["USERNAME_PASSWORD", "CLIENT_CREDENTIALS", "REFRESH_TOKEN", "JWT"]
       refreshToken:
         title: Refresh Token
-        description: Refresh token used by the REFRESH_TOKEN authentication type.
+        description: "A refresh token of the connected app for the user to act as, obtained once through an OAuth login in a browser with the `refresh_token` scope. Only used by `REFRESH_TOKEN`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       instanceUrl:
         title: Instance URL
-        description: Salesforce instance URL, needed when the authentication response does not carry one.
+        description: "The address of your org, such as `https://mycompany.my.salesforce.com`. Only needed when the answer to the login does not give it."
         type: string
         example: "https://myinstance.my.salesforce.com"
       jwtAudience:
         title: JWT Audience
-        description: Audience claim for the JWT authentication type, usually the login URL of the target org.
+        description: "The audience of the JWT that the Kamelet signs to log in: `https://login.salesforce.com` for a production org, or `https://test.salesforce.com` for a sandbox. Only used by `JWT`."
         type: string
         example: "https://login.salesforce.com"
       keystore:
         title: Keystore
-        description: >-
-          Reference to a registry bean of type org.apache.camel.support.jsse.KeyStoreParameters,
-          written as "#bean:myBeanName", holding the certificate that signs the JWT. Required by
-          the JWT authentication type and ignored by the others.
+        description: "A reference to a bean of type `org.apache.camel.support.jsse.KeyStoreParameters`, written as `#bean:` and the name of the bean, holding the private key that signs the JWT. Its certificate must be uploaded to the connected app, under Use Digital Signatures. Only used by `JWT`."
         type: string
         example: "#bean:myKeystore"
       notifyForOperationCreate:
         title: Notify Operation Create
-        description: Notify for create operation.
+        description: If true, an event is sent when a record that matches `query` is created.
         type: boolean
         default: true
       notifyForOperationUpdate:
         title: Notify Operation Update
-        description: Notify for update operation.
+        description: If true, an event is sent when a record that matches `query` is updated; `notifyForFields` says which fields count.
         type: boolean
         default: false
       notifyForOperationDelete:
         title: Notify Operation Delete
-        description: Notify for delete operation.
+        description: If true, an event is sent when a record that matches `query` is deleted.
         type: boolean
         default: false
       notifyForOperationUndelete:
         title: Notify Operation Undelete
-        description: Notify for undelete operation.
+        description: If true, an event is sent when a deleted record that matches `query` is restored from the Recycle Bin.
         type: boolean
         default: false
       operation:
         title: Operation
-        description: The operation to use
+        description: The kind of subscription of the Salesforce component. Leave it as `subscribe`, the only one that works with the other options of this Kamelet.
         type: string
         default: subscribe
       rawPayload:
         title: Raw Payload
-        description: Use raw payload String for request and response (either JSON or XML depending on format), instead of DTOs, false by default.
+        description: If true, the record is passed on as the JSON text that Salesforce sent, instead of being read and written again. The body is JSON text either way.
         type: boolean
         default: false
       replayId:
         title: Replay Id
-        description: The replayId value to use when subscribing to the Streaming API.
+        description: "Where to start: `-1` for only the events after the start, as when it is not set; `-2` for all the events that Salesforce still keeps; or the replay ID of an event, from its `CamelSalesforceReplayId` header, for the events after it."
         type: long
   types:
     out:
       mediaType: application/json
+  dataTypes:
+    out:
+      headers:
+        CamelSalesforceEventType:
+          title: Event Type
+          description: What happened to the record, `created`, `updated`, `deleted` or `undeleted`.
+          type: string
+        CamelSalesforceReplayId:
+          title: Replay ID
+          description: The replay ID of the event. Set it in `replayId` to receive the events after this one.
+          type: string
+        CamelSalesforceTopicName:
+          title: Topic Name
+          description: The name of the PushTopic, the `topicName` option.
+          type: string
+        CamelSalesforceCreatedDate:
+          title: Created Date
+          description: When the event happened, as Salesforce gives it.
+          type: string
   dependencies:
   - "camel:jackson"
   - "camel:salesforce"

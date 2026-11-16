@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "Slack Source"
-    description: Receive messages from a Slack channel.
+    description: |-
+      Reads the new messages posted in a public Slack channel, by asking Slack at a regular interval, one message per Slack message.
+
+      Use it to react to what people write in a channel, for example to turn a message in `#support` into a ticket, to archive a channel, or to start a job when someone posts a command. To post to Slack instead, use `slack-sink`.
+
+      Output: the body is the Slack message as JSON text, with fields such as `text` (what was written), `user` (the ID of the author) and `ts` (the time stamp that identifies the message). The `Content-Type` header is `application/json`.
+
+      Good to know: when it starts, it also sends the most recent message already in the channel, then only the messages posted after it. It does not remember where it stopped: after a restart it starts again from the most recent message. It reads public channels only, by their name, and needs a token of a Slack app, see `token`.
     required:
       - channel
       - token
@@ -38,31 +45,31 @@ spec:
     properties:
       serverUrl:
         title: Server URL
-        description: The Slack API server endpoint URL.
+        description: The address of the Slack API. Change it only to use a test server or a proxy that stands in for Slack.
         type: string
         default: "https://slack.com"
         example: "https://slack.com"
       channel:
         title: Channel
-        description: The Slack channel to receive messages from.
+        description: The name of the public channel to read, without the leading `#`, as Slack shows it in the channel list. Not the channel ID. When no public channel has this name, the Kamelet does not start.
         type: string
-        example: "#myroom"
+        example: "support"
       token:
         title: Token
-        description: "The Bot User OAuth Access Token to access Slack. A Slack app that has the following permissions is required: `channels:history`, `groups:history`, `im:history`, `mpim:history`, `channels:read`, `groups:read`, `im:read`, and `mpim:read`."
+        description: "The OAuth token of your Slack app, which starts with `xoxb-` (bot token) or `xoxp-` (user token). Copy it from the OAuth & Permissions page of your app at api.slack.com/apps, after you install the app in your workspace. The app needs the scopes `channels:history`, `groups:history`, `im:history`, `mpim:history`, `channels:read`, `groups:read`, `im:read`, and `mpim:read`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       delay:
         title: Delay
-        description: The delay between polls. If no unit provided, milliseconds is the default.
+        description: How long to wait between two checks for new messages. A number is in milliseconds; a unit can be added, such as `30s` or `1m`.
         type: string
         default: "60000"
-        example: "60s or 6000 or 1m"
+        example: "30s"
       naturalOrder:
         title: Natural Order
-        description: Create exchanges in natural order (oldest to newest) or not.
+        description: If true, the new messages found at a check are sent oldest first. If false, they are sent newest first.
         type: boolean
         default: false
   dataTypes:

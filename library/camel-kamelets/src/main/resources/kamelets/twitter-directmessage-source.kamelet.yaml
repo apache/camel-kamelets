@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "Twitter Direct Message Source"
-    description: Allows to get all direct messages for your Twitter account.
+    description: |-
+      Reads the direct messages of a Twitter (X) account, by asking Twitter at a regular interval, one message per direct message.
+
+      Use it to react to private messages sent to your company account, for example to open a support case or to forward them to a team chat. To read public tweets, use `twitter-search-source` or `twitter-timeline-source`.
+
+      Output: the body is the direct message as JSON text, with its `text`, its `id`, the `senderId` and the `recipientId`. The `CamelTwitterEventType` header is `DIRECT_MESSAGE`.
+
+      Good to know: it reads the messages of the account that owns `accessToken`, both the ones it received and the ones it sent; compare `senderId` to tell them apart. At the first check, every direct message that Twitter still lists (the last 30 days) is sent, then only new ones, every 30 seconds. It does not remember what it read: after a restart, it sends them all again. It uses version 1.1 of the Twitter API, and the app needs the permission to read direct messages.
     required:
     - user
     - apiKey
@@ -41,33 +48,33 @@ spec:
     properties:
       user:
         title: User
-        description: The user we want to read the direct messages
+        description: The user name of the account, without the `@`. It is required, but it does not choose whose messages are read; that is always the account of `accessToken`.
         type: string
         example: "ApacheCamel"
       apiKey:
         title: API Key
-        description: The API Key from the Twitter application in the developer portal
+        description: The API key (consumer key) of your app, from the Keys and Tokens page of the app in the Twitter (X) developer portal at developer.x.com. Used together with `apiKeySecret`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       apiKeySecret:
         title: API Key Secret
-        description: The API Key Secret from the Twitter application in the developer portal
+        description: The API key secret (consumer secret) of your app, shown with the API key on the Keys and Tokens page of the app in the developer portal.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       accessToken:
         title: Access Token
-        description: The Access Token from the Twitter application in the developer portal
+        description: The access token of the account to read with, generated on the Keys and Tokens page of the app in the developer portal. The Kamelet acts as that account. Used together with `accessTokenSecret`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       accessTokenSecret:
         title: Access Token Secret
-        description: The Access Token Secret from the Twitter application in the developer portal
+        description: The access token secret, shown with the access token on the Keys and Tokens page of the app in the developer portal.
         type: string
         format: password
         x-descriptors:
@@ -75,6 +82,13 @@ spec:
   types:
     out:
       mediaType: application/json
+  dataTypes:
+    out:
+      headers:
+        CamelTwitterEventType:
+          title: Event Type
+          description: The kind of item in the body, `DIRECT_MESSAGE` for a direct message.
+          type: string
   dependencies:
     - "camel:jackson"
     - "camel:twitter"

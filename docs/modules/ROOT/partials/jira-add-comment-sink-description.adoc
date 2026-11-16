@@ -2,26 +2,42 @@
 
 === JIRA Operations
 
-This Kamelet adds comments to existing JIRA issues.
+This Kamelet adds a comment to an existing JIRA issue for each message.
 
 === Input Format
 
-Expects JSON-formatted data containing the comment information.
+The body is the text of the comment, as text. The `ce-issueKey` header names the issue, such as `SHOP-42`, and is
+required: a message without it fails.
 
 === Authentication
 
-Supports multiple authentication methods:
-- **Username and Password**: Basic authentication
-- **Personal Token**: API token authentication
+Use one of the two ways to log in:
 
-=== Required Configuration
+- **Jira Cloud**: set `username` to the email address of the account, and `password` to an API token of that account.
+- **Jira Server and Jira Data Center**: set `personal-token` to a personal access token, and leave `username` and `password` empty.
 
-- **JIRA URL**: The URL of your JIRA instance
+The comment is written in the name of the account the Kamelet logs in with.
 
-=== Optional Headers
+=== Usage example
 
-- `ce-issueKey`: Specify the JIRA issue key to add the comment to
+The route below adds a comment to the issue `SHOP-42`.
 
-=== Usage
-
-The Kamelet sends the comment data to the specified JIRA issue, enabling automated comment addition to issues based on events or data processing.
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: "Version 2.3.1 with the fix is deployed to production."
+        repeatCount: 1
+      steps:
+        - setHeader:
+            name: ce-issueKey
+            constant: SHOP-42
+        - to:
+            uri: "kamelet:jira-add-comment-sink"
+            parameters:
+              jiraUrl: "https://mycompany.atlassian.net"
+              username: "me@mycompany.com"
+              password: "{{jira.apiToken}}"
+----
