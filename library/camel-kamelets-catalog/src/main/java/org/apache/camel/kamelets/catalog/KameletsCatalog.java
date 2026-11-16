@@ -267,6 +267,33 @@ public class KameletsCatalog {
         }
     }
 
+    /**
+     * The summary of the Kamelet: the first paragraph of its description, for a list of the Kamelets.
+     *
+     * @return the summary, or null when there is no such Kamelet or it has no description
+     * @see    #summary(String)
+     */
+    public String getKameletSummary(String name) {
+        Definition definition = getKameletDefinition(name);
+        return definition != null ? summary(definition.getDescription()) : null;
+    }
+
+    /**
+     * The summary of a Kamelet description: its first paragraph, up to the first blank line, on one line. A description
+     * starts with one sentence that says what the Kamelet does and stands alone, so a list of the Kamelets shows it,
+     * and the rest of the description (when to use it, its input and output) is for the page of the Kamelet.
+     *
+     * @param  description the description of a Kamelet
+     * @return             the summary, or null when the description is null or blank
+     */
+    public static String summary(String description) {
+        if (description == null || description.isBlank()) {
+            return null;
+        }
+        String first = description.strip().split("\\R\\s*\\R", 2)[0];
+        return first.replaceAll("\\s*\\R\\s*", " ");
+    }
+
     public List<Kamelet> getKameletByProvider(String provider) {
         return kameletModels.entrySet().stream()
                 .filter(x -> {

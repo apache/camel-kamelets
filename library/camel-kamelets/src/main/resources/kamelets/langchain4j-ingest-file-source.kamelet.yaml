@@ -33,7 +33,9 @@ spec:
     title: "LangChain4j Ingest File Source"
     description: |-
       Watch a directory as the source of an ingestion pipeline, with the defaults a knowledge
-      base needs: documents are left in place (noop), unchanged files are remembered in a
+      base needs.
+
+      The defaults: documents are left in place (noop), unchanged files are remembered in a
       duplicate register keyed on path, modification time and size, a file still being copied
       in is waited for (readLock=changed), and the file name is exposed as the document id in
       the CamelLangChain4jIngestDocumentId header.

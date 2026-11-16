@@ -329,7 +329,8 @@ mvn verify -Pcoverage                        # with coverage
 - Descriptions follow
   [`docs/modules/ROOT/pages/documenting.adoc`](docs/modules/ROOT/pages/documenting.adoc):
   written for integrators who do not know Camel and for AI assistants, which
-  read only the YAML. A one-sentence summary that stands alone, then `Use it to`,
+  read only the YAML. A one-sentence summary as the first paragraph (at most 200
+  characters, as lists of Kamelets show it and the build checks it), then `Use it to`,
   `Input:`, `Output:` and `Good to know:` paragraphs; every fact checked by
   running the Kamelet. A `spec.dataTypes` `default` is not documentation:
   Camel runs its transformer on every message, so adding one changes behaviour.

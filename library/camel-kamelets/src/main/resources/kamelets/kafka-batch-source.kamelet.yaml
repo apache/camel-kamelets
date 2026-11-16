@@ -30,7 +30,10 @@ metadata:
 spec:
   definition:
     title: "Kafka Batch Source"
-    description: Receive data from Kafka topics in batch and commit them manually through KafkaManualCommit. This provides complete control over when messages are committed, allowing for custom processing logic before acknowledgment.
+    description: |-
+      Receive data from Kafka topics in batch and commit them manually through KafkaManualCommit.
+
+      This provides complete control over when messages are committed, allowing for custom processing logic before acknowledgment.
     required:
       - topic
       - bootstrapServers

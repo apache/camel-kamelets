@@ -30,7 +30,10 @@ metadata:
 spec:
   definition:
     title: "Databricks Sink"
-    description: Send data to a Databricks Database. This Kamelet expects a JSON-formatted body. Use key:value pairs to map the JSON fields and parameters. For Unity Catalog workspaces, specify catalog and schema parameters.
+    description: |-
+      Send data to a Databricks Database.
+
+      This Kamelet expects a JSON-formatted body. Use key:value pairs to map the JSON fields and parameters. For Unity Catalog workspaces, specify catalog and schema parameters.
     required:
       - serverHostname
       - httpPath

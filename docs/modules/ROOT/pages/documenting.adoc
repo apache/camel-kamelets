@@ -59,8 +59,7 @@ must be JSON when the body is the text of the issue description.
 
 NOTE: In 2025 the descriptions were cut to one line and the details moved to the partial pages
 (https://github.com/apache/camel-kamelets/issues/2345[#2345]). This guide asks for more in the YAML again, because the
-AI tools read only the YAML. The first sentence of a description still stands alone, so that a tool that shows one
-line shows a good one.
+AI tools read only the YAML. A tool that shows one line shows the summary, the first paragraph of the description.
 
 [[documenting-description]]
 == The description
@@ -70,8 +69,11 @@ line shows a good one.
 A description is a few short paragraphs, in this order. Each paragraph after the first starts with its lead words, so
 that a reader, or an AI assistant, can find the part it needs.
 
-. *Summary.* One sentence: what the Kamelet does, with which system, for each what (message, file, record). It must
-  stand alone, as listings show only the start. Not "Send data to X", which the title already says.
+. *Summary.* One sentence: what the Kamelet does, with which system, for each what (message, file, record). Not "Send
+  data to X", which the title already says. It is a paragraph of its own, of at most 200 characters, because it is
+  what a list of the Kamelets shows: the catalog API (`KameletsCatalog.getKameletSummary`) and the index of the
+  Kamelets (`summary` in `META-INF/kamelets-index.json`) take the first paragraph of the description as the summary.
+  The build fails on a longer one.
 . *Use it to ...* One to three real situations in the words of the integrator. Name the other Kamelet to use for a
   near case, such as the event-based source of the same system, or the secured variant.
 . *Input:* for sinks and actions. What the body must be, and what the Kamelet does with it. The headers it reads, and
@@ -221,7 +223,7 @@ Kamelets is open, in https://github.com/apache/camel-kamelets/issues/3117[#3117]
 
 For the author, and for the reviewer of a Kamelet change:
 
-* [ ] The first sentence of the description says what the Kamelet does, and stands alone.
+* [ ] The first paragraph of the description is one sentence that says what the Kamelet does, and stands alone.
 * [ ] The description says when to use the Kamelet, and names the Kamelet to use for a near case.
 * [ ] It has an `Input:` paragraph (sinks and actions) and an `Output:` paragraph (sources and actions).
 * [ ] Defaults that delete, overwrite or connect without security are in `Good to know:`.

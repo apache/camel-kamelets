@@ -91,6 +91,26 @@ public class KameletsCatalogTest {
     }
 
     @Test
+    void testGetKameletSummary() throws Exception {
+        assertEquals("Sends the same fixed message again and again at a regular interval, such as once every second.",
+                catalog.getKameletSummary("timer-source"));
+        assertNull(catalog.getKameletSummary("word"));
+    }
+
+    @Test
+    void testSummary() throws Exception {
+        assertEquals("One line.", KameletsCatalog.summary("One line."));
+        assertEquals("The first paragraph.", KameletsCatalog.summary("The first paragraph.\n\nThe second.\n\nThe third."));
+        // a blank line made of spaces, and Windows line ends
+        assertEquals("The first.", KameletsCatalog.summary("The first.\r\n  \r\nThe second."));
+        // a first paragraph wrapped over several lines is put on one line
+        assertEquals("A sentence wrapped over two lines.",
+                KameletsCatalog.summary("  A sentence wrapped\n   over two lines.\n\nThe rest."));
+        assertNull(KameletsCatalog.summary(null));
+        assertNull(KameletsCatalog.summary(" \n "));
+    }
+
+    @Test
     void testGetKameletsByProvider() throws Exception {
         List<Kamelet> c = catalog.getKameletByProvider("Apache Software Foundation");
         assertFalse(c.isEmpty());

@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+import org.apache.camel.kamelets.catalog.KameletsCatalog;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -40,8 +41,10 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * Generates the index of the Kamelets, {@value #INDEX} in the camel-kamelets JAR: for each Kamelet, sorted by name, its
- * name, type, support level, title, description, group, namespace and provider (an attribute that a Kamelet does not
- * have is left out). A tool that lists the Kamelets, such as the Camel CLI, reads this small file instead of the YAML of
+ * name, type, support level, title, summary, description, group, namespace and provider (an attribute that a Kamelet
+ * does not have is left out). The summary is the first paragraph of the description, see
+ * {@link KameletsCatalog#summary(String)}: a list of the Kamelets shows the summary, and a search looks in the whole
+ * description. A tool that lists the Kamelets, such as the Camel CLI, reads this small file instead of the YAML of
  * every Kamelet (2.3 MB with their icons), which takes hundreds of milliseconds to parse.
  * <p>
  * The index is written into the resources of camel-kamelets and committed with the Kamelets, like the copy of the
@@ -56,7 +59,8 @@ import org.apache.maven.plugins.annotations.Parameter;
  *     "type" : "sink",
  *     "supportLevel" : "Stable",
  *     "title" : "AWS S3 Sink",
- *     "description" : "Upload data to an Amazon S3 Bucket. ...",
+ *     "summary" : "Upload data to an Amazon S3 Bucket.",
+ *     "description" : "Upload data to an Amazon S3 Bucket.\n\n...",
  *     "group" : "AWS S3",
  *     "namespace" : "AWS",
  *     "provider" : "Apache Software Foundation"
@@ -138,7 +142,9 @@ public class GenerateIndexMojo extends AbstractMojo {
         put(entry, "type", labels.get("camel.apache.org/kamelet.type"));
         put(entry, "supportLevel", annotations.get("camel.apache.org/kamelet.support.level"));
         put(entry, "title", definition.get("title"));
-        put(entry, "description", definition.get("description"));
+        Object description = definition.get("description");
+        put(entry, "summary", description != null ? KameletsCatalog.summary(description.toString()) : null);
+        put(entry, "description", description);
         put(entry, "group", annotations.get("camel.apache.org/kamelet.group"));
         put(entry, "namespace", annotations.get("camel.apache.org/kamelet.namespace"));
         put(entry, "provider", annotations.get("camel.apache.org/provider"));
