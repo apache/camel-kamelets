@@ -72,7 +72,7 @@
     <build>
         <plugins>
 
-            <!-- Validate Kamelets and regenerate the Antora nav -->
+            <!-- Validate Kamelets and regenerate the Antora nav and the index of the Kamelets -->
             <plugin>
                 <groupId>org.apache.camel.kamelets</groupId>
                 <artifactId>kamelets-maven-plugin</artifactId>
@@ -90,6 +90,13 @@
                         <phase>compile</phase>
                         <goals>
                             <goal>generate-nav</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>generate-index</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate-index</goal>
                         </goals>
                     </execution>
                     <execution>
