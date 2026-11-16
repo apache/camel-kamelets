@@ -30,8 +30,14 @@ metadata:
 spec:
   definition:
     title: "Mail IMAP Source"
-    description: Receive unread emails from an IMAP mail server, marking them as read once they are received.
+    description: |-
+      Reads the unread emails in the inbox of a mailbox over IMAP, one message per email, and marks each email as read.
 
+      Use it to start a flow from incoming email, for example turn support requests into tickets, or process the orders and invoices that customers send by email. For a Microsoft 365 mailbox that needs an OAuth login, use `ms-exchange-online-imap-oauth-source`, and for Gmail through its API, use `google-mail-source`.
+
+      Output: the body is the text of the email. For an email with several parts, such as text and HTML or attachments, it is the text of the first part; attachments are not in the body. The `ce-subject`, `ce-from`, `ce-to` and `ce-cc` headers hold the subject and the addresses, and the headers of the email, such as `Subject`, `From`, `Date` and `Message-ID`, are copied too.
+
+      Good to know: emails stay in the mailbox, marked as read, and emails that are already read are skipped. It reads only the `INBOX` folder. It always connects with TLS (IMAPS) and checks the certificate of the server. It checks for new email once a minute by default (`delay`).
     required:
     - connectionHost
     - connectionPort
@@ -41,37 +47,56 @@ spec:
     properties:
       connectionHost:
         title: Connection Host
-        description: The IMAP server host.
+        description: The host name of the IMAP server of the mail provider, without a port.
         type: string
-        example: imap.gmail.com
+        example: imap.example.com
       connectionPort:
         title: Connection Port
-        description: The IMAP server port.
+        description: The port of the IMAP server for TLS connections (IMAPS), usually 993.
         type: string
         default: 993
       username:
         title: Username
-        description: The username to access the mail box.
+        description: The user to log in to the mailbox as, usually the email address.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access the mail box.
+        description: The password of `username`. Some providers need an app password here, made in the security settings of the account, instead of the password of the account.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       fetchSize:
         title: Fetch Size
-        description: The number of messages fetched for each poll (-1 for no limits).
+        description: The most emails to read at each check of the mailbox. Use -1 for no limit.
         type: integer
         default: 10
       delay:
         title: Delay
-        description: The delay between fetches in milliseconds.
+        description: How long to wait between two checks of the mailbox, in milliseconds. The default, 60000, is one minute.
         type: integer
         default: 60000
+  dataTypes:
+    out:
+      headers:
+        ce-subject:
+          title: Subject
+          description: The subject of the email.
+          type: string
+        ce-from:
+          title: From
+          description: The sender of the email, such as `jane@example.com`.
+          type: string
+        ce-to:
+          title: To
+          description: The recipients of the email, separated by commas.
+          type: string
+        ce-cc:
+          title: Cc
+          description: The copy recipients of the email, separated by commas.
+          type: string
   dependencies:
     - "camel:mail"
     - "camel:kamelet"

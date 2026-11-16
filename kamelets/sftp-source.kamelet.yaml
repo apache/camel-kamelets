@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "SFTP Source"
-    description: Receive data from an SFTP server.
+    description: |-
+      Reads the files in a directory on an SFTP server, over an encrypted SSH connection, one message per file, and by default leaves them on the server.
+
+      Use it to collect the files that a partner or another system drops on a server you reach with SSH, such as orders, invoices or exports. For an FTP server use `ftp-source` or `ftps-source`.
+
+      Output: the body is the content of the file, as bytes. The `file` and `ce-file` headers hold the name of the file, with its path below `directoryName` when `recursive` is true, such as `2026/orders.csv`. `CamelFileName` holds the same name, and `CamelFileLength` the size of the file in bytes.
+
+      Good to know: files are not deleted or moved after they are read, unless `delete` is true. A file is read only once while the integration runs (`idempotent`), but the files left on the server are all read again after a restart; set `delete` to true to read each file only once. Log in with `username` and either `password` or a private key. The key of the server must be in a known_hosts file, `knownHostsUri` or else `~/.ssh/known_hosts` of the user that runs the integration, or the connection fails.
     required:
       - connectionHost
       - connectionPort
@@ -39,101 +46,121 @@ spec:
     properties:
       connectionHost:
         title: Connection Host
-        description: The hostname of the SFTP server.
+        description: The host name or IP address of the SFTP server, without `sftp://` and without a port.
         type: string
+        example: sftp.example.com
       connectionPort:
         title: Connection Port
-        description: The port of the FTP server.
+        description: The port of the SFTP server, which is its SSH port, usually 22.
         type: string
         default: 22
       username:
         title: Username
-        description: The username to access the SFTP server.
+        description: The user to log in to the SFTP server as.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access the SFTP server.
+        description: The password of `username`. Leave it empty to log in with a private key instead, set in `privateKeyFile` or `privateKeyUri`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       directoryName:
         title: Directory Name
-        description: The starting directory.
+        description: The directory on the server to read the files from. A path without a leading `/` is relative to the home directory of the user.
         type: string
+        example: outgoing/orders
       passiveMode:
         title: Passive Mode
-        description: Sets the passive mode connection.
+        description: A setting of FTP that has no effect on SFTP. Leave it unset.
         type: boolean
         default: false
       recursive:
         title: Recursive
-        description: If a directory, look for files in all sub-directories as well.
+        description: If true, the files in the subdirectories of `directoryName` are read too.
         type: boolean
         default: false
       idempotent:
-        title: Idempotency
-        description: Skip already-processed files.
+        title: Skip Files Already Read
+        description: If true, a file is read only once while the integration runs, even when it stays on the server. The list of the files read is kept in memory, so after a restart the files still on the server are read again. If false, and `delete` is false, the same files are read again on every poll.
         type: boolean
         default: true
       ignoreFileNotFoundOrPermissionError:
-        title: Ignore File Not Found Or Permission Error
-        description: Whether to ignore when (trying to list files in directories or when downloading a file), which does not exist or due to permission error. By default when a directory or file does not exists or insufficient permission, then an exception is thrown. Setting this option to true allows to ignore that instead.
+        title: Ignore Access Errors
+        description: If true, a directory or a file that does not exist, or that `username` may not read, is skipped. If false, it causes an error.
         type: boolean
         default: false
       binary:
-        title: Binary
-        description: Specifies the file transfer mode, BINARY or ASCII. Default is ASCII (false).
+        title: Binary Mode
+        description: A setting of FTP that has no effect on SFTP, which always transfers files byte for byte. Leave it unset.
         type: boolean
         default: false
       privateKeyFile:
         title: Private Key File
-        description: Set the private key file so that the SFTP endpoint can do private key verification.
+        description: The path of a private key file on the machine that runs the integration, to log in with instead of a password. The matching public key must be in the `authorized_keys` of `username` on the server.
         type: string
+        example: /etc/sftp/keys/id_rsa
       privateKeyPassphrase:
         title: Private Key Passphrase
-        description: Set the private key file passphrase so that the SFTP endpoint can do private key verification.
+        description: The passphrase of the private key, when the key is protected with one.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       privateKeyUri:
         title: Private Key URI
-        description: Set the private key file (loaded from classpath by default) so that the SFTP endpoint can do private key verification.
+        description: Where to load the private key from, instead of `privateKeyFile`. It starts with `file://` for a file, `classpath://` for a resource in the application, or `http://` or `https://`.
         type: string
         pattern: "^(http|https|file|classpath|ref|bean)://.*"
+        example: file:///etc/sftp/keys/id_rsa
       strictHostKeyChecking:
         title: Strict Host Checking
-        description: Sets whether to use strict host key checking. One of yes, no or
-          ask. With no, the server host key is accepted without being checked against
-          a known_hosts entry.
+        description: Whether the key of the server must be found in a known_hosts file. With `yes`, a server that is not in it is refused. With `no`, any server is accepted without checking its key, so someone in between could read the files and the password. `ask` is meant for interactive use.
         type: string
         enum: ["yes", "no", "ask"]
         default: "yes"
       knownHostsUri:
         title: Known Hosts URI
-        description: The known_hosts file used to verify the server host key, loaded
-          from the classpath by default. Needed when the process has no
-          $HOME/.ssh/known_hosts to fall back on.
+        description: The known_hosts file that holds the key of the server, starting with `file://`, `classpath://`, `http://` or `https://`. Its lines can be made with `ssh-keyscan`. When it is not set, `~/.ssh/known_hosts` of the user that runs the integration is used, unless `useUserKnownHostsFile` is false; set it when that file does not exist, for example in a container.
         type: string
         pattern: "^(http|https|file|classpath|ref|bean)://.*"
+        example: file:///etc/sftp/known_hosts
       useUserKnownHostsFile:
         title: Use User Known Hosts File
-        description: If knownHostFile has not been explicit configured then use the host file from System.getProperty(user.home)/.ssh/known_hosts.
+        description: If true and `knownHostsUri` is not set, the key of the server is looked up in `~/.ssh/known_hosts` of the user that runs the integration.
         type: boolean
         default: true
       autoCreate:
         title: Autocreate Missing Directories
-        description: Automatically create starting directory.
+        description: If true, `directoryName` is created on the server when it does not exist.
         type: boolean
         default: true
       delete:
         title: Delete
-        description: If true, the file is deleted after it is processed successfully.
+        description: If true, each file is deleted from the server once it has been read and handed on successfully. Use it to read each file only once, also across restarts.
         type: boolean
         default: false
+  dataTypes:
+    out:
+      headers:
+        file:
+          title: File Name
+          description: The name of the file, with its path below `directoryName` when `recursive` is true, such as `2026/orders.csv`.
+          type: string
+        ce-file:
+          title: File Name (CloudEvents)
+          description: The same value as `file`.
+          type: string
+        CamelFileName:
+          title: Camel File Name
+          description: The same value as `file`.
+          type: string
+        CamelFileLength:
+          title: File Size
+          description: The size of the file, in bytes.
+          type: integer
   dependencies:
     - "camel:ftp"
     - "camel:kamelet"

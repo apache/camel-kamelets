@@ -6,7 +6,7 @@ This Kamelet provides integration with RESTful APIs that are documented using Op
 
 === OpenAPI Specification
 
-Uses OpenAPI specifications to understand API endpoints, request/response formats, and authentication requirements, ensuring consistent and documented API interactions.
+Uses the OpenAPI specification to find the method, the path, the parameters and the content type of the operation given in `operation`. The path and query parameters come from headers with the same names as the parameters: for `/pets/{petId}`, set the `petId` header. A missing path parameter is not an error: the request is sent with `{petId}` in the path. The Kamelet has no authentication options.
 
 === HTTP Operations
 
@@ -18,7 +18,7 @@ The host and base path for the REST service can be configured to override the de
 
 === Schema Validation
 
-OpenAPI specifications include schema definitions that can be used for request and response validation, ensuring data integrity and API compliance. Client request validation can be enabled to check if outgoing requests conform to the OpenAPI specification before they are sent.
+OpenAPI specifications include schema definitions that can be used for request and response validation. The `clientRequestValidation` option of this Kamelet has no effect: requests that do not conform to the specification are still sent.
 
 === Documentation-Driven Development
 

@@ -8,18 +8,17 @@ This Kamelet supports SSH authentication using username and password credentials
 
 The SSH Source Kamelet supports the following configurations:
 
-- **Host**: SSH server hostname or IP address (required)
-- **Port**: SSH server port (default: 22)
-- **Username**: Username for SSH authentication (required)
-- **Password**: Password for SSH authentication (required)
-- **Poll Command**: Command to execute on the remote server (required)
-- **Cert Resource**: SSH certificate resource for key-based authentication
-- **Timeout**: Command execution timeout in milliseconds
-- **Poll Interval**: Interval between command executions
+- **Connection Host** (`connectionHost`): SSH server hostname or IP address (required)
+- **Connection Port** (`connectionPort`): SSH server port (default: 22)
+- **Username** (`username`): Username for SSH authentication (required)
+- **Password** (`password`): Password for SSH authentication (required)
+- **Poll Command** (`pollCommand`): Command to execute on the remote server (required)
+- **Known Hosts Resource** (`knownHostsResource`): known_hosts file to verify the key of the server; without it, any server is accepted
+- **Delay** (`delay`): Milliseconds between two runs of the command (default: 500)
 
 === Output Format
 
-The Kamelet outputs the result of SSH command execution as text, including both stdout and stderr streams from the remote command.
+The body is what the command printed on its standard output, as text. The exit code is in the `CamelSshExitValue` header and the standard error, as a stream, in `CamelSshStderr`. A command that fails still sends a message.
 
 === Usage Example
 
@@ -29,12 +28,12 @@ The Kamelet outputs the result of SSH command execution as text, including both 
     from:
       uri: "kamelet:ssh-source"
       parameters:
-        host: "server.example.com"
-        port: "22"
+        connectionHost: "server.example.com"
+        connectionPort: "22"
         username: "sshuser"
         password: "sshpass"
         pollCommand: "tail -n 10 /var/log/application.log"
-        pollInterval: 30000
+        delay: 30000
       steps:
         - to:
             uri: "kamelet:log-sink"
@@ -48,17 +47,17 @@ The Kamelet outputs the result of SSH command execution as text, including both 
     from:
       uri: "kamelet:ssh-source"
       parameters:
-        host: "server.example.com"
+        connectionHost: "server.example.com"
         username: "monitor"
         password: "monitorpass"
         pollCommand: "df -h | grep -E '(Filesystem|/dev/)'  && free -m"
-        pollInterval: 60000
+        delay: 60000
       steps:
         - to:
             uri: "kamelet:log-sink"
 ----
 
-=== Example with Custom Timeout
+=== Example with a Longer Delay
 
 [source,yaml,subs='+attributes,macros']
 ----
@@ -66,12 +65,11 @@ The Kamelet outputs the result of SSH command execution as text, including both 
     from:
       uri: "kamelet:ssh-source"
       parameters:
-        host: "server.example.com"
+        connectionHost: "server.example.com"
         username: "operator"
         password: "operatorpass"
         pollCommand: "ps aux | grep java | grep -v grep"
-        timeout: 10000
-        pollInterval: 120000
+        delay: 120000
       steps:
         - to:
             uri: "kamelet:log-sink"
@@ -79,7 +77,8 @@ The Kamelet outputs the result of SSH command execution as text, including both 
 
 === Security Considerations
 
-- Use strong passwords or preferably SSH key authentication
+- Use strong passwords
+- Set `knownHostsResource` so that the key of the server is checked
 - Limit the commands that can be executed
 - Consider using dedicated monitoring users with restricted permissions
 - Monitor SSH access logs for security purposes

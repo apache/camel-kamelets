@@ -13,6 +13,7 @@ The FTPS Source Kamelet supports the following configurations:
 - **Username**: Username for FTPS authentication (required)
 - **Password**: Password for FTPS authentication (required)
 - **Directory Name**: The starting directory path on the FTPS server (required)
+- Files are left on the server after they are read unless **Delete** is true; with **Idempotent**, they are skipped while the integration runs but read again after a restart
 - **Passive Mode**: Use passive mode for FTPS connections (default: false)
 - **Recursive**: Process files in subdirectories (default: false)
 - **Idempotent**: Skip already-processed files (default: true)
@@ -28,7 +29,7 @@ The Kamelet outputs file content as an `InputStream` and sets headers with file 
 
 === Security
 
-FTPS provides enhanced security over standard FTP by encrypting the connection using SSL/TLS. This ensures that credentials and data are transmitted securely.
+FTPS encrypts the connection of standard FTP with TLS. The Kamelet uses explicit FTPS (it switches to TLS on the normal FTP port).
 
 === Usage Example
 
@@ -57,7 +58,7 @@ FTPS provides enhanced security over standard FTP by encrypting the connection u
       uri: "kamelet:ftps-source"
       parameters:
         connectionHost: "ftps.example.com"
-        connectionPort: "990"
+        connectionPort: "21"
         username: "ftpsuser"
         password: "ftpspass"
         directoryName: "/data"
@@ -69,4 +70,4 @@ FTPS provides enhanced security over standard FTP by encrypting the connection u
             uri: "kamelet:log-sink"
 ----
 
-This example uses port 990 (common for implicit FTPS), enables passive mode, binary transfer, and recursive directory processing.
+This example enables passive mode, binary transfer, and recursive directory processing. The Kamelet uses explicit FTPS: it connects to the normal FTP port and then switches to TLS. Servers that only accept implicit FTPS (usually on port 990) are not supported.

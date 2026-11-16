@@ -31,9 +31,15 @@ spec:
   definition:
     title: "REST OpenAPI Sink"
     description: |-
-      Load an OpenAPI specification from a URI and call an operation on a HTTP service.
+      Calls one operation of a REST API for each message, building the request (method, path, parameters and content type) from the OpenAPI specification of the API.
 
-      The request that is generated respects the rules given in the OpenAPI specification (for example, path parameters and Content-Type).
+      Use it to call an API that publishes an OpenAPI (Swagger) document without writing its URLs by hand, for example to create a customer or look up an order in a service of your company. For a call to a fixed URL, use `http-sink`, or `http-secured-sink` when the service needs a login.
+
+      Input: the body is the request body, such as JSON text, and is sent with the content type the specification gives for the operation. The path and query parameters of the operation come from headers of the same name: for `/pets/{petId}`, set the `petId` header. The other headers of the message, except the Camel ones, are sent as HTTP headers.
+
+      Output: when it is used inside a route, the body afterwards is the response of the API, as bytes, with the headers of the response and its status code in `CamelHttpResponseCode`.
+
+      Good to know: a missing path parameter is not an error; the request is sent with `{petId}` in the path. The address of the API is taken from the `servers` of the specification, unless `host` or `basePath` is set. The Kamelet has no login options. The Kamelet does not start when the specification has no operation with the ID in `operation`.
     required:
     - specification
     - operation
@@ -41,27 +47,28 @@ spec:
     properties:
       specification:
         title: Specification URI
-        description: The URI to the OpenApi specification file.
+        description: Where to load the OpenAPI document of the API from. It starts with `https://` or `http://` for a URL, `file://` for a file, or `classpath://` for a resource in the application.
         type: string
         example: "https://api.example.com/openapi.json"
         pattern: "^(http|https|file|classpath|ref|bean)://.*"
       operation:
         title: Operation ID
-        description: The operation to call.
+        description: The `operationId` of the operation to call, exactly as it is written in the specification.
         type: string
+        example: getOrderById
       host:
         title: Host
-        description: The host to use for calling the REST service. Overrides the value found in the OpenAPI specification. The format is https://hostname:port.
+        description: The scheme, host and port of the API, in place of the address in the `servers` of the specification. Use it when the specification points to another server, such as a test server or `localhost`.
         type: string
         example: "https://api.example.com:443"
       basePath:
         title: Base Path
-        description: The API base path. Overrides the value present in the OpenAPI specification.
+        description: The path that comes before the paths of the operations, in place of the one in the specification.
         type: string
         example: "/v3"
       clientRequestValidation:
         title: Client Request Validation
-        description: Whether to enable validation of the client request to check if the incoming request is valid according to the OpenAPI specification.
+        description: Meant to check each request against the specification before it is sent. It has no effect in this Kamelet; a request with a missing parameter or an invalid body is still sent.
         type: boolean
         default: false
   dependencies:

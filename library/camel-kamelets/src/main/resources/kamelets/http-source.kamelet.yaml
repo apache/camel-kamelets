@@ -30,27 +30,47 @@ metadata:
 spec:
   definition:
     title: "HTTP Source"
-    description: Periodically fetches an HTTP resource and provides the content as output.
+    description: |-
+      Fetches a web address with an HTTP GET request at a regular interval, and sends each response as a message.
+
+      Use it to poll a REST API, a feed or a status page for its current data, for example fetch the state of the orders every minute. If the address needs a login, use `http-secured-source`. To receive the requests that other systems send instead, use `webhook-source`.
+
+      Output: the body is the body of the response, as bytes. The headers of the response, such as `Content-Type`, are copied to the message, and `CamelHttpResponseCode` holds the status code.
+
+      Good to know: it fetches the address every `period` and sends a message for each response, even when the data has not changed. A response with a status code of 300 or higher sends no message: the error is logged, and the address is fetched again at the next period.
     required:
     - url
     type: object
     properties:
       period:
         title: Period between Updates
-        description: The interval between fetches in milliseconds.
+        description: How long to wait between two requests, in milliseconds. The default, 10000, is ten seconds.
         type: integer
         default: 10000
+        example: 60000
       contentType:
         title: Content Type
-        description: The content type accepted for the resource.
+        description: The value of the `Accept` header of the request, which tells the service the kind of response you want, such as `application/json` or `text/csv`.
         type: string
         default: "application/json"
+        example: text/csv
       url:
         title: URL
-        description: The URL to fetch for data.
+        description: The address to fetch, with the path and any query parameters. It must start with `http://` or `https://`.
         type: string
-        example: "https://gist.githubusercontent.com/nicolaferraro/e3c72ace3c751f9f88273896611ce5fe/raw/3b6f54060bacb56b6719b7386a4645cb59ad6cc1/quote.json"
+        example: "https://api.example.com/v1/orders/status"
         pattern: "^(http|https)://.*"
+  dataTypes:
+    out:
+      headers:
+        CamelHttpResponseCode:
+          title: Status Code
+          description: The HTTP status code of the response, such as 200.
+          type: integer
+        Content-Type:
+          title: Content Type
+          description: The content type of the response, as sent by the service, such as `application/json`.
+          type: string
   dependencies:
     - "camel:http"
     - "camel:kamelet"

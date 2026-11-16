@@ -18,7 +18,7 @@ The FTP Source Kamelet supports the following configurations:
 - **Idempotent**: Skip already-processed files (default: true)
 - **Binary**: Use binary transfer mode instead of ASCII (default: false)
 - **Auto Create**: Automatically create the starting directory if it doesn't exist (default: true)
-- **Delete**: Delete files after successful processing (default: false)
+- **Delete**: Delete files after successful processing (default: false). When false, files are left on the server; with **Idempotent**, they are skipped while the integration runs but read again after a restart
 
 === Output Format
 

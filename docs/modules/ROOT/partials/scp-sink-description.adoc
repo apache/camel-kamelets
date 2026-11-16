@@ -10,7 +10,7 @@ Uses SSH protocol for authentication and encryption, providing strong security f
 
 === Remote File Placement
 
-Transfers files to remote servers and places them in specified directories with configurable file names and permissions.
+Transfers files to the home directory of `username` on the remote server. The file name comes from the `CamelFileName` header, which may include subdirectories; without it, a unique name is generated. A file with the same name is replaced. To choose another directory on the server, use the SFTP Sink Kamelet.
 
 === Network Efficiency
 
@@ -26,8 +26,8 @@ SCP provides efficient file transfer capabilities suitable for:
 Supports multiple authentication methods:
 
 - Username and password authentication
-- Public key authentication
-- Host key verification for security
+- Private key authentication (`privateKeyFile`), with a key that has no passphrase
+- Host key verification against `~/.ssh/known_hosts` of the user that runs the integration
 
 === Cross-Platform Support
 

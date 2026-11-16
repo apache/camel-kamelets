@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "SFTP Sink"
-    description: Send data to an SFTP Server.
+    description: |-
+      Uploads each message as a file to a directory on an SFTP server, which transfers files over an encrypted SSH connection.
+
+      Use it to deliver exports, reports or data files to a server you reach with SSH, such as the SFTP drop box of a partner. For an FTP server use `ftp-sink` or `ftps-sink`.
+
+      Input: the body is the content of the file, as text, bytes or a stream. The name of the file comes from the `file` header, or from `ce-file` when `file` is not set; any directory in it is dropped, so `reports/data.csv` is written as `data.csv`. Without these headers, `CamelFileName` is used as it is, subdirectories included, and without any of them a unique name is generated.
+
+      Output: the message is unchanged. The `CamelFileNameProduced` header is set to the path of the file on the server.
+
+      Good to know: a file with the same name is replaced, unless `fileExist` says otherwise. Log in with `username` and either `password` or a private key. The key of the server must be in a known_hosts file, `knownHostsUri` or else `~/.ssh/known_hosts` of the user that runs the integration, or the connection fails. A file name that points outside `directoryName` fails the message.
     required:
       - connectionHost
       - connectionPort
@@ -39,87 +48,109 @@ spec:
     properties:
       connectionHost:
         title: Connection Host
-        description: The hostname of the FTP server.
+        description: The host name or IP address of the SFTP server, without `sftp://` and without a port.
         type: string
+        example: sftp.example.com
       connectionPort:
         title: Connection Port
-        description: The port of the FTP server.
+        description: The port of the SFTP server, which is its SSH port, usually 22.
         type: string
         default: 22
       username:
         title: Username
-        description: The username to access the FTP server.
+        description: The user to log in to the SFTP server as.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access the FTP server.
+        description: The password of `username`. Leave it empty to log in with a private key instead, set in `privateKeyFile` or `privateKeyUri`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       directoryName:
         title: Directory Name
-        description: The starting directory.
+        description: The directory on the server to write the files to. A path without a leading `/` is relative to the home directory of the user. It is created when it does not exist, unless `autoCreate` is false.
         type: string
+        example: upload/orders
       passiveMode:
         title: Passive Mode
-        description: Specifies to use passive mode connection.
+        description: A setting of FTP that has no effect on SFTP. Leave it unset.
         type: boolean
         default: false
       fileExist:
-        title: File Existence
-        description: How to behave in case of file already existent.
+        title: If File Exists
+        description: What to do when a file with the same name is already in the directory. `Override` replaces it, `Append` adds the new content at its end, `Fail` fails the message, and `Ignore` keeps the old file and drops the new content without an error.
         type: string
         default: Override
         enum: ["Override", "Append", "Fail", "Ignore"]
       binary:
-        title: Binary
-        description: Specifies the file transfer mode, BINARY or ASCII. Default is ASCII (false).
+        title: Binary Mode
+        description: A setting of FTP that has no effect on SFTP, which always transfers files byte for byte. Leave it unset.
         type: boolean
         default: false
       privateKeyFile:
         title: Private Key File
-        description: Set the private key file so that the SFTP endpoint can do private key verification.
+        description: The path of a private key file on the machine that runs the integration, to log in with instead of a password. The matching public key must be in the `authorized_keys` of `username` on the server.
         type: string
+        example: /etc/sftp/keys/id_rsa
       privateKeyPassphrase:
         title: Private Key Passphrase
-        description: Set the private key file passphrase so that the SFTP endpoint can do private key verification.
+        description: The passphrase of the private key, when the key is protected with one.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       privateKeyUri:
         title: Private Key URI
-        description: Set the private key file (loaded from classpath by default) so that the SFTP endpoint can do private key verification.
+        description: Where to load the private key from, instead of `privateKeyFile`. It starts with `file://` for a file, `classpath://` for a resource in the application, or `http://` or `https://`.
         type: string
         pattern: "^(http|https|file|classpath|ref|bean)://.*"
+        example: file:///etc/sftp/keys/id_rsa
       strictHostKeyChecking:
         title: Strict Host Checking
-        description: Sets whether to use strict host key checking. One of yes, no or
-          ask. With no, the server host key is accepted without being checked against
-          a known_hosts entry.
+        description: Whether the key of the server must be found in a known_hosts file. With `yes`, a server that is not in it is refused. With `no`, any server is accepted without checking its key, so someone in between could read the files and the password. `ask` is meant for interactive use.
         type: string
         enum: ["yes", "no", "ask"]
         default: "yes"
       knownHostsUri:
         title: Known Hosts URI
-        description: The known_hosts file used to verify the server host key, loaded
-          from the classpath by default. Needed when the process has no
-          $HOME/.ssh/known_hosts to fall back on.
+        description: The known_hosts file that holds the key of the server, starting with `file://`, `classpath://`, `http://` or `https://`. Its lines can be made with `ssh-keyscan`. When it is not set, `~/.ssh/known_hosts` of the user that runs the integration is used, unless `useUserKnownHostsFile` is false; set it when that file does not exist, for example in a container.
         type: string
         pattern: "^(http|https|file|classpath|ref|bean)://.*"
+        example: file:///etc/sftp/known_hosts
       useUserKnownHostsFile:
         title: Use User Known Hosts File
-        description: If knownHostFile has not been explicit configured then use the host file from System.getProperty(user.home)/.ssh/known_hosts.
+        description: If true and `knownHostsUri` is not set, the key of the server is looked up in `~/.ssh/known_hosts` of the user that runs the integration.
         type: boolean
         default: true
       autoCreate:
         title: Autocreate Missing Directories
-        description: Automatically create the directory the files should be written to.
+        description: If true, `directoryName`, and any subdirectory in the `CamelFileName` header, is created on the server when it does not exist.
         type: boolean
         default: true
+  dataTypes:
+    in:
+      headers:
+        file:
+          title: File Name
+          description: The name of the file to write, such as `orders.csv`. Any directory in it is dropped.
+          type: string
+        ce-file:
+          title: File Name (CloudEvents)
+          description: The name of the file to write, used when `file` is not set. Any directory in it is dropped.
+          type: string
+        CamelFileName:
+          title: Camel File Name
+          description: The name of the file to write, used as it is, subdirectories included, when neither `file` nor `ce-file` is set.
+          type: string
+    out:
+      headers:
+        CamelFileNameProduced:
+          title: File Written
+          description: The path of the file that was written on the server, such as `upload/orders/orders.csv`.
+          type: string
   dependencies:
     - "camel:ftp"
     - "camel:kamelet"

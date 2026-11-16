@@ -11,10 +11,13 @@ This Kamelet sends emails through SMTP servers with configurable authentication 
 
 === Optional Configuration
 
-- **Connection Port**: SMTP port (defaults to 25)
+- **Connection Port**: SMTP port (defaults to 465)
+- **Protocol**: `smtps` (the default, TLS from the start) or `smtp` (no encryption)
 - **From**: Sender email address
-- **To**: Primary recipient
+- **To**: Recipients, separated by commas
 - **Subject**: Email subject line
+
+Set **From**, **To** and **Subject** even when every message carries the matching `ce-*` header: the Kamelet does not start without them.
 
 === Email Headers Support
 
@@ -23,6 +26,8 @@ The Kamelet supports various email headers through CloudEvents:
 - `ce-from`: Override sender address
 - `ce-to`: Override recipient address
 - `ce-cc`: Add CC recipients
+
+Other mail headers on the message, such as `To`, `Cc` or `Bcc`, are removed. A `Content-Type` header of `text/html` sends the body as an HTML email.
 
 === Usage
 
