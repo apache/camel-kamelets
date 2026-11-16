@@ -20,6 +20,7 @@
       uri: "kamelet:timer-source"
       parameters:
         period: '{{timer.source.period}}'
+        repeatCount: 1
         message: '{{jira.issue.comment}}'
       steps:
         - to:
