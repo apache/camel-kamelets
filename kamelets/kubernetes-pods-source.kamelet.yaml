@@ -30,27 +30,47 @@ metadata:
 spec:
   definition:
     title: "Kubernetes Pods Source"
-    description: Consume Events from Kubernetes Pods
+    description: |-
+      Watches the pods of a Kubernetes cluster and sends a message each time a pod is added, changed or deleted, in any namespace.
+
+      Use it to react to what happens to workloads, for example to alert when a pod fails or restarts, or to keep an inventory of running pods. For nodes or namespaces, use `kubernetes-nodes-source` or `kubernetes-namespaces-source`.
+
+      Output: the body is the pod as JSON text, in the same shape as `kubectl get pod <name> -o json`. The `CamelKubernetesEventAction` header says what happened: `ADDED`, `MODIFIED` or `DELETED`.
+
+      Good to know: when it starts, it first sends an `ADDED` message for every pod that already exists. A pod changes often, so expect many `MODIFIED` messages. It watches the pods of all namespaces: `resourceName` has no effect. The token must be allowed to list and watch pods in all namespaces.
     required:
       - token
       - masterUrl
     type: object
     properties:
       token:
-        title: Oauth Token
-        description: The Auth Token to connect to Kubernetes Cluster
+        title: Token
+        description: A bearer token to log in to the Kubernetes API with, such as the token of a service account created with `kubectl create token <service-account>`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       masterUrl:
         title: Kubernetes Master URL
-        description: The Kubernetes Cluster Master URL
+        description: The address of the Kubernetes API server, as a URL that starts with `https://`, such as the `server` of the cluster in your kubeconfig file.
         type: string
+        example: https://my-cluster.example.com:6443
       resourceName:
         title: Resource Name
-        description: The Resource Name we want to watch
+        description: Meant to watch only the pod with this name, but it has no effect, as this Kamelet watches the pods of all namespaces.
         type: string
+        example: web-1
+  dataTypes:
+    out:
+      headers:
+        CamelKubernetesEventAction:
+          title: Event Action
+          description: What happened to the pod, such as `ADDED`, `MODIFIED` or `DELETED`.
+          type: string
+        CamelKubernetesEventTimestamp:
+          title: Event Timestamp
+          description: When the event was received, in milliseconds since 1 January 1970.
+          type: integer
   types:
     out:
       mediaType: application/json

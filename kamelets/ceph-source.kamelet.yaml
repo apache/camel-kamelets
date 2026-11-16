@@ -31,7 +31,14 @@ metadata:
 spec:
   definition:
     title: "Ceph Source"
-    description: Receive data from an Ceph Bucket, managed by a Object Storage Gateway.
+    description: |-
+      Reads the files (objects) in a bucket of a Ceph Object Gateway, one message per file, and by default deletes each file once it has been read.
+
+      Use it to process files that another system drops into a Ceph bucket, such as uploaded documents, exported reports or log files. To react to the bucket notifications of Ceph instead of reading the bucket over and over, use `ceph-event-based-source`.
+
+      Output: the body is the content of the file, as bytes. The headers give the bucket name, the key (the path of the file in the bucket, `CamelAwsS3Key`), the content type and the ETag of the file.
+
+      Good to know: files are deleted from the bucket after they are read, unless `deleteAfterRead` is set to false; then the same files are read again on every poll. Files in folders are read too. The bucket is addressed as part of the host name (such as `my-bucket.ceph.example.com`) unless `cephUrl` uses an IP address, so the gateway must accept that style of address.
     required:
       - cephUrl
       - accessKey
@@ -42,61 +49,86 @@ spec:
     properties:
       bucketName:
         title: Bucket Name
-        description: The Ceph Bucket name.
+        description: The name of the bucket to read the files from.
         type: string
+        example: my-bucket
       deleteAfterRead:
         title: Auto-delete Objects
-        description: Specifies to delete objects after consuming them.
+        description: If true, each file is deleted from the bucket after it has been read. Set it to false to keep the files; they are then read again on every poll.
         type: boolean
         default: true
       accessKey:
         title: Access Key
-        description: The access key.
+        description: The S3 access key of a Ceph Object Gateway user, as shown by `radosgw-admin user info`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       secretKey:
         title: Secret Key
-        description: The secret key.
+        description: The S3 secret key that goes with `accessKey`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       zoneGroup:
         title: Bucket Zone Group
-        description: The bucket zone group.
+        description: The name of the zone group of the Ceph Object Gateway, used as the region of the requests. A Ceph cluster that was not set up with several zone groups uses `default`.
         type: string
+        example: default
       autoCreateBucket:
         title: Autocreate Bucket
-        description: Specifies to automatically create the bucket.
+        description: If true, the bucket is created when it does not exist yet. If false, every poll fails while the bucket does not exist.
         type: boolean
         default: false
       includeBody:
         title: Include Body
-        description: If true, the exchange is consumed and put into the body and closed. If false, the Object stream is put raw into the body and the headers are set with the object metadata.
+        description: If true, the body is the content of the file, as bytes. If false, the body is a stream of the content, which suits large files.
         type: boolean
         default: true
       prefix:
         title: Prefix
-        description: The bucket prefix to consider while searching.
+        description: Read only the files whose key starts with this text, such as a folder name followed by `/`. When it is not set, all the files of the bucket are read.
         type: string
         example: 'folder/'
       ignoreBody:
         title: Ignore Body
-        description: If true, the Object body is ignored. Setting this to true overrides any behavior defined by the `includeBody` option. If false, the object is put in the body.
+        description: If true, the content of the file is not read, and the body is empty; only the headers describe the file. It takes precedence over `includeBody`.
         type: boolean
         default: false
       cephUrl:
         title: Ceph Url Address
-        description: Set the Ceph Object Storage Address Url.
+        description: The address of the Ceph Object Gateway (RGW), as a URL with the scheme and the port.
         type: string
-        example: "http://ceph-storage-address.com"
+        example: "http://ceph-rgw.example.com:7480"
       delay:
         title: Delay
-        description: The number of milliseconds before the next poll of the selected bucket.
+        description: How long to wait between two polls of the bucket, in milliseconds.
         type: integer
         default: 500
+  dataTypes:
+    out:
+      headers:
+        CamelAwsS3BucketName:
+          title: Bucket Name
+          description: The name of the bucket the file was read from.
+          type: string
+        CamelAwsS3Key:
+          title: Key
+          description: The key of the file, its path in the bucket, such as `reports/january.csv`.
+          type: string
+        CamelAwsS3ContentType:
+          title: Content Type
+          description: The content type the file was stored with, such as `application/octet-stream`.
+          type: string
+        CamelAwsS3ContentLength:
+          title: Content Length
+          description: The size of the file, in bytes.
+          type: integer
+        CamelAwsS3ETag:
+          title: ETag
+          description: The ETag of the file, which changes when its content changes.
+          type: string
   dependencies:
     - "camel:aws2-s3"
     - "camel:kamelet"

@@ -2,22 +2,15 @@
 
 === Authentication methods
 
-This Kamelet connects to Kubernetes using:
-
-- Service account authentication (recommended in cluster)
-- Kubeconfig file authentication
-- Token-based authentication
+This Kamelet connects to the Kubernetes API server given by `masterUrl` with a bearer token, the `token` option, such as the token of a service account created with `kubectl create token <service-account>`. The token must be allowed to list and watch pods.
 
 === Output format
 
-The Kamelet watches Kubernetes pods resources and produces event data in JSON format when resources are created, updated, or deleted.
+The Kamelet watches Kubernetes pods resources and produces a message when one is created, updated, or deleted. The body is the resource as JSON text, and the `CamelKubernetesEventAction` header says what happened (`ADDED`, `MODIFIED` or `DELETED`).
 
 === Configuration
 
-The Kamelet supports various Kubernetes connection parameters:
-
-- `namespace`: The Kubernetes namespace to watch (optional)
-- Authentication and connection configuration
+The Kamelet requires `masterUrl` and `token`. It watches the pods of all namespaces: it has no option to choose a namespace, and `resourceName` has no effect.
 
 === Usage example
 
@@ -33,7 +26,8 @@ spec:
       apiVersion: camel.apache.org/v1alpha1
       name: kubernetes-pods-source
     properties:
-      namespace: "default"
+      masterUrl: "https://my-cluster.example.com:6443"
+      token: "{{kubernetes-token}}"
   sink:
     ref:
       kind: Service

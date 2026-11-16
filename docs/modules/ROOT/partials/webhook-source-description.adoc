@@ -66,11 +66,12 @@ Processing webhook data:
         subpath: "github-webhook"
       steps:
         - filter:
-            header:
-              name: "X-GitHub-Event"
-              value: "push"
-        - to:
-            uri: "kamelet:log-sink"
+            expression:
+              simple:
+                expression: "${header.X-GitHub-Event} == 'push'"
+            steps:
+              - to:
+                  uri: "kamelet:log-sink"
 ----
 
 This example filters for GitHub push events before processing.

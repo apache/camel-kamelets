@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "Minio Source"
-    description: Receive data from MinIO.
+    description: |-
+      Reads the files (objects) in a MinIO bucket, one message per file, and by default deletes each file once it has been read.
+
+      Use it to process files that another system drops into a MinIO bucket, such as uploaded documents, exported reports or log files. For Amazon S3 use `aws-s3-source`, and for the S3 gateway of Ceph use `ceph-source`.
+
+      Output: the body is the content of the file, as bytes. The headers give the bucket name, the name of the file (`CamelMinioObjectName`), and its content type, size, ETag and last modified date.
+
+      Good to know: files are deleted from the bucket after they are read, unless `deleteAfterRead` is set to false; then the same files are read again on every poll, about twice a second. Only the files at the top of the bucket are read: a file in a folder, such as `reports/january.csv`, is not.
     required:
       - bucketName
       - accessKey
@@ -40,37 +47,61 @@ spec:
     properties:
       bucketName:
         title: Bucket Name
-        description: The MinIO Bucket name.
+        description: The name of the bucket to read the files from.
         type: string
+        example: my-bucket
       deleteAfterRead:
         title: Auto-delete Objects
-        description: Delete objects after consuming them.
+        description: If true, each file is deleted from the bucket after it has been read. Set it to false to keep the files; they are then read again on every poll.
         type: boolean
         default: true
       accessKey:
         title: Access Key
-        description: The access key obtained from MinIO.
+        description: The access key to log in to MinIO with, such as the access key of a key pair created in the MinIO Console, or the name of a MinIO user.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       secretKey:
         title: Secret Key
-        description: The secret key obtained from MinIO.
+        description: The secret key that goes with `accessKey`, or the password of the MinIO user.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       endpoint:
         title: Endpoint
-        description: The MinIO Endpoint. You can specify an URL, domain name, IPv4 address, or IPv6 address.
+        description: The address of the MinIO server, as a URL with the port, such as `http://localhost:9000`. Use `https://` when the server has TLS.
         type: string
         example: http://localhost:9000
       autoCreateBucket:
         title: Autocreate Bucket
-        description: Specifies to automatically create the MinIO bucket.
+        description: If true, the bucket is created when it does not exist yet. If false, every poll fails while the bucket does not exist.
         type: boolean
         default: false
+  dataTypes:
+    out:
+      headers:
+        CamelMinioBucketName:
+          title: Bucket Name
+          description: The name of the bucket the file was read from.
+          type: string
+        CamelMinioObjectName:
+          title: Object Name
+          description: The name of the file in the bucket, such as `invoice-42.pdf`.
+          type: string
+        CamelMinioContentType:
+          title: Content Type
+          description: The content type the file was stored with, such as `application/octet-stream`.
+          type: string
+        CamelMinioContentLength:
+          title: Content Length
+          description: The size of the file, in bytes.
+          type: integer
+        CamelMinioETag:
+          title: ETag
+          description: The ETag of the file, which changes when its content changes.
+          type: string
   dependencies:
   - "camel:minio"
   - "camel:kamelet"

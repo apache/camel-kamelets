@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "GitHub Pull Request Source"
-    description: Receive pull request From GitHub.
+    description: |-
+      Receives each new pull request opened in a GitHub repository, one message per pull request, by asking the GitHub API for new open pull requests.
+
+      Use it to react when someone proposes a change, for example to announce the pull request in a chat channel, open a review ticket or start a check. To receive the comments on pull requests, use `github-pullrequest-comment-source`.
+
+      Output: the body is the pull request as JSON text. The `CamelGitHubPullRequest` header gives its number, and `CamelGitHubPullRequestHeadCommitSha` the SHA of its latest commit.
+
+      Good to know: only the pull requests opened after the start are sent, once each; updates, merges and closes are not. It works with github.com, not with GitHub Enterprise Server. It asks GitHub for new pull requests about twice a second, and every request counts against the API rate limit of the token.
     required:
       - repoName
       - repoOwner
@@ -39,15 +46,17 @@ spec:
     properties:
       repoName:
         title: Repository Name
-        description: The GitHub Repository name
+        description: The name of the repository, such as `camel` in `https://github.com/apache/camel`.
         type: string
+        example: camel
       repoOwner:
         title: Repository Owner
-        description: The repository owner
+        description: The user or organization that owns the repository, such as `apache` in `https://github.com/apache/camel`.
         type: string
+        example: apache
       oauthToken:
         title: OAuth Token
-        description: OAuth token
+        description: A GitHub personal access token, created on GitHub under Settings, Developer settings, Personal access tokens. It needs read access to the repository and its pull requests.
         type: string
         format: password
         x-descriptors:
@@ -57,6 +66,17 @@ spec:
         description: The number of milliseconds before the next poll
         type: integer
         default: 60000
+  dataTypes:
+    out:
+      headers:
+        CamelGitHubPullRequest:
+          title: Pull Request Number
+          description: The number of the pull request, as in `https://github.com/apache/camel/pull/42`.
+          type: integer
+        CamelGitHubPullRequestHeadCommitSha:
+          title: Head Commit SHA
+          description: The SHA of the latest commit of the pull request.
+          type: string
   types:
     out:
       mediaType: application/json

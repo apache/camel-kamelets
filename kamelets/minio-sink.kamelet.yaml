@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Minio Sink"
-    description: Upload data to MinIO.
+    description: |-
+      Uploads each message as a file (object) to a bucket in MinIO, the S3-compatible object storage.
+
+      Use it to store data in MinIO, such as reports, exports, images or received messages to keep as an archive. For Amazon S3 use `aws-s3-sink`, and for the S3 gateway of Ceph use `ceph-sink`.
+
+      Input: the body is the content of the file, as text, bytes or a stream. When `keyName` is set, every message is stored under that name. Otherwise the name of the file comes from the optional `file` header, or the `ce-file` header, and is a generated unique name when neither is set.
+
+      Output: the body is unchanged. The `CamelMinioObjectName` header holds the name the file was stored under, unless `keyName` is set.
+
+      Good to know: a file with the same name is overwritten, so with `keyName` set each message replaces the previous one. When `keyName` is set, the `file` and `ce-file` headers are ignored.
     required:
       - bucketName
       - accessKey
@@ -40,36 +49,49 @@ spec:
     properties:
       bucketName:
         title: Bucket Name
-        description: The Minio Bucket name.
+        description: The name of the bucket to store the files in.
         type: string
+        example: my-bucket
       accessKey:
         title: Access Key
-        description: The access key obtained from MinIO.
+        description: The access key to log in to MinIO with, such as the access key of a key pair created in the MinIO Console, or the name of a MinIO user.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       secretKey:
         title: Secret Key
-        description: The secret key obtained from MinIO.
+        description: The secret key that goes with `accessKey`, or the password of the MinIO user.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       endpoint:
         title: Endpoint
-        description: The MinIO Endpoint. You can specify an URL, domain name, IPv4 address, or IPv6 address.
+        description: The address of the MinIO server, as a URL with the port, such as `http://localhost:9000`. Use `https://` when the server has TLS.
         type: string
         example: http://localhost:9000
       autoCreateBucket:
         title: Autocreate Bucket
-        description: Specify to automatically create the MinIO bucket.
+        description: If true, the bucket is created when it does not exist yet. If false, the bucket must already exist.
         type: boolean
         default: false
       keyName:
         title: Key Name
-        description: The key name for saving an element in the bucket.
+        description: The name to store every file under, with its folder if any. When it is not set, the name comes from the `file` or `ce-file` header of each message, or is generated.
         type: string
+        example: reports/latest.csv
+  dataTypes:
+    in:
+      headers:
+        file:
+          title: File Name
+          description: The name to store the file under, such as `reports/january.csv`. Ignored when `keyName` is set.
+          type: string
+        ce-file:
+          title: File Name
+          description: The name to store the file under, used when the `file` header is not set. Ignored when `keyName` is set.
+          type: string
   dependencies:
     - "camel:minio"
     - "camel:kamelet"

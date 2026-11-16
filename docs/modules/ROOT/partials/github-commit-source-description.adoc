@@ -9,7 +9,7 @@ This Kamelet uses OAuth token-based authentication to connect to GitHub. You nee
 
 === Output format
 
-The Kamelet produces commit data in JSON format containing commit information from the specified GitHub repository and branch.
+The Kamelet produces one message per new commit on the branch. The body is the commit message as JSON text, that is a quoted JSON string, and the headers `CamelGitHubCommitSha`, `CamelGitHubCommitUrl`, `CamelGitHubCommitAuthor` and `CamelGitHubCommitCommitter` give the details of the commit.
 
 === Configuration
 

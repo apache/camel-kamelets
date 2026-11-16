@@ -18,7 +18,7 @@ The Kamelet can optionally auto-create buckets if they don't exist, providing fl
 
 === Object Naming
 
-Object names can be specified through configuration or derived from message headers (`file` or `ce-file`). If no name is provided, the exchange ID is used as the object name.
+When the `keyName` option is set, every message is stored under that name, and the `file` and `ce-file` headers are ignored. Otherwise the object name comes from the `file` header, or the `ce-file` header, and is a generated unique name when neither is set.
 
 === Deployment Flexibility
 

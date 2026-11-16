@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "GitHub Pull Request Comments Source"
-    description: Receive pull request Comments From GitHub.
+    description: |-
+      Receives each new comment written on the open pull requests of a GitHub repository, one message per comment, by asking the GitHub API for new comments.
+
+      Use it to react to the discussion on pull requests, for example to answer a command written in a comment, such as `/retest`, or to forward the comments to a chat channel. To receive the pull requests themselves, use `github-pullrequest-source`.
+
+      Output: the body is the comment as JSON text. The `CamelGitHubPullRequest` header gives the number of the pull request it was written on.
+
+      Good to know: only the comments written after the start are sent, and only on pull requests that are still open. These are the comments of the conversation of a pull request, not the review comments on lines of code. It works with github.com, not with GitHub Enterprise Server. About twice a second it asks GitHub for the open pull requests and for the comments of each of them, and every request counts against the API rate limit of the token.
     required:
       - repoName
       - repoOwner
@@ -39,15 +46,17 @@ spec:
     properties:
       repoName:
         title: Repository Name
-        description: The GitHub Repository name
+        description: The name of the repository, such as `camel` in `https://github.com/apache/camel`.
         type: string
+        example: camel
       repoOwner:
         title: Repository Owner
-        description: The repository owner
+        description: The user or organization that owns the repository, such as `apache` in `https://github.com/apache/camel`.
         type: string
+        example: apache
       oauthToken:
         title: OAuth Token
-        description: OAuth token
+        description: A GitHub personal access token, created on GitHub under Settings, Developer settings, Personal access tokens. It needs read access to the repository and its pull requests.
         type: string
         format: password
         x-descriptors:
@@ -57,6 +66,13 @@ spec:
         description: The number of milliseconds before the next poll
         type: integer
         default: 60000
+  dataTypes:
+    out:
+      headers:
+        CamelGitHubPullRequest:
+          title: Pull Request Number
+          description: The number of the pull request the comment was written on.
+          type: integer
   types:
     out:
       mediaType: application/json

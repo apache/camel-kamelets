@@ -9,7 +9,7 @@ This Kamelet uses OAuth token-based authentication to connect to GitHub. You nee
 
 === Output format
 
-The Kamelet produces event data in JSON format containing various GitHub repository events such as pushes, issues, pull requests, and other repository activities.
+The Kamelet produces one message per repository event, such as a push, an issue or a pull request. The body is the type of the event as JSON text, that is a quoted JSON string such as `"PUSH"`; the details of the event are in the `CamelGitHubEventPayload` header, as a Java object.
 
 === Configuration
 
