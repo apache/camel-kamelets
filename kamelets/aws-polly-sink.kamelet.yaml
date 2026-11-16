@@ -31,94 +31,121 @@ metadata:
 spec:
   definition:
     title: "AWS Polly Sink"
-    description: Synthesize speech from text using AWS Polly.
+    description: |-
+      Turns the text of each message into speech with Amazon Polly, and gives the audio, such as an MP3 file.
+
+      Use it to create voice messages, audio versions of articles or spoken announcements from text. Write the audio to a file or a bucket as the next step, for example with `aws-s3-sink`.
+
+      Input: the body is the text to speak, as plain text, or as SSML when `textType` is `SSML`. The voice comes from `voiceId`, or when that is not set from the `CamelAwsPollyVoiceId` header; one of them is required.
+
+      Output: when it is used inside a route, the body afterwards is the audio, as a stream in the format of `outputFormat`, and the `CamelAwsPollyContentType` header holds its content type, such as `audio/mpeg`.
+
+      Good to know: the stream can be read only once, so write it to a file or a bucket right away. A voice that is not available with the chosen `engine` fails the message.
     required:
       - region
     type: object
     properties:
       voiceId:
-        title: Voice Id
-        description: The voice ID to use for speech synthesis (e.g., Joanna, Matthew, Amy, Brian).
+        title: Voice ID
+        description: The name of the voice to speak with, such as `Joanna` (US English) or `Hans` (German); the voice also sets the language. The Polly console lists the voices. When it is not set, the `CamelAwsPollyVoiceId` header gives the voice.
         type: string
+        example: Joanna
       outputFormat:
         title: Output Format
-        description: The audio format in which the resulting stream will be encoded.
+        description: "The format of the audio: `MP3`, `OggVorbis`, `Pcm` (raw audio), or `Json` for speech marks, which give the timing of the words instead of audio."
         type: string
         default: MP3
         enum: ["MP3", "OggVorbis", "Pcm", "Json"]
       textType:
         title: Text Type
-        description: Specifies whether the input text is plain text or SSML.
+        description: Whether the body is plain text (`TEXT`) or SSML (`SSML`), the markup language that controls pronunciation, pauses, volume and speed.
         type: string
         default: TEXT
         enum: ["TEXT", "SSML"]
       engine:
         title: Engine
-        description: Specifies the engine (standard, neural, long-form, generative) for Amazon Polly to use when processing input text for speech synthesis.
+        description: "The kind of voice: `standard`, `neural` (more natural), `long-form` (for long texts such as articles) or `generative`. Not every voice is available with every engine. When it is not set, Polly uses its default engine."
         type: string
         enum: ["standard", "neural", "long-form", "generative"]
       sampleRate:
         title: Sample Rate
-        description: The audio frequency in Hz.
+        description: The sample rate of the audio, in hertz, such as `22050` for MP3 or `16000` for PCM. When it is not set, Polly uses the default of the format.
         type: string
+        example: "22050"
       languageCode:
         title: Language Code
-        description: Optional language code for voice synthesis. This is only necessary if using a bilingual voice.
+        description: The language to speak in, such as `en-IN` or `hi-IN`. Only needed for a bilingual voice, such as `Aditi`, to choose one of its two languages.
         type: string
+        example: en-IN
       accessKey:
         title: Access Key
-        description: The access key obtained from AWS.
+        description: "The access key ID of an IAM user, which AWS gives when you create an access key for the user (in the AWS console: IAM, Users, Security credentials). Use it together with `secretKey`, or leave both empty and set `useDefaultCredentialsProvider` or `useProfileCredentialsProvider` instead."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       secretKey:
         title: Secret Key
-        description: The secret key obtained from AWS.
+        description: The secret access key that goes with `accessKey`. AWS shows it only once, when the access key is created.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       region:
         title: AWS Region
-        description: The AWS region to access.
+        description: The AWS region of Amazon Polly to use, such as `eu-west-1`.
         type: string
+        example: eu-west-1
         enum: ["ap-south-1", "eu-south-1", "us-gov-east-1", "me-central-1", "ca-central-1", "eu-central-1", "us-iso-west-1", "us-west-1", "us-west-2", "af-south-1", "eu-north-1", "eu-west-3", "eu-west-2", "eu-west-1", "ap-northeast-3", "ap-northeast-2", "ap-northeast-1", "me-south-1", "sa-east-1", "ap-east-1", "cn-north-1", "us-gov-west-1", "ap-southeast-1", "ap-southeast-2", "us-iso-east-1", "ap-southeast-3", "us-east-1", "us-east-2", "cn-northwest-1", "us-isob-east-1", "aws-global", "aws-cn-global", "aws-us-gov-global", "aws-iso-global", "aws-iso-b-global"]
       useDefaultCredentialsProvider:
         title: Default Credentials Provider
-        description: If true, the Polly client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
+        description: "If true, the credentials are found the way the AWS SDK finds them: from the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables, the shared credentials file, or the IAM role of the machine, container or pod it runs on. Then `accessKey` and `secretKey` are not needed."
         type: boolean
         default: false
       useProfileCredentialsProvider:
         title: Profile Credentials Provider
-        description: Set whether the Polly client should expect to load credentials through a profile credentials provider.
+        description: If true, the credentials are read from a profile of the AWS credentials file (`~/.aws/credentials`), the one named in `profileCredentialsName`.
         type: boolean
         default: false
       useSessionCredentials:
         title: Session Credentials
-        description: Set whether the Polly client should expect to use Session Credentials. This is useful in a situation in which the user needs to assume an IAM role for doing operations in Polly.
+        description: "If true, it logs in with temporary credentials, such as those of an assumed IAM role: `accessKey`, `secretKey` and `sessionToken` together."
         type: boolean
         default: false
       profileCredentialsName:
         title: Profile Credentials Name
-        description: If using a profile credentials provider this parameter sets the profile name.
+        description: The name of the profile to use from the AWS credentials file. Only used when `useProfileCredentialsProvider` is true.
         type: string
       sessionToken:
         title: Session Token
-        description: Amazon AWS Session Token used when the user needs to assume an IAM role.
+        description: The session token of temporary credentials, which AWS gives together with their access key and secret key. Only used when `useSessionCredentials` is true.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       uriEndpointOverride:
         title: Overwrite Endpoint URI
-        description: The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option.
+        description: The address to send the requests to instead of the usual AWS address, such as `http://localhost:4566` for LocalStack. Only used when `overrideEndpoint` is true.
         type: string
+        example: http://localhost:4566
       overrideEndpoint:
         title: Endpoint Overwrite
-        description: Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option.
+        description: If true, the requests go to the address in `uriEndpointOverride` instead of AWS, for example to test against LocalStack.
         type: boolean
         default: false
+  dataTypes:
+    in:
+      headers:
+        CamelAwsPollyVoiceId:
+          title: Voice ID
+          description: The name of the voice, such as `Joanna`. Used only when the `voiceId` option is not set.
+          type: string
+    out:
+      headers:
+        CamelAwsPollyContentType:
+          title: Content Type
+          description: The content type of the audio, such as `audio/mpeg`.
+          type: string
   dependencies:
     - "camel:aws2-polly"
     - "camel:kamelet"

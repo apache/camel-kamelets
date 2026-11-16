@@ -31,7 +31,16 @@ metadata:
 spec:
   definition:
     title: "AWS Translate Action"
-    description: Translate a text in a specific language.
+    description: |-
+      Translates the text of each message from one language into another with Amazon Translate.
+
+      Use it to translate customer messages, support tickets or product descriptions, for example from Italian into English before they are analyzed or stored.
+
+      Input: the body is the text to translate.
+
+      Output: the body is the translated text.
+
+      Good to know: both languages are fixed by the options. Only the listed language codes can be chosen, although Amazon Translate knows more languages.
     required:
       - region
       - sourceLanguage
@@ -40,57 +49,58 @@ spec:
     properties:
       accessKey:
         title: Access Key
-        description: The access key obtained from AWS.
+        description: "The access key ID of an IAM user, which AWS gives when you create an access key for the user (in the AWS console: IAM, Users, Security credentials). Use it together with `secretKey`, or leave both empty and set `useDefaultCredentialsProvider` or `useProfileCredentialsProvider` instead."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       secretKey:
         title: Secret Key
-        description: The secret key obtained from AWS.
+        description: The secret access key that goes with `accessKey`. AWS shows it only once, when the access key is created.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       region:
         title: AWS Region
-        description: The AWS region to access.
+        description: The AWS region of Amazon Translate to use, such as `eu-west-1`.
         type: string
+        example: eu-west-1
         enum: ["ap-south-1", "eu-south-1", "us-gov-east-1", "me-central-1", "ca-central-1", "eu-central-1", "us-iso-west-1", "us-west-1", "us-west-2", "af-south-1", "eu-north-1", "eu-west-3", "eu-west-2", "eu-west-1", "ap-northeast-3", "ap-northeast-2", "ap-northeast-1", "me-south-1", "sa-east-1", "ap-east-1", "cn-north-1", "us-gov-west-1", "ap-southeast-1", "ap-southeast-2", "us-iso-east-1", "ap-southeast-3", "us-east-1", "us-east-2", "cn-northwest-1", "us-isob-east-1", "aws-global", "aws-cn-global", "aws-us-gov-global", "aws-iso-global", "aws-iso-b-global"]
       sourceLanguage:
         title: Source Language
-        description: The source language of the translating text.
+        description: The language of the text, as a language code, such as `it` for Italian or `en` for English.
         type: string
         example: it
         enum: ["ar", "zh", "zh-TW", "cs", "da", "nl", "en", "fi", "fr", "de", "he", "hi", "id", "it", "ja", "ko", "ms", "no", "fa", "pl", "pt", "ru", "es", "sv", "tr"]
       targetLanguage:
         title: Target Language
-        description: The target language of the translating text.
+        description: The language to translate the text into, as a language code, such as `en` for English or `de` for German.
         type: string
-        example: it
+        example: en
         enum: ["ar", "zh", "zh-TW", "cs", "da", "nl", "en", "fi", "fr", "de", "he", "hi", "id", "it", "ja", "ko", "ms", "no", "fa", "pl", "pt", "ru", "es", "sv", "tr"]
       useDefaultCredentialsProvider:
         title: Default Credentials Provider
-        description: Set whether the Translate client should expect to load credentials through a default credentials provider or to expect static credentials to be passed in.
+        description: "If true, the credentials are found the way the AWS SDK finds them: from the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables, the shared credentials file, or the IAM role of the machine, container or pod it runs on. Then `accessKey` and `secretKey` are not needed."
         type: boolean
         default: false
       useProfileCredentialsProvider:
         title: Profile Credentials Provider
-        description: Set whether the Translate client should expect to load credentials through a profile credentials provider.
+        description: If true, the credentials are read from a profile of the AWS credentials file (`~/.aws/credentials`), the one named in `profileCredentialsName`.
         type: boolean
         default: false
       useSessionCredentials:
         title: Session Credentials
-        description: Set whether the Translate client should expect to use Session Credentials. This is useful in situation in which the user needs to assume a IAM role for doing operations in Translate.
+        description: "If true, it logs in with temporary credentials, such as those of an assumed IAM role: `accessKey`, `secretKey` and `sessionToken` together."
         type: boolean
         default: false
       profileCredentialsName:
         title: Profile Credentials Name
-        description: If using a profile credentials provider this parameter sets the profile name.
+        description: The name of the profile to use from the AWS credentials file. Only used when `useProfileCredentialsProvider` is true.
         type: string
       sessionToken:
         title: Session Token
-        description: Amazon AWS Session Token used when the user needs to assume a IAM role.
+        description: The session token of temporary credentials, which AWS gives together with their access key and secret key. Only used when `useSessionCredentials` is true.
         type: string
         format: password
         x-descriptors:

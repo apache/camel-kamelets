@@ -31,79 +31,111 @@ metadata:
 spec:
   definition:
     title: "AWS Comprehend Sink"
-    description: Send data to AWS Comprehend for natural language processing.
+    description: |-
+      Analyzes the text of each message with Amazon Comprehend, for example to detect its language, its sentiment, or the people, places and personal data it mentions.
+
+      Use it to sort customer feedback by sentiment, route support tickets by language, or find personal data in text before it is stored.
+
+      Input: the body is the text to analyze.
+
+      Output: when it is used inside a route, the body afterwards is what was found, as objects of the AWS SDK for Java (not JSON text): a List for most operations, such as the languages with their scores for `detectDominantLanguage` or the entities for `detectEntities`, and the sentiment with its scores for `detectSentiment`. Headers give the main result: `CamelAwsComprehendDetectedLanguage` with its score, or `CamelAwsComprehendDetectedSentiment` with its scores.
+
+      Good to know: every operation except `detectDominantLanguage` needs `languageCode`, and a message fails without it. `classifyDocument` needs `endpointArn`.
     required:
       - region
     type: object
     properties:
       operation:
         title: Operation
-        description: The operation to perform on the input text.
+        description: "What to find in the text: `detectDominantLanguage` (its language), `detectSentiment` (positive, negative, neutral or mixed), `detectEntities` (people, places, organizations, dates, ...), `detectKeyPhrases`, `detectSyntax` (the part of speech of each word), `detectPiiEntities` and `containsPiiEntities` (personal data, such as names and addresses), `detectToxicContent`, or `classifyDocument` (the classes of a custom classifier)."
         type: string
         default: detectDominantLanguage
         enum: ["detectDominantLanguage", "detectEntities", "detectKeyPhrases", "detectSentiment", "detectSyntax", "detectPiiEntities", "detectToxicContent", "classifyDocument", "containsPiiEntities"]
       languageCode:
         title: Language Code
-        description: The language code of the input text. Required for all operations except detectDominantLanguage. Use a 2-letter ISO 639-1 code (e.g., 'en' for English, 'es' for Spanish).
+        description: The language of the text, as a two-letter code, such as `en` for English or `es` for Spanish. Required for every operation except `detectDominantLanguage`.
         type: string
+        example: en
       endpointArn:
         title: Endpoint ARN
-        description: The Amazon Resource Name (ARN) of the endpoint to use for document classification. Required for classifyDocument operation.
+        description: The ARN of the endpoint of a custom document classifier that you trained in Comprehend. Only used, and required, by `classifyDocument`.
         type: string
+        example: arn:aws:comprehend:eu-west-1:123456789012:document-classifier-endpoint/my-classifier
       accessKey:
         title: Access Key
-        description: The access key obtained from AWS.
+        description: "The access key ID of an IAM user, which AWS gives when you create an access key for the user (in the AWS console: IAM, Users, Security credentials). Use it together with `secretKey`, or leave both empty and set `useDefaultCredentialsProvider` or `useProfileCredentialsProvider` instead."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       secretKey:
         title: Secret Key
-        description: The secret key obtained from AWS.
+        description: The secret access key that goes with `accessKey`. AWS shows it only once, when the access key is created.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       region:
         title: AWS Region
-        description: The AWS region to access.
+        description: The AWS region of Amazon Comprehend to use, such as `eu-west-1`.
         type: string
+        example: eu-west-1
         enum: ["ap-south-1", "eu-south-1", "us-gov-east-1", "me-central-1", "ca-central-1", "eu-central-1", "us-iso-west-1", "us-west-1", "us-west-2", "af-south-1", "eu-north-1", "eu-west-3", "eu-west-2", "eu-west-1", "ap-northeast-3", "ap-northeast-2", "ap-northeast-1", "me-south-1", "sa-east-1", "ap-east-1", "cn-north-1", "us-gov-west-1", "ap-southeast-1", "ap-southeast-2", "us-iso-east-1", "ap-southeast-3", "us-east-1", "us-east-2", "cn-northwest-1", "us-isob-east-1", "aws-global", "aws-cn-global", "aws-us-gov-global", "aws-iso-global", "aws-iso-b-global"]
       useDefaultCredentialsProvider:
         title: Default Credentials Provider
-        description: If true, the Comprehend client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
+        description: "If true, the credentials are found the way the AWS SDK finds them: from the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables, the shared credentials file, or the IAM role of the machine, container or pod it runs on. Then `accessKey` and `secretKey` are not needed."
         type: boolean
         default: false
       useProfileCredentialsProvider:
         title: Profile Credentials Provider
-        description: Set whether the Comprehend client should expect to load credentials through a profile credentials provider.
+        description: If true, the credentials are read from a profile of the AWS credentials file (`~/.aws/credentials`), the one named in `profileCredentialsName`.
         type: boolean
         default: false
       useSessionCredentials:
         title: Session Credentials
-        description: Set whether the Comprehend client should expect to use Session Credentials. This is useful in a situation in which the user needs to assume an IAM role for doing operations in Comprehend.
+        description: "If true, it logs in with temporary credentials, such as those of an assumed IAM role: `accessKey`, `secretKey` and `sessionToken` together."
         type: boolean
         default: false
       profileCredentialsName:
         title: Profile Credentials Name
-        description: If using a profile credentials provider this parameter sets the profile name.
+        description: The name of the profile to use from the AWS credentials file. Only used when `useProfileCredentialsProvider` is true.
         type: string
       sessionToken:
         title: Session Token
-        description: Amazon AWS Session Token used when the user needs to assume an IAM role.
+        description: The session token of temporary credentials, which AWS gives together with their access key and secret key. Only used when `useSessionCredentials` is true.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       uriEndpointOverride:
         title: Overwrite Endpoint URI
-        description: The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option.
+        description: The address to send the requests to instead of the usual AWS address, such as `http://localhost:4566` for LocalStack. Only used when `overrideEndpoint` is true.
         type: string
+        example: http://localhost:4566
       overrideEndpoint:
         title: Endpoint Overwrite
-        description: Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option.
+        description: If true, the requests go to the address in `uriEndpointOverride` instead of AWS, for example to test against LocalStack.
         type: boolean
         default: false
+  dataTypes:
+    out:
+      headers:
+        CamelAwsComprehendDetectedLanguage:
+          title: Detected Language
+          description: For `detectDominantLanguage`, the code of the main language of the text, such as `en`.
+          type: string
+        CamelAwsComprehendDetectedLanguageScore:
+          title: Detected Language Score
+          description: For `detectDominantLanguage`, how sure Comprehend is of the language, from 0 to 1.
+          type: number
+        CamelAwsComprehendDetectedSentiment:
+          title: Detected Sentiment
+          description: For `detectSentiment`, the sentiment of the text, `POSITIVE`, `NEGATIVE`, `NEUTRAL` or `MIXED`.
+          type: string
+        CamelAwsComprehendDetectedSentimentScore:
+          title: Detected Sentiment Score
+          description: For `detectSentiment`, the score of each of the four sentiments, as an object of the AWS SDK for Java.
+          type: object
   dependencies:
     - "camel:aws2-comprehend"
     - "camel:kamelet"

@@ -302,7 +302,7 @@ public class KameletsCatalogTest {
         verifyHeaders("slack-source", 5);
         verifyHeaders("azure-cosmosdb-source", 5);
         verifyHeaders("google-sheets-sink", 5);
-        verifyHeaders("aws-ddb-sink", 2);
+        verifyHeaders("aws-ddb-sink", 3);
         verifyHeaders("splunk-hec-sink", 1);
         verifyHeaders("sqlserver-sink", 2);
         verifyHeaders("sqlserver-source", 1);

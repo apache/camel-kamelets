@@ -1,36 +1,21 @@
 == AWS Redshift Sink Kamelet Description
 
-=== Authentication methods
+=== Authentication
 
-In this Kamelet you can avoid using explicit static credentials by specifying the `useDefaultCredentialsProvider` option and set it to `true`.
-
-The order of evaluation for Default Credentials Provider is the following:
-
- - Java system properties - `aws.accessKeyId` and `aws.secretKey`.
- - Environment variables - `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
- - Web Identity Token from AWS STS.
- - The shared credentials and config files.
- - Amazon ECS container credentials - loaded from the Amazon ECS if the environment variable `AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` is set.
- - Amazon EC2 Instance profile credentials. 
- 
-You can also use the Profile Credentials Provider, by setting the `useProfileCredentialsProvider` option to `true` and `profileCredentialsName` to the profile name.
-
-Only one of access key/secret key or default credentials provider could be used
-
-For more information, see the https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials.html[AWS credentials documentation]
+This Kamelet logs in to the Redshift database with a database user and password (`username` and `password`), not with AWS access keys. It connects with the Amazon Redshift JDBC driver, which uses TLS by default.
 
 === Expected Data format for sink
 
-The Kamelet expects a JSON-formatted body. Use key:value pairs to map the JSON fields and parameters. For example, here is a query:
+The Kamelet expects a JSON object, as JSON text. Each `:#name` in the query takes the value of the JSON field with that name, or else of the header with that name. For example, here is a query:
 
 [source,sql]
-----   
-'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
----- 
+----
+INSERT INTO accounts (username,city) VALUES (:#username,:#city)
+----
 
 Here is example input for the example query:
 
 [source,json]
-----   
-'{ "username":"oscerd", "city":"Rome"}'
+----
+{ "username":"oscerd", "city":"Rome"}
 ----
