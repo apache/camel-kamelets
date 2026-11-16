@@ -7,7 +7,6 @@ In this Kamelet, you can use these Azure authentication methods:
 - Client secret: `CLIENT_SECRET` (default)
 - Azure SAS: `AZURE_SAS`
 - Azure Identity mechanism:  `AZURE_IDENTITY`
-- Plain Shared Account Key:  `SHARED_ACCOUNT_KEY`
 - Service client instance: `SERVICE_CLIENT_INSTANCE`
 - Shared key credentials: `SHARED_KEY_CREDENTIAL`
 
@@ -25,4 +24,4 @@ For more information, see the https://learn.microsoft.com/en-us/java/api/overvie
 
 === Optional Headers
 
-In the headers, you can set the `file` / `ce-file` property to specify the filename to upload. If you do set property in the header, the Kamelet uses the exchange ID as filename.
+In the headers, you can set the `file` / `ce-file` property to specify the filename to upload. If you do not set it, the file gets a generated unique name.

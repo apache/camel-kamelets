@@ -31,35 +31,45 @@ metadata:
 spec:
   definition:
     title: "Azure Servicebus Sink"
-    description: Send Messages to Azure Servicebus.
+    description: |-
+      Sends each message to a queue or a topic in Azure Service Bus, the Azure message broker.
+
+      Use it to hand work or events to other applications through Service Bus, such as orders to process, or notifications for all the subscribers of a topic. For simple storage queues, use `azure-storage-queue-sink`.
+
+      Input: the body is sent as text: text, bytes or a stream are read as text. A Map is sent as its text form, so turn it into JSON text first, for example with `json-serialize-action`. A List is sent as one message per element. The optional `CamelAzureServiceBusApplicationProperties` header, a Map, sets the custom properties of the message.
+
+      Output: the message is unchanged.
+
+      Good to know: the shared access policy of the connection string needs the Send right.
     required:
       - topicOrQueueName
       - connectionString
     type: object
     properties:
       topicOrQueueName:
-        title: Topic Or Queue Name
-        description: Topic Or Queue Name for the Azure Servicebus instance
+        title: Topic or Queue Name
+        description: The name of the queue, or of the topic, to send the messages to. For a topic, set `serviceBusType` to `topic`.
         type: string
+        example: orders
       connectionString:
         title: Connection String
-        description: Connection String for Azure Servicebus instance
+        description: "The connection string of the Service Bus namespace, from the Azure portal: the namespace, then Settings, Shared access policies, a policy, Primary Connection String. It starts with `Endpoint=sb://`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       serviceBusType:
-        title: Servicebus Type
-        description: The service bus type of connection to execute. Queue is for typical queue option and topic for subscription based model.
+        title: Service Bus Type
+        description: Whether `topicOrQueueName` is a `queue` or a `topic`.
         type: string
-        default: queue
+        default: "queue"
         enum: ["queue", "topic"]
       credentialType:
         title: Credential Type
-        description: Determines the credential strategy to adopt.
+        description: How to log in to Service Bus. Keep `CONNECTION_STRING`, the default, which uses `connectionString`. `AZURE_IDENTITY` and `TOKEN_CREDENTIAL` also need the `fullyQualifiedNamespace` of the Camel component, which this Kamelet does not set.
         type: string
-        enum: ["AZURE_IDENTITY", "CONNECTION_STRING", "TOKEN_CREDENTIAL"]
         default: "CONNECTION_STRING"
+        enum: ["AZURE_IDENTITY", "CONNECTION_STRING", "TOKEN_CREDENTIAL"]
   types:
     in:
       mediaType: application/octet-stream

@@ -31,7 +31,16 @@ metadata:
 spec:
   definition:
     title: "Azure Storage Queue Sink"
-    description: Send events to Azure Storage queues.
+    description: |-
+      Adds each message to a queue in Azure Queue Storage, as the text of a queue message.
+
+      Use it to hand work to another application or worker that reads the queue, such as orders to process or jobs to run. For a message broker with topics and dead-letter queues, use `azure-servicebus-sink`.
+
+      Input: the body is the text of the queue message: text or bytes. A Map is sent as its text form, so turn it into JSON text first, for example with `json-serialize-action`. The optional `expiration` header (or `ce-expiration`) sets how long the message stays in the queue, as an ISO-8601 duration such as `PT1H` (one hour) or `P2D` (two days); without it, the message expires after 7 days.
+
+      Output: the body afterwards is `true`, and headers such as `CamelAzureStorageQueueMessageId` and `CamelAzureStorageQueueExpirationTime` describe the message sent.
+
+      Good to know: the queue must exist: a missing queue fails the message. An `expiration` that is a plain number, such as `600`, fails the message.
     required:
       - accountName
       - queueName
@@ -40,27 +49,40 @@ spec:
     properties:
       accountName:
         title: Account Name
-        description: The Azure Storage Queue account name.
+        description: The name of the storage account, as shown in the Azure portal under Storage accounts. It is the first part of the address of the account, `https://<accountName>.queue.core.windows.net`.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
+        example: mystorageaccount
       queueName:
         title: Queue Name
-        description: The Azure Storage Queue container name.
+        description: The name of the queue in the storage account to send the messages to.
         type: string
+        example: orders
       accessKey:
         title: Access Key
-        description: The Azure Storage Queue access key.
+        description: "An access key of the storage account, from the Azure portal: the storage account, then Security + networking, then Access keys. Used when `credentialType` is `SHARED_ACCOUNT_KEY`, the default."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       credentialType:
         title: Credential Type
-        description: Determines the credential strategy to adopt.
+        description: How to log in to the storage account. `SHARED_ACCOUNT_KEY`, the default, and `SHARED_KEY_CREDENTIAL` use `accessKey`. `AZURE_IDENTITY` uses the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login; `accessKey` must still be given, but is not used.
         type: string
-        enum: ["SHARED_ACCOUNT_KEY", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY"]
         default: "SHARED_ACCOUNT_KEY"
+        enum: ["SHARED_ACCOUNT_KEY", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY"]
+  dataTypes:
+    in:
+      headers:
+        expiration:
+          title: Expiration
+          description: "How long the message stays in the queue, as an ISO-8601 duration such as `PT1H` or `P2D`. Optional: without it (and without `ce-expiration`), 7 days."
+          type: string
+        ce-expiration:
+          title: Expiration
+          description: How long the message stays in the queue, as a CloudEvents extension. Used when `expiration` is not set.
+          type: string
   dependencies:
     - "camel:azure-storage-queue"
     - "camel:kamelet"

@@ -31,7 +31,14 @@ metadata:
 spec:
   definition:
     title: "Azure Storage Blob Event-based Source"
-    description: Receive data from Azure Service Bus subscribed to Azure Eventgrid reporting events related to a Azure Storage Blob account.
+    description: |-
+      Receives the Event Grid events of an Azure Storage account from a Service Bus queue and can read the content of each new blob in a container.
+
+      Use it to react quickly to new blobs, such as uploaded files, without reading the container over and over. It needs an Event Grid subscription on the storage account that sends the events, in the Event Grid schema, to a Service Bus queue. To read the container on a timer instead, use `azure-storage-blob-source`.
+
+      Output: when `getBlob` is false, the default, the body is the Event Grid event as JSON (an Azure `BinaryData`, which converts to text or bytes). When `getBlob` is true, the body of a `Microsoft.Storage.BlobCreated` event for a blob of `containerName` is the content of that blob, as a stream of bytes; the other events are passed on as parsed JSON (a Jackson JSON node).
+
+      Good to know: with the default `serviceBusReceiveMode` of `RECEIVE_AND_DELETE`, an event is removed from the queue as soon as it is received, so an event whose processing fails is lost. With `getBlob`, only blobs at the top of the container can be read: an event for a blob in a virtual folder, such as `in/a.txt`, fails. It reads from a queue, not from a topic.
     required:
       - topicOrQueueName
       - connectionString
@@ -40,75 +47,76 @@ spec:
     type: object
     properties:
       topicOrQueueName:
-        title: Topic Or Queue Name
-        description: Topic Or Queue Name for the Azure Servicebus instance
+        title: Queue Name
+        description: The name of the Service Bus queue that the Event Grid subscription of the storage account sends its events to.
         type: string
+        example: blob-events
       connectionString:
         title: Connection String
-        description: Connection String for Azure Servicebus instance
+        description: "The connection string of the Service Bus namespace, from the Azure portal: the namespace, then Settings, Shared access policies, a policy, Primary Connection String. It starts with `Endpoint=sb://`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       serviceBusReceiveMode:
-        title: Servicebus Receive Mode
-        description: Sets the receive mode for the receiver.
+        title: Service Bus Receive Mode
+        description: "`RECEIVE_AND_DELETE`, the default, removes each event from the queue as soon as it is received, so an event whose processing fails is lost. `PEEK_LOCK` removes it only once it has been processed, and gives it back to the queue when processing fails."
         type: string
-        default: RECEIVE_AND_DELETE
+        default: "RECEIVE_AND_DELETE"
         enum: ["RECEIVE_AND_DELETE", "PEEK_LOCK"]
       subscriptionName:
         title: Subscription Name
-        description: Sets the name of the subscription in the topic to listen to. This parameter is mandatory in case of topic.
+        description: "The name of a subscription of a Service Bus topic. Not used: this Kamelet reads from a queue."
         type: string
       accountName:
         title: Account Name
-        description: The Azure Storage Blob account name.
+        description: The name of the storage account, as shown in the Azure portal under Storage accounts. It is the first part of the address of the account, `https://<accountName>.blob.core.windows.net`.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
+        example: mystorageaccount
       containerName:
         title: Container Name
-        description: The Azure Storage Blob container name.
+        description: The name of the container whose new blobs are read when `getBlob` is true. Events for other containers are passed on as they are.
         type: string
+        example: uploads
       accessKey:
         title: Access Key
-        description: The Azure Storage Blob access key.
+        description: "An access key of the storage account, from the Azure portal: the storage account, then Security + networking, then Access keys. Used when `credentialType` is `SHARED_ACCOUNT_KEY`, the default."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       clientId:
-        title: Client Id
-        description: The Azure Storage Blob client Id.
+        title: Client ID
+        description: The application (client) ID of an app registration (service principal) in Microsoft Entra ID that has access to the storage account, from the Overview page of the app registration in the Azure portal. Used with `clientSecret` and `tenantId` when `credentialType` is `AZURE_IDENTITY`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       clientSecret:
         title: Client Secret
-        description: The Azure Storage Blob client secret.
+        description: "A client secret of the app registration, from the Azure portal: the app registration, then Certificates & secrets. Used with `clientId` and `tenantId` when `credentialType` is `AZURE_IDENTITY`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       tenantId:
-        title: Tenant Id
-        description: The Azure Storage Blob tenant id.
+        title: Tenant ID
+        description: The directory (tenant) ID of the app registration, from its Overview page in the Azure portal. Used with `clientId` and `clientSecret` when `credentialType` is `AZURE_IDENTITY`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       credentialType:
         title: Credential Type
-        description: Determines the credential strategy to adopt.
+        description: "How to log in to the storage account to read the new blobs. `SHARED_ACCOUNT_KEY`, the default, and `SHARED_KEY_CREDENTIAL` use `accessKey`. `AZURE_IDENTITY` uses `clientId`, `clientSecret` and `tenantId` when all three are set, and otherwise the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login. Do not use `CLIENT_SECRET`: it does not use the three client options."
         type: string
-        default: SHARED_ACCOUNT_KEY
+        default: "SHARED_ACCOUNT_KEY"
         enum: ["SHARED_ACCOUNT_KEY", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY", "CLIENT_SECRET"]
       getBlob:
-        title: Get Object in Container
-        description: >-
-          If `getBlob` is enabled, then the file created in the container is
-          retrieved and returned as body. If not only the event is returned as body.
+        title: Get Blob
+        description: If true, the body of each event about a new blob in `containerName` is replaced by the content of that blob. If false, the body is the event.
         type: boolean
         default: false
   types:

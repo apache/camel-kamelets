@@ -31,7 +31,16 @@ metadata:
 spec:
   definition:
     title: "Azure Storage Files Sink"
-    description: Upload data to Azure Storage Files Share.
+    description: |-
+      Uploads each message as a file to a directory of a file share in Azure Files, named after the `file` header.
+
+      Use it to drop files where applications or people that mount the share can read them, such as reports or exports. For blob containers, use `azure-storage-blob-sink`.
+
+      Input: the body is the content of the file: text, bytes or a stream. A Map fails: turn it into JSON text first, for example with `json-serialize-action`. The optional `file` header (or `ce-file`) is the name of the file; only its last part is used, so `reports/2026/data.csv` is written as `data.csv` in `directoryName`. Without it, the file gets a generated unique name.
+
+      Output: the message is unchanged.
+
+      Good to know: a file with the same name is replaced. Missing directories are created.
     required:
       - accountName
       - shareName
@@ -39,32 +48,46 @@ spec:
     properties:
       accountName:
         title: Account Name
-        description: The Azure Storage Blob account name.
+        description: The name of the storage account, as shown in the Azure portal under Storage accounts. It is the first part of the address of the account, `https://<accountName>.file.core.windows.net`.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
+        example: mystorageaccount
       shareName:
         title: Share Name
-        description: The Azure Storage File Share share name.
+        description: The name of the file share in the storage account to write the files to.
         type: string
+        example: documents
       sharedKey:
         title: Shared Access Key
-        description: The Azure Storage Blob access key.
+        description: "An access key of the storage account, from the Azure portal: the storage account, then Security + networking, then Access keys. Used when `credentialType` is `SHARED_ACCOUNT_KEY`, the default."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       credentialType:
         title: Credential Type
-        description: Determines the credential strategy to adopt.
+        description: How to log in to the storage account. `SHARED_ACCOUNT_KEY`, the default, uses `sharedKey`. `AZURE_IDENTITY` uses the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login. The other values need settings that this Kamelet does not offer.
         type: string
-        enum: ["SHARED_ACCOUNT_KEY", "AZURE_IDENTITY", "SHARED_KEY_CREDENTIAL", "AZURE_SAS"]
         default: "SHARED_ACCOUNT_KEY"
+        enum: ["SHARED_ACCOUNT_KEY", "AZURE_IDENTITY", "SHARED_KEY_CREDENTIAL", "AZURE_SAS"]
       directoryName:
         title: Directory Name
-        description: The directory from where the producer will upload the file.
+        description: The directory of the share to write the files to, such as `inbox/orders`. `.`, the default, is the top of the share.
         type: string
         default: "."
+        example: inbox/orders
+  dataTypes:
+    in:
+      headers:
+        file:
+          title: File Name
+          description: "The name of the file. Only its last part is used: `reports/data.csv` is written as `data.csv`. Optional: without it (and without `ce-file`), the file gets a generated unique name."
+          type: string
+        ce-file:
+          title: File Name
+          description: The name of the file, as a CloudEvents extension. Used when `file` is not set.
+          type: string
   dependencies:
     - "camel:azure-files"
     - "camel:kamelet"
