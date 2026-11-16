@@ -9,38 +9,19 @@ This Kamelet supports MongoDB authentication using username and password credent
 The MongoDB Source Kamelet supports the following configurations:
 
 - **Hosts**: MongoDB server hosts and ports (required)
-- **Collection**: MongoDB collection name to query (required)
+- **Collection**: MongoDB collection name to read; it must be a capped collection (required)
 - **Database**: MongoDB database name (required)
 - **Username**: Username for authentication (optional)
 - **Password**: Password for authentication (optional)
-- **Query**: MongoDB query filter in JSON format
-- **Tail**: Enable tailable cursor for real-time changes
-- **Create Collection**: Auto-create collection if it doesn't exist
+- **SSL**: Whether to connect with TLS (default: true); set it to false for a MongoDB without TLS
+- **Tail Track Increasing Field**: A field whose value grows with each new document
+- **Persistent Tail Tracking**: Remember the last document read across restarts (needs the increasing field)
 
 === Output Format
 
-The Kamelet outputs MongoDB documents as JSON objects, preserving the original document structure including ObjectId fields.
+The Kamelet reads the documents of a capped collection with a tailable cursor: first the documents already there, then each new one as it is added. Each document is sent as one message, as JSON text.
 
 === Usage Example
-
-[source,yaml,subs='+attributes,macros']
-----
-- route:
-    from:
-      uri: "kamelet:mongodb-source"
-      parameters:
-        hosts: "mongodb.example.com:27017"
-        database: "analytics"
-        collection: "events"
-        username: "mongouser"
-        password: "mongopass"
-        query: '{"status": "active"}'
-      steps:
-        - to:
-            uri: "kamelet:log-sink"
-----
-
-=== Example with Tailable Cursor
 
 [source,yaml,subs='+attributes,macros']
 ----
@@ -53,13 +34,14 @@ The Kamelet outputs MongoDB documents as JSON objects, preserving the original d
         collection: "app_logs"
         username: "mongouser"
         password: "mongopass"
-        tail: true
       steps:
         - to:
             uri: "kamelet:log-sink"
 ----
 
-=== Replica Set Example
+=== Example with Persistent Tail Tracking
+
+The Kamelet stores the `seq` value of the last document read in the `camelTailTracking` collection of the same database, and after a restart goes on from there.
 
 [source,yaml,subs='+attributes,macros']
 ----
@@ -69,15 +51,21 @@ The Kamelet outputs MongoDB documents as JSON objects, preserving the original d
       parameters:
         hosts: "mongo1.example.com:27017,mongo2.example.com:27017,mongo3.example.com:27017"
         database: "production"
-        collection: "orders"
+        collection: "events"
         username: "mongouser"
         password: "mongopass"
-        query: '{"created_at": {"$gte": {"$date": "2023-01-01T00:00:00Z"}}}'
+        tailTrackIncreasingField: "seq"
+        persistentTailTracking: true
       steps:
         - to:
             uri: "kamelet:log-sink"
 ----
 
-=== Query Format
+=== Capped Collections
 
-MongoDB queries should be provided in standard MongoDB JSON query format. The kamelet supports complex queries including operators like $gte, $lte, $in, etc.
+The collection must be capped, or the Kamelet fails to start. A capped collection is created with a fixed size, for example in `mongosh`:
+
+[source,javascript]
+----
+db.createCollection("events", { capped: true, size: 100000 })
+----

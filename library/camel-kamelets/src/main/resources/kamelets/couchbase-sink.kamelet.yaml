@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Couchbase Sink"
-    description: Send documents to Couchbase.
+    description: |-
+      Stores each message as a document in a Couchbase bucket, under a document ID that the Kamelet counts up or that a header gives.
+
+      Use it to save events, orders or other records as JSON documents in Couchbase, for example each message that arrives on a Kafka topic. To read documents, use `couchbase-source`.
+
+      Input: the body is the document. JSON text is stored as a JSON document; other text is stored as a JSON string. With `autoStartId` true, the default, the documents get the IDs `1`, `2`, `3` and so on, counted from `startingId`, and the `CamelCouchbaseId` header is ignored. With `autoStartId` false, the `CamelCouchbaseId` header is the ID, and it is required.
+
+      Output: the body afterwards is `true`.
+
+      Good to know: a document that already has the ID is replaced. The count starts again at `startingId` each time the integration starts, so with `autoStartId` true a restart overwrites the documents stored before. Set `autoStartId` to false and give each message its own ID to avoid that. The connection is not encrypted, also with `protocol` set to `https`.
     required:
       - protocol
       - couchbaseHostname
@@ -39,48 +48,59 @@ spec:
     properties:
       protocol:
         title: Protocol
-        description: The protocol to use
+        description: The protocol part of the address of the server, `http` or `https`. It is required, but it does not choose how the Kamelet connects, and `https` does not turn on TLS.
         type: string
+        example: http
       couchbaseHostname:
         title: Hostname
-        description: The hostname to use
+        description: The host name or IP address of a node of the Couchbase cluster. The Kamelet connects to its data service, on port 11210.
         type: string
+        example: couchbase.example.com
       couchbasePort:
         title: Port
-        description: The port to use
+        description: The port of the web console and REST interface of Couchbase, 8091 by default. The Kamelet does not connect to this port; to reach the data service on a port other than 11210, set `connectionString`.
         type: integer
         default: 8091
       bucket:
         title: Bucket
-        description: The bucket to use
+        description: The name of the bucket to store the documents in, in its default collection.
         type: string
+        example: orders
       username:
         title: Username
-        description: Username to connect to Couchbase.
+        description: The Couchbase user to log in as. It needs the rights to write documents in `bucket`.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: Password to connect to Couchbase.
+        description: The password of the Couchbase user `username`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       startingId:
-        title: Starting Id
-        description: The starting id
+        title: Starting ID
+        description: The first document ID to use when `autoStartId` is true. Each message gets the next number.
         type: integer
         default: 1
       connectionString:
         title: Connection String
-        description: The full Couchbase SDK connection string (e.g. couchbase://host:port). When set, it takes precedence over hostname extraction for the KV service port.
+        description: The address of the cluster for the Couchbase SDK, which starts with `couchbase://`. When it is set, it is used instead of `couchbaseHostname` to connect, for example to reach the data service on another port than 11210.
         type: string
+        example: couchbase://couchbase.example.com:11210
       autoStartId:
-        title: Auto Start Id
-        description: Auto Start Id or not
+        title: Automatic IDs
+        description: If true, the documents get the IDs `startingId`, `startingId` + 1, and so on, and the `CamelCouchbaseId` header is ignored. If false, each message must carry its document ID in the `CamelCouchbaseId` header.
         type: boolean
         default: true
+  dataTypes:
+    in:
+      headers:
+        CamelCouchbaseId:
+          title: Document ID
+          description: The ID of the document to store. Required when `autoStartId` is false; ignored when it is true.
+          type: string
   dependencies:
     - "camel:couchbase"
     - "camel:kamelet"

@@ -2,45 +2,42 @@
 
 === Authentication methods
 
-This Kamelet connects to Mongodb Changes Stream using:
+This Kamelet connects to MongoDB with:
 
-- Database-specific connection credentials
-- Username and password authentication
-- Connection URL/string configuration
+- Username and password authentication (optional), for a user defined in the `admin` database
+- TLS, on by default (`ssl`); set `ssl` to false for a MongoDB without TLS
 
 === Output format
 
-The Kamelet monitors Mongodb Changes Stream for changes and produces the data in JSON format.
+The Kamelet watches a collection with a MongoDB change stream, and sends one message for each change made after it starts, as JSON text: the new document for an insert or a replace, `null` for an update, and an object with the `_id` for a delete. The `CamelMongoDbStreamOperationType` header says which kind of change it is.
+
+Change streams need a replica set or a sharded cluster.
 
 === Configuration
 
 The Kamelet requires database connection parameters:
 
-- Database connection URL/server information
-- Username and password for authentication
-- Query or monitoring configuration
+- `hosts`: the members of the replica set, as `host:port`
+- `database` and `collection`: the collection to watch
+- `streamFilter` (optional): a `$match` stage that chooses the changes to send
 
 === Usage example
 
-```yaml
-apiVersion: camel.apache.org/v1alpha1
-kind: KameletBinding
-metadata:
-  name: mongodb-changes-stream-source-binding
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
-      name: mongodb-changes-stream-source
-    properties:
-      serverName: "database-server"
-      username: "{{username}}"
-      password: "{{password}}"
-      databaseName: "mydb"
-  sink:
-    ref:
-      kind: Service
-      apiVersion: v1
-      name: my-service
-```
+The route below logs each document inserted into the `orders` collection.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mongodb-changes-stream-source"
+      parameters:
+        hosts: "mongo1.example.com:27017,mongo2.example.com:27017"
+        database: "shop"
+        collection: "orders"
+        username: "mongouser"
+        password: "mongopass"
+        streamFilter: "{ '$match': { 'operationType': 'insert' } }"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

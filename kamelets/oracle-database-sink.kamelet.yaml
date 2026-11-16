@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Oracle Database Sink"
-    description: Send data to an Oracle Database. This Kamelet expects a JSON-formatted body. Use key:value pairs to map the JSON fields and parameters.
+    description: |-
+      Runs an SQL statement, such as an INSERT, in an Oracle Database database for each message, with values taken from the fields of the JSON object in the body.
+
+      Use it to store records from another system as rows of a table, such as each order that arrives on a Kafka topic, or to update or delete rows. To read rows, use `oracle-database-source`.
+
+      Input: the body is one JSON object, as text, such as `{"username":"oscerd","city":"Rome"}`. In `query`, write `:#username` where the value of the field `username` goes. When the object has no field of that name, the header of that name is used instead. Fields that `query` does not name are ignored.
+
+      Output: the body afterwards is the JSON object as a Map, and the `CamelSqlUpdateCount` header holds the number of rows the statement changed. When `query` is a SELECT, the body is instead a List of the rows found, each a Map, and the `CamelSqlRowCount` header holds their number.
+
+      Good to know: a message fails when its body is not a JSON object (a JSON array or plain text, for example), or when it has no value for a parameter of `query`. The values are sent to the database apart from the SQL text, so the content of a message cannot change the statement. Do not write `?` in `query`, not even in a quoted string: the Kamelet then fails to start. The JDBC driver of Oracle Database is not included: add `mvn:com.oracle.database.jdbc:ojdbc17` to the dependencies of the integration. Camel JBang (`camel run`) adds it by itself.
     required:
       - serverName
       - username
@@ -41,39 +50,51 @@ spec:
     properties:
       serverName:
         title: Server Name
-        description: The server name for the data source.
+        description: The host name or IP address of the Oracle Database server, without the port.
         type: string
-        example: localhost
+        example: db.example.com
       serverPort:
         title: Server Port
-        description: The server port for the data source.
+        description: The port of the Oracle listener on the server. Oracle uses 1521 unless it was set up otherwise.
         type: string
         default: 1521
       username:
         title: Username
-        description: The username to access a secured Oracle Database.
+        description: The database user to log in as. It needs the rights to run the queries of this Kamelet on their tables.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access a secured Oracle Database.
+        description: The password of the database user `username`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       query:
         title: Query
-        description: The query to execute against the Oracle Database.
+        description: The SQL statement to run for each message, such as an INSERT, UPDATE or DELETE. Write `:#name` where the value of the field `name` of the JSON body goes.
         type: string
         example: 'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
       databaseName:
         title: Database Name
-        description: The name of the Oracle Database.
+        description: The service name of the database to connect to, such as `FREEPDB1` or `ORCLPDB1`. It is a service name, not a SID.
         type: string
+        example: ORCLPDB1
   types:
     in:
       mediaType: application/json
+  dataTypes:
+    out:
+      headers:
+        CamelSqlUpdateCount:
+          title: Update Count
+          description: The number of rows the statement inserted, updated or deleted.
+          type: integer
+        CamelSqlRowCount:
+          title: Row Count
+          description: The number of rows a SELECT returned. Only set when `query` is a SELECT.
+          type: integer
   dependencies:
   - "camel:jackson"
   - "camel:kamelet"

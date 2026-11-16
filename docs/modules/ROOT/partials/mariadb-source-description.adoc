@@ -1,46 +1,40 @@
-== Mariadb Source Kamelet Description
+== MariaDB Source Kamelet Description
 
 === Authentication methods
 
-This Kamelet connects to Mariadb using:
-
-- Database-specific connection credentials
-- Username and password authentication
-- Connection URL/string configuration
+This Kamelet connects to MariaDB with the user name and password of a database user, set in `username` and `password`.
 
 === Output format
 
-The Kamelet monitors Mariadb for changes and produces the data in JSON format.
+The Kamelet runs `query` again every `delay` milliseconds, and sends each row it returns as a message: a JSON object with the column names as keys. Without `consumedQuery`, the same rows are read again on every run.
 
 === Configuration
 
 The Kamelet requires database connection parameters:
 
-- Database connection URL/server information
-- Username and password for authentication
-- Query or monitoring configuration
+- `serverName` and `serverPort` (3306 by default): where the MariaDB server runs
+- `databaseName`: the database to connect to
+- `username` and `password`: the database user to log in as
+- `query`: the SQL query to run, such as `SELECT * FROM accounts WHERE processed = false`
+- `consumedQuery` (optional): an SQL statement run for each row once it is sent, to mark the row as read or delete it, such as `UPDATE accounts SET processed = true WHERE id = :#id`
 
 === Usage example
 
-```yaml
-apiVersion: camel.apache.org/v1alpha1
-kind: KameletBinding
-metadata:
-  name: mariadb-source-binding
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
-      name: mariadb-source
-    properties:
-      serverName: "database-server"
-      username: "{{username}}"
-      password: "{{password}}"
-      databaseName: "mydb"
-  sink:
-    ref:
-      kind: Service
-      apiVersion: v1
-      name: my-service
-```
+The route below logs each account that is not processed yet, and marks it as processed.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mariadb-source"
+      parameters:
+        serverName: "db.example.com"
+        username: "dbuser"
+        password: "dbpass"
+        databaseName: "shop"
+        query: "SELECT * FROM accounts WHERE processed = false"
+        consumedQuery: "UPDATE accounts SET processed = true WHERE id = :#id"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

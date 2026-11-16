@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "MongoDB Sink"
-    description: Send data to MongoDB.
+    description: |-
+      Inserts each message as a new document into a collection of a MongoDB database.
+
+      Use it to store events, orders or other records as documents in MongoDB, for example each message that arrives on a Kafka topic. To read documents, use `mongodb-source` or `mongodb-changes-stream-source`.
+
+      Input: the body is one document, as a JSON object in text, such as `{"item":"book","qty":2}`. When it has no `_id` field, MongoDB gives the document a new ObjectId. A JSON array, or text that is not JSON, fails.
+
+      Output: the body afterwards is the document that was stored, as a Map with its `_id`, and the `CamelMongoOid` header holds that `_id`.
+
+      Good to know: a document whose `_id` is already in the collection fails: the Kamelet only inserts, and the `db-upsert` and `ce-dbupsert` headers do not change that. With `createCollection` false, the default, the Kamelet fails to start when the collection does not exist yet. It connects with TLS by default; set `ssl` to false for a MongoDB without TLS, such as a local one.
     required:
       - hosts
       - collection
@@ -39,52 +48,62 @@ spec:
     properties:
       hosts:
         title: MongoDB Hosts
-        description: A comma-separated list of MongoDB host addresses in `host:port` format.
+        description: The address of one or more MongoDB servers, as `host:port`, separated by commas. MongoDB uses port 27017 unless it was set up otherwise. For a replica set, list its members.
         type: string
+        example: mongo1.example.com:27017,mongo2.example.com:27017
       collection:
         title: MongoDB Collection
-        description: The name of the MongoDB collection to bind to this endpoint.
+        description: The name of the collection to insert the documents into.
         type: string
+        example: orders
       password:
         title: MongoDB Password
-        description: A user password for accessing MongoDB.
+        description: The password of the MongoDB user `username`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       username:
         title: MongoDB Username
-        description: A username for accessing MongoDB.
+        description: The MongoDB user to log in as, defined in the `admin` database. Leave it empty for a MongoDB that does not ask for a login.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       ssl:
-        title: Enable Ssl for Mongodb Connection
-        description: whether to enable ssl connection to mongodb.
+        title: Use TLS
+        description: Whether to connect with TLS (SSL). Set it to false for a MongoDB that does not offer TLS.
         type: boolean
         default: true
       sslValidationEnabled:
-        title: Enables Ssl Certificates Validation and Host name checks.
-        description: IMPORTANT this should be disabled only in test environment since can pose security issues.
+        title: Check TLS Certificate
+        description: Whether to check the certificate and the host name of the server when `ssl` is true. Set it to false only for tests, as the connection can then be intercepted.
         type: boolean
         default: true
       database:
         title: MongoDB Database
-        description: The name of the MongoDB database.
+        description: The name of the database that holds the collection.
         type: string
+        example: shop
       writeConcern:
         title: Write Concern
-        description: The level of acknowledgment requested from MongoDB for write operations.
+        description: How many MongoDB servers must confirm an insert before it counts as done, such as `MAJORITY` for most members of a replica set. When it is not set, MongoDB acknowledges each insert (`ACKNOWLEDGED`).
         type: string
         enum: ["ACKNOWLEDGED", "W1", "W2", "W3", "UNACKNOWLEDGED", "JOURNALED", "MAJORITY"]
       createCollection:
-        title: Collection
-        description: Create a collection during initialization if it doesn't exist.
+        title: Create Collection
+        description: If true, the collection is created when the Kamelet starts, if it does not exist. If false, the Kamelet fails to start when the collection does not exist.
         type: boolean
         default: false
   types:
     in:
       mediaType: application/json
+  dataTypes:
+    out:
+      headers:
+        CamelMongoOid:
+          title: Document ID
+          description: The `_id` of the document that was inserted, an ObjectId when MongoDB made it.
+          type: string
   dependencies:
     - "camel:kamelet"
     - "camel:mongodb"

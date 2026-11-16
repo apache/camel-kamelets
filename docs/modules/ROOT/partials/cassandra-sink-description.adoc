@@ -4,6 +4,16 @@
 
 The Kamelet supports username/password authentication.
 
-=== Payload 
+=== Payload
 
-This Kamelet works with JSON Array formatted data, but it's possible to pass even Object and enable the `jsonPayload` option, transforming the payload directly in Json.
+With `jsonPayload` set to true, the default, the body must be a JSON array that holds the values of the `?` markers of
+`query`, in their order. A JSON object fails. With `jsonPayload` set to false, the body is passed as it is, as the one
+value of a statement with a single `?`.
+
+For example, with the query `INSERT INTO accounts (id, username, city) VALUES (?, ?, ?)`, the body is:
+
+[source,json]
+----
+[1, "oscerd", "Rome"]
+----
+

@@ -14,12 +14,12 @@ The PostgreSQL Source Kamelet supports the following configurations:
 - **Query**: SQL query to execute (required)
 - **Database Name**: Name of the PostgreSQL database (required)
 - **Server Port**: Port number for the PostgreSQL server (default: 5432)
-- **Period**: Interval between query executions in milliseconds
-- **Connection Properties**: Additional JDBC connection properties
+- **Delay**: How long to wait after one run of the query before the next, in milliseconds (default: 500)
+- **Consumed Query**: An SQL statement run for each row once it is sent, to mark the row as read or delete it, so that it is not read again
 
 === Output Format
 
-The Kamelet outputs query results as JSON objects. Each row from the result set is converted to a JSON object with column names as keys.
+The Kamelet sends one message per row of the query result. Each row is a JSON object with the column names as keys. Without `consumedQuery`, the same rows are read again on every run of the query.
 
 === Usage Example
 
@@ -34,7 +34,7 @@ The Kamelet outputs query results as JSON objects. Each row from the result set 
         password: "dbpass"
         databaseName: "analytics"
         query: "SELECT * FROM events WHERE created_at > NOW() - INTERVAL '1 hour'"
-        period: 30000
+        delay: 30000
       steps:
         - to:
             uri: "kamelet:log-sink"
@@ -53,7 +53,7 @@ The Kamelet outputs query results as JSON objects. Each row from the result set 
         password: "dbpass"
         databaseName: "ecommerce"
         query: "SELECT o.id, o.total, u.email FROM orders o JOIN users u ON o.user_id = u.id WHERE o.status = 'PENDING'"
-        period: 60000
+        delay: 60000
       steps:
         - to:
             uri: "kamelet:log-sink"

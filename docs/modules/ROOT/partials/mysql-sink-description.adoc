@@ -2,7 +2,7 @@
 
 === Database Connection
 
-This Kamelet connects to MySQL databases using the MySQL Connector/J JDBC driver. MySQL is one of the world's most popular open-source relational database management systems.
+This Kamelet connects to MySQL databases using the MySQL Connector/J JDBC driver, which is not a dependency of the Kamelet: add `mvn:com.mysql:mysql-connector-j` to the integration (Camel JBang adds it by itself). MySQL is one of the world's most popular open-source relational database management systems.
 
 === Data Processing
 
@@ -18,4 +18,4 @@ Uses Apache Commons DBCP2 for efficient database connection pooling. This provid
 
 === Authentication and Security
 
-Requires username and password authentication for database access. The Kamelet uses the latest MySQL JDBC driver which supports modern security features and protocols.
+Requires username and password authentication for database access.

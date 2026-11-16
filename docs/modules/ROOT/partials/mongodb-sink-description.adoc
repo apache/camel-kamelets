@@ -14,7 +14,7 @@ Optional username and password authentication is supported for secured MongoDB i
 
 === Write Operations
 
-The Kamelet performs insert operations into the specified collection. It supports upsert operations through header configuration (`db-upsert` or `ce-dbupsert` headers).
+The Kamelet performs insert operations into the specified collection. A document whose `_id` is already in the collection fails; the `db-upsert` and `ce-dbupsert` headers do not change that.
 
 === Write Concerns
 
@@ -22,4 +22,4 @@ Configurable write concern levels ensure data durability and consistency based o
 
 === Collection Management
 
-The Kamelet can optionally create collections during initialization if they don't exist, providing flexibility for dynamic database structures.
+The Kamelet can optionally create collections during initialization if they don't exist (`createCollection`). When `createCollection` is false, the default, the Kamelet fails to start if the collection does not exist.
