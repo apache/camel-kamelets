@@ -2,7 +2,7 @@
 
 === FHIR Operations
 
-This Kamelet supports various FHIR operations including CREATE, READ, UPDATE, DELETE, SEARCH, and others. You must specify both the API name and method name for the operation.
+This Kamelet sends the FHIR resource in the message body to the server. You must specify both the API name and the method name of the operation, and the operation must take the resource as input: `CREATE`, `UPDATE`, `DELETE` or `VALIDATE`, each with the method name `resource`. Operations that do not take a resource, such as READ or SEARCH, fail.
 
 === FHIR Versions
 

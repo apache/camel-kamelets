@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Solr Sink"
-    description: Send documents to Solr Collection.
+    description: |-
+      Adds each message, a JSON object or a JSON array of objects, as one or more documents to a collection or core of Apache Solr, so that they can be searched.
+
+      Use it to make records searchable in Solr, such as products, articles or orders. To run a query on a schedule, use `solr-source`.
+
+      Input: the body is JSON text: an object for one document, such as `{"id": "order-42", "status_s": "shipped"}`, or an array of objects for several. A document with the same `id` as one already stored replaces it.
+
+      Output: when it is used inside a route, the body afterwards is the answer of Solr, as a Map-like object with its `responseHeader`.
+
+      Good to know: a body that is not JSON fails the message. With `autocommit` false, the default, the documents become searchable only when Solr commits them, as set in the configuration of the collection. It connects with plain HTTP.
     required:
       - servers
       - collection
@@ -38,26 +47,28 @@ spec:
     properties:
       collection:
         title: Collection
-        description: Solr Collection name
+        description: The name of the Solr collection, or of the core on a Solr server that does not run in SolrCloud mode, to add the documents to.
         type: string
+        example: products
       servers:
         title: Servers
-        description: Comma separated list of Solr Servers and ports
+        description: The address of the Solr server, as `host:port`, without `http://` and without the `/solr` path. The port of Solr is 8983 by default.
         type: string
+        example: "solr.example.com:8983"
       autocommit:
-        title: Autocommit 
-        description: If autocommit should be enabled or not
+        title: Autocommit
+        description: If true, Solr commits after each message, so the documents can be searched at once. Commits are costly, so leave it false for many messages and let Solr commit on its own schedule.
         type: boolean
         default: false
       username:
         title: Username
-        description: Username to connect to Solr.
+        description: The Solr user to log in as, with Basic authentication. Leave it out for a Solr without login.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: Password to connect to Solr.
+        description: The password of the Solr user in `username`.
         type: string
         format: password
         x-descriptors:

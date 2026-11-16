@@ -31,7 +31,16 @@ metadata:
 spec:
   definition:
     title: "FHIR Sink"
-    description: Forward data to a FHIR endpoint.
+    description: |-
+      Sends each message, a FHIR resource such as a Patient or an Observation, to a FHIR server of healthcare data, to create, update, delete or validate it there.
+
+      Use it to write healthcare records into a FHIR server, for example to create a Patient for each new admission, or to update an Observation that a device measured. To read resources from a FHIR server, use `fhir-source`.
+
+      Input: the body is the FHIR resource, as JSON text, or as XML text with `encoding` set to `XML`, such as `{"resourceType": "Patient", "name": [{"family": "Doe"}]}`. It is sent with the operation set by `apiName` and `methodName`, which must be one that takes a resource: `CREATE` with `resource`, `UPDATE` with `resource`, `DELETE` with `resource`, or `VALIDATE` with `resource`.
+
+      Output: when it is used inside a route, the body afterwards is the outcome of the operation, as a Java object of the HAPI FHIR library, with the id of the resource; it is not JSON.
+
+      Good to know: a body that is not a valid FHIR resource of the chosen `fhirVersion` fails the message. Operations that do not take a resource, such as `READ` or `SEARCH`, fail.
     required:
     - serverUrl
     - apiName
@@ -40,80 +49,85 @@ spec:
     properties:
       apiName:
         title: API Name
-        description: "What kind of operation to perform."
+        description: "The kind of operation, such as `CREATE` to add a new resource or `UPDATE` to change an existing one. Use one that takes a resource as input: `CREATE`, `UPDATE`, `DELETE` or `VALIDATE`. Required, although not marked so."
         type: string
         enum:  ["CAPABILITIES", "CREATE", "DELETE", "HISTORY", "LOAD_PAGE", "META", "OPERATION", "PATCH", "READ", "SEARCH", "TRANSACTION", "UPDATE", "VALIDATE"]
       methodName:
         title: Method Name
-        description: "What sub operation to use for the selected operation."
+        description: "The variant of the operation in `apiName`. Use `resource`, which takes the resource in the body."
         type: string
+        example: resource
       encoding:
         title: Encoding
-        description: "Encoding to use for all request. One of: [JSON] [XML]."
+        description: "How the resources are written: `JSON` or `XML`. The body must be in this format."
         type: string
         default: "JSON"
+        example: XML
       fhirVersion:
         title: FHIR Version
-        description: "The FHIR Version to use."
+        description: "The version of the FHIR standard that the server and the resources use. Most servers today use `R4`."
         type: string
         enum:  ["DSTU2", "DSTU2_HL7ORG", "DSTU2_1", "DSTU3", "R4", "R5"]
         default: "R4"
       log:
         title: Log
-        description: "Will log every requests and responses."
+        description: "If true, every request to the server and every response is written to the log, for troubleshooting."
         type: boolean
         default: false
       prettyPrint:
         title: Pretty Print
-        description: "Pretty print all request."
+        description: "If true, the resources sent to the server are indented, which is easier to read in logs."
         type: boolean
         default: false
       serverUrl:
         title: Server URL
-        description: The FHIR server base URL.
+        description: The base address of the FHIR API of the server, the part before the resource type, starting with `http://` or `https://`.
         type: string
+        example: "https://fhir.example.com/fhir"
       lazyStartProducer:
         title: Lazy Start Producer
-        description: "Whether the producer should be started lazy (on the first message). By starting lazy you can use this to allow CamelContext and routes to startup in situations where a producer may otherwise fail during starting and cause the route to fail being started. By deferring this startup to be lazy then the startup failure can be handled during routing messages via Camel’s routing error handlers. Beware that when the first message is processed then creating and starting the producer may take a little time and prolong the total processing time of the processing."
+        description: "If true, the connection to the server is set up at the first message instead of when the integration starts, so that the integration can start while the server is not reachable. The first message then takes a little longer."
         type: boolean
         default: false
       proxyHost:
         title: Proxy Host
-        description: The proxy host.
+        description: The host name of an HTTP proxy to reach the server through. Use it with `proxyPort`.
         type: string
+        example: proxy.example.com
       proxyPassword:
         title: Proxy Password
-        description: The proxy password.
+        description: The password of `proxyUser` for the HTTP proxy.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       proxyPort:
         title: Proxy Port
-        description: The proxy port.
+        description: The port of the HTTP proxy in `proxyHost`.
         type: integer
+        example: 3128
       proxyUser:
         title: Proxy User
-        description: The proxy username.
+        description: The user to log in to the HTTP proxy as, when the proxy needs a login.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       accessToken:
         title: Access Token
-        description: OAuth access token.
+        description: An OAuth access token, sent as a Bearer token, for a server that uses OAuth, such as SMART on FHIR. Use it instead of `username` and `password`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       username:
         title: Username
-        description: Username to use for basic authentication.
+        description: The user to log in to the server as, with Basic authentication. Leave it out for a server without login.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: Password to use for basic authentication.
+        description: The password of `username`, for Basic authentication.
         type: string
         format: password
         x-descriptors:

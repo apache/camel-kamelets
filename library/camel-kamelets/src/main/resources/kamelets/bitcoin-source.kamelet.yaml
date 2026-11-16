@@ -30,14 +30,22 @@ metadata:
 spec:
   definition:
     title: "Bitcoin Source"
-    description: Provides a feed of the value of the Bitcoin compared to USDT using the Binance service.
+    description: |-
+      Reads the current price of Bitcoin in USDT (Tether) from the public market data of the Binance trading platform at a regular interval, one message per reading.
+
+      Use it to follow the Bitcoin price, for example to store it over time, to send an alert when it crosses a threshold, or as a live data feed for a demo. It reads market prices from Binance; it does not connect to a Bitcoin node or wallet.
+
+      Output: the body is JSON text with the ticker of the BTC/USDT pair: among others the last price (`last`), the best bid and ask (`bid`, `ask`), the high and low (`high`, `low`) and the volume (`volume`) of the last 24 hours. The `Content-Type` header is `application/json`.
+
+      Good to know: it needs access to the internet and no account or key. The first reading comes about one second after start, then one every `period`.
     type: object
     properties:
       period:
         title: Period between Updates
-        description: The interval between updates in milliseconds.
+        description: How long to wait between two readings, in milliseconds. For example, 60000 is one minute.
         type: integer
         default: 10000
+        example: 60000
   types:
     out:
       mediaType: application/json  

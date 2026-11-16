@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "PQC Signature Action"
-    description: Sign or verify a payload with a Post-Quantum Cryptography (PQC) algorithm.
+    description: |-
+      Signs each message with a post-quantum digital signature algorithm, such as ML-DSA, or checks the signature of a message signed before.
+
+      Use it to try out post-quantum signatures, or to check inside one running application that a message was not changed between two steps: sign it with `operation` set to `sign`, and check it later with a second copy of this Kamelet with `operation` set to `verify` and the same algorithm.
+
+      Input: the body is the data to sign or to check, as text, bytes or a stream. To check, the `CamelPQCSignature` header must hold the signature that `sign` set.
+
+      Output: the body is unchanged. `sign` sets the `CamelPQCSignature` header to the signature, as bytes. `verify` sets the `CamelPQCVerification` header to true when the signature matches the body, and to false when it does not.
+
+      Good to know: the key pair is created when the application starts, and no option can set it, so a signature can be checked only by the same running application, and not after a restart. A `verify` without a `CamelPQCSignature` header fails the message.
     required:
     - signatureAlgorithm
     - operation
@@ -38,14 +47,33 @@ spec:
     properties:
       signatureAlgorithm:
         title: PQC Signature Algorithm
-        description: The PQC Signature Algorithm to be used.
+        description: The post-quantum signature algorithm. `MLDSA` (ML-DSA, the NIST standard FIPS 204) is the usual choice; `SLHDSA` is the hash-based NIST standard. Use the same algorithm to sign and to check.
         type: string
         enum: ["MLDSA","SLHDSA","LMS","XMSS","FALCON"]
       operation:
         title: PQC Signature Operation
-        description: The PQC Signature Operation to be performed.
+        description: What to do with each message. `sign` adds a signature of the body in the `CamelPQCSignature` header; `verify` checks the body against that header and sets `CamelPQCVerification`.
         type: string
         enum: ["sign","verify"]
+  dataTypes:
+    in:
+      headers:
+        CamelPQCSignature:
+          title: Signature
+          description: The signature to check, as bytes, as set by `sign`. Required for `verify`.
+          type: string
+          format: binary
+    out:
+      headers:
+        CamelPQCSignature:
+          title: Signature
+          description: The signature of the body, as bytes. Set by `sign`.
+          type: string
+          format: binary
+        CamelPQCVerification:
+          title: Verification Result
+          description: True when the signature matches the body, false when it does not. Set by `verify`.
+          type: boolean
   dependencies:
   - "camel:pqc"
   - "camel:kamelet"

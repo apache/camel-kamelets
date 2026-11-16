@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "ElasticSearch Index Sink"
-    description: Stores JSON-formatted data into ElasticSearch.
+    description: |-
+      Stores each message, a JSON object, as a document in an index of Elasticsearch, so that it can be searched.
+
+      Use it to make records searchable, such as orders, log entries or products, or to feed dashboards in Kibana. To run a search on a schedule, use `elasticsearch-search-source`; for OpenSearch, use `opensearch-index-sink`.
+
+      Input: the body is the document, as JSON text, such as `{"order": 42, "status": "shipped"}`. The optional `indexId` header (or `ce-indexid`) is the id of the document: a document with the same id is replaced. Without it, Elasticsearch makes up a new id, so each message adds a new document. The optional `indexName` header (or `ce-indexname`) is the index to write to, instead of the `indexName` option.
+
+      Output: when it is used inside a route, the body afterwards is the id of the document, as text.
+
+      Good to know: a body that is not JSON fails the message, and so does a message with no index, from the option or the header. It connects with TLS by default (`enableSSL`); for a server with a self-signed certificate, give its certificate in `certificate`.
     required:
       - clusterName
       - hostAddresses
@@ -38,41 +47,60 @@ spec:
     properties:
       user:
         title: Username
-        description: The username to connect to ElasticSearch.
+        description: The Elasticsearch user to log in as, such as `elastic`. Leave it out for a cluster without security.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to connect to ElasticSearch.
+        description: The password of the Elasticsearch user in `user`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       enableSSL:
         title: Enable SSL
-        description: Specifies to connect by using SSL.
+        description: If true, it connects with HTTPS. Set it to false for a cluster that is reached with plain HTTP.
         type: boolean
         default: true
       hostAddresses:
         title: Host Addresses
-        description: A comma-separated list of remote transport addresses in `ip:port format`.
+        description: The address of the Elasticsearch HTTP API, as `host:port`, or several nodes separated by commas. The port is 9200 by default.
         type: string
         example: quickstart-es-http:9200
       clusterName:
         title: ElasticSearch Cluster Name
-        description: The name of the ElasticSearch cluster.
+        description: The name of the Elasticsearch cluster. Required, but not checked against the cluster.
         type: string
         example: quickstart
       indexName:
         title: Index in ElasticSearch
-        description: The name of the ElasticSearch index.
+        description: The name of the index to store the documents in. Elasticsearch creates it when it does not exist. The `indexName` header of a message takes precedence.
         type: string
-        example: data
+        example: orders
       certificate:
-        title: Certificate 
-        description: The Certificate for accessing the Elasticsearch cluster. You must encode this value in base64.
+        title: Certificate
+        description: The certificate of the certificate authority (CA) that signed the certificate of the cluster, such as the `http_ca.crt` file of Elasticsearch, as PEM text encoded in base64. Needed when the cluster uses a self-signed certificate.
         type: string
+  dataTypes:
+    in:
+      headers:
+        indexId:
+          title: Document ID
+          description: The id of the document. A document with the same id is replaced. When it is not set, `ce-indexid` is used, and then a new id made up by Elasticsearch.
+          type: string
+        ce-indexid:
+          title: Document ID (CloudEvents)
+          description: The id of the document, when the message is a CloudEvent. Used only when `indexId` is not set.
+          type: string
+        indexName:
+          title: Index Name
+          description: The index to write to, instead of the `indexName` option. When it is not set, `ce-indexname` is used.
+          type: string
+        ce-indexname:
+          title: Index Name (CloudEvents)
+          description: The index to write to, when the message is a CloudEvent. Used only when `indexName` is not set.
+          type: string
   types:
     out:
       mediaType: text/plain

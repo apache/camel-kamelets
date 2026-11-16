@@ -30,15 +30,36 @@ metadata:
 spec:
   definition:
     title: "Exec Sink"
-    description: Execute system commands
+    description: |-
+      Runs a program or command on the machine where the integration runs, once for each message, with the body as its standard input.
+
+      Use it to hand each message to an existing script or command-line tool, for example a script that imports a file or a tool that converts data, and to use what the program prints in the next step.
+
+      Input: the body is written to the standard input of the program, when it is text, bytes, a stream or a file. Another body, or no body, runs the program without input.
+
+      Output: when it is used inside a route, the body afterwards is what the program printed on its standard output, as a stream, or no body when it printed nothing. The `CamelExecExitValue` header is the exit code of the program, and `CamelExecStderr` what it printed on its standard error.
+
+      Good to know: this Kamelet runs programs by design, with the rights of the integration, so never place it after a source of untrusted messages. `executable` is only the name or path of the program: arguments cannot be given, so to run a command with arguments, put it in a script. A program that ends with an error exit code does not fail the message; check `CamelExecExitValue`. A program that is not found fails the message.
     required:
     - executable
     type: object
     properties:
       executable:
         title: Executable Command
-        description: The command to execute
+        description: The name of the program to run, found on the `PATH` of the machine, or its full path, without arguments. A value with a space, such as `ls -l`, fails, because no program has that name.
         type: string
+        example: /opt/scripts/import-order.sh
+  dataTypes:
+    out:
+      headers:
+        CamelExecExitValue:
+          title: Exit Value
+          description: The exit code of the program; 0 usually means it succeeded.
+          type: integer
+        CamelExecStderr:
+          title: Standard Error
+          description: What the program printed on its standard error, as a stream, or no value when it printed nothing.
+          type: object
   dependencies:
     - "camel:exec"
     - "camel:kamelet"

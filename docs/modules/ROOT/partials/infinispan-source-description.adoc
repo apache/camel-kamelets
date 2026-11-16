@@ -6,11 +6,11 @@ This Kamelet uses username and password authentication to connect to Infinispan 
 
 - Username and password for Infinispan authentication
 - Host information for the Infinispan instance
-- Optionally, security settings (secure connection enabled by default)
+- Optionally, security settings (login enabled by default with `secure`; the connection has no TLS)
 
 === Output format
 
-The Kamelet gets events from an Infinispan cache and produces the event data in the configured format.
+The Kamelet receives an event for each change of an entry in the cache. The message has no body: the event type, the key, the cache name and the version of the entry are in the `infinispan-event-type`, `infinispan-key`, `infinispan-cache-name` and `infinispan-entry-version` headers.
 
 === Configuration
 

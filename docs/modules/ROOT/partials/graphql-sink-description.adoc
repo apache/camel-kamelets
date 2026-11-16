@@ -2,7 +2,7 @@
 
 === GraphQL Operations
 
-This Kamelet forwards data to GraphQL endpoints for executing queries, mutations, and subscriptions.
+This Kamelet sends the GraphQL query or mutation in the message body to a GraphQL endpoint, with an HTTP POST, and returns the answer of the server.
 
 === Required Configuration
 
@@ -10,8 +10,8 @@ This Kamelet forwards data to GraphQL endpoints for executing queries, mutations
 
 === Authentication
 
-- **Access Token**: Optional access token for secured GraphQL endpoints
+- **Access Token**: Optional access token for secured GraphQL endpoints, sent as a Bearer token
 
 === Usage
 
-The Kamelet sends data to the specified GraphQL endpoint, enabling integration with GraphQL APIs for data operations and retrieval.
+The body of each message must be the text of the query or mutation, such as `{ books { title } }`. The answer of the server, JSON text with `data` and `errors`, becomes the body of the message, for the next steps of a route.

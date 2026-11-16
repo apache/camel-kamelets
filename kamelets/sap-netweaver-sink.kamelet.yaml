@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "SAP NetWeaver Sink"
-    description: Send requests to an SAP NetWeaver Gateway over HTTP.
+    description: |-
+      Reads data from an SAP NetWeaver Gateway with an OData GET request, the same request for each message, and gives the answer as a Map or as JSON text.
+
+      Use it to fetch business data from SAP, such as flights, orders or materials, for example on a schedule with `timer-source`, and pass it on to another system.
+
+      Input: any body; it is not sent. The request is always the `command` option, added to `url`; headers on the message cannot change it.
+
+      Output: when it is used inside a route, the body afterwards is the answer of the gateway. By default it is a Map, and the outer `d` entry of the OData answer is removed, so the body holds the `results` list or the fields of the entity. With `jsonAsMap` set to false it is JSON text, and with `json` set to false it is XML text in the Atom format.
+
+      Good to know: the body is never sent, so this Kamelet cannot create or change data in SAP. A response that is not JSON fails the message while `json` and `jsonAsMap` are true.
     required:
       - url
       - username
@@ -40,40 +49,40 @@ spec:
     properties:
       url:
         title: URL
-        description: The URL of the SAP NetWeaver Gateway server.
+        description: The address of the OData service on the SAP NetWeaver Gateway, up to the name of the service, starting with `https://`.
         type: string
         example: "https://gateway.example.com/sap/opu/odata/sap/ZDEMO_SRV"
       command:
         title: Command
-        description: The OData command to run against the gateway. It is sent as the request path.
+        description: The OData request to run, added to `url` as the rest of the path, such as an entity set (`FlightCollection`), one entity by its key, and OData query options.
         type: string
         example: "FlightCollection(carrid='AA',connid='0017',fldate=datetime'2024-01-01T00%3A00%3A00')"
       username:
         title: Username
-        description: The username to authenticate against the gateway.
+        description: The SAP user to log in to the gateway as, with Basic authentication.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to authenticate against the gateway.
+        description: The password of the SAP user in `username`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       json:
         title: JSON
-        description: Return data as JSON. When false the gateway returns XML in Atom format instead.
+        description: If true, the answer is asked for in JSON. If false, the gateway answers in XML, in the Atom format, and the body is that XML as text.
         type: boolean
         default: true
       jsonAsMap:
         title: JSON As Map
-        description: Transform the returned JSON from a String into a Map in the message body.
+        description: If true, the JSON answer is read into a Map. If false, the body is the JSON text. Only used when `json` is true.
         type: boolean
         default: true
       flatternMap:
         title: Flatten Map
-        description: When the returned Map holds a single entry, use that entry value as the message body.
+        description: If true, and the Map has only one entry, such as the `d` entry of an OData answer, the body is the value of that entry. Only used when `jsonAsMap` is true.
         type: boolean
         default: true
   dependencies:
