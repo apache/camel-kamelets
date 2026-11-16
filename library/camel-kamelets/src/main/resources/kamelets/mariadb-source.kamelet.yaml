@@ -103,7 +103,7 @@ spec:
           url: "jdbc:mariadb://{{serverName}}:{{serverPort}}/{{databaseName}}"
           driverClassName: org.mariadb.jdbc.Driver
     from:
-      uri: "{{local-sql-mariadb-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume={{?consumedQuery}}&delay={{delay}}"
+      uri: "{{local-sql-mariadb-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume=RAW({{?consumedQuery}})&delay={{delay}}"
       steps:
         - marshal:
             json: {}

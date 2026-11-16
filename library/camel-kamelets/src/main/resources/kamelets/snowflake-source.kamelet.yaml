@@ -99,7 +99,7 @@ spec:
           url: "jdbc:snowflake://{{instanceUrl}}"
           databaseName: "{{?databaseName}}"
     from:
-      uri: "{{local-sql-snowflake-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume={{?consumedQuery}}&delay={{delay}}"
+      uri: "{{local-sql-snowflake-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume=RAW({{?consumedQuery}})&delay={{delay}}"
       steps:
         - marshal:
             json: {}

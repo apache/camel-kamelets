@@ -107,6 +107,15 @@ spec:
                       expression:
                         simple:
                           expression: "${header[ce-channel]}"
+              - expression:
+                  simple:
+                    expression: "${header[CamelRedis.Channel]} == null"
+                steps:
+                  - setHeader:
+                      name: CamelRedis.Channel
+                      expression:
+                        constant:
+                          expression: "{{channels}}"
         - setHeader:
             name: CamelRedis.Message
             expression:

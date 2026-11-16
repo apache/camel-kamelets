@@ -104,25 +104,5 @@ spec:
     from:
       uri: kamelet:source
       steps:
-        - choice:
-            when:
-              - expression:
-                  simple:
-                    expression: "${header[db-upsert]}"
-                steps:
-                  - setHeader:
-                      name: CamelMongoDbUpsert
-                      expression:
-                        simple:
-                          expression: "${header[db-upsert]}"
-              - expression:
-                  simple:
-                    expression: "${header[ce-dbupsert]}"
-                steps:
-                  - setHeader:
-                      name: CamelMongoDbUpsert
-                      expression:
-                        simple:
-                          expression: "${header[ce-dbupsert]}"
         - to:
             uri: "{{local-mongodb}}:test?createCollection={{?createCollection}}&writeConcern={{?writeConcern}}&collection={{collection}}&database={{database}}&operation=insert&mongoConnection=#{{mongo-client}}"

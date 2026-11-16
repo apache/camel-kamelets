@@ -103,7 +103,7 @@ spec:
           url: "jdbc:mysql://{{serverName}}:{{serverPort}}/{{databaseName}}"
           driverClassName: com.mysql.cj.jdbc.Driver
     from:
-      uri: "{{local-sql-mysql-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume={{?consumedQuery}}&delay={{delay}}"
+      uri: "{{local-sql-mysql-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume=RAW({{?consumedQuery}})&delay={{delay}}"
       steps:
         - marshal:
             json: {}

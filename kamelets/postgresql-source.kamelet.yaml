@@ -104,7 +104,7 @@ spec:
           url: "jdbc:postgresql://{{serverName}}:{{serverPort}}/{{databaseName}}"
           driverClassName: org.postgresql.Driver
     from:
-      uri: "{{local-sql-postgres-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume={{?consumedQuery}}&delay={{delay}}"
+      uri: "{{local-sql-postgres-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume=RAW({{?consumedQuery}})&delay={{delay}}"
       steps:
         - marshal:
             json: {}
