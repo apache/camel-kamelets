@@ -30,16 +30,25 @@ metadata:
 spec:
   definition:
     title: "Drop Header Action"
-    description: "Remove an header from the message in transit."
+    description: |-
+      Removes one header, given by its name, from each message.
+
+      Use it to remove a header that the next step must not see, for example an `Authorization` header with a secret, or a header that would change what a sink does. To remove several headers at once by a pattern, such as all the headers whose names start with `Camel`, use `drop-headers-action`.
+
+      Input: any message.
+
+      Output: the same body, and the same headers without the one named by `name`. A message without that header passes on unchanged.
+
+      Good to know: the name is not case-sensitive: `FOO` also removes the header `foo`.
     required:
       - name
+    type: object
     properties:
       name:
-        title: Name
-        description: The name of the header to be removed.
+        title: Header Name
+        description: "The name of the header to remove, such as `Authorization`. Upper and lower case do not matter."
         type: string
-        example: headername
-    type: object
+        example: "Authorization"
   dependencies:
     - "camel:kamelet"
   template:

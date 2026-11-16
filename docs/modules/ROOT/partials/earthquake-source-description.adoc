@@ -26,7 +26,7 @@ The Kamelet uses the official USGS Earthquake API at `https://earthquake.usgs.go
 The Kamelet maintains state to avoid duplicate earthquake reports by:
 
 1. Caching the timestamp of the last update
-2. Only fetching earthquakes that occurred after the last known update
+2. Only fetching earthquakes whose report was updated after the last known update, so an earthquake is sent again when USGS updates its report
 3. Using the USGS API's `updatedafter` parameter for efficient filtering
 
 === Usage examples

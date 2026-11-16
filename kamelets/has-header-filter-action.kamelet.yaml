@@ -30,21 +30,30 @@ metadata:
 spec:
   definition:
     title: "Has Header Filter Action"
-    description: "Filter message based on the presence of one header."
+    description: |-
+      Keeps only the messages that have a given header, optionally with a given value, and drops all others.
+
+      Use it to pass on only the messages that carry a marker, such as a `priority` header, or only those of one kind, such as the events whose `type` header is `order`. To match the value of a header against a pattern, use `header-matches-filter-action`, and to keep or drop messages by the content of a JSON body, use `predicate-filter-action`.
+
+      Input: any message. The header named by `name` is read.
+
+      Output: the same message, unchanged, when it has the header and, when `value` is set, when the header has exactly that value. Otherwise the message is dropped and nothing is sent on.
+
+      Good to know: the comparison with `value` is case-sensitive: `order` does not match `Order`. A header with an empty value counts as present when `value` is not set.
     required:
       - name
+    type: object
     properties:
       name:
         title: Header Name
-        description: The header name to evaluate. The header name must be passed by the source Kamelet. For Knative only, the name of the header requires a CloudEvent (ce-) prefix.
+        description: "The name of the header the message must have to be kept, such as `priority`. The header must already be on the message, for example set by the source. With Knative, the name of a CloudEvent attribute starts with `ce-`, such as `ce-type`."
         type: string
-        example: headerName
+        example: "priority"
       value:
         title: Header Value
-        description: An optional header value to compare the header to
+        description: "The value the header must have, exactly, for the message to be kept, such as `high`. When it is not set, any value is enough, as long as the header is there."
         type: string
-        example: headerValue
-    type: object
+        example: "high"
   dependencies:
   - "camel:kamelet"
   template:

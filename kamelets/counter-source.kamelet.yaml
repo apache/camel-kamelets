@@ -32,23 +32,40 @@ metadata:
 spec:
   definition:
     title: "Counter Source"
-    description: Generates sequential number events starting from a configurable value, incrementing by a specified step. Useful for testing, scheduled tasks, or creating ordered event sequences.
+    description: |-
+      Sends a message with a number that counts up by one, such as 1, 2, 3, at a regular interval.
+
+      Use it to try out a sink or an action with messages that are each different and easy to follow, or to make ordered test data. For the same fixed message every time use `timer-source`, and for a calendar schedule such as "every weekday at 9:00" use `cron-source`.
+
+      Output: the body is the number, as an Integer (a whole number, not text). The `Content-Type` header is `text/plain`.
+
+      Good to know: it keeps sending until the integration is stopped, unless `numbers` is set. The count starts again from `start` when the integration restarts.
     type: object
     properties:
       period:
         title: Period
-        description: The time interval between two numbers
+        description: "How long to wait between two messages, in milliseconds. For example, 60000 is one minute."
         type: integer
         default: 1000
+        example: 60000
       start:
-        title: Starting Number
-        description: The starting number
+        title: Start
+        description: "The number in the first message. Each next message has a number one higher."
         type: integer
         default: 1
+        example: 100
       numbers:
-        title: Numbers
-        description: How many numbers to generate
+        title: Number of Messages
+        description: "How many messages to send in total. When it is not set, a message is sent every `period` until the integration is stopped."
         type: integer
+        example: 10
+  dataTypes:
+    out:
+      headers:
+        Content-Type:
+          title: Content Type
+          description: "Always `text/plain`."
+          type: string
   dependencies:
     - "camel:timer"
     - "camel:kamelet"

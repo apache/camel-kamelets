@@ -30,14 +30,22 @@ metadata:
 spec:
   definition:
     title: "Chuck Norris Source"
-    description: Gets periodically Chuck Norris jokes
+    description: |-
+      Fetches a random Chuck Norris joke from the public api.chucknorris.io service at a regular interval, and sends it as a message.
+
+      Use it to get short, changing text messages to try out a sink, an action or a demo, with no account and no setup. For the same fixed message every time, use `timer-source`.
+
+      Output: the body is the text of one joke. The message has no headers.
+
+      Good to know: it calls `https://api.chucknorris.io` over the internet for every message, so it needs internet access.
     type: object
     properties:
       period:
         title: Period
-        description: The interval (msec) to wait before getting the next joke
+        description: "How long to wait between two jokes, in milliseconds. For example, 60000 is one minute."
         type: integer
         default: 10000
+        example: 60000
   types:
     out:
       mediaType: text/plain
