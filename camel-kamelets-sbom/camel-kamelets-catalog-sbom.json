@@ -1342,12 +1342,12 @@
     "version" : "1.18.1",
     "purl" : "pkg:maven/com.azure/azure-identity@1.18.1"
   }, {
-    "bom-ref" : "pkg:maven/com.databricks/databricks-jdbc@3.4.4",
+    "bom-ref" : "pkg:maven/com.databricks/databricks-jdbc@3.4.5",
     "type" : "library",
     "group" : "com.databricks",
     "name" : "databricks-jdbc",
-    "version" : "3.4.4",
-    "purl" : "pkg:maven/com.databricks/databricks-jdbc@3.4.4"
+    "version" : "3.4.5",
+    "purl" : "pkg:maven/com.databricks/databricks-jdbc@3.4.5"
   }, {
     "bom-ref" : "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-joda@2.12.5",
     "type" : "library",
@@ -2655,12 +2655,12 @@
     "version" : "2.14.0",
     "purl" : "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0"
   }, {
-    "bom-ref" : "pkg:maven/org.messaginghub/pooled-jms@3.2.5",
+    "bom-ref" : "pkg:maven/org.messaginghub/pooled-jms@3.2.6",
     "type" : "library",
     "group" : "org.messaginghub",
     "name" : "pooled-jms",
-    "version" : "3.2.5",
-    "purl" : "pkg:maven/org.messaginghub/pooled-jms@3.2.5"
+    "version" : "3.2.6",
+    "purl" : "pkg:maven/org.messaginghub/pooled-jms@3.2.6"
   }, {
     "bom-ref" : "pkg:maven/org.postgresql/postgresql@42.7.14",
     "type" : "library",
@@ -2878,10 +2878,10 @@
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-kamelet@4.23.0" ]
   }, {
     "ref" : "kamelet:databricks-sink",
-    "dependsOn" : [ "pkg:maven/com.databricks/databricks-jdbc@3.4.4", "pkg:maven/org.apache.camel/camel-jackson@4.23.0", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0", "pkg:maven/org.apache.camel/camel-sql@4.23.0", "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0" ]
+    "dependsOn" : [ "pkg:maven/com.databricks/databricks-jdbc@3.4.5", "pkg:maven/org.apache.camel/camel-jackson@4.23.0", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0", "pkg:maven/org.apache.camel/camel-sql@4.23.0", "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0" ]
   }, {
     "ref" : "kamelet:databricks-source",
-    "dependsOn" : [ "pkg:maven/com.databricks/databricks-jdbc@3.4.4", "pkg:maven/org.apache.camel/camel-jackson@4.23.0", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0", "pkg:maven/org.apache.camel/camel-sql@4.23.0", "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0" ]
+    "dependsOn" : [ "pkg:maven/com.databricks/databricks-jdbc@3.4.5", "pkg:maven/org.apache.camel/camel-jackson@4.23.0", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0", "pkg:maven/org.apache.camel/camel-sql@4.23.0", "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0" ]
   }, {
     "ref" : "kamelet:delay-action",
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-kamelet@4.23.0" ]
@@ -3091,10 +3091,10 @@
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-jms@4.23.0", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0" ]
   }, {
     "ref" : "kamelet:jms-pooled-apache-artemis-sink",
-    "dependsOn" : [ "pkg:maven/org.apache.activemq/artemis-jakarta-client-all@2.57.0", "pkg:maven/org.apache.camel/camel-jms@4.23.0", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0", "pkg:maven/org.messaginghub/pooled-jms@3.2.5" ]
+    "dependsOn" : [ "pkg:maven/org.apache.activemq/artemis-jakarta-client-all@2.57.0", "pkg:maven/org.apache.camel/camel-jms@4.23.0", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0", "pkg:maven/org.messaginghub/pooled-jms@3.2.6" ]
   }, {
     "ref" : "kamelet:jms-pooled-apache-artemis-source",
-    "dependsOn" : [ "pkg:maven/org.apache.activemq/artemis-jakarta-client-all@2.57.0", "pkg:maven/org.apache.camel/camel-jms@4.23.0", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0", "pkg:maven/org.messaginghub/pooled-jms@3.2.5" ]
+    "dependsOn" : [ "pkg:maven/org.apache.activemq/artemis-jakarta-client-all@2.57.0", "pkg:maven/org.apache.camel/camel-jms@4.23.0", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0", "pkg:maven/org.messaginghub/pooled-jms@3.2.6" ]
   }, {
     "ref" : "kamelet:jolt-transformation-action",
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-jolt@4.23.0", "pkg:maven/org.apache.camel/camel-kamelet@4.23.0" ]
@@ -3465,7 +3465,7 @@
     "ref" : "pkg:maven/com.azure/azure-identity@1.18.1",
     "dependsOn" : [ ]
   }, {
-    "ref" : "pkg:maven/com.databricks/databricks-jdbc@3.4.4",
+    "ref" : "pkg:maven/com.databricks/databricks-jdbc@3.4.5",
     "dependsOn" : [ ]
   }, {
     "ref" : "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-joda@2.12.5",
@@ -3834,7 +3834,7 @@
     "ref" : "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0",
     "dependsOn" : [ ]
   }, {
-    "ref" : "pkg:maven/org.messaginghub/pooled-jms@3.2.5",
+    "ref" : "pkg:maven/org.messaginghub/pooled-jms@3.2.6",
     "dependsOn" : [ ]
   }, {
     "ref" : "pkg:maven/org.postgresql/postgresql@42.7.14",
