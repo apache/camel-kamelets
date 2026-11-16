@@ -105,8 +105,9 @@ actions:
   # Verify Kamelet sink
   - createVariables:
       variables:
+        # sorted, see getItem.groovy
         - name: "aws.ddb.item.directors"
-          value: "[Merian C. Cooper, Ernest B. Schoedsack]"
+          value: "[Ernest B. Schoedsack, Merian C. Cooper]"
         - name: "aws.ddb.item"
           value: "[directors:AttributeValue(SS=${aws.ddb.item.directors}), id:AttributeValue(N=${aws.ddb.item.id}), title:AttributeValue(S=${aws.ddb.item.title.new}), year:AttributeValue(N=${aws.ddb.item.year})]"
 

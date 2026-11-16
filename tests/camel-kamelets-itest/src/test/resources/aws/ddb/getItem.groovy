@@ -25,7 +25,12 @@ try {
     def item = amazonDDBClient.getItem(b -> b.tableName('${aws.ddb.tableName}')
             .key(Collections.singletonMap("id", AttributeValue.builder().n('${aws.ddb.item.id}').build())))?.item()
 
-    assert new TreeMap(item).toString() == '${aws.ddb.item}'
+    // DynamoDB sets have no order: sort them so the expected value can list them sorted
+    def normalized = new TreeMap(item.collectEntries { name, value ->
+        [(name): value.hasSs() ? value.toBuilder().ss(value.ss().toSorted()).build() : value]
+    })
+
+    assert normalized.toString() == '${aws.ddb.item}'
 } catch (AssertionError e) {
     throw new CitrusRuntimeException("AWS DDB item verification failed", e)
 }
