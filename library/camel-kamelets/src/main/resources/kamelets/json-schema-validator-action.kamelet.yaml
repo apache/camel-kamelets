@@ -37,7 +37,7 @@ spec:
     properties:
       template:
         title: Template
-        description: The inline template
+        description: "Where to load the JSON Schema from, not the JSON Schema itself: `file://` followed by the path of a file, `classpath://` followed by a resource in the application, or an `http://` or `https://` URL."
         type: string
         example: "file:////template.json"
         pattern: "^(http|https|file|classpath|ref|bean)://.*"
