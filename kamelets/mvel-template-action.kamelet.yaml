@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Mvel Template Action"
-    description: Apply a Mvel Template.
+    description: |-
+      Builds a new message body from an MVEL template, filling in values from the incoming message.
+
+      Use it to turn data into text for people or for another system, such as the text of an email or a small XML or JSON document, when you already have MVEL templates. For simple templates, `mustache-template-action` is an alternative; to reshape JSON into other JSON, `jslt-action` is often simpler.
+
+      Input: any body. The template sees the body as `@{body}` and a header as `@{headers.name}`, for example `Dear @{headers.customer}, your order @{body} has shipped.`
+
+      Output: the body is the text the template produced. The headers are kept.
+
+      Good to know: a header the template uses that is not set fails the message, and so does a template file that cannot be found. The template is loaded from a file, the classpath or a URL given by the `template` option; it cannot come from the message.
     required:
       - template
     type: object
@@ -39,7 +48,7 @@ spec:
         title: Template
         description: "Where to load the MVEL template from, not the MVEL template itself: `file://` followed by the path of a file, `classpath://` followed by a resource in the application, or an `http://` or `https://` URL."
         type: string
-        example: "file:////template.mvel"
+        example: "file:///opt/templates/order.mvel"
         pattern: "^(http|https|file|classpath|ref|bean)://.*"
   dependencies:
   - "camel:mvel"

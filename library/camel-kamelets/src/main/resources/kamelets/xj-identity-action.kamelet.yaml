@@ -31,14 +31,21 @@ metadata:
 spec:
   definition:
     title: "XJ Identity Action"
-    description: Apply the XJ Identity Transformation to transform JSON to XML and XML to JSON.
+    description: |-
+      Converts each message from XML to JSON, or from JSON to XML, with a fixed mapping and no template to write.
+
+      Use it to pass XML to a system that expects JSON, or the other way round, when the default mapping is good enough. To control the result, such as the names of the elements or which fields to keep, use `xj-template-action` with an XSLT stylesheet.
+
+      Input: XML or JSON as text, bytes or a stream, as `direction` says. Parsed JSON, such as a Map, fails the message.
+
+      Output: the body is JSON text or XML text. From XML, the root element is dropped, its attributes and child elements become fields, repeated elements become an array, and all values are text: `<order id="7"><qty>2</qty></order>` gives `{"id":"7","qty":"2"}`. To XML, each JSON value becomes an `object` element that keeps its name and type in `xj:name` and `xj:type` attributes, such as `<object xj:name="qty" xj:type="int">2</object>`. The headers are kept.
     required:
       - direction
     type: object
     properties:
       direction:
         title: Direction
-        description: The transform direction.
+        description: "Which way to convert: `XML2JSON` turns XML into JSON, and `JSON2XML` turns JSON into XML."
         type: string
         enum: ["XML2JSON", "JSON2XML"]
   dependencies:
