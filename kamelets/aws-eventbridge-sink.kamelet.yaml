@@ -33,95 +33,118 @@ spec:
   definition:
     title: "AWS Eventbridge Sink"
     description: |-
-      Send events to an Amazon Eventbridge Eventbus.
+      Sends each message as an event to an Amazon EventBridge event bus, where rules route it to targets such as Lambda functions, SQS queues or Step Functions.
 
-      In the headers, you can set the `resources-arn` / `ce-resources-arn` property to specify the ARN of resources related to the event.
+      Use it to publish business events, such as `Order Shipped`, for other applications and AWS services to react to through EventBridge rules.
 
-      In the headers, you can set the `detail-type` / `ce-detail-type` property to specify the detail type related to the event.
+      Input: the body is the detail of the event, as JSON text that holds a JSON object, such as `{"orderId": "A-1"}`. The `detail-type` header (or `ce-detail-type`) is the detail type, such as `Order Shipped`; the `event-source` header (or `ce-event-source`, or `ce-source`) is the source, such as `com.example.shop`; and the `resources-arn` header (or `ce-resources-arn`) is the ARN (Amazon Resource Name) of the resource the event is about, or several separated by commas. Each header falls back on its option: `detailType`, `eventSource` and `resourcesArn`.
 
-      In the headers, you can set the `event-source` / `ce-event-source` property to specify the event source related to the event.
+      Output: when it is used inside a route, the body afterwards is the response of EventBridge, and the `CamelAwsEventbridgeFailedEntryCount` header is 1 when EventBridge rejected the event, 0 otherwise.
 
-      If you do not set the property in the header, the Kamelet uses the given Kamelet properties as a default.
+      Good to know: a message fails when it has no detail type, no source or no resource ARN, from a header or an option. `eventSourcePrefix` is put before every source. An event that EventBridge rejects, such as one whose body is not a JSON object, is not delivered; depending on the Camel version the message then fails, or it only sets `CamelAwsEventbridgeFailedEntryCount` to 1.
     required:
       - eventbusNameOrArn
       - region
     type: object
     properties:
       eventbusNameOrArn:
-        title: Eventbus Name
-        description: The Eventbridge Eventbus name or Amazon Resource Name (ARN).
+        title: Event Bus Name
+        description: The name of the event bus, such as `default` or `orders`, or its ARN (Amazon Resource Name).
+        example: orders
         type: string
       resourcesArn:
-        title: Event Resource ARN
-        description: The ARN of resources related to the AWS event (e.g. `arn:aws:s3:eu-east-1:000000000001:test`).
+        title: Resource ARNs
+        description: The ARNs (Amazon Resource Names) of the resources the event is about, separated by commas. Used when the message has no `resources-arn` header. Each event needs at least one.
+        example: arn:aws:s3:::my-bucket
         type: string
       eventSourcePrefix:
         title: Event Source Prefix
-        description: The event source prefix set for all events sent to the eventbus.
+        description: Text put before the source of every event, from the `event-source` header or the `eventSource` option. For example, with `com.example.` a source of `shop` becomes `com.example.shop`.
+        example: com.example.
         type: string
         default: ""
       eventSource:
         title: Event Source
-        description: The event source related to the AWS event (e.g. `aws.s3`).
+        description: The source of the events, which says what sent them and which rules use to match, such as `com.example.shop`. Used when the message has no `event-source` header. Each event needs one.
+        example: com.example.shop
         type: string
       detailType:
         title: Event Detail Type
-        description: The event detail type related to the AWS event.
+        description: The detail type of the events, a short name of what happened that rules use to match, such as `Order Shipped`. Used when the message has no `detail-type` header. Each event needs one.
+        example: Order Shipped
         type: string
       accessKey:
         title: Access Key
-        description: The access key obtained from AWS.
+        description: The access key ID of an IAM user, which you create in the AWS console under IAM, Users, Security credentials. Use it together with `secretKey`. Leave both out when `useDefaultCredentialsProvider` or `useProfileCredentialsProvider` is true.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       secretKey:
         title: Secret Key
-        description: The secret key obtained from AWS.
+        description: The secret access key that belongs to `accessKey`. The AWS console shows it only once, when the access key is created.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       region:
         title: AWS Region
-        description: The AWS region to access.
+        description: The AWS region of the event bus, as a region code such as `eu-west-1` or `us-east-1`.
+        example: eu-west-1
         type: string
         enum: ["ap-south-1", "eu-south-1", "us-gov-east-1", "me-central-1", "ca-central-1", "eu-central-1", "us-iso-west-1", "us-west-1", "us-west-2", "af-south-1", "eu-north-1", "eu-west-3", "eu-west-2", "eu-west-1", "ap-northeast-3", "ap-northeast-2", "ap-northeast-1", "me-south-1", "sa-east-1", "ap-east-1", "cn-north-1", "us-gov-west-1", "ap-southeast-1", "ap-southeast-2", "us-iso-east-1", "ap-southeast-3", "us-east-1", "us-east-2", "cn-northwest-1", "us-isob-east-1", "aws-global", "aws-cn-global", "aws-us-gov-global", "aws-iso-global", "aws-iso-b-global"]
       useDefaultCredentialsProvider:
         title: Default Credentials Provider
-        description: If true, the Eventbridge client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
+        description: "If true, the credentials are found in the environment instead of in `accessKey` and `secretKey`: the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables, the `~/.aws/credentials` file, or the IAM role of the EC2 instance, ECS task or Kubernetes pod the integration runs on."
         type: boolean
         default: false
       useProfileCredentialsProvider:
         title: Profile Credentials Provider
-        description: Set whether the Eventbridge client should expect to load credentials through a profile credentials provider.
+        description: If true, the credentials are read from a named profile in the AWS credentials file (`~/.aws/credentials`), as the AWS CLI does. Name the profile in `profileCredentialsName`.
         type: boolean
         default: false
       useSessionCredentials:
         title: Session Credentials
-        description: Set whether the Eventbridge client should expect to use Session Credentials. This is useful in situation in which the user needs to assume a IAM role for doing operations in Eventbridge.
+        description: "If true, it logs in with temporary credentials: `accessKey`, `secretKey` and `sessionToken`, such as the ones AWS STS gives when you assume an IAM role."
         type: boolean
         default: false
       profileCredentialsName:
         title: Profile Credentials Name
-        description: If using a profile credentials provider this parameter sets the profile name.
+        description: The name of the profile in the AWS credentials file. Only used when `useProfileCredentialsProvider` is true; when it is not set, the default profile is used.
+        example: production
         type: string
       sessionToken:
         title: Session Token
-        description: Amazon AWS Session Token used when the user needs to assume a IAM role.
+        description: The session token of temporary credentials, which comes with their access key and secret key, for example from AWS STS when you assume an IAM role. Only used when `useSessionCredentials` is true.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       uriEndpointOverride:
         title: Overwrite Endpoint URI
-        description: The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option.
+        description: The address to connect to instead of AWS, as a URL such as `http://localhost:4566` for LocalStack. Only used when `overrideEndpoint` is true.
+        example: http://localhost:4566
         type: string
       overrideEndpoint:
         title: Endpoint Overwrite
-        description: Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option.
+        description: If true, it connects to the address in `uriEndpointOverride` instead of to AWS. Use it for a local stand-in of AWS such as LocalStack.
         type: boolean
         default: false
+  dataTypes:
+    in:
+      headers:
+        detail-type:
+          title: Detail Type
+          description: The detail type of the event, such as `Order Shipped`. `ce-detail-type` works too. Without it, the `detailType` option is used; one of them is required.
+          type: string
+        event-source:
+          title: Event Source
+          description: The source of the event, such as `com.example.shop`, after `eventSourcePrefix`. `ce-event-source` and `ce-source` work too. Without it, the `eventSource` option is used; one of them is required.
+          type: string
+        resources-arn:
+          title: Resource ARNs
+          description: The ARNs of the resources the event is about, separated by commas. `ce-resources-arn` works too. Without it, the `resourcesArn` option is used; one of them is required.
+          type: string
   dependencies:
     - "camel:aws2-eventbridge"
     - "camel:kamelet"

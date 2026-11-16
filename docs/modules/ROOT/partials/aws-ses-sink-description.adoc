@@ -19,14 +19,14 @@ Only one of access key/secret key or default credentials provider could be used
 
 For more information, see the https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials.html[AWS credentials documentation]
 
-=== Required Headers
+=== Headers
 
-In the headers, you can optionally set the following properties:
-      
-- `subject` / `ce-subject` property to specify the email subject. If you do not set this property in the header, the Kamelet uses the exchange ID for the email subject.
-
-While the following headers are required
+The following header is required:
 
 - `to` / `ce-to` to provide a comma-separated list of email addresses.
 
-- `reply-to-addresses` / `ce-reply-to-addresses`to provider a comma-separated list of reply-to email addresses.
+In the headers, you can optionally set the following properties:
+
+- `subject` / `ce-subject` property to specify the email subject. If you do not set this property in the header, the Kamelet uses a generated unique ID for the email subject.
+
+- `reply-to-addresses` / `ce-reply-to-addresses` to provide a comma-separated list of reply-to email addresses.

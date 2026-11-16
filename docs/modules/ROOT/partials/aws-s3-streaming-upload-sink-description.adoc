@@ -1,4 +1,4 @@
-== AWS S3 Sink Kamelet Description
+== AWS S3 Streaming Upload Sink Kamelet Description
 
 === Authentication methods
 
@@ -19,8 +19,8 @@ Only one of access key/secret key or default credentials provider could be used
 
 For more information, see the https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials.html[AWS credentials documentation]
 
-=== Optional Headers
+=== File names
 
-In the header, you can optionally set the `file` / `ce-file` property to specify the name of the file to upload.
+This Kamelet uses no headers: the name of the files comes from the `keyName` option.
 
-If you do not set the property in the header, the Kamelet uses the exchange ID for the file name.
+With the default `namingStrategy` of `progressive` and a `keyName` of `logs/app.log`, the first file is `logs/app.log` and the next ones are `logs/app-1.log`, `logs/app-2.log` and so on. With `random` or `timestamp`, a random ID or the time in milliseconds is added to the name instead of a number.

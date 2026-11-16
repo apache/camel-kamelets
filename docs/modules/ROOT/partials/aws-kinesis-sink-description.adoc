@@ -21,8 +21,8 @@ For more information, see the https://docs.aws.amazon.com/sdk-for-java/latest/de
 
 === Optional Headers
 
-In the header, you can optionally set the `file` / `ce-partition` property to set the Kinesis partition key.
+In the header, you can optionally set the `partition` / `ce-partition` property to set the Kinesis partition key.
 
-If you do not set the property in the header, the Kamelet uses the exchange ID for the partition key.
+If you do not set the property in the header, the Kamelet uses a generated unique ID for the partition key.
 
 You can also set the `sequence-number` / `ce-sequencenumber` property in the header to specify the Sequence number.

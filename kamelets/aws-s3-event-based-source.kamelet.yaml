@@ -32,7 +32,14 @@ metadata:
 spec:
   definition:
     title: "AWS S3 Event Based Source"
-    description: Receive data from AWS SQS subscribed to Eventbridge Bus reporting events related to an S3 bucket or multiple buckets.
+    description: |-
+      Receives the events of an Amazon S3 bucket, such as a new or a deleted file, from the Amazon SQS queue that Amazon EventBridge sends them to, one message per event.
+
+      Use it to react to new files in a bucket as soon as they arrive, without listing the bucket again and again, for example to process uploaded documents or imported data files. To read the files of a bucket by polling it, use `aws-s3-source`.
+
+      Output: the body is the EventBridge event, as JSON text: `detail-type` says what happened (such as `Object Created` or `Object Deleted`), `detail.bucket.name` is the bucket and `detail.object.key` the key of the file. With `getObject` set to true, the event of a file uploaded with a simple upload (PutObject) carries the content of the file instead, as a stream, with the `CamelAwsS3ProducedBucketName` and `CamelAwsS3ProducedKey` headers; the other events then come as parsed JSON (a Jackson `JsonNode`).
+
+      Good to know: it needs a setup in AWS. In the properties of the bucket, turn on sending events to Amazon EventBridge; then create an EventBridge rule for the events of source `aws.s3` and that bucket, with the queue as its target. Each event is deleted from the queue once it has been processed, unless `deleteAfterRead` is false. The files stay in the bucket. `getObject` skips files created by a multipart upload or a copy, and never connects through `uriEndpointOverride`.
     required:
       - accessKey
       - secretKey
@@ -42,30 +49,32 @@ spec:
     properties:
       queueNameOrArn:
         title: Queue Name
-        description: The SQS Queue Name or ARN
+        description: The name of the SQS queue that the EventBridge rule sends the S3 events to, such as `s3-events`, or its ARN (Amazon Resource Name).
+        example: s3-events
         type: string
       deleteAfterRead:
         title: Auto-delete Messages
-        description: Delete messages after consuming them
+        description: If true, each event is deleted from the queue once it has been processed. Set it to false to keep the events; they are then received again each time the visibility timeout of the queue ends.
         type: boolean
         default: true
       accessKey:
         title: Access Key
-        description: The access key obtained from AWS.
+        description: The access key ID of an IAM user, which you create in the AWS console under IAM, Users, Security credentials. Use it together with `secretKey`.
         type: string
         format: password
         x-descriptors:
           - 'urn:camel:group:credentials'
       secretKey:
         title: Secret Key
-        description: The secret key obtained from AWS.
+        description: The secret access key that belongs to `accessKey`. The AWS console shows it only once, when the access key is created.
         type: string
         format: password
         x-descriptors:
           - 'urn:camel:group:credentials'
       region:
         title: AWS Region
-        description: The AWS region to access.
+        description: The AWS region of the queue and the bucket, as a region code such as `eu-west-1` or `us-east-1`.
+        example: eu-west-1
         type: string
         enum:
           - ap-south-1
@@ -105,58 +114,65 @@ spec:
           - aws-iso-b-global
       autoCreateQueue:
         title: Autocreate Queue
-        description: Setting the autocreation of the SQS queue.
+        description: If true, the queue is created when it does not exist. A name that ends in `.fifo` creates a FIFO queue. The credentials need the permission to create queues.
         type: boolean
         default: false
       amazonAWSHost:
         title: AWS Host
-        description: The hostname of the Amazon AWS cloud.
+        description: The host name of AWS. Leave it as `amazonaws.com` for AWS. Any other value is the address to connect to instead, as `host:port`, together with `protocol`; `uriEndpointOverride` does the same.
         type: string
         default: amazonaws.com
       protocol:
         title: Protocol
-        description: The underlying protocol used to communicate with SQS
+        description: "`https` or `http`. Only used when `amazonAWSHost` is not `amazonaws.com`."
         type: string
-        example: http or https
+        example: http
         default: https
       queueURL:
         title: Queue URL
-        description: The full SQS Queue URL. When set, it is used verbatim and every
-          other property that would otherwise determine the queue URL is ignored.
-          Intended for connecting to a mock SQS implementation.
+        description: The full address of the queue, as the SQS console shows it. When it is set, it is used as it is, and the queue is not looked up by name.
+        example: https://sqs.eu-west-1.amazonaws.com/123456789012/s3-events
         type: string
       uriEndpointOverride:
         title: Overwrite Endpoint URI
-        description: >-
-          The overriding endpoint URI. To use this option, you must also select
-          the `overrideEndpoint` option.
+        description: The address to connect to instead of AWS, as a URL such as `http://localhost:4566` for LocalStack. Only used when `overrideEndpoint` is true.
+        example: http://localhost:4566
         type: string
       overrideEndpoint:
         title: Endpoint Overwrite
-        description: >-
-          Select this option to override the endpoint URI. To use this option,
-          you must also provide a URI for the `uriEndpointOverride` option.
+        description: If true, it connects to the address in `uriEndpointOverride` instead of to SQS. Use it for a local stand-in of AWS such as LocalStack.
         type: boolean
         default: false
       delay:
         title: Delay
-        description: The number of milliseconds before the next poll of the selected stream
+        description: How long to wait between two polls of the queue, in milliseconds.
         type: integer
         default: 500
       greedy:
         title: Greedy Scheduler
-        description: >-
-          If greedy is enabled, then the polling will happen immediately again,
-          if the previous run polled 1 or more messages.
+        description: If true, it polls again right away when the last poll received messages, instead of waiting for `delay`.
         type: boolean
         default: false
       getObject:
-        title: Greedy Object in Bucket
-        description: >-
-          If `getObject` is enabled, then the file created in the bucket is
-          retrieved and returned as body. If not, only the event will returned as body.
+        title: Get Object
+        description: If true, for an event of a file uploaded with a simple upload (PutObject), it fetches the file and sends its content instead of the event. It connects to S3 with `accessKey`, `secretKey` and `region` only, not with `uriEndpointOverride`.
         type: boolean
         default: false
+  dataTypes:
+    out:
+      headers:
+        CamelAwsSqsMessageId:
+          title: SQS Message ID
+          description: The ID of the SQS message that carried the event.
+          type: string
+        CamelAwsS3ProducedBucketName:
+          title: Bucket Name
+          description: The bucket of the file. Only set when `getObject` is true and the file was fetched.
+          type: string
+        CamelAwsS3ProducedKey:
+          title: Key
+          description: The key (the path in the bucket) of the file. Only set when `getObject` is true and the file was fetched.
+          type: string
   dependencies:
     - 'camel:aws2-sqs'
     - 'camel:aws2-s3'

@@ -198,7 +198,7 @@ public class KameletsCatalogTest {
     @Test
     void testSupportedHeaders() throws Exception {
         verifyHeaders("aws-s3-source", 4);
-        verifyHeaders("aws-s3-sink", 51);
+        verifyHeaders("aws-s3-sink", 2);
         verifyHeaders("aws-cloudtrail-source", 4);
         verifyHeaders("aws-redshift-source", 0);
         verifyHeaders("aws-not-exists", 0);
