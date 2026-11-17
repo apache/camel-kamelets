@@ -98,7 +98,7 @@ spec:
           url: "jdbc:oracle:thin:@{{serverName}}:{{serverPort}}/{{databaseName}}"
           driverClassName: oracle.jdbc.driver.OracleDriver
     from:
-      uri: "{{local-sql-oracle-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume={{?consumedQuery}}"
+      uri: "{{local-sql-oracle-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume=RAW({{?consumedQuery}})"
       steps:
         - marshal:
             json: {}

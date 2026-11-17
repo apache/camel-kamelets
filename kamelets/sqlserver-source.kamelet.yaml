@@ -114,7 +114,7 @@ spec:
           url: "jdbc:sqlserver://{{serverName}}:{{serverPort}};databaseName={{databaseName}};encrypt={{encrypt}};trustServerCertificate={{trustServerCertificate}};"
           driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
     from:
-      uri: "{{local-sqlserver-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume={{?consumedQuery}}&delay={{delay}}"
+      uri: "{{local-sqlserver-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume=RAW({{?consumedQuery}})&delay={{delay}}"
       steps:
         - marshal:
             json: {}

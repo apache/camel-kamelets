@@ -101,7 +101,7 @@ spec:
         properties:
           autowiredEnabled: "false"
     from:
-      uri: "{{local-sql-cassandraql-source}}://{{connectionHost}}:{{connectionPort}}/{{keyspace}}?username={{?username}}&password={{?password}}&cql={{query}}&consistencyLevel={{consistencyLevel}}&resultSetConversionStrategy={{resultStrategy}}&extraTypeCodecs={{?extraTypeCodecs}}"
+      uri: "{{local-sql-cassandraql-source}}://{{connectionHost}}:{{connectionPort}}/{{keyspace}}?username={{?username}}&password={{?password}}&cql=RAW({{query}})&consistencyLevel={{consistencyLevel}}&resultSetConversionStrategy={{resultStrategy}}&extraTypeCodecs={{?extraTypeCodecs}}"
       steps:
         - marshal:
             json: {}

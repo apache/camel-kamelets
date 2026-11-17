@@ -63,6 +63,11 @@ spec:
         title: Branch 
         description: The branch we want to consume commit from
         type: string
+      delay:
+        title: Delay
+        description: The number of milliseconds before the next poll
+        type: integer
+        default: 60000
   types:
     out:
       mediaType: application/json
@@ -72,7 +77,7 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "github2://commit/{{branch}}?oauthToken=RAW({{oauthToken}})&repoName={{repoName}}&repoOwner={{repoOwner}}&startingSha={{startingSha}}"
+      uri: "github2://commit/{{branch}}?oauthToken=RAW({{oauthToken}})&repoName={{repoName}}&repoOwner={{repoOwner}}&delay={{delay}}&startingSha={{startingSha}}"
       steps:
         - marshal:
             json: {}

@@ -145,11 +145,16 @@ spec:
                   simple:
                     expression: "${header[ce-issueDescription]}"
                 steps:
-                  - setHeader:
-                      name: CamelJiraIssueDescription
-                      expression:
-                        simple:
-                          expression: "${header[ce-issueDescription]}"
+                  - choice:
+                      when:
+                        - expression:
+                            simple:
+                              expression: "${body} == null || ${bodyAs(String)} == ''"
+                          steps:
+                            - setBody:
+                                expression:
+                                  simple:
+                                    expression: "${header[ce-issueDescription]}"
         - to:
             uri: jira
             parameters:
