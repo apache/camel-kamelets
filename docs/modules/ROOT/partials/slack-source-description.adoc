@@ -59,7 +59,7 @@ messages posted since the last check.
         delay: 30000
       steps:
         - filter:
-            simple: "${body} contains 'ERROR'"
+            simple: "$\{body} contains 'ERROR'"
             steps:
               - to:
                   uri: "kamelet:log-sink"
