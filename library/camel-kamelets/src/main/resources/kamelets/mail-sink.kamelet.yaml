@@ -39,7 +39,7 @@ spec:
 
       Output: the message is unchanged. The `CamelMailMessageId` header holds the ID of the email that was sent.
 
-      Good to know: each email needs a sender, recipients and a subject, from the options or from the `ce-from`, `ce-to` and `ce-subject` headers. The default protocol, `smtps`, connects with TLS and checks the certificate of the server. With `smtp`, the connection, the password and the emails are not encrypted.
+      Good to know: each email needs a sender, recipients and a subject, from the options or from the `ce-from`, `ce-to` and `ce-subject` headers. The default protocol, `smtps`, connects with TLS from the start, usually on port 465, and checks the certificate of the server. For a server that uses STARTTLS, usually on port 587, set `protocol` to `smtp` and `startTls` to true: the connection is then encrypted before the login, the certificate and the host name of the server are checked, and sending fails when the server does not offer STARTTLS. With `smtp` alone, the connection, the password and the emails are not encrypted.
     required:
       - connectionHost
       - username
@@ -52,16 +52,20 @@ spec:
         title: Host
         type: string
       connectionPort:
-        description: The port of the SMTP server, usually 465 for `smtps` and 25 for `smtp`.
+        description: The port of the SMTP server, usually 465 for `smtps`, 587 for `smtp` with `startTls`, and 25 for `smtp` without encryption.
         title: Port
         default: 465
         type: string
       protocol:
         title: Protocol
-        description: How to connect to the server. `smtps` connects with TLS from the start, usually on port 465. `smtp` connects without encryption, so the password and the emails are sent as clear text.
+        description: How to connect to the server. `smtps` connects with TLS from the start, usually on port 465. `smtp` connects without encryption, so the password and the emails are sent as clear text, unless `startTls` is true.
         type: string
         enum: ["smtp", "smtps"]
         default: "smtps"
+      startTls:
+        title: STARTTLS
+        description: Whether to switch an `smtp` connection to TLS with the STARTTLS command before logging in, as most mail providers ask for on port 587. When true, the certificate and the host name of the server are checked, and sending fails when the server does not offer STARTTLS, so the password is never sent as clear text. Only used when `protocol` is `smtp`; with `smtps` the connection is encrypted from the start. When false or not set, the Kamelet does not ask for STARTTLS, and a server that offers the login only after STARTTLS, such as Gmail or Office 365 on port 587, rejects the emails.
+        type: boolean
       username:
         title: Username
         description: The user to log in to the SMTP server as, usually an email address.
@@ -188,9 +192,13 @@ spec:
         - removeHeaders:
             pattern: ce-*
         - to:
-            uri: "{{protocol}}:{{connectionHost}}:{{connectionPort}}?subject={{?subject}}&from={{?from}}&to={{?to}}&username={{username}}&password={{password}}&useHeaderSubject=true&useHeaderFrom=true&useHeaderRecipients=true"
+            uri: "{{protocol}}:{{connectionHost}}:{{connectionPort}}?subject={{?subject}}&from={{?from}}&to={{?to}}&username={{username}}&password={{password}}&useHeaderSubject=true&useHeaderFrom=true&useHeaderRecipients=true&mail.smtp.starttls.enable={{?startTls}}&mail.smtp.starttls.required={{?startTls}}"
             # camel-mail ignores the Subject / From / To / Cc headers unless
             # these are enabled; without them the ce-* mappings above are
             # dead code. Reply-To stays disabled - it is not part of the
             # documented interface.
+            # startTls has no default on purpose: when it is not set the
+            # optional placeholders drop both mail.smtp.starttls.* parameters,
+            # so a STARTTLS setting from JVM system properties or the smtp
+            # component configuration still applies as before.
 
