@@ -6,7 +6,7 @@ This Kamelet provides integration with RESTful APIs that are documented using Op
 
 === OpenAPI Specification
 
-Uses the OpenAPI specification to find the method, the path, the parameters and the content type of the operation given in `operation`. The path and query parameters come from headers with the same names as the parameters: for `/pets/{petId}`, set the `petId` header. A missing path parameter is not an error: the request is sent with `{petId}` in the path. The Kamelet has no authentication options.
+Uses the OpenAPI specification to find the method, the path, the parameters and the content type of the operation given in `operation`. The path and query parameters come from headers with the same names as the parameters: for `/pets/\{petId}`, set the `petId` header. A missing path parameter is not an error: the request is sent with `\{petId}` in the path. The Kamelet has no authentication options.
 
 === HTTP Operations
 

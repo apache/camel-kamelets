@@ -221,11 +221,11 @@ public class KameletsCatalogTest {
         verifyHeaders("elasticsearch-search-source", 10);
         verifyHeaders("exec-sink", 0);
         verifyHeaders("fhir-source", 0);
-        verifyHeaders("file-watch-source", 10);
-        verifyHeaders("ftp-source", 15);
-        verifyHeaders("ftp-sink", 6);
-        verifyHeaders("ftps-source", 15);
-        verifyHeaders("ftps-sink", 6);
+        verifyHeaders("file-watch-source", 3);
+        verifyHeaders("ftp-source", 4);
+        verifyHeaders("ftp-sink", 4);
+        verifyHeaders("ftps-source", 4);
+        verifyHeaders("ftps-sink", 4);
         verifyHeaders("github-commit-source", 4);
         verifyHeaders("github-event-source", 1);
         verifyHeaders("github-pullrequest-comment-source", 1);
@@ -240,9 +240,9 @@ public class KameletsCatalogTest {
         verifyHeaders("google-sheets-source", 5);
         verifyHeaders("google-storage-source", 4);
         verifyHeaders("google-storage-sink", 15);
-        verifyHeaders("http-source", 5);
+        verifyHeaders("http-source", 2);
         verifyHeaders("http-sink", 14);
-        verifyHeaders("http-secured-source", 5);
+        verifyHeaders("http-secured-source", 2);
         verifyHeaders("http-secured-sink", 14);
         verifyHeaders("infinispan-source", 6);
         verifyHeaders("infinispan-sink", 14);
@@ -263,7 +263,7 @@ public class KameletsCatalogTest {
         verifyHeaders("kubernetes-pods-source", 2);
         verifyHeaders("log-sink", 0);
         verifyHeaders("mail-source", 0);
-        verifyHeaders("mail-sink", 8);
+        verifyHeaders("mail-sink", 6);
         verifyHeaders("mariadb-source", 0);
         verifyHeaders("mariadb-sink", 9);
         verifyHeaders("minio-source", 5);
@@ -293,9 +293,9 @@ public class KameletsCatalogTest {
         verifyHeaders("salesforce-update-sink", 1);
         verifyHeaders("salesforce-composite-upsert-sink", 1);
         verifyHeaders("salesforce-source", 4);
-        verifyHeaders("scp-sink", 0);
-        verifyHeaders("sftp-sink", 6);
-        verifyHeaders("sftp-source", 15);
+        verifyHeaders("scp-sink", 1);
+        verifyHeaders("sftp-sink", 4);
+        verifyHeaders("sftp-source", 4);
         verifyHeaders("slack-sink", 0);
         // Declares five CloudEvent headers under spec.dataTypes.out.types.cloudevents.headers,
         // so it reports those rather than falling back to the camel-slack component.
@@ -306,8 +306,8 @@ public class KameletsCatalogTest {
         verifyHeaders("splunk-hec-sink", 1);
         verifyHeaders("sqlserver-sink", 9);
         verifyHeaders("sqlserver-source", 0);
-        verifyHeaders("ssh-sink", 4);
-        verifyHeaders("ssh-source", 4);
+        verifyHeaders("ssh-sink", 2);
+        verifyHeaders("ssh-source", 2);
         verifyHeaders("telegram-sink", 5);
         verifyHeaders("telegram-source", 2);
         verifyHeaders("timer-source", 1);

@@ -35,11 +35,11 @@ spec:
 
       Use it to call an API that publishes an OpenAPI (Swagger) document without writing its URLs by hand, for example to create a customer or look up an order in a service of your company. For a call to a fixed URL, use `http-sink`, or `http-secured-sink` when the service needs a login.
 
-      Input: the body is the request body, such as JSON text, and is sent with the content type the specification gives for the operation. The path and query parameters of the operation come from headers of the same name: for `/pets/{petId}`, set the `petId` header. The other headers of the message, except the Camel ones, are sent as HTTP headers.
+      Input: the body is the request body, such as JSON text, and is sent with the content type the specification gives for the operation. The path and query parameters of the operation come from headers of the same name: for `/pets/\{petId}`, set the `petId` header. The other headers of the message, except the Camel ones, are sent as HTTP headers.
 
       Output: when it is used inside a route, the body afterwards is the response of the API, as bytes, with the headers of the response and its status code in `CamelHttpResponseCode`.
 
-      Good to know: a missing path parameter is not an error; the request is sent with `{petId}` in the path. The address of the API is taken from the `servers` of the specification, unless `host` or `basePath` is set. The Kamelet has no login options. The Kamelet does not start when the specification has no operation with the ID in `operation`.
+      Good to know: a missing path parameter is not an error; the request is sent with `\{petId}` in the path. The address of the API is taken from the `servers` of the specification, unless `host` or `basePath` is set. The Kamelet has no login options. The Kamelet does not start when the specification has no operation with the ID in `operation`.
     required:
     - specification
     - operation
