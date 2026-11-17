@@ -38,7 +38,7 @@ spec:
 
       Output: the body is the content of the file, as bytes. The headers give the bucket name, the key (the path of the file in the bucket, `CamelAwsS3Key`), the content type and the ETag of the file.
 
-      Good to know: files are deleted from the bucket after they are read, unless `deleteAfterRead` is set to false; then the same files are read again on every poll. Files in folders are read too. The bucket is addressed as part of the host name (such as `my-bucket.ceph.example.com`) unless `cephUrl` uses an IP address, so the gateway must accept that style of address.
+      Good to know: files are deleted from the bucket after they are read, unless `deleteAfterRead` is set to false; then the same files are read again on every poll. Files in folders are read too. The bucket is addressed as part of the host name (such as `my-bucket.ceph.example.com`) unless `cephUrl` uses an IP address; set `forcePathStyle` to true when the DNS of the gateway has no wildcard name for its buckets.
     required:
       - cephUrl
       - accessKey
@@ -101,6 +101,11 @@ spec:
         description: The address of the Ceph Object Gateway (RGW), as a URL with the scheme and the port.
         type: string
         example: "http://ceph-rgw.example.com:7480"
+      forcePathStyle:
+        title: Force Path Style
+        description: If true, the bucket name is put in the path of the address (`http://ceph-rgw.example.com:7480/my-bucket/key`) instead of in the host name (`http://my-bucket.ceph-rgw.example.com:7480/key`). The Ceph Object Gateway always accepts the path style; the host name style works only when the gateway has a wildcard DNS name for its buckets.
+        type: boolean
+        default: false
       delay:
         title: Delay
         description: How long to wait between two polls of the bucket, in milliseconds.
@@ -134,7 +139,7 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "aws2-s3:{{bucketName}}?accessKey=RAW({{?accessKey}})&autoCreateBucket={{autoCreateBucket}}&delay={{delay}}&deleteAfterRead={{deleteAfterRead}}&ignoreBody={{ignoreBody}}&includeBody={{includeBody}}&overrideEndpoint=true&prefix={{?prefix}}&region={{zoneGroup}}&secretKey=RAW({{?secretKey}})&uriEndpointOverride={{cephUrl}}"
+      uri: "aws2-s3:{{bucketName}}?accessKey=RAW({{?accessKey}})&autoCreateBucket={{autoCreateBucket}}&delay={{delay}}&deleteAfterRead={{deleteAfterRead}}&ignoreBody={{ignoreBody}}&includeBody={{includeBody}}&forcePathStyle={{forcePathStyle}}&overrideEndpoint=true&prefix={{?prefix}}&region={{zoneGroup}}&secretKey=RAW({{?secretKey}})&uriEndpointOverride={{cephUrl}}"
       steps:
         - to:
             uri: kamelet:sink
