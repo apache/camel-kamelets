@@ -115,7 +115,7 @@ spec:
         default: TRIM_HORIZON
       sequenceNumber:
         title: Sequence Number
-        description: The sequence number of the record to start at, as Kinesis gives it, such as the value of the `CamelAwsKinesisSequenceNumber` header of a record read earlier. Required, and only used, when `iteratorType` is `AT_SEQUENCE_NUMBER` or `AFTER_SEQUENCE_NUMBER`. A sequence number belongs to one shard, so this fits a stream with one shard.
+        description: The sequence number of the record to start at, as Kinesis gives it, such as the value of the `CamelAwsKinesisSequenceNumber` header of a record read earlier. Required, and only used, when `iteratorType` is `AT_SEQUENCE_NUMBER` or `AFTER_SEQUENCE_NUMBER`.
         example: "49655467183424123548936502291338416434578112145614569474"
         type: string
       messageTimestamp:
