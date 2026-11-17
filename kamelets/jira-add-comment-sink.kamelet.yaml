@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Jira Add Comment Sink"
-    description: Add a new comment to an existing issue in Jira.
+    description: |-
+      Adds the text of each message as a new comment to an existing issue in Jira.
+
+      Use it to record on a ticket what happened elsewhere, for example a deployment, the result of a build or a reply of a customer. To create issues use `jira-add-issue-sink`, to change their fields `jira-update-issue-sink`, and to change their status `jira-transition-issue-sink`.
+
+      Input: the body is the text of the comment, as text. The `ce-issueKey` header, the key of the issue such as `SHOP-42`, is required. Set it before this sink, for example with `insert-header-action`.
+
+      Output: the message is unchanged.
+
+      Good to know: a message without `ce-issueKey`, or for an issue that does not exist or that the user cannot see, fails. The comment is written in the name of the account the Kamelet logs in with. Log in either with `username` and `password`, or with `personal-token`.
 
     required:
       - jiraUrl
@@ -38,25 +47,25 @@ spec:
     properties:
       jiraUrl:
         title: Jira URL
-        description: The URL of your instance of Jira
+        description: The address of your Jira, as you open it in a browser, without a path.
         type: string
-        example: http://my_jira.com:8081
+        example: https://mycompany.atlassian.net
       username:
         title: Username
-        description: The username to access Jira
+        description: The user to log in as, together with `password`. For Jira Cloud, this is the email address of the account. When it is set, `personal-token` is not used.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access Jira
+        description: The password of `username`. For Jira Cloud, use an API token of the account here, not its password; create one at id.atlassian.com, under Security, API tokens.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       personal-token:
         title: Personal Token
-        description: Personal Token
+        description: A personal access token, for Jira Server and Jira Data Center; create one in Jira under your profile, Personal Access Tokens. Use it instead of `username` and `password`.
         type: string
         format: password
         x-descriptors:
@@ -64,6 +73,13 @@ spec:
   types:
     in:
       mediaType: application/json
+  dataTypes:
+    in:
+      headers:
+        ce-issueKey:
+          title: Issue Key
+          description: The key of the issue to comment on, such as `SHOP-42`. Required.
+          type: string
   dependencies:
   - "camel:jackson"
   - "camel:jira"

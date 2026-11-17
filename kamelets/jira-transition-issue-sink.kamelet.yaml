@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Jira Transition Issue Sink"
-    description: Sets a new status (transition to) of an existing issue in Jira.
+    description: |-
+      Moves an existing Jira issue to another status, such as from `In Progress` to `Done`, by running a transition of its workflow for each message.
+
+      Use it to keep tickets in step with what happens elsewhere, for example to close an issue when its fix is deployed or to reopen it when a test fails again. To change other fields use `jira-update-issue-sink`, and to only add a comment `jira-add-comment-sink`.
+
+      Input: the `ce-issueKey` header (the key of the issue, such as `SHOP-42`) and the `ce-issueTransitionId` header (the ID number of the transition, such as `31`, not the name of the status) are required. The body, as text, is added to the issue as a comment after the transition.
+
+      Output: the message is unchanged.
+
+      Good to know: a message without one of the two headers fails, and so does a transition that the workflow does not allow from the current status of the issue. Jira lists the transitions possible for an issue, with their IDs, at `<jiraUrl>/rest/api/2/issue/<key>/transitions`. Log in either with `username` and `password`, or with `personal-token`.
 
     required:
       - jiraUrl
@@ -38,25 +47,25 @@ spec:
     properties:
       jiraUrl:
         title: Jira URL
-        description: The URL of your instance of Jira
+        description: The address of your Jira, as you open it in a browser, without a path.
         type: string
-        example: http://my_jira.com:8081
+        example: https://mycompany.atlassian.net
       username:
         title: Username
-        description: The username to access Jira
+        description: The user to log in as, together with `password`. For Jira Cloud, this is the email address of the account. When it is set, `personal-token` is not used.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access Jira
+        description: The password of `username`. For Jira Cloud, use an API token of the account here, not its password; create one at id.atlassian.com, under Security, API tokens.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       personal-token:
         title: Personal Token
-        description: Personal Token
+        description: A personal access token, for Jira Server and Jira Data Center; create one in Jira under your profile, Personal Access Tokens. Use it instead of `username` and `password`.
         type: string
         format: password
         x-descriptors:
@@ -64,6 +73,17 @@ spec:
   types:
     in:
       mediaType: application/json
+  dataTypes:
+    in:
+      headers:
+        ce-issueKey:
+          title: Issue Key
+          description: The key of the issue to move, such as `SHOP-42`. Required.
+          type: string
+        ce-issueTransitionId:
+          title: Transition ID
+          description: The ID number of the transition to run, such as `31`. Not the name of the status. Required.
+          type: string
   dependencies:
   - "camel:jackson"
   - "camel:jira"

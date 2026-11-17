@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "Twitter Timeline Source"
-    description: Allows to get tweets from the timeline of a specific user from Twitter.
+    description: |-
+      Reads the new tweets that one Twitter (X) account posts, by asking Twitter at a regular interval, one message per tweet.
+
+      Use it to follow an account, such as a news feed, a status page or a partner, and pass on what it posts, for example to a chat or a database. To follow a word or a hashtag across all accounts, use `twitter-search-source`.
+
+      Output: the body is the tweet as JSON text, with its `text`, its `id`, the time it was created and the `user` who wrote it. The `CamelTwitterEventType` header is `STATUS`.
+
+      Good to know: it checks every 30 seconds. The first check sends the 5 most recent tweets of the account, and each later check sends at most 5 tweets newer than the last one it saw. It does not remember what it read: after a restart, it starts again with the most recent tweets. It uses version 1.1 of the Twitter API.
     required:
     - user
     - apiKey
@@ -41,33 +48,33 @@ spec:
     properties:
       user:
         title: User
-        description: The user we want to read the timeline
+        description: The user name (handle) of the account whose tweets to read, without the `@`.
         type: string
         example: "ApacheCamel"
       apiKey:
         title: API Key
-        description: The API Key from the Twitter application in the developer portal
+        description: The API key (consumer key) of your app, from the Keys and Tokens page of the app in the Twitter (X) developer portal at developer.x.com. Used together with `apiKeySecret`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       apiKeySecret:
         title: API Key Secret
-        description: The API Key Secret from the Twitter application in the developer portal
+        description: The API key secret (consumer secret) of your app, shown with the API key on the Keys and Tokens page of the app in the developer portal.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       accessToken:
         title: Access Token
-        description: The Access Token from the Twitter application in the developer portal
+        description: The access token of the account to read with, generated on the Keys and Tokens page of the app in the developer portal. The Kamelet acts as that account. Used together with `accessTokenSecret`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       accessTokenSecret:
         title: Access Token Secret
-        description: The Access Token Secret from the Twitter application in the developer portal
+        description: The access token secret, shown with the access token on the Keys and Tokens page of the app in the developer portal.
         type: string
         format: password
         x-descriptors:
@@ -75,6 +82,13 @@ spec:
   types:
     out:
       mediaType: application/json
+  dataTypes:
+    out:
+      headers:
+        CamelTwitterEventType:
+          title: Event Type
+          description: The kind of item in the body, `STATUS` for a tweet.
+          type: string
   dependencies:
     - "camel:jackson"
     - "camel:twitter"

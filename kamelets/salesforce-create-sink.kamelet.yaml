@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Salesforce Create Sink"
-    description: Create an object in Salesforce.
+    description: |-
+      Creates a new record, such as a contact, an account or a lead, in Salesforce for each message.
+
+      Use it to add to Salesforce what happens in other systems, for example a contact for each web form sent or a lead from a marketing tool. To change existing records use `salesforce-update-sink`, and to create or update many records at once, matched by an external ID, `salesforce-composite-upsert-sink`.
+
+      Input: the body is the fields of the new record as JSON text, with the API names of the fields, such as `{"LastName": "Lovelace", "Email": "ada@example.com"}`. It is sent to Salesforce as it is. The kind of record comes from `sObjectName`.
+
+      Output: when it is used inside a route, the body afterwards is the answer of Salesforce as JSON text, with the `id` of the new record, `success` and `errors`.
+
+      Good to know: a record that Salesforce refuses, for example because a required field is missing or a validation rule fails, fails the message. `sObjectName` must be set, or the Kamelet does not start.
     required:
       - clientId
       - clientSecret
@@ -39,69 +48,67 @@ spec:
     properties:
       sObjectName:
         title: Object Name
-        description: The type of the object.
+        description: The API name of the kind of record to create, such as `Contact`, `Account` or `Lead`, or a custom object such as `Invoice__c`. It must be set, or the Kamelet does not start.
         type: string
         example: Contact
       loginUrl:
         title: Login URL
-        description: The Salesforce instance login URL.
+        description: "The address the Kamelet logs in to. Keep the default for a production org, use `https://test.salesforce.com` for a sandbox, or the My Domain address of your org."
         type: string
         default: https://login.salesforce.com
+        example: "https://test.salesforce.com"
       clientId:
         title: Consumer Key
-        description: The Salesforce application consumer key.
+        description: "The consumer key of the connected app that the Kamelet logs in through. In Salesforce Setup, open App Manager, choose View on the app, then Manage Consumer Details."
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       clientSecret:
         title: Consumer Secret
-        description: The Salesforce application consumer secret.
+        description: "The consumer secret of the same connected app, shown next to the consumer key under Manage Consumer Details."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       userName:
         title: Username
-        description: The Salesforce username.
+        description: "The user name of the Salesforce user to log in as, which looks like an email address. Used by the `USERNAME_PASSWORD` and `JWT` authentication types."
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The Salesforce user password.
+        description: "The password of `userName`. When Salesforce asks for a security token, such as from outside the trusted IP ranges of the org, add the token of the user at the end of the password; the user gets a new one from Reset My Security Token in their personal settings. Only used by `USERNAME_PASSWORD`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       authenticationType:
         title: Authentication Type
-        description: Authentication type to use. USERNAME_PASSWORD needs userName and password, CLIENT_CREDENTIALS needs only the consumer key and secret, REFRESH_TOKEN needs refreshToken, JWT needs keystore and jwtAudience.
+        description: "How the Kamelet logs in. `USERNAME_PASSWORD` needs `userName` and `password`; `CLIENT_CREDENTIALS` needs only the consumer key and secret, and a run-as user set for the client credentials flow in the connected app; `REFRESH_TOKEN` needs `refreshToken`; `JWT` needs `userName`, `keystore` and `jwtAudience`."
         type: string
         default: USERNAME_PASSWORD
         enum: ["USERNAME_PASSWORD", "CLIENT_CREDENTIALS", "REFRESH_TOKEN", "JWT"]
       refreshToken:
         title: Refresh Token
-        description: Refresh token used by the REFRESH_TOKEN authentication type.
+        description: "A refresh token of the connected app for the user to act as, obtained once through an OAuth login in a browser with the `refresh_token` scope. Only used by `REFRESH_TOKEN`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       instanceUrl:
         title: Instance URL
-        description: Salesforce instance URL, needed when the authentication response does not carry one.
+        description: "The address of your org, such as `https://mycompany.my.salesforce.com`. Only needed when the answer to the login does not give it."
         type: string
         example: "https://myinstance.my.salesforce.com"
       jwtAudience:
         title: JWT Audience
-        description: Audience claim for the JWT authentication type, usually the login URL of the target org.
+        description: "The audience of the JWT that the Kamelet signs to log in: `https://login.salesforce.com` for a production org, or `https://test.salesforce.com` for a sandbox. Only used by `JWT`."
         type: string
         example: "https://login.salesforce.com"
       keystore:
         title: Keystore
-        description: >-
-          Reference to a registry bean of type org.apache.camel.support.jsse.KeyStoreParameters,
-          written as "#bean:myBeanName", holding the certificate that signs the JWT. Required by
-          the JWT authentication type and ignored by the others.
+        description: "A reference to a bean of type `org.apache.camel.support.jsse.KeyStoreParameters`, written as `#bean:` and the name of the bean, holding the private key that signs the JWT. Its certificate must be uploaded to the connected app, under Use Digital Signatures. Only used by `JWT`."
         type: string
         example: "#bean:myKeystore"
   types:

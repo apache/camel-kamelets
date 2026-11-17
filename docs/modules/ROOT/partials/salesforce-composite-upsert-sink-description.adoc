@@ -2,29 +2,44 @@
 
 === Salesforce CRM Integration
 
-This Kamelet integrates with Salesforce CRM using composite upsert operations. Composite operations allow multiple records to be processed in a single API call, improving efficiency and reducing API usage.
+This Kamelet integrates with Salesforce CRM using the composite upsert operation of the sObject Collections API.
+Several records are processed in a single API call, which reduces API usage.
 
 === Upsert Operations
 
-Performs upsert (insert or update) operations that create new records if they don't exist or update existing records based on external ID fields. This provides flexible data synchronization capabilities.
+Performs upsert (insert or update) operations: a record whose external ID is already in Salesforce is updated, and the
+others are created. This avoids duplicate records when the same data is sent again.
 
-=== Batch Processing
+=== Input Format
 
-Composite operations enable batch processing of multiple records in a single request, reducing API call overhead and improving performance for bulk data operations.
+The body is JSON text with a `records` list. All the records are of the kind named by `sObjectName`, and each one holds
+the external ID field named by `sObjectIdName`:
+
+[source,json]
+----
+{
+  "records": [
+    { "attributes": { "type": "Contact" }, "External_Id__c": "C-1", "LastName": "Lovelace" },
+    { "attributes": { "type": "Contact" }, "External_Id__c": "C-2", "LastName": "Hopper" }
+  ]
+}
+----
+
+Salesforce accepts up to 200 records in one call.
 
 === External ID Matching
 
-Uses external ID fields for record matching, allowing integration with external systems while maintaining data relationships and avoiding duplicate records.
-
-=== API Efficiency
-
-Salesforce composite operations optimize API usage by:
-
-- Reducing the number of API calls
-- Minimizing network round trips
-- Improving overall integration performance
-- Supporting bulk data operations
+Uses an external ID field for record matching, so that records keep the IDs of the system they come from. The field
+must be marked as External ID in Salesforce.
 
 === Error Handling
 
-Provides detailed error information for each record in the composite operation, enabling granular error handling and data quality management.
+The Kamelet does not use all-or-none: a record that Salesforce refuses does not fail the message, and the other records
+are still saved. The result is a list with one entry per record, in the same order, each with `id`, `success`,
+`created` (true for a new record) and `errors`.
+
+=== API Authentication
+
+The Kamelet logs in through a connected app of your org. Create one in Salesforce Setup, under App Manager, with OAuth
+enabled, and copy its consumer key and secret into `clientId` and `clientSecret`. `authenticationType` chooses how the
+Kamelet logs in, and which other options it needs.

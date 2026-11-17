@@ -2,41 +2,54 @@
 
 === Telegram Bot Integration
 
-This Kamelet integrates with Telegram's Bot API, enabling automated message sending through Telegram bots to users, groups, or channels.
+This Kamelet integrates with Telegram's Bot API, enabling automated message sending through a Telegram bot to users,
+groups, or channels.
 
-=== Bot API Features
+=== Bot Setup
 
-Telegram Bot API provides comprehensive messaging capabilities:
+1. Contact @BotFather on Telegram
+2. Create a new bot with the `/newbot` command
+3. Follow the instructions to set the bot name and username
+4. Copy the bot token into `authorizationToken`
+5. Add the bot to the group or channel to send to. To send to a person, that person must first start a chat with the
+   bot: a bot cannot start a conversation.
 
-- Text messages with rich formatting
-- Media sharing (photos, videos, documents)
-- Inline keyboards and custom keyboards
-- Location and contact sharing
-- Polls and quizzes
+=== What It Sends
 
-=== Message Formatting
+The Kamelet sends two kinds of messages:
 
-Supports Telegram's message formatting options:
+- *Text messages*: by default, the body is sent as the text of the message, as it is. Markdown and HTML are not
+  interpreted.
+- *Photos*: when the `Content-Type` header is `image/png` or `image/jpeg`, the body is sent as a photo, and the `text`
+  (or `ce-text`) header becomes its caption.
 
-- Markdown and HTML parsing
-- Bold, italic, and code formatting
-- Links and mentions
-- Emoji and stickers
-- Message threading and replies
+=== Choosing the Chat
 
-=== Delivery Options
+The chat is taken, in this order, from the `chat-id` header, the `ce-chatid` header, and the `chatId` option. A message
+with none of them fails. The ID of a person or a group is a number, negative for a group; a public channel can also be
+written as `@channelname`.
 
-Provides flexible message delivery:
+To learn the ID of a chat, send a message to the bot and run `telegram-source`: it sets the `chat-id` header of each
+message it receives. For the same reason, a route from `telegram-source` to `telegram-sink` answers in the chat the
+message came from.
 
-- Direct messages to users
-- Group chat messaging
-- Channel broadcasting
-- Silent notifications
-- Message scheduling and editing
+=== Usage Example
 
-=== Bot Authentication
-
-Uses Telegram bot tokens for authentication, providing secure API access while maintaining user privacy and platform security.
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: "Order 1234 has shipped."
+        repeatCount: 1
+      steps:
+        - to:
+            uri: "kamelet:telegram-sink"
+            parameters:
+              authorizationToken: "{{telegram.token}}"
+              chatId: "123456789"
+----
 
 === Notification Use Cases
 

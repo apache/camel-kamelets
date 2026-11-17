@@ -30,15 +30,21 @@ metadata:
 spec:
   definition:
     title: "Telegram Source"
-    description: Receive all messages that people send to your Telegram bot.
+    description: |-
+      Receives the messages that people send to your Telegram bot, in private chats and in the groups the bot is in, one message per Telegram message.
 
+      Use it to build a chat bot, for example to answer questions, take orders or run commands sent on Telegram; send the answers with `telegram-sink`.
+
+      Output: the body is the Telegram message as JSON text, with fields such as `text` (what was written), `chat` (with the `id` of the chat), `from` (the sender) and `message_id`. A photo or a document comes without `text`. The `chat-id` and `ce-chatid` headers hold the ID of the chat, so that `telegram-sink` can answer in the same chat.
+
+      Good to know: it asks Telegram for new messages all the time, and each message is received once. Telegram keeps the messages that arrive while the Kamelet is stopped for up to 24 hours. It does not work while a webhook is set for the bot, and only one application at a time can read the messages of a bot. In a group, Telegram gives a bot only the commands and the replies to the bot, unless its privacy mode is turned off with @BotFather.
     required:
       - authorizationToken
     type: object
     properties:
       authorizationToken:
         title: Token
-        description: "The token to access your bot on Telegram. You can obtain it from the Telegram @botfather."
+        description: "The token of your Telegram bot, such as `123456789:AAH...`. Telegram gives it when you create the bot by talking to @BotFather in Telegram, with the command `/newbot`."
         type: string
         format: password
         x-descriptors:
@@ -46,6 +52,17 @@ spec:
   types:
     out:
       mediaType: application/json
+  dataTypes:
+    out:
+      headers:
+        chat-id:
+          title: Chat ID
+          description: The ID of the chat the message was sent in. `telegram-sink` reads it to answer in the same chat.
+          type: string
+        ce-chatid:
+          title: Chat ID
+          description: The same as `chat-id`, for CloudEvents.
+          type: string
   dependencies:
     - "camel:jackson"
     - "camel:kamelet"

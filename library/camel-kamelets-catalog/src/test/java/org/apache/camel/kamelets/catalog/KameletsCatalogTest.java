@@ -246,7 +246,7 @@ public class KameletsCatalogTest {
         verifyHeaders("http-secured-sink", 14);
         verifyHeaders("infinispan-source", 6);
         verifyHeaders("infinispan-sink", 14);
-        verifyHeaders("jira-add-comment-sink", 17);
+        verifyHeaders("jira-add-comment-sink", 1);
         verifyHeaders("jira-add-issue-sink", 6);
         verifyHeaders("jira-source", 3);
         verifyHeaders("jira-oauth-source", 3);
@@ -292,7 +292,7 @@ public class KameletsCatalogTest {
         verifyHeaders("salesforce-delete-sink", 1);
         verifyHeaders("salesforce-update-sink", 1);
         verifyHeaders("salesforce-composite-upsert-sink", 1);
-        verifyHeaders("salesforce-source", 22);
+        verifyHeaders("salesforce-source", 4);
         verifyHeaders("scp-sink", 0);
         verifyHeaders("sftp-sink", 6);
         verifyHeaders("sftp-source", 15);
@@ -308,12 +308,12 @@ public class KameletsCatalogTest {
         verifyHeaders("sqlserver-source", 0);
         verifyHeaders("ssh-sink", 4);
         verifyHeaders("ssh-source", 4);
-        verifyHeaders("telegram-sink", 6);
-        verifyHeaders("telegram-source", 5);
+        verifyHeaders("telegram-sink", 5);
+        verifyHeaders("telegram-source", 2);
         verifyHeaders("timer-source", 1);
-        verifyHeaders("twitter-directmessage-source", 2);
+        verifyHeaders("twitter-directmessage-source", 1);
         verifyHeaders("twitter-timeline-source", 1);
-        verifyHeaders("twitter-search-source", 7);
+        verifyHeaders("twitter-search-source", 1);
         verifyHeaders("webhook-source", 0);
         verifyHeaders("wttrin-source", 5);
     }

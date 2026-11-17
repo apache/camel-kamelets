@@ -2,38 +2,48 @@
 
 === Salesforce CRM Integration
 
-This Kamelet integrates with Salesforce CRM to update existing records in Salesforce objects. It provides efficient record modification capabilities through Salesforce's REST API.
+This Kamelet integrates with Salesforce CRM to update existing records. It provides record modification through
+Salesforce's REST API.
 
 === Record Updates
 
-Updates existing records in specified Salesforce objects using record IDs or external ID fields. Supports partial updates where only modified fields are updated.
+Each message names the record to update and the new values, as JSON text:
+
+[source,json]
+----
+{
+  "sObjectName": "Contact",
+  "sObjectId": "003XXXXXXXXXXXXXXX",
+  "payload": {
+    "Phone": "+45 1234 5678"
+  }
+}
+----
+
+- `sObjectName`: the API name of the kind of record
+- `sObjectId`: the Salesforce ID of the record
+- `payload`: the fields to change, by their API names, with their new values
 
 === Field-Level Updates
 
-Enables selective field updates without affecting other record fields, providing granular control over data modifications and preserving unchanged data.
-
-=== Optimistic Locking
-
-Salesforce provides optimistic locking mechanisms to prevent conflicts when multiple systems attempt to update the same record simultaneously.
+Only the fields in `payload` are changed; the other fields of the record keep their values.
 
 === Validation and Workflow
 
-Updated records are subject to Salesforce's validation rules, workflow rules, and triggers, ensuring business logic enforcement and data integrity.
+Updated records are subject to Salesforce's validation rules, workflow rules, and triggers. A change that Salesforce
+refuses fails the message.
+
+=== API Authentication
+
+The Kamelet logs in through a connected app of your org. Create one in Salesforce Setup, under App Manager, with OAuth
+enabled, and copy its consumer key and secret into `clientId` and `clientSecret`. `authenticationType` chooses how the
+Kamelet logs in, and which other options it needs.
 
 === Audit Trail
 
-Salesforce maintains comprehensive audit trails for record updates, including:
+Salesforce maintains audit trails for record updates, including:
 
 - Field history tracking
 - User identification
 - Timestamp information
 - Before and after values
-
-=== Integration Patterns
-
-Supports various integration patterns including:
-
-- Real-time data synchronization
-- Batch update operations
-- Event-driven updates
-- Scheduled data maintenance

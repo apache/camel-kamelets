@@ -6,29 +6,50 @@ This Kamelet updates fields of existing JIRA issues.
 
 === Input Format
 
-Expects JSON-formatted data containing the updated issue information.
-
-=== Authentication
-
-Supports multiple authentication methods:
-- **Username and Password**: Basic authentication
-- **Personal Token**: API token authentication
-
-=== Required Configuration
-
-- **JIRA URL**: The URL of your JIRA instance
+The body becomes the new description of the issue, as text. It replaces the description on every message.
 
 === Issue Update Headers
 
-The Kamelet supports various headers to update issue fields:
-- `ce-issueKey`: The JIRA issue key to update
-- `ce-issueTypeName`: Update issue type
-- `ce-issueSummary`: Update issue summary/title
-- `ce-issueAssignee`: Update assignee
-- `ce-issuePriorityName`: Update priority level
-- `ce-issueComponents`: Update issue components
-- `ce-issueDescription`: Update detailed description
+The Kamelet reads these headers. Only `ce-issueKey` is required; a field without a header is left as it is.
 
-=== Usage
+- `ce-issueKey`: the key of the issue to update, such as `SHOP-42` (required)
+- `ce-issueTypeName`: the name of the new issue type, such as `Bug`
+- `ce-issueSummary`: the new summary (title)
+- `ce-issueAssignee`: the user name of the new assignee
+- `ce-issuePriorityName`: the name of the new priority, such as `High`
+- `ce-issueComponents`: a comma-separated list of component names, which replaces the components of the issue
 
-The Kamelet modifies existing JIRA issues with new field values, enabling automated issue updates based on external data or processing results.
+An issue type or a priority whose name Jira does not know is ignored. The `ce-issueDescription` header is not used: the
+description always comes from the body.
+
+=== Authentication
+
+Use one of the two ways to log in:
+
+- **Jira Cloud**: set `username` to the email address of the account, and `password` to an API token of that account.
+- **Jira Server and Jira Data Center**: set `personal-token` to a personal access token, and leave `username` and `password` empty.
+
+=== Usage example
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: "The checkout page fails for orders above 1000 EUR. Seen again today."
+        repeatCount: 1
+      steps:
+        - setHeader:
+            name: ce-issueKey
+            constant: SHOP-42
+        - setHeader:
+            name: ce-issuePriorityName
+            constant: High
+        - to:
+            uri: "kamelet:jira-update-issue-sink"
+            parameters:
+              jiraUrl: "https://mycompany.atlassian.net"
+              username: "me@mycompany.com"
+              password: "{{jira.apiToken}}"
+----

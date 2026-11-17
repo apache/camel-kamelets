@@ -2,45 +2,38 @@
 
 === Authentication methods
 
-This Kamelet uses basic authentication (username and password) to connect to JIRA. You need to provide:
+Use one of the two ways to log in:
 
-- Username and password for JIRA authentication
-- JIRA instance URL
+- **Jira Cloud**: set `username` to the email address of the account, and `password` to an API token of that account.
+- **Jira Server and Jira Data Center**: set `personal-token` to a personal access token, and leave `username` and `password` empty.
+
+To log in with OAuth 1.0a, use `jira-oauth-source` instead.
 
 === Output format
 
-The Kamelet receives notifications about new issues from JIRA and produces the issue data in JSON format.
+The Kamelet sends each new issue that matches the JQL query as one message, with the issue as JSON text. Only the
+issues created after the Kamelet starts are sent. It checks for new issues every 6 seconds.
 
 === Configuration
 
 The Kamelet requires the following parameters:
 
-- `jiraUrl`: The URL of your instance of JIRA
-- `username`: The username to access JIRA
-- `password`: The password to access JIRA
-- `jql`: The JQL query to filter issues
+- `jiraUrl`: The address of your Jira, such as `https://mycompany.atlassian.net`
+- `jql`: The JQL query that selects the issues, without `ORDER BY`. The Kamelet does not start without it.
 
 === Usage example
 
-```yaml
-apiVersion: camel.apache.org/v1alpha1
-kind: KameletBinding
-metadata:
-  name: jira-source-binding
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
-      name: jira-source
-    properties:
-      jiraUrl: "http://my_jira.com:8081"
-      username: "{{username}}"
-      password: "{{password}}"
-      jql: "project = TEST"
-  sink:
-    ref:
-      kind: Service
-      apiVersion: v1
-      name: my-service
-```
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:jira-source"
+      parameters:
+        jiraUrl: "https://mycompany.atlassian.net"
+        username: "me@mycompany.com"
+        password: "{{jira.apiToken}}"
+        jql: "project = SHOP AND issuetype = Bug"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

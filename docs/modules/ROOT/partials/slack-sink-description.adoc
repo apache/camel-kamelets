@@ -2,33 +2,43 @@
 
 === Team Communication Integration
 
-This Kamelet integrates with Slack, a popular team collaboration and messaging platform. It enables automated message posting to Slack channels, users, or groups.
+This Kamelet integrates with Slack, a popular team collaboration and messaging platform. It posts each message as a
+text message to a Slack channel, through an incoming webhook.
 
-=== Channel and Direct Messaging
+=== Setup Requirements
 
-Supports posting messages to:
+1. Create a Slack app in your workspace at https://api.slack.com/apps.
+2. On the *Incoming Webhooks* page of the app, turn incoming webhooks on.
+3. Click *Add New Webhook to Workspace* and choose the channel to post to.
+4. Copy the webhook URL, which starts with `https://hooks.slack.com/services/`, into `webhookUrl`, and the name of the
+   same channel into `channel`.
 
-- Public and private channels
-- Direct messages to users
-- Group conversations
-- Thread replies for organized discussions
+The webhook of a Slack app always posts to the channel it was created for. To post to several channels, create one
+webhook per channel and one Kamelet per webhook.
 
-=== Rich Message Formatting
+=== Message Formatting
 
-Slack supports rich message formatting including:
+The body of the message becomes the text of the Slack message. The text can use Slack formatting, such as `*bold*`,
+`_italic_` and `` `code` ``, and emoji such as `:tada:`. JSON in the body is posted as text, not as a Slack message
+structure, so attachments, blocks and interactive elements are not available through this Kamelet.
 
-- Text formatting (bold, italic, code blocks)
-- Mentions (@user, @channel, @here)
-- Emoji and reactions
-- Attachments and interactive elements
+=== Usage Example
 
-=== Bot Integration
-
-Often used with Slack bots and applications to provide automated notifications, alerts, and system status updates to team members.
-
-=== API Authentication
-
-Uses Slack's API authentication mechanisms including bot tokens, OAuth tokens, and webhook URLs for secure message posting.
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: "The nightly build *failed*."
+        repeatCount: 1
+      steps:
+        - to:
+            uri: "kamelet:slack-sink"
+            parameters:
+              channel: "#alerts"
+              webhookUrl: "{{slack.webhookUrl}}"
+----
 
 === Notification Patterns
 

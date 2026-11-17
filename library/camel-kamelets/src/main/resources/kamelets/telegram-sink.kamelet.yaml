@@ -30,25 +30,58 @@ metadata:
 spec:
   definition:
     title: "Telegram Sink"
-    description: Send a message to a Telegram chat by using your Telegram bot as sender.
+    description: |-
+      Sends each message as a text message, or as a photo, from your Telegram bot to a Telegram chat, group or channel.
+
+      Use it to notify a person or a group on Telegram, for example with an alert, an order update or a daily report, or to answer the messages your bot receives with `telegram-source`.
+
+      Input: the body is the text of the message, as text; another kind of body is turned into text first, and the text is sent as it is, without Markdown or HTML formatting. When the `Content-Type` header is `image/png` or `image/jpeg`, the body is sent as a photo instead, as bytes, and the `text` or `ce-text` header is its caption. The `chat-id` or `ce-chatid` header chooses the chat, instead of the `chatId` option; `telegram-source` sets both, so a reply goes back to the chat a message came from.
+
+      Output: when it is used inside a route, the body afterwards is the answer of Telegram as JSON text, with the message that was sent.
+
+      Good to know: a message fails when no chat is given, neither in a header nor in `chatId`, and when Telegram refuses it, for example because the bot is not a member of the group or the person never started a chat with the bot.
     required:
       - authorizationToken
     type: object
     properties:
       authorizationToken:
         title: Token
-        description: "The token to access your bot on Telegram. You you can obtain it from the Telegram @botfather."
+        description: "The token of your Telegram bot, such as `123456789:AAH...`. Telegram gives it when you create the bot by talking to @BotFather in Telegram, with the command `/newbot`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       chatId:
         title: Chat ID
-        description: The Chat ID to where you want to send messages by default.
+        description: The chat to send to when the message has no `chat-id` or `ce-chatid` header. The ID of a person or group is a number (negative for a group); a public channel can also be given as `@` and its name. To learn the ID, send a message to the bot and read the `chat-id` header that `telegram-source` sets.
         type: string
+        example: "-1001234567890"
   types:
     out:
       mediaType: application/json
+  dataTypes:
+    in:
+      headers:
+        chat-id:
+          title: Chat ID
+          description: The chat to send this message to, instead of the `chatId` option. `telegram-source` sets it.
+          type: string
+        ce-chatid:
+          title: Chat ID
+          description: The same as `chat-id`, for CloudEvents. Used when `chat-id` is not set.
+          type: string
+        text:
+          title: Caption
+          description: The caption of a photo. Only used when the body is a photo.
+          type: string
+        ce-text:
+          title: Caption
+          description: The same as `text`, for CloudEvents. Used when `text` is not set.
+          type: string
+        Content-Type:
+          title: Content Type
+          description: "`image/png` or `image/jpeg` sends the body as a photo. Any other value, or none, sends the body as text."
+          type: string
   dependencies:
     - "camel:jackson"
     - "camel:kamelet"

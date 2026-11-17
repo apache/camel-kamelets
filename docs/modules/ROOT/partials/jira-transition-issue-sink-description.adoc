@@ -2,28 +2,53 @@
 
 === JIRA Operations
 
-This Kamelet transitions JIRA issues to new statuses (e.g., from "In Progress" to "Done").
+This Kamelet transitions JIRA issues to new statuses (e.g., from "In Progress" to "Done"), by running a transition of
+the workflow of the issue.
 
 === Input Format
 
-Expects JSON-formatted data containing the transition information.
+Two headers are required:
+
+- `ce-issueKey`: the key of the issue to transition, such as `SHOP-42`.
+- `ce-issueTransitionId`: the ID number of the transition to run, such as `31`. It is not the name of the status.
+
+The body, as text, is added to the issue as a comment after the transition.
+
+=== Finding the Transition ID
+
+A transition is a step of the workflow, from one status to another, and each has an ID number. Jira lists the
+transitions that are possible for an issue in its current status, with their IDs, at
+`<jiraUrl>/rest/api/2/issue/<key>/transitions`. A Jira administrator can also see them in the text view of the
+workflow. A transition that is not possible from the current status of the issue fails.
 
 === Authentication
 
-Supports multiple authentication methods:
-- **Username and Password**: Basic authentication
-- **Personal Token**: API token authentication
+Use one of the two ways to log in:
 
-=== Required Configuration
+- **Jira Cloud**: set `username` to the email address of the account, and `password` to an API token of that account.
+- **Jira Server and Jira Data Center**: set `personal-token` to a personal access token, and leave `username` and `password` empty.
 
-- **JIRA URL**: The URL of your JIRA instance
+=== Usage example
 
-=== Transition Configuration Headers
-
-The Kamelet supports headers to specify transition details:
-- `ce-issueKey`: The JIRA issue key to transition
-- `ce-issueTransitionId`: The transition ID to execute
-
-=== Usage
-
-The Kamelet changes the status of existing JIRA issues by executing workflow transitions, enabling automated issue state management based on external events or processing results.
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: "Closed automatically: the fix is deployed."
+        repeatCount: 1
+      steps:
+        - setHeader:
+            name: ce-issueKey
+            constant: SHOP-42
+        - setHeader:
+            name: ce-issueTransitionId
+            constant: "31"
+        - to:
+            uri: "kamelet:jira-transition-issue-sink"
+            parameters:
+              jiraUrl: "https://mycompany.atlassian.net"
+              username: "me@mycompany.com"
+              password: "{{jira.apiToken}}"
+----

@@ -8,9 +8,16 @@ uses. Subscribe to a channel such as `/event/MyEvent__e`, `/topic/MyTopic` or
 
 === Deserialization
 
-`deserializeType` defaults to JSON so the body is usable downstream without further
-decoding. The component's own default is AVRO, which emits binary. Use POJO together with
-`pojoClass` to deserialise into a generated class.
+`deserializeType` defaults to JSON so the body is JSON text, usable downstream without further
+decoding. The component's own default is AVRO, which gives an Avro record object instead. Use POJO
+together with `pojoClass` to deserialise into a generated class.
+
+=== Replay
+
+By default (`replayPreset` set to `LATEST`) the Kamelet receives only the events published after
+it starts. Each event carries its replay ID in the `CamelSalesforcePubSubReplayId` header. To go on
+from a given event after a restart, set `replayPreset` to `CUSTOM` and `replayId` to the replay ID
+of the last event processed.
 
 === Runtime Dependency
 
