@@ -93,7 +93,7 @@ unchanged." Leave out the other paragraphs when they have nothing to add.
   consumer, SMT or destination. When a word of the outside system is needed, such as ARN or partition, say what it is
   the first time.
 * *Name the kind of body*, with the words of the
-  https://camel.apache.org/manual/body-types.html[Camel message body types]: text, bytes, a stream, a file, a Map (a
+  xref:manual::body-types.adoc[Camel message body types]: text, bytes, a stream, a file, a Map (a
   JSON object, parsed), a List. "JSON" alone is not enough: say whether it is JSON text or parsed JSON.
 * *Write only what you have checked.* Run the Kamelet (`camel run route.yaml --local-kamelet-dir=kamelets`) and look
   at what comes out. Do not copy the documentation of the Camel component without checking that the template passes
