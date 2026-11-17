@@ -37,7 +37,7 @@ spec:
 
       Output: the body is the content of the file, as a stream. The `file` and `ce-file` headers hold the name of the file, with its path below `directoryName` when `recursive` is true, such as `2026/orders.csv`. `CamelFileName` holds the same name, and `CamelFileLength` the size of the file in bytes.
 
-      Good to know: files are not deleted or moved after they are read, unless `delete` is true or `move` is set. A file is read only once while the integration runs (`idempotent`), but the files left on the server are all read again after a restart; to read each file only once, also across restarts, set `move` to a directory such as `.done`, or set `delete` to true. The connection and the login are not encrypted. Files are transferred in ASCII (text) mode unless `binary` is true.
+      Good to know: files are not deleted or moved after they are read, unless `delete` is true or `move` is set. A file is read only once while the integration runs (`idempotent`), but the files left on the server are all read again after a restart; to read each file only once, also across restarts, set `move` to a directory such as `.done`, set `delete` to true, or keep the list of the files read in a file with `idempotentRepository`. The connection and the login are not encrypted. Files are transferred in ASCII (text) mode unless `binary` is true.
     required:
       - connectionHost
       - connectionPort
@@ -86,9 +86,14 @@ spec:
         default: false
       idempotent:
         title: Skip Files Already Read
-        description: If true, a file is read only once while the integration runs, even when it stays on the server. The list of the files read is kept in memory, so after a restart the files still on the server are read again, unless `move` or `delete` takes them away. If false, and neither `delete` nor `move` is set, the same files are read again on every poll.
+        description: If true, a file is read only once while the integration runs, even when it stays on the server. The list of the files read is kept in memory, so after a restart the files still on the server are read again, unless `move` or `delete` takes them away, or `idempotentRepository` keeps the list elsewhere. If false, and neither `delete` nor `move` is set, the same files are read again on every poll.
         type: boolean
         default: true
+      idempotentRepository:
+        title: Files Read Store
+        description: The name of a bean that keeps the list of the files read, so that the files left on the server are not read again after a restart, such as a `FileIdempotentRepository` that keeps the list in a file. Declare the bean in the integration, for example under `beans` in YAML. Only used when `idempotent` is true. When it is not set, the list is kept in memory.
+        type: string
+        example: readFiles
       binary:
         title: Binary Mode
         description: If true, files are transferred in binary mode, byte for byte. When false, they are transferred in ASCII mode, which is meant for text. Set it to true for files that are not text, such as images, archives or PDF files.
@@ -147,6 +152,7 @@ spec:
         binary: "{{binary}}"
         delete: "{{delete}}"
         idempotent: "{{idempotent}}"
+        idempotentRepository: "#bean:{{?idempotentRepository}}"
         move: "{{?move}}"
         moveFailed: "{{?moveFailed}}"
         passiveMode: "{{passiveMode}}"

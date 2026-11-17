@@ -94,3 +94,33 @@ This example enables passive mode, binary transfer, and recursive directory proc
 ----
 
 Each file is moved to the `.done` directory next to it once it has been read, and to `.error` when it could not be handed on, so a restart does not read the same files again while they are kept on the server. Directories whose names start with a dot are never read, also when **Recursive** is true. The user needs the right to create directories and rename files on the server.
+
+=== Example with Files Remembered Across Restarts
+
+To keep the files on the server and still read each one only once, also across restarts, keep the list of the files
+read in a file. Declare a `FileIdempotentRepository` bean that writes the list to a file, and give its name in
+**idempotentRepository**:
+
+[source,yaml,subs='+attributes,macros']
+----
+- beans:
+    - name: readFiles
+      type: "#class:org.apache.camel.support.processor.idempotent.FileIdempotentRepository"
+      properties:
+        fileStore: "#class:java.io.File('/var/data/read-files.dat')"
+- route:
+    from:
+      uri: "kamelet:ftps-source"
+      parameters:
+        connectionHost: "ftps.example.com"
+        username: "ftpsuser"
+        password: "ftpspass"
+        directoryName: "/incoming"
+        idempotentRepository: "readFiles"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+The file must be on storage that survives a restart of the integration, such as a persistent volume. A file that is
+put on the server again under the same name is not read again.
