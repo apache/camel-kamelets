@@ -35,7 +35,7 @@ spec:
 
       Use it to put values in a Redis cache for other applications to read, to push work items onto a Redis list, or to publish events on a Redis channel that `redis-source` or other subscribers listen to. To cache values only inside one running application, use `caffeine-action`.
 
-      Input: the body is the value, as text. The `key` header (or `ce-key`) gives the key, for commands that work on a key such as `SET`, `GET` or `RPUSH`. The `channel` header (or `ce-channel`) gives the channel, and is required for `PUBLISH`.
+      Input: the body is the value, as text. The `key` header (or `ce-key`) gives the key, for commands that work on a key such as `SET`, `GET` or `RPUSH`. The `channel` header (or `ce-channel`) gives the channel for `PUBLISH`; without it, the channel in `channels` is used.
 
       Output: when it is used inside a route, the body afterwards is what Redis answered, such as the value for `GET` or the new length of the list for `RPUSH`; for `SET` the body is unchanged.
 
@@ -64,7 +64,7 @@ spec:
         example: SET
       channels:
         title: Channels
-        description: Not used by this sink. The channel that `PUBLISH` sends to comes from the `channel` header.
+        description: The channel that `PUBLISH` sends to when the message has no `channel` or `ce-channel` header.
         type: string
         default: one
       serializer:
@@ -85,7 +85,7 @@ spec:
           type: string
         channel:
           title: Channel
-          description: The channel to publish on, for `PUBLISH`. When it is not set, `ce-channel` is used.
+          description: The channel to publish on, for `PUBLISH`. When it is not set, `ce-channel` is used, and then `channels`.
           type: string
         ce-channel:
           title: Channel (CloudEvents)

@@ -19,8 +19,8 @@ The Kamelet reads these headers. Only `ce-issueKey` is required; a field without
 - `ce-issuePriorityName`: the name of the new priority, such as `High`
 - `ce-issueComponents`: a comma-separated list of component names, which replaces the components of the issue
 
-An issue type or a priority whose name Jira does not know is ignored. The `ce-issueDescription` header is not used: the
-description always comes from the body.
+An issue type or a priority whose name Jira does not know is ignored. The description comes from the body; the
+`ce-issueDescription` header gives it only when the body is empty.
 
 === Authentication
 

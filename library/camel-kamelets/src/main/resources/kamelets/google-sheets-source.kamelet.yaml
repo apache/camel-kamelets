@@ -35,7 +35,7 @@ spec:
 
       Use it to feed the content of a spreadsheet that people maintain, such as a price list, a contact list or a list of tasks, to another system on a schedule. To write rows to a spreadsheet, use `google-sheets-sink`.
 
-      Output: with `range` set, the body is one row as JSON text, a JSON array of the values of the row, such as `["Alice","3"]`; with `splitResults` set to false, it is the whole range as JSON text, with the rows in its `values` field. Without `range`, the body is the description of the spreadsheet (its sheets and properties) as JSON text, not its cells. The `CamelGoogleSheets.spreadsheetId` and `CamelGoogleSheets.range` headers repeat the options.
+      Output: with `range` set, the body is one row as JSON text, a JSON array of the values of the row (or of one column, with `majorDimension` set to `COLUMNS`), such as `["Alice","3"]`; with `splitResults` set to false, it is the whole range as JSON text, with the rows in its `values` field. Without `range`, the body is the description of the spreadsheet (its sheets and properties) as JSON text, not its cells. The `CamelGoogleSheets.spreadsheetId` and `CamelGoogleSheets.range` headers repeat the options.
 
       Good to know: every poll reads the whole range again, by default every 500 milliseconds, so the same rows come again and again until `repeatCount` is reached; it does not track which rows are new. It logs in to Google with OAuth: an OAuth client of a Google Cloud project, and an access token and a refresh token of a Google account that may read the spreadsheet.
     required:
@@ -107,7 +107,7 @@ spec:
         example: "Sheet1!A2:C100"
       majorDimension:
         title: Major Dimension
-        description: Sets the `CamelGoogleSheets.majorDimension` header, for a later step that turns the rows into JSON objects. It does not change how the cells are read, which is always by rows.
+        description: Whether the cells are read by rows (`ROWS`) or by columns (`COLUMNS`). With `COLUMNS`, each message holds one column instead of one row. It is also set as the `CamelGoogleSheets.majorDimension` header.
         type: string
         enum: [ "COLUMNS", "ROWS" ]
         default: "ROWS"

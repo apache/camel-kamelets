@@ -39,7 +39,7 @@ spec:
 
       Output: the message is unchanged. The `CamelMailMessageId` header holds the ID of the email that was sent.
 
-      Good to know: set `from`, `to` and `subject`, even though they are not marked as required: the Kamelet does not start without them. The default protocol, `smtps`, connects with TLS and checks the certificate of the server. With `smtp`, the connection, the password and the emails are not encrypted.
+      Good to know: each email needs a sender, recipients and a subject, from the options or from the `ce-from`, `ce-to` and `ce-subject` headers. The default protocol, `smtps`, connects with TLS and checks the certificate of the server. With `smtp`, the connection, the password and the emails are not encrypted.
     required:
       - connectionHost
       - username
@@ -76,17 +76,17 @@ spec:
         x-descriptors:
           - urn:camel:group:credentials
       from:
-        description: The sender address of the emails. The `ce-from` header replaces it for one message. Set it even when every message has that header, as the Kamelet does not start without it.
+        description: The sender address of the emails. The `ce-from` header replaces it for one message. It can be left empty when every message has that header.
         example: alerts@example.com
         title: From
         type: string
       to:
-        description: The recipient of the emails; several addresses are separated by commas. The `ce-to` header replaces it for one message. Set it even when every message has that header, as the Kamelet does not start without it.
+        description: The recipient of the emails; several addresses are separated by commas. The `ce-to` header replaces it for one message. It can be left empty when every message has that header.
         example: team@example.com
         title: To
         type: string
       subject:
-        description: The subject of the emails. The `ce-subject` header replaces it for one message. Set it even when every message has that header, as the Kamelet does not start without it.
+        description: The subject of the emails. The `ce-subject` header replaces it for one message. It can be left empty when every message has that header.
         example: Order failed
         title: Subject
         type: string

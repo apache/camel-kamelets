@@ -37,7 +37,7 @@ spec:
 
       Output: the body is the type of the event as JSON text, that is a quoted JSON string such as `"PUSH"`, `"PULL_REQUEST"` or `"ISSUES"`. The details of the event are only in the `CamelGitHubEventPayload` header, as a Java object.
 
-      Good to know: when it starts, it first sends the recent events that GitHub still lists for the repository, not only the new ones. It works with github.com, not with GitHub Enterprise Server. It asks GitHub for new events about twice a second, and every request counts against the API rate limit of the token.
+      Good to know: when it starts, it first sends the recent events that GitHub still lists for the repository, not only the new ones. It works with github.com, not with GitHub Enterprise Server. It asks GitHub for new events once a minute by default (`delay`), and every request counts against the API rate limit of the token.
     required:
       - repoName
       - repoOwner
@@ -63,7 +63,7 @@ spec:
         - urn:camel:group:credentials
       delay:
         title: Delay
-        description: The number of milliseconds before the next poll
+        description: How long to wait between two polls of GitHub, in milliseconds. For example, 60000 is one minute.
         type: integer
         default: 60000
   dataTypes:

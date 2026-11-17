@@ -14,7 +14,7 @@ message, `CamelMqttQoS` its quality of service, and `CamelPahoMqtt5MsgProperties
 
 - `topic`: the topic to subscribe to, with the `+` and `#` wildcards
 - `brokerUrl`: the address of the broker, such as `tcp://mosquitto:1883`
-- `clientId`: the client ID, `mqtt-source` by default; give each running copy its own
+- `clientId`: the client ID; a unique one is generated when it is not set
 - `username` and `password`: the login, when the broker needs one
 
 === Usage example

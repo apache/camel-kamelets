@@ -37,7 +37,7 @@ spec:
 
       Output: the body is the payload, as bytes. The `CamelMqttTopic` header is the topic the message was published to, `CamelMqttQoS` its quality of service, and `CamelPahoMqtt5MsgProperties` holds the MQTT 5 properties of the message, such as its user properties.
 
-      Good to know: it receives only the messages published while it is connected. Each running copy needs its own `clientId`: two clients with the same ID, such as the default `mqtt-source`, keep pushing each other off the broker and lose messages. It connects with no TLS unless `brokerUrl` starts with `ssl://`, and the integration fails to start when the broker cannot be reached.
+      Good to know: it receives only the messages published while it is connected. Each running copy needs its own `clientId`: two clients with the same ID keep pushing each other off the broker and lose messages. When it is not set, a unique one is generated. It connects with no TLS unless `brokerUrl` starts with `ssl://`, and the integration fails to start when the broker cannot be reached.
     required:
     - topic
     - brokerUrl
@@ -55,7 +55,7 @@ spec:
         example: "tcp://mosquitto:1883"
       clientId:
         title: "Client ID"
-        description: "The client ID that names this connection to the broker. It must be unique on the broker: a second client with the same ID pushes the first one off. The default is the same for every copy of `mqtt-source` and `mqtt5-source`, so give each running copy its own."
+        description: "The client ID that names this connection to the broker. It must be unique on the broker: a second client with the same ID pushes the first one off. When it is not set, a unique ID is generated."
         example: "sensor-reader-1"
         type: string
       username:

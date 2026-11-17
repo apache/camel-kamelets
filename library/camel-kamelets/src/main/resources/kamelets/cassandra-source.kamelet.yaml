@@ -37,7 +37,7 @@ spec:
 
       Output: the body is JSON text, an array with one object per row, or one object with `resultStrategy` set to `ONE`. The values of a row are not separate fields of its object: they are in the text of its `formattedContents` field, such as `[id:1, username:'oscerd', city:'Rome']`. The `Content-Type` header is `application/json`.
 
-      Good to know: every run sends all the rows the query finds, again and again, and nothing marks a row as read. When the query finds no rows, an empty array `[]` is sent. `query` cannot contain `+` (it becomes a space) or `&`.
+      Good to know: every run sends all the rows the query finds, again and again, and nothing marks a row as read. When the query finds no rows, an empty array `[]` is sent.
     required:
       - connectionHost
       - connectionPort

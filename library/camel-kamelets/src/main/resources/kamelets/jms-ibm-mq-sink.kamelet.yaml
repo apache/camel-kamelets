@@ -40,7 +40,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: the IBM MQ client library is not included, as its licence is not the Apache one: add `mvn:com.ibm.mq:com.ibm.mq.jakarta.client` with a version to the dependencies of the integration (Camel JBang adds it by itself). It connects as a client over the network, with no TLS unless `sslCipherSuite` is set. Messages go to a queue unless `destinationType` is `topic`, and a message sent to a topic reaches only the receivers subscribed at that moment. When the incoming message expects a reply, as one from `webhook-source` does, the sink waits up to 20 seconds for a reply message and then fails.
+      Good to know: the IBM MQ client library is not included, as its licence is not the Apache one: add `mvn:com.ibm.mq:com.ibm.mq.jakarta.client` with a version to the dependencies of the integration (Camel JBang adds it by itself). It connects as a client over the network, with no TLS unless `sslCipherSuite` is set. Messages go to a queue unless `destinationType` is `topic`, and a message sent to a topic reaches only the receivers subscribed at that moment. It does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does.
     required:
       - serverName
       - serverPort

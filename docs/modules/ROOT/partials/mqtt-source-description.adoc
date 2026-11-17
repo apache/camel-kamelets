@@ -12,7 +12,7 @@ The MQTT Source Kamelet supports the following configurations:
 - **Broker URL**: MQTT broker URL (required, e.g., tcp://broker.example.com:1883, or ssl://broker.example.com:8883 for TLS)
 - **Username**: Username for MQTT authentication (optional)
 - **Password**: Password for MQTT authentication (optional)
-- **Client ID**: MQTT client identifier (default: `mqtt-source`). Give each running copy its own: two clients with the same ID push each other off the broker.
+- **Client ID**: MQTT client identifier; a unique one is generated when it is not set. Two clients with the same ID push each other off the broker.
 
 The Kamelet subscribes with QoS 2 and a clean session, so it receives only the messages published while it is connected. It has no options to change the QoS or the session.
 

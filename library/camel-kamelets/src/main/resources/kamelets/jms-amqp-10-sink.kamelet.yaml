@@ -40,7 +40,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: Messages go to a queue unless `destinationType` is `topic`, and a message sent to a topic reaches only the receivers subscribed at that moment. The login and the TLS settings go in `remoteURI`: there are no separate options for them. It opens a new connection to the broker for each message. When the incoming message expects a reply, as one from `webhook-source` does, the sink waits up to 20 seconds for a reply message and then fails.
+      Good to know: Messages go to a queue unless `destinationType` is `topic`, and a message sent to a topic reaches only the receivers subscribed at that moment. The login and the TLS settings go in `remoteURI`: there are no separate options for them. It opens a new connection to the broker for each message. It does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does.
     required:
       - destinationName
       - remoteURI

@@ -37,7 +37,7 @@ spec:
 
       Output: the body is the text of the email (its first part with content, such as the plain text part) as JSON text, that is the text in double quotes with JSON escapes. The headers give the subject (`CamelGoogleMailStreamSubject`), the sender (`CamelGoogleMailStreamFrom`), the recipients (`CamelGoogleMailStreamTo`, `CamelGoogleMailStreamCc`, `CamelGoogleMailStreamBcc`) and the Gmail ID of the email (`CamelGoogleMailId`).
 
-      Good to know: it reads the emails that match `query`, by default the unread ones. With `markAsRead` set to false and the default query, the same emails are read again on every poll. An email whose processing fails is marked as unread again. Set `labels`: the Kamelet does not start without it. It logs in to Google with OAuth: an OAuth client of a Google Cloud project, and an access token and a refresh token of the Gmail account.
+      Good to know: it reads the emails that match `query`, by default the unread ones. With `markAsRead` set to false and the default query, the same emails are read again on every poll. An email whose processing fails is marked as unread again. It logs in to Google with OAuth: an OAuth client of a Google Cloud project, and an access token and a refresh token of the Gmail account.
     required:
       - index
       - clientId
@@ -98,7 +98,7 @@ spec:
         default: true
       labels:
         title: Gmail Labels
-        description: The names of the Gmail labels to read the emails of, separated by commas, such as `INBOX` or a label of your own. Set it, as the Kamelet does not start without it.
+        description: The names of the Gmail labels to read the emails of, separated by commas, such as `INBOX` or a label of your own. When it is not set, the emails are not filtered by label.
         type: string
         example: "INBOX"
       query:
