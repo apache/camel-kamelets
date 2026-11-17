@@ -34,7 +34,7 @@ spec:
     description: |-
       Receives each message from a queue or a topic in a message broker that speaks AMQP 1.0, such as Apache ActiveMQ Artemis, through JMS and the Apache Qpid client.
 
-      Use it to process work that other applications put on a queue, or to react to events published on a topic, on any broker that supports the AMQP 1.0 protocol. For an Artemis broker, `jms-apache-artemis-source` and `jms-pooled-apache-artemis-source` work too.
+      Use it to process work that other applications put on a queue, or to react to events published on a topic, on any broker that supports the AMQP 1.0 protocol. For an Artemis broker, `jms-apache-artemis-source` works too.
 
       Output: the body is text for a JMS text message, bytes for a bytes message, and a Map for a map message. The JMS properties of the message become headers, along with the JMS headers such as `JMSMessageID`, `JMSDestination`, `JMSTimestamp`, `JMSPriority` and `JMSRedelivered`.
 

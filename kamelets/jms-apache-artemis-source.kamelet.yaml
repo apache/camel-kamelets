@@ -34,11 +34,11 @@ spec:
     description: |-
       Receives each message from a queue or a topic in an Apache ActiveMQ Artemis broker, through JMS.
 
-      Use it to process work that other applications put on a queue, such as orders or jobs, or to react to events published on a topic. `jms-pooled-apache-artemis-source` does the same with a pool of connections and has `username` and `password` options. For another broker that speaks AMQP 1.0, use `jms-amqp-10-source`.
+      Use it to process work that other applications put on a queue, such as orders or jobs, or to react to events published on a topic. For another broker that speaks AMQP 1.0, use `jms-amqp-10-source`.
 
       Output: the body is text for a JMS text message, bytes for a bytes message, and a Map for a map message. The JMS properties of the message become headers, along with the JMS headers such as `JMSMessageID`, `JMSDestination`, `JMSTimestamp`, `JMSPriority` and `JMSRedelivered`.
 
-      Good to know: From a queue, each message is removed when it is received, even when the rest of the flow then fails, and several copies of this source share the messages. From a topic (`destinationType` set to `topic`), it receives only the messages sent while it is connected, as the subscription is not durable. It connects with no TLS and no login, unless `brokerURL` asks for them. When the broker cannot be reached, it starts anyway and tries again every 5 seconds.
+      Good to know: From a queue, each message is removed when it is received, even when the rest of the flow then fails, and several copies of this source share the messages. From a topic (`destinationType` set to `topic`), it receives only the messages sent while it is connected, as the subscription is not durable. It connects with no TLS unless `brokerURL` asks for it, and logs in with `username` and `password` when they are set. When the broker cannot be reached, it starts anyway and tries again every 5 seconds.
     required:
       - destinationName
       - brokerURL
@@ -59,6 +59,19 @@ spec:
         description: "The address of the Artemis broker, as `tcp://host:port`; the usual port is 61616. Add `?sslEnabled=true` for TLS. A broker that needs a login takes it in the URL too, as `tcp://host:61616?user=app&password=secret`."
         type: string
         example: "tcp://localhost:61616"
+      username:
+        title: "Broker Username"
+        description: "The user name to log in to the broker with. Leave it empty for a broker that accepts clients without a login."
+        type: string
+        x-descriptors:
+        - urn:camel:group:credentials
+      password:
+        title: "Broker Password"
+        description: "The password to log in to the broker with, for the user `username`."
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
   dataTypes:
     out:
       headers:
@@ -88,6 +101,8 @@ spec:
         type: "#class:org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory"
         properties:
           brokerURL: "{{brokerURL}}"
+          user: "{{?username}}"
+          password: "{{?password}}"
     from:
       uri: jms
       parameters:

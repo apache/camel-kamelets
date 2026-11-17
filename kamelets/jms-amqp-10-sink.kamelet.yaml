@@ -34,7 +34,7 @@ spec:
     description: |-
       Sends each message to a queue or a topic in a message broker that speaks AMQP 1.0, such as Apache ActiveMQ Artemis, through JMS and the Apache Qpid client.
 
-      Use it to hand work to another application through a queue, or to publish events on a topic, on any broker that supports the AMQP 1.0 protocol. For an Artemis broker, `jms-apache-artemis-sink` and `jms-pooled-apache-artemis-sink` work too.
+      Use it to hand work to another application through a queue, or to publish events on a topic, on any broker that supports the AMQP 1.0 protocol. For an Artemis broker, `jms-apache-artemis-sink` works too.
 
       Input: text is sent as a JMS text message, bytes as a JMS bytes message, and a Map as a JMS map message. The headers of the message, except the Camel ones, are sent along as JMS properties of the message.
 
