@@ -19,7 +19,7 @@ kind: Kamelet
 metadata:
   name: http-secured-source
   annotations:
-    camel.apache.org/kamelet.support.level: "Stable"
+    camel.apache.org/kamelet.support.level: "Deprecated"
     camel.apache.org/catalog.version: "4.24.0-SNAPSHOT"
     camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MjAiCmhlaWdodD0iNDIwIiBzdHJva2U9IiMwMDAiIGZpbGw9Im5vbmUiPgo8cGF0aCBzdHJva2Utd2lkdGg9IjI2IgpkPSJNMjA5LDE1YTE5NSwxOTUgMCAxLDAgMiwweiIvPgo8cGF0aCBzdHJva2Utd2lkdGg9IjE4IgpkPSJtMjEwLDE1djM5MG0xOTUtMTk1SDE1TTU5LDkwYTI2MCwyNjAgMCAwLDAgMzAyLDAgbTAsMjQwIGEyNjAsMjYwIDAgMCwwLTMwMiwwTTE5NSwyMGEyNTAsMjUwIDAgMCwwIDAsMzgyIG0zMCwwIGEyNTAsMjUwIDAgMCwwIDAtMzgyIi8+Cjwvc3ZnPg=="
     camel.apache.org/provider: "Apache Software Foundation"
@@ -31,9 +31,9 @@ spec:
   definition:
     title: "HTTP Secured Source"
     description: |-
-      Fetches a web address with an HTTP GET request at a regular interval, logging in with a user and password or with an OAuth 2.0 token, and sends each response as a message.
+      Deprecated, use `http-source` instead, which has the same login options: fetches a web address at a regular interval with a login, one message per response.
 
-      Use it to poll a protected REST API or feed for its current data, for example fetch the state of the orders every minute. If the address needs no login, use `http-source`. To receive the requests that other systems send instead, use `webhook-source`.
+      Use it to poll a protected REST API or feed for its current data, for example fetch the state of the orders every minute. This Kamelet will be removed in a later release: `http-source` now takes the same options, so change only the name of the Kamelet. To receive the requests that other systems send instead, use `webhook-source`.
 
       Output: the body is the body of the response, as bytes. The headers of the response, such as `Content-Type`, are copied to the message, and `CamelHttpResponseCode` holds the status code.
 
