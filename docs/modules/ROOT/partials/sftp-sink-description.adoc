@@ -8,27 +8,17 @@ This Kamelet provides secure file transfer capabilities using SFTP (SSH File Tra
 
 Built on top of SSH protocol, SFTP provides strong authentication and encryption for all file transfer operations, ensuring data confidentiality and integrity.
 
-=== File Management Operations
+=== File Operations
 
-Supports comprehensive file operations including:
-
-- File uploads and downloads
-- Directory creation and navigation
-- File and directory listing
-- Permission and attribute management
+The sink uploads each message as a file into `directoryName`, and creates missing directories when `autoCreate` is true. What happens when the file already exists is set by `fileExist` (`Override`, `Append`, `Fail` or `Ignore`). To read files from an SFTP server, use the SFTP Source Kamelet.
 
 === Authentication Methods
 
-Supports multiple authentication mechanisms:
+Supports these authentication mechanisms:
 
 - Username and password authentication
-- Public key authentication
-- Interactive keyboard authentication
-- Host key verification
-
-=== Resume and Recovery
-
-SFTP supports file transfer resume capabilities, allowing interrupted transfers to continue from where they left off, improving reliability for large file transfers.
+- Private key authentication (`privateKeyFile` or `privateKeyUri`, with `privateKeyPassphrase` for a protected key)
+- Host key verification against a known_hosts file (`knownHostsUri`, or `~/.ssh/known_hosts` of the user that runs the integration); with the default `strictHostKeyChecking` of `yes`, a server that is not in it is refused
 
 === Cross-Platform Compatibility
 

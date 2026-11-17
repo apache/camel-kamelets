@@ -2,7 +2,7 @@
 
 === Authentication
 
-This Kamelet supports SFTP authentication using username and password credentials. SFTP provides secure file transfer over SSH, ensuring encrypted communication.
+This Kamelet supports SFTP authentication with a username and either a password or a private key (`privateKeyFile` or `privateKeyUri`). The key of the server must be in a known_hosts file (`knownHostsUri`, or `~/.ssh/known_hosts` of the user that runs the integration). SFTP provides secure file transfer over SSH, ensuring encrypted communication.
 
 === Configuration
 
@@ -10,18 +10,18 @@ The SFTP Source Kamelet supports the following configurations:
 
 - **Connection Host**: The hostname or IP address of the SFTP server (required)
 - **Connection Port**: The port number of the SFTP server (default: 22)
-- **Username**: Username for SFTP authentication (required)
-- **Password**: Password for SFTP authentication (required)
+- **Username**: Username for SFTP authentication
+- **Password**: Password for SFTP authentication, or use a private key
 - **Directory Name**: The starting directory path on the SFTP server (required)
 - **Recursive**: Process files in subdirectories (default: false)
 - **Idempotent**: Skip already-processed files (default: true)
 - **Binary**: Use binary transfer mode instead of ASCII (default: false)
 - **Auto Create**: Automatically create the starting directory if it doesn't exist (default: true)
-- **Delete**: Delete files after successful processing (default: false)
+- **Delete**: Delete files after successful processing (default: false). When false, files are left on the server; with **Idempotent**, they are skipped while the integration runs but read again after a restart
 
 === Output Format
 
-The Kamelet outputs file content as an `InputStream` and sets headers with file information:
+The Kamelet outputs the file content as bytes and sets headers with file information:
 - `file`: The name of the processed file
 - `ce-file`: Cloud Events compatible file name header
 

@@ -2,24 +2,24 @@
 
 === Authentication
 
-This Kamelet requires username and password authentication to connect to an IMAP mail server. It supports both standard and secure IMAP connections.
+This Kamelet requires username and password authentication to connect to an IMAP mail server. It always connects with TLS (IMAPS) and checks the certificate of the server.
 
 === Configuration
 
 The Mail IMAP Source Kamelet supports the following configurations:
 
-- **Host**: IMAP server hostname (required)
-- **Port**: IMAP server port (default: 993 for IMAPS, 143 for IMAP)
-- **Username**: Email account username (required)
-- **Password**: Email account password (required)
-- **Folder**: Email folder to monitor (default: "INBOX")
-- **Unseen Only**: Only process unread emails (default: true)
-- **Delete**: Delete emails after processing (default: false)
-- **Connection Encryption**: Use SSL/TLS encryption (default: true)
+- **Connection Host** (`connectionHost`): IMAP server hostname (required)
+- **Connection Port** (`connectionPort`): IMAPS server port (default: 993)
+- **Username** (`username`): Email account username (required)
+- **Password** (`password`): Email account password (required)
+- **Fetch Size** (`fetchSize`): The most emails to read at each check (default: 10, -1 for no limit)
+- **Delay** (`delay`): Milliseconds between two checks of the mailbox (default: 60000)
+
+The Kamelet reads only the unread emails of the `INBOX` folder, and marks each one as read. Emails are not deleted.
 
 === Output Format
 
-The Kamelet outputs email messages including headers, body content, attachments, and metadata such as sender, recipient, and timestamp information.
+The body is the text of the email; for an email with several parts, it is the text of the first part, and attachments are not in the body. The `ce-subject`, `ce-from`, `ce-to` and `ce-cc` headers hold the subject and the addresses, and the headers of the email (`Subject`, `From`, `Date`, ...) are copied too.
 
 === Usage Example
 
@@ -29,17 +29,16 @@ The Kamelet outputs email messages including headers, body content, attachments,
     from:
       uri: "kamelet:mail-imap-source"
       parameters:
-        host: "imap.gmail.com"
-        port: "993"
+        connectionHost: "imap.gmail.com"
+        connectionPort: "993"
         username: "user@gmail.com"
         password: "app-password"
-        folder: "INBOX"
       steps:
         - to:
             uri: "kamelet:log-sink"
 ----
 
-=== Example with Custom Folder
+=== Example with a Shorter Delay
 
 [source,yaml,subs='+attributes,macros']
 ----
@@ -47,30 +46,11 @@ The Kamelet outputs email messages including headers, body content, attachments,
     from:
       uri: "kamelet:mail-imap-source"
       parameters:
-        host: "mail.example.com"
-        port: "993"
+        connectionHost: "mail.example.com"
+        connectionPort: "993"
         username: "support@example.com"
         password: "mailpass"
-        folder: "Support"
-        unseenOnly: true
-      steps:
-        - to:
-            uri: "kamelet:log-sink"
-----
-
-=== Example with Email Deletion
-
-[source,yaml,subs='+attributes,macros']
-----
-- route:
-    from:
-      uri: "kamelet:mail-imap-source"
-      parameters:
-        host: "imap.example.com"
-        username: "processor@example.com"
-        password: "mailpass"
-        folder: "Processing"
-        delete: true
+        delay: 10000
       steps:
         - to:
             uri: "kamelet:log-sink"
@@ -79,6 +59,5 @@ The Kamelet outputs email messages including headers, body content, attachments,
 === Security Considerations
 
 - Use app-specific passwords for Gmail and similar providers
-- Enable SSL/TLS encryption for secure connections
 - Store credentials securely using secrets management
 - Consider OAuth2 authentication for enhanced security

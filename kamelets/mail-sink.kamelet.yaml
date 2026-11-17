@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Mail Sink"
-    description: "Send mails to given SMTP server."
+    description: |-
+      Sends each message as an email through an SMTP server, with the body as the text of the email.
+
+      Use it to send notifications, alerts or reports by email, for example tell a team when an order fails or send a daily summary.
+
+      Input: the body is the text of the email. With a `Content-Type` header of `text/html`, the email is sent as HTML. The `ce-subject`, `ce-from`, `ce-to` and `ce-cc` headers set the subject, the sender, the recipients and the copy recipients of one email, in place of the options; several addresses are separated by commas. Other mail headers on the message, such as `To` or `Bcc`, are removed and not used.
+
+      Output: the message is unchanged. The `CamelMailMessageId` header holds the ID of the email that was sent.
+
+      Good to know: set `from`, `to` and `subject`, even though they are not marked as required: the Kamelet does not start without them. The default protocol, `smtps`, connects with TLS and checks the certificate of the server. With `smtp`, the connection, the password and the emails are not encrypted.
     required:
       - connectionHost
       - username
@@ -38,48 +47,78 @@ spec:
     type: object
     properties:
       connectionHost:
-        description: The mail server host
-        example: smtp.gmail.com
+        description: The host name of the SMTP server of the mail provider, without a port.
+        example: smtp.example.com
         title: Host
         type: string
       connectionPort:
-        description: The mail server port
+        description: The port of the SMTP server, usually 465 for `smtps` and 25 for `smtp`.
         title: Port
         default: 465
         type: string
       protocol:
         title: Protocol
-        description: The mail protocol to use. Use smtps for an implicitly TLS-encrypted
-          connection; smtp connects in the clear, which sends the configured
-          credentials unencrypted.
+        description: How to connect to the server. `smtps` connects with TLS from the start, usually on port 465. `smtp` connects without encryption, so the password and the emails are sent as clear text.
         type: string
         enum: ["smtp", "smtps"]
         default: "smtps"
       username:
         title: Username
-        description: The username to access the mail box
+        description: The user to log in to the SMTP server as, usually an email address.
         type: string
         x-descriptors:
           - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access the mail box
+        description: The password of `username` on the SMTP server.
         type: string
         format: password
         x-descriptors:
           - urn:camel:group:credentials
       from:
-        description: The `from` field of the outgoing mail
+        description: The sender address of the emails. The `ce-from` header replaces it for one message. Set it even when every message has that header, as the Kamelet does not start without it.
+        example: alerts@example.com
         title: From
         type: string
       to:
-        description: The `to` field of the outgoing mail
+        description: The recipient of the emails; several addresses are separated by commas. The `ce-to` header replaces it for one message. Set it even when every message has that header, as the Kamelet does not start without it.
+        example: team@example.com
         title: To
         type: string
       subject:
-        description: The mail subject of the outgoing mail
+        description: The subject of the emails. The `ce-subject` header replaces it for one message. Set it even when every message has that header, as the Kamelet does not start without it.
+        example: Order failed
         title: Subject
         type: string
+  dataTypes:
+    in:
+      headers:
+        ce-subject:
+          title: Subject
+          description: The subject of the email, in place of the `subject` option.
+          type: string
+        ce-from:
+          title: From
+          description: The sender address of the email, in place of the `from` option.
+          type: string
+        ce-to:
+          title: To
+          description: The recipients of the email, separated by commas, in place of the `to` option.
+          type: string
+        ce-cc:
+          title: Cc
+          description: The copy recipients of the email, separated by commas.
+          type: string
+        Content-Type:
+          title: Content Type
+          description: The type of the text in the body, such as `text/html` to send an HTML email.
+          type: string
+    out:
+      headers:
+        CamelMailMessageId:
+          title: Message ID
+          description: The ID of the email that was sent.
+          type: string
   dependencies:
     - "camel:mail"
     - "camel:kamelet"

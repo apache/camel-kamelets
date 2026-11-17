@@ -30,4 +30,4 @@ For OAuth 2.0 authentication, configure:
 
 === Headers
 
-The Kamelet automatically sets the HTTP method header and removes any existing CamelHttpUri header to prevent conflicts.
+The Kamelet sets the HTTP method from the `method` option, and removes the `CamelHttpUri`, `CamelHttpPath`, `CamelHttpQuery`, `CamelHttpRawQuery`, `CamelRestHttpUri` and `CamelRestHttpQuery` headers, so that headers on the message cannot change where the request is sent.

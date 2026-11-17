@@ -30,75 +30,98 @@ metadata:
 spec:
   definition:
     title: "HTTP Secured Source"
-    description: Periodically fetches a secured HTTP resource and provides the content as output. Supports Oauth and Basic authentication.
+    description: |-
+      Fetches a web address with an HTTP GET request at a regular interval, logging in with a user and password or with an OAuth 2.0 token, and sends each response as a message.
+
+      Use it to poll a protected REST API or feed for its current data, for example fetch the state of the orders every minute. If the address needs no login, use `http-source`. To receive the requests that other systems send instead, use `webhook-source`.
+
+      Output: the body is the body of the response, as bytes. The headers of the response, such as `Content-Type`, are copied to the message, and `CamelHttpResponseCode` holds the status code.
+
+      Good to know: it fetches the address every `period` and sends a message for each response, even when the data has not changed. A response with a status code of 300 or higher sends no message: the error is logged, and the address is fetched again at the next period. Log in either with `authUsername` and `authPassword`, or with `oauth2ClientId`, `oauth2ClientSecret` and `oauth2TokenEndpoint`: the Kamelet then gets a token from that URL and sends it as a Bearer token.
     required:
     - url
     type: object
     properties:
       period:
         title: Period between Updates
-        description: The interval between fetches in milliseconds
+        description: How long to wait between two requests, in milliseconds. The default, 10000, is ten seconds.
         type: integer
         default: 10000
+        example: 60000
       contentType:
         title: Content Type
-        description: The content type accepted for the resource
+        description: The value of the `Accept` header of the request, which tells the service the kind of response you want, such as `application/json` or `text/csv`.
         type: string
         default: "application/json"
+        example: text/csv
       url:
         title: URL
-        description: The URL to fetch for data
+        description: The address to fetch, with the path and any query parameters. It must start with `http://` or `https://`.
         type: string
-        example: "https://gist.githubusercontent.com/nicolaferraro/e3c72ace3c751f9f88273896611ce5fe/raw/3b6f54060bacb56b6719b7386a4645cb59ad6cc1/quote.json"
+        example: "https://api.example.com/v1/orders/status"
         pattern: "^(http|https)://.*"
       authMethod:
         title: Authentication Method
-        description: Authentication methods allowed to use as a comma separated list of values Basic, Digest or NTLM.
+        description: The login methods to allow when the service asks for a login, as a comma-separated list of `Basic`, `Digest` and `NTLM`. Basic login with `authUsername` and `authPassword` works without it.
         type: string
+        example: Basic
       authenticationPreemptive:
         title: Authentication Preemptive
-        description: If this option is true, camel-http sends preemptive basic authentication to the server.
+        description: If true, `authUsername` and `authPassword` are sent with Basic login on the first request. If false, they are sent only after the service answers 401 and asks for them, which takes a second request.
         type: boolean
         default: false
       authUsername:
         title: Authentication Username
-        description: Authentication username
+        description: The user to log in as, together with `authPassword`.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       authPassword:
         title: Authentication Password
-        description: Authentication password
+        description: The password of `authUsername`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       oauth2ClientId:
-        title: Oauth2 Client Id
-        description: Oauth2 Client Id
+        title: OAuth2 Client ID
+        description: The client ID of the application, as registered with the OAuth 2.0 provider. With `oauth2ClientSecret`, it is used to get a token from `oauth2TokenEndpoint` (client credentials grant).
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       oauth2ClientSecret:
-        title: Oauth2 Client Secret
-        description: Oauth2 Client Secret
+        title: OAuth2 Client Secret
+        description: The client secret of the application, as given by the OAuth 2.0 provider.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       oauth2TokenEndpoint:
-        title: Oauth2 Token Endpoint
-        description: Oauth2 Token Endpoint
+        title: OAuth2 Token URL
+        description: The URL to get the tokens from, as given by the OAuth 2.0 provider. The Kamelet logs in to it with `oauth2ClientId` and `oauth2ClientSecret`.
         type: string
+        example: https://login.example.com/oauth2/token
         x-descriptors:
         - urn:camel:group:credentials
       oauth2Scope:
-        title: Oauth2 Scope
-        description: Oauth2 Scope
+        title: OAuth2 Scope
+        description: The scope to ask for in the token request, when the OAuth 2.0 provider needs one.
         type: string
+        example: orders.write
         x-descriptors:
         - urn:camel:group:credentials
+  dataTypes:
+    out:
+      headers:
+        CamelHttpResponseCode:
+          title: Status Code
+          description: The HTTP status code of the response, such as 200.
+          type: integer
+        Content-Type:
+          title: Content Type
+          description: The content type of the response, as sent by the service, such as `application/json`.
+          type: string
   dependencies:
     - "camel:http"
     - "camel:kamelet"

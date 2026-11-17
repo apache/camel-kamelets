@@ -4,13 +4,13 @@
 
 This Kamelet supports multiple authentication methods:
 
-- OAuth authentication
-- Basic authentication using username and password
+- OAuth 2.0 client credentials (`oauth2ClientId`, `oauth2ClientSecret`, `oauth2TokenEndpoint`, `oauth2Scope`)
+- Basic, Digest or NTLM authentication using username and password (`authUsername`, `authPassword`, `authMethod`)
 - No authentication (if not specified)
 
 === Output format
 
-The Kamelet periodically fetches a secured HTTP resource and provides the content as output. The content type is configurable and defaults to application/json.
+The Kamelet periodically fetches a secured HTTP resource with a GET request and provides the body of the response, as bytes, as output. The `contentType` option sets the `Accept` header of the request (default: application/json). The headers of the response are copied to the message, with the status code in `CamelHttpResponseCode`. A response with a status code of 300 or higher sends no message; the error is logged.
 
 === Configuration
 
@@ -20,7 +20,7 @@ The Kamelet requires the following parameters:
 
 Optional parameters:
 - `period`: The interval between fetches in milliseconds (default: 10000)
-- `contentType`: The content type accepted for the resource (default: "application/json")
+- `contentType`: The value of the `Accept` header of the request (default: "application/json")
 - Authentication parameters (oauth or basic auth credentials)
 
 === Usage example

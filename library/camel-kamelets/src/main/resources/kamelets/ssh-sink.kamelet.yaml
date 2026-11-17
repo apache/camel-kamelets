@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "SSH Sink"
-    description: Send command through SSH session.
+    description: |-
+      Runs the text of each message as a command on a remote server over SSH, and returns what the command prints.
+
+      Use it to run a script or a maintenance command on a server when something happens, for example restart a service after a deployment or clear a cache when data changes. To run a fixed command on a schedule and read its output, use `ssh-source`; to run a command on the machine of the integration, use `exec-sink`.
+
+      Input: the body is the command to run, as text, such as `systemctl restart myapp`. It runs in the shell of `username`, so it can hold several commands separated by `;`.
+
+      Output: the body afterwards is what the command printed on its standard output, as a stream. The `CamelSshExitValue` header holds the exit code of the command, and `CamelSshStderr` what it printed on its standard error, as a stream.
+
+      Good to know: it runs whatever command it receives, with the rights of `username`. Never send it messages from an untrusted source, and log in with an account that may do only what is needed. A command that ends with an exit code other than 0 does not fail the message: check `CamelSshExitValue`. The key of the server is checked only when `knownHostsResource` is set; without it, any server is accepted.
     required:
       - connectionHost
       - connectionPort
@@ -40,38 +49,49 @@ spec:
     properties:
       connectionHost:
         title: Connection Host
-        description: The SSH Host
+        description: The host name or IP address of the SSH server, without a port.
         type: string
+        example: server.example.com
       connectionPort:
         title: Connection Port
-        description: The SSH Port
+        description: The port of the SSH server, usually 22.
         type: string
         default: 22
       username:
         title: Username
-        description: The SSH username to use
+        description: The user to log in as. The commands run with the rights of this user.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The SSH password to use
+        description: The password of `username` on the SSH server.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       knownHostsResource:
         title: Known Hosts Resource
-        description: The resource path of a known_hosts file used to verify the SSH
-          server host key. When not set, the client does not verify the server host
-          key against a known_hosts file.
+        description: A known_hosts file that holds the key of the server, starting with `file:`, `classpath:`, `http:` or `https:`. Its lines can be made with `ssh-keyscan`. A server whose key does not match is refused. When it is not set, the key of the server is not checked, so any server is accepted.
         type: string
         pattern: "^(http|https|file|classpath|ref|bean):.*"
+        example: file:/etc/ssh/known_hosts
   types:
     in:
       mediaType: text/plain
     out:
       mediaType: text/plain
+  dataTypes:
+    out:
+      headers:
+        CamelSshExitValue:
+          title: Exit Code
+          description: The exit code of the command, such as 0 when it succeeded.
+          type: integer
+        CamelSshStderr:
+          title: Standard Error
+          description: What the command printed on its standard error, as a stream.
+          type: object
   dependencies:
     - "camel:ssh"
     - "camel:gson"

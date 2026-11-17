@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "SSH Source"
-    description: Receive data from SSH session.
+    description: |-
+      Runs a command on a remote server over SSH again and again, at a regular interval, and sends what the command prints as a message each time.
+
+      Use it to watch a server without installing anything on it, for example check the free disk space, the state of a service or the last lines of a log file every minute. To run a command for each incoming message instead, use `ssh-sink`.
+
+      Output: the body is what the command printed on its standard output, as text. The `CamelSshExitValue` header holds the exit code of the command, and `CamelSshStderr` what it printed on its standard error, as a stream.
+
+      Good to know: it runs `pollCommand` with the rights of `username`, so log in with an account that may do only what is needed. It runs it every half second by default; set `delay` to how often you need it. A command that fails still sends a message, with its exit code in `CamelSshExitValue`. The key of the server is checked only when `knownHostsResource` is set; without it, any server is accepted.
     required:
       - connectionHost
       - connectionPort
@@ -41,43 +48,55 @@ spec:
     properties:
       connectionHost:
         title: Connection Host
-        description: The SSH Host
+        description: The host name or IP address of the SSH server, without a port.
         type: string
+        example: server.example.com
       connectionPort:
         title: Connection Port
-        description: The SSH Port
+        description: The port of the SSH server, usually 22.
         type: string
         default: 22
       username:
         title: Username
-        description: The SSH username to use
+        description: The user to log in as. The command runs with the rights of this user.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The SSH password to use
+        description: The password of `username` on the SSH server.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       knownHostsResource:
         title: Known Hosts Resource
-        description: The resource path of a known_hosts file used to verify the SSH
-          server host key. When not set, the client does not verify the server host
-          key against a known_hosts file.
+        description: A known_hosts file that holds the key of the server, starting with `file:`, `classpath:`, `http:` or `https:`. Its lines can be made with `ssh-keyscan`. A server whose key does not match is refused. When it is not set, the key of the server is not checked, so any server is accepted.
         type: string
         pattern: "^(http|https|file|classpath|ref|bean):.*"
+        example: file:/etc/ssh/known_hosts
       delay:
         title: Delay
-        description: The number of milliseconds before the next poll
+        description: How long to wait between two runs of the command, in milliseconds. For example, 60000 is one minute.
         type: integer
         default: 500
+        example: 60000
       pollCommand:
         title: Poll Command
-        description: The command to run while polling the SSH session
+        description: The command to run each time, as you would type it in a shell on the server. It can hold several commands separated by `;`.
         type: string
-        example: date
+        example: df -h /
+  dataTypes:
+    out:
+      headers:
+        CamelSshExitValue:
+          title: Exit Code
+          description: The exit code of the command, such as 0 when it succeeded.
+          type: integer
+        CamelSshStderr:
+          title: Standard Error
+          description: What the command printed on its standard error, as a stream.
+          type: object
   dependencies:
     - "camel:ssh"
     - "camel:kamelet"

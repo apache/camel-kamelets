@@ -31,7 +31,16 @@ metadata:
 spec:
   definition:
     title: "SCP Sink"
-    description: Send file to an FTP Server through Secure Copy Protocol
+    description: |-
+      Copies each message as a file to the home directory of a user on a remote server, with SCP (secure copy) over an SSH connection.
+
+      Use it to copy files to a server you reach with SSH that does not offer SFTP, for example to drop a configuration or a report on a host. To choose the directory on the server, or to append to or keep existing files, use `sftp-sink` instead.
+
+      Input: the body is the content of the file, as text, bytes or a stream. The name of the file comes from the `CamelFileName` header, which may hold subdirectories, such as `reports/data.csv`; without it, a unique name is generated.
+
+      Output: the message is unchanged.
+
+      Good to know: files are written in the home directory of `username`, with the rights of that user, and a file with the same name is replaced. A file name that points outside the home directory fails the message. The key of the server is checked against `~/.ssh/known_hosts` of the user that runs the integration, unless `strictHostKeyChecking` is `no`. Setting `knownHostsUri` or `privateKeyPassphrase` stops the Kamelet from starting. Do not place it after messages from an untrusted source.
     required:
       - serverName
       - serverPort
@@ -39,54 +48,60 @@ spec:
     properties:
       serverName:
         title: Hostname
-        description: The hostname of the FTP server
+        description: The host name or IP address of the server to copy the files to.
         type: string
+        example: files.example.com
       serverPort:
         title: Port
-        description: The port of the FTP server
+        description: The SSH port of the server, usually 22.
         type: string
+        example: "22"
       username:
         title: Username
-        description: Username for accessing FTP Server
+        description: The user to log in as. The files are written in the home directory of this user.
         type: string
       password:
         title: Password
-        description: Password for accessing FTP Server
+        description: The password of `username`. Leave it empty to log in with a private key, set in `privateKeyFile`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       privateKeyFile:
         title: Private Key File
-        description: Set the private key file so that the SCP endpoint can do private key verification.
+        description: The path of a private key file on the machine that runs the integration, to log in with instead of a password. The matching public key must be in the `authorized_keys` of `username` on the server.
         type: string
+        example: /etc/scp/keys/id_rsa
       privateKeyPassphrase:
         title: Private Key Passphrase
-        description: Set the private key file passphrase so that the SCP endpoint can do private key verification.
+        description: Meant for the passphrase of a protected private key, but setting it stops the Kamelet from starting. Use a private key without a passphrase.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       strictHostKeyChecking:
         title: Strict Host Checking
-        description: Sets whether to use strict host key checking. One of yes, no or
-          ask. With no, the server host key is accepted without being checked against
-          a known_hosts entry.
+        description: Whether the key of the server must be found in `~/.ssh/known_hosts` of the user that runs the integration. With `yes`, a server that is not in it is refused. With `no`, any server is accepted without checking its key, so someone in between could read the files and the password. `ask` is meant for interactive use.
         type: string
         enum: ["yes", "no", "ask"]
         default: "yes"
       knownHostsUri:
         title: Known Hosts URI
-        description: The known_hosts file used to verify the server host key, loaded
-          from the classpath by default. Needed when the process has no
-          $HOME/.ssh/known_hosts to fall back on.
+        description: Meant for a known_hosts file that holds the key of the server, but setting it stops the Kamelet from starting. Add the server to `~/.ssh/known_hosts` of the user that runs the integration instead, for example with `ssh-keyscan`.
         type: string
         pattern: "^(classpath:)?[^:]+$"
       useUserKnownHostsFile:
         title: Use User Known Hosts File
-        description: If knownHostFile has not been explicit configured then use the host file from System.getProperty(user.home)/.ssh/known_hosts.
+        description: If true, the key of the server is looked up in `~/.ssh/known_hosts` of the user that runs the integration.
         type: boolean
         default: true
+  dataTypes:
+    in:
+      headers:
+        CamelFileName:
+          title: File Name
+          description: The name of the file to write in the home directory of the user, such as `report.txt` or `reports/report.txt`. When it is not set, a unique name is generated.
+          type: string
   dependencies:
     - "camel:jsch"
     - "camel:kamelet"

@@ -30,21 +30,45 @@ metadata:
 spec:
   definition:
     title: "File Watch Source"
-    description: Receive events related to a file or folder. It may require a volume mounting on Kubernetes.
+    description: |-
+      Sends a message each time a file in a local directory is created, changed or deleted, with the kind of change and the path of the file.
+
+      Use it to react to files that another program writes into a directory on the same machine, for example to start processing when a new export appears, or to keep track of the changes in a folder. To read files from a remote server instead, use `ftp-source`, `sftp-source` or `aws-s3-source`.
+
+      Output: the body is the file that changed, which the next step can read as text or bytes; a deleted file or a directory has no content to read. The `CamelFileEventType` header is `CREATE`, `MODIFY` or `DELETE`, `CamelFileName` is the path of the file relative to the watched directory, and `CamelFileAbsolutePath` is its full path.
+
+      Good to know: it watches the subdirectories too, new ones included. It never changes or deletes the files. Only changes made while it runs are sent, not the files that are already there when it starts. The path must be a directory, not a single file; it is created when it does not exist. On Kubernetes, mount the directory into the pod as a volume.
     required:
       - filePath
       - events
     type: object
     properties:
       filePath:
-        title: Path to Watch
-        description: Path of file or folder to watch
+        title: Directory to Watch
+        description: "The full path of the local directory to watch. It must be a directory, not a single file: to follow one file, watch its directory. Changes in its subdirectories are sent too."
         type: string
+        example: /data/incoming
       events:
         title: Events
-        description: The type of events to consume
+        description: "The kinds of change to send, as a comma-separated list of `CREATE`, `MODIFY` and `DELETE`. For example, `CREATE` sends only the new files."
         type: string
         default: "CREATE,MODIFY,DELETE"
+        example: CREATE
+  dataTypes:
+    out:
+      headers:
+        CamelFileEventType:
+          title: Event Type
+          description: The kind of change, `CREATE`, `MODIFY` or `DELETE`.
+          type: string
+        CamelFileName:
+          title: File Name
+          description: The path of the file relative to the watched directory, such as `orders.csv` or `2026/orders.csv`.
+          type: string
+        CamelFileAbsolutePath:
+          title: Absolute Path
+          description: The full path of the file, such as `/data/incoming/orders.csv`.
+          type: string
   dependencies:
     - "camel:file-watch"
     - "camel:kamelet"
