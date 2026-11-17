@@ -37,7 +37,7 @@ spec:
 
       Output: the body is the published message, as text. The `CamelRedis.Channel` header is the channel it was published on.
 
-      Good to know: only the messages published while the integration runs are received; Redis does not keep them for later. It connects with no password and no TLS.
+      Good to know: only the messages published while the integration runs are received; Redis does not keep them for later. By default it connects with no password and no TLS: set `password` (and `username` for an ACL user) for a Redis server that asks for a login, and `ssl` for one that needs TLS. The channels are shared by all the databases of a Redis server, so there is no database to choose.
     required:
       - redisHost
       - redisPort
@@ -54,6 +54,24 @@ spec:
         description: The port of the Redis server, usually 6379.
         type: integer
         example: 6379
+      username:
+        title: Username
+        description: The Redis user to log in as, for a Redis server with access control lists (ACL, Redis 6 and later). Leave it empty to log in with `password` alone, as the `default` user.
+        type: string
+        x-descriptors:
+        - urn:camel:group:credentials
+      password:
+        title: Password
+        description: The password to log in to Redis with, the one set with `requirepass` or the password of the user in `username`. Leave it empty for a Redis server that does not ask for a password.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      ssl:
+        title: Use TLS
+        description: "Whether to connect with TLS (SSL), for a Redis server that offers TLS on `redisPort`. The certificate of the server is checked: it must be trusted by Java, as one from a public certificate authority is, and name `redisHost`."
+        type: boolean
+        default: false
       command:
         title: Command
         description: How to subscribe. `SUBSCRIBE` listens to the channels named in `channels`; `PSUBSCRIBE` treats them as patterns, such as `orders.*`, and listens to every channel that matches.
@@ -82,6 +100,17 @@ spec:
     - "camel:kamelet"
     - "camel:spring-redis"
   template:
+    beans:
+      - name: redisConnectionFactory
+        type: "#class:org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+        initMethod: afterPropertiesSet
+        destroyMethod: destroy
+        properties:
+          standaloneConfiguration.hostName: "{{redisHost}}"
+          standaloneConfiguration.port: "{{redisPort}}"
+          standaloneConfiguration.username: "{{?username}}"
+          password: "{{?password}}"
+          useSsl: "{{ssl}}"
     from:
       uri: spring-redis
       parameters:
@@ -90,6 +119,7 @@ spec:
         channels: "{{channels}}"
         command: "{{command}}"
         serializer: "#class:{{serializer}}"
+        connectionFactory: "#bean:{{redisConnectionFactory}}"
       steps:
         - to:
             uri: kamelet:sink
