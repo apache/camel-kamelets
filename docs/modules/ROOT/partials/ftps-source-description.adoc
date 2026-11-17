@@ -13,13 +13,15 @@ The FTPS Source Kamelet supports the following configurations:
 - **Username**: Username for FTPS authentication (required)
 - **Password**: Password for FTPS authentication (required)
 - **Directory Name**: The starting directory path on the FTPS server (required)
-- Files are left on the server after they are read unless **Delete** is true; with **Idempotent**, they are skipped while the integration runs but read again after a restart
+- Files are left on the server after they are read unless **Delete** is true or **Move** is set; with **Idempotent**, they are skipped while the integration runs but read again after a restart
 - **Passive Mode**: Use passive mode for FTPS connections (default: false)
 - **Recursive**: Process files in subdirectories (default: false)
 - **Idempotent**: Skip already-processed files (default: true)
 - **Binary**: Use binary transfer mode instead of ASCII (default: false)
 - **Auto Create**: Automatically create the starting directory if it doesn't exist (default: true)
 - **Delete**: Delete files after successful processing (default: false)
+- **Move**: Where to move each file on the server after it has been read, such as `.done`, so that it is not read again, also after a restart (not set by default). It cannot be combined with **Delete**
+- **Move Failed**: Where to move a file on the server when it could not be handed on, such as `.error` (not set by default). When not set, a file that fails is read again at every poll
 
 === Output Format
 
@@ -71,3 +73,24 @@ FTPS encrypts the connection of standard FTP with TLS. The Kamelet uses explicit
 ----
 
 This example enables passive mode, binary transfer, and recursive directory processing. The Kamelet uses explicit FTPS: it connects to the normal FTP port and then switches to TLS. Servers that only accept implicit FTPS (usually on port 990) are not supported.
+
+=== Example with Files Moved After Reading
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ftps-source"
+      parameters:
+        connectionHost: "ftps.example.com"
+        username: "ftpsuser"
+        password: "ftpspass"
+        directoryName: "/incoming"
+        move: ".done"
+        moveFailed: ".error"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Each file is moved to the `.done` directory next to it once it has been read, and to `.error` when it could not be handed on, so a restart does not read the same files again while they are kept on the server. Directories whose names start with a dot are never read, also when **Recursive** is true. The user needs the right to create directories and rename files on the server.

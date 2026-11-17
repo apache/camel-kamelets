@@ -18,7 +18,9 @@ The FTP Source Kamelet supports the following configurations:
 - **Idempotent**: Skip already-processed files (default: true)
 - **Binary**: Use binary transfer mode instead of ASCII (default: false)
 - **Auto Create**: Automatically create the starting directory if it doesn't exist (default: true)
-- **Delete**: Delete files after successful processing (default: false). When false, files are left on the server; with **Idempotent**, they are skipped while the integration runs but read again after a restart
+- **Delete**: Delete files after successful processing (default: false). When false, and **Move** is not set, files are left on the server; with **Idempotent**, they are skipped while the integration runs but read again after a restart
+- **Move**: Where to move each file on the server after it has been read, such as `.done`, so that it is not read again, also after a restart (not set by default). It cannot be combined with **Delete**
+- **Move Failed**: Where to move a file on the server when it could not be handed on, such as `.error` (not set by default). When not set, a file that fails is read again at every poll
 
 === Output Format
 
@@ -64,6 +66,27 @@ The Kamelet outputs file content as an `InputStream` and sets headers with file 
         - to:
             uri: "kamelet:log-sink"
 ----
+
+=== Example with Files Moved After Reading
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ftp-source"
+      parameters:
+        connectionHost: "ftp.example.com"
+        username: "ftpuser"
+        password: "ftppass"
+        directoryName: "/incoming"
+        move: ".done"
+        moveFailed: ".error"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Each file is moved to the `.done` directory next to it once it has been read, and to `.error` when it could not be handed on, so a restart does not read the same files again while they are kept on the server. Directories whose names start with a dot are never read, also when **Recursive** is true. The user needs the right to create directories and rename files on the server.
 
 === Example with File Deletion
 
