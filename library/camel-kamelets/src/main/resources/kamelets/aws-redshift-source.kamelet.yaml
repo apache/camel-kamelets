@@ -37,7 +37,7 @@ spec:
 
       Output: one message per row. The body is the row as a JSON object, in JSON text, with the column names as field names, such as `{"id":1,"username":"alice","city":"Rome"}`. The `Content-Type` header is `application/json`.
 
-      Good to know: the query runs again every `delay` milliseconds, and returns the same rows each time unless they change; set `consumedQuery` to mark or delete each row once it has been sent. It logs in with a database user and password, not with AWS keys, and connects with the Amazon Redshift JDBC driver, which uses TLS by default.
+      Good to know: the query runs again every `delay` milliseconds, and returns the same rows each time unless they change; set `consumedQuery` to mark or delete each row once it has been sent. It logs in with a database user and password, not with AWS keys, and connects with the Amazon Redshift JDBC driver, which uses TLS by default. Other settings of the driver go in `connectionProperties`.
     required:
       - serverName
       - username
@@ -89,6 +89,11 @@ spec:
         description: How long to wait between two runs of the query, in milliseconds.
         type: integer
         default: 500
+      connectionProperties:
+        title: Connection Properties
+        description: "Extra settings for the Amazon Redshift JDBC driver, as `name=value` pairs separated by `;`, such as `loginTimeout=30`. When it is not set, the driver connects with TLS, as it does by default. The value is not hidden like a password, and it can show in the log when the integration starts, so do not put a password in it."
+        type: string
+        example: loginTimeout=30
   types:
     out:
       mediaType: application/json
@@ -111,6 +116,7 @@ spec:
           password: "{{password}}"
           url: "jdbc:redshift://{{serverName}}:{{serverPort}}/{{databaseName}}"
           driverClassName: com.amazon.redshift.jdbc.Driver
+          connectionProperties: "{{?connectionProperties}}"
     from:
       uri: "{{local-sql-redshift-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume=RAW({{?consumedQuery}})&delay={{delay}}"
       steps:
