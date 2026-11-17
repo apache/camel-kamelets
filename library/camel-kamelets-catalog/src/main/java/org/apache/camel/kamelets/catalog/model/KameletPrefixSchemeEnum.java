@@ -47,7 +47,6 @@ public enum KameletPrefixSchemeEnum {
     ceph("ceph", "aws2-s3"),
     chuck_norris("chuck-norris", "http"),
     couchbase("couchbase", "couchbase"),
-    dropbox("dropbox", "dropbox"),
     elasticsearch_index("elasticsearch-index", "elasticsearch"),
     elasticsearch_search("elasticsearch-search", "elasticsearch"),
     exec("exec", "exec"),
@@ -120,9 +119,6 @@ public enum KameletPrefixSchemeEnum {
     ssh("ssh", "ssh"),
     telegram("telegram", "telegram"),
     timer("timer", "timer"),
-    twitter_directmessage("twitter-directmessage", "twitter-directmessage"),
-    twitter_timeline("twitter-timeline", "twitter-timeline"),
-    twitter_search("twitter-search", "twitter-search"),
     webhook("webhook", "platform-http"),
     wttrin("wttrin", "https");
 

@@ -142,7 +142,7 @@ public class KameletsCatalogTest {
     void testGetKameletsByNamespace() throws Exception {
         List<Kamelet> c = catalog.getKameletsByNamespace("AWS");
         assertFalse(c.isEmpty());
-        assertEquals(32, c.size());
+        assertEquals(31, c.size());
         c = catalog.getKameletsByGroups("Not-existing-group");
         assertTrue(c.isEmpty());
     }
@@ -215,8 +215,6 @@ public class KameletsCatalogTest {
         verifyHeaders("cassandra-sink", 1);
         verifyHeaders("cassandra-source", 1);
         verifyHeaders("couchbase-sink", 1);
-        verifyHeaders("dropbox-source", 0);
-        verifyHeaders("dropbox-source", 0);
         verifyHeaders("elasticsearch-index-sink", 4);
         verifyHeaders("elasticsearch-search-source", 10);
         verifyHeaders("exec-sink", 2);
@@ -311,9 +309,6 @@ public class KameletsCatalogTest {
         verifyHeaders("telegram-sink", 5);
         verifyHeaders("telegram-source", 2);
         verifyHeaders("timer-source", 1);
-        verifyHeaders("twitter-directmessage-source", 1);
-        verifyHeaders("twitter-timeline-source", 1);
-        verifyHeaders("twitter-search-source", 1);
         verifyHeaders("webhook-source", 3);
         verifyHeaders("wttrin-source", 5);
     }
