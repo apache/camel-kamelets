@@ -128,3 +128,4 @@ spec:
       steps:
         - to:
             uri: "spring-rabbitmq://{{exchangeName}}?autoDeclareProducer={{autoDeclareProducer}}&confirm={{confirm}}&confirmTimeout={{confirmTimeout}}&connectionFactory=#bean:{{connectionFactory}}&queues={{?queues}}&routingKey={{?routingKey}}"
+            pattern: InOnly

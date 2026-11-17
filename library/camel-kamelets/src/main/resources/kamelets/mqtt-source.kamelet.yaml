@@ -50,7 +50,6 @@ spec:
         title: Client ID
         description: The client ID to use when connecting to the resource
         type: string
-        default: "mqtt-source"
       username:
         title: Username
         description: Username to use when connecting to the MQTT broker
@@ -73,7 +72,7 @@ spec:
       parameters:
         topic: "{{topic}}"
         brokerUrl: "{{brokerUrl}}"
-        clientId: "{{clientId}}"
+        clientId: "{{?clientId}}"
         password: "RAW({{?password}})"
         userName: "RAW({{?username}})"
       steps:

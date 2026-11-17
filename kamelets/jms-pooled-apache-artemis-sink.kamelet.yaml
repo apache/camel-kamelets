@@ -105,6 +105,7 @@ spec:
       steps:
         - to:
             uri: jms
+            pattern: InOnly
             parameters:
               destinationType: "{{destinationType}}"
               destinationName: "{{destinationName}}"

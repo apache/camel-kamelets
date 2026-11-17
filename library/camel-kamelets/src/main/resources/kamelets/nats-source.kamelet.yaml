@@ -78,7 +78,5 @@ spec:
         jetstreamName: "{{?jetstreamName}}"
         servers: "{{servers}}"
       steps:
-        - marshal:
-            json: {}
         - to:
             uri: kamelet:sink
