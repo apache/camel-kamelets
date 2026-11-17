@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "JSLT Action"
-    description: Apply a JSLT query or transformation on JSON.
+    description: |-
+      Turns each JSON message into new JSON with a JSLT transformation, a query language for JSON that picks, renames and computes fields.
+
+      Use it to map the JSON of one system to the JSON another system expects, for example to keep only some fields, rename them or count the items of an order. To build text rather than JSON, use `mustache-template-action`; `jolt-transformation-action` reshapes JSON with Jolt specifications instead.
+
+      Input: JSON text, bytes or a stream. The transformation sees the body as `.` and a header as `$headers.name`, for example `{"customer": .name, "items": size(.items), "source": $headers.origin}`.
+
+      Output: the body is the result as JSON text. The headers are kept.
+
+      Good to know: parsed JSON (a Map or a JsonNode, such as the output of `json-deserialize-action`) fails the message: give the JSON as text. A field whose value is missing, such as a header that is not set, is left out of the result. The transformation is loaded from a file, the classpath or a URL given by the `template` option; it cannot come from the message.
     required:
       - template
     type: object
@@ -39,7 +48,7 @@ spec:
         title: Template
         description: "Where to load the JSLT transformation from, not the JSLT transformation itself: `file://` followed by the path of a file, `classpath://` followed by a resource in the application, or an `http://` or `https://` URL."
         type: string
-        example: "file://template.json"
+        example: "file:///opt/templates/order.jslt"
         pattern: "^(http|https|file|classpath|ref|bean)://.*"
   dependencies:
   - "camel:jslt"

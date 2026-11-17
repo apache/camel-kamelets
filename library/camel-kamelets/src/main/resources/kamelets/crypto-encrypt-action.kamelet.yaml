@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Crypto Encrypt Action"
-    description: Encrypt the payload using the Java Cryptographic Extension (JCE) and a fixed key.
+    description: |-
+      Encrypts the body of each message with a secret key, such as an AES key, for `crypto-decrypt-action` to decrypt later with the same key.
+
+      Use it to protect sensitive data, such as personal or payment details, before it is stored or sent through a system you do not fully trust, and decrypt it later with `crypto-decrypt-action` and the same `algorithm` and `key`.
+
+      Input: text or bytes.
+
+      Output: the body is the encrypted data, as bytes (a stream), a little longer than the input. It is not text: to send it where only text fits, encode it, for example in Base64. The headers are kept.
+
+      Good to know: the key is a secret; anyone who has it can decrypt the data, so keep it in a vault or a secret, not in plain configuration. The encrypted data carries a check value, so `crypto-decrypt-action` fails on data that was changed or decrypted with another key. A key of the wrong length fails each message, not the start.
     required:
       - algorithm
       - key
@@ -38,12 +47,12 @@ spec:
     properties:
       algorithm:
         title: Algorithm
-        description: The JCE algorithm name indicating the cryptographic algorithm that will be used.
+        description: "The name of the encryption algorithm, such as `AES`, or `DESede` for Triple DES. Give the name alone: a full form such as `AES/CBC/PKCS5Padding` fails each message. Use the same value in `crypto-decrypt-action`."
         type: string
         example: "AES"
       key:
         title: Secret Key
-        description: The secret key to use to encrypt the payload. The length must match the requirements of the selected algorithm (for example 16, 24 or 32 bytes for AES).
+        description: "The secret key, as text. Its length must fit the algorithm: for `AES`, 16, 24 or 32 characters (plain ASCII characters count as one byte each), and for `DESede`, 24. Use the same key in `crypto-decrypt-action`."
         type: string
         format: password
         x-descriptors:
