@@ -8,7 +8,7 @@ leave the others empty.
 [width="100%",cols="1,3",options="header"]
 |===
 | `saslAuthType` | Options to set
-| `NONE` (default) | None. No login and no TLS, as a local Kafka expects.
+| `NONE` | None. No login and no TLS, as a local Kafka expects.
 | `PLAIN`, `SCRAM_SHA_256`, `SCRAM_SHA_512` | `saslUsername` and `saslPassword`.
 | `SSL` | `sslTruststoreLocation` and `sslTruststorePassword`; for mutual TLS also `sslKeystoreLocation`, `sslKeystorePassword` and `sslKeyPassword`.
 | `OAUTH` | `oauthClientId`, `oauthClientSecret` and `oauthTokenEndpointUri`; `oauthScope` when the provider asks for one.
@@ -38,4 +38,5 @@ The route below sends a JSON order every ten seconds to the `orders` topic, with
             parameters:
               bootstrapServers: "localhost:9092"
               topic: orders
+              saslAuthType: NONE
 ----
