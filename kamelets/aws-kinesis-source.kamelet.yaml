@@ -39,7 +39,7 @@ spec:
 
       Output: the body is the data of the record, as bytes. The headers give the partition key, the sequence number, the shard ID and the arrival time of the record.
 
-      Good to know: it reads the stream from its oldest record, and again from the oldest record each time the integration starts: it does not remember where it stopped, so records are read again after a restart. Records are not removed: Kinesis keeps them for the retention period of the stream. With `useKclConsumers` it reads through the Kinesis Client Library instead, and the body is a `ByteBuffer` rather than bytes.
+      Good to know: by default it reads the stream from its oldest record, and again from the oldest record each time the integration starts: it does not remember where it stopped, so records are read again after a restart. Set `iteratorType` to `LATEST` to read only the records written after it started; the records written while it was stopped are then not read. `iteratorType` can also start at a sequence number or at a time, again on each start. Records are not removed: Kinesis keeps them for the retention period of the stream. With `useKclConsumers` it reads through the Kinesis Client Library instead, which keeps where it stopped in a DynamoDB table and does not use `iteratorType`, and the body is a `ByteBuffer` rather than bytes.
     required:
       - stream
       - region
@@ -107,6 +107,22 @@ spec:
         description: If true, it connects to the address in `uriEndpointOverride` instead of to AWS. Use it for a local stand-in of AWS such as LocalStack.
         type: boolean
         default: false
+      iteratorType:
+        title: Start Position
+        description: "Where in the stream it starts reading each time the integration starts. `TRIM_HORIZON` starts at the oldest record the stream still keeps, so the records are read again after each restart. `LATEST` reads only the records written after it started. `AT_SEQUENCE_NUMBER` and `AFTER_SEQUENCE_NUMBER` start at, or just after, the record whose sequence number is in `sequenceNumber`. `AT_TIMESTAMP` starts at the first record that arrived at or after the time in `messageTimestamp`. Not used when `useKclConsumers` is true."
+        type: string
+        enum: ["TRIM_HORIZON", "LATEST", "AT_SEQUENCE_NUMBER", "AFTER_SEQUENCE_NUMBER", "AT_TIMESTAMP"]
+        default: TRIM_HORIZON
+      sequenceNumber:
+        title: Sequence Number
+        description: The sequence number of the record to start at, as Kinesis gives it, such as the value of the `CamelAwsKinesisSequenceNumber` header of a record read earlier. Required, and only used, when `iteratorType` is `AT_SEQUENCE_NUMBER` or `AFTER_SEQUENCE_NUMBER`. A sequence number belongs to one shard, so this fits a stream with one shard.
+        example: "49655467183424123548936502291338416434578112145614569474"
+        type: string
+      messageTimestamp:
+        title: Start Time
+        description: The time to start reading at, either as an ISO 8601 date and time in UTC, such as `2026-11-17T08:00:00Z`, or as milliseconds since 1970-01-01 UTC, such as `1794902400000`. It starts at the first record that arrived in the stream at or after this time. Required, and only used, when `iteratorType` is `AT_TIMESTAMP`.
+        example: "2026-11-17T08:00:00Z"
+        type: string
       delay:
         title: Delay
         description: How long to wait between two polls of the stream, in milliseconds.
@@ -160,6 +176,9 @@ spec:
         accessKey: "RAW({{?accessKey}})"
         asyncClient: "{{asyncClient}}"
         delay: "{{delay}}"
+        iteratorType: "{{iteratorType}}"
+        sequenceNumber: "{{?sequenceNumber}}"
+        messageTimestamp: "{{?messageTimestamp}}"
         kclDisableCloudwatchMetricsExport: "{{kclDisableCloudwatchMetricsExport}}"
         overrideEndpoint: "{{overrideEndpoint}}"
         profileCredentialsName: "{{?profileCredentialsName}}"
