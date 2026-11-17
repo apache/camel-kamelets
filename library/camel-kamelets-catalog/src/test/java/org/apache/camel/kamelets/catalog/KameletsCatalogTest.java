@@ -303,7 +303,6 @@ public class KameletsCatalogTest {
         verifyHeaders("telegram-source", 2);
         verifyHeaders("timer-source", 1);
         verifyHeaders("webhook-source", 3);
-        verifyHeaders("wttrin-source", 5);
     }
 
     void verifyHeaders(String name, int expected) {
