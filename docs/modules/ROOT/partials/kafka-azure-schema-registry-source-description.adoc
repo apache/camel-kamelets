@@ -50,8 +50,10 @@ spec:
       name: kafka-azure-schema-registry-source
     properties:
       topic: "my-topic"
-      bootstrapServers: "kafka-broker1:9092,kafka-broker2:9092"
+      bootstrapServers: "my-registry.servicebus.windows.net:9093"
       azureRegistryUrl: "https://my-registry.servicebus.windows.net"
+      password: "Endpoint=sb://my-registry.servicebus.windows.net/;SharedAccessKeyName=...;SharedAccessKey=..."
+      specificAvroValueType: "com.example.Order"
   sink:
     ref:
       kind: Service

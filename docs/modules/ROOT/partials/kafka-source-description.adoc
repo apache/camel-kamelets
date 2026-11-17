@@ -102,10 +102,10 @@ keep working. The Kafka record headers are passed through separately, controlled
 
 === Security
 
-Nothing is enabled by default: `saslAuthType` is `NONE` and no TLS material is configured, so
-an unconfigured binding talks to the broker in the clear. Set `saslAuthType` and the matching
-properties for the mechanism the broker expects, and supply the truststore and keystore
-properties for a TLS listener.
+`saslAuthType` has no default, so the security of the connection is always chosen explicitly.
+With `NONE` the Kamelet talks to the broker in the clear, with no login. All the other types
+connect over TLS; supply the truststore properties when the brokers use a certificate that Java
+does not trust by default, and the keystore properties to log in with a client certificate.
 
 === Error Handling
 

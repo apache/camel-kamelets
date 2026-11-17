@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Kafka Not Secured with Apicurio Registry secured with Keycloak Sink"
-    description: Send data to Kafka topics on an insecure broker with Apicurio Registry secured with Keycloak.
+    description: |-
+      Sends each message as an Avro record to a topic in Apache Kafka, with the schema kept in an Apicurio Registry secured with Keycloak.
+
+      Use it to publish records that other applications read with the schema of the registry, when the registry needs a Keycloak login and Kafka needs none. When the registry needs no login use `kafka-apicurio-registry-not-secured-sink`; for records without a schema use `kafka-sink`.
+
+      Input: the body must be an Avro object, such as an Avro `GenericRecord` or an object of a class generated from the schema; it is written as Avro binary. A body of text is written as an Avro string, and so fails unless the schema is a string. The optional `key` header (or `ce-key`) becomes the key of the record, and the optional `partition-key` header (or `ce-partitionkey`) is the number of the partition to write to. The other headers of the message, except the Camel ones, are sent as record headers.
+
+      Output: the message is unchanged.
+
+      Good to know: The schema must already be in the registry, as the artifact `<topic>-value` (such as `orders-value`) in the default group: the Kamelet does not register it, and a message whose schema is not found fails with `ArtifactNotFoundException`. Kafka is not secured: it connects to the brokers with no login and no TLS.
     required:
       - topic
       - bootstrapServers
@@ -44,61 +53,81 @@ spec:
     type: object
     properties:
       topic:
-        title: Topic Names
-        description: Comma separated list of Kafka topic names
+        title: Topic Name
+        description: "The name of the topic to write the records to."
         type: string
+        example: "orders"
       bootstrapServers:
         title: Bootstrap Servers
-        description: Comma separated list of Kafka Broker URLs
+        description: "The address of one or more Kafka brokers to connect to first, as `host:port`, separated by commas. The other brokers of the cluster are found from them."
         type: string
+        example: "broker1:9092,broker2:9092"
       valueSerializer:
         title: Value Serializer
-        description: Serliazer class for value that implements the Serializer interface.
+        description: "The Java class that turns the body into the value of the record. The default writes Avro with the schema from the registry. Change it only to use another serializer of the Apicurio Registry library."
         type: string
         default: "io.apicurio.registry.serde.avro.AvroKafkaSerializer"
       apicurioRegistryUrl:
         title: Apicurio Registry URL
-        description: The Apicurio Schema Registry URL
+        description: "The URL of the API of the Apicurio Registry that holds the schemas, such as `http://registry:8080/apis/registry/v2`."
         type: string
+        example: "http://registry.example.com:8080/apis/registry/v2"
       avroDatumProvider:
         title: Avro Datum Provider
-        description: How to write data with Avro. Defaults to Apicurio's own DefaultAvroDatumProvider,
-          which handles GenericRecord and generated SpecificRecord classes. Set
-          io.apicurio.registry.serde.avro.ReflectAvroDatumProvider to map arbitrary POJOs onto Avro
-          by reflection instead.
+        description: "How the body is turned into Avro. The default `io.apicurio.registry.serde.avro.DefaultAvroDatumProvider` takes an Avro `GenericRecord` or an object of a class generated from the schema; `io.apicurio.registry.serde.avro.ReflectAvroDatumProvider` maps any Java object to Avro by reflection."
         type: string
         default: "io.apicurio.registry.serde.avro.DefaultAvroDatumProvider"
       apicurioAuthServiceUrl:
-        title: Apicurio Registry Auth Service URL
-        description: The URL for Keycloak instance securing the Apicurio Registry
+        title: Keycloak URL
+        description: "The URL of the Keycloak server that secures the registry."
         type: string
-        example: "http://my-keycloak.com:8080/"
+        example: "https://keycloak.example.com"
       apicurioAuthRealm:
-        title: Apicurio Registry Auth Realm
-        description: The Realm in Keycloak instance securing the Apicurio Registry
+        title: Keycloak Realm
+        description: "The Keycloak realm in which the client and the user of the registry are defined."
         type: string
+        example: "registry"
       apicurioAuthClientId:
-        title: Apicurio Registry Auth Client ID
-        description: The Client ID in Keycloak instance securing the Apicurio Registry
+        title: Keycloak Client ID
+        description: "The ID of the Keycloak client that has access to the registry."
         type: string
       apicurioAuthClientSecret:
-        title: Apicurio Registry Auth Client Secret
-        description: The Client Secret in Keycloak instance securing the Apicurio Registry
+        title: Keycloak Client Secret
+        description: "The secret of the Keycloak client `apicurioAuthClientId`, from the Credentials tab of the client in the Keycloak admin console."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       apicurioAuthUsername:
-        title: Apicurio Registry Auth Username
-        description: The Username in Keycloak instance securing the Apicurio Registry
+        title: Registry Username
+        description: "The user name to log in to the registry with, through Keycloak."
         type: string
       apicurioAuthPassword:
-        title: Apicurio Registry Auth Password
-        description: The Password in Keycloak instance securing the Apicurio Registry
+        title: Registry Password
+        description: "The password of `apicurioAuthUsername`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+  dataTypes:
+    in:
+      headers:
+        key:
+          title: Key
+          description: "Optional. The key of the record. `ce-key` is used when it is not set."
+          type: string
+        ce-key:
+          title: CloudEvents Key
+          description: "Optional. The key of the record, when `key` is not set."
+          type: string
+        partition-key:
+          title: Partition Key
+          description: "Optional. The number of the partition to write the record to. `ce-partitionkey` is used when it is not set."
+          type: integer
+        ce-partitionkey:
+          title: CloudEvents Partition Key
+          description: "Optional. The number of the partition to write the record to, when `partition-key` is not set."
+          type: integer
   dependencies:
     - "camel:kamelet"
     - "camel:kafka"

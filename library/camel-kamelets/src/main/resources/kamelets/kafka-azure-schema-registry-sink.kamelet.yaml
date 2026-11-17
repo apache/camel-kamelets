@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Azure Kafka through Eventhubs with Azure Schema Registry Sink"
-    description: Send data to Kafka topics on Azure Eventhubs combined with Azure Schema Registry.
+    description: |-
+      Sends each message as an Avro record to an event hub in Azure Event Hubs, through its Kafka interface, with the schema kept in Azure Schema Registry.
+
+      Use it to publish Avro records to Azure Event Hubs for applications that read them with the schema of the registry. For event hubs without a schema use `azure-eventhubs-sink`; for Apicurio Registry use `kafka-apicurio-registry-not-secured-sink`.
+
+      Input: the body must be an Avro object, such as an object of the class named in `specificAvroValueType`; it is written as Avro binary. The optional `key` header (or `ce-key`) becomes the key of the record, and the optional `partition-key` header (or `ce-partitionkey`) is the number of the partition to write to. The other headers of the message, except the Camel ones, are sent as record headers.
+
+      Output: the message is unchanged.
+
+      Good to know: it logs in to Event Hubs with the connection string in `password`, and to the schema registry with the Azure credentials of the environment the integration runs in, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables of a service principal, or a managed identity. The schemas must be in a schema group named `avro`.
     required:
       - topic
       - bootstrapServers
@@ -39,44 +48,66 @@ spec:
     type: object
     properties:
       topic:
-        title: Topic Names
-        description: Comma separated list of Kafka topic names
+        title: Event Hub Name
+        description: "The name of the event hub to write the records to, which Kafka calls the topic."
         type: string
+        example: "orders"
       bootstrapServers:
         title: Bootstrap Servers
-        description: Comma separated list of Kafka Broker URLs
+        description: "The Kafka address of the Event Hubs namespace, as `<namespace>.servicebus.windows.net:9093`."
         type: string
+        example: "my-namespace.servicebus.windows.net:9093"
       securityProtocol:
         title: Security Protocol
-        description: Protocol used to communicate with brokers. SASL_PLAINTEXT, PLAINTEXT, SASL_SSL and SSL are supported
+        description: "How to connect to Event Hubs. Keep the default `SASL_SSL`, a login over TLS, which Event Hubs requires. The other values are `SASL_PLAINTEXT`, `PLAINTEXT` and `SSL`."
         type: string
         default: SASL_SSL
       saslMechanism:
         title: SASL Mechanism
-        description: The Simple Authentication and Security Layer (SASL) Mechanism used.
+        description: "The login method. Keep the default `PLAIN`, which the login with the connection string in `password` needs."
         type: string
         default: PLAIN
       password:
-        title: Password
-        description: Password to authenticate to kafka
+        title: Connection String
+        description: "The connection string of the Event Hubs namespace, which starts with `Endpoint=sb://`. Find it in the Azure portal, under Shared access policies of the namespace."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       valueSerializer:
-        title: Value Deserializer
-        description: Deserializer class for value that implements the Deserializer interface.
+        title: Value Serializer
+        description: "The Java class that turns the body into the value of the record. The default writes Avro with the schema from Azure Schema Registry."
         type: string
         default: "com.microsoft.azure.schemaregistry.kafka.avro.KafkaAvroSerializer"
       azureRegistryUrl:
         title: Azure Schema Registry URL
-        description: The Apicurio Schema Registry URL
+        description: "The URL of the Azure Schema Registry, which is the address of the Event Hubs namespace that holds it, as `https://<namespace>.servicebus.windows.net`."
         type: string
+        example: "https://my-namespace.servicebus.windows.net"
       specificAvroValueType:
         title: Specific Avro Value Type
-        description: The Specific Type Avro will have to deal with
+        description: "The full name of the Java class generated from the Avro schema of the records. The class must be part of the integration. The Kamelet does not start without this option, although it is not marked as required."
         type: string
         example: "com.example.Order"
+  dataTypes:
+    in:
+      headers:
+        key:
+          title: Key
+          description: "Optional. The key of the record. `ce-key` is used when it is not set."
+          type: string
+        ce-key:
+          title: CloudEvents Key
+          description: "Optional. The key of the record, when `key` is not set."
+          type: string
+        partition-key:
+          title: Partition Key
+          description: "Optional. The number of the partition to write the record to. `ce-partitionkey` is used when it is not set."
+          type: integer
+        ce-partitionkey:
+          title: CloudEvents Partition Key
+          description: "Optional. The number of the partition to write the record to, when `partition-key` is not set."
+          type: integer
   dependencies:
     - "camel:kafka"
     - "camel:kamelet"

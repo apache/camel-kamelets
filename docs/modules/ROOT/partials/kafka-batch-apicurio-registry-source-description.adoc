@@ -4,7 +4,7 @@
 
 This Kamelet connects to Kafka using:
 
-- Security mechanisms (SASL/SSL)
+- No login and no TLS to Kafka; a Keycloak login to the registry
 - Apicurio Schema Registry for schema management
 - Batch consumption mode for processing multiple messages
 
@@ -38,6 +38,12 @@ spec:
       topic: "my-topic"
       bootstrapServers: "kafka-broker1:9092,kafka-broker2:9092"
       apicurioRegistryUrl: "http://apicurio-registry:8080/apis/registry/v2"
+      apicurioAuthServiceUrl: "https://keycloak.example.com"
+      apicurioAuthRealm: "registry"
+      apicurioAuthClientId: "registry-client"
+      apicurioAuthClientSecret: "client-secret"
+      apicurioAuthUsername: "registry-user"
+      apicurioAuthPassword: "registry-password"
   sink:
     ref:
       kind: Service

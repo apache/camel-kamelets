@@ -256,7 +256,7 @@ public class KameletsCatalogTest {
         verifyHeaders("jms-apache-artemis-sink", 18);
         verifyHeaders("jms-ibm-mq-source", 15);
         verifyHeaders("jms-ibm-mq-sink", 18);
-        verifyHeaders("kafka-source", 9);
+        verifyHeaders("kafka-source", 10);
         verifyHeaders("kafka-sink", 5);
         verifyHeaders("kubernetes-namespaces-source", 2);
         verifyHeaders("kubernetes-nodes-source", 2);
