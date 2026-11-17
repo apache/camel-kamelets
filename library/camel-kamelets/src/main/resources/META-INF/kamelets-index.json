@@ -310,16 +310,6 @@
     "namespace" : "AWS",
     "provider" : "Apache Software Foundation"
   }, {
-    "name" : "aws-sts-assume-role-action",
-    "type" : "action",
-    "supportLevel" : "Stable",
-    "title" : "AWS STS Assume Role Action",
-    "summary" : "Assume a role through STS",
-    "description" : "Assume a role through STS",
-    "group" : "AWS STS",
-    "namespace" : "AWS",
-    "provider" : "Apache Software Foundation"
-  }, {
     "name" : "aws-timestream-query-sink",
     "type" : "sink",
     "supportLevel" : "Preview",
@@ -600,16 +590,6 @@
     "namespace" : "Dataset",
     "provider" : "Apache Software Foundation"
   }, {
-    "name" : "chunk-template-action",
-    "type" : "action",
-    "supportLevel" : "Stable",
-    "title" : "Chunk Template Action",
-    "summary" : "Apply a Chunk Template.",
-    "description" : "Apply a Chunk Template.",
-    "group" : "Actions",
-    "namespace" : "Transformation",
-    "provider" : "Apache Software Foundation"
-  }, {
     "name" : "couchbase-sink",
     "type" : "sink",
     "supportLevel" : "Stable",
@@ -710,16 +690,6 @@
     "namespace" : "EIP",
     "provider" : "Apache Software Foundation"
   }, {
-    "name" : "djl-image-to-text-action",
-    "type" : "action",
-    "supportLevel" : "Preview",
-    "title" : "Image-to-Text Action",
-    "summary" : "Detect and classify objects in an image into texts using the SSD and ResNet models and the ImageNet dataset.",
-    "description" : "Detect and classify objects in an image into texts using the SSD and ResNet models and the ImageNet dataset.",
-    "group" : "Actions",
-    "namespace" : "AI",
-    "provider" : "Apache Software Foundation"
-  }, {
     "name" : "dns-dig-action",
     "type" : "action",
     "supportLevel" : "Stable",
@@ -788,26 +758,6 @@
     "description" : "Removes from each message all the headers whose names match a pattern, such as `Camel*`.\n\nUse it to remove the internal `Camel*` headers that came with a message from outside before it reaches a sink, or to clear many headers at once before a message goes to another system. To remove a single header by its name, `drop-header-action` is enough.\n\nInput: any message.\n\nOutput: the same body, without the headers that match `pattern`. The headers that match `excludePattern` are kept.\n\nGood to know: a pattern is compared with each header name first as an exact name, then as a wildcard when it ends with `*` (`x-*` matches every name that starts with `x-`), and then as a Java regular expression, such as `x-(one|two)`. None of these comparisons is case-sensitive.",
     "group" : "Actions",
     "namespace" : "EIP",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "dropbox-sink",
-    "type" : "sink",
-    "supportLevel" : "Stable",
-    "title" : "Dropbox Sink",
-    "summary" : "Upload Files to Dropbox.",
-    "description" : "Upload Files to Dropbox.",
-    "group" : "Dropbox",
-    "namespace" : "Cloud",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "dropbox-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "Dropbox Source",
-    "summary" : "Consume Files from Dropbox.",
-    "description" : "Consume Files from Dropbox.",
-    "group" : "Dropbox",
-    "namespace" : "Cloud",
     "provider" : "Apache Software Foundation"
   }, {
     "name" : "earthquake-source",
@@ -1475,7 +1425,7 @@
     "supportLevel" : "Stable",
     "title" : "Kafka Not Secured with Apicurio Registry Sink",
     "summary" : "Sends each message as an Avro record to a topic in Apache Kafka, with the schema kept in an Apicurio Registry, and no login or TLS to either.",
-    "description" : "Sends each message as an Avro record to a topic in Apache Kafka, with the schema kept in an Apicurio Registry, and no login or TLS to either.\n\nUse it to publish records that other applications read with the schema of the registry, on a Kafka and a registry that need no login, such as in development. When the registry is secured with Keycloak use `kafka-not-secured-apicurio-registry-sink`; for Azure Schema Registry use `kafka-azure-schema-registry-sink`; for records without a schema use `kafka-sink`.\n\nInput: the body must be an Avro object, such as an Avro `GenericRecord` or an object of a class generated from the schema; it is written as Avro binary. A body of text is written as an Avro string, and so fails unless the schema is a string. The optional `key` header (or `ce-key`) becomes the key of the record, and the optional `partition-key` header (or `ce-partitionkey`) is the number of the partition to write to. The other headers of the message, except the Camel ones, are sent as record headers.\n\nOutput: the message is unchanged.\n\nGood to know: The schema must already be in the registry, as the artifact `<topic>-value` (such as `orders-value`) in the default group: the Kamelet does not register it, and a message whose schema is not found fails with `ArtifactNotFoundException`. Neither Kafka nor the registry is secured: there is no login and no TLS.",
+    "description" : "Sends each message as an Avro record to a topic in Apache Kafka, with the schema kept in an Apicurio Registry, and no login or TLS to either.\n\nUse it to publish records that other applications read with the schema of the registry, on a Kafka and a registry that need no login, such as in development. When the registry is secured with Keycloak use `kafka-not-secured-apicurio-registry-sink`; for records without a schema use `kafka-sink`.\n\nInput: the body must be an Avro object, such as an Avro `GenericRecord` or an object of a class generated from the schema; it is written as Avro binary. A body of text is written as an Avro string, and so fails unless the schema is a string. The optional `key` header (or `ce-key`) becomes the key of the record, and the optional `partition-key` header (or `ce-partitionkey`) is the number of the partition to write to. The other headers of the message, except the Camel ones, are sent as record headers.\n\nOutput: the message is unchanged.\n\nGood to know: The schema must already be in the registry, as the artifact `<topic>-value` (such as `orders-value`) in the default group: the Kamelet does not register it, and a message whose schema is not found fails with `ArtifactNotFoundException`. Neither Kafka nor the registry is secured: there is no login and no TLS.",
     "group" : "Kafka",
     "namespace" : "Kafka",
     "provider" : "Apache Software Foundation"
@@ -1486,26 +1436,6 @@
     "title" : "Kafka Not Secured with Apicurio Registry Source",
     "summary" : "Receives each record written with a JSON Schema from topics in Apache Kafka, with the schema kept in an Apicurio Registry, and no login or TLS to either.",
     "description" : "Receives each record written with a JSON Schema from topics in Apache Kafka, with the schema kept in an Apicurio Registry, and no login or TLS to either.\n\nUse it to read JSON records that other applications write with a JSON Schema of the registry, on a Kafka and a registry that need no login, such as in development. For Avro records use `kafka-batch-apicurio-registry-not-secured-source`; when the registry is secured with Keycloak use `kafka-not-secured-apicurio-registry-json-source`; for records without a schema use `kafka-source`.\n\nOutput: the body is the value of the record as parsed JSON. The `kafka-topic`, `kafka-key`, `kafka-partition`, `kafka-offset` and `kafka-timestamp` (in milliseconds since 1970) headers say where the record came from. They are also set as `ce-kafkatopic`, `ce-kafkakey` and so on, and as the `CamelKafka*` headers that the Kafka actions read. The record headers become message headers, as text unless `deserializeHeaders` is false.\n\nGood to know: it reads JSON Schema records only, not Avro: the sink of the same name writes Avro. Neither Kafka nor the registry is secured: there is no login and no TLS. A new consumer group starts at the newest records, unless `autoOffsetReset` is `earliest`. Without `consumerGroup`, every start uses a new group, so the records sent while the integration was stopped are skipped.",
-    "group" : "Kafka",
-    "namespace" : "Kafka",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "kafka-azure-schema-registry-sink",
-    "type" : "sink",
-    "supportLevel" : "Stable",
-    "title" : "Azure Kafka through Eventhubs with Azure Schema Registry Sink",
-    "summary" : "Sends each message as an Avro record to an event hub in Azure Event Hubs, through its Kafka interface, with the schema kept in Azure Schema Registry.",
-    "description" : "Sends each message as an Avro record to an event hub in Azure Event Hubs, through its Kafka interface, with the schema kept in Azure Schema Registry.\n\nUse it to publish Avro records to Azure Event Hubs for applications that read them with the schema of the registry. For event hubs without a schema use `azure-eventhubs-sink`; for Apicurio Registry use `kafka-apicurio-registry-not-secured-sink`.\n\nInput: the body must be an Avro object, such as an object of the class named in `specificAvroValueType`; it is written as Avro binary. The optional `key` header (or `ce-key`) becomes the key of the record, and the optional `partition-key` header (or `ce-partitionkey`) is the number of the partition to write to. The other headers of the message, except the Camel ones, are sent as record headers.\n\nOutput: the message is unchanged.\n\nGood to know: it logs in to Event Hubs with the connection string in `password`, and to the schema registry with the Azure credentials of the environment the integration runs in, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables of a service principal, or a managed identity. The schemas must be in a schema group named `avro`.",
-    "group" : "Kafka",
-    "namespace" : "Kafka",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "kafka-azure-schema-registry-source",
-    "type" : "source",
-    "supportLevel" : "Preview",
-    "title" : "Azure Kafka through Eventhubs with Azure Schema Registry Source",
-    "summary" : "Receives each Avro record from event hubs in Azure Event Hubs, through its Kafka interface, with the schema kept in Azure Schema Registry.",
-    "description" : "Receives each Avro record from event hubs in Azure Event Hubs, through its Kafka interface, with the schema kept in Azure Schema Registry.\n\nUse it to read Avro records that other applications write to Azure Event Hubs with the schema of the registry. For many records in one message use `kafka-batch-azure-schema-registry-source`; for event hubs without a schema use `azure-eventhubs-source`.\n\nOutput: the body is the value of the record as an object of the `specificAvroValueType` class. The `kafka-topic`, `kafka-key`, `kafka-partition`, `kafka-offset` and `kafka-timestamp` (in milliseconds since 1970) headers say where the record came from. They are also set as `ce-kafkatopic`, `ce-kafkakey` and so on, and as the `CamelKafka*` headers that the Kafka actions read. The record headers become message headers, as text unless `deserializeHeaders` is false.\n\nGood to know: it logs in to Event Hubs with the connection string in `password`, and to the schema registry with the Azure credentials of the environment the integration runs in, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables of a service principal, or a managed identity. The schemas must be in a schema group named `avro`. A new consumer group starts at the newest records, unless `autoOffsetReset` is `earliest`. Without `consumerGroup`, every start uses a new group, so the records sent while the integration was stopped are skipped.",
     "group" : "Kafka",
     "namespace" : "Kafka",
     "provider" : "Apache Software Foundation"
@@ -1526,16 +1456,6 @@
     "title" : "Kafka Batch with Apicurio Registry secured with Keycloak Source",
     "summary" : "Receives Avro records from topics in Apache Kafka in batches, with the schema kept in an Apicurio Registry secured with Keycloak.",
     "description" : "Receives Avro records from topics in Apache Kafka in batches, with the schema kept in an Apicurio Registry secured with Keycloak.\n\nUse it to read many Avro records at once, when the registry needs a Keycloak login and Kafka needs none. For one record at a time use `kafka-not-secured-apicurio-registry-source`; when the registry needs no login use `kafka-batch-apicurio-registry-not-secured-source`.\n\nOutput: the body is a List with one entry per record, up to `batchSize`. Each entry is a message of its own, with the value of the record as its body (an Avro `GenericRecord`, whose text form is JSON), and the key, offset and timestamp of the record in its `CamelKafkaKey`, `CamelKafkaOffset` and `CamelKafkaTimestamp` headers. The record headers are in the entries too, as bytes. The message itself has the `CamelKafkaTopic` and `CamelKafkaPartition` headers. The `kafka-topic`, `kafka-key` and other headers of `kafka-source` are not set.\n\nGood to know: Kafka is not secured: it connects to the brokers with no login and no TLS. To save the position in Kafka only once a batch was handled, set `allowManualCommit` to true and `autoCommitEnable` to false, and end the flow with `kafka-batch-manual-commit-action`.",
-    "group" : "Kafka",
-    "namespace" : "Kafka",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "kafka-batch-azure-schema-registry-source",
-    "type" : "source",
-    "supportLevel" : "Preview",
-    "title" : "Azure Kafka Batch through Eventhubs with Azure Schema Registry Source",
-    "summary" : "Receives Avro records from event hubs in Azure Event Hubs in batches, through its Kafka interface, with the schema kept in Azure Schema Registry.",
-    "description" : "Receives Avro records from event hubs in Azure Event Hubs in batches, through its Kafka interface, with the schema kept in Azure Schema Registry.\n\nUse it to read many Avro records at once from Azure Event Hubs, for example to write them to a database in one go. For one record at a time use `kafka-azure-schema-registry-source`.\n\nOutput: the body is a List with one entry per record, up to `batchSize`. Each entry is a message of its own, with the value of the record as its body (an object of the `specificAvroValueType` class), and the key, offset and timestamp of the record in its `CamelKafkaKey`, `CamelKafkaOffset` and `CamelKafkaTimestamp` headers. The record headers are in the entries too, as bytes. The message itself has the `CamelKafkaTopic` and `CamelKafkaPartition` headers. The `kafka-topic`, `kafka-key` and other headers of `kafka-source` are not set.\n\nGood to know: it logs in to Event Hubs with the connection string in `password`, and to the schema registry with the Azure credentials of the environment the integration runs in, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables of a service principal, or a managed identity. The schemas must be in a schema group named `avro`. To save the position in Kafka only once a batch was handled, set `allowManualCommit` to true and `autoCommitEnable` to false, and end the flow with `kafka-batch-manual-commit-action`.",
     "group" : "Kafka",
     "namespace" : "Kafka",
     "provider" : "Apache Software Foundation"
@@ -2498,36 +2418,6 @@
     "description" : "Keeps only the Kafka records whose topic name matches a regular expression, and drops all others.\n\nUse it to handle the records of only some topics, after a `kafka-source` whose `topic` lists several topics or is a pattern, for example only those of `orders-eu`. To keep or drop messages by another header use `header-matches-filter-action`.\n\nInput: a message from `kafka-source`, with the name of the topic in the `CamelKafkaTopic` header.\n\nOutput: the same message, unchanged, when `regex` matches the whole topic name. Otherwise the message is dropped and nothing is sent on.\n\nGood to know: the expression must match the whole name: `orders` does not keep the records of `orders-eu`, but `orders.*` does. A message without the `CamelKafkaTopic` header is dropped.",
     "group" : "Actions",
     "namespace" : "Kafka",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "twitter-directmessage-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "Twitter Direct Message Source",
-    "summary" : "Reads the direct messages of a Twitter (X) account, by asking Twitter at a regular interval, one message per direct message.",
-    "description" : "Reads the direct messages of a Twitter (X) account, by asking Twitter at a regular interval, one message per direct message.\n\nUse it to react to private messages sent to your company account, for example to open a support case or to forward them to a team chat. To read public tweets, use `twitter-search-source` or `twitter-timeline-source`.\n\nOutput: the body is the direct message as JSON text, with its `text`, its `id`, the `senderId` and the `recipientId`. The `CamelTwitterEventType` header is `DIRECT_MESSAGE`.\n\nGood to know: it reads the messages of the account that owns `accessToken`, both the ones it received and the ones it sent; compare `senderId` to tell them apart. At the first check, every direct message that Twitter still lists (the last 30 days) is sent, then only new ones, every 30 seconds. It does not remember what it read: after a restart, it sends them all again. It uses version 1.1 of the Twitter API, and the app needs the permission to read direct messages.",
-    "group" : "Twitter",
-    "namespace" : "Social",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "twitter-search-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "Twitter Search Source",
-    "summary" : "Reads the new tweets that match a search, such as a word, a hashtag or a mention, by asking Twitter (X) at a regular interval, one message per tweet.",
-    "description" : "Reads the new tweets that match a search, such as a word, a hashtag or a mention, by asking Twitter (X) at a regular interval, one message per tweet.\n\nUse it to follow what people say about a brand, a product or an event, for example to collect mentions for analysis or to alert a team. To follow the tweets of one account, use `twitter-timeline-source`.\n\nOutput: the body is the tweet as JSON text, with its `text`, its `id`, its `lang`, the time it was created and the `user` who wrote it. The `CamelTwitterEventType` header is `STATUS`.\n\nGood to know: it searches every 30 seconds. The first search sends up to 5 matching tweets, and each later search sends at most 5 tweets newer than the last one it saw, so on a busy search some tweets are missed. It does not remember what it read: after a restart, it starts over as on the first search. It uses the standard search of version 1.1 of the Twitter API.",
-    "group" : "Twitter",
-    "namespace" : "Social",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "twitter-timeline-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "Twitter Timeline Source",
-    "summary" : "Reads the new tweets that one Twitter (X) account posts, by asking Twitter at a regular interval, one message per tweet.",
-    "description" : "Reads the new tweets that one Twitter (X) account posts, by asking Twitter at a regular interval, one message per tweet.\n\nUse it to follow an account, such as a news feed, a status page or a partner, and pass on what it posts, for example to a chat or a database. To follow a word or a hashtag across all accounts, use `twitter-search-source`.\n\nOutput: the body is the tweet as JSON text, with its `text`, its `id`, the time it was created and the `user` who wrote it. The `CamelTwitterEventType` header is `STATUS`.\n\nGood to know: it checks every 30 seconds. The first check sends the 5 most recent tweets of the account, and each later check sends at most 5 tweets newer than the last one it saw. It does not remember what it read: after a restart, it starts again with the most recent tweets. It uses version 1.1 of the Twitter API.",
-    "group" : "Twitter",
-    "namespace" : "Social",
     "provider" : "Apache Software Foundation"
   }, {
     "name" : "value-to-key-action",
