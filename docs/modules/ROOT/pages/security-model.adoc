@@ -307,8 +307,8 @@ such, with a reference to this page.
   input is operator responsibility - the behaviour is the Kamelet's documented
   contract, analogous to Camel's "bean-based dispatch via internal headers is
   intentional" limitation.
-* *Network exposure of a source Kamelet.* `webhook-source`, `http-source`,
-  `http-secured-source` and similar open a `platform-http` listener. The catalog
+* *Network exposure of a source Kamelet.* `webhook-source` and similar open a
+  `platform-http` listener. The catalog
   does not add authentication except where a Kamelet's name and properties say
   it does (`*-secured-*` variants expose auth *options* the operator must
   configure). Exposing a source to untrusted networks, or not configuring the
