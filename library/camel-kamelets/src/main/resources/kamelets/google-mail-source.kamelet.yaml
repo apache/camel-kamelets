@@ -161,7 +161,7 @@ spec:
   - "camel:google-mail"
   template:
     from:
-      uri: "google-mail-stream://{{index}}?accessToken=RAW({{accessToken}})&applicationName={{applicationName}}&clientId={{clientId}}&clientSecret=RAW({{clientSecret}})&delay={{delay}}&labels={{labels}}&markAsRead={{markAsRead}}&query={{query}}&refreshToken=RAW({{refreshToken}})"
+      uri: "google-mail-stream://{{index}}?accessToken=RAW({{accessToken}})&applicationName={{applicationName}}&clientId={{clientId}}&clientSecret=RAW({{clientSecret}})&delay={{delay}}&labels={{?labels}}&markAsRead={{markAsRead}}&query={{query}}&refreshToken=RAW({{refreshToken}})"
       steps:
         - marshal:
             json: {}

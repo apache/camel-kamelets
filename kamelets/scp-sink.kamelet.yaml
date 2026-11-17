@@ -81,7 +81,7 @@ spec:
           from the classpath by default. Needed when the process has no
           $HOME/.ssh/known_hosts to fall back on.
         type: string
-        pattern: "^(http|https|file|classpath|ref|bean)://.*"
+        pattern: "^(classpath:)?[^:]+$"
       useUserKnownHostsFile:
         title: Use User Known Hosts File
         description: If knownHostFile has not been explicit configured then use the host file from System.getProperty(user.home)/.ssh/known_hosts.
@@ -95,4 +95,4 @@ spec:
       uri: kamelet:source
       steps:
         - to:
-            uri: "scp:{{serverName}}:{{serverPort}}?knownHostsUri={{?knownHostsUri}}&password=RAW({{?password}})&privateKeyFile=RAW({{?privateKeyFile}})&privateKeyPassphrase={{?privateKeyPassphrase}}&strictHostKeyChecking={{?strictHostKeyChecking}}&useUserKnownHostsFile={{?useUserKnownHostsFile}}&username=RAW({{?username}})"
+            uri: "scp:{{serverName}}:{{serverPort}}?knownHostsFile={{?knownHostsUri}}&password=RAW({{?password}})&privateKeyFile=RAW({{?privateKeyFile}})&privateKeyFilePassphrase=RAW({{?privateKeyPassphrase}})&strictHostKeyChecking={{?strictHostKeyChecking}}&useUserKnownHostsFile={{?useUserKnownHostsFile}}&username=RAW({{?username}})"

@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "Solr Source"
-    description: Query for documents to Solr Collection.
+    description: |-
+      Runs the same query on a collection or core of Apache Solr at a regular interval, and sends the result of each query as one message.
+
+      Use it to watch a Solr collection on a schedule, for example to send the documents that match a query to another system. To add documents to Solr, use `solr-sink`.
+
+      Output: the body is JSON text, the answer of Solr: `responseHeader`, and under `response` the list of the documents found, each with its fields. The `Content-Type` header is `application/json`.
+
+      Good to know: every query returns all the matching documents again, not only the new ones; filter on a date in the query to get only new documents. Each query returns only the first documents found, 10 with the usual Solr settings. It connects with plain HTTP.
     required:
       - period
       - servers
@@ -40,36 +47,40 @@ spec:
     properties:
       period:
         title: Period between Polls
-        description: The interval between fetches to the Solr collection
+        description: How long to wait between two queries, in milliseconds. For example, 60000 is one minute.
         type: integer
         default: 10000
+        example: 60000
       collection:
         title: Collection
-        description: Solr Collection name
+        description: The name of the Solr collection, or of the core on a Solr server that does not run in SolrCloud mode, to query.
         type: string
+        example: products
       servers:
         title: Servers
-        description: Comma separated list of Solr Servers and ports
+        description: The address of the Solr server, as `host:port`, without `http://` and without the `/solr` path. The port of Solr is 8983 by default.
         type: string
+        example: "solr.example.com:8983"
       query:
         title: Query
-        description: The query to submit to Solr
+        description: The query to run, in the Solr query syntax, as given in the `q` parameter of a Solr search, such as `*:*` for every document or `status_s:new`.
         type: string
+        example: "status_s:new"
       username:
         title: Username
-        description: Username to connect to Solr.
+        description: The Solr user to log in as, with Basic authentication. Leave it out for a Solr without login.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: Password to connect to Solr.
+        description: The password of the Solr user in `username`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
   types:
-    in:
+    out:
       mediaType: application/json
   dependencies:
   - "camel:solr"
@@ -102,5 +113,8 @@ spec:
             name: content-type
         - to:
             uri: "solr:{{servers}}/solr/?password=RAW({{?password}})&username=RAW({{?username}})"
+        - marshal:
+            json:
+              library: Jackson
         - to:
             uri: kamelet:sink
