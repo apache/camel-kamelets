@@ -34,13 +34,13 @@ spec:
     description: |-
       Sends each message to a queue or a topic in an Apache ActiveMQ Artemis broker, through JMS.
 
-      Use it to hand work to another application through a queue, such as orders to process, or to publish events on a topic for every application that listens. For a steady flow of messages, use `jms-pooled-apache-artemis-sink`, which reuses its connections to the broker and has `username` and `password` options. For another broker that speaks AMQP 1.0, use `jms-amqp-10-sink`.
+      Use it to hand work to another application through a queue, such as orders to process, or to publish events on a topic for every application that listens. For another broker that speaks AMQP 1.0, use `jms-amqp-10-sink`.
 
       Input: text is sent as a JMS text message, bytes as a JMS bytes message, and a Map as a JMS map message. The headers of the message, except the Camel ones, are sent along as JMS properties of the message.
 
       Output: the message is unchanged.
 
-      Good to know: Messages go to a queue unless `destinationType` is `topic`, and a message sent to a topic reaches only the receivers subscribed at that moment. It connects with no TLS and no login, unless `brokerURL` asks for them. It does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does.
+      Good to know: Messages go to a queue unless `destinationType` is `topic`, and a message sent to a topic reaches only the receivers subscribed at that moment. It connects with no TLS unless `brokerURL` asks for it, and logs in with `username` and `password` when they are set. It keeps its connections to the broker in a pool and reuses them for the next messages. It does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does.
     required:
       - destinationName
       - brokerURL
@@ -61,16 +61,54 @@ spec:
         description: "The address of the Artemis broker, as `tcp://host:port`; the usual port is 61616. Add `?sslEnabled=true` for TLS. A broker that needs a login takes it in the URL too, as `tcp://host:61616?user=app&password=secret`."
         type: string
         example: "tcp://localhost:61616"
+      username:
+        title: "Broker Username"
+        description: "The user name to log in to the broker with. Leave it empty for a broker that accepts clients without a login."
+        type: string
+        x-descriptors:
+        - urn:camel:group:credentials
+      password:
+        title: "Broker Password"
+        description: "The password to log in to the broker with, for the user `username`."
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      maxSessionsPerConnection:
+        title: "Max Sessions Per Connection"
+        description: "The most sessions that can be open at the same time on each connection of the pool. Each message being sent or received uses one session."
+        type: integer
+        default: 500
+      maxIdleSessionsPerConnection:
+        title: "Max Idle Sessions Per Connection"
+        description: "How many unused sessions each connection of the pool keeps open for reuse. Unused sessions beyond this number are closed."
+        type: integer
+        default: 500
+      connectionIdleTimeout:
+        title: "Connection Idle Timeout"
+        description: "How long a connection of the pool can stay unused before it is closed, in milliseconds. For example, 30000 is 30 seconds."
+        type: integer
+        default: 30000
   dependencies:
   - "camel:jms"
   - "camel:kamelet"
   - "mvn:org.apache.activemq:artemis-jakarta-client-all:2.57.0"
+  - "mvn:org.messaginghub:pooled-jms:3.2.6"
   template:
     beans:
       - name: connectionFactoryBean
         type: "#class:org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory"
         properties:
           brokerURL: "{{brokerURL}}"
+          user: "{{?username}}"
+          password: "{{?password}}"
+      - name: pooledFactoryBean
+        type: "#class:org.messaginghub.pooled.jms.JmsPoolConnectionFactory"
+        properties:
+          connectionFactory: "#bean:{{connectionFactoryBean}}"
+          maxSessionsPerConnection: "{{maxSessionsPerConnection}}"
+          maxIdleSessionsPerConnection: "{{maxIdleSessionsPerConnection}}"
+          connectionIdleTimeout: "{{connectionIdleTimeout}}"
     from:
       uri: kamelet:source
       steps:
@@ -80,4 +118,4 @@ spec:
             parameters:
               destinationType: "{{destinationType}}"
               destinationName: "{{destinationName}}"
-              connectionFactory: "#bean:{{connectionFactoryBean}}"
+              connectionFactory: "#bean:{{pooledFactoryBean}}"

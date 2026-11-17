@@ -2,9 +2,8 @@
 
 === Authentication
 
-This Kamelet has no `username` and `password` options. A broker that needs a login takes it in `brokerURL`, as
-`tcp://artemis.example.com:61616?user=artemisuser&password=artemispass`. To keep the password in an option of its own,
-use `jms-pooled-apache-artemis-source`, which has `username` and `password`.
+A broker that needs a login takes it in the `username` and `password` options. Without them, the Kamelet connects with
+no login.
 
 === Configuration
 
@@ -13,6 +12,7 @@ The JMS Apache Artemis Source Kamelet supports the following configurations:
 - **Broker URL**: Apache Artemis broker URL (required)
 - **Destination Name**: JMS destination (queue or topic) name (required)
 - **Destination Type**: Type of destination - queue or topic (default: queue)
+- **Username** and **Password**: the login to the broker, when it needs one
 
 The subscription to a topic is not durable, and the Kamelet has no option for a message selector.
 
@@ -47,7 +47,9 @@ The source receives only the messages published to the topic while it is connect
     from:
       uri: "kamelet:jms-apache-artemis-source"
       parameters:
-        brokerURL: "tcp://artemis.example.com:61616?user=artemisuser&password=artemispass"
+        brokerURL: "tcp://artemis.example.com:61616"
+        username: "artemisuser"
+        password: "artemispass"
         destinationName: "events.topic"
         destinationType: "topic"
       steps:
@@ -58,4 +60,4 @@ The source receives only the messages published to the topic while it is connect
 === Connection Management
 
 When the broker cannot be reached, the Kamelet starts anyway and tries to connect again every 5 seconds. It does not
-pool connections; `jms-pooled-apache-artemis-source` does.
+pool connections, and does not need to: it keeps its connection open while it receives.

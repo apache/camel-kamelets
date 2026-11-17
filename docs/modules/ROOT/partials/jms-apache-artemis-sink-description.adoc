@@ -11,3 +11,17 @@ The Kamelet supports both queue and topic destinations. The destination type can
 === Apache Artemis Client
 
 This sink uses the Apache Artemis Jakarta JMS client library to establish connections and send messages to the broker.
+
+=== Authentication
+
+A broker that needs a login takes it in the `username` and `password` options. Without them, the Kamelet connects with
+no login.
+
+=== Connection Pooling
+
+The Kamelet keeps its connections to the broker in a pool and reuses them for the next messages, instead of opening a
+new connection for each message. The pool is set with these options:
+
+- `maxSessionsPerConnection`: the most sessions open at the same time on each connection (default: 500)
+- `maxIdleSessionsPerConnection`: how many unused sessions each connection keeps for reuse (default: 500)
+- `connectionIdleTimeout`: how long an unused connection stays open, in milliseconds (default: 30000)
