@@ -36,7 +36,7 @@ spec:
 
       Use it to send a fixed text or a small JSON document, such as a status message, or to build a short text from headers and the old body. For longer texts, a template Kamelet such as `mustache-template-action` is easier to maintain.
 
-      Input: any message. In the text, `${body}` is the old body and `${header.name}` the value of a header.
+      Input: any message. In the text, `$\{body}` is the old body and `${header.name}` the value of a header.
 
       Output: the body is the text, with the values filled in. The headers are kept as they were, `Content-Type` too, so set it to match the new body when needed, for example with `insert-header-action`.
 
@@ -46,7 +46,7 @@ spec:
     properties:
       value:
         title: Value
-        description: "The new body, as text. `${body}` is replaced by the old body, `${header.name}` by the value of the header `name`, and `${date:now:yyyy-MM-dd}` by the current date."
+        description: "The new body, as text. `$\\{body}` is replaced by the old body, `${header.name}` by the value of the header `name`, and `${date:now:yyyy-MM-dd}` by the current date."
         type: string
         example: "Order ${header.orderId} received"
     type: object
