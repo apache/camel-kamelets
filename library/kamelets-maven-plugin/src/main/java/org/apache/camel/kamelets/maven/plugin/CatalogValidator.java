@@ -56,6 +56,7 @@ public final class CatalogValidator {
      * The longest summary, the first paragraph of the description that a list of the Kamelets shows.
      */
     static final int MAX_SUMMARY_LENGTH = 200;
+    private static final Pattern ATTRIBUTE_REFERENCE = Pattern.compile("(?<!\\\\)\\{[A-Za-z0-9_][A-Za-z0-9_-]*}");
 
     private static final Pattern PARAM = Pattern.compile("\\{\\{[?]?([A-Za-z0-9\\-._]+)(?:[:][^}]*)?}}");
 
@@ -221,6 +222,7 @@ public final class CatalogValidator {
         verifyDescriptors(kamelets, errors);
         verifyDuplicates(kamelets, errors);
         verifySummary(kamelets, errors);
+        verifyAttributeReferences(kamelets, errors);
         verifyUsedParams(kamelets, errors);
         verifyTemplateConvention(kamelets, errors);
         verifyDependencies(kamelets, errors);
@@ -444,6 +446,39 @@ public final class CatalogValidator {
                         + MAX_SUMMARY_LENGTH + ": the first paragraph of the description is what a list of the Kamelets"
                         + " shows, so end it after the first sentence with a blank line");
             }
+        }
+    }
+
+    /**
+     * The documentation page of a Kamelet renders its title, its description and the title and description of each
+     * property as AsciiDoc, where {@code {name}} is a reference to an attribute: {@code ${body}} or {@code {{body}}}
+     * in a text breaks the documentation build. Such a text must escape the brace, as {@code $\{body}}.
+     */
+    static void verifyAttributeReferences(List<KameletInfo> kamelets, List<String> errors) {
+        for (KameletInfo k : kamelets) {
+            if (k.definition() == null) {
+                continue;
+            }
+            checkAttributeReferences(k, "title", str(k.definition().get("title")), errors);
+            checkAttributeReferences(k, "description", str(k.definition().get("description")), errors);
+            for (Map.Entry<String, Object> e : k.properties().entrySet()) {
+                Map<String, Object> p = asMap(e.getValue());
+                if (p == null) {
+                    continue;
+                }
+                checkAttributeReferences(k, "title of property " + q(e.getKey()), str(p.get("title")), errors);
+                checkAttributeReferences(k, "description of property " + q(e.getKey()), str(p.get("description")),
+                        errors);
+            }
+        }
+    }
+
+    private static void checkAttributeReferences(KameletInfo k, String where, String text, List<String> errors) {
+        Matcher m = ATTRIBUTE_REFERENCE.matcher(text);
+        if (m.find()) {
+            errors.add("kamelet " + q(k.name) + " has " + q(m.group()) + " in its " + where
+                    + ", which the documentation reads as an AsciiDoc attribute: write " + q("\\" + m.group())
+                    + " instead");
         }
     }
 

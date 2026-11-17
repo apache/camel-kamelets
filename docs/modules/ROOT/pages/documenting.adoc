@@ -100,6 +100,9 @@ unchanged." Leave out the other paragraphs when they have nothing to add.
   the option or the header on.
 * *Plain text.* Use backticks for names, and a blank line between paragraphs (a `|-` block in YAML). No other
   markup: not every reader renders AsciiDoc or Markdown.
+* *Escape a brace before a name.* The documentation page renders the titles and descriptions as AsciiDoc, where
+  `+{name}+` is an attribute. Put a backslash before such a brace: `+$\{body}+`, `+{\{body}}+`, `+/pets/\{petId}+`. The
+  page then shows `+${body}+`, `+{{body}}+` and `+/pets/{petId}+`. The build fails on a brace that is not escaped.
 * *No history and no implementation reasons.* They belong in the commit message, the upgrade guide or the
   security model.
 * *Keep it short.* Most descriptions take 400 to 1000 characters.

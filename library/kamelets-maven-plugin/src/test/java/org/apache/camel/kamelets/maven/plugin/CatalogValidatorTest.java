@@ -58,6 +58,40 @@ public class CatalogValidatorTest {
         assertEquals(List.of(), verifySummary(null));
     }
 
+    @Test
+    void anAttributeReferenceInTheDescription() {
+        List<String> errors = verifyAttributeReferences("Sets the body to `${body}` again.", "The body.");
+
+        assertEquals(List.of("kamelet \"a-sink\" has \"{body}\" in its description, which the documentation reads as an"
+                + " AsciiDoc attribute: write \"\\{body}\" instead"), errors);
+    }
+
+    @Test
+    void anAttributeReferenceInAPropertyDescription() {
+        List<String> errors = verifyAttributeReferences("Sends each message.", "The template sees `{{body}}`.");
+
+        assertEquals(1, errors.size());
+        assertTrue(errors.get(0).contains("in its description of property \"template\""), errors.get(0));
+    }
+
+    @Test
+    void escapedBracesAndOtherBracesAreFine() {
+        assertEquals(List.of(), verifyAttributeReferences(
+                "Sets `$\\{body}` and `{\\{body}}`, with `{{headers.name}}`, `{ \"id\": 1 }` and `{}`.",
+                "A path such as `/pets/\\{petId}`."));
+    }
+
+    private static List<String> verifyAttributeReferences(String description, String propertyDescription) {
+        Map<String, Object> property = Map.of("type", "string", "title", "Template", "description", propertyDescription);
+        Map<String, Object> definition = Map.of("title", "A Sink", "description", description,
+                "properties", Map.of("template", property));
+        Map<String, Object> doc = Map.of("spec", Map.of("definition", definition));
+        List<String> errors = new ArrayList<>();
+        CatalogValidator.verifyAttributeReferences(
+                List.of(new CatalogValidator.KameletInfo("a-sink", new File("a-sink.kamelet.yaml"), doc)), errors);
+        return errors;
+    }
+
     private static List<String> verifySummary(String description) {
         Map<String, Object> definition = description != null ? Map.of("description", description) : Map.of();
         Map<String, Object> doc = Map.of("spec", Map.of("definition", definition));
