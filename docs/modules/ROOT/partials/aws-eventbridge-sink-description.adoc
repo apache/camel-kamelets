@@ -19,10 +19,12 @@ Only one of access key/secret key or default credentials provider could be used
 
 For more information, see the https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials.html[AWS credentials documentation]
 
-=== Required Headers
+=== Headers
 
-You need to set the `resources-arn` / `ce-resources-arn` property to specify the ARN of resources related to the event.
+Each event needs a resource ARN, a detail type and a source. Each comes from a header, or, when the message does not have the header, from the option of the Kamelet:
 
-You need to set the `detail-type` / `ce-detail-type` property to specify the detail type related to the event.
+- the `resources-arn` / `ce-resources-arn` header, or the `resourcesArn` option, to specify the ARN of resources related to the event, separated by commas.
 
-You need to set the `event-source` / `ce-event-source` property to specify the event source related to the event.
+- the `detail-type` / `ce-detail-type` header, or the `detailType` option, to specify the detail type related to the event.
+
+- the `event-source` / `ce-event-source` / `ce-source` header, or the `eventSource` option, to specify the event source related to the event. The `eventSourcePrefix` option is put before it.

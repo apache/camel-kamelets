@@ -31,7 +31,16 @@ metadata:
 spec:
   definition:
     title: "AWS S3 Streaming upload Sink"
-    description: Upload data to AWS S3 in streaming upload mode.
+    description: |-
+      Writes many messages into a few large files in an Amazon S3 bucket, adding each message to the current file and starting a new file after a number of messages or bytes.
+
+      Use it to store a stream of small records, such as log lines, events or sensor readings, as a few large files instead of one file per message. To upload one file per message, use `aws-s3-sink`.
+
+      Input: the body is added to the end of the current file as it is, as text, bytes or a stream. Nothing is put between two messages: end each message with a line break if the file must have one record per line. Headers are not used: the names of the files come from `keyName`.
+
+      Output: the message is unchanged. The message that completes a file gets the `CamelAwsS3ETag` header of that file.
+
+      Good to know: a file is uploaded when it has `batchMessageNumber` messages or `batchSize` bytes, or when `streamingUploadTimeout` has passed; until then it is not in the bucket. With the default `namingStrategy` of `progressive`, the first file is named `keyName`, such as `logs/app.log`, and the next ones `logs/app-1.log`, `logs/app-2.log` and so on. With `restartingPolicy` set to `override`, a new run starts again from `keyName` and replaces the files of the earlier run.
     required:
       - bucketNameOrArn
       - region
@@ -40,98 +49,104 @@ spec:
     properties:
       bucketNameOrArn:
         title: Bucket Name
-        description: The S3 Bucket name or Amazon Resource Name (ARN).
+        description: The name of the bucket, such as `my-bucket`, or its ARN (Amazon Resource Name), such as `arn:aws:s3:::my-bucket`.
+        example: my-bucket
         type: string
       accessKey:
         title: Access Key
-        description: The access key obtained from AWS.
+        description: The access key ID of an IAM user, which you create in the AWS console under IAM, Users, Security credentials. Use it together with `secretKey`. Leave both out when `useDefaultCredentialsProvider` or `useProfileCredentialsProvider` is true.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       secretKey:
         title: Secret Key
-        description: The secret key obtained from AWS.
+        description: The secret access key that belongs to `accessKey`. The AWS console shows it only once, when the access key is created.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       region:
         title: AWS Region
-        description: The AWS region to access.
+        description: The AWS region of the bucket, as a region code such as `eu-west-1` or `us-east-1`.
+        example: eu-west-1
         type: string
         enum: ["ap-south-1", "eu-south-1", "us-gov-east-1", "me-central-1", "ca-central-1", "eu-central-1", "us-iso-west-1", "us-west-1", "us-west-2", "af-south-1", "eu-north-1", "eu-west-3", "eu-west-2", "eu-west-1", "ap-northeast-3", "ap-northeast-2", "ap-northeast-1", "me-south-1", "sa-east-1", "ap-east-1", "cn-north-1", "us-gov-west-1", "ap-southeast-1", "ap-southeast-2", "us-iso-east-1", "ap-southeast-3", "us-east-1", "us-east-2", "cn-northwest-1", "us-isob-east-1", "aws-global", "aws-cn-global", "aws-us-gov-global", "aws-iso-global", "aws-iso-b-global"]
       autoCreateBucket:
         title: Autocreate Bucket
-        description: Setting the autocreation of the S3 bucket bucketName.
+        description: If true, the bucket is created when it does not exist. The credentials need the permission to create buckets.
         type: boolean
         default: false
       restartingPolicy:
         title: Restarting Policy
-        description: The restarting policy to use in streaming upload mode. There are 2 enums and the value can be one of `override`, `lastPart`.
+        description: What to do when the integration starts again and files from an earlier run exist. `lastPart` goes on numbering after the newest file, such as `logs/app-3.log`; `override` starts again from `keyName` and replaces the files of the earlier run. Only `progressive` naming uses it.
         type: string
         default: "lastPart"
       batchMessageNumber:
         title: Batch Message Number
-        description: The number of messages composing a batch in streaming upload mode.
+        description: How many messages make one file. The file is uploaded when it has this many messages, or `batchSize` bytes, whichever comes first.
         type: integer
         default: 10
       batchSize:
         title: Batch Size
-        description: The batch size (in bytes) in streaming upload mode.
+        description: How big a file may grow, in bytes, before it is uploaded and a new file is started. 1000000 is about 1 MB.
         type: integer
         default: 1000000
       streamingUploadTimeout:
         title: Streaming Upload Timeout
-        description: While streaming upload mode is true, this option set the timeout to complete upload.
+        description: How long to wait, in milliseconds, before the current file is uploaded even when it is not full. When it is not set, a file is uploaded only when it is full.
+        example: 60000
         type: integer
       namingStrategy:
         title: Naming Strategy
-        description: The naming strategy to use in streaming upload mode. There are 2 enums and the value can be one of progressive, random.
+        description: How the files after the first one are named, from `keyName` such as `logs/app.log`. `progressive` adds a number that counts up (`logs/app-1.log`, `logs/app-2.log`), `random` adds a random ID, and `timestamp` adds the time in milliseconds.
         type: string
         default: "progressive"
       keyName:
         title: Key Name
-        description: Setting the key name for an element in the bucket through endpoint parameter. In Streaming Upload, with the default configuration, this is the base for the progressive creation of files.
+        description: The key (the path in the bucket) of the first file, such as `logs/app.log`. The next files get a number or an ID added before the extension, as `namingStrategy` says.
+        example: logs/app.log
         type: string
       useDefaultCredentialsProvider:
         title: Default Credentials Provider
-        description: Set whether the S3 client should expect to load credentials through a default credentials provider or to expect static credentials to be passed in.
+        description: "If true, the credentials are found in the environment instead of in `accessKey` and `secretKey`: the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables, the `~/.aws/credentials` file, or the IAM role of the EC2 instance, ECS task or Kubernetes pod the integration runs on."
         type: boolean
         default: false
       useProfileCredentialsProvider:
         title: Profile Credentials Provider
-        description: Set whether the S3 client should expect to load credentials through a profile credentials provider.
+        description: If true, the credentials are read from a named profile in the AWS credentials file (`~/.aws/credentials`), as the AWS CLI does. Name the profile in `profileCredentialsName`.
         type: boolean
         default: false
       useSessionCredentials:
         title: Session Credentials
-        description: Set whether the S3 client should expect to use Session Credentials. This is useful in situation in which the user needs to assume a IAM role for doing operations in S3.
+        description: "If true, it logs in with temporary credentials: `accessKey`, `secretKey` and `sessionToken`, such as the ones AWS STS gives when you assume an IAM role."
         type: boolean
         default: false
       profileCredentialsName:
         title: Profile Credentials Name
-        description: If using a profile credentials provider this parameter sets the profile name.
+        description: The name of the profile in the AWS credentials file. Only used when `useProfileCredentialsProvider` is true; when it is not set, the default profile is used.
+        example: production
         type: string
       sessionToken:
         title: Session Token
-        description: Amazon AWS Session Token used when the user needs to assume a IAM role.
+        description: The session token of temporary credentials, which comes with their access key and secret key, for example from AWS STS when you assume an IAM role. Only used when `useSessionCredentials` is true.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       uriEndpointOverride:
         title: Overwrite Endpoint URI
-        description: The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option.
+        description: The address to connect to instead of AWS, as a URL such as `http://localhost:4566` for LocalStack. Only used when `overrideEndpoint` is true.
+        example: http://localhost:4566
         type: string
       overrideEndpoint:
         title: Endpoint Overwrite
-        description: Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option.
+        description: If true, it connects to the address in `uriEndpointOverride` instead of to AWS. Use it for a local stand-in of AWS such as LocalStack, or for S3-compatible storage such as MinIO.
         type: boolean
         default: false
       forcePathStyle:
         title: Force Path Style
-        description: Forces path style when accessing AWS S3 buckets.
+        description: If true, the bucket name is put in the path of the address (`https://host/my-bucket/key`) instead of in the host name (`https://my-bucket.host/key`). S3-compatible storage such as MinIO often needs it.
         type: boolean
         default: false
   dependencies:

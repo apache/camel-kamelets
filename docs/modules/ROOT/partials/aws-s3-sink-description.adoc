@@ -23,4 +23,6 @@ For more information, see the https://docs.aws.amazon.com/sdk-for-java/latest/de
 
 In the header, you can optionally set the `file` / `ce-file` property to specify the name of the file to upload.
 
-If you do not set the property in the header, the Kamelet uses the exchange ID for the file name.
+If you do not set the property in the header, the Kamelet uses a generated unique ID for the file name.
+
+When the `keyName` option is set, the `file` / `ce-file` header is not used, and every message is written to that key, replacing the previous file.
