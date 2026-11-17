@@ -2,42 +2,34 @@
 
 === Authentication methods
 
-This Kamelet connects to Solr using appropriate authentication mechanisms:
-
-- Service-specific authentication methods
-- API keys, tokens, or credential-based authentication
-- Connection configuration
+This Kamelet connects to Solr over plain HTTP. For a Solr with Basic authentication, set the `username` and `password` properties; leave them out for a Solr without login.
 
 === Output format
 
-The Kamelet consumes data from Solr and produces the data in JSON format.
+The Kamelet runs the configured query at every `period`, and produces one message per query: the answer of Solr as JSON text, with the documents found under `response`. Every query returns all the matching documents again, not only the new ones.
 
 === Configuration
 
-The Kamelet requires connection parameters specific to Solr:
+The Kamelet requires the following properties:
 
-- Service connection details
-- Authentication credentials
-- Query or consumption parameters
+- `servers`: the Solr server, as `host:port`
+- `collection`: the collection, or the core, to query
+- `query`: the query, in the Solr query syntax, such as `status_s:new`
+- `period`: the time between two queries, in milliseconds
 
 === Usage example
 
-```yaml
-apiVersion: camel.apache.org/v1alpha1
-kind: KameletBinding
-metadata:
-  name: solr-source-binding
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
-      name: solr-source
-    properties:
-      # Add service-specific properties here
-  sink:
-    ref:
-      kind: Service
-      apiVersion: v1
-      name: my-service
-```
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:solr-source"
+      parameters:
+        servers: "solr.example.com:8983"
+        collection: "products"
+        query: "status_s:new"
+        period: 60000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
