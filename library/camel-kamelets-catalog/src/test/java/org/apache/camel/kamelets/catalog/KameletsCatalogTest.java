@@ -233,13 +233,13 @@ public class KameletsCatalogTest {
         verifyHeaders("github-tag-source", 7);
         verifyHeaders("google-bigquery-sink", 4);
         verifyHeaders("google-calendar-source", 1);
-        verifyHeaders("google-functions-sink", 5);
+        verifyHeaders("google-functions-sink", 1);
         verifyHeaders("google-mail-source", 6);
-        verifyHeaders("google-pubsub-sink", 3);
-        verifyHeaders("google-pubsub-source", 6);
+        verifyHeaders("google-pubsub-sink", 1);
+        verifyHeaders("google-pubsub-source", 3);
         verifyHeaders("google-sheets-source", 5);
         verifyHeaders("google-storage-source", 4);
-        verifyHeaders("google-storage-sink", 15);
+        verifyHeaders("google-storage-sink", 3);
         verifyHeaders("http-source", 2);
         verifyHeaders("http-sink", 14);
         verifyHeaders("http-secured-source", 2);

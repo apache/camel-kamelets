@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "Google Mail Source"
-    description: Receive data from Google Mail.
+    description: |-
+      Receives the emails of a Gmail mailbox that match a search, by default the unread ones, one message per email, and marks each email as read once it has been processed.
+
+      Use it to act on incoming email, for example to open a ticket for each email sent to a support address, or to collect orders or invoices that arrive by mail.
+
+      Output: the body is the text of the email (its first part with content, such as the plain text part) as JSON text, that is the text in double quotes with JSON escapes. The headers give the subject (`CamelGoogleMailStreamSubject`), the sender (`CamelGoogleMailStreamFrom`), the recipients (`CamelGoogleMailStreamTo`, `CamelGoogleMailStreamCc`, `CamelGoogleMailStreamBcc`) and the Gmail ID of the email (`CamelGoogleMailId`).
+
+      Good to know: it reads the emails that match `query`, by default the unread ones. With `markAsRead` set to false and the default query, the same emails are read again on every poll. An email whose processing fails is marked as unread again. Set `labels`: the Kamelet does not start without it. It logs in to Google with OAuth: an OAuth client of a Google Cloud project, and an access token and a refresh token of the Gmail account.
     required:
       - index
       - clientId
@@ -42,58 +49,61 @@ spec:
     properties:
       index:
         title: Index
-        description: An index for the google mail endpoint.
+        description: Any name for this reader of the mailbox, such as `support`. It is not sent to Google.
         type: string
+        example: support
       clientId:
         title: Client ID
-        description: Client ID of the gmail application.
+        description: The client ID of an OAuth client, created in the Google Cloud console under APIs & Services > Credentials, in a project where the Gmail API is enabled.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       clientSecret:
         title: Client Secret
-        description: Client Secret of the gmail application.
+        description: The client secret of the OAuth client of `clientId`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       accessToken:
         title: Access Token
-        description: OAuth 2 access token for google mail application. This typically expires after an hour so refreshToken is recommended for long term usage.
+        description: An OAuth 2 access token of the Gmail account, with access to read and change its emails. It expires after about an hour; the Kamelet then gets a new one with `refreshToken`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       refreshToken:
         title: Refresh Token
-        description: OAuth 2 refresh token for google mail application. Using this, the Google Calendar component can obtain a new accessToken whenever the current one expires - a necessity if the application is long-lived.
+        description: An OAuth 2 refresh token of the Gmail account, which the Kamelet uses to get a new access token when the current one expires. You get it together with the access token, for example from the Google OAuth 2.0 Playground.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       delay:
         title: Delay
-        description: The number of milliseconds before the next poll
+        description: How long to wait between two polls of the mailbox, in milliseconds. For example, 60000 is one minute.
         type: integer
         default: 500
+        example: 60000
       applicationName:
-        title: Application name
-        description: Google Mail application name
+        title: Application Name
+        description: A name for your application, sent to Google with each call, such as `my-company-mail/1.0`.
         type: string
+        example: my-company-mail/1.0
       markAsRead:
         title: Mark as Read
-        description: Mark the message as read once it has been consumed
+        description: If true, each email is marked as read once it has been processed, so that the default query `is:unread` does not read it again.
         type: boolean
         default: true
       labels:
         title: Gmail Labels
-        description: Comma separated list of labels to take into account
+        description: The names of the Gmail labels to read the emails of, separated by commas, such as `INBOX` or a label of your own. Set it, as the Kamelet does not start without it.
         type: string
-        example: "inbox"
+        example: "INBOX"
       query:
         title: Gmail Query
-        description: The query to execute on gmail box
+        description: A Gmail search, written as in the search box of Gmail, that selects the emails to read.
         type: string
         example: "is:unread -category:(promotions OR social)"
         default: "is:unread"
@@ -102,28 +112,28 @@ spec:
       default: json
       headers:
         CamelGoogleMailId:
-          title: Camel Google Mail Id
-          description: The ID of the message
+          title: Email ID
+          description: The Gmail ID of the email.
           type: string
         CamelGoogleMailStreamTo:
-          title: Camel Google Mail To Address
-          description: The recipient of the message
+          title: To
+          description: The `To` header of the email, the recipients.
           type: string
         CamelGoogleMailStreamFrom:
-          title: Camel Google Mail From Address
-          description: The emitter of the message
+          title: From
+          description: The `From` header of the email, the sender.
           type: string
         CamelGoogleMailStreamCc:
-          title: Camel Google Mail Cc
-          description: The carbon copy of the message
+          title: Cc
+          description: The `Cc` header of the email, the recipients in copy.
           type: string
         CamelGoogleMailStreamBcc:
-          title: Camel Google Mail Bcc
-          description: The blind carbon cpoy of the message
+          title: Bcc
+          description: The `Bcc` header of the email, the hidden recipients.
           type: string
         CamelGoogleMailStreamSubject:
-          title: Camel Google Mail Subject
-          description: The subject of the message
+          title: Subject
+          description: The subject of the email.
           type: string
       types:
         json:

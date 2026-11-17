@@ -30,60 +30,70 @@ metadata:
 spec:
   definition:
     title: "Google Storage Source"
-    description: Consume objects from Google Cloud Storage.
+    description: |-
+      Reads the files (objects) in a Google Cloud Storage bucket, one message per file, and by default deletes each file once it has been read.
+
+      Use it to process files that another system drops into a bucket, such as uploaded documents, exported reports or log files. To react to new files through Pub/Sub notifications instead of reading the bucket over and over, use `google-storage-event-based-source`.
+
+      Output: the body is the content of the file, as a stream. The headers give the bucket name (`CamelGoogleCloudStorageBucketName`), the object name, that is the path of the file in the bucket (`CamelGoogleCloudStorageObjectName`), the content type and the ETag of the file.
+
+      Good to know: files are deleted from the bucket after they are read, unless `deleteAfterRead` is set to false; then the same files are read again on every poll, about twice a second. A file whose processing fails is not deleted, and is read again on the next poll. Without `serviceAccountKey`, it logs in with the Application Default Credentials of the environment where it runs.
     required:
       - bucketNameOrArn
     type: object
     properties:
       bucketNameOrArn:
-        title: Bucket Name Or ARN
-        description: The Google Cloud Storage bucket name or Bucket Amazon Resource Name (ARN).
+        title: Bucket Name
+        description: The name of the bucket to read the files from, without `gs://`.
         type: string
+        example: my-bucket
       serviceAccountKey:
         title: Service Account Key
-        description: The service account key to use as credentials for Google Cloud Storage access. You must encode this value in base64.
+        description: "The JSON key of a service account that may read (and delete) the files of the bucket, encoded in Base64: create the key in the Google Cloud console under IAM & Admin > Service Accounts > Keys, then encode the downloaded file, for example with `base64 -w0 key.json`. When it is not set, the Application Default Credentials are used: the key file named in the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, or the service account of the Google Cloud machine it runs on."
         type: binary
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       deleteAfterRead:
         title: Auto-delete Objects
-        description: Specifies to delete objects after consuming them.
+        description: If true, each file is deleted from the bucket after it has been read. Set it to false to keep the files; they are then read again on every poll.
         type: boolean
         default: true
       autoCreateBucket:
         title: Autocreate Bucket
-        description: Specifies to automatically create the Google Cloud Storage bucket.
+        description: If true, the bucket is created when it does not exist yet.
         type: boolean
         default: false
       prefix:
         title: Prefix
-        description: The prefix which is used in the BlobListOptions to only consume objects we are interested in.
+        description: Only read the files whose name starts with this text, such as a folder followed by `/`.
         type: string
+        example: 'inbox/'
       filter:
         title: Filter
-        description: A regular expression to include only blobs with name matching it.
+        description: A regular expression that the whole name of a file must match for the file to be read, such as `.*\.csv` for the CSV files only. The name includes the folders, as in `inbox/orders.csv`.
         type: string
+        example: '.*\.csv'
   dataTypes:
     out:
       default: binary
       headers:
         CamelGoogleCloudStorageBucketName:
-          title: Google Cloud Storage Bucket Name
-          description: The bucket name which has been used to retrieve objects
+          title: Bucket Name
+          description: The name of the bucket the file was read from.
           type: string
         CamelGoogleCloudStorageObjectName:
-          title: Google Cloud Storage Object Name
-          description: The object name under which the retrieved object is stored
+          title: Object Name
+          description: The name of the file in the bucket, with its folders, such as `inbox/orders.csv`.
           type: string
         CamelGoogleCloudStorageContentType:
           title: Content Type
-          description: The content type of the retrieved object.
+          description: The content type stored with the file.
           default: application/octet-stream
           type: string
         CamelGoogleCloudStorageETag:
-          title: ETag Value
-          description: The hex encoded 128-bit MD5 digest of the associated object according to RFC 1864.
+          title: ETag
+          description: The ETag of the file, which changes when the file changes.
           type: string
       types:
         binary:

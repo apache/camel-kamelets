@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "Google Calendar Source"
-    description: Receive event data from Google Calendar.
+    description: |-
+      Receives the events of a Google Calendar, such as meetings and appointments, one message per event, by asking the calendar for events at a regular interval.
+
+      Use it to act on calendar entries, for example to send a reminder before a meeting, copy new appointments into another system, or notify a team when a booking is made.
+
+      Output: the body is the event as JSON text, with the fields of the Google Calendar API such as `id`, `summary`, `start` and `attendees`. The `CamelGoogleCalendarEventId` header gives the ID of the event.
+
+      Good to know: by default it only receives the events that have not ended yet at the time of the poll (`consumeFromNow`). With `syncFlow` set to true, each poll after the first asks only for the events that are new or changed since the previous one. It logs in to Google with OAuth: an OAuth client of a Google Cloud project, and an access token and a refresh token of a Google account that may read the calendar.
     required:
       - index
       - calendarId
@@ -43,57 +50,61 @@ spec:
     properties:
       index:
         title: Index
-        description: An index for the Google Calendar endpoint.
+        description: Any name for this reader of the calendar, such as `events`. It is not sent to Google.
         type: string
+        example: events
       calendarId:
         title: Calendar ID
-        description: The calendar ID to use as the source of event data.
+        description: The ID of the calendar to read, `primary` for the main calendar of the Google account, or the ID shown in the settings of the calendar under Integrate calendar, which looks like an email address.
         type: string
+        example: primary
       clientId:
-        title: Client Id
-        description: The Client ID of the Google Calendar application.
+        title: Client ID
+        description: The client ID of an OAuth client, created in the Google Cloud console under APIs & Services > Credentials, in a project where the Google Calendar API is enabled.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       clientSecret:
         title: Client Secret
-        description: The Client secret of the Google Calendar application.
+        description: The client secret of the OAuth client of `clientId`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       accessToken:
         title: Access Token
-        description: The OAuth 2 access token for the Google Calendar application. This token typically expires after an hour. For long term usage, set the `refreshToken` property.
+        description: An OAuth 2 access token of the Google account, with access to Google Calendar. It expires after about an hour; the Kamelet then gets a new one with `refreshToken`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       refreshToken:
         title: Refresh Token
-        description: The OAuth 2 refresh token for the Google Calendar application. The Google Calendar component can obtain a new `accessToken` whenever the current one expires. Set this value for long term usage.
+        description: An OAuth 2 refresh token of the Google account, which the Kamelet uses to get a new access token when the current one expires. You get it together with the access token, for example from the Google OAuth 2.0 Playground.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       delay:
         title: Delay
-        description: The number of milliseconds before the next poll.
+        description: How long to wait between two polls of the calendar, in milliseconds. For example, 60000 is one minute.
         type: integer
         default: 500
+        example: 60000
       applicationName:
-        title: Application name
-        description: The Google Calendar application name.
+        title: Application Name
+        description: A name for your application, sent to Google with each call, such as `my-company-calendar/1.0`.
         type: string
+        example: my-company-calendar/1.0
       syncFlow:
         title: Sync Flow
-        description: Specifies to sync events for incremental synchronization.
+        description: If true, each poll after the first asks Google only for the events that were created, changed or cancelled since the previous poll.
         type: boolean
         default: false
       consumeFromNow:
-        title: Consume from now
-        description: Specfies to consume events in the calendar from now on.
+        title: Consume from Now
+        description: If true, only the events that have not ended yet at the time of each poll are read. If false, past events are read too.
         type: boolean
         default: true
   dataTypes:
@@ -101,8 +112,8 @@ spec:
       default: json
       headers:
         CamelGoogleCalendarEventId:
-          title: Camel Google Calendar Event Id
-          description: The calendar event id
+          title: Event ID
+          description: The ID of the calendar event.
           type: string
       types:
         json:

@@ -31,26 +31,35 @@ metadata:
 spec:
   definition:
     title: "IBM Watson Natural Language Understanding Sink"
-    description: Analyze text using IBM Watson Natural Language Understanding to extract sentiment, entities, keywords, concepts, categories, and emotions.
+    description: |-
+      Analyzes the text of each message with IBM Watson Natural Language Understanding and replaces the body with the results, such as the sentiment, the entities and the keywords.
+
+      Use it to find out what people write about and how they feel, for example to flag angry customer emails, tag support tickets with the products they mention, or measure the tone of reviews.
+
+      Input: the body is the text to analyze, as text. With `operation` set to `analyzeUrl`, the body is instead the address of a web page for Watson to fetch and analyze. The optional `CamelIBMWatsonLanguageText` or `CamelIBMWatsonLanguageUrl` header gives the text or the address instead of the body. An empty body fails.
+
+      Output: when it is used inside a route, the body afterwards is the results as JSON text (bytes), with the `Content-Type` header set to `application/json`. The `CamelIBMWatsonLanguageSentimentLabel` and `CamelIBMWatsonLanguageSentimentScore` headers give the sentiment of the whole text, and `CamelIBMWatsonLanguageLanguage` its language.
+
+      Good to know: it logs in with the API key of a Natural Language Understanding instance in IBM Cloud; set `serviceUrl` when the instance is not in the US South region.
     required:
       - apiKey
     type: object
     properties:
       apiKey:
         title: API Key
-        description: The IBM Cloud API key for Watson Natural Language Understanding.
+        description: The API key of the Natural Language Understanding instance, the `apikey` value of its service credentials in the IBM Cloud console.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       serviceUrl:
         title: Service URL
-        description: The Watson Natural Language Understanding service endpoint URL. If not specified, the default URL will be used.
+        description: The address of the Natural Language Understanding instance, the `url` value of its service credentials, which depends on the region of the instance. When it is not set, the address of the US South region is used.
         type: string
         example: "https://api.us-south.natural-language-understanding.watson.cloud.ibm.com"
       operation:
         title: Operation
-        description: The operation to perform.
+        description: "`analyzeText` analyzes the text of the body; `analyzeUrl` takes the body as the address of a web page that Watson fetches and analyzes."
         type: string
         default: analyzeText
         enum:
@@ -58,49 +67,59 @@ spec:
           - analyzeUrl
       analyzeSentiment:
         title: Analyze Sentiment
-        description: Enable sentiment analysis to detect positive, negative, or neutral sentiment.
+        description: If true, the results say whether the text is positive, negative or neutral, with a score from -1 to 1.
         type: boolean
         default: true
       analyzeEmotion:
         title: Analyze Emotion
-        description: Enable emotion analysis to detect emotions like joy, anger, sadness, fear, and disgust.
+        description: If true, the results give the emotions of the text, such as joy, anger, sadness, fear and disgust.
         type: boolean
         default: false
       analyzeEntities:
         title: Analyze Entities
-        description: Enable entity extraction to identify people, companies, organizations, cities, and more.
+        description: If true, the results list the people, companies, organizations, places and other named things in the text.
         type: boolean
         default: true
       analyzeKeywords:
         title: Analyze Keywords
-        description: Enable keyword extraction to identify important keywords and phrases.
+        description: If true, the results list the important words and phrases of the text.
         type: boolean
         default: true
       analyzeConcepts:
         title: Analyze Concepts
-        description: Enable concept extraction to identify high-level concepts that aren't necessarily mentioned in the text.
+        description: If true, the results list general concepts that the text is about, even when it does not name them.
         type: boolean
         default: false
       analyzeCategories:
         title: Analyze Categories
-        description: Enable category classification to classify content into a hierarchy of categories.
+        description: If true, the results place the text in a hierarchy of topics, such as `/technology and computing/software`.
         type: boolean
         default: false
   dataTypes:
+    in:
+      headers:
+        CamelIBMWatsonLanguageText:
+          title: Text
+          description: The text to analyze, used instead of the body.
+          type: string
+        CamelIBMWatsonLanguageUrl:
+          title: URL
+          description: The address of the web page to analyze, used instead of the body when `operation` is `analyzeUrl`.
+          type: string
     out:
       default: watson-analysis
       headers:
         CamelIBMWatsonLanguageSentimentLabel:
           title: Sentiment Label
-          description: The sentiment label (positive, negative, or neutral).
+          description: The sentiment of the whole text, `positive`, `negative` or `neutral`. Only set when `analyzeSentiment` is true.
           type: string
         CamelIBMWatsonLanguageSentimentScore:
           title: Sentiment Score
-          description: The sentiment score (-1 to 1, where -1 is most negative and 1 is most positive).
+          description: The sentiment of the whole text, from -1 (most negative) to 1 (most positive). Only set when `analyzeSentiment` is true.
           type: number
         CamelIBMWatsonLanguageLanguage:
           title: Detected Language
-          description: The detected language of the analyzed text.
+          description: The language of the text, as a code such as `en`.
           type: string
       types:
         watson-analysis:

@@ -5,7 +5,7 @@
 This Kamelet uses Service Account Key authentication to connect to Google Cloud Storage. You need to provide:
 
 - A service account key encoded in base64 format (optional, can use default credentials)
-- The bucket name or Amazon Resource Name (ARN) from which to consume objects
+- The name of the bucket from which to consume objects
 
 === Output format
 
@@ -15,7 +15,7 @@ The Kamelet consumes objects from Google Cloud Storage and produces the object d
 
 The Kamelet requires the following parameters:
 
-- `bucketNameOrArn`: The Google Cloud Storage bucket name or Bucket Amazon Resource Name (ARN)
+- `bucketNameOrArn`: The name of the Google Cloud Storage bucket
 
 Optional parameters:
 - `serviceAccountKey`: The service account key to use as credentials (must be base64 encoded)

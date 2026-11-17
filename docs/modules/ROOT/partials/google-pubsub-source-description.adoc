@@ -10,7 +10,7 @@ This Kamelet uses Service Account Key authentication to connect to Google Cloud 
 
 === Output format
 
-The Kamelet consumes messages from Google Cloud Pub/Sub and produces the message data in JSON format.
+The Kamelet consumes messages from Google Cloud Pub/Sub. The body is the data of each message, as bytes, and the attributes of the message are set as headers.
 
 === Configuration
 

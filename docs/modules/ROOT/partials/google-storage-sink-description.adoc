@@ -6,15 +6,15 @@ This Kamelet supports Google Cloud service account authentication. The service a
 
 === Required Configuration
 
-- **Bucket Name or ARN**: The Google Cloud Storage bucket name or Amazon Resource Name
+- **Bucket Name**: The name of the Google Cloud Storage bucket
 
 === Optional Configuration
 
-- **Service Account Key**: Base64-encoded service account credentials
+- **Service Account Key**: The JSON key file of a service account, encoded in Base64
 - **Auto Create Bucket**: Automatically creates the bucket if it doesn't exist (defaults to false)
 
 === Optional Headers
 
 In the header, you can optionally set the `file` / `ce-file` property to specify the name of the object to upload.
 
-If you do not set the property in the header, the Kamelet uses the exchange ID for the object name.
+If you do not set the property in the header, the Kamelet uses a generated unique name for the object. An object with the same name is overwritten.

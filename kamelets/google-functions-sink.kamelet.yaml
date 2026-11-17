@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Google Functions Sink"
-    description: Send data to Google Functions.
+    description: |-
+      Calls a function in Google Cloud Functions for each message, with the body as the data of the call.
+
+      Use it to hand each message to your own serverless code, for example to enrich, check or store it, without running a web server for it.
+
+      Input: the body is the data to call the function with, as text; bytes and streams are read as text. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`.
+
+      Output: when it is used inside a route, the body afterwards is the result that the function returned, as text, and the `CamelGoogleCloudFunctionsResponseObject` header holds the whole response of the call.
+
+      Good to know: it calls the function through the Cloud Functions API (the `call` method), with the service account key, not through the HTTP address of the function.
     required:
       - projectId
       - functionName
@@ -39,24 +48,34 @@ spec:
     type: object
     properties:
       projectId:
-        title: Project Id
-        description: The Google Cloud Functions Project ID.
+        title: Project ID
+        description: The ID of the Google Cloud project where the function is deployed, as shown in the Google Cloud console. It is the project ID, not the project name or number.
         type: string
+        example: my-project-123
       region:
-        title: Region 
-        description: The region where Google Cloud Functions has been deployed.
+        title: Region
+        description: The region where the function is deployed.
         type: string
+        example: us-central1
       functionName:
         title: Function Name
-        description: The Function name.
+        description: The name of the function, as shown in the list of functions in the Google Cloud console.
         type: string
+        example: process-order
       serviceAccountKey:
         title: Service Account Key
-        description: The path to the service account key file that provides credentials for the Google Cloud Functions platform. You must encode this value in base64.
+        description: "The JSON key of a service account that may call the function, such as one with the Cloud Functions Invoker role, encoded in Base64: create the key in the Google Cloud console under IAM & Admin > Service Accounts > Keys, then encode the downloaded file, for example with `base64 -w0 key.json`. It is the content of the key file, not its path."
         type: binary
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+  dataTypes:
+    out:
+      headers:
+        CamelGoogleCloudFunctionsResponseObject:
+          title: Response
+          description: The whole response of the call, with the result, the execution ID and, when the function failed, the error.
+          type: object
   dependencies:
     - "camel:kamelet"
     - "camel:google-functions"

@@ -7,11 +7,11 @@ This Kamelet uses OAuth 2.0 authentication to connect to Google Mail. You need t
 - Client ID and Client Secret from your Google Cloud Console application
 - Access Token for immediate access (typically expires after an hour)
 - Refresh Token for long-term usage (allows automatic token renewal)
-- Application Name registered in Google Cloud Console
+- An application name of your choice, sent to Google with each call
 
 === Output format
 
-The Kamelet produces mail data in JSON format. It supports two output data types:
+The body is the text of the mail (its first part with content, such as the plain text part) as JSON text, that is the text in double quotes with JSON escapes. It supports two output data types:
 
 - **json**: Json representation of a Google Mail event object
 - **cloudevents**: Output data as CloudEvent V1 format with specific headers
@@ -44,11 +44,11 @@ The Kamelet requires the following parameters:
 - `accessToken`: OAuth 2 access token
 - `refreshToken`: OAuth 2 refresh token for long term usage
 - `applicationName`: Google Mail application name
+- `labels`: Comma separated list of labels to take into account (example: "INBOX"); the Kamelet does not start without it
 
 Optional parameters:
 - `delay`: The number of milliseconds before the next poll (default: 500)
 - `markAsRead`: Mark the message as read once it has been consumed (default: true)
-- `labels`: Comma separated list of labels to take into account (example: "inbox")
 - `query`: The query to execute on gmail box (default: "is:unread", example: "is:unread -category:(promotions OR social)")
 
 === Usage example
