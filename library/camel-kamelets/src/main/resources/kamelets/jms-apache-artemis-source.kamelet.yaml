@@ -31,26 +31,53 @@ metadata:
 spec:
   definition:
     title: "JMS - Apache Artemis Source"
-    description: "Receive data from an Apache Artemis message broker by using JMS."
+    description: |-
+      Receives each message from a queue or a topic in an Apache ActiveMQ Artemis broker, through JMS.
+
+      Use it to process work that other applications put on a queue, such as orders or jobs, or to react to events published on a topic. `jms-pooled-apache-artemis-source` does the same with a pool of connections and has `username` and `password` options. For another broker that speaks AMQP 1.0, use `jms-amqp-10-source`.
+
+      Output: the body is text for a JMS text message, bytes for a bytes message, and a Map for a map message. The JMS properties of the message become headers, along with the JMS headers such as `JMSMessageID`, `JMSDestination`, `JMSTimestamp`, `JMSPriority` and `JMSRedelivered`.
+
+      Good to know: From a queue, each message is removed when it is received, even when the rest of the flow then fails, and several copies of this source share the messages. From a topic (`destinationType` set to `topic`), it receives only the messages sent while it is connected, as the subscription is not durable. It connects with no TLS and no login, unless `brokerURL` asks for them. When the broker cannot be reached, it starts anyway and tries again every 5 seconds.
     required:
       - destinationName
       - brokerURL
     type: object
     properties:
       destinationType:
-        title: "Destination Type"
-        description: "The JMS destination type (queue or topic)."
+        title: "Queue or Topic"
+        description: "Whether `destinationName` is a queue (`queue`) or a topic (`topic`). A queue keeps each message until one receiver takes it; a topic hands each message to every receiver subscribed at that moment."
         type: string
         default: queue
       destinationName:
-        title: "Destination Name"
-        description: "The JMS destination name."
+        title: "Queue or Topic Name"
+        description: "The name of the queue or topic to receive the messages from."
+        example: "orders"
         type: string
       brokerURL:
         title: "Broker URL"
-        description: "The JMS URL."
+        description: "The address of the Artemis broker, as `tcp://host:port`; the usual port is 61616. Add `?sslEnabled=true` for TLS. A broker that needs a login takes it in the URL too, as `tcp://host:61616?user=app&password=secret`."
         type: string
-        example: "tcp://my-host:61616"
+        example: "tcp://localhost:61616"
+  dataTypes:
+    out:
+      headers:
+        JMSMessageID:
+          title: "Message ID"
+          description: "The ID the broker gave the message."
+          type: string
+        JMSDestination:
+          title: "Queue or Topic"
+          description: "The queue or topic the message was received from."
+          type: string
+        JMSTimestamp:
+          title: "Timestamp"
+          description: "When the message was sent, in milliseconds since 1970-01-01 UTC."
+          type: integer
+        JMSRedelivered:
+          title: "Redelivered"
+          description: "True when the broker delivers the message again, after an earlier delivery was not acknowledged."
+          type: boolean
   dependencies:
   - "camel:jms"
   - "camel:kamelet"

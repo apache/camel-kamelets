@@ -30,31 +30,40 @@ metadata:
 spec:
   definition:
     title: "MQTT v5 Sink"
-    description: Allows sending messages to any endpoint that supports the MQTT v5 protocol, such as a message broker.
+    description: |-
+      Publishes each message to a topic on an MQTT broker, such as Eclipse Mosquitto or HiveMQ, with MQTT 5.
+
+      Use it to send commands or data to IoT devices, or to publish readings and events, when the broker or the clients use MQTT 5. For a broker that only speaks MQTT 3.1.1, use `mqtt-sink`.
+
+      Input: the body is the payload, as text or bytes, and is sent as it is. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The headers of the message are not sent, not even as MQTT 5 user properties.
+
+      Output: the message is unchanged.
+
+      Good to know: messages are published with quality of service 2 (exactly once) and are not retained by the broker. It connects with no TLS unless `brokerUrl` starts with `ssl://`. It connects when the integration starts, and the integration fails to start when the broker cannot be reached.
     required:
     - topic
     - brokerUrl
     type: object
     properties:
       topic:
-        title: Topic
-        description: The topic to send messages to.
+        title: "Topic"
+        description: "The topic to publish each message to, such as `sensors/temperature`. Wildcards (`+` and `#`) cannot be used here."
         type: string
-        example: "mytopic"
+        example: "sensors/temperature"
       brokerUrl:
-        title: Broker URL
-        description: The URL of the broker where to establish the connection.
+        title: "Broker URL"
+        description: "The address of the MQTT broker, as `tcp://host:port` (usually port 1883), or `ssl://host:port` for TLS (usually port 8883)."
         type: string
         example: "tcp://mosquitto:1883"
       username:
-        title: Username
-        description: Username to use when connecting to the MQTT v5 compliant broker.
+        title: "Username"
+        description: "The user name to log in to the broker with. Leave it empty for a broker that accepts clients without a login."
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
-        title: Password
-        description: Password to use when connecting to the MQTT v5 compliant broker.
+        title: "Password"
+        description: "The password to log in to the broker with, for the user `username`."
         type: string
         format: password
         x-descriptors:

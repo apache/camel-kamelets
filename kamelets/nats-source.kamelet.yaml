@@ -30,40 +30,65 @@ metadata:
 spec:
   definition:
     title: "NATS Source"
-    description: Receive data from NATS topics.
+    description: |-
+      Receives each message published to a subject on a NATS server, or stored in a JetStream stream.
+
+      Use it to react to events or commands that services publish on NATS. Use `nats-sink` to publish them.
+
+      Output: the body is the payload, as a stream of bytes, unchanged. The `CamelNatsSubject` header is the subject, and the NATS headers of the message become headers too. The `Content-Type` header is always `application/json`, even when the payload is not JSON.
+
+      Good to know: without JetStream, it receives only the messages published while it is connected. With `jetstreamEnabled`, it creates the stream `jetstreamName` for the subject when it does not exist, and each time it starts it reads the stream from the beginning, so messages already read are received again. The integration fails to start when no server can be reached.
     required:
       - topic
       - servers
     type: object
     properties:
       topic:
-        title: Topic
-        description: NATS Topic name
+        title: "Subject"
+        description: "The NATS subject to receive the messages from."
+        example: "orders.created"
         type: string
       servers:
-        title: Servers
-        description: Comma separated list of NATS Servers
+        title: "Servers"
+        description: "The addresses of one or more NATS servers, as `host:port` or `nats://host:port`, separated by commas. The usual NATS port is 4222. For a server that needs a login, put the user and password in the address, as `nats://user:password@host:4222`."
+        example: "nats://localhost:4222"
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       jetstreamEnabled:
-        title: Jetstream Enabled
-        description: Sets whether to enable JetStream support for this endpoint.
+        title: "JetStream Enabled"
+        description: "If true, the messages are read from the JetStream stream `jetstreamName`, which keeps them, instead of from plain NATS. The stream is created for the subject in `topic` when it does not exist."
         type: boolean
         default: false
       jetstreamName:
-        title: Jetstream Stream Name
-        description: Sets the name of the JetStream stream to use.
+        title: "JetStream Stream Name"
+        description: "The name of the JetStream stream that stores the messages. Only used when `jetstreamEnabled` is true."
+        example: "ORDERS"
         type: string
       jetstreamAsync:
-        title: Jetstream Async Enabled
-        description: Sets whether to operate JetStream requests asynchronously.
+        title: "JetStream Async"
+        description: "If true, JetStream calls are made without blocking a thread while waiting for the server to answer. Only used when `jetstreamEnabled` is true."
         type: boolean
         default: true
   types:
     out:
       mediaType: application/json
+  dataTypes:
+    out:
+      headers:
+        CamelNatsSubject:
+          title: "Subject"
+          description: "The subject the message was published to."
+          type: string
+        CamelNatsReplyTo:
+          title: "Reply Subject"
+          description: "The subject to send a reply to, when the sender asked for one."
+          type: string
+        Content-Type:
+          title: "Content Type"
+          description: "Always `application/json`, whatever the payload is."
+          type: string
   dependencies:
   - "camel:jackson"
   - "camel:nats"

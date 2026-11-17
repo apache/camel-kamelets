@@ -30,35 +30,47 @@ metadata:
 spec:
   definition:
     title: "NATS Sink"
-    description: Send data to NATS topics.
+    description: |-
+      Publishes each message to a subject on a NATS server, or to a JetStream stream that stores the messages.
+
+      Use it to send events or commands to services that listen on NATS, such as microservices or edge devices. Use `nats-source` to receive them.
+
+      Input: the body is the payload, as text or bytes. A Map is sent as its Java text form, such as `{a=1, b=x}`, so turn it into JSON text first, for example with `json-serialize-action`. Headers of the message, such as `Content-Type`, are sent as NATS headers.
+
+      Output: the message is unchanged.
+
+      Good to know: a plain NATS subject stores nothing: only the receivers subscribed at that moment get the message. With `jetstreamEnabled`, the message is stored in the stream `jetstreamName`, which must exist already, for example created by `nats-source`; otherwise sending fails. It connects with no TLS, and the integration fails to start when no server can be reached. When the incoming message expects a reply, as one from `webhook-source` does, it is sent as a NATS request, and fails when no application answers it.
     required:
       - topic
       - servers
     type: object
     properties:
       topic:
-        title: Topic
-        description: NATS Topic name
+        title: "Subject"
+        description: "The NATS subject to publish the messages to."
+        example: "orders.created"
         type: string
       servers:
-        title: Servers
-        description: Comma separated list of NATS Servers
+        title: "Servers"
+        description: "The addresses of one or more NATS servers, as `host:port` or `nats://host:port`, separated by commas. The usual NATS port is 4222. For a server that needs a login, put the user and password in the address, as `nats://user:password@host:4222`."
+        example: "nats://localhost:4222"
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       jetstreamEnabled:
-        title: Jetstream Enabled
-        description: Sets whether to enable JetStream support for this endpoint.
+        title: "JetStream Enabled"
+        description: "If true, each message is published to the JetStream stream `jetstreamName`, which stores it, instead of to plain NATS. The stream must exist and take in the subject in `topic`."
         type: boolean
         default: false
       jetstreamName:
-        title: Jetstream Stream Name
-        description: Sets the name of the JetStream stream to use.
+        title: "JetStream Stream Name"
+        description: "The name of the JetStream stream that stores the messages. Only used when `jetstreamEnabled` is true."
+        example: "ORDERS"
         type: string
       jetstreamAsync:
-        title: Jetstream Async Enabled
-        description: Sets whether to operate JetStream requests asynchronously.
+        title: "JetStream Async"
+        description: "If true, JetStream calls are made without blocking a thread while waiting for the server to answer. Only used when `jetstreamEnabled` is true."
         type: boolean
         default: true
   dependencies:

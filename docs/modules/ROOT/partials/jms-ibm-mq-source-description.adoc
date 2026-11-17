@@ -2,46 +2,48 @@
 
 === Authentication methods
 
-This Kamelet supports IBM MQ authentication including:
+This Kamelet connects to IBM MQ as a client, with:
 
 - Channel and queue manager configuration
 - Username and password authentication
-- IBM MQ specific connection settings
+- TLS, when `sslCipherSuite` is set to a cipher suite that matches the channel
+
+=== IBM MQ client library
+
+The IBM MQ client library is not included in the Kamelet. Add it to the dependencies of the integration, for example
+`mvn:com.ibm.mq:com.ibm.mq.jakarta.client:<version>`. Camel JBang adds it by itself.
 
 === Output format
 
-The Kamelet consumes messages from IBM MQ queues and produces the message data in the configured format.
+The body is text for a JMS text message and bytes for a bytes message. The JMS properties of the message become
+headers, along with IBM MQ details such as `JMS_IBM_PutDate`.
 
 === Configuration
 
 The Kamelet requires IBM MQ specific connection parameters:
 
-- `destinationName`: The destination queue name
+- `serverName` and `serverPort`: the host and the port of the queue manager listener (1414 by default)
 - `queueManager`: IBM MQ queue manager name
 - `channel`: IBM MQ channel name
-- `connName`: IBM MQ connection name (host:port)
+- `username` and `password`: the login
+- `destinationName`: The destination queue name
 
 === Usage example
 
-```yaml
-apiVersion: camel.apache.org/v1alpha1
-kind: KameletBinding
-metadata:
-  name: jms-ibm-mq-source-binding
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
-      name: jms-ibm-mq-source
-    properties:
-      destinationName: "MY.QUEUE"
-      queueManager: "QM1"
-      channel: "DEV.APP.SVRCONN"
-      connName: "localhost(1414)"
-  sink:
-    ref:
-      kind: Service
-      apiVersion: v1
-      name: my-service
-```
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:jms-ibm-mq-source"
+      parameters:
+        serverName: "mq.example.com"
+        serverPort: 1414
+        queueManager: "QM1"
+        channel: "DEV.APP.SVRCONN"
+        username: "app"
+        password: "passw0rd"
+        destinationName: "DEV.QUEUE.1"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

@@ -1,43 +1,34 @@
-== Mqtt5 Source Kamelet Description
+== MQTT 5 Source Kamelet Description
 
-=== Authentication methods
+=== Authentication
 
-This Kamelet connects to Mqtt5 using appropriate authentication mechanisms:
-
-- Service-specific authentication methods
-- API keys, tokens, or credential-based authentication
-- Connection configuration
+The Kamelet logs in to the broker with `username` and `password`, or without a login when they are not set. For TLS,
+use an `ssl://` address in `brokerUrl`.
 
 === Output format
 
-The Kamelet consumes data from Mqtt5 and produces the data in JSON format.
+The body is the MQTT payload, as bytes; it is not turned into JSON. The `CamelMqttTopic` header is the topic of the
+message, `CamelMqttQoS` its quality of service, and `CamelPahoMqtt5MsgProperties` its MQTT 5 properties.
 
 === Configuration
 
-The Kamelet requires connection parameters specific to Mqtt5:
-
-- Service connection details
-- Authentication credentials
-- Query or consumption parameters
+- `topic`: the topic to subscribe to, with the `+` and `#` wildcards
+- `brokerUrl`: the address of the broker, such as `tcp://mosquitto:1883`
+- `clientId`: the client ID, `mqtt-source` by default; give each running copy its own
+- `username` and `password`: the login, when the broker needs one
 
 === Usage example
 
-```yaml
-apiVersion: camel.apache.org/v1alpha1
-kind: KameletBinding
-metadata:
-  name: mqtt5-source-binding
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
-      name: mqtt5-source
-    properties:
-      # Add service-specific properties here
-  sink:
-    ref:
-      kind: Service
-      apiVersion: v1
-      name: my-service
-```
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mqtt5-source"
+      parameters:
+        topic: "sensors/#"
+        brokerUrl: "tcp://mosquitto:1883"
+        clientId: "sensor-reader-1"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

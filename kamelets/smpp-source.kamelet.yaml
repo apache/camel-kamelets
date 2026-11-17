@@ -30,54 +30,77 @@ metadata:
 spec:
   definition:
     title: "SMPP Source"
-    description: Receive SMS messages and delivery receipts from a SMSC (Short Message Service Center) using the SMPP protocol.
+    description: |-
+      Receives each SMS sent to your numbers, and the delivery receipts of the SMS you sent, from an SMS center (SMSC) that speaks the SMPP protocol.
+
+      Use it to process SMS replies from customers, such as a STOP or a YES, or to follow whether the SMS sent with `smpp-sink` reached the phone.
+
+      Output: the body is the text of the SMS. The `CamelSmppSourceAddr` header is the phone number of the sender, `CamelSmppDestAddr` the number it was sent to, and `CamelSmppMessageType` is `DeliverSm` for an SMS and `DeliveryReceipt` for a delivery receipt, whose body is the text of the receipt and whose fields are in other `CamelSmpp` headers.
+
+      Good to know: it logs in to the SMSC as a receiver when the integration starts, and the integration fails to start when the SMSC cannot be reached. The SMSC decides which messages it gets, from `systemId` and `addressRange`. It connects with no TLS unless `usingSSL` is true.
     required:
     - host
     type: object
     properties:
       host:
-        title: Host
-        description: The hostname of the SMSC server to connect to.
+        title: "Host"
+        description: "The host name or IP address of the SMSC (the SMS center of your SMS provider or operator)."
         type: string
         example: "smsc.example.com"
       port:
-        title: Port
-        description: The port of the SMSC server to connect to.
+        title: "Port"
+        description: "The port of the SMSC. 2775 is the usual SMPP port."
         type: integer
         default: 2775
       systemId:
-        title: System ID
-        description: The system id (username) for connecting to the SMSC server.
+        title: "System ID"
+        description: "The user name, called system ID in SMPP, to log in to the SMSC with. Your SMS provider gives it."
         type: string
         default: smppclient
         x-descriptors:
         - urn:camel:group:credentials
       password:
-        title: Password
-        description: The password for connecting to the SMSC server.
+        title: "Password"
+        description: "The password to log in to the SMSC with. Your SMS provider gives it."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       systemType:
-        title: System Type
-        description: The type of ESME (External Short Message Entity) binding to the SMSC (max. 13 characters).
+        title: "System Type"
+        description: "A short label of at most 13 characters that some SMSCs ask for when logging in. Leave it empty unless your SMS provider gives one."
         type: string
         example: "cp"
       addressRange:
-        title: Address Range
-        description: The address range the consumer binds with, as defined in section 5.2.7 of the SMPP 3.4 specification. The SMSC uses it to route messages to this ESME.
+        title: "Address Range"
+        description: "The phone numbers this receiver wants the SMSC to send it messages for, as a regular expression, as defined in section 5.2.7 of the SMPP 3.4 specification. Most SMSCs decide this from `systemId` alone: leave it empty unless your SMS provider asks for it."
+        example: "^4512.*"
         type: string
       encoding:
-        title: Encoding
-        description: The encoding scheme of the short message user data.
+        title: "Encoding"
+        description: "The character set of the text of the SMS, such as `ISO-8859-1` or `UTF-8`."
         type: string
         default: "ISO-8859-1"
       usingSSL:
-        title: Using SSL
-        description: Whether to secure the connection to the SMSC server with TLS (the smpps protocol).
+        title: "Use TLS"
+        description: "Whether to secure the connection to the SMSC with TLS (the smpps protocol). The SMSC must support it, usually on another port."
         type: boolean
         default: false
+  dataTypes:
+    out:
+      headers:
+        CamelSmppSourceAddr:
+          title: "Sender Address"
+          description: "The phone number that sent the SMS."
+          type: string
+        CamelSmppDestAddr:
+          title: "Recipient Address"
+          description: "The phone number the SMS was sent to."
+          type: string
+        CamelSmppMessageType:
+          title: "Message Type"
+          description: "`DeliverSm` for an SMS, `DeliveryReceipt` for a delivery receipt."
+          type: string
   dependencies:
     - "camel:smpp"
     - "camel:kamelet"

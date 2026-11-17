@@ -2,7 +2,9 @@
 
 === Authentication
 
-This Kamelet supports username and password authentication to connect to Apache Artemis JMS broker. Connection can be configured with or without authentication based on broker setup.
+This Kamelet has no `username` and `password` options. A broker that needs a login takes it in `brokerURL`, as
+`tcp://artemis.example.com:61616?user=artemisuser&password=artemispass`. To keep the password in an option of its own,
+use `jms-pooled-apache-artemis-source`, which has `username` and `password`.
 
 === Configuration
 
@@ -11,15 +13,13 @@ The JMS Apache Artemis Source Kamelet supports the following configurations:
 - **Broker URL**: Apache Artemis broker URL (required)
 - **Destination Name**: JMS destination (queue or topic) name (required)
 - **Destination Type**: Type of destination - queue or topic (default: queue)
-- **Username**: Username for broker authentication (optional)
-- **Password**: Password for broker authentication (optional)
-- **Client ID**: JMS client ID for durable subscriptions
-- **Durable Subscription Name**: Name for durable topic subscription
-- **Message Selector**: JMS message selector for filtering
+
+The subscription to a topic is not durable, and the Kamelet has no option for a message selector.
 
 === Output Format
 
-The Kamelet outputs JMS messages including message body, headers, and JMS properties. Message format depends on the original message type (text, bytes, object, etc.).
+The Kamelet outputs JMS messages including message body, headers, and JMS properties. The body is text for a text
+message, bytes for a bytes message, and a Map for a map message.
 
 === Usage Example
 
@@ -32,8 +32,6 @@ The Kamelet outputs JMS messages including message body, headers, and JMS proper
         brokerURL: "tcp://artemis.example.com:61616"
         destinationName: "orders.queue"
         destinationType: "queue"
-        username: "artemisuser"
-        password: "artemispass"
       steps:
         - to:
             uri: "kamelet:log-sink"
@@ -41,38 +39,17 @@ The Kamelet outputs JMS messages including message body, headers, and JMS proper
 
 === Example with Topic Subscription
 
+The source receives only the messages published to the topic while it is connected.
+
 [source,yaml,subs='+attributes,macros']
 ----
 - route:
     from:
       uri: "kamelet:jms-apache-artemis-source"
       parameters:
-        brokerURL: "tcp://artemis.example.com:61616"
+        brokerURL: "tcp://artemis.example.com:61616?user=artemisuser&password=artemispass"
         destinationName: "events.topic"
         destinationType: "topic"
-        username: "artemisuser"
-        password: "artemispass"
-        clientId: "my-consumer"
-        durableSubscriptionName: "my-subscription"
-      steps:
-        - to:
-            uri: "kamelet:log-sink"
-----
-
-=== Example with Message Selector
-
-[source,yaml,subs='+attributes,macros']
-----
-- route:
-    from:
-      uri: "kamelet:jms-apache-artemis-source"
-      parameters:
-        brokerURL: "tcp://artemis.example.com:61616"
-        destinationName: "notifications.queue"
-        destinationType: "queue"
-        username: "artemisuser"
-        password: "artemispass"
-        messageSelector: "priority > 5"
       steps:
         - to:
             uri: "kamelet:log-sink"
@@ -80,4 +57,5 @@ The Kamelet outputs JMS messages including message body, headers, and JMS proper
 
 === Connection Management
 
-The kamelet manages connections to Apache Artemis automatically, including connection pooling and reconnection on failures. It supports both embedded and standalone Artemis deployments.
+When the broker cannot be reached, the Kamelet starts anyway and tries to connect again every 5 seconds. It does not
+pool connections; `jms-pooled-apache-artemis-source` does.

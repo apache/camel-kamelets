@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "RabbitMQ Sink"
-    description: Send data to a RabbitMQ Broker.
+    description: |-
+      Publishes each message to an exchange in a RabbitMQ broker, which routes it to queues by its routing key.
+
+      Use it to hand work or events to applications that read from RabbitMQ queues. Use `spring-rabbitmq-source` to read from them.
+
+      Input: the body is the payload, as text or bytes. Text is sent with the content type `text/plain`, and bytes with `application/octet-stream`. A Map fails, and so does an empty body: turn structured data into JSON text first, for example with `json-serialize-action`. The headers of the message, except the Camel ones, are sent as headers of the RabbitMQ message.
+
+      Output: the message is unchanged.
+
+      Good to know: it does not create the exchange, unless `autoDeclareProducer` is true. A message sent to an exchange that does not exist is lost without an error, unless publisher confirms are on (`publisherConfirmType` and `confirm`), and RabbitMQ drops a message that no queue is bound to take. It connects with no TLS unless `protocol` is `amqps`. When the incoming message expects a reply, as one from `webhook-source` does, the sink waits up to 30 seconds for a reply and then fails.
     required:
       - host
       - port
@@ -38,75 +47,73 @@ spec:
     type: object
     properties:
       host:
-        title: Server Address
-        description: RabbitMQ broker address
+        title: "Server Address"
+        description: "The host name or IP address of the RabbitMQ broker."
         type: string
         example: "localhost"
       port:
-        title: Server Port
-        description: RabbitMQ broker port
+        title: "Server Port"
+        description: "The port of the RabbitMQ broker: usually 5672, or 5671 for `amqps`."
         type: integer
         example: 5672
       routingKey:
-        title: Routing Key
-        description: The routing key to use when binding a consumer queue to the exchange
+        title: "Routing Key"
+        description: "The routing key of each message, which the exchange uses to choose the queues that get it. With a `direct` exchange, a queue gets the message when it is bound with the same key."
+        example: "new-order"
         type: string
       username:
-        title: Username
-        description: The username to access the RabbitMQ server
+        title: "Username"
+        description: "The user name to log in to RabbitMQ with. When it is not set, `guest` is used."
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
-        title: Password
-        description: The password to access the RabbitMQ server
+        title: "Password"
+        description: "The password to log in to RabbitMQ with, for the user `username`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       exchangeName:
-        title: Exchange name
-        description: The exchange name determines the exchange the queue is bound to.
+        title: "Exchange Name"
+        description: "The name of the exchange to publish the messages to."
+        example: "orders"
         type: string
       queues:
-        title: Queue name
-        description: The queue to receive messages from
+        title: "Queue Name"
+        description: "The queue to create and bind to the exchange with `routingKey` when `autoDeclareProducer` is true. Not used otherwise."
+        example: "orders"
         type: string
       autoDeclareProducer:
-        title: Auto Declare Producer
-        description: Specifies whether the producer should auto declare binding between exchange, queue and routing key when starting
+        title: "Create Exchange and Queue"
+        description: "If true, the sink creates the exchange (as a `direct` exchange) and the queue in `queues`, and binds them with `routingKey`, before it sends the first message."
         type: boolean
         default: false
       publisherConfirmType:
-        title: Publisher Confirm Type
-        description: The publisher confirm mode of the underlying connection factory. Must be SIMPLE or
-          CORRELATED for the confirm option below to have anything to wait on. NONE, the default, leaves
-          publisher confirms switched off.
+        title: "Publisher Confirm Type"
+        description: "Whether RabbitMQ confirms each message it takes: `NONE` turns confirms off, `SIMPLE` or `CORRELATED` turns them on. Use it with `confirm`."
         type: string
         default: "NONE"
         enum: ["NONE", "SIMPLE", "CORRELATED"]
       confirm:
-        title: Confirm
-        description: Controls whether to wait for publisher confirms. auto lets Camel detect whether the
-          connection factory is configured for confirms, enabled always waits, disabled never waits.
-          Requires publisherConfirmType to be SIMPLE or CORRELATED.
+        title: "Confirm"
+        description: "Whether the sink waits for RabbitMQ to confirm each message: `enabled` always waits, `disabled` never waits, and `auto` waits when `publisherConfirmType` turns confirms on. A message that is not confirmed fails, such as one sent to an exchange that does not exist."
         type: string
         default: "auto"
         enum: ["auto", "enabled", "disabled"]
       confirmTimeout:
-        title: Confirm Timeout
-        description: How long in milliseconds to wait for a sent message to be confirmed by RabbitMQ when
-          doing send-only (InOnly) messaging. A negative value waits indefinitely.
+        title: "Confirm Timeout"
+        description: "How long to wait for RabbitMQ to confirm a message, in milliseconds. A negative value waits forever."
         type: string
         default: "5000"
       vhost:
-        title: Virtual Host
-        description: The virtual host
+        title: "Virtual Host"
+        description: "The virtual host of the broker to connect to, which holds the exchanges and queues. RabbitMQ has the virtual host `/` from the start."
         type: string
         default: "/"
       protocol:
-        title:  Protocol
-        description: The AMQP protocol to use.
+        title: "Protocol"
+        description: "`amqp` for a plain connection, or `amqps` for a connection encrypted with TLS."
         type: string
         enum: ["amqp", "amqps"]
         default: "amqp"

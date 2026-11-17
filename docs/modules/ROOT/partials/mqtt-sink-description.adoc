@@ -27,4 +27,4 @@ MQTT's lightweight nature makes it ideal for:
 
 === Quality of Service
 
-MQTT supports different Quality of Service levels for message delivery guarantees, though this Kamelet uses the default QoS settings provided by the underlying MQTT client.
+MQTT supports different Quality of Service levels for message delivery guarantees. This Kamelet publishes every message with QoS 2 (exactly once), not retained, and has no option to change that.
