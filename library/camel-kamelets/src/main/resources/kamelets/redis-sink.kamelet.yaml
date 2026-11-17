@@ -33,7 +33,7 @@ spec:
     description: |-
       Runs a Redis command for each message, such as storing the body under a key with `SET`, adding it to a list with `RPUSH`, or publishing it on a channel with `PUBLISH`.
 
-      Use it to put values in a Redis cache for other applications to read, to push work items onto a Redis list, or to publish events on a Redis channel that `redis-source` or other subscribers listen to. To cache values only inside one running application, use `caffeine-action`.
+      Use it to put values in a Redis cache for other applications to read, to push work items onto a Redis list, or to publish events on a Redis channel that `redis-source` or other subscribers listen to.
 
       Input: the body is the value, as text. The `key` header (or `ce-key`) gives the key, for commands that work on a key such as `SET`, `GET` or `RPUSH`. The `channel` header (or `ce-channel`) gives the channel for `PUBLISH`; without it, the channel in `channels` is used.
 

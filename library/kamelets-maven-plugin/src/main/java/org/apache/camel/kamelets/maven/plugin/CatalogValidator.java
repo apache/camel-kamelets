@@ -90,8 +90,6 @@ public final class CatalogValidator {
             "set-kafka-key-action",
             "azure-storage-blob-event-based-source",
             "google-storage-event-based-source",
-            "elasticsearch-search-source",
-            "opensearch-search-source",
             "cassandra-sink",
             "data-type-action");
 
