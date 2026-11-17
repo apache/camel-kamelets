@@ -39,7 +39,7 @@ spec:
 
       Output: the body afterwards is the JSON object as a Map, and the `CamelSqlUpdateCount` header holds the number of rows the statement changed. When `query` is a SELECT, the body is instead a List of the rows found, each a Map, and the `CamelSqlRowCount` header holds their number.
 
-      Good to know: a message fails when its body is not a JSON object (a JSON array or plain text, for example), or when it has no value for a parameter of `query`. The values are sent to the database apart from the SQL text, so the content of a message cannot change the statement. Do not write `?` in `query`, not even in a quoted string: the Kamelet then fails to start.
+      Good to know: a message fails when its body is not a JSON object (a JSON array or plain text, for example), or when it has no value for a parameter of `query`. The values are sent to the database apart from the SQL text, so the content of a message cannot change the statement. Do not write `?` in `query`, not even in a quoted string: the Kamelet then fails to start. Without `connectionProperties`, the connection uses TLS only when the server offers it, and the certificate of the server is not checked: set `sslmode=require` or `sslmode=verify-full` in `connectionProperties` to insist on TLS.
     required:
       - serverName
       - username
@@ -81,6 +81,11 @@ spec:
         description: The name of the database to connect to on the PostgreSQL server.
         type: string
         example: shop
+      connectionProperties:
+        title: Connection Properties
+        description: "Extra settings for the PostgreSQL JDBC driver, as `name=value` pairs separated by `;`, such as `sslmode=require;connectTimeout=10`. Use it for TLS: `sslmode=require` refuses a server that does not offer TLS, and `sslmode=verify-full` also checks the certificate of the server against the CA certificate in the file named by `sslrootcert`. When it is not set, the driver uses TLS when the server offers it, without checking the certificate. The value is not hidden like a password, and it can show in the log when the integration starts, so do not put a password in it."
+        type: string
+        example: sslmode=require
   types:
     in:
       mediaType: application/json
@@ -114,6 +119,7 @@ spec:
           password: "{{password}}"
           url: "jdbc:postgresql://{{serverName}}:{{serverPort}}/{{databaseName}}"
           driverClassName: org.postgresql.Driver
+          connectionProperties: "{{?connectionProperties}}"
     from:
       uri: kamelet:source
       steps:

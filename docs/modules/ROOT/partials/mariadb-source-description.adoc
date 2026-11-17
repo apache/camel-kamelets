@@ -17,6 +17,7 @@ The Kamelet requires database connection parameters:
 - `username` and `password`: the database user to log in as
 - `query`: the SQL query to run, such as `SELECT * FROM accounts WHERE processed = false`
 - `consumedQuery` (optional): an SQL statement run for each row once it is sent, to mark the row as read or delete it, such as `UPDATE accounts SET processed = true WHERE id = :#id`
+- `connectionProperties` (optional): extra settings for the MariaDB JDBC driver, such as `sslMode=trust` to always use TLS
 
 === Usage example
 
@@ -37,4 +38,16 @@ The route below logs each account that is not processed yet, and marks it as pro
       steps:
         - to:
             uri: "kamelet:log-sink"
+----
+
+=== Connecting with TLS
+
+Set `connectionProperties` to pass settings to the MariaDB JDBC driver (MariaDB Connector/J), as `name=value` pairs
+separated by `;`. Without it, the default of the driver applies, and it depends on its version: Connector/J 3 connects
+without TLS, Connector/J 4 with TLS. Set `sslMode=trust` to always use TLS, without checking the certificate of the
+server.
+
+[source,yaml,subs='+attributes,macros']
+----
+connectionProperties: "sslMode=trust"
 ----

@@ -19,3 +19,15 @@ The Kamelet uses Apache Commons DBCP2 for connection pooling, providing efficien
 === Authentication
 
 Requires username and password authentication for secure database access. These credentials should be properly managed and secured.
+
+=== Connecting with TLS
+
+Set `connectionProperties` to pass settings to the MariaDB JDBC driver (MariaDB Connector/J), as `name=value` pairs
+separated by `;`. Without it, the default of the driver applies, and it depends on its version: Connector/J 3 connects
+without TLS, Connector/J 4 with TLS. Set `sslMode=trust` to always use TLS, without checking the certificate of the
+server.
+
+[source,yaml,subs='+attributes,macros']
+----
+connectionProperties: "sslMode=trust"
+----

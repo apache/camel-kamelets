@@ -16,6 +16,7 @@ The MySQL Source Kamelet supports the following configurations:
 - **Server Port**: Port number for the MySQL server (default: 3306)
 - **Delay**: How long to wait after one run of the query before the next, in milliseconds (default: 500)
 - **Consumed Query**: An SQL statement run for each row once it is sent, to mark the row as read or delete it, so that it is not read again
+- **Connection Properties**: Extra settings for the MySQL JDBC driver, such as `sslMode=REQUIRED` to always use TLS
 
 === Output Format
 
@@ -82,3 +83,14 @@ The Kamelet sends one message per row of the query result. Each row is a JSON ob
 === Connection Management
 
 The kamelet manages database connections automatically, including connection pooling and reconnection on failures. Query execution is scheduled at the specified interval.
+
+=== Connecting with TLS
+
+Set `connectionProperties` to pass settings to the MySQL JDBC driver (Connector/J), as `name=value` pairs separated by
+`;`. Without it, the driver uses TLS only when the server offers it, and does not check the certificate of the server.
+Set `sslMode=REQUIRED` to always use TLS.
+
+[source,yaml,subs='+attributes,macros']
+----
+connectionProperties: "sslMode=REQUIRED"
+----
