@@ -33,7 +33,7 @@ spec:
     description: |-
       Stores the body of each message under a key in a cache of a remote Infinispan server, or in Red Hat Data Grid.
 
-      Use it to share data between applications through an Infinispan cache, for example the latest status of each order or a lookup table that other services read. To react to the changes in a cache, use `infinispan-source`; to cache values only inside one running application, use `caffeine-action`.
+      Use it to share data between applications through an Infinispan cache, for example the latest status of each order or a lookup table that other services read. To react to the changes in a cache, use `infinispan-source`.
 
       Input: the body is the value to store, as text. The `key` header (or `ce-key`) is the key; without one, a new unique id is used as the key, so each message adds a new entry. A value that is already under the key is replaced.
 

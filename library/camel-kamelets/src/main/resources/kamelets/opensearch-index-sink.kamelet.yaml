@@ -33,7 +33,7 @@ spec:
     description: |-
       Stores each message, a JSON object, as a document in an index of OpenSearch, so that it can be searched.
 
-      Use it to make records searchable, such as orders, log entries or products, or to feed dashboards in OpenSearch Dashboards. To run a search on a schedule, use `opensearch-search-source`; for Elasticsearch, use `elasticsearch-index-sink`.
+      Use it to make records searchable, such as orders, log entries or products, or to feed dashboards in OpenSearch Dashboards. For Elasticsearch, use `elasticsearch-index-sink`.
 
       Input: the body is the document, as JSON text, such as `{"order": 42, "status": "shipped"}`. The optional `indexId` header (or `ce-indexid`) is the id of the document: a document with the same id is replaced. Without it, OpenSearch makes up a new id, so each message adds a new document. The optional `indexName` header (or `ce-indexname`) is the index to write to, instead of the `indexName` option.
 

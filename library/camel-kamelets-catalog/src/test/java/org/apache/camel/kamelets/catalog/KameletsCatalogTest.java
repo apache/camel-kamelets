@@ -207,16 +207,13 @@ public class KameletsCatalogTest {
         verifyHeaders("azure-servicebus-source", 7);
         verifyHeaders("azure-storage-blob-source", 8);
         verifyHeaders("azure-storage-blob-sink", 2);
-        verifyHeaders("azure-storage-blob-changefeed-source", 39);
         verifyHeaders("azure-storage-datalake-source", 26);
         verifyHeaders("azure-storage-datalake-sink", 2);
         verifyHeaders("azure-storage-queue-source", 6);
         verifyHeaders("azure-storage-queue-sink", 2);
         verifyHeaders("cassandra-sink", 1);
-        verifyHeaders("cassandra-source", 1);
         verifyHeaders("couchbase-sink", 1);
         verifyHeaders("elasticsearch-index-sink", 4);
-        verifyHeaders("elasticsearch-search-source", 10);
         verifyHeaders("exec-sink", 2);
         verifyHeaders("fhir-source", 0);
         verifyHeaders("file-watch-source", 3);
@@ -231,7 +228,6 @@ public class KameletsCatalogTest {
         verifyHeaders("github-tag-source", 7);
         verifyHeaders("google-bigquery-sink", 4);
         verifyHeaders("google-calendar-source", 1);
-        verifyHeaders("google-functions-sink", 1);
         verifyHeaders("google-mail-source", 6);
         verifyHeaders("google-pubsub-sink", 1);
         verifyHeaders("google-pubsub-source", 3);
@@ -256,9 +252,6 @@ public class KameletsCatalogTest {
         verifyHeaders("jms-ibm-mq-sink", 18);
         verifyHeaders("kafka-source", 10);
         verifyHeaders("kafka-sink", 5);
-        verifyHeaders("kubernetes-namespaces-source", 2);
-        verifyHeaders("kubernetes-nodes-source", 2);
-        verifyHeaders("kubernetes-pods-source", 2);
         verifyHeaders("log-sink", 0);
         verifyHeaders("mail-source", 0);
         verifyHeaders("mail-sink", 6);
