@@ -31,14 +31,21 @@ metadata:
 spec:
   definition:
     title: "Delay Action"
-    description: Delay the processing using a specific amount of time
+    description: |-
+      Holds each message for a fixed time, such as one second, before passing it on.
+
+      Use it to slow down a flow, for example to give another system time to finish its work before the next step, or to space out the calls of a test. To limit how many messages pass per second or per minute, rather than holding each one, use `throttle-action`.
+
+      Input: any message.
+
+      Output: the same message, unchanged, after the wait.
     required:
       - milliseconds
     type: object
     properties:
       milliseconds:
-        title: Milliseconds
-        description: The number of milliseconds of delay
+        title: Delay in Milliseconds
+        description: "How long to hold each message, in milliseconds. For example, 1000 is one second."
         type: integer
         example: 1000
   dependencies:

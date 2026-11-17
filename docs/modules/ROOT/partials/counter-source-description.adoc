@@ -4,7 +4,7 @@ This Kamelet provides a simple counting source that generates sequential numbers
 
 === Output format
 
-The Kamelet outputs each number as a plain text integer. Each message contains a single number that increments from the starting value.
+The Kamelet outputs each number as an `Integer` body (a whole number, not text), even though the `Content-Type` header is `text/plain`. Each message contains a single number that increments by one from the starting value.
 
 === Special headers
 

@@ -15,14 +15,14 @@ This Kamelet requires the following mandatory properties:
 
 === Cron expression format
 
-The cron expression follows the standard format:
+The cron expression follows the Quartz format, with the seconds first (a Unix cron expression of five fields, without the seconds, works too):
 ```
 <seconds> <minutes> <hours> <day-of-month> <month> <day-of-week> [year]
 ```
 
 === Usage examples
 
-Send a message every 3 seconds during the 10th hour:
+Send a message every 3 seconds during minute 10 of every hour:
 
 [source,yaml,subs='+attributes,macros']
 ----

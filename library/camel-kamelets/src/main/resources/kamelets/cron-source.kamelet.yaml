@@ -31,7 +31,14 @@ metadata:
 spec:
   definition:
     title: "Cron Source"
-    description: Send events at specific time.
+    description: |-
+      Sends the same fixed message on a calendar schedule, written as a cron expression, such as every weekday at 9:00.
+
+      Use it to start a flow at set times, such as a report every morning or a clean-up every night. For a message every few seconds or minutes, `timer-source` is simpler, and for a message that counts up use `counter-source`.
+
+      Output: the body is the `message` option as text, the same on every message. Headers about the schedule are set too, such as `fireTime` (the time of this message) and `nextFireTime`.
+
+      Good to know: the times are in the time zone of the machine it runs on. It keeps sending until the integration is stopped.
     required:
       - schedule
       - message
@@ -39,14 +46,14 @@ spec:
     properties:
       schedule:
         title: Cron Schedule
-        description: A cron expression that is used to trigger events generation.
+        description: "When to send a message, as a Quartz cron expression of six or seven fields: seconds, minutes, hours, day of month, month, day of week, and an optional year. For example, `0 0 9 ? * MON-FRI` is 9:00 every weekday, and `0 */5 * * * ?` is every five minutes. A Unix cron expression of five fields, without the seconds, works too."
         type: string
-        example: "0/3 10 * * * ?"
+        example: "0 0 9 ? * MON-FRI"
       message:
         title: Message
-        description: The message to generate
+        description: "The body of every message, sent as text exactly as written."
         type: string
-        example: hello world
+        example: "hello world"
   types:
     out:
       mediaType: text/plain
