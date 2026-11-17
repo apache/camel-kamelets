@@ -7,8 +7,7 @@ as `nats://user:password@host:4222`. The Kamelet has no TLS options.
 
 === Output format
 
-The body is the NATS payload, unchanged, as a stream of bytes; it is not turned into JSON, although the `Content-Type`
-header is always `application/json`. The `CamelNatsSubject` header is the subject, and the NATS headers of the message
+The body is the NATS payload, unchanged, as bytes; it is not turned into JSON. The `CamelNatsSubject` header is the subject, and the NATS headers of the message
 become headers too.
 
 === JetStream

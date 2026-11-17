@@ -37,7 +37,7 @@ spec:
 
       Output: the body is the comment as JSON text. The `CamelGitHubPullRequest` header gives the number of the pull request it was written on.
 
-      Good to know: only the comments written after the start are sent, and only on pull requests that are still open. These are the comments of the conversation of a pull request, not the review comments on lines of code. It works with github.com, not with GitHub Enterprise Server. About twice a second it asks GitHub for the open pull requests and for the comments of each of them, and every request counts against the API rate limit of the token.
+      Good to know: only the comments written after the start are sent, and only on pull requests that are still open. These are the comments of the conversation of a pull request, not the review comments on lines of code. It works with github.com, not with GitHub Enterprise Server. Once a minute by default (`delay`), it asks GitHub for the open pull requests and for the comments of each of them, and every request counts against the API rate limit of the token.
     required:
       - repoName
       - repoOwner
@@ -63,7 +63,7 @@ spec:
         - urn:camel:group:credentials
       delay:
         title: Delay
-        description: The number of milliseconds before the next poll
+        description: How long to wait between two polls of GitHub, in milliseconds. For example, 60000 is one minute.
         type: integer
         default: 60000
   dataTypes:

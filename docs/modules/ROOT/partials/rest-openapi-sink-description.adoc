@@ -18,7 +18,7 @@ The host and base path for the REST service can be configured to override the de
 
 === Schema Validation
 
-OpenAPI specifications include schema definitions that can be used for request and response validation. The `clientRequestValidation` option of this Kamelet has no effect: requests that do not conform to the specification are still sent.
+OpenAPI specifications include schema definitions that can be used for request and response validation. With `clientRequestValidation` set to true, a request that does not conform to the specification fails the message and is not sent.
 
 === Documentation-Driven Development
 

@@ -37,7 +37,7 @@ spec:
 
       Output: the body is the commit message as JSON text, that is a quoted JSON string such as `"Fix the login page"`. The `CamelGitHubCommitSha` header gives the SHA of the commit, `CamelGitHubCommitUrl` its web address, and `CamelGitHubCommitAuthor` and `CamelGitHubCommitCommitter` the names of its author and committer.
 
-      Good to know: with the default `startingSha` of `last`, only the commits made after the start are sent. It works with github.com, not with GitHub Enterprise Server. It asks GitHub for new commits about twice a second, and every request counts against the API rate limit of the token.
+      Good to know: with the default `startingSha` of `last`, only the commits made after the start are sent. It works with github.com, not with GitHub Enterprise Server. It asks GitHub for new commits once a minute by default (`delay`), and every request counts against the API rate limit of the token.
     required:
       - repoName
       - repoOwner
@@ -76,7 +76,7 @@ spec:
         example: main
       delay:
         title: Delay
-        description: The number of milliseconds before the next poll
+        description: How long to wait between two polls of GitHub, in milliseconds. For example, 60000 is one minute.
         type: integer
         default: 60000
   dataTypes:

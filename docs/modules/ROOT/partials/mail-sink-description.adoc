@@ -17,7 +17,7 @@ This Kamelet sends emails through SMTP servers with configurable authentication 
 - **To**: Recipients, separated by commas
 - **Subject**: Email subject line
 
-Set **From**, **To** and **Subject** even when every message carries the matching `ce-*` header: the Kamelet does not start without them.
+**From**, **To** and **Subject** can be left empty when every message carries the matching `ce-from`, `ce-to` and `ce-subject` header.
 
 === Email Headers Support
 

@@ -39,7 +39,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: a plain NATS subject stores nothing: only the receivers subscribed at that moment get the message. With `jetstreamEnabled`, the message is stored in the stream `jetstreamName`, which must exist already, for example created by `nats-source`; otherwise sending fails. It connects with no TLS, and the integration fails to start when no server can be reached. When the incoming message expects a reply, as one from `webhook-source` does, it is sent as a NATS request, and fails when no application answers it.
+      Good to know: a plain NATS subject stores nothing: only the receivers subscribed at that moment get the message. With `jetstreamEnabled`, the message is stored in the stream `jetstreamName`, which must exist already, for example created by `nats-source`; otherwise sending fails. It connects with no TLS, and the integration fails to start when no server can be reached. It publishes the message and does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does.
     required:
       - topic
       - servers

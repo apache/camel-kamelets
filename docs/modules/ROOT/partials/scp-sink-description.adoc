@@ -26,8 +26,8 @@ SCP provides efficient file transfer capabilities suitable for:
 Supports multiple authentication methods:
 
 - Username and password authentication
-- Private key authentication (`privateKeyFile`), with a key that has no passphrase
-- Host key verification against `~/.ssh/known_hosts` of the user that runs the integration
+- Private key authentication (`privateKeyFile`), with `privateKeyPassphrase` for a key protected by one
+- Host key verification against the file in `knownHostsUri`, or else `~/.ssh/known_hosts` of the user that runs the integration
 
 === Cross-Platform Support
 

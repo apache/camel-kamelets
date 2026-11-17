@@ -39,7 +39,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the response of the API, as bytes, with the headers of the response and its status code in `CamelHttpResponseCode`.
 
-      Good to know: a missing path parameter is not an error; the request is sent with `\{petId}` in the path. The address of the API is taken from the `servers` of the specification, unless `host` or `basePath` is set. The Kamelet has no login options. The Kamelet does not start when the specification has no operation with the ID in `operation`.
+      Good to know: a missing path parameter is not an error; the request is sent with `\{petId}` in the path, unless `clientRequestValidation` is true. The address of the API is taken from the `servers` of the specification, unless `host` or `basePath` is set. The Kamelet has no login options. The Kamelet does not start when the specification has no operation with the ID in `operation`.
     required:
     - specification
     - operation
@@ -68,7 +68,7 @@ spec:
         example: "/v3"
       clientRequestValidation:
         title: Client Request Validation
-        description: Meant to check each request against the specification before it is sent. It has no effect in this Kamelet; a request with a missing parameter or an invalid body is still sent.
+        description: If true, each request is checked against the specification before it is sent. A request that does not match it, such as one without a required parameter, fails the message and is not sent.
         type: boolean
         default: false
   dependencies:

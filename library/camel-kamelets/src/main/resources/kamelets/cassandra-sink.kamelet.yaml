@@ -39,7 +39,7 @@ spec:
 
       Output: the body afterwards is an empty List for an INSERT, UPDATE or DELETE.
 
-      Good to know: with `jsonPayload` true, the default, a message fails when its body is not a JSON array, such as a JSON object. The values are sent apart from the statement, so the content of a message cannot change it. `query` cannot contain `+` (it becomes a space) or `&`. `ANY`, the default `consistencyLevel`, is the weakest level: a write counts as done even before a replica has stored it.
+      Good to know: with `jsonPayload` true, the default, a message fails when its body is not a JSON array, such as a JSON object. The values are sent apart from the statement, so the content of a message cannot change it. `ANY`, the default `consistencyLevel`, is the weakest level: a write counts as done even before a replica has stored it.
     required:
       - connectionHost
       - connectionPort

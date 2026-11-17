@@ -40,7 +40,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: files are written in the home directory of `username`, with the rights of that user, and a file with the same name is replaced. A file name that points outside the home directory fails the message. The key of the server is checked against `~/.ssh/known_hosts` of the user that runs the integration, unless `strictHostKeyChecking` is `no`. Setting `knownHostsUri` or `privateKeyPassphrase` stops the Kamelet from starting. Do not place it after messages from an untrusted source.
+      Good to know: files are written in the home directory of `username`, with the rights of that user, and a file with the same name is replaced. A file name that points outside the home directory fails the message. The key of the server is checked against the file in `knownHostsUri`, or else `~/.ssh/known_hosts` of the user that runs the integration, unless `strictHostKeyChecking` is `no`. Do not place it after messages from an untrusted source.
     required:
       - serverName
       - serverPort
@@ -74,7 +74,7 @@ spec:
         example: /etc/scp/keys/id_rsa
       privateKeyPassphrase:
         title: Private Key Passphrase
-        description: Meant for the passphrase of a protected private key, but setting it stops the Kamelet from starting. Use a private key without a passphrase.
+        description: The passphrase of the private key in `privateKeyFile`, when the key is protected by one.
         type: string
         format: password
         x-descriptors:
@@ -87,7 +87,7 @@ spec:
         default: "yes"
       knownHostsUri:
         title: Known Hosts URI
-        description: Meant for a known_hosts file that holds the key of the server, but setting it stops the Kamelet from starting. Add the server to `~/.ssh/known_hosts` of the user that runs the integration instead, for example with `ssh-keyscan`.
+        description: A known_hosts file that holds the key of the server, such as one made with `ssh-keyscan`. A path is read as a file; `classpath:` followed by a name reads a resource of the application. Use it when the user that runs the integration has no `~/.ssh/known_hosts` with the server in it.
         type: string
         pattern: "^(classpath:)?[^:]+$"
       useUserKnownHostsFile:
