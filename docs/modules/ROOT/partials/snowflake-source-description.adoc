@@ -2,45 +2,39 @@
 
 === Authentication methods
 
-This Kamelet connects to Snowflake using:
-
-- Database-specific connection credentials
-- Username and password authentication
-- Connection URL/string configuration
+This Kamelet connects to Snowflake with the user name and password of a Snowflake user, set in `username` and `password`.
 
 === Output format
 
-The Kamelet monitors Snowflake for changes and produces the data in JSON format.
+The Kamelet runs `query` again every `delay` milliseconds, and sends each row it returns as a message: a JSON object with the column names as keys. Without `consumedQuery`, the same rows are read again on every run.
 
 === Configuration
 
 The Kamelet requires database connection parameters:
 
-- Database connection URL/server information
-- Username and password for authentication
-- Query or monitoring configuration
+- `instanceUrl`: the host name of your Snowflake account, such as `myorg-myaccount.snowflakecomputing.com`
+- `databaseName` (optional): the Snowflake database that holds the tables
+- `username` and `password`: the Snowflake user to log in as
+- `query`: the SQL query to run, such as `SELECT * FROM accounts WHERE processed = false`
+- `consumedQuery` (optional): an SQL statement run for each row once it is sent, to mark the row as read or delete it, such as `UPDATE accounts SET processed = true WHERE id = :#id`
 
 === Usage example
 
-```yaml
-apiVersion: camel.apache.org/v1alpha1
-kind: KameletBinding
-metadata:
-  name: snowflake-source-binding
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
-      name: snowflake-source
-    properties:
-      serverName: "database-server"
-      username: "{{username}}"
-      password: "{{password}}"
-      databaseName: "mydb"
-  sink:
-    ref:
-      kind: Service
-      apiVersion: v1
-      name: my-service
-```
+The route below logs each account that is not processed yet, and marks it as processed.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:snowflake-source"
+      parameters:
+        instanceUrl: "myorg-myaccount.snowflakecomputing.com"
+        username: "dbuser"
+        password: "dbpass"
+        databaseName: "SHOP"
+        query: "SELECT * FROM accounts WHERE processed = false"
+        consumedQuery: "UPDATE accounts SET processed = true WHERE id = :#id"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

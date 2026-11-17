@@ -14,12 +14,12 @@ The MySQL Source Kamelet supports the following configurations:
 - **Query**: SQL query to execute (required)
 - **Database Name**: Name of the MySQL database (required)
 - **Server Port**: Port number for the MySQL server (default: 3306)
-- **Period**: Interval between query executions in milliseconds
-- **Connection Properties**: Additional JDBC connection properties
+- **Delay**: How long to wait after one run of the query before the next, in milliseconds (default: 500)
+- **Consumed Query**: An SQL statement run for each row once it is sent, to mark the row as read or delete it, so that it is not read again
 
 === Output Format
 
-The Kamelet outputs query results as JSON objects. Each row from the result set is converted to a JSON object with column names as keys.
+The Kamelet sends one message per row of the query result. Each row is a JSON object with the column names as keys. Without `consumedQuery`, the same rows are read again on every run of the query.
 
 === Usage Example
 
@@ -34,7 +34,7 @@ The Kamelet outputs query results as JSON objects. Each row from the result set 
         password: "dbpass"
         databaseName: "orders"
         query: "SELECT * FROM orders WHERE status = 'PENDING'"
-        period: 30000
+        delay: 30000
       steps:
         - to:
             uri: "kamelet:log-sink"
@@ -54,13 +54,13 @@ The Kamelet outputs query results as JSON objects. Each row from the result set 
         password: "dbpass"
         databaseName: "analytics"
         query: "SELECT id, name, created_at FROM users WHERE created_at > NOW() - INTERVAL 1 HOUR"
-        period: 60000
+        delay: 60000
       steps:
         - to:
             uri: "kamelet:log-sink"
 ----
 
-=== Example with Parameterized Query
+=== Example with a Filter
 
 [source,yaml,subs='+attributes,macros']
 ----
@@ -73,7 +73,7 @@ The Kamelet outputs query results as JSON objects. Each row from the result set 
         password: "dbpass"
         databaseName: "inventory"
         query: "SELECT * FROM products WHERE stock_level < 10"
-        period: 120000
+        delay: 120000
       steps:
         - to:
             uri: "kamelet:log-sink"

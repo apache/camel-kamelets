@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "Couchbase Source"
-    description: Poll a Couchbase bucket and emit the results.
+    description: |-
+      Runs a SQL++ (N1QL) query on a Couchbase bucket again and again, and sends each document or row it finds as a message, as JSON text.
+
+      Use it to pass the documents of a Couchbase bucket on to another system, for example to copy them to a search index or a data warehouse. To store documents, use `couchbase-sink`.
+
+      Output: the body is one result row as JSON text. Without `statement`, the query reads all the documents of the default collection, and a row is `{"<bucket>":<the document>,"__id":"<document ID>"}`. The `CamelCouchbaseId` header holds the ID of the document.
+
+      Good to know: the query runs again every `delay` milliseconds and nothing marks a document as read, so the same documents are sent on every run. A `statement` must name the document ID `__id` (`SELECT META().id AS __id, ...`), or its rows are skipped. With `fullDocument` set to true, the body is an object of the Couchbase SDK instead of JSON text. The connection is not encrypted, also with `protocol` set to `https`.
     required:
       - protocol
       - couchbaseHostname
@@ -39,87 +46,94 @@ spec:
     properties:
       protocol:
         title: Protocol
-        description: The protocol to use
+        description: The protocol part of the address of the server, `http` or `https`. It is required, but it does not choose how the Kamelet connects, and `https` does not turn on TLS.
         type: string
+        example: http
       couchbaseHostname:
         title: Hostname
-        description: The hostname to use
+        description: The host name or IP address of a node of the Couchbase cluster. The Kamelet connects to its data service, on port 11210.
         type: string
+        example: couchbase.example.com
       couchbasePort:
         title: Port
-        description: The port to use
+        description: The port of the web console and REST interface of Couchbase, 8091 by default. The Kamelet does not connect to this port; to reach the data service on a port other than 11210, set `connectionString`.
         type: integer
         default: 8091
       bucket:
         title: Bucket
-        description: The bucket to use
+        description: The name of the bucket to read the documents from.
         type: string
+        example: orders
       username:
         title: Username
-        description: Username to connect to Couchbase.
+        description: The Couchbase user to log in as. It needs the rights to read the documents of `bucket` and to run queries on it.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: Password to connect to Couchbase.
+        description: The password of the Couchbase user `username`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       connectionString:
         title: Connection String
-        description: The full Couchbase SDK connection string (e.g. couchbase://host:port). When set, it takes precedence over hostname extraction for the KV service port.
+        description: The address of the cluster for the Couchbase SDK, which starts with `couchbase://`. When it is set, it is used instead of `couchbaseHostname` to connect, for example to reach the data service on another port than 11210.
         type: string
+        example: couchbase://couchbase.example.com:11210
       statement:
-        title: N1QL Statement
-        description: >-
-          The N1QL query to run against the bucket on each poll. Used unless useView is true.
-          The query runs in the bucket scope, so the keyspace is the collection - use _default
-          for the default collection rather than the bucket name. It must also alias the document
-          id as __id, because rows without that field are skipped.
+        title: SQL++ Statement
+        description: The SQL++ (N1QL) query to run on each poll, instead of reading all documents. It runs in the scope of the bucket, so name the collection, such as `_default`, not the bucket. It must return the document ID as `__id`, or its rows are skipped. Not used when `useView` is true.
         type: string
         example: "SELECT META().id AS __id, * FROM _default"
       useView:
         title: Use View
-        description: Poll a MapReduce view instead of running the N1QL statement.
+        description: If true, the Kamelet reads a MapReduce view, chosen with `designDocumentName` and `viewName`, instead of running a SQL++ query.
         type: boolean
         default: false
       designDocumentName:
         title: Design Document Name
-        description: The design document to query. Only used when useView is true.
+        description: The design document that holds the view to read. Only used when `useView` is true. The default, `beer`, is the one of the beer-sample bucket.
         type: string
         default: beer
       viewName:
         title: View Name
-        description: The view to query. Only used when useView is true.
+        description: The view to read. Only used when `useView` is true. The default, `brewery_beers`, is a view of the beer-sample bucket.
         type: string
         default: brewery_beers
       fullDocument:
         title: Full Document
-        description: Emit the whole document rather than only the fields the query or view returns.
+        description: If true, the Kamelet reads each document found by its ID and sends it as an object of the Couchbase SDK, not as JSON text. If false, it sends the row of the query as JSON text.
         type: boolean
         default: false
       limit:
         title: Limit
-        description: The maximum number of documents to return per poll. A negative value means no limit.
+        description: The most documents to send on each poll. A negative value means no limit.
         type: integer
         default: -1
       skip:
         title: Skip
-        description: How many documents to skip before returning results. A negative value means none.
+        description: How many documents to skip on each poll before sending the others. A negative value skips none.
         type: integer
         default: -1
       descending:
         title: Descending
-        description: Return the results in descending order.
+        description: If true, the results come in descending order.
         type: boolean
         default: false
       delay:
         title: Delay
-        description: The number of milliseconds between each poll.
+        description: How long to wait after one poll before the next, in milliseconds.
         type: integer
         default: 500
+  dataTypes:
+    out:
+      headers:
+        CamelCouchbaseId:
+          title: Document ID
+          description: The ID of the document the message comes from.
+          type: string
   dependencies:
     - "camel:couchbase"
     - "camel:kamelet"

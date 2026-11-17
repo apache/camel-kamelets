@@ -7,7 +7,7 @@ This Kamelet uses username and password authentication to connect to Couchbase.
 === Configuration
 
 This Kamelet requires configuration of:
-- Protocol (e.g., http or https)
+- Protocol (`http` or `https`; it does not turn on TLS)
 - Hostname of the Couchbase server
 - Bucket name to store documents
 - Username and password credentials
@@ -19,4 +19,4 @@ Optional settings include:
 
 === Document Storage
 
-Documents are stored in the specified Couchbase bucket. The Kamelet can automatically generate document IDs starting from a configurable starting point.
+Documents are stored in the specified Couchbase bucket. The Kamelet can automatically generate document IDs starting from a configurable starting point. The count starts again at the starting ID each time the integration starts, and a document that already has an ID is replaced, so a restart overwrites the documents stored before. To choose the IDs yourself, set `autoStartId` to false and give each message its ID in the `CamelCouchbaseId` header.

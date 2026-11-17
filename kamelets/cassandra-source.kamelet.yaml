@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "Cassandra Source"
-    description: Send a query to an Apache Cassandra cluster table.
+    description: |-
+      Runs a CQL query in an Apache Cassandra keyspace every half second, and sends all the rows it returns as one message, a JSON array.
+
+      Use it to watch a small Cassandra table, such as a table of settings or of current states, and pass its content on to another system. To write rows, use `cassandra-sink`.
+
+      Output: the body is JSON text, an array with one object per row, or one object with `resultStrategy` set to `ONE`. The values of a row are not separate fields of its object: they are in the text of its `formattedContents` field, such as `[id:1, username:'oscerd', city:'Rome']`. The `Content-Type` header is `application/json`.
+
+      Good to know: every run sends all the rows the query finds, again and again, and nothing marks a row as read. When the query finds no rows, an empty array `[]` is sent. `query` cannot contain `+` (it becomes a space) or `&`.
     required:
       - connectionHost
       - connectionPort
@@ -39,57 +46,65 @@ spec:
     type: object
     properties:
       connectionHost:
-        title: Connection Host
-        description: The hostname(s) for the Cassandra server(s). Use a comma to separate multiple hostnames.
+        title: Hosts
+        description: The host name or IP address of one or more Cassandra nodes, separated by commas. The other nodes of the cluster are found from them.
         type: string
-        example: localhost
+        example: cassandra1.example.com,cassandra2.example.com
       connectionPort:
-        title: Connection Port
-        description: The port number(s) of the cassandra server(s). Use a comma to separate multiple port numbers.
+        title: Port
+        description: The port the Cassandra nodes listen on for CQL clients, the same for all hosts. Cassandra uses 9042 unless it was set up otherwise.
         type: string
         example: 9042
       keyspace:
         title: Keyspace 
-        description: The keyspace to use.
+        description: The keyspace (the Cassandra name for a database) that holds the tables of `query`.
         type: string
         example: customers
       username:
         title: Username
-        description: The username for accessing a secured Cassandra cluster.
+        description: The Cassandra user to log in as. Leave it empty for a cluster that does not ask for a login.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password for accessing a secured Cassandra cluster.
+        description: The password of the Cassandra user `username`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       resultStrategy:
         title: Result Strategy
-        description: The strategy to convert the result set of the query. 
+        description: Which rows of the result to send. `ALL` sends all rows, `LIMIT_10` and `LIMIT_100` the first 10 or 100, all as one array; `ONE` sends only the first row, as one object.
         type: string
         default: ALL
         enum: ["ALL", "ONE", "LIMIT_10", "LIMIT_100"]
       consistencyLevel:
         title: Consistency Level
-        description: The consistency level to use.
+        description: How many replicas must answer a read before its result counts. `QUORUM`, the default, waits for a majority of the replicas; `ONE` is faster but can return older data.
         type: string
         default: QUORUM
         enum: ["ONE", "TWO", "THREE", "QUORUM", "ALL", "LOCAL_QUORUM", "EACH_QUORUM", "SERIAL", "LOCAL_SERIAL", "LOCAL_ONE"]
       query:
         title: Query
-        description: The query to execute against the Cassandra cluster table.
+        description: The CQL query to run, a SELECT.
         type: string
+        example: SELECT id, username, city FROM accounts
       extraTypeCodecs:
         title: Extra Type Codecs
-        description: To use a specific comma separated list of Extra Type codecs. 
+        description: An extra conversion between Cassandra and Java types to turn on, such as `TIMESTAMP_UTC` or `BLOB_TO_ARRAY`. Needed only when a column type does not map to a Java value by default.
         type: string
         enum: ["BLOB_TO_ARRAY", "BOOLEAN_LIST_TO_ARRAY", "BYTE_LIST_TO_ARRAY", "SHORT_LIST_TO_ARRAY", "INT_LIST_TO_ARRAY", "LONG_LIST_TO_ARRAY", "FLOAT_LIST_TO_ARRAY", "DOUBLE_LIST_TO_ARRAY", "TIMESTAMP_UTC", "TIMESTAMP_MILLIS_SYSTEM", "TIMESTAMP_MILLIS_UTC", "ZONED_TIMESTAMP_SYSTEM", "ZONED_TIMESTAMP_UTC", "ZONED_TIMESTAMP_PERSISTED", "LOCAL_TIMESTAMP_SYSTEM", "LOCAL_TIMESTAMP_UTC"]
   types:
     out:
       mediaType: application/json
+  dataTypes:
+    out:
+      headers:
+        Content-Type:
+          title: Content Type
+          description: Always `application/json`, as the body is JSON.
+          type: string
   dependencies:
   - "camel:jackson"
   - "camel:kamelet"

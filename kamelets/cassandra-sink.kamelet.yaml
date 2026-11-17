@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Cassandra Sink"
-    description: Send data to an Apache Cassandra cluster.
+    description: |-
+      Runs a CQL statement, such as an INSERT, in an Apache Cassandra keyspace for each message, with the values of its `?` markers taken from the JSON array in the body.
+
+      Use it to store events or records as rows of a Cassandra table, for example each reading of a sensor or each order that arrives on a Kafka topic. To read rows, use `cassandra-source`.
+
+      Input: the body is a JSON array, as text, with one value for each `?` in `query`, in the same order: for `INSERT INTO accounts (id, username, city) VALUES (?, ?, ?)` the body `[1,"oscerd","Rome"]`. With `jsonPayload` set to false, the body is used as it is, as the one value of a statement with a single `?`.
+
+      Output: the body afterwards is an empty List for an INSERT, UPDATE or DELETE.
+
+      Good to know: with `jsonPayload` true, the default, a message fails when its body is not a JSON array, such as a JSON object. The values are sent apart from the statement, so the content of a message cannot change it. `query` cannot contain `+` (it becomes a space) or `&`. `ANY`, the default `consistencyLevel`, is the weakest level: a write counts as done even before a replica has stored it.
     required:
       - connectionHost
       - connectionPort
@@ -39,56 +48,57 @@ spec:
     type: object
     properties:
       connectionHost:
-        title: Connection Host
-        description: The hostname(s) for the Cassandra server(s). Use a comma to separate multiple hostnames.
+        title: Hosts
+        description: The host name or IP address of one or more Cassandra nodes, separated by commas. The other nodes of the cluster are found from them.
         type: string
-        example: localhost
+        example: cassandra1.example.com,cassandra2.example.com
       connectionPort:
-        title: Connection Port
-        description: The port number(s) of the cassandra server(s). Use a comma to separate multiple port numbers.
+        title: Port
+        description: The port the Cassandra nodes listen on for CQL clients, the same for all hosts. Cassandra uses 9042 unless it was set up otherwise.
         type: string
         example: 9042
       keyspace:
         title: Keyspace 
-        description: The keyspace to use.
+        description: The keyspace (the Cassandra name for a database) that holds the tables of `query`.
         type: string
         example: customers
       username:
         title: Username
-        description: The username for accessing a secured Cassandra cluster.
+        description: The Cassandra user to log in as. Leave it empty for a cluster that does not ask for a login.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password for accessing a secured Cassandra cluster.
+        description: The password of the Cassandra user `username`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       consistencyLevel:
         title: Consistency Level
-        description: The consistency level to use.
+        description: How many replicas must store a write before it counts as done. `ANY` is the fastest and the least safe; `QUORUM` or `LOCAL_QUORUM` waits for a majority of the replicas.
         type: string
         default: ANY
         enum: ["ANY", "ONE", "TWO", "THREE", "QUORUM", "ALL", "LOCAL_QUORUM", "EACH_QUORUM", "LOCAL_ONE"]
       prepareStatements:
         title: Prepare Statements
-        description: If true, specifies to use PreparedStatements as the query. If false, specifies to use regular Statements as the query.
+        description: Whether `query` is prepared once by Cassandra and then run with the values of each message, which is faster. Set it to false to send the statement as a new one each time.
         type: boolean
         default: true
       query:
         title: Query
-        description: The query to execute against the Cassandra cluster table.
+        description: The CQL statement to run for each message, such as an INSERT, UPDATE or DELETE. Write `?` for each value that comes from the body.
         type: string
+        example: INSERT INTO accounts (id, username, city) VALUES (?, ?, ?)
       extraTypeCodecs:
         title: Extra Type Codecs
-        description: To use a specific comma separated list of Extra Type codecs. 
+        description: An extra conversion between Cassandra and Java types to turn on, such as `TIMESTAMP_UTC` or `BLOB_TO_ARRAY`. Needed only when a column type does not map to a value of the body by default.
         type: string
         enum: ["BLOB_TO_ARRAY", "BOOLEAN_LIST_TO_ARRAY", "BYTE_LIST_TO_ARRAY", "SHORT_LIST_TO_ARRAY", "INT_LIST_TO_ARRAY", "LONG_LIST_TO_ARRAY", "FLOAT_LIST_TO_ARRAY", "DOUBLE_LIST_TO_ARRAY", "TIMESTAMP_UTC", "TIMESTAMP_MILLIS_SYSTEM", "TIMESTAMP_MILLIS_UTC", "ZONED_TIMESTAMP_SYSTEM", "ZONED_TIMESTAMP_UTC", "ZONED_TIMESTAMP_PERSISTED", "LOCAL_TIMESTAMP_SYSTEM", "LOCAL_TIMESTAMP_UTC"]
       jsonPayload:
-        title: JSON Payload
-        description: If we want to transform the payload in json or not
+        title: JSON Array Body
+        description: If true, the body is read as a JSON array that holds the values of the `?` markers. If false, the body is passed as it is, as the one value of `query`.
         type: boolean
         default: true
   types:

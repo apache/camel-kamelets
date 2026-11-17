@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "MySQL Source"
-    description: Query data from a MySQL Database.
+    description: |-
+      Runs an SQL query in a MySQL database again and again, and sends each row it returns as a message, as a JSON object.
+
+      Use it to pick up the rows that another application adds to a table, such as new orders or events, and pass them on to another system. To write rows, use `mysql-sink`.
+
+      Output: the body is one row as JSON text, an object with the column names as keys, such as `{"id":1,"username":"oscerd","city":"Rome"}`. The `Content-Type` header is `application/json`.
+
+      Good to know: the query runs again `delay` milliseconds after the previous run, so the same rows are sent again and again, unless `consumedQuery` marks or deletes each row once it is sent and `query` leaves such rows out: for example `SELECT * FROM accounts WHERE processed = false` with `UPDATE accounts SET processed = true WHERE id = :#id`. When the next step fails for a row, `consumedQuery` is not run for it, and the row is read again. A query that finds no rows sends nothing. `query` cannot contain `?`, and `consumedQuery` cannot contain `&` or `+`. The format of date and time columns in the JSON depends on the Camel version. The JDBC driver of MySQL is not included: add `mvn:com.mysql:mysql-connector-j` to the dependencies of the integration. Camel JBang (`camel run`) adds it by itself.
     required:
       - serverName
       - username
@@ -41,49 +48,57 @@ spec:
     properties:
       serverName:
         title: Server Name
-        description: The server name for the data source.
+        description: The host name or IP address of the MySQL server, without the port.
         type: string
-        example: localhost
+        example: db.example.com
       serverPort:
         title: Server Port
-        description: The server port for the data source.
+        description: The port the MySQL server listens on. MySQL uses 3306 unless it was set up otherwise.
         type: string
         default: 3306
       username:
         title: Username
-        description: The username to access a secured MySQL Database.
+        description: The database user to log in as. It needs the rights to run the queries of this Kamelet on their tables.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access a secured MySQL Database.
+        description: The password of the database user `username`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       query:
         title: Query
-        description: The query to execute against the MySQL Database.
+        description: The SQL query to run on each poll, usually a SELECT. Each row it returns becomes a message.
         type: string
-        example: 'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
+        example: SELECT * FROM accounts WHERE processed = false
       databaseName:
         title: Database Name
-        description: The name of the MySQL Database.
+        description: The name of the database to connect to on the MySQL server.
         type: string
+        example: shop
       consumedQuery:
         title: Consumed Query
-        description: A query to run on a tuple consumed.
+        description: An SQL statement to run after each row has been sent on, to mark the row as read or to delete it, so that `query` does not return it again. Write `:#column` where the value of a column of that row goes, such as `:#id`. When it is not set, nothing is changed, and the same rows are read on every poll.
         type: string
-        example: 'DELETE FROM accounts where user_id = :#user_id'
+        example: UPDATE accounts SET processed = true WHERE id = :#id
       delay:
         title: Delay
-        description: The number of milliseconds before the next poll
+        description: How long to wait after one run of `query` before the next, in milliseconds.
         type: integer
         default: 500
   types:
     out:
       mediaType: application/json
+  dataTypes:
+    out:
+      headers:
+        Content-Type:
+          title: Content Type
+          description: Always `application/json`, as the body is a JSON object.
+          type: string
   dependencies:
   - "camel:jackson"
   - "camel:kamelet"

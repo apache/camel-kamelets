@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "MongoDB Changes Stream Source"
-    description: Consume Changes from MongoDB Collection in streaming mode.
+    description: |-
+      Sends a message for each change to a collection of a MongoDB database, such as a document inserted, updated or deleted, as it happens.
+
+      Use it to react to changes in MongoDB, for example to copy new orders to another system or to keep a cache or a search index up to date. To read the documents of a capped collection from the start, use `mongodb-source`. To write documents, use `mongodb-sink`.
+
+      Output: the body is JSON text. For an insert or a replace, it is the whole new document; for an update, the text `null`; for a delete, an object with only the `_id` of the deleted document. The `CamelMongoDbStreamOperationType` header says what happened (`insert`, `update`, `replace` or `delete`), and the `_id` header holds the `_id` of the document.
+
+      Good to know: only changes made after the Kamelet starts are sent. MongoDB offers change streams only on a replica set or a sharded cluster, not on a single standalone server. It connects with TLS by default; set `ssl` to false for a MongoDB without TLS, such as a local one.
     required:
       - hosts
       - collection
@@ -39,44 +46,62 @@ spec:
     properties:
       hosts:
         title: MongoDB Hosts
-        description: Comma separated list of MongoDB Host Addresses in host:port format.
+        description: The address of one or more members of the MongoDB replica set or sharded cluster, as `host:port`, separated by commas. MongoDB uses port 27017 unless it was set up otherwise.
         type: string
+        example: mongo1.example.com:27017,mongo2.example.com:27017
       collection:
         title: MongoDB Collection
-        description: Sets the name of the MongoDB collection to bind to this endpoint.
+        description: The name of the collection to watch for changes.
         type: string
+        example: orders
       password:
         title: MongoDB Password
-        description: User password for accessing MongoDB.
+        description: The password of the MongoDB user `username`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       username:
         title: MongoDB Username
-        description: Username for accessing MongoDB. The username must be present in the MongoDB's authentication database (authenticationDatabase). By default, the MongoDB authenticationDatabase is 'admin'.
+        description: The MongoDB user to log in as, defined in the `admin` database. Leave it empty for a MongoDB that does not ask for a login.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       ssl:
-        title: Enable Ssl for Mongodb Connection
-        description: whether to enable ssl connection to mongodb
+        title: Use TLS
+        description: Whether to connect with TLS (SSL). Set it to false for a MongoDB that does not offer TLS.
         type: boolean
         default: true
       sslValidationEnabled:
-        title: Enables Ssl Certificates Validation and Host name checks.
-        description: IMPORTANT this should be disabled only in test environment since can pose security issues.
+        title: Check TLS Certificate
+        description: Whether to check the certificate and the host name of the server when `ssl` is true. Set it to false only for tests, as the connection can then be intercepted.
         type: boolean
         default: true
       database:
         title: MongoDB Database
-        description: Sets the name of the MongoDB database to target.
+        description: The name of the database that holds the collection.
         type: string
+        example: shop
       streamFilter:
         title: Stream Filter
-        description: Filter condition for change streams consumer.
+        description: A `$match` stage of a MongoDB aggregation, as JSON text, that chooses which changes to send. Match on `operationType` (such as `insert`) or on fields of the new document under `fullDocument`. When it is not set, all changes are sent.
         type: string
         example: "{ '$match':{'$or':[{'fullDocument.stringValue': 'specificValue'}]} }"
+  dataTypes:
+    out:
+      headers:
+        CamelMongoDbStreamOperationType:
+          title: Operation Type
+          description: The kind of change, such as `insert`, `update`, `replace` or `delete`.
+          type: string
+        _id:
+          title: Document ID
+          description: The `_id` of the document that changed.
+          type: string
+        Content-Type:
+          title: Content Type
+          description: Always `application/json`, as the body is JSON text.
+          type: string
   dependencies:
     - "camel:kamelet"
     - "camel:mongodb"
