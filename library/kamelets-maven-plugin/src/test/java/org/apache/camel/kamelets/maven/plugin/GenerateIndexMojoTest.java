@@ -79,9 +79,11 @@ public class GenerateIndexMojoTest {
         // without the attributes it does not have
         assertEquals(Map.of("name", "alpha-sink", "type", "sink", "title", "Alpha Sink"), index.get(0));
         Map<String, Object> zeta = index.get(1);
-        assertEquals(List.of("name", "type", "supportLevel", "title", "description", "group", "namespace", "provider"),
+        assertEquals(
+                List.of("name", "type", "supportLevel", "title", "summary", "description", "group", "namespace", "provider"),
                 List.copyOf(zeta.keySet()));
         assertEquals("Preview", zeta.get("supportLevel"));
+        assertEquals("Receive from Zeta.", zeta.get("summary"));
         assertEquals("Receive from Zeta.\n\nOn two lines.", zeta.get("description"));
         // no icon
         assertFalse(GenerateIndexMojo.toJson(index).contains("base64"));
@@ -108,7 +110,7 @@ public class GenerateIndexMojoTest {
         assertEquals(files, index.size());
         for (Map<String, Object> kamelet : index) {
             // what a list of the Kamelets shows
-            for (String key : List.of("type", "supportLevel", "title", "description")) {
+            for (String key : List.of("type", "supportLevel", "title", "summary", "description")) {
                 assertTrue(kamelet.containsKey(key), kamelet.get("name") + " has no " + key);
             }
         }

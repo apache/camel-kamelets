@@ -1,0 +1,238 @@
+[[documenting-kamelets]]
+= Documenting a Kamelet
+
+A Kamelet is chosen and configured by people who do not know Camel, and more and more often by an AI assistant
+working for them. Neither reads the route template. What they know about a Kamelet is what its description, its
+options and its data types say, so these are the user interface of the Kamelet, and they deserve the same care as the
+template.
+
+This page says who we write for, where each piece of information goes, and the shape of a good description. The
+xref:development.adoc[Kamelets Developer Guide] covers how to write the Kamelet itself.
+
+[[documenting-audience]]
+== Who we write for
+
+We write for two readers:
+
+* *The integrator.* They know what they want to achieve, such as "copy the new files in this bucket into Kafka", and
+  they know the outside system as a user: they have an account, and they know what a bucket, a topic or a channel is.
+  They do not know Camel, its components, or words such as _exchange_, _endpoint_ or _SMT_. They read the catalog
+  page, or browse the catalog in a tool such as Kaoto.
+* *The AI assistant.* It finds and configures Kamelets for the integrator. It reads only the Kamelet YAML, through the
+  Camel catalog and the Camel JBang MCP server: `camel_catalog_kamelet_list` searches the name and the description, and
+  `camel_catalog_kamelet_doc` returns the description, the options, the dependencies and the data types. It does not
+  see the documentation page, and it should not need to read the template.
+
+We do not write for Camel developers here: they can read the template.
+
+The test for any description: could someone who has never used Camel decide from it alone whether this Kamelet fits
+their need, and configure it without reading the template?
+
+[[documenting-where]]
+== Where each piece goes
+
+[width="100%",cols="2,2,4",options="header"]
+|===
+| Place | Read by | What goes there
+| `spec.definition.description`
+| Everyone: the catalog page, the catalog API, the MCP server, tools.
+| What the Kamelet does, when to use it, its input, its output, and what is good to know. See
+  <<documenting-description>>.
+| `spec.definition.properties`
+| Everyone. The catalog page shows them as the options table.
+| One entry per option. See <<documenting-options>>.
+| `spec.dataTypes`
+| Tools: the catalog API, the MCP server, the YAML validator.
+| The input and output as data: the headers the Kamelet reads or sets, and the kinds of body. See
+  <<documenting-datatypes>>.
+| `docs/modules/ROOT/partials/<name>-description.adoc`
+| The catalog page only.
+| Long-form help: step-by-step setup in the outside system (create a bot, an access policy), tables of option
+  combinations, longer examples.
+|===
+
+Anything a reader needs to *choose* or *configure* the Kamelet goes in the YAML, because the YAML is all an AI
+assistant sees. The partial page adds help; it must not hold a fact the YAML lacks, and it must not contradict the
+YAML. A partial page that is not kept up to date is worse than none: the `kafka-sink` page said the Kamelet connects
+with `SASL_SSL` by default when it connects with no login and no TLS, and the `jira-add-issue-sink` page said the body
+must be JSON when the body is the text of the issue description.
+
+NOTE: In 2025 the descriptions were cut to one line and the details moved to the partial pages
+(https://github.com/apache/camel-kamelets/issues/2345[#2345]). This guide asks for more in the YAML again, because the
+AI tools read only the YAML. A tool that shows one line shows the summary, the first paragraph of the description.
+
+[[documenting-description]]
+== The description
+
+=== Shape
+
+A description is a few short paragraphs, in this order. Each paragraph after the first starts with its lead words, so
+that a reader, or an AI assistant, can find the part it needs.
+
+. *Summary.* One sentence: what the Kamelet does, with which system, for each what (message, file, record). Not "Send
+  data to X", which the title already says. It is a paragraph of its own, of at most 200 characters, because it is
+  what a list of the Kamelets shows: the catalog API (`KameletsCatalog.getKameletSummary`) and the index of the
+  Kamelets (`summary` in `META-INF/kamelets-index.json`) take the first paragraph of the description as the summary.
+  The build fails on a longer one.
+. *Use it to ...* One to three real situations in the words of the integrator. Name the other Kamelet to use for a
+  near case, such as the event-based source of the same system, or the secured variant.
+. *Input:* for sinks and actions. What the body must be, and what the Kamelet does with it. The headers it reads, and
+  which of them are required.
+. *Output:* for sources and actions, and for sinks when they are used inside a route. What the body is afterwards, and
+  the headers it sets.
+. *Good to know:* defaults that surprise (deleting what was read, connecting without TLS), side effects, what makes a
+  message fail, and the safety notes the
+  xref:security-model.adoc[security model] asks for.
+
+Write `Input:` and `Output:` even when there is little to say, such as "Input: any body." or "Output: the message is
+unchanged." Leave out the other paragraphs when they have nothing to add.
+
+=== Writing rules
+
+* *Use the words of the reader.* Say file, record, message, header, body. Do not say exchange, endpoint, producer,
+  consumer, SMT or destination. When a word of the outside system is needed, such as ARN or partition, say what it is
+  the first time.
+* *Name the kind of body*, with the words of the
+  https://camel.apache.org/manual/body-types.html[Camel message body types]: text, bytes, a stream, a file, a Map (a
+  JSON object, parsed), a List. "JSON" alone is not enough: say whether it is JSON text or parsed JSON.
+* *Write only what you have checked.* Run the Kamelet (`camel run route.yaml --local-kamelet-dir=kamelets`) and look
+  at what comes out. Do not copy the documentation of the Camel component without checking that the template passes
+  the option or the header on.
+* *Plain text.* Use backticks for names, and a blank line between paragraphs (a `|-` block in YAML). No other
+  markup: not every reader renders AsciiDoc or Markdown.
+* *Escape a brace before a name.* The documentation page renders the titles and descriptions as AsciiDoc, where
+  `+{name}+` is an attribute. Put a backslash before such a brace: `+$\{body}+`, `+{\{body}}+`, `+/pets/\{petId}+`. The
+  page then shows `+${body}+`, `+{{body}}+` and `+/pets/{petId}+`. The build fails on a brace that is not escaped.
+* *No history and no implementation reasons.* They belong in the commit message, the upgrade guide or the
+  security model.
+* *Keep it short.* Most descriptions take 400 to 1000 characters.
+
+=== Example
+
+.jira-add-issue-sink.kamelet.yaml, before
+[source,yaml]
+----
+    description: Add a new issue to Jira.
+----
+
+.jira-add-issue-sink.kamelet.yaml, after
+[source,yaml]
+----
+    description: |-
+      Creates a new issue, such as a bug or a task, in a Jira project for each message.
+
+      Use it to open a ticket automatically when something happens, for example when a monitoring alert fires, a form is submitted or an order fails.
+
+      Input: the body is the description of the issue, as text. The other fields come from headers. `ce-projectKey` (the key of the project, such as `SHOP`), `ce-issueTypeName` (such as `Bug` or `Task`) and `ce-issueSummary` (the title) are required. `ce-issueAssignee`, `ce-issuePriorityName` (such as `High`) and `ce-issueComponents` (a comma-separated list) are optional. Set them before this sink, for example with `insert-header-action`.
+
+      Output: when it is used inside a route, the body afterwards is the issue that was created.
+
+      Good to know: a message without a project key, an issue type or a summary fails. Log in either with `username` and `password`, or with `personal-token`.
+----
+
+Before, neither a person nor an AI assistant could use this Kamelet without reading the source of the Camel Jira
+component: nothing said that the issue fields come from headers, or which of them are required.
+
+These Kamelets follow this guide, and can be copied from: `timer-source`, `aws-s3-source`, `kafka-sink`, `http-sink`,
+`jira-add-issue-sink`, `mustache-template-action`, `predicate-filter-action`, `set-kafka-key-action` and
+`dns-lookup-action`.
+
+[[documenting-options]]
+== Options
+
+Each option under `spec.definition.properties` has:
+
+* A `title` of one to four words that names the option, as a form would label it. `headerName` is "Header Name", not
+  "Field".
+* A `description` that says what the value is and what it changes. It never only repeats the title. Add what the
+  reader cannot guess:
+** the format, such as `host:port` or a URL that starts with `https://`;
+** the unit of a number, such as milliseconds;
+** where to get the value, for a key or a token;
+** how it works with other options, such as "Only used when `moveAfterRead` is true";
+** what happens when it is not set, when that is not obvious.
+* An `enum` when only some values are allowed, rather than a list in the description.
+* An `example` for every value with a format: an address, a path, a name with rules, an expression, a template
+  location.
+* The right `type` and `default`: a number is an `integer` or a `number`, not a `string`.
+* For a secret, `format: password` and `x-descriptors: [urn:camel:group:credentials]`; for a value that ends up in a
+  URI, a `pattern`, as the xref:security-model.adoc[security model] asks.
+
+[width="100%",cols="1,2,3",options="header"]
+|===
+| Option | Before | After
+| `timer-source` `period`
+| The interval (in milliseconds) to wait between producing the next message.
+| How long to wait between two messages, in milliseconds. For example, 60000 is one minute.
+| `mustache-template-action` `template`
+| The inline template.
+| Where to load the Mustache template from, not the Mustache template itself: `file://` followed by the path of a
+  file, `classpath://` followed by a resource in the application, or an `http://` or `https://` URL.
+| `jira-add-issue-sink` `personal-token`
+| Personal Token
+| A personal access token, for Jira Server and Jira Data Center. Use it instead of `username` and `password`.
+| `kafka-sink` `topic`
+| Comma separated list of Kafka topic names
+| The name of the topic to write the records to.
+|===
+
+The second row was not only short but wrong: the option is the location of a template, and a reader who wrote the
+template text in it got a Kamelet that failed. The last row was wrong too: the sink writes to one topic.
+
+[[documenting-datatypes]]
+== Input and output as data: `spec.dataTypes`
+
+The description tells a person what goes in and what comes out. `spec.dataTypes` tells the tools the same.
+
+=== Headers
+
+A Kamelet declares the headers it reads under `in` and the headers it sets under `out`, each with a `title`, a
+`description` and a `type`. A Kamelet that transforms nothing declares the `headers` block alone, without `types` and
+without `default`: it changes nothing at runtime, and the catalog API (`getKameletSupportedHeaders`) answers with it
+instead of with the headers of the Camel component. See the xref:development.adoc[Kamelets Developer Guide], section
+_Declaring headers without a transformation_.
+
+[source,yaml]
+----
+  dataTypes:
+    in:
+      headers:
+        ce-projectKey:
+          title: Project Key
+          description: The key of the project to create the issue in, such as `SHOP`. Required.
+          type: string
+----
+
+=== Body
+
+A data type under `types` names a data type transformer in its `format`, such as `text-plain`,
+`application-octet-stream`, `application-json` or `aws2-s3:application-cloudevents`
+(`camel catalog transformer` lists them all). Since Camel 4.24 the Camel catalog knows the body each transformer takes
+and gives (https://issues.apache.org/jira/browse/CAMEL-25928[CAMEL-25928]), so the tools learn the body of the
+Kamelet from its data types: `camel_catalog_kamelet_doc` shows the body of each data type, and the YAML validator
+follows the body of the default data type through the route.
+
+WARNING: A `default` data type is not only documentation. Camel makes it the `inputType` or `outputType` of the
+Kamelet route and runs its transformer on every message. For example, `log-sink` with an `in` default of
+`application-octet-stream` turns a `String` body into a `byte[]` and adds a `Content-Type` header. Adding a `default`
+to an existing Kamelet therefore changes what it does: test it, and add a note to the upgrade guide.
+
+A data type in `types` without a `default` is not run. `camel_catalog_kamelet_doc` still shows it with its body, but
+the YAML validator does not follow it. Which of the two the catalog should use to describe the body of all its
+Kamelets is open, in https://github.com/apache/camel-kamelets/issues/3117[#3117].
+
+[[documenting-checklist]]
+== Checklist
+
+For the author, and for the reviewer of a Kamelet change:
+
+* [ ] The first paragraph of the description is one sentence that says what the Kamelet does, and stands alone.
+* [ ] The description says when to use the Kamelet, and names the Kamelet to use for a near case.
+* [ ] It has an `Input:` paragraph (sinks and actions) and an `Output:` paragraph (sources and actions).
+* [ ] Defaults that delete, overwrite or connect without security are in `Good to know:`.
+* [ ] It uses no Camel-internal words, and names the kind of body.
+* [ ] Every fact was checked by running the Kamelet.
+* [ ] No option description only repeats its title. Formats, units and links between options are given.
+* [ ] Values with a format have an `example`; closed sets of values are an `enum`.
+* [ ] The headers the Kamelet reads or sets are declared under `spec.dataTypes`.
+* [ ] The partial page, when there is one, agrees with the YAML.

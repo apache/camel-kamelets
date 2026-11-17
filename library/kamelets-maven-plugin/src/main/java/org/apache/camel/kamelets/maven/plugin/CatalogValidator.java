@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.apache.camel.kamelets.catalog.KameletsCatalog;
 
 /**
  * Catalog-wide conventions for the Kamelet YAML files.
@@ -50,6 +51,12 @@ public final class CatalogValidator {
     static final String EXPECTED_PROVIDER = "Apache Software Foundation";
     static final String CREDENTIALS_DESCRIPTOR = "urn:camel:group:credentials";
     static final String DEPRECATED_DESCRIPTOR_PREFIX = "urn:alm:descriptor:com.tectonic.ui";
+
+    /**
+     * The longest summary, the first paragraph of the description that a list of the Kamelets shows.
+     */
+    static final int MAX_SUMMARY_LENGTH = 200;
+    private static final Pattern ATTRIBUTE_REFERENCE = Pattern.compile("(?<!\\\\)\\{[A-Za-z0-9_][A-Za-z0-9_-]*}");
 
     private static final Pattern PARAM = Pattern.compile("\\{\\{[?]?([A-Za-z0-9\\-._]+)(?:[:][^}]*)?}}");
 
@@ -214,6 +221,8 @@ public final class CatalogValidator {
         verifyAnnotations(kamelets, errors);
         verifyDescriptors(kamelets, errors);
         verifyDuplicates(kamelets, errors);
+        verifySummary(kamelets, errors);
+        verifyAttributeReferences(kamelets, errors);
         verifyUsedParams(kamelets, errors);
         verifyTemplateConvention(kamelets, errors);
         verifyDependencies(kamelets, errors);
@@ -418,6 +427,58 @@ public final class CatalogValidator {
             if (!descriptions.add(description)) {
                 errors.add("kamelet " + q(k.name) + " has duplicate description " + q(description));
             }
+        }
+    }
+
+    /**
+     * A list of the Kamelets shows the summary, the first paragraph of the description (see
+     * {@link KameletsCatalog#summary(String)}), so it must be one short sentence, followed by a blank line when the
+     * description goes on. See docs/modules/ROOT/pages/documenting.adoc.
+     */
+    static void verifySummary(List<KameletInfo> kamelets, List<String> errors) {
+        for (KameletInfo k : kamelets) {
+            if (k.definition() == null) {
+                continue;
+            }
+            String summary = KameletsCatalog.summary(str(k.definition().get("description")));
+            if (summary != null && summary.length() > MAX_SUMMARY_LENGTH) {
+                errors.add("kamelet " + q(k.name) + " has a summary of " + summary.length() + " characters, more than "
+                        + MAX_SUMMARY_LENGTH + ": the first paragraph of the description is what a list of the Kamelets"
+                        + " shows, so end it after the first sentence with a blank line");
+            }
+        }
+    }
+
+    /**
+     * The documentation page of a Kamelet renders its title, its description and the title and description of each
+     * property as AsciiDoc, where {@code {name}} is a reference to an attribute: {@code ${body}} or {@code {{body}}}
+     * in a text breaks the documentation build. Such a text must escape the brace, as {@code $\{body}}.
+     */
+    static void verifyAttributeReferences(List<KameletInfo> kamelets, List<String> errors) {
+        for (KameletInfo k : kamelets) {
+            if (k.definition() == null) {
+                continue;
+            }
+            checkAttributeReferences(k, "title", str(k.definition().get("title")), errors);
+            checkAttributeReferences(k, "description", str(k.definition().get("description")), errors);
+            for (Map.Entry<String, Object> e : k.properties().entrySet()) {
+                Map<String, Object> p = asMap(e.getValue());
+                if (p == null) {
+                    continue;
+                }
+                checkAttributeReferences(k, "title of property " + q(e.getKey()), str(p.get("title")), errors);
+                checkAttributeReferences(k, "description of property " + q(e.getKey()), str(p.get("description")),
+                        errors);
+            }
+        }
+    }
+
+    private static void checkAttributeReferences(KameletInfo k, String where, String text, List<String> errors) {
+        Matcher m = ATTRIBUTE_REFERENCE.matcher(text);
+        if (m.find()) {
+            errors.add("kamelet " + q(k.name) + " has " + q(m.group()) + " in its " + where
+                    + ", which the documentation reads as an AsciiDoc attribute: write " + q("\\" + m.group())
+                    + " instead");
         }
     }
 

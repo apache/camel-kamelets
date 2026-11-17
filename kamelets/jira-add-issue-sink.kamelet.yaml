@@ -30,33 +30,41 @@ metadata:
 spec:
   definition:
     title: "Jira Add Issue Sink"
-    description: Add a new issue to Jira.
+    description: |-
+      Creates a new issue, such as a bug or a task, in a Jira project for each message.
 
+      Use it to open a ticket automatically when something happens, for example when a monitoring alert fires, a form is submitted or an order fails.
+
+      Input: the body is the description of the issue, as text. The other fields come from headers. `ce-projectKey` (the key of the project, such as `SHOP`), `ce-issueTypeName` (such as `Bug` or `Task`) and `ce-issueSummary` (the title) are required. `ce-issueAssignee`, `ce-issuePriorityName` (such as `High`) and `ce-issueComponents` (a comma-separated list) are optional. Set them before this sink, for example with `insert-header-action`.
+
+      Output: when it is used inside a route, the body afterwards is the issue that was created.
+
+      Good to know: a message without a project key, an issue type or a summary fails. Log in either with `username` and `password`, or with `personal-token`.
     required:
       - jiraUrl
     type: object
     properties:
       jiraUrl:
         title: Jira URL
-        description: The URL of your instance of Jira
+        description: The address of your Jira, as you open it in a browser, without a path.
         type: string
-        example: http://my_jira.com:8081
+        example: https://mycompany.atlassian.net
       username:
         title: Username
-        description: The username to access Jira
+        description: The user to log in as, together with `password`. For Jira Cloud, this is the email address of the account.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access Jira
+        description: The password of `username`. For Jira Cloud, use an API token of the account here, not its password.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       personal-token:
         title: Personal Token
-        description: Personal Token
+        description: A personal access token, for Jira Server and Jira Data Center. Use it instead of `username` and `password`.
         type: string
         format: password
         x-descriptors:
@@ -64,6 +72,33 @@ spec:
   types:
     in:
       mediaType: application/json
+  dataTypes:
+    in:
+      headers:
+        ce-projectKey:
+          title: Project Key
+          description: The key of the project to create the issue in, such as `SHOP`. Required.
+          type: string
+        ce-issueTypeName:
+          title: Issue Type
+          description: The name of the issue type, such as `Bug` or `Task`. Required.
+          type: string
+        ce-issueSummary:
+          title: Summary
+          description: The title of the issue. Required.
+          type: string
+        ce-issueAssignee:
+          title: Assignee
+          description: The user name of the person to assign the issue to.
+          type: string
+        ce-issuePriorityName:
+          title: Priority
+          description: The name of the priority, such as `High`.
+          type: string
+        ce-issueComponents:
+          title: Components
+          description: A comma-separated list of the names of the components of the issue.
+          type: string
   dependencies:
   - "camel:jackson"
   - "camel:jira"

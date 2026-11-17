@@ -32,9 +32,10 @@ spec:
   definition:
     title: "LangChain4j Ingest Sink"
     description: |-
-      Ingest documents into a LangChain4j EmbeddingStore: the payload is split into overlapping
-      segments, embedded in batches and written to the store, each segment stamped with the
-      pipeline name and the document id.
+      Ingest documents into a LangChain4j EmbeddingStore.
+
+      The payload is split into overlapping segments, embedded in batches and written to the
+      store, each segment stamped with the pipeline name and the document id.
 
       The document id is read from the `CamelLangChain4jIngestDocumentId` exchange property
       when a prior step captured it (the parser actions do, before the parse), else from the

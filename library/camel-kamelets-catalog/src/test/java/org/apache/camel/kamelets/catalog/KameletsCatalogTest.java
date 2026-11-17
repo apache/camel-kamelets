@@ -91,6 +91,26 @@ public class KameletsCatalogTest {
     }
 
     @Test
+    void testGetKameletSummary() throws Exception {
+        assertEquals("Sends the same fixed message again and again at a regular interval, such as once every second.",
+                catalog.getKameletSummary("timer-source"));
+        assertNull(catalog.getKameletSummary("word"));
+    }
+
+    @Test
+    void testSummary() throws Exception {
+        assertEquals("One line.", KameletsCatalog.summary("One line."));
+        assertEquals("The first paragraph.", KameletsCatalog.summary("The first paragraph.\n\nThe second.\n\nThe third."));
+        // a blank line made of spaces, and Windows line ends
+        assertEquals("The first.", KameletsCatalog.summary("The first.\r\n  \r\nThe second."));
+        // a first paragraph wrapped over several lines is put on one line
+        assertEquals("A sentence wrapped over two lines.",
+                KameletsCatalog.summary("  A sentence wrapped\n   over two lines.\n\nThe rest."));
+        assertNull(KameletsCatalog.summary(null));
+        assertNull(KameletsCatalog.summary(" \n "));
+    }
+
+    @Test
     void testGetKameletsByProvider() throws Exception {
         List<Kamelet> c = catalog.getKameletByProvider("Apache Software Foundation");
         assertFalse(c.isEmpty());
@@ -227,7 +247,7 @@ public class KameletsCatalogTest {
         verifyHeaders("infinispan-source", 6);
         verifyHeaders("infinispan-sink", 14);
         verifyHeaders("jira-add-comment-sink", 17);
-        verifyHeaders("jira-add-issue-sink", 17);
+        verifyHeaders("jira-add-issue-sink", 6);
         verifyHeaders("jira-source", 3);
         verifyHeaders("jira-oauth-source", 3);
         verifyHeaders("jms-amqp-10-source", 15);
@@ -290,7 +310,7 @@ public class KameletsCatalogTest {
         verifyHeaders("ssh-source", 4);
         verifyHeaders("telegram-sink", 6);
         verifyHeaders("telegram-source", 5);
-        verifyHeaders("timer-source", 2);
+        verifyHeaders("timer-source", 1);
         verifyHeaders("twitter-directmessage-source", 2);
         verifyHeaders("twitter-timeline-source", 1);
         verifyHeaders("twitter-search-source", 7);
