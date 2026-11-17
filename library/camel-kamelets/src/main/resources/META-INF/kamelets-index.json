@@ -500,16 +500,6 @@
     "namespace" : "Azure",
     "provider" : "Apache Software Foundation"
   }, {
-    "name" : "bitcoin-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "Bitcoin Source",
-    "summary" : "Reads the current price of Bitcoin in USDT (Tether) from the public market data of the Binance trading platform at a regular interval, one message per reading.",
-    "description" : "Reads the current price of Bitcoin in USDT (Tether) from the public market data of the Binance trading platform at a regular interval, one message per reading.\n\nUse it to follow the Bitcoin price, for example to store it over time, to send an alert when it crosses a threshold, or as a live data feed for a demo. It reads market prices from Binance; it does not connect to a Bitcoin node or wallet.\n\nOutput: the body is JSON text with the ticker of the BTC/USDT pair: among others the last price (`last`), the best bid and ask (`bid`, `ask`), the high and low (`high`, `low`) and the volume (`volume`) of the last 24 hours. The `Content-Type` header is `application/json`.\n\nGood to know: it needs access to the internet and no account or key. The first reading comes about one second after start, then one every `period`.",
-    "group" : "Bitcoin",
-    "namespace" : "Bitcoin",
-    "provider" : "Apache Software Foundation"
-  }, {
     "name" : "cassandra-sink",
     "type" : "sink",
     "supportLevel" : "Stable",
@@ -548,16 +538,6 @@
     "description" : "Reads the files (objects) in a bucket of a Ceph Object Gateway, one message per file, and by default deletes each file once it has been read.\n\nUse it to process files that another system drops into a Ceph bucket, such as uploaded documents, exported reports or log files. To react to the bucket notifications of Ceph instead of reading the bucket over and over, use `ceph-event-based-source`.\n\nOutput: the body is the content of the file, as bytes. The headers give the bucket name, the key (the path of the file in the bucket, `CamelAwsS3Key`), the content type and the ETag of the file.\n\nGood to know: files are deleted from the bucket after they are read, unless `deleteAfterRead` is set to false; then the same files are read again on every poll. Files in folders are read too. The bucket is addressed as part of the host name (such as `my-bucket.ceph.example.com`) unless `cephUrl` uses an IP address, so the gateway must accept that style of address.",
     "group" : "Ceph",
     "namespace" : "Cloud",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "chuck-norris-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "Chuck Norris Source",
-    "summary" : "Fetches a random Chuck Norris joke from the public api.chucknorris.io service at a regular interval, and sends it as a message.",
-    "description" : "Fetches a random Chuck Norris joke from the public api.chucknorris.io service at a regular interval, and sends it as a message.\n\nUse it to get short, changing text messages to try out a sink, an action or a demo, with no account and no setup. For the same fixed message every time, use `timer-source`.\n\nOutput: the body is the text of one joke. The message has no headers.\n\nGood to know: it calls `https://api.chucknorris.io` over the internet for every message, so it needs internet access.",
-    "group" : "Chuck Norris",
-    "namespace" : "Dataset",
     "provider" : "Apache Software Foundation"
   }, {
     "name" : "couchbase-sink",
@@ -728,16 +708,6 @@
     "description" : "Removes from each message all the headers whose names match a pattern, such as `Camel*`.\n\nUse it to remove the internal `Camel*` headers that came with a message from outside before it reaches a sink, or to clear many headers at once before a message goes to another system. To remove a single header by its name, `drop-header-action` is enough.\n\nInput: any message.\n\nOutput: the same body, without the headers that match `pattern`. The headers that match `excludePattern` are kept.\n\nGood to know: a pattern is compared with each header name first as an exact name, then as a wildcard when it ends with `*` (`x-*` matches every name that starts with `x-`), and then as a Java regular expression, such as `x-(one|two)`. None of these comparisons is case-sensitive.",
     "group" : "Actions",
     "namespace" : "EIP",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "earthquake-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "Earthquake Source",
-    "summary" : "Sends a message for each earthquake reported by the USGS (United States Geological Survey), checking for new reports at a regular interval.",
-    "description" : "Sends a message for each earthquake reported by the USGS (United States Geological Survey), checking for new reports at a regular interval.\n\nUse it to follow the earthquakes around the world, for example to alert on the strong ones, or as a stream of real, changing JSON data for a demo. No account is needed.\n\nOutput: one message per earthquake. The body is a GeoJSON feature, as JSON text: `properties` has the magnitude (`mag`), the place, the time and a link to the USGS page, and `geometry` has the longitude, the latitude and the depth. The `Content-Type` header is `application/json`.\n\nGood to know: the first check sends the earthquakes whose report was updated in the last `lookAhead` minutes, and each later check those updated since the check before. An earthquake is sent again when USGS updates its report. The time of the last check is kept in memory only, so a restart begins again with the last `lookAhead` minutes. It calls `https://earthquake.usgs.gov` over the internet.",
-    "group" : "Earthquake",
-    "namespace" : "Dataset",
     "provider" : "Apache Software Foundation"
   }, {
     "name" : "elasticsearch-index-sink",
@@ -2348,16 +2318,6 @@
     "description" : "Receives HTTP requests on a path of its own, such as `/webhook`, and sends each request on as a message, with its body and headers.\n\nUse it to receive the webhook calls of an online service, such as a payment, form or code hosting service, or to let another system push data with a simple HTTP POST. To fetch a URL at a regular interval instead, use `http-source`.\n\nOutput: the body is the body of the request, as a stream, and is empty for a request without a body, such as a GET. The HTTP headers of the request become headers of the message, and so does each query parameter. `CamelHttpMethod` gives the method (such as `POST`), `CamelHttpPath` the path and `CamelHttpQuery` the query string. A form (`application/x-www-form-urlencoded`) arrives as a Map of its fields instead.\n\nGood to know: there is no login, so anyone who can reach the address can send messages; protect it with network rules or a gateway in front, and treat the content as untrusted. It accepts every HTTP method, on the exact path only. It listens on the HTTP port of the application, 8080 by default with Camel JBang. The caller gets back the message as it is at the end of the flow: by default the body it sent, with status 200, or status 204 when there is no body.",
     "group" : "Webhook",
     "namespace" : "Cloud",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "wttrin-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "wttr.in Source",
-    "summary" : "Fetches the current weather or the forecast for a place from the public wttr.in service at a regular interval, and sends it as JSON.",
-    "description" : "Fetches the current weather or the forecast for a place from the public wttr.in service at a regular interval, and sends it as JSON.\n\nUse it to feed weather data into a dashboard, a chat message or a decision, such as a frost alert, or as real, changing JSON data for a demo. No account is needed.\n\nOutput: the body is JSON text. With `output` set to `current`, the default, it is an object with the current conditions, such as `temp_C`, `humidity` and `weatherDesc`. With `weather`, it is a list with the forecast for each day, starting today. With `full`, it is the whole answer of wttr.in, which has both. The `Content-Type` header is `application/json`, and the other headers of the HTTP answer are kept.\n\nGood to know: it calls `https://wttr.in` over the internet. When `wttrLocation` is not set, wttr.in guesses the place from the IP address of the machine.",
-    "group" : "Weather",
-    "namespace" : "Dataset",
     "provider" : "Apache Software Foundation"
   }, {
     "name" : "xj-identity-action",

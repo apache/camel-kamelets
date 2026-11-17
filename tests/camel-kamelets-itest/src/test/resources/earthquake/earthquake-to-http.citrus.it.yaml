@@ -27,6 +27,9 @@ actions:
               properties:
                 - name: http.sink.url
                   value: "http://localhost:${http.server.port}/test"
+          # earthquake-source is a demo, not in the catalog: the build copies examples/kamelets into examples/
+          resources:
+            - "../examples/earthquake-source.kamelet.yaml"
 
   # Verify Http request
   - http:

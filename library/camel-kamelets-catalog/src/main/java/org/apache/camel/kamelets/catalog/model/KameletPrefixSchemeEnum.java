@@ -41,10 +41,8 @@ public enum KameletPrefixSchemeEnum {
     azure_storage_datalake("azure-storage-datalake","azure-storage-datalake"),
     azure_storage_queue("azure-storage-queue","azure-storage-queue"),
     beer("beer", "http"),
-    bitcoin("bitcoin", "xchange"),
     cassandra("cassandra", "cql"),
     ceph("ceph", "aws2-s3"),
-    chuck_norris("chuck-norris", "http"),
     couchbase("couchbase", "couchbase"),
     elasticsearch_index("elasticsearch-index", "elasticsearch"),
     exec("exec", "exec"),
@@ -113,8 +111,7 @@ public enum KameletPrefixSchemeEnum {
     ssh("ssh", "ssh"),
     telegram("telegram", "telegram"),
     timer("timer", "timer"),
-    webhook("webhook", "platform-http"),
-    wttrin("wttrin", "https");
+    webhook("webhook", "platform-http");
 
     public final String name;
     public final String scheme;
