@@ -30,20 +30,29 @@ metadata:
 spec:
   definition:
     title: "GraphQL Sink"
-    description: Forward data to a GraphQL endpoint.
+    description: |-
+      Sends the GraphQL query or mutation in the body of each message to a GraphQL server, with an HTTP POST, and gives back the answer of the server.
+
+      Use it to create or change data through a GraphQL API with a mutation, for example to add a record for each event, or to fetch data with a query.
+
+      Input: the body is the GraphQL query or mutation itself, as text, such as `{ books { title } }`. A body that is not text, such as a Map, fails the message. The other headers of the message, except the Camel ones, are sent as HTTP headers.
+
+      Output: when it is used inside a route, the body afterwards is the answer of the server, as JSON text with its `data` and `errors`.
+
+      Good to know: GraphQL errors in the answer do not fail the message, but an HTTP status outside 200 to 299 does. Since the body is run as a query, only send it messages from a source you trust.
     required:
     - url
     type: object
     properties:
       url:
         title: GraphQL Server URL
-        description: The URL to which you want to send data.
+        description: The address of the GraphQL API, starting with `http://` or `https://`.
         type: string
-        example: "http://example.com/graphql"
+        example: "https://api.example.com/graphql"
         pattern: "^(http|https)://.*"
       accessToken:
         title: GraphQL Access Token
-        description: The access Token to use to access GraphQL server
+        description: A token from the provider of the API, sent as `Authorization` `Bearer` with each request. Leave it out for an API that needs no login.
         type: string
         format: password
         x-descriptors:

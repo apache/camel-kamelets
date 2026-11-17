@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "Infinispan Source"
-    description: Get Events from an Infinispan cache
+    description: |-
+      Receives an event each time an entry of a cache on a remote Infinispan server, or Red Hat Data Grid, is created, changed, removed or expires, one message per event.
+
+      Use it to react to changes in a shared cache, for example to update a search index or notify another service when a value changes. To write to a cache, use `infinispan-sink`.
+
+      Output: the message has no body: the event is in headers. `infinispan-event-type` is the kind of event, such as `CLIENT_CACHE_ENTRY_CREATED`, `infinispan-key` the key of the entry, `infinispan-cache-name` the name of the cache and `infinispan-entry-version` the version of the entry. The same values are in `ce-infinispaneventtype`, `ce-infinispankey`, `ce-infinispancachename` and `ce-infinispanentryversion`. To read the value, look up the key in the cache.
+
+      Good to know: only the changes made while the integration runs are received. The cache must already exist on the server. Recent Infinispan servers do not accept the default `saslMechanism` of `DIGEST-MD5`: set it to `SCRAM-SHA-512`. The connection has no TLS.
     required:
       - cacheName
       - hosts
@@ -40,52 +47,74 @@ spec:
     properties:
       cacheName:
         title: Cache Name
-        description: The name of the Infinispan cache to use
+        description: The name of the cache to watch. It must exist on the server.
         type: string
+        example: orders
       hosts:
         title: Hosts
-        description: Specifies the host of the cache on Infinispan instance
+        description: The address of the Infinispan server, as `host:port`. The Hot Rod port of Infinispan is 11222 by default.
         type: string
+        example: "infinispan.example.com:11222"
       secure:
         title: Secure
-        description: If the Infinispan instance is secured or not
+        description: If true, it logs in with `username` and `password`. Set it to false only for a server that needs no login. It does not turn on TLS.
         type: boolean
         default: true
       username:
         title: Username
-        description: Username to connect to Infinispan.
+        description: The Infinispan user to log in as.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: Password to connect to Infinispan.
+        description: The password of the Infinispan user in `username`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       saslMechanism:
         title: SASL Mechanism
-        description: The SASL Mechanism to use
+        description: How the user and password are checked by the server. Recent Infinispan servers accept `SCRAM-SHA-512`, `SCRAM-SHA-256` or `DIGEST-SHA-512`, but not the default `DIGEST-MD5`.
         type: string
         default: "DIGEST-MD5"
+        example: SCRAM-SHA-512
       securityRealm:
         title: Security Realm
-        description: Define the security realm to access the infinispan instance
+        description: The security realm of the server that holds the user. Keep the default unless your Infinispan administrator set up another realm.
         type: string
         default: "default"
       securityServerName:
-        title: Security Server name
-        description: Define the security server name to access the infinispan instance
+        title: Security Server Name
+        description: The name of the server, used when logging in. Keep the default unless your Infinispan administrator changed it.
         type: string
         default: "infinispan"
       eventTypes:
-        title: Infinispan Cluster Name
-        description: Specifies the set of event types to register by the consumer. Multiple event can be separated by comma without spaces.
+        title: Event Types
+        description: The kinds of events to receive, separated by commas without spaces. `CLIENT_CACHE_ENTRY_CREATED`, `CLIENT_CACHE_ENTRY_MODIFIED`, `CLIENT_CACHE_ENTRY_REMOVED` and `CLIENT_CACHE_ENTRY_EXPIRED` are changes of an entry; `CLIENT_CACHE_FAILOVER` tells that the connection moved to another server of the cluster.
         type: string
         example: "CLIENT_CACHE_ENTRY_CREATED,CLIENT_CACHE_ENTRY_MODIFIED"
         default: "CLIENT_CACHE_ENTRY_CREATED,CLIENT_CACHE_ENTRY_MODIFIED,CLIENT_CACHE_ENTRY_REMOVED,CLIENT_CACHE_ENTRY_EXPIRED,CLIENT_CACHE_FAILOVER"
         enum: ["CLIENT_CACHE_ENTRY_CREATED", "CLIENT_CACHE_ENTRY_MODIFIED", "CLIENT_CACHE_ENTRY_REMOVED", "CLIENT_CACHE_ENTRY_EXPIRED", "CLIENT_CACHE_FAILOVER"]
+  dataTypes:
+    out:
+      headers:
+        infinispan-event-type:
+          title: Event Type
+          description: The kind of event, such as `CLIENT_CACHE_ENTRY_CREATED` or `CLIENT_CACHE_ENTRY_REMOVED`. Also in `ce-infinispaneventtype`.
+          type: string
+        infinispan-key:
+          title: Key
+          description: The key of the entry that changed. Also in `ce-infinispankey`.
+          type: string
+        infinispan-cache-name:
+          title: Cache Name
+          description: The name of the cache. Also in `ce-infinispancachename`.
+          type: string
+        infinispan-entry-version:
+          title: Entry Version
+          description: The version of the entry after the change. Also in `ce-infinispanentryversion`.
+          type: integer
   dependencies:
     - "camel:kamelet"
     - "camel:infinispan"

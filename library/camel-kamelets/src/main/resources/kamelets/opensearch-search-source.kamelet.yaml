@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "OpenSearch Search Source"
-    description: Search data on OpenSearch.
+    description: |-
+      Runs the same search on an index of OpenSearch at a regular interval, and sends the result of each search as one message.
+
+      Use it to watch an index on a schedule, for example to send the error log entries or the orders that match a query to another system. To store documents in OpenSearch, use `opensearch-index-sink`; for Elasticsearch, use `elasticsearch-search-source`.
+
+      Output: the body is JSON text with the total number of matches (`total`) and a `hits` list, with the index, the id and the score of each document found. The fields of each document are under `source`, but in an unusual nested form, in which each value is wrapped in a `_value` object under `_children`. The `Content-Type` header is `application/json`.
+
+      Good to know: every search returns all the matching documents again, not only the new ones; to get only new documents, filter on a date in the query. By default a search runs every second. A search on an index that does not exist fails, and is tried again at the next interval. It connects with TLS by default (`enableSSL`).
     required:
       - query
       - clusterName
@@ -40,55 +47,56 @@ spec:
     properties:
       period:
         title: Period
-        description: The time interval between two searches
+        description: How long to wait between two searches, in milliseconds. For example, 60000 is one minute.
         type: integer
         default: 1000
+        example: 60000
       query:
         title: Query
-        description: The query we want to use to search on OpenSearch.
+        description: The search to run, as a JSON search request of OpenSearch, the same as the body of a `_search` request. It can also set `size`, the number of documents returned, which is 10 when not set.
         type: string
+        example: '{"query": {"match": {"status": "shipped"}}}'
       user:
         title: Username
-        description: Username to connect to OpenSearch.
+        description: The OpenSearch user to log in as, such as `admin`. Leave it out for a cluster without security.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: Password to connect to OpenSearch.
+        description: The password of the OpenSearch user in `user`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       enableSSL:
         title: Enable SSL
-        description: Do we want to connect using SSL?
+        description: If true, it connects with HTTPS. Set it to false for a cluster that is reached with plain HTTP.
         type: boolean
         default: true
       hostAddresses:
         title: Host Addresses
-        description: Comma separated list with ip:port formatted remote transport addresses to use.
+        description: The address of the OpenSearch HTTP API, as `host:port`, or several nodes separated by commas. The port is 9200 by default.
         type: string
+        example: quickstart-es-http:9200
       indexName:
         title: Index in OpenSearch
-        description: The name of the index to act against.
+        description: The name of the index to search.
         type: string
+        example: orders
       clusterName:
         title: OpenSearch Cluster Name
-        description: The name of the cluster.
+        description: The name of the OpenSearch cluster. Required, but not checked against the cluster.
         type: string
+        example: quickstart
       sslContextParameters:
         title: SSL Context Parameters
-        description: >-
-          Reference to a registry bean of type org.apache.camel.support.jsse.SSLContextParameters,
-          written as "#bean:myBeanName". Use this for anything the certificate property cannot
-          express - mutual TLS with a client keystore, a custom trust store, a specific TLS protocol
-          version, or cipher suite selection. When set it takes precedence over certificate, so
-          configure one or the other rather than both.
+        description: For TLS settings that `certificate` cannot give, such as a client certificate (mutual TLS), a trust store, or a TLS version, an `SSLContextParameters` object defined in the application, as `#bean:` followed by its name. It takes precedence over `certificate`; set one or the other.
         type: string
+        example: "#bean:mySslContext"
       certificate:
         title: Certificate
-        description: The Certificate for accessing the Opensearch cluster. You must encode this value in base64.
+        description: The certificate of the certificate authority (CA) that signed the certificate of the cluster, as PEM text encoded in base64. Needed when the cluster uses a self-signed certificate.
         type: string
   types:
     out:

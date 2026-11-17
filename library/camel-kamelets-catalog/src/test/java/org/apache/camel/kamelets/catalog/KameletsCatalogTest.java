@@ -217,9 +217,9 @@ public class KameletsCatalogTest {
         verifyHeaders("couchbase-sink", 1);
         verifyHeaders("dropbox-source", 0);
         verifyHeaders("dropbox-source", 0);
-        verifyHeaders("elasticsearch-index-sink", 10);
+        verifyHeaders("elasticsearch-index-sink", 4);
         verifyHeaders("elasticsearch-search-source", 10);
-        verifyHeaders("exec-sink", 0);
+        verifyHeaders("exec-sink", 2);
         verifyHeaders("fhir-source", 0);
         verifyHeaders("file-watch-source", 3);
         verifyHeaders("ftp-source", 4);
@@ -244,8 +244,8 @@ public class KameletsCatalogTest {
         verifyHeaders("http-sink", 14);
         verifyHeaders("http-secured-source", 2);
         verifyHeaders("http-secured-sink", 14);
-        verifyHeaders("infinispan-source", 6);
-        verifyHeaders("infinispan-sink", 14);
+        verifyHeaders("infinispan-source", 4);
+        verifyHeaders("infinispan-sink", 2);
         verifyHeaders("jira-add-comment-sink", 1);
         verifyHeaders("jira-add-issue-sink", 6);
         verifyHeaders("jira-source", 3);
@@ -285,8 +285,8 @@ public class KameletsCatalogTest {
         verifyHeaders("postgresql-source", 1);
         verifyHeaders("pulsar-sink", 2);
         verifyHeaders("pulsar-source", 5);
-        verifyHeaders("redis-sink", 29);
-        verifyHeaders("redis-source", 28);
+        verifyHeaders("redis-sink", 4);
+        verifyHeaders("redis-source", 1);
         verifyHeaders("rest-openapi-sink", 0);
         verifyHeaders("salesforce-create-sink", 1);
         verifyHeaders("salesforce-delete-sink", 1);

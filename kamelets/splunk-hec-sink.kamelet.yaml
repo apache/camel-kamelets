@@ -30,8 +30,16 @@ metadata:
 spec:
   definition:
     title: "Splunk HEC Sink"
-    description: The Splunk HEC sink allows to send data to Splunk using the https://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector[HTTP Event Collector].
+    description: |-
+      Sends each message as an event to Splunk through its HTTP Event Collector (HEC), for searching, dashboards and alerts in Splunk.
 
+      Use it to send application logs, audit records, metrics or business events from any flow into a Splunk index.
+
+      Input: the body is the event, as text or as structured data such as a Map, which is sent as a JSON object. By default the event sent to Splunk is a JSON object with the headers of the message under `headers` and the body under `body`; `bodyOnly` sends the body alone, and `headersOnly` the headers alone.
+
+      Output: the message is unchanged.
+
+      Good to know: when `index`, `source` and `sourceType` are not set, the events go to the index `camel` with the source and source type `camel`, so set them for your Splunk. The `host` field of the event is the IP address of the machine that runs the integration, unless `hostPayload` is set. It connects with HTTPS and checks the certificate of the server, unless `https` or `skipTlsVerify` say otherwise.
     required:
       - splunkUrl
       - token
@@ -39,56 +47,61 @@ spec:
     properties:
       splunkUrl:
         title: Splunk URL
-        description: The URL of your Splunk server. No need to set the protocol prefix.
+        description: The host and port of the HTTP Event Collector of your Splunk, as `host:port`, without `https://`. The port of HEC is 8088 unless your Splunk administrator changed it.
         type: string
         example: my_server.splunkcloud.com:8088
       token:
         title: Token
-        description: The Token of the HEC. Note it is not the user's authentication token.
+        description: The token of an HTTP Event Collector input, from Settings, Data Inputs, HTTP Event Collector in Splunk. It is a GUID such as `12345678-1234-1234-1234-123456789012`, not the token of a user; a value in another form makes the integration fail to start.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       hostPayload:
         title: Host of the Event
-        description: The host field set in the data sent to Splunk, it is not related to the Splunk URL or the connection to Splunk server.
+        description: The value of the `host` field of every event, such as the name of the machine or application that the events are about. It is not the address of Splunk. When it is not set, the IP address of the machine that runs the integration is used.
         type: string
+        example: web-1
       bodyOnly:
         title: Body Only
-        description: Send to Splunk only data contained in the body.
+        description: If true, the event is the body alone, without the headers of the message.
         type: boolean
         default: false
       headersOnly:
         title: Headers Only
-        description: Send to Splunk only data contained in the headers.
+        description: If true, the event is the headers of the message alone, as a JSON object, without the body.
         type: boolean
         default: false
       index:
         title: Index
-        description: Splunk index to write to.
+        description: The Splunk index to write the events to. The token must be allowed to write to it. When it is not set, the index `camel` is used.
         type: string
+        example: main
       source:
         title: Source
-        description: The source named field of the data.
+        description: The value of the `source` field of every event, which tells where the events come from. When it is not set, `camel` is used.
         type: string
+        example: shop-orders
       sourceType:
         title: Source Type
-        description: The source named field of the data.
+        description: The value of the `sourcetype` field of every event, which tells Splunk how to read the events, such as `_json`. When it is not set, `camel` is used.
         type: string
+        example: _json
       skipTlsVerify:
         title: Skip TLS Verification
-        description: Skip TLS verification.
+        description: If true, the certificate of the Splunk server is not checked. Use it only for tests with a self-signed certificate.
         type: boolean
         default: false
       https:
         title: Secure
-        description: Use a secure HTTPS connection.
+        description: If true, it connects with HTTPS. Set it to false only for an HTTP Event Collector without TLS.
         type: boolean
         default: true
       time:
         title: Time
-        description: Time this event occurred. By default, the time is when this event hits the Splunk server.
+        description: The time of every event, as the number of seconds since 1 January 1970 (UTC). When it is not set, Splunk uses the time the event arrives.
         type: string
+        example: "1700000000"
   types:
     in:
       mediaType: application/json

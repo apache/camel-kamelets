@@ -30,16 +30,64 @@ metadata:
 spec:
   definition:
     title: "Nominatim GeoCode Action"
-    description: Find locations on Earth by name and address.
+    description: |-
+      Looks up a place name or a postal address, such as `Eiffel Tower, Paris`, in a Nominatim server of OpenStreetMap, and gives the best match with its coordinates as JSON.
+
+      Use it to turn the addresses in orders, customer records or events into latitude and longitude, for example to show them on a map or to find the nearest store.
+
+      Input: the place name or address to look up, as text.
+
+      Output: the body is JSON text: an array with the best match, with its coordinates, its full address and its kind of place, or an empty array when nothing matches. The headers give the same answer in short: `CamelGeoCoderLat` and `CamelGeoCoderLng` (the coordinates), `CamelGeoCoderAddress` (the full address found), `CamelGeoCoderCity`, `CamelGeoCoderCountryLong`, `CamelGeoCoderPostalCode` and `CamelGeoCoderStatus`, which is `OK` when a place was found and `ZERO_RESULTS` when none was.
+
+      Good to know: a place that is not found does not fail the message; check `CamelGeoCoderStatus`. The public server `https://nominatim.openstreetmap.org` limits how often it may be called; for many lookups, run your own Nominatim server.
     required:
       - serverUrl
     type: object
     properties:
       serverUrl:
         title: "Server URL"
-        description: "Url of the Nominatim server."
+        description: "The address of the Nominatim server, starting with `https://`, without a path. Use the public OpenStreetMap server for a few lookups, or your own server."
         example: "https://nominatim.openstreetmap.org"
         type: string
+  dataTypes:
+    out:
+      headers:
+        CamelGeoCoderStatus:
+          title: Status
+          description: "`OK` when a place was found, `ZERO_RESULTS` when none was."
+          type: string
+        CamelGeoCoderLat:
+          title: Latitude
+          description: The latitude of the place found, in decimal degrees.
+          type: string
+        CamelGeoCoderLng:
+          title: Longitude
+          description: The longitude of the place found, in decimal degrees.
+          type: string
+        CamelGeoCoderLatlng:
+          title: Latitude and Longitude
+          description: The latitude and the longitude of the place found, separated by a comma.
+          type: string
+        CamelGeoCoderAddress:
+          title: Address
+          description: The full address of the place found, or the text looked up when nothing was found.
+          type: string
+        CamelGeoCoderCity:
+          title: City
+          description: The city of the place found.
+          type: string
+        CamelGeoCoderCountryLong:
+          title: Country
+          description: The name of the country of the place found.
+          type: string
+        CamelGeoCoderCountryShort:
+          title: Country Code
+          description: The two-letter code of the country of the place found, such as `FR`.
+          type: string
+        CamelGeoCoderPostalCode:
+          title: Postal Code
+          description: The postal code of the place found.
+          type: string
   types:
     in:
       mediaType: text/plain

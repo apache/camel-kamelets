@@ -6,8 +6,8 @@ This Kamelet uses username and password authentication to connect to Infinispan 
 
 === Security Configuration
 
-- **Secure Connection**: Enabled by default (secure: true)
-- **SASL Mechanism**: DIGEST-MD5 (default)
+- **Authentication**: Enabled by default (secure: true). It is a login with username and password, not TLS: the connection has no TLS.
+- **SASL Mechanism**: DIGEST-MD5 (default). Recent Infinispan servers do not accept it: set `saslMechanism` to `SCRAM-SHA-512`.
 - **Security Realm**: "default" realm
 - **Security Server Name**: "infinispan" (default)
 
@@ -19,10 +19,10 @@ This Kamelet uses username and password authentication to connect to Infinispan 
 
 === Cache Operations
 
-Objects are stored in the specified cache using keys derived from headers or exchange ID.
+The body of each message is stored as the value in the specified cache, which must already exist on the server. The key comes from a header, or is a new unique id.
 
 === Optional Headers
 
 - `key` / `ce-key`: Specify the cache key for the object
 
-If no key is provided in headers, the Kamelet uses the exchange ID as the cache key.
+If no key is provided in headers, the Kamelet uses a new unique id (the id of the message) as the cache key, so each such message adds a new entry.

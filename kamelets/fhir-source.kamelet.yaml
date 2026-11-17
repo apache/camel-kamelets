@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "FHIR Source"
-    description: Receive data from FHIR server.
+    description: |-
+      Runs the same search on a FHIR server of healthcare data over and over, by default for all the Patient resources, and sends each search result, a FHIR Bundle, as one message.
+
+      Use it to copy healthcare records, such as patients or observations, from a FHIR server into another system, or to check a FHIR server on a schedule. To create or update resources on a FHIR server, use `fhir-sink`.
+
+      Output: the body is a FHIR Bundle of type `searchset`, as JSON text, with the number of resources found (`total`) and the resources themselves under `entry`. The `Content-Type` header is `application/fhir+json`.
+
+      Good to know: a new search starts about every half second, and every search returns all the matching resources again, not only the new ones; add a filter such as `_lastUpdated` to `url` to narrow it. `username` and `password` are required, even for a server without login.
     required:
       - serverUrl
       - username
@@ -39,41 +46,43 @@ spec:
     properties:
       serverUrl:
         title: Server URL
-        description: The FHIR server url.
+        description: The base address of the FHIR API of the server, the part before the resource type, starting with `http://` or `https://`.
         type: string
+        example: "https://fhir.example.com/fhir"
       url:
         title: URL
-        description: The FHIR resource type url.
+        description: The search to run, as the part of a FHIR search URL after `serverUrl`, starting with the resource type, and optionally followed by search parameters.
         type: string
         default: "/Patient"
+        example: "/Observation?subject=Patient/123"
       encoding:
         title: Encoding
-        description: Encoding to use for all request. 
+        description: How the server is asked to answer, `JSON` or `XML`. The body that comes out is JSON in both cases.
         type: string
         default: "JSON"
         enum: ["JSON", "XML"]
       fhirVersion:
         title: FHIR Version
-        description: The FHIR Version to use.
+        description: The version of the FHIR standard that the server uses. Most servers today use `R4`.
         type: string
         default: "R4"
         enum: ["DSTU2", "DSTU2_HL7ORG", "DSTU2_1", "DSTU3", "R4", "R5"]
       username:
         title: Username
-        description: The username to access the FHIR server.
+        description: The user to log in to the server as, with Basic authentication.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access the FHIR server.
+        description: The password of `username`, for Basic authentication.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       prettyPrint:
         title: Json Pretty Print
-        description: Define if the Json must be pretty print or not.
+        description: If true, the JSON in the body is indented over several lines; if false, it is on one line.
         type: boolean
         default: true
   types:

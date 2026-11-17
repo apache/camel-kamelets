@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "Redis Sink"
-    description: "Write object to a Redis cache."
+    description: |-
+      Runs a Redis command for each message, such as storing the body under a key with `SET`, adding it to a list with `RPUSH`, or publishing it on a channel with `PUBLISH`.
+
+      Use it to put values in a Redis cache for other applications to read, to push work items onto a Redis list, or to publish events on a Redis channel that `redis-source` or other subscribers listen to. To cache values only inside one running application, use `caffeine-action`.
+
+      Input: the body is the value, as text. The `key` header (or `ce-key`) gives the key, for commands that work on a key such as `SET`, `GET` or `RPUSH`. The `channel` header (or `ce-channel`) gives the channel, and is required for `PUBLISH`.
+
+      Output: when it is used inside a route, the body afterwards is what Redis answered, such as the value for `GET` or the new length of the list for `RPUSH`; for `SET` the body is unchanged.
+
+      Good to know: the default `command` is `GET`, which reads and stores nothing, so set it to the command you need. A body that is not text, such as a Map, fails the message; turn it into JSON text first, for example with `json-serialize-action`. It connects with no password and no TLS.
     required:
       - redisHost
       - redisPort
@@ -39,27 +48,49 @@ spec:
     properties:
       redisHost:
         title: Redis Host
-        description: The host where Redis server is running
+        description: The host name or IP address of the Redis server.
         type: string
+        example: redis.example.com
       redisPort:
         title: Redis Port
-        description: The port where Redis server is running
+        description: The port of the Redis server, usually 6379.
         type: integer
+        example: 6379
       command:
         title: Command
-        description: Redis Command 
+        description: The Redis command to run for each message, such as `SET` to store the body under the key, `RPUSH` or `LPUSH` to add it to a list, `SADD` to add it to a set, or `PUBLISH` to send it on a channel.
         type: string
         default: GET
+        example: SET
       channels:
         title: Channels
-        description: Redis Channels
+        description: Not used by this sink. The channel that `PUBLISH` sends to comes from the `channel` header.
         type: string
         default: one
       serializer:
         title: Serializer
-        description: RedisSerializer fully qualified name implementation 
+        description: The full Java class name of the Spring Data Redis serializer that turns the values and keys into the bytes Redis stores. The default stores them as text.
         type: string
         default: org.springframework.data.redis.serializer.StringRedisSerializer
+  dataTypes:
+    in:
+      headers:
+        key:
+          title: Key
+          description: The key to store, read or change, such as `order:42`. When it is not set, `ce-key` is used.
+          type: string
+        ce-key:
+          title: Key (CloudEvents)
+          description: The key, when the message is a CloudEvent. Used only when `key` is not set.
+          type: string
+        channel:
+          title: Channel
+          description: The channel to publish on, for `PUBLISH`. When it is not set, `ce-channel` is used.
+          type: string
+        ce-channel:
+          title: Channel (CloudEvents)
+          description: The channel to publish on, when the message is a CloudEvent. Used only when `channel` is not set.
+          type: string
   dependencies:
     - "camel:kamelet"
     - "camel:spring-redis"
