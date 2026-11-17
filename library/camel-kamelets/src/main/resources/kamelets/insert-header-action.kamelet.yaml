@@ -39,7 +39,7 @@ spec:
 
       Output: the same body. The header named by `name` is set to `value`, and replaces a header of the same name.
 
-      Good to know: `value` is written in the Camel Simple language: plain text is used as it is, and the `${...}` parts are filled in from the message, such as `${body}` for the body, or `${header.source}` for the value of the header `source`.
+      Good to know: `value` is written in the Camel Simple language: plain text is used as it is, and the `${...}` parts are filled in from the message, such as `$\{body}` for the body, or `${header.source}` for the value of the header `source`.
     required:
       - name
       - value
@@ -52,7 +52,7 @@ spec:
         example: "source"
       value:
         title: Header Value
-        description: "The value of the header: plain text, such as `orders-app`, or a Simple expression whose `${...}` parts are filled in from the message, such as `${body}` or `${header.customerId}`."
+        description: "The value of the header: plain text, such as `orders-app`, or a Simple expression whose `${...}` parts are filled in from the message, such as `$\\{body}` or `${header.customerId}`."
         type: string
         example: "${header.customerId}"
   dependencies:

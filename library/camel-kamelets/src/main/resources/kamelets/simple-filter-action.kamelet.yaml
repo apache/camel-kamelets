@@ -47,7 +47,7 @@ spec:
     properties:
       expression:
         title: Condition
-        description: "The condition, in the Camel Simple language, that makes a message be dropped. `${body}` is the body and `${header.name}` the value of a header. For example, `${header.type} == 'test'` drops the messages whose `type` header is `test`, and `${header.amount} > 100` those whose `amount` header is more than 100."
+        description: "The condition, in the Camel Simple language, that makes a message be dropped. `$\\{body}` is the body and `${header.name}` the value of a header. For example, `${header.type} == 'test'` drops the messages whose `type` header is `test`, and `${header.amount} > 100` those whose `amount` header is more than 100."
         type: string
         example: "${header.type} == 'test'"
   dependencies:
