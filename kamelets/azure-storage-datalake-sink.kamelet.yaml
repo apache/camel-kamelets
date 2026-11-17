@@ -31,7 +31,16 @@ metadata:
 spec:
   definition:
     title: "Azure Storage Blob Data Lake Sink"
-    description: Send data to Azure Storage Blob Data Lake.
+    description: |-
+      Uploads each message as a file to a file system in Azure Data Lake Storage Gen2, named after the `file` header.
+
+      Use it to land data for analytics, such as exports, events or reports, in a data lake. For plain blob containers, use `azure-storage-blob-sink`.
+
+      Input: the body is the content of the file: text, bytes or a stream. A Map fails: turn it into JSON text first, for example with `json-serialize-action`. The optional `file` header (or `ce-file`) is the name of the file, such as `sales-2026-05.csv`. Without it, the file gets a generated unique name.
+
+      Output: the body afterwards is `true`.
+
+      Good to know: by default it logs in as an app registration, with `clientId`, `clientSecret` and `tenantId`, so that app needs a role on the account that allows writing, such as Storage Blob Data Contributor.
     required:
       - accountName
       - clientId
@@ -42,43 +51,56 @@ spec:
     properties:
       accountName:
         title: Account Name
-        description: The Azure Storage Blob Data lake account name.
+        description: The name of the storage account, an Azure Data Lake Storage Gen2 account (a storage account with hierarchical namespace), as shown in the Azure portal under Storage accounts.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
+        example: mydatalake
       clientId:
-        title: Client Id
-        description: The Azure Storage Blob Data lake client Id.
+        title: Client ID
+        description: The application (client) ID of an app registration (service principal) in Microsoft Entra ID that has access to the account, from the Overview page of the app registration in the Azure portal. Used when `credentialType` is `CLIENT_SECRET`, the default.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       clientSecret:
         title: Client Secret
-        description: The Azure Storage Blob Data lake client secret.
+        description: "A client secret of the app registration, from the Azure portal: the app registration, then Certificates & secrets. Used when `credentialType` is `CLIENT_SECRET`, the default."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       tenantId:
-        title: Tenant Id
-        description: The Azure Storage Blob Data lake tenant id.
+        title: Tenant ID
+        description: The directory (tenant) ID of the app registration, from its Overview page in the Azure portal. Used when `credentialType` is `CLIENT_SECRET`, the default.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       fileSystemName:
         title: File System Name
-        description: The Azure Storage Blob Data lake File system name.
+        description: The name of the file system (the container) in the account to write the files to.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
+        example: raw-data
       credentialType:
         title: Credential Type
-        description: Determines the credential strategy to adopt.
+        description: How to log in to the account. `CLIENT_SECRET`, the default, uses `clientId`, `clientSecret` and `tenantId`. `AZURE_IDENTITY` uses the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login. The other values need a credential object, such as a `DataLakeServiceClient` for `SERVICE_CLIENT_INSTANCE`, in the application.
         type: string
-        enum: ["CLIENT_SECRET", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY", "AZURE_SAS", "SERVICE_CLIENT_INSTANCE"]
         default: "CLIENT_SECRET"
+        enum: ["CLIENT_SECRET", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY", "AZURE_SAS", "SERVICE_CLIENT_INSTANCE"]
+  dataTypes:
+    in:
+      headers:
+        file:
+          title: File Name
+          description: "The name of the file, such as `sales-2026-05.csv`. Optional: without it (and without `ce-file`), the file gets a generated unique name."
+          type: string
+        ce-file:
+          title: File Name
+          description: The name of the file, as a CloudEvents extension. Used when `file` is not set.
+          type: string
   dependencies:
     - "camel:azure-storage-datalake"
     - "camel:kamelet"

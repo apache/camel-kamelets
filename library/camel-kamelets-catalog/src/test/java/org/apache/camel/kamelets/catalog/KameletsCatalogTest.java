@@ -204,14 +204,14 @@ public class KameletsCatalogTest {
         verifyHeaders("aws-not-exists", 0);
         verifyHeaders("azure-eventhubs-sink", 2);
         verifyHeaders("azure-functions-sink", 8);
-        verifyHeaders("azure-servicebus-source", 21);
+        verifyHeaders("azure-servicebus-source", 7);
         verifyHeaders("azure-storage-blob-source", 8);
-        verifyHeaders("azure-storage-blob-sink", 46);
+        verifyHeaders("azure-storage-blob-sink", 2);
         verifyHeaders("azure-storage-blob-changefeed-source", 39);
         verifyHeaders("azure-storage-datalake-source", 26);
-        verifyHeaders("azure-storage-datalake-sink", 37);
+        verifyHeaders("azure-storage-datalake-sink", 2);
         verifyHeaders("azure-storage-queue-source", 6);
-        verifyHeaders("azure-storage-queue-sink", 16);
+        verifyHeaders("azure-storage-queue-sink", 2);
         verifyHeaders("cassandra-sink", 1);
         verifyHeaders("cassandra-source", 1);
         verifyHeaders("couchbase-sink", 2);

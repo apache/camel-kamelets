@@ -31,39 +31,62 @@ metadata:
 spec:
   definition:
     title: "Azure Eventhubs Sink"
-    description: Send events to Azure Event Hubs.        
+    description: |-
+      Sends each message as an event to an event hub in Azure Event Hubs, the Azure service for event streams.
+
+      Use it to publish events, such as clicks, sensor readings or changes, for stream processing or for other applications to read. To receive them, use `azure-eventhubs-source`.
+
+      Input: the body becomes the body of the event: text, bytes or a stream. A Map fails: turn it into JSON text first, for example with `json-serialize-action`. A List is sent as one event per element. The optional `partition-id` header (or `ce-partition-id`) is the partition to send to, such as `0`; without it, Event Hubs chooses one.
+
+      Output: the message is unchanged.
+
+      Good to know: the shared access policy needs the Send right.
     required:
       - namespaceName
       - eventhubName
     type: object
     properties:
       namespaceName:
-        title: Eventhubs Namespace
-        description: The Event Hubs namespace.
+        title: Event Hubs Namespace
+        description: The name of the Event Hubs namespace, the first part of its address `<namespaceName>.servicebus.windows.net`.
         type: string
+        example: my-namespace
       eventhubName:
-        title: Eventhubs Name
-        description: The Event Hub name.
+        title: Event Hub Name
+        description: The name of the event hub in the namespace to send the events to.
         type: string
+        example: orders
       sharedAccessName:
-        title: Share Access Name
-        description: The Event Hubs SAS key name.
+        title: Shared Access Name
+        description: "The name of a shared access policy of the namespace or of the event hub, such as `RootManageSharedAccessKey`, from the Azure portal: the namespace or the event hub, then Settings, Shared access policies. Used when `credentialType` is `CONNECTION_STRING`, the default."
         type: string
         x-descriptors:
         - urn:camel:group:credentials
+        example: RootManageSharedAccessKey
       sharedAccessKey:
-        title: Share Access Key
-        description: The key for the Event Hubs SAS key name.
+        title: Shared Access Key
+        description: The primary or secondary key of the shared access policy named in `sharedAccessName`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       credentialType:
         title: Credential Type
-        description: Determines the credential strategy to adopt.
+        description: How to log in to Event Hubs. `CONNECTION_STRING`, the default, uses `sharedAccessName` and `sharedAccessKey`. `AZURE_IDENTITY` uses the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login.
         type: string
-        enum: ["CONNECTION_STRING", "AZURE_IDENTITY"]
         default: "CONNECTION_STRING"
+        enum: ["CONNECTION_STRING", "AZURE_IDENTITY"]
+  dataTypes:
+    in:
+      headers:
+        partition-id:
+          title: Partition ID
+          description: "The ID of the partition to send the event to, such as `0`. Optional: without it (and without `ce-partition-id`), Event Hubs chooses the partition."
+          type: string
+        ce-partition-id:
+          title: Partition ID
+          description: The ID of the partition, as a CloudEvents extension. Used when `partition-id` is not set.
+          type: string
   dependencies:
     - "camel:azure-eventhubs"
     - "camel:kamelet"

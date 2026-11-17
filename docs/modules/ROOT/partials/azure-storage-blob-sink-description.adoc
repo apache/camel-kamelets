@@ -6,7 +6,6 @@ In this Kamelet, you can use these Azure authentication methods:
 
 - Azure Identity mechanism:  `AZURE_IDENTITY`
 - Plain Shared Account Key:  `SHARED_ACCOUNT_KEY`
-- Client Secret Credentials:  `CLIENT_SECRET`
 
 The order of evaluation for `AZURE_IDENTITY` is the following:
 
@@ -18,10 +17,10 @@ The order of evaluation for `AZURE_IDENTITY` is the following:
  - Azure CLI
  - Azure Powershell
 
-For `CLIENT_SECRET` you'll need to provide `clientId`, `clientSecret`, and `tenantId` properties.
+To log in as an app registration (a service principal), set `credentialType` to `AZURE_IDENTITY` and provide `clientId`, `clientSecret`, and `tenantId`: when all three are set, they are used instead of the order above. `CLIENT_SECRET` does not use these three properties.
 
 For more information, see the https://learn.microsoft.com/en-us/java/api/overview/azure/identity-readme[Azure Identity documentation]
 
 === Optional Headers
 
-In the headers, you can set the `file` / `ce-file` property to specify the filename to upload. If you do set property in the header, the Kamelet uses the exchange ID as filename.
+In the headers, you can set the `file` / `ce-file` property to specify the filename to upload. If you do not set it, the blob gets a generated unique name.

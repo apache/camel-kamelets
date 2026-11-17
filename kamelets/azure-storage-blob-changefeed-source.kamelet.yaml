@@ -31,57 +31,65 @@ metadata:
 spec:
   definition:
     title: "Azure Storage Blob Changefeed Source"
-    description: Consume events from an Azure Storage Blob change feed.
+    description: |-
+      Reads the change feed of an Azure Storage account at a fixed interval, one message per event, such as a blob that was created or deleted.
+
+      Use it to audit or replicate the changes made to the blobs of a whole storage account. To read the blobs themselves, use `azure-storage-blob-source`; to react to new blobs as they arrive, use `azure-storage-blob-event-based-source`.
+
+      Output: the body is the `data` part of the event, as JSON text. The headers `azure-storage-blob-changefeed-eventType`, `azure-storage-blob-changefeed-subject` (the path of the blob), `azure-storage-blob-changefeed-eventTime`, `azure-storage-blob-changefeed-id`, `azure-storage-blob-changefeed-topic`, `azure-storage-blob-changefeed-dataVersion` and `azure-storage-blob-changefeed-metadataVersion` give the rest of the event.
+
+      Good to know: the change feed must be turned on for the storage account (in the Azure portal: the storage account, then Data protection, then Enable blob change feed); otherwise every poll fails. It does not remember what it has read: every poll returns the whole change feed again, so the same events come again on every poll.
     required:
       - period
       - accountName
     type: object
     properties:
       period:
-        title: Period between Polls
-        description: The interval (in milliseconds) between fetches to the Azure Storage change feed.
+        title: Period Between Polls
+        description: How long to wait between two reads of the change feed, in milliseconds. For example, 60000 is one minute.
         type: integer
         default: 10000
       accountName:
         title: Account Name
-        description: The Azure Storage Blob account name.
+        description: The name of the storage account, as shown in the Azure portal under Storage accounts. It is the first part of the address of the account, `https://<accountName>.blob.core.windows.net`.
         type: string
         x-descriptors:
-          - urn:camel:group:credentials
+        - urn:camel:group:credentials
+        example: mystorageaccount
       accessKey:
         title: Access Key
-        description: The Azure Storage Blob access Key.
+        description: "An access key of the storage account, from the Azure portal: the storage account, then Security + networking, then Access keys. Used when `credentialType` is `SHARED_ACCOUNT_KEY`, the default."
         type: string
         format: password
         x-descriptors:
-          - urn:camel:group:credentials
+        - urn:camel:group:credentials
       clientId:
-        title: Client Id
-        description: The Azure Storage Blob client Id.
+        title: Client ID
+        description: The application (client) ID of an app registration (service principal) in Microsoft Entra ID that has access to the storage account, from the Overview page of the app registration in the Azure portal. Used with `clientSecret` and `tenantId` when `credentialType` is `AZURE_IDENTITY`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       clientSecret:
         title: Client Secret
-        description: The Azure Storage Blob client secret.
+        description: "A client secret of the app registration, from the Azure portal: the app registration, then Certificates & secrets. Used with `clientId` and `tenantId` when `credentialType` is `AZURE_IDENTITY`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       tenantId:
-        title: Tenant Id
-        description: The Azure Storage Blob tenant id.
+        title: Tenant ID
+        description: The directory (tenant) ID of the app registration, from its Overview page in the Azure portal. Used with `clientId` and `clientSecret` when `credentialType` is `AZURE_IDENTITY`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       credentialType:
         title: Credential Type
-        description: Determines the credential strategy to adopt.
+        description: "How to log in to the storage account. `SHARED_ACCOUNT_KEY`, the default, uses `accessKey`. `AZURE_IDENTITY` uses `clientId`, `clientSecret` and `tenantId` when all three are set, and otherwise the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login. Do not use `CLIENT_SECRET`: it does not use the three client options."
         type: string
-        enum: ["SHARED_ACCOUNT_KEY", "AZURE_IDENTITY", "CLIENT_SECRET"]
         default: "SHARED_ACCOUNT_KEY"
+        enum: ["SHARED_ACCOUNT_KEY", "AZURE_IDENTITY", "CLIENT_SECRET"]
   dependencies:
     - "camel:azure-storage-blob"
     - "camel:kamelet"

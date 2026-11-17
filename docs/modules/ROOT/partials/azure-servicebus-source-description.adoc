@@ -22,6 +22,8 @@ For more information, see the https://learn.microsoft.com/en-us/java/api/overvie
 
 For `TOKEN_CREDENTIAL` type, you'll need to add `com.azure.core.credential.TokenCredential` instance in the Camel registry.
 
+`AZURE_IDENTITY` and `TOKEN_CREDENTIAL` also need the fully qualified namespace of Service Bus, which this Kamelet does not set: configure the `fullyQualifiedNamespace` option of the Camel `azure-servicebus` component, or use `CONNECTION_STRING`.
+
 === Topic vs Queue
 
 The subscribtion name parameter needs to be populated in case of consuming from a Topic, while it's not required in case of Queue.

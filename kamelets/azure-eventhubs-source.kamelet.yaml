@@ -31,7 +31,14 @@ metadata:
 spec:
   definition:
     title: "Azure Eventhubs Source"
-    description: Receive events from Azure Event Hubs.
+    description: |-
+      Receives the events of an event hub in Azure Event Hubs, one message per event, and saves how far it has read in an Azure Storage blob container.
+
+      Use it to process event streams, such as telemetry or changes, that other applications send to Event Hubs. To send events, use `azure-eventhubs-sink`.
+
+      Output: the body is the body of the event, as bytes. The headers give its partition (`CamelAzureEventHubsPartitionId`), offset, sequence number and the time it was enqueued, and `CamelAzureEventHubsMetadata` holds the custom properties of the event.
+
+      Good to know: when no position has been saved yet, it starts with the events that arrive after it starts, not the older ones. It reads as the `$Default` consumer group. It saves its position (a checkpoint) in `blobContainerName` every 500 events or every 5 seconds, so after a restart some events can be read again.
     required:
       - namespaceName
       - eventhubName
@@ -41,47 +48,52 @@ spec:
     type: object
     properties:
       namespaceName:
-        title: Eventhubs Namespace
-        description: The Event Hubs namespace.
+        title: Event Hubs Namespace
+        description: The name of the Event Hubs namespace, the first part of its address `<namespaceName>.servicebus.windows.net`.
         type: string
+        example: my-namespace
       eventhubName:
-        title: Eventhubs Name
-        description: The Event Hub name.
+        title: Event Hub Name
+        description: The name of the event hub in the namespace to receive the events from.
         type: string
+        example: orders
       sharedAccessName:
-        title: Share Access Name
-        description: The Event Hubs SAS key name.
+        title: Shared Access Name
+        description: "The name of a shared access policy of the namespace or of the event hub, such as `RootManageSharedAccessKey`, from the Azure portal: the namespace or the event hub, then Settings, Shared access policies. Used when `credentialType` is `CONNECTION_STRING`, the default."
         type: string
         x-descriptors:
         - urn:camel:group:credentials
+        example: RootManageSharedAccessKey
       sharedAccessKey:
-        title: Share Access Key
-        description: The key for the Event Hubs SAS key name.
+        title: Shared Access Key
+        description: The primary or secondary key of the shared access policy named in `sharedAccessName`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       blobAccountName:
-        title: Azure Storage Blob Account Name
-        description: The name of the Storage Blob account.
+        title: Checkpoint Storage Account
+        description: The name of the storage account where the source saves how far it has read each partition (its checkpoints).
         type: string
+        example: mystorageaccount
       blobContainerName:
-        title: Azure Storage Blob Container Name
-        description: The name of the Storage Blob container.
+        title: Checkpoint Container Name
+        description: The name of the blob container, in `blobAccountName`, for the checkpoints.
         type: string
+        example: eventhub-checkpoints
       blobAccessKey:
-        title: Azure Storage Blob Access Key
-        description: The key for the Azure Storage Blob service that is associated with the Storage Blob account name.
+        title: Checkpoint Access Key
+        description: "An access key of the storage account `blobAccountName`, from the Azure portal: the storage account, then Security + networking, then Access keys."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       credentialType:
         title: Credential Type
-        description: Determines the credential strategy to adopt.
+        description: How to log in to Event Hubs. `CONNECTION_STRING`, the default, uses `sharedAccessName` and `sharedAccessKey`. `AZURE_IDENTITY` uses the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login.
         type: string
-        enum: ["CONNECTION_STRING", "AZURE_IDENTITY"]
         default: "CONNECTION_STRING"
+        enum: ["CONNECTION_STRING", "AZURE_IDENTITY"]
   dataTypes:
     out:
       default: binary

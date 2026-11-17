@@ -31,48 +31,88 @@ metadata:
 spec:
   definition:
     title: "Azure Servicebus Source"
-    description: Consume Messages from Azure Servicebus.
+    description: |-
+      Receives the messages of a queue, or of a topic subscription, in Azure Service Bus, one message each.
+
+      Use it to process work or events that other applications send through Service Bus. To read new blobs from Event Grid events that arrive in a Service Bus queue, use `azure-storage-blob-event-based-source`.
+
+      Output: the body is the body of the Service Bus message, as bytes. The headers give its ID (`CamelAzureServiceBusMessageId`), its custom properties (`CamelAzureServiceBusApplicationProperties`, a Map), its content type, correlation ID, subject, enqueued time and delivery count.
+
+      Good to know: with the default `serviceBusReceiveMode` of `PEEK_LOCK`, a message is removed only once it has been processed; a message whose processing fails is given back and received again, until Service Bus moves it to the dead-letter queue after the maximum delivery count (10 by default). With `RECEIVE_AND_DELETE`, a message is removed as soon as it is received, so a failure loses it. For a topic, set `serviceBusType` to `topic` and `subscriptionName`.
     required:
       - topicOrQueueName
       - connectionString
     type: object
     properties:
       topicOrQueueName:
-        title: Topic Or Queue Name
-        description: Topic Or Queue Name for the Azure Servicebus instance
+        title: Topic or Queue Name
+        description: The name of the queue, or of the topic, to receive the messages from. For a topic, also set `serviceBusType` to `topic` and `subscriptionName`.
         type: string
+        example: orders
       connectionString:
         title: Connection String
-        description: Connection String for Azure Servicebus instance
+        description: "The connection string of the Service Bus namespace, from the Azure portal: the namespace, then Settings, Shared access policies, a policy, Primary Connection String. It starts with `Endpoint=sb://`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       serviceBusReceiveMode:
-        title: Servicebus Receive Mode
-        description: Sets the receive mode for the receiver
+        title: Service Bus Receive Mode
+        description: "`PEEK_LOCK`, the default, removes a message only once it has been processed, and gives it back when processing fails. `RECEIVE_AND_DELETE` removes each message as soon as it is received, so a message whose processing fails is lost."
         type: string
-        default: PEEK_LOCK
+        default: "PEEK_LOCK"
         enum: ["PEEK_LOCK", "RECEIVE_AND_DELETE"]
       subscriptionName:
         title: Subscription Name
-        description: Sets the name of the subscription in the topic to listen to. This parameter is mandatory in case of topic.
+        description: The name of the subscription of the topic to receive from. Required when `serviceBusType` is `topic`; not used for a queue.
         type: string
+        example: all-orders
       serviceBusType:
-        title: Servicebus Type
-        description: The service bus type of connection to execute. Queue is for typical queue option and topic for subscription based model.
+        title: Service Bus Type
+        description: Whether `topicOrQueueName` is a `queue` or a `topic`.
         type: string
-        default: queue
+        default: "queue"
         enum: ["queue", "topic"]
       credentialType:
         title: Credential Type
-        description: Determines the credential strategy to adopt.
+        description: How to log in to Service Bus. Keep `CONNECTION_STRING`, the default, which uses `connectionString`. `AZURE_IDENTITY` and `TOKEN_CREDENTIAL` also need the `fullyQualifiedNamespace` of the Camel component, which this Kamelet does not set.
         type: string
-        enum: ["AZURE_IDENTITY", "CONNECTION_STRING", "TOKEN_CREDENTIAL"]
         default: "CONNECTION_STRING"
+        enum: ["AZURE_IDENTITY", "CONNECTION_STRING", "TOKEN_CREDENTIAL"]
   types:
     out:
       mediaType: application/octet-stream
+  dataTypes:
+    out:
+      headers:
+        CamelAzureServiceBusMessageId:
+          title: Message ID
+          description: The ID of the message.
+          type: string
+        CamelAzureServiceBusApplicationProperties:
+          title: Application Properties
+          description: The custom properties of the message, as a Map.
+          type: object
+        CamelAzureServiceBusContentType:
+          title: Content Type
+          description: The content type of the message, when the sender set one.
+          type: string
+        CamelAzureServiceBusCorrelationId:
+          title: Correlation ID
+          description: The correlation ID of the message, when the sender set one.
+          type: string
+        CamelAzureServiceBusSubject:
+          title: Subject
+          description: The subject (label) of the message, when the sender set one.
+          type: string
+        CamelAzureServiceBusEnqueuedTime:
+          title: Enqueued Time
+          description: When the message was accepted by Service Bus.
+          type: object
+        CamelAzureServiceBusDeliveryCount:
+          title: Delivery Count
+          description: How many times the message has been delivered, this time included.
+          type: integer
   dependencies:
     - "camel:azure-servicebus"
     - "camel:kamelet"

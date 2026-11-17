@@ -24,4 +24,4 @@ For more information, see the https://learn.microsoft.com/en-us/java/api/overvie
 
 === Optional Headers
 
-In the header, you can set the `partition` / `ce-partition` property to determine how long an event remains in the Azure Storage queue. Use `PnDTnHnMn.nS.` format. For example, `PT20.345S` parses as 20.345 seconds and `P2D` parses as 2 days. If you not set the property in the header, the Kamelet uses the default of `P27D` (7 days).
+In the header, you can set the `expiration` / `ce-expiration` property to determine how long an event remains in the Azure Storage queue. Use `PnDTnHnMn.nS.` format. For example, `PT20.345S` parses as 20.345 seconds and `P2D` parses as 2 days. A plain number, such as `600`, fails the message. If you do not set the property in the header, the message expires after 7 days.

@@ -31,7 +31,14 @@ metadata:
 spec:
   definition:
     title: "Azure Storage Queue Source"
-    description: Receive events from Azure Storage queues.
+    description: |-
+      Receives the messages of a queue in Azure Queue Storage, one message each, and deletes each message from the queue once it has been processed.
+
+      Use it to process work that other applications put in a storage queue, such as orders or jobs. For Service Bus queues and topics, use `azure-servicebus-source`.
+
+      Output: the body is the text of the queue message (as a stream). The headers give its ID (`CamelAzureStorageQueueMessageId`), the times it was inserted and expires, its pop receipt, and how many times it has been received (`CamelAzureStorageQueueDequeueCount`).
+
+      Good to know: a message whose processing fails stays in the queue and is received again 30 seconds later, with a higher dequeue count.
     required:
       - accountName
       - queueName
@@ -40,32 +47,34 @@ spec:
     properties:
       accountName:
         title: Account Name
-        description: The Azure Storage Queue account name.
+        description: The name of the storage account, as shown in the Azure portal under Storage accounts. It is the first part of the address of the account, `https://<accountName>.queue.core.windows.net`.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
+        example: mystorageaccount
       queueName:
         title: Queue Name
-        description: The Azure Storage Queue container name.
+        description: The name of the queue in the storage account to receive the messages from.
         type: string
+        example: orders
       accessKey:
         title: Access Key
-        description: The Azure Storage Queue access key.
+        description: "An access key of the storage account, from the Azure portal: the storage account, then Security + networking, then Access keys. Used when `credentialType` is `SHARED_ACCOUNT_KEY`, the default."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       maxMessages:
         title: Maximum Messages
-        description: The maximum number of messages to get. You can specify a value between 1 and 32. The default is 1 (one message). If there are fewer than the maximum number of messages in the queue, then all the messages are returned.
+        description: The most messages to receive at each poll, from 1 to 32. When the queue holds fewer, all of them are received.
         type: integer
         default: 1
       credentialType:
         title: Credential Type
-        description: Determines the credential strategy to adopt.
+        description: How to log in to the storage account. `SHARED_ACCOUNT_KEY`, the default, and `SHARED_KEY_CREDENTIAL` use `accessKey`. `AZURE_IDENTITY` uses the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login; `accessKey` must still be given, but is not used.
         type: string
-        enum: ["SHARED_ACCOUNT_KEY", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY"]
         default: "SHARED_ACCOUNT_KEY"
+        enum: ["SHARED_ACCOUNT_KEY", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY"]
   dataTypes:
     out:
       default: text

@@ -31,7 +31,16 @@ metadata:
 spec:
   definition:
     title: "Azure CosmosDB Sink"
-    description: Send Data to an Azure CosmosDB instance
+    description: |-
+      Creates an item (a JSON document) in a container of Azure Cosmos DB for each message, from the JSON object in the body.
+
+      Use it to store orders, events or profiles as JSON documents in Cosmos DB. To receive the changes made to a container, use `azure-cosmosdb-source`.
+
+      Input: the body is one item as JSON text: a JSON object with an `id` field, such as `{"id": "1001", "region": "EU"}`. A Map fails: turn it into JSON text first, for example with `json-serialize-action`. The partition key value of the item comes from the `itemPartitionKey` option or, when the option is not set, from the `itemPartitionKey` header (or `ce-itemPartitionKey`) of each message.
+
+      Output: the body afterwards is the item as it was created, as a Map, with the fields that Cosmos DB adds.
+
+      Good to know: a message without a partition key value fails, and so does an item whose `id` already exists in the same partition: the sink creates items and never replaces them.
     required:
       - databaseName
       - containerName
@@ -40,36 +49,51 @@ spec:
     properties:
       databaseName:
         title: Database Name
-        description: The Azure Cosmos database name.
+        description: The name of the database in the Azure Cosmos DB account.
         type: string
+        example: shop
       containerName:
         title: Container Name
-        description: The Azure Cosmos container name.
+        description: The name of the container in the database to create the items in.
         type: string
+        example: orders
       accountKey:
         title: Account Key
-        description: The Azure Cosmos account Key.
+        description: "The primary or secondary key of the Azure Cosmos DB account, from the Azure portal: the account, then Settings, Keys. Used when `credentialType` is `SHARED_ACCOUNT_KEY`, the default."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       databaseEndpoint:
         title: Database Endpoint
-        description: Sets the Azure Cosmos database endpoint the component will connect to.
+        description: The address of the Azure Cosmos DB account, shown as URI on the Overview page of the account in the Azure portal.
         type: string
+        example: https://my-account.documents.azure.com:443/
       itemPartitionKey:
         title: Item Partition Key
-        description: Represents a partition key value in the Azure Cosmos DB database service. A partition key identifies the partition where the item is stored in.
+        description: The value of the partition key of the items, the same for every item, such as `EU` when the partition key of the container is `/region`. When it is not set, the value comes from the `itemPartitionKey` header of each message.
         type: string
+        example: EU
       credentialType:
         title: Credential Type
-        description: Determines the credential strategy to adopt.
+        description: How to log in to Azure Cosmos DB. `SHARED_ACCOUNT_KEY`, the default, uses `accountKey`. `AZURE_IDENTITY` uses the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login.
         type: string
-        enum: ["SHARED_ACCOUNT_KEY", "AZURE_IDENTITY"]
         default: "SHARED_ACCOUNT_KEY"
+        enum: ["SHARED_ACCOUNT_KEY", "AZURE_IDENTITY"]
   types:
     in:
       mediaType: application/json
+  dataTypes:
+    in:
+      headers:
+        itemPartitionKey:
+          title: Item Partition Key
+          description: The value of the partition key of the item, such as `EU`. Used only when the `itemPartitionKey` option is not set; then it, or `ce-itemPartitionKey`, is required.
+          type: string
+        ce-itemPartitionKey:
+          title: Item Partition Key
+          description: The value of the partition key of the item, as a CloudEvents extension. Used when `itemPartitionKey` is not set.
+          type: string
   dependencies:
     - "camel:azure-cosmosdb"
     - "camel:kamelet"

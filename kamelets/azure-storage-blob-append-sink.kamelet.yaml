@@ -31,7 +31,16 @@ metadata:
 spec:
   definition:
     title: "Azure Storage Blob Append Sink"
-    description: Upload data in append mode to Azure Storage Blob.
+    description: |-
+      Adds each message at the end of an append blob in Azure Blob Storage, named after the `file` header, and creates the blob when it does not exist yet.
+
+      Use it to collect log lines, audit records or CSV rows from many messages into one growing blob. To write each message as a blob of its own, use `azure-storage-blob-sink`.
+
+      Input: the body is the data to add: text, bytes or a stream. It is added as it is, so end each line with a line break yourself. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The `file` header (or `ce-file`) is the name of the blob, such as `logs/app.log`. Without it, each message goes to a new blob with a generated unique name.
+
+      Output: the body afterwards is `true`, and headers such as `CamelAzureStorageBlobAppendOffset` and `CamelAzureStorageBlobCommittedBlockCount` describe the append.
+
+      Good to know: the container must exist: a missing container fails the message. A name that is already used by a block blob, such as one written by `azure-storage-blob-sink`, fails the message too.
     required:
       - accountName
       - containerName
@@ -39,48 +48,61 @@ spec:
     properties:
       accountName:
         title: Account Name
-        description: The Azure Storage Blob account name.
+        description: The name of the storage account, as shown in the Azure portal under Storage accounts. It is the first part of the address of the account, `https://<accountName>.blob.core.windows.net`.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
+        example: mystorageaccount
       containerName:
         title: Container Name
-        description: The Azure Storage Blob container name.
+        description: The name of the container in the storage account that holds the append blobs.
         type: string
+        example: logs
       accessKey:
         title: Access Key
-        description: The Azure Storage Blob access key.
+        description: "An access key of the storage account, from the Azure portal: the storage account, then Security + networking, then Access keys. Used when `credentialType` is `SHARED_ACCOUNT_KEY`, the default."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       clientId:
-        title: Client Id
-        description: The Azure Storage Blob client Id.
+        title: Client ID
+        description: The application (client) ID of an app registration (service principal) in Microsoft Entra ID that has access to the storage account, from the Overview page of the app registration in the Azure portal. Used with `clientSecret` and `tenantId` when `credentialType` is `AZURE_IDENTITY`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       clientSecret:
         title: Client Secret
-        description: The Azure Storage Blob client secret.
+        description: "A client secret of the app registration, from the Azure portal: the app registration, then Certificates & secrets. Used with `clientId` and `tenantId` when `credentialType` is `AZURE_IDENTITY`."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       tenantId:
-        title: Tenant Id
-        description: The Azure Storage Blob tenant id.
+        title: Tenant ID
+        description: The directory (tenant) ID of the app registration, from its Overview page in the Azure portal. Used with `clientId` and `clientSecret` when `credentialType` is `AZURE_IDENTITY`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       credentialType:
         title: Credential Type
-        description: Determines the credential strategy to adopt.
+        description: "How to log in to the storage account. `SHARED_ACCOUNT_KEY`, the default, uses `accessKey`. `AZURE_IDENTITY` uses `clientId`, `clientSecret` and `tenantId` when all three are set, and otherwise the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login. Do not use `CLIENT_SECRET`: it does not use the three client options."
         type: string
-        enum: ["SHARED_ACCOUNT_KEY", "AZURE_IDENTITY", "CLIENT_SECRET"]
         default: "SHARED_ACCOUNT_KEY"
+        enum: ["SHARED_ACCOUNT_KEY", "AZURE_IDENTITY", "CLIENT_SECRET"]
+  dataTypes:
+    in:
+      headers:
+        file:
+          title: File Name
+          description: The name of the append blob to add to, such as `logs/app.log`. Without it (and without `ce-file`), each message goes to a new blob with a generated unique name.
+          type: string
+        ce-file:
+          title: File Name
+          description: The name of the append blob, as a CloudEvents extension. Used when `file` is not set.
+          type: string
   dependencies:
     - "camel:azure-storage-blob"
     - "camel:kamelet"

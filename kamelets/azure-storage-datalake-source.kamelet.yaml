@@ -31,7 +31,14 @@ metadata:
 spec:
   definition:
     title: "Azure Storage Blob Data Lake Source"
-    description: Consume files from Azure Storage Blob Data Lake.
+    description: |-
+      Reads the files in a file system of Azure Data Lake Storage Gen2, one message per file, on every poll.
+
+      Use it to process files that land in a data lake, such as exports or reports. For plain blob containers, use `azure-storage-blob-source`, which can also delete what it reads.
+
+      Output: the body is the content of the file, as a stream of bytes. The `CamelAzureStorageDataLakeFileName` header is the name of the file, and other headers give its size, content type, ETag and last-modified time.
+
+      Good to know: it neither deletes nor moves the files, so it reads all of them again on every poll, every 500 milliseconds by default. It reads the files at the top of the file system: files in directories are not read.
     required:
       - accountName
       - clientId
@@ -42,48 +49,50 @@ spec:
     properties:
       accountName:
         title: Account Name
-        description: The Azure Storage Blob Data lake account name.
+        description: The name of the storage account, an Azure Data Lake Storage Gen2 account (a storage account with hierarchical namespace), as shown in the Azure portal under Storage accounts.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
+        example: mydatalake
       clientId:
-        title: Client Id
-        description: The Azure Storage Blob Data lake client Id.
+        title: Client ID
+        description: The application (client) ID of an app registration (service principal) in Microsoft Entra ID that has access to the account, from the Overview page of the app registration in the Azure portal. Used when `credentialType` is `CLIENT_SECRET`, the default.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       clientSecret:
         title: Client Secret
-        description: The Azure Storage Blob Data lake client secret.
+        description: "A client secret of the app registration, from the Azure portal: the app registration, then Certificates & secrets. Used when `credentialType` is `CLIENT_SECRET`, the default."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       tenantId:
-        title: Tenant Id
-        description: The Azure Storage Blob Data lake tenant id.
+        title: Tenant ID
+        description: The directory (tenant) ID of the app registration, from its Overview page in the Azure portal. Used when `credentialType` is `CLIENT_SECRET`, the default.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       fileSystemName:
         title: File System Name
-        description: The Azure Storage Blob Data lake File system name.
+        description: The name of the file system (the container) in the account to read the files from.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
+        example: raw-data
       delay:
         title: Delay
-        description: The number of milliseconds before the next poll of the selected blob.
+        description: How long to wait between two polls of the file system, in milliseconds.
         type: integer
         default: 500
       credentialType:
         title: Credential Type
-        description: Determines the credential strategy to adopt.
+        description: How to log in to the account. `CLIENT_SECRET`, the default, uses `clientId`, `clientSecret` and `tenantId`. `AZURE_IDENTITY` uses the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login. The other values need a credential object, such as a `DataLakeServiceClient` for `SERVICE_CLIENT_INSTANCE`, in the application.
         type: string
-        enum: ["CLIENT_SECRET", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY", "AZURE_SAS", "SERVICE_CLIENT_INSTANCE"]
         default: "CLIENT_SECRET"
+        enum: ["CLIENT_SECRET", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY", "AZURE_SAS", "SERVICE_CLIENT_INSTANCE"]
   dataTypes:
     out:
       default: binary
@@ -136,7 +145,7 @@ spec:
           title: Azure Storage Data Lake File Copy Id
           description: String identifier for this copy operation.
           type: string
-        amelAzureStorageDataLakeCopyProgress:
+        CamelAzureStorageDataLakeCopyProgress:
           title: Azure Storage Data Lake File Copy Progress
           description: Contains the number of bytes copied and the total bytes in the source in the last attempted Copy Blob operation where this file was the destination file.
           type: string

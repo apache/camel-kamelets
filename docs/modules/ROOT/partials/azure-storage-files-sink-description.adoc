@@ -23,7 +23,7 @@ For more information, see the https://learn.microsoft.com/en-us/java/api/overvie
 
 === Optional Headers
 
-In the headers, you can set the `file` / `ce-file` property to specify the filename to upload. If you do set property in the header, the Kamelet uses the exchange ID as filename.
+In the headers, you can set the `file` / `ce-file` property to specify the filename to upload. If you do not set it, the file gets a generated unique name.
 
 The value is reduced to a single file name before use: any directory component is
 dropped, so `reports/2026/data.csv` is stored as `data.csv`. The file is always

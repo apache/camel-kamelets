@@ -31,7 +31,14 @@ metadata:
 spec:
   definition:
     title: "Azure Storage File Source"
-    description: Consume files from Azure Storage File Shares.
+    description: |-
+      Reads the files in a directory of a file share in Azure Files, one message per file, and can delete each file once it has been read.
+
+      Use it to process files that people or applications put on a share, such as scanned documents or exports. For blob containers, use `azure-storage-blob-source`.
+
+      Output: the body is the content of the file, which converts to text, bytes or a stream. The `CamelFileName` header is the path of the file from `directoryName`, `CamelFileNameOnly` its name, and `CamelFileLength` and `CamelFileLastModified` its size and last-modified time.
+
+      Good to know: files are kept after they are read, so the same files are read again on every poll, every 500 milliseconds by default; set `deleteAfterRead` to true to delete each file once it has been processed. Subdirectories are read only when `recursive` is true.
     required:
       - accountName
       - shareName
@@ -39,45 +46,48 @@ spec:
     properties:
       accountName:
         title: Account Name
-        description: The Azure Storage File Share account name.
+        description: The name of the storage account, as shown in the Azure portal under Storage accounts. It is the first part of the address of the account, `https://<accountName>.file.core.windows.net`.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
+        example: mystorageaccount
       shareName:
         title: Share Name
-        description: The Azure Storage File Share share name.
+        description: The name of the file share in the storage account to read the files from.
         type: string
+        example: documents
       sharedKey:
         title: Shared Access Key
-        description: The Azure Storage Blob access key.
+        description: "An access key of the storage account, from the Azure portal: the storage account, then Security + networking, then Access keys. Used when `credentialType` is `SHARED_ACCOUNT_KEY`, the default."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       delay:
         title: Delay
-        description: The number of milliseconds before the next poll of the selected blob.
+        description: How long to wait between two polls of the directory, in milliseconds.
         type: integer
         default: 500
       deleteAfterRead:
-        title: Auto-delete Blob 
-        description: Specifies to delete blobs after consuming them
+        title: Auto-delete File
+        description: If true, each file is deleted from the share once it has been processed. When false, the files stay and are read again on every poll.
         type: boolean
         default: false
       credentialType:
         title: Credential Type
-        description: Determines the credential strategy to adopt.
+        description: How to log in to the storage account. `SHARED_ACCOUNT_KEY`, the default, uses `sharedKey`. `AZURE_IDENTITY` uses the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login. The other values need settings that this Kamelet does not offer.
         type: string
-        enum: ["SHARED_ACCOUNT_KEY", "AZURE_IDENTITY", "SHARED_KEY_CREDENTIAL", "AZURE_SAS"]
         default: "SHARED_ACCOUNT_KEY"
+        enum: ["SHARED_ACCOUNT_KEY", "AZURE_IDENTITY", "SHARED_KEY_CREDENTIAL", "AZURE_SAS"]
       directoryName:
         title: Directory Name
-        description: The directory from where the consumer will start reading files.
+        description: The directory of the share to read the files from, such as `inbox/orders`. `.`, the default, is the top of the share.
         type: string
         default: "."
+        example: inbox/orders
       recursive:
-        title: Recursive Mode 
-        description: If a directory, the consumer will look for files in all the sub-directories as well.
+        title: Recursive Mode
+        description: If true, also reads the files in the subdirectories of `directoryName`.
         type: boolean
         default: false
   dataTypes:
