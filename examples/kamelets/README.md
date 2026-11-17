@@ -7,7 +7,7 @@ example of how to write a Kamelet. They are not part of the Kamelet catalog: the
 | Kamelet | What it does |
 |---|---|
 | `bitcoin-source` | Reads the current price of Bitcoin in USDT from the public market data of Binance at a regular interval. It does not connect to a Bitcoin node or wallet. |
-| `chuck-norris-source` | Fetches a random Chuck Norris joke from api.chucknorris.io at a regular interval. |
+| `chuck-norris-source` | Fetches a random Chuck Norris joke about programming from api.chucknorris.io at a regular interval. |
 | `earthquake-source` | Sends a message for each earthquake reported by the USGS. The developer guide builds it step by step. |
 | `wttrin-source` | Fetches the current weather or the forecast for a place from wttr.in at a regular interval. |
 
