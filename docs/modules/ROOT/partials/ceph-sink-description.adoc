@@ -8,4 +8,4 @@ In this Kamelet you need to use static credentials
 
 In the header, you can optionally set the `file` / `ce-file` property to specify the name of the file to upload.
 
-If you do not set the property in the header, the Kamelet uses the exchange ID for the file name.
+If you do not set the property in the header, the Kamelet uses the `keyName` option for the file name, or a generated unique name when `keyName` is not set.

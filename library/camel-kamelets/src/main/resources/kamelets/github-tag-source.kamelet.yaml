@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "GitHub Tag Source"
-    description: Receive Tags From a GitHub Repository.
+    description: |-
+      Receives each new tag created in a GitHub repository, one message per tag, by asking the GitHub API for the tags of the repository.
+
+      Use it to react to a new version, for example to announce a release, update a changelog or start a deployment. To receive every commit instead, use `github-commit-source`.
+
+      Output: the body is the tag as JSON text.
+
+      Good to know: only the tags created after the start are sent; the tags that exist when it starts are skipped. It works with github.com, not with GitHub Enterprise Server. It asks GitHub for the tags about twice a second, and every request counts against the API rate limit of the token.
     required:
       - repoName
       - repoOwner
@@ -39,15 +46,17 @@ spec:
     properties:
       repoName:
         title: Repository Name
-        description: The GitHub Repository name
+        description: The name of the repository, such as `camel` in `https://github.com/apache/camel`.
         type: string
+        example: camel
       repoOwner:
         title: Repository Owner
-        description: The repository owner
+        description: The user or organization that owns the repository, such as `apache` in `https://github.com/apache/camel`.
         type: string
+        example: apache
       oauthToken:
         title: OAuth Token
-        description: OAuth token
+        description: A GitHub personal access token, created on GitHub under Settings, Developer settings, Personal access tokens. It needs read access to the repository.
         type: string
         format: password
         x-descriptors:

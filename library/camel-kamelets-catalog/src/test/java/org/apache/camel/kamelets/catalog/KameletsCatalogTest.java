@@ -226,10 +226,10 @@ public class KameletsCatalogTest {
         verifyHeaders("ftp-sink", 6);
         verifyHeaders("ftps-source", 15);
         verifyHeaders("ftps-sink", 6);
-        verifyHeaders("github-commit-source", 7);
-        verifyHeaders("github-event-source", 7);
-        verifyHeaders("github-pullrequest-comment-source", 7);
-        verifyHeaders("github-pullrequest-source", 7);
+        verifyHeaders("github-commit-source", 4);
+        verifyHeaders("github-event-source", 1);
+        verifyHeaders("github-pullrequest-comment-source", 1);
+        verifyHeaders("github-pullrequest-source", 2);
         verifyHeaders("github-tag-source", 7);
         verifyHeaders("google-bigquery-sink", 4);
         verifyHeaders("google-calendar-source", 1);
@@ -266,8 +266,8 @@ public class KameletsCatalogTest {
         verifyHeaders("mail-sink", 8);
         verifyHeaders("mariadb-source", 0);
         verifyHeaders("mariadb-sink", 9);
-        verifyHeaders("minio-source", 15);
-        verifyHeaders("minio-sink", 23);
+        verifyHeaders("minio-source", 5);
+        verifyHeaders("minio-sink", 2);
         verifyHeaders("mongodb-changes-stream-source", 3);
         verifyHeaders("mongodb-sink", 12);
         verifyHeaders("mongodb-source", 3);
@@ -314,7 +314,7 @@ public class KameletsCatalogTest {
         verifyHeaders("twitter-directmessage-source", 1);
         verifyHeaders("twitter-timeline-source", 1);
         verifyHeaders("twitter-search-source", 1);
-        verifyHeaders("webhook-source", 0);
+        verifyHeaders("webhook-source", 3);
         verifyHeaders("wttrin-source", 5);
     }
 

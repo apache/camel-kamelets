@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "GitHub Commit Source"
-    description: Receive commit From GitHub.
+    description: |-
+      Receives each new commit on a branch of a GitHub repository, one message per commit, oldest first, by asking the GitHub API for new commits.
+
+      Use it to start a flow when code is pushed, for example to post the commit message to a chat channel or to trigger a build or a deployment.
+
+      Output: the body is the commit message as JSON text, that is a quoted JSON string such as `"Fix the login page"`. The `CamelGitHubCommitSha` header gives the SHA of the commit, `CamelGitHubCommitUrl` its web address, and `CamelGitHubCommitAuthor` and `CamelGitHubCommitCommitter` the names of its author and committer.
+
+      Good to know: with the default `startingSha` of `last`, only the commits made after the start are sent. It works with github.com, not with GitHub Enterprise Server. It asks GitHub for new commits about twice a second, and every request counts against the API rate limit of the token.
     required:
       - repoName
       - repoOwner
@@ -41,33 +48,56 @@ spec:
     properties:
       repoName:
         title: Repository Name
-        description: The GitHub Repository name
+        description: The name of the repository, such as `camel` in `https://github.com/apache/camel`.
         type: string
+        example: camel
       repoOwner:
         title: Repository Owner
-        description: The repository owner
+        description: The user or organization that owns the repository, such as `apache` in `https://github.com/apache/camel`.
         type: string
+        example: apache
       oauthToken:
         title: OAuth Token
-        description: OAuth token
+        description: A GitHub personal access token, created on GitHub under Settings, Developer settings, Personal access tokens. It needs read access to the repository.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       startingSha:
         title: Starting SHA
-        description: The SHA from which we want to consume, possible values beginning, last or a specific SHA
+        description: Where to start. `last` sends only the commits made after the start, `beginning` also sends the commits already on the branch, and the SHA of a commit sends the commits made after that one.
         type: string
         default: last
+        example: 8aed4eb7f8fa1877d215a331a2a682edc4e26932
       branch:
-        title: Branch 
-        description: The branch we want to consume commit from
+        title: Branch
+        description: The name of the branch to watch for new commits.
         type: string
+        example: main
       delay:
         title: Delay
         description: The number of milliseconds before the next poll
         type: integer
         default: 60000
+  dataTypes:
+    out:
+      headers:
+        CamelGitHubCommitSha:
+          title: Commit SHA
+          description: The SHA of the commit.
+          type: string
+        CamelGitHubCommitUrl:
+          title: Commit URL
+          description: The address of the commit on github.com.
+          type: string
+        CamelGitHubCommitAuthor:
+          title: Author
+          description: The name of the author of the commit.
+          type: string
+        CamelGitHubCommitCommitter:
+          title: Committer
+          description: The name of the committer of the commit.
+          type: string
   types:
     out:
       mediaType: application/json

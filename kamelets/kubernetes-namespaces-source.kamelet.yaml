@@ -30,23 +30,42 @@ metadata:
 spec:
   definition:
     title: "Kubernetes Namespaces Source"
-    description: Consume Events from Kubernetes Namespaces
+    description: |-
+      Watches the namespaces of a Kubernetes cluster and sends a message each time a namespace is created, changed or deleted.
+
+      Use it to react when teams or applications are added to or removed from a cluster, for example to set up monitoring, quotas or access for each new namespace. For pods or nodes, use `kubernetes-pods-source` or `kubernetes-nodes-source`.
+
+      Output: the body is the namespace as JSON text, in the same shape as `kubectl get namespace <name> -o json`. The `CamelKubernetesEventAction` header says what happened: `ADDED`, `MODIFIED` or `DELETED`.
+
+      Good to know: when it starts, it first sends an `ADDED` message for every namespace that already exists. The token must be allowed to list and watch namespaces, which is a cluster-wide permission.
     required:
       - token
       - masterUrl
     type: object
     properties:
       token:
-        title: Oauth Token
-        description: The Auth Token to connect to Kubernetes Cluster
+        title: Token
+        description: A bearer token to log in to the Kubernetes API with, such as the token of a service account created with `kubectl create token <service-account>`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       masterUrl:
         title: Kubernetes Master URL
-        description: The Kubernetes Cluster Master URL
+        description: The address of the Kubernetes API server, as a URL that starts with `https://`, such as the `server` of the cluster in your kubeconfig file.
         type: string
+        example: https://my-cluster.example.com:6443
+  dataTypes:
+    out:
+      headers:
+        CamelKubernetesEventAction:
+          title: Event Action
+          description: What happened to the namespace, such as `ADDED`, `MODIFIED` or `DELETED`.
+          type: string
+        CamelKubernetesEventTimestamp:
+          title: Event Timestamp
+          description: When the event was received, in milliseconds since 1 January 1970.
+          type: integer
   types:
     out:
       mediaType: application/json

@@ -30,15 +30,37 @@ metadata:
 spec:
   definition:
     title: "Webhook Source"
-    description: Creates an HTTP endpoint that can be used as a bridge to forward data to the Kamelet sink.
+    description: |-
+      Receives HTTP requests on a path of its own, such as `/webhook`, and sends each request on as a message, with its body and headers.
+
+      Use it to receive the webhook calls of an online service, such as a payment, form or code hosting service, or to let another system push data with a simple HTTP POST. To fetch a URL at a regular interval instead, use `http-source`.
+
+      Output: the body is the body of the request, as a stream, and is empty for a request without a body, such as a GET. The HTTP headers of the request become headers of the message, and so does each query parameter. `CamelHttpMethod` gives the method (such as `POST`), `CamelHttpPath` the path and `CamelHttpQuery` the query string. A form (`application/x-www-form-urlencoded`) arrives as a Map of its fields instead.
+
+      Good to know: there is no login, so anyone who can reach the address can send messages; protect it with network rules or a gateway in front, and treat the content as untrusted. It accepts every HTTP method, on the exact path only. It listens on the HTTP port of the application, 8080 by default with Camel JBang. The caller gets back the message as it is at the end of the flow: by default the body it sent, with status 200, or status 204 when there is no body.
     type: object
     properties:
       subpath:
         title: Subpath
-        description: |
-          The subpath where the webhook is registered
+        description: The path to receive the requests on, without a leading `/`. For example, `hooks/orders` receives the requests sent to `http://<host>:<port>/hooks/orders`.
         type: string
         default: "webhook"
+        example: hooks/orders
+  dataTypes:
+    out:
+      headers:
+        CamelHttpMethod:
+          title: HTTP Method
+          description: The method of the request, such as `POST` or `GET`.
+          type: string
+        CamelHttpPath:
+          title: HTTP Path
+          description: The path of the request, such as `/webhook`.
+          type: string
+        CamelHttpQuery:
+          title: HTTP Query
+          description: The query string of the request, without the `?`, such as `source=shop`. Each query parameter is also a header of its own.
+          type: string
   dependencies:
     - "camel:platform-http"
     - "camel:kamelet"

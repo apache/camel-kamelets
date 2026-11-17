@@ -10,7 +10,7 @@ This Kamelet connects to Minio using appropriate authentication mechanisms:
 
 === Output format
 
-The Kamelet consumes data from Minio and produces the data in JSON format.
+The Kamelet reads the files of a MinIO bucket, and produces one message per file, with the content of the file as bytes. It reads only the files at the top of the bucket, not the files in folders, and by default deletes each file after it has been read.
 
 === Configuration
 
