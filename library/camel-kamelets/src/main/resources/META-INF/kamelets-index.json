@@ -310,16 +310,6 @@
     "namespace" : "AWS",
     "provider" : "Apache Software Foundation"
   }, {
-    "name" : "aws-sts-assume-role-action",
-    "type" : "action",
-    "supportLevel" : "Stable",
-    "title" : "AWS STS Assume Role Action",
-    "summary" : "Assume a role through STS",
-    "description" : "Assume a role through STS",
-    "group" : "AWS STS",
-    "namespace" : "AWS",
-    "provider" : "Apache Software Foundation"
-  }, {
     "name" : "aws-timestream-query-sink",
     "type" : "sink",
     "supportLevel" : "Preview",
@@ -420,16 +410,6 @@
     "namespace" : "Azure",
     "provider" : "Apache Software Foundation"
   }, {
-    "name" : "azure-storage-blob-changefeed-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "Azure Storage Blob Changefeed Source",
-    "summary" : "Reads the change feed of an Azure Storage account at a fixed interval, one message per event, such as a blob that was created or deleted.",
-    "description" : "Reads the change feed of an Azure Storage account at a fixed interval, one message per event, such as a blob that was created or deleted.\n\nUse it to audit or replicate the changes made to the blobs of a whole storage account. To read the blobs themselves, use `azure-storage-blob-source`; to react to new blobs as they arrive, use `azure-storage-blob-event-based-source`.\n\nOutput: the body is the `data` part of the event, as JSON text. The headers `azure-storage-blob-changefeed-eventType`, `azure-storage-blob-changefeed-subject` (the path of the blob), `azure-storage-blob-changefeed-eventTime`, `azure-storage-blob-changefeed-id`, `azure-storage-blob-changefeed-topic`, `azure-storage-blob-changefeed-dataVersion` and `azure-storage-blob-changefeed-metadataVersion` give the rest of the event.\n\nGood to know: the change feed must be turned on for the storage account (in the Azure portal: the storage account, then Data protection, then Enable blob change feed); otherwise every poll fails. It does not remember what it has read: every poll returns the whole change feed again, so the same events come again on every poll.",
-    "group" : "Azure Storage Blob Changefeed",
-    "namespace" : "Azure",
-    "provider" : "Apache Software Foundation"
-  }, {
     "name" : "azure-storage-blob-event-based-source",
     "type" : "source",
     "supportLevel" : "Preview",
@@ -520,32 +500,12 @@
     "namespace" : "Azure",
     "provider" : "Apache Software Foundation"
   }, {
-    "name" : "caffeine-action",
-    "type" : "action",
-    "supportLevel" : "Stable",
-    "title" : "Caffeine Action",
-    "summary" : "Stores a value under a key, reads it back, or removes it, in a Caffeine cache kept in the memory of the running application.",
-    "description" : "Stores a value under a key, reads it back, or removes it, in a Caffeine cache kept in the memory of the running application.\n\nUse it to remember something between messages without an outside system, for example the last status seen for each order, or to look up a value that an earlier message stored. To share the values between several applications, or to keep them after a restart, use `redis-sink` or `infinispan-sink` instead.\n\nInput: the operation comes from the `caffeine-operation` header (or `ce-caffeineoperation`): `GET` (the default when no header is set), `PUT`, `INVALIDATE` to remove one key, or `INVALIDATE_ALL` to empty the cache. The key comes from the `caffeine-key` header (or `ce-caffeinekey`), else from the body as text. For `PUT`, the body is the value to store.\n\nOutput: for a `GET` of a key that is in the cache, the body is the stored value; for a key that is not, the body is unchanged. The other operations keep the body. The `CamelCaffeineActionHasResult` header is true when a `GET` found the key, and `CamelCaffeineActionSucceeded` tells whether the operation worked.\n\nGood to know: the cache lives only in the memory of the running application. It is empty after a restart, and it is not shared with other applications. All the Kamelets with the same `cacheName` in one application share the same cache.",
-    "group" : "Caffeine",
-    "namespace" : "Cache",
-    "provider" : "Apache Software Foundation"
-  }, {
     "name" : "cassandra-sink",
     "type" : "sink",
     "supportLevel" : "Stable",
     "title" : "Cassandra Sink",
     "summary" : "Runs a CQL statement, such as an INSERT, in an Apache Cassandra keyspace for each message, with the values of its `?` markers taken from the JSON array in the body.",
-    "description" : "Runs a CQL statement, such as an INSERT, in an Apache Cassandra keyspace for each message, with the values of its `?` markers taken from the JSON array in the body.\n\nUse it to store events or records as rows of a Cassandra table, for example each reading of a sensor or each order that arrives on a Kafka topic. To read rows, use `cassandra-source`.\n\nInput: the body is a JSON array, as text, with one value for each `?` in `query`, in the same order: for `INSERT INTO accounts (id, username, city) VALUES (?, ?, ?)` the body `[1,\"oscerd\",\"Rome\"]`. With `jsonPayload` set to false, the body is used as it is, as the one value of a statement with a single `?`.\n\nOutput: the body afterwards is an empty List for an INSERT, UPDATE or DELETE.\n\nGood to know: with `jsonPayload` true, the default, a message fails when its body is not a JSON array, such as a JSON object. The values are sent apart from the statement, so the content of a message cannot change it. `ANY`, the default `consistencyLevel`, is the weakest level: a write counts as done even before a replica has stored it.",
-    "group" : "Cassandra",
-    "namespace" : "Nosql",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "cassandra-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "Cassandra Source",
-    "summary" : "Runs a CQL query in an Apache Cassandra keyspace every half second, and sends all the rows it returns as one message, a JSON array.",
-    "description" : "Runs a CQL query in an Apache Cassandra keyspace every half second, and sends all the rows it returns as one message, a JSON array.\n\nUse it to watch a small Cassandra table, such as a table of settings or of current states, and pass its content on to another system. To write rows, use `cassandra-sink`.\n\nOutput: the body is JSON text, an array with one object per row, or one object with `resultStrategy` set to `ONE`. The values of a row are not separate fields of its object: they are in the text of its `formattedContents` field, such as `[id:1, username:'oscerd', city:'Rome']`. The `Content-Type` header is `application/json`.\n\nGood to know: every run sends all the rows the query finds, again and again, and nothing marks a row as read. When the query finds no rows, an empty array `[]` is sent.",
+    "description" : "Runs a CQL statement, such as an INSERT, in an Apache Cassandra keyspace for each message, with the values of its `?` markers taken from the JSON array in the body.\n\nUse it to store events or records as rows of a Cassandra table, for example each reading of a sensor or each order that arrives on a Kafka topic.\n\nInput: the body is a JSON array, as text, with one value for each `?` in `query`, in the same order: for `INSERT INTO accounts (id, username, city) VALUES (?, ?, ?)` the body `[1,\"oscerd\",\"Rome\"]`. With `jsonPayload` set to false, the body is used as it is, as the one value of a statement with a single `?`.\n\nOutput: the body afterwards is an empty List for an INSERT, UPDATE or DELETE.\n\nGood to know: with `jsonPayload` true, the default, a message fails when its body is not a JSON array, such as a JSON object. The values are sent apart from the statement, so the content of a message cannot change it. `ANY`, the default `consistencyLevel`, is the weakest level: a write counts as done even before a replica has stored it.",
     "group" : "Cassandra",
     "namespace" : "Nosql",
     "provider" : "Apache Software Foundation"
@@ -578,16 +538,6 @@
     "description" : "Reads the files (objects) in a bucket of a Ceph Object Gateway, one message per file, and by default deletes each file once it has been read.\n\nUse it to process files that another system drops into a Ceph bucket, such as uploaded documents, exported reports or log files. To react to the bucket notifications of Ceph instead of reading the bucket over and over, use `ceph-event-based-source`.\n\nOutput: the body is the content of the file, as bytes. The headers give the bucket name, the key (the path of the file in the bucket, `CamelAwsS3Key`), the content type and the ETag of the file.\n\nGood to know: files are deleted from the bucket after they are read, unless `deleteAfterRead` is set to false; then the same files are read again on every poll. Files in folders are read too. The bucket is addressed as part of the host name (such as `my-bucket.ceph.example.com`) unless `cephUrl` uses an IP address, so the gateway must accept that style of address.",
     "group" : "Ceph",
     "namespace" : "Cloud",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "chunk-template-action",
-    "type" : "action",
-    "supportLevel" : "Stable",
-    "title" : "Chunk Template Action",
-    "summary" : "Apply a Chunk Template.",
-    "description" : "Apply a Chunk Template.",
-    "group" : "Actions",
-    "namespace" : "Transformation",
     "provider" : "Apache Software Foundation"
   }, {
     "name" : "couchbase-sink",
@@ -690,16 +640,6 @@
     "namespace" : "EIP",
     "provider" : "Apache Software Foundation"
   }, {
-    "name" : "djl-image-to-text-action",
-    "type" : "action",
-    "supportLevel" : "Preview",
-    "title" : "Image-to-Text Action",
-    "summary" : "Detect and classify objects in an image into texts using the SSD and ResNet models and the ImageNet dataset.",
-    "description" : "Detect and classify objects in an image into texts using the SSD and ResNet models and the ImageNet dataset.",
-    "group" : "Actions",
-    "namespace" : "AI",
-    "provider" : "Apache Software Foundation"
-  }, {
     "name" : "dns-dig-action",
     "type" : "action",
     "supportLevel" : "Stable",
@@ -770,42 +710,12 @@
     "namespace" : "EIP",
     "provider" : "Apache Software Foundation"
   }, {
-    "name" : "dropbox-sink",
-    "type" : "sink",
-    "supportLevel" : "Stable",
-    "title" : "Dropbox Sink",
-    "summary" : "Upload Files to Dropbox.",
-    "description" : "Upload Files to Dropbox.",
-    "group" : "Dropbox",
-    "namespace" : "Cloud",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "dropbox-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "Dropbox Source",
-    "summary" : "Consume Files from Dropbox.",
-    "description" : "Consume Files from Dropbox.",
-    "group" : "Dropbox",
-    "namespace" : "Cloud",
-    "provider" : "Apache Software Foundation"
-  }, {
     "name" : "elasticsearch-index-sink",
     "type" : "sink",
     "supportLevel" : "Stable",
     "title" : "ElasticSearch Index Sink",
     "summary" : "Stores each message, a JSON object, as a document in an index of Elasticsearch, so that it can be searched.",
-    "description" : "Stores each message, a JSON object, as a document in an index of Elasticsearch, so that it can be searched.\n\nUse it to make records searchable, such as orders, log entries or products, or to feed dashboards in Kibana. To run a search on a schedule, use `elasticsearch-search-source`; for OpenSearch, use `opensearch-index-sink`.\n\nInput: the body is the document, as JSON text, such as `{\"order\": 42, \"status\": \"shipped\"}`. The optional `indexId` header (or `ce-indexid`) is the id of the document: a document with the same id is replaced. Without it, Elasticsearch makes up a new id, so each message adds a new document. The optional `indexName` header (or `ce-indexname`) is the index to write to, instead of the `indexName` option.\n\nOutput: when it is used inside a route, the body afterwards is the id of the document, as text.\n\nGood to know: a body that is not JSON fails the message, and so does a message with no index, from the option or the header. It connects with TLS by default (`enableSSL`); for a server with a self-signed certificate, give its certificate in `certificate`.",
-    "group" : "ElasticSearch",
-    "namespace" : "Search",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "elasticsearch-search-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "ElasticSearch Search Source",
-    "summary" : "Runs the same search on an index of Elasticsearch at a regular interval, and sends the result of each search as one message.",
-    "description" : "Runs the same search on an index of Elasticsearch at a regular interval, and sends the result of each search as one message.\n\nUse it to watch an index on a schedule, for example to send the error log entries or the orders that match a query to another system. To store documents in Elasticsearch, use `elasticsearch-index-sink`; for OpenSearch, use `opensearch-search-source`.\n\nOutput: the body is JSON text with the total number of matches (`total`) and a `hits` list, with the index, the id and the score of each document found. The fields of each document are under `source`, but in an unusual nested form, in which each value is wrapped in a `_value` object under `_children`. The `Content-Type` header is `application/json`.\n\nGood to know: every search returns all the matching documents again, not only the new ones; to get only new documents, filter on a date in the query. By default a search runs every second. A search on an index that does not exist fails, and is tried again at the next interval. It connects with TLS by default (`enableSSL`).",
+    "description" : "Stores each message, a JSON object, as a document in an index of Elasticsearch, so that it can be searched.\n\nUse it to make records searchable, such as orders, log entries or products, or to feed dashboards in Kibana. For OpenSearch, use `opensearch-index-sink`.\n\nInput: the body is the document, as JSON text, such as `{\"order\": 42, \"status\": \"shipped\"}`. The optional `indexId` header (or `ce-indexid`) is the id of the document: a document with the same id is replaced. Without it, Elasticsearch makes up a new id, so each message adds a new document. The optional `indexName` header (or `ce-indexname`) is the index to write to, instead of the `indexName` option.\n\nOutput: when it is used inside a route, the body afterwards is the id of the document, as text.\n\nGood to know: a body that is not JSON fails the message, and so does a message with no index, from the option or the header. It connects with TLS by default (`enableSSL`); for a server with a self-signed certificate, give its certificate in `certificate`.",
     "group" : "ElasticSearch",
     "namespace" : "Search",
     "provider" : "Apache Software Foundation"
@@ -977,16 +887,6 @@
     "summary" : "Receives the events of a Google Calendar, such as meetings and appointments, one message per event, by asking the calendar for events at a regular interval.",
     "description" : "Receives the events of a Google Calendar, such as meetings and appointments, one message per event, by asking the calendar for events at a regular interval.\n\nUse it to act on calendar entries, for example to send a reminder before a meeting, copy new appointments into another system, or notify a team when a booking is made.\n\nOutput: the body is the event as JSON text, with the fields of the Google Calendar API such as `id`, `summary`, `start` and `attendees`. The `CamelGoogleCalendarEventId` header gives the ID of the event.\n\nGood to know: by default it only receives the events that have not ended yet at the time of the poll (`consumeFromNow`). With `syncFlow` set to true, each poll after the first asks only for the events that are new or changed since the previous one. It logs in to Google with OAuth: an OAuth client of a Google Cloud project, and an access token and a refresh token of a Google account that may read the calendar.",
     "group" : "Google Calendar",
-    "namespace" : "GCP",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "google-functions-sink",
-    "type" : "sink",
-    "supportLevel" : "Stable",
-    "title" : "Google Functions Sink",
-    "summary" : "Calls a function in Google Cloud Functions for each message, with the body as the data of the call.",
-    "description" : "Calls a function in Google Cloud Functions for each message, with the body as the data of the call.\n\nUse it to hand each message to your own serverless code, for example to enrich, check or store it, without running a web server for it.\n\nInput: the body is the data to call the function with, as text; bytes and streams are read as text. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`.\n\nOutput: when it is used inside a route, the body afterwards is the result that the function returned, as text, and the `CamelGoogleCloudFunctionsResponseObject` header holds the whole response of the call.\n\nGood to know: it calls the function through the Cloud Functions API (the `call` method), with the service account key, not through the HTTP address of the function.",
-    "group" : "Google Functions",
     "namespace" : "GCP",
     "provider" : "Apache Software Foundation"
   }, {
@@ -1195,7 +1095,7 @@
     "supportLevel" : "Stable",
     "title" : "Infinispan Sink",
     "summary" : "Stores the body of each message under a key in a cache of a remote Infinispan server, or in Red Hat Data Grid.",
-    "description" : "Stores the body of each message under a key in a cache of a remote Infinispan server, or in Red Hat Data Grid.\n\nUse it to share data between applications through an Infinispan cache, for example the latest status of each order or a lookup table that other services read. To react to the changes in a cache, use `infinispan-source`; to cache values only inside one running application, use `caffeine-action`.\n\nInput: the body is the value to store, as text. The `key` header (or `ce-key`) is the key; without one, a new unique id is used as the key, so each message adds a new entry. A value that is already under the key is replaced.\n\nOutput: when it is used inside a route, the message has no body afterwards.\n\nGood to know: the cache must already exist on the server. A body that the Infinispan client cannot store, such as a Map, fails the message; turn it into JSON text first, for example with `json-serialize-action`. Recent Infinispan servers do not accept the default `saslMechanism` of `DIGEST-MD5`: set it to `SCRAM-SHA-512`. The connection has no TLS.",
+    "description" : "Stores the body of each message under a key in a cache of a remote Infinispan server, or in Red Hat Data Grid.\n\nUse it to share data between applications through an Infinispan cache, for example the latest status of each order or a lookup table that other services read. To react to the changes in a cache, use `infinispan-source`.\n\nInput: the body is the value to store, as text. The `key` header (or `ce-key`) is the key; without one, a new unique id is used as the key, so each message adds a new entry. A value that is already under the key is replaced.\n\nOutput: when it is used inside a route, the message has no body afterwards.\n\nGood to know: the cache must already exist on the server. A body that the Infinispan client cannot store, such as a Map, fails the message; turn it into JSON text first, for example with `json-serialize-action`. Recent Infinispan servers do not accept the default `saslMechanism` of `DIGEST-MD5`: set it to `SCRAM-SHA-512`. The connection has no TLS.",
     "group" : "Infinispan",
     "namespace" : "Cache",
     "provider" : "Apache Software Foundation"
@@ -1445,7 +1345,7 @@
     "supportLevel" : "Stable",
     "title" : "Kafka Not Secured with Apicurio Registry Sink",
     "summary" : "Sends each message as an Avro record to a topic in Apache Kafka, with the schema kept in an Apicurio Registry, and no login or TLS to either.",
-    "description" : "Sends each message as an Avro record to a topic in Apache Kafka, with the schema kept in an Apicurio Registry, and no login or TLS to either.\n\nUse it to publish records that other applications read with the schema of the registry, on a Kafka and a registry that need no login, such as in development. When the registry is secured with Keycloak use `kafka-not-secured-apicurio-registry-sink`; for Azure Schema Registry use `kafka-azure-schema-registry-sink`; for records without a schema use `kafka-sink`.\n\nInput: the body must be an Avro object, such as an Avro `GenericRecord` or an object of a class generated from the schema; it is written as Avro binary. A body of text is written as an Avro string, and so fails unless the schema is a string. The optional `key` header (or `ce-key`) becomes the key of the record, and the optional `partition-key` header (or `ce-partitionkey`) is the number of the partition to write to. The other headers of the message, except the Camel ones, are sent as record headers.\n\nOutput: the message is unchanged.\n\nGood to know: The schema must already be in the registry, as the artifact `<topic>-value` (such as `orders-value`) in the default group: the Kamelet does not register it, and a message whose schema is not found fails with `ArtifactNotFoundException`. Neither Kafka nor the registry is secured: there is no login and no TLS.",
+    "description" : "Sends each message as an Avro record to a topic in Apache Kafka, with the schema kept in an Apicurio Registry, and no login or TLS to either.\n\nUse it to publish records that other applications read with the schema of the registry, on a Kafka and a registry that need no login, such as in development. When the registry is secured with Keycloak use `kafka-not-secured-apicurio-registry-sink`; for records without a schema use `kafka-sink`.\n\nInput: the body must be an Avro object, such as an Avro `GenericRecord` or an object of a class generated from the schema; it is written as Avro binary. A body of text is written as an Avro string, and so fails unless the schema is a string. The optional `key` header (or `ce-key`) becomes the key of the record, and the optional `partition-key` header (or `ce-partitionkey`) is the number of the partition to write to. The other headers of the message, except the Camel ones, are sent as record headers.\n\nOutput: the message is unchanged.\n\nGood to know: The schema must already be in the registry, as the artifact `<topic>-value` (such as `orders-value`) in the default group: the Kamelet does not register it, and a message whose schema is not found fails with `ArtifactNotFoundException`. Neither Kafka nor the registry is secured: there is no login and no TLS.",
     "group" : "Kafka",
     "namespace" : "Kafka",
     "provider" : "Apache Software Foundation"
@@ -1456,26 +1356,6 @@
     "title" : "Kafka Not Secured with Apicurio Registry Source",
     "summary" : "Receives each record written with a JSON Schema from topics in Apache Kafka, with the schema kept in an Apicurio Registry, and no login or TLS to either.",
     "description" : "Receives each record written with a JSON Schema from topics in Apache Kafka, with the schema kept in an Apicurio Registry, and no login or TLS to either.\n\nUse it to read JSON records that other applications write with a JSON Schema of the registry, on a Kafka and a registry that need no login, such as in development. For Avro records use `kafka-batch-apicurio-registry-not-secured-source`; when the registry is secured with Keycloak use `kafka-not-secured-apicurio-registry-json-source`; for records without a schema use `kafka-source`.\n\nOutput: the body is the value of the record as parsed JSON. The `kafka-topic`, `kafka-key`, `kafka-partition`, `kafka-offset` and `kafka-timestamp` (in milliseconds since 1970) headers say where the record came from. They are also set as `ce-kafkatopic`, `ce-kafkakey` and so on, and as the `CamelKafka*` headers that the Kafka actions read. The record headers become message headers, as text unless `deserializeHeaders` is false.\n\nGood to know: it reads JSON Schema records only, not Avro: the sink of the same name writes Avro. Neither Kafka nor the registry is secured: there is no login and no TLS. A new consumer group starts at the newest records, unless `autoOffsetReset` is `earliest`. Without `consumerGroup`, every start uses a new group, so the records sent while the integration was stopped are skipped.",
-    "group" : "Kafka",
-    "namespace" : "Kafka",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "kafka-azure-schema-registry-sink",
-    "type" : "sink",
-    "supportLevel" : "Stable",
-    "title" : "Azure Kafka through Eventhubs with Azure Schema Registry Sink",
-    "summary" : "Sends each message as an Avro record to an event hub in Azure Event Hubs, through its Kafka interface, with the schema kept in Azure Schema Registry.",
-    "description" : "Sends each message as an Avro record to an event hub in Azure Event Hubs, through its Kafka interface, with the schema kept in Azure Schema Registry.\n\nUse it to publish Avro records to Azure Event Hubs for applications that read them with the schema of the registry. For event hubs without a schema use `azure-eventhubs-sink`; for Apicurio Registry use `kafka-apicurio-registry-not-secured-sink`.\n\nInput: the body must be an Avro object, such as an object of the class named in `specificAvroValueType`; it is written as Avro binary. The optional `key` header (or `ce-key`) becomes the key of the record, and the optional `partition-key` header (or `ce-partitionkey`) is the number of the partition to write to. The other headers of the message, except the Camel ones, are sent as record headers.\n\nOutput: the message is unchanged.\n\nGood to know: it logs in to Event Hubs with the connection string in `password`, and to the schema registry with the Azure credentials of the environment the integration runs in, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables of a service principal, or a managed identity. The schemas must be in a schema group named `avro`.",
-    "group" : "Kafka",
-    "namespace" : "Kafka",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "kafka-azure-schema-registry-source",
-    "type" : "source",
-    "supportLevel" : "Preview",
-    "title" : "Azure Kafka through Eventhubs with Azure Schema Registry Source",
-    "summary" : "Receives each Avro record from event hubs in Azure Event Hubs, through its Kafka interface, with the schema kept in Azure Schema Registry.",
-    "description" : "Receives each Avro record from event hubs in Azure Event Hubs, through its Kafka interface, with the schema kept in Azure Schema Registry.\n\nUse it to read Avro records that other applications write to Azure Event Hubs with the schema of the registry. For many records in one message use `kafka-batch-azure-schema-registry-source`; for event hubs without a schema use `azure-eventhubs-source`.\n\nOutput: the body is the value of the record as an object of the `specificAvroValueType` class. The `kafka-topic`, `kafka-key`, `kafka-partition`, `kafka-offset` and `kafka-timestamp` (in milliseconds since 1970) headers say where the record came from. They are also set as `ce-kafkatopic`, `ce-kafkakey` and so on, and as the `CamelKafka*` headers that the Kafka actions read. The record headers become message headers, as text unless `deserializeHeaders` is false.\n\nGood to know: it logs in to Event Hubs with the connection string in `password`, and to the schema registry with the Azure credentials of the environment the integration runs in, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables of a service principal, or a managed identity. The schemas must be in a schema group named `avro`. A new consumer group starts at the newest records, unless `autoOffsetReset` is `earliest`. Without `consumerGroup`, every start uses a new group, so the records sent while the integration was stopped are skipped.",
     "group" : "Kafka",
     "namespace" : "Kafka",
     "provider" : "Apache Software Foundation"
@@ -1496,16 +1376,6 @@
     "title" : "Kafka Batch with Apicurio Registry secured with Keycloak Source",
     "summary" : "Receives Avro records from topics in Apache Kafka in batches, with the schema kept in an Apicurio Registry secured with Keycloak.",
     "description" : "Receives Avro records from topics in Apache Kafka in batches, with the schema kept in an Apicurio Registry secured with Keycloak.\n\nUse it to read many Avro records at once, when the registry needs a Keycloak login and Kafka needs none. For one record at a time use `kafka-not-secured-apicurio-registry-source`; when the registry needs no login use `kafka-batch-apicurio-registry-not-secured-source`.\n\nOutput: the body is a List with one entry per record, up to `batchSize`. Each entry is a message of its own, with the value of the record as its body (an Avro `GenericRecord`, whose text form is JSON), and the key, offset and timestamp of the record in its `CamelKafkaKey`, `CamelKafkaOffset` and `CamelKafkaTimestamp` headers. The record headers are in the entries too, as bytes. The message itself has the `CamelKafkaTopic` and `CamelKafkaPartition` headers. The `kafka-topic`, `kafka-key` and other headers of `kafka-source` are not set.\n\nGood to know: Kafka is not secured: it connects to the brokers with no login and no TLS. To save the position in Kafka only once a batch was handled, set `allowManualCommit` to true and `autoCommitEnable` to false, and end the flow with `kafka-batch-manual-commit-action`.",
-    "group" : "Kafka",
-    "namespace" : "Kafka",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "kafka-batch-azure-schema-registry-source",
-    "type" : "source",
-    "supportLevel" : "Preview",
-    "title" : "Azure Kafka Batch through Eventhubs with Azure Schema Registry Source",
-    "summary" : "Receives Avro records from event hubs in Azure Event Hubs in batches, through its Kafka interface, with the schema kept in Azure Schema Registry.",
-    "description" : "Receives Avro records from event hubs in Azure Event Hubs in batches, through its Kafka interface, with the schema kept in Azure Schema Registry.\n\nUse it to read many Avro records at once from Azure Event Hubs, for example to write them to a database in one go. For one record at a time use `kafka-azure-schema-registry-source`.\n\nOutput: the body is a List with one entry per record, up to `batchSize`. Each entry is a message of its own, with the value of the record as its body (an object of the `specificAvroValueType` class), and the key, offset and timestamp of the record in its `CamelKafkaKey`, `CamelKafkaOffset` and `CamelKafkaTimestamp` headers. The record headers are in the entries too, as bytes. The message itself has the `CamelKafkaTopic` and `CamelKafkaPartition` headers. The `kafka-topic`, `kafka-key` and other headers of `kafka-source` are not set.\n\nGood to know: it logs in to Event Hubs with the connection string in `password`, and to the schema registry with the Azure credentials of the environment the integration runs in, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables of a service principal, or a managed identity. The schemas must be in a schema group named `avro`. To save the position in Kafka only once a batch was handled, set `allowManualCommit` to true and `autoCommitEnable` to false, and end the flow with `kafka-batch-manual-commit-action`.",
     "group" : "Kafka",
     "namespace" : "Kafka",
     "provider" : "Apache Software Foundation"
@@ -1588,36 +1458,6 @@
     "description" : "Receives each record from one or more topics in Apache Kafka, or in a Kafka-compatible service such as Amazon MSK, Confluent Cloud or Redpanda.\n\nUse it to react to events or data that other applications publish, such as orders, sensor readings or changes from a database. To get many records in one message use `kafka-batch-source`. When the records are written with a schema kept in a schema registry, use one of the `kafka-*-registry-*` sources instead.\n\nOutput: the body is the value of the record, as text. A record without a value (a tombstone) gives a message with no body. The `kafka-topic`, `kafka-key`, `kafka-partition`, `kafka-offset` and `kafka-timestamp` (in milliseconds since 1970) headers say where the record came from. They are also set as `ce-kafkatopic`, `ce-kafkakey` and so on, and as the `CamelKafka*` headers that the Kafka actions read. The record headers become message headers, as text unless `deserializeHeaders` is false.\n\nGood to know: `saslAuthType` has no default and must be set; `NONE` connects with no login and no TLS. A new consumer group starts at the newest records, unless `autoOffsetReset` is `earliest`. Without `consumerGroup`, every start uses a new group, so the records sent while the integration was stopped are skipped.",
     "group" : "Kafka",
     "namespace" : "Kafka",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "kubernetes-namespaces-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "Kubernetes Namespaces Source",
-    "summary" : "Watches the namespaces of a Kubernetes cluster and sends a message each time a namespace is created, changed or deleted.",
-    "description" : "Watches the namespaces of a Kubernetes cluster and sends a message each time a namespace is created, changed or deleted.\n\nUse it to react when teams or applications are added to or removed from a cluster, for example to set up monitoring, quotas or access for each new namespace. For pods or nodes, use `kubernetes-pods-source` or `kubernetes-nodes-source`.\n\nOutput: the body is the namespace as JSON text, in the same shape as `kubectl get namespace <name> -o json`. The `CamelKubernetesEventAction` header says what happened: `ADDED`, `MODIFIED` or `DELETED`.\n\nGood to know: when it starts, it first sends an `ADDED` message for every namespace that already exists. The token must be allowed to list and watch namespaces, which is a cluster-wide permission.",
-    "group" : "Kubernetes",
-    "namespace" : "Cloud",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "kubernetes-nodes-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "Kubernetes Nodes Source",
-    "summary" : "Watches the nodes (the machines) of a Kubernetes cluster and sends a message each time a node is added, changed or removed.",
-    "description" : "Watches the nodes (the machines) of a Kubernetes cluster and sends a message each time a node is added, changed or removed.\n\nUse it to react to changes in the capacity or the health of a cluster, for example to alert when a node is not ready or when a node joins or leaves. For pods or namespaces, use `kubernetes-pods-source` or `kubernetes-namespaces-source`.\n\nOutput: the body is the node as JSON text, in the same shape as `kubectl get node <name> -o json`. The `CamelKubernetesEventAction` header says what happened: `ADDED`, `MODIFIED` or `DELETED`.\n\nGood to know: when it starts, it first sends an `ADDED` message for every node that already exists. The status of a node is updated often, so expect many `MODIFIED` messages. The token must be allowed to list and watch nodes, which is a cluster-wide permission.",
-    "group" : "Kubernetes",
-    "namespace" : "Cloud",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "kubernetes-pods-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "Kubernetes Pods Source",
-    "summary" : "Watches the pods of a Kubernetes cluster and sends a message each time a pod is added, changed or deleted, in any namespace.",
-    "description" : "Watches the pods of a Kubernetes cluster and sends a message each time a pod is added, changed or deleted, in any namespace.\n\nUse it to react to what happens to workloads, for example to alert when a pod fails or restarts, or to keep an inventory of running pods. For nodes or namespaces, use `kubernetes-nodes-source` or `kubernetes-namespaces-source`.\n\nOutput: the body is the pod as JSON text, in the same shape as `kubectl get pod <name> -o json`. The `CamelKubernetesEventAction` header says what happened: `ADDED`, `MODIFIED` or `DELETED`.\n\nGood to know: when it starts, it first sends an `ADDED` message for every pod that already exists. A pod changes often, so expect many `MODIFIED` messages. It watches the pods of all namespaces: `resourceName` has no effect. The token must be allowed to list and watch pods in all namespaces.",
-    "group" : "Kubernetes",
-    "namespace" : "Cloud",
     "provider" : "Apache Software Foundation"
   }, {
     "name" : "langchain4j-ingest-file-source",
@@ -1905,17 +1745,7 @@
     "supportLevel" : "Stable",
     "title" : "OpenSearch Index Sink",
     "summary" : "Stores each message, a JSON object, as a document in an index of OpenSearch, so that it can be searched.",
-    "description" : "Stores each message, a JSON object, as a document in an index of OpenSearch, so that it can be searched.\n\nUse it to make records searchable, such as orders, log entries or products, or to feed dashboards in OpenSearch Dashboards. To run a search on a schedule, use `opensearch-search-source`; for Elasticsearch, use `elasticsearch-index-sink`.\n\nInput: the body is the document, as JSON text, such as `{\"order\": 42, \"status\": \"shipped\"}`. The optional `indexId` header (or `ce-indexid`) is the id of the document: a document with the same id is replaced. Without it, OpenSearch makes up a new id, so each message adds a new document. The optional `indexName` header (or `ce-indexname`) is the index to write to, instead of the `indexName` option.\n\nOutput: when it is used inside a route, the body afterwards is the id of the document, as text.\n\nGood to know: a body that is not JSON fails the message, and so does a message with no index, from the option or the header. It connects with TLS by default (`enableSSL`); for a server with a self-signed certificate, give its certificate in `certificate`.",
-    "group" : "OpenSearch",
-    "namespace" : "Search",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "opensearch-search-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "OpenSearch Search Source",
-    "summary" : "Runs the same search on an index of OpenSearch at a regular interval, and sends the result of each search as one message.",
-    "description" : "Runs the same search on an index of OpenSearch at a regular interval, and sends the result of each search as one message.\n\nUse it to watch an index on a schedule, for example to send the error log entries or the orders that match a query to another system. To store documents in OpenSearch, use `opensearch-index-sink`; for Elasticsearch, use `elasticsearch-search-source`.\n\nOutput: the body is JSON text with the total number of matches (`total`) and a `hits` list, with the index, the id and the score of each document found. The fields of each document are under `source`, but in an unusual nested form, in which each value is wrapped in a `_value` object under `_children`. The `Content-Type` header is `application/json`.\n\nGood to know: every search returns all the matching documents again, not only the new ones; to get only new documents, filter on a date in the query. By default a search runs every second. A search on an index that does not exist fails, and is tried again at the next interval. It connects with TLS by default (`enableSSL`).",
+    "description" : "Stores each message, a JSON object, as a document in an index of OpenSearch, so that it can be searched.\n\nUse it to make records searchable, such as orders, log entries or products, or to feed dashboards in OpenSearch Dashboards. For Elasticsearch, use `elasticsearch-index-sink`.\n\nInput: the body is the document, as JSON text, such as `{\"order\": 42, \"status\": \"shipped\"}`. The optional `indexId` header (or `ce-indexid`) is the id of the document: a document with the same id is replaced. Without it, OpenSearch makes up a new id, so each message adds a new document. The optional `indexName` header (or `ce-indexname`) is the index to write to, instead of the `indexName` option.\n\nOutput: when it is used inside a route, the body afterwards is the id of the document, as text.\n\nGood to know: a body that is not JSON fails the message, and so does a message with no index, from the option or the header. It connects with TLS by default (`enableSSL`); for a server with a self-signed certificate, give its certificate in `certificate`.",
     "group" : "OpenSearch",
     "namespace" : "Search",
     "provider" : "Apache Software Foundation"
@@ -2045,7 +1875,7 @@
     "supportLevel" : "Stable",
     "title" : "Redis Sink",
     "summary" : "Runs a Redis command for each message, such as storing the body under a key with `SET`, adding it to a list with `RPUSH`, or publishing it on a channel with `PUBLISH`.",
-    "description" : "Runs a Redis command for each message, such as storing the body under a key with `SET`, adding it to a list with `RPUSH`, or publishing it on a channel with `PUBLISH`.\n\nUse it to put values in a Redis cache for other applications to read, to push work items onto a Redis list, or to publish events on a Redis channel that `redis-source` or other subscribers listen to. To cache values only inside one running application, use `caffeine-action`.\n\nInput: the body is the value, as text. The `key` header (or `ce-key`) gives the key, for commands that work on a key such as `SET`, `GET` or `RPUSH`. The `channel` header (or `ce-channel`) gives the channel for `PUBLISH`; without it, the channel in `channels` is used.\n\nOutput: when it is used inside a route, the body afterwards is what Redis answered, such as the value for `GET` or the new length of the list for `RPUSH`; for `SET` the body is unchanged.\n\nGood to know: the default `command` is `GET`, which reads and stores nothing, so set it to the command you need. A body that is not text, such as a Map, fails the message; turn it into JSON text first, for example with `json-serialize-action`. It connects with no password and no TLS.",
+    "description" : "Runs a Redis command for each message, such as storing the body under a key with `SET`, adding it to a list with `RPUSH`, or publishing it on a channel with `PUBLISH`.\n\nUse it to put values in a Redis cache for other applications to read, to push work items onto a Redis list, or to publish events on a Redis channel that `redis-source` or other subscribers listen to.\n\nInput: the body is the value, as text. The `key` header (or `ce-key`) gives the key, for commands that work on a key such as `SET`, `GET` or `RPUSH`. The `channel` header (or `ce-channel`) gives the channel for `PUBLISH`; without it, the channel in `channels` is used.\n\nOutput: when it is used inside a route, the body afterwards is what Redis answered, such as the value for `GET` or the new length of the list for `RPUSH`; for `SET` the body is unchanged.\n\nGood to know: the default `command` is `GET`, which reads and stores nothing, so set it to the command you need. A body that is not text, such as a Map, fails the message; turn it into JSON text first, for example with `json-serialize-action`. It connects with no password and no TLS.",
     "group" : "Redis",
     "namespace" : "Cache",
     "provider" : "Apache Software Foundation"
@@ -2158,16 +1988,6 @@
     "description" : "Changes fields of an existing Salesforce record, such as the phone number of a contact, for each message; the message names the record and the new values.\n\nUse it to keep Salesforce records in step with another system, for example to update the address of an account when it changes in the ERP. To create records use `salesforce-create-sink`, and to create or update many records matched by an external ID, `salesforce-composite-upsert-sink`.\n\nInput: the body is JSON text with three fields: `sObjectName`, the API name of the kind of record (such as `Contact`); `sObjectId`, the ID of the record; and `payload`, an object with the fields to change and their new values. For example `{\"sObjectName\": \"Contact\", \"sObjectId\": \"003XXXXXXXXXXXXXXX\", \"payload\": {\"Phone\": \"+45 1234 5678\"}}`. The fields that are not in `payload` keep their values.\n\nOutput: when it is used inside a route, the body afterwards is the `payload` as JSON text.\n\nGood to know: a message without `sObjectName` or `sObjectId`, for a record that does not exist, or with a change that Salesforce refuses, fails. The message decides which record is changed, so place this sink only after a source you trust.",
     "group" : "Salesforce",
     "namespace" : "Salesforce",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "sap-netweaver-sink",
-    "type" : "sink",
-    "supportLevel" : "Preview",
-    "title" : "SAP NetWeaver Sink",
-    "summary" : "Reads data from an SAP NetWeaver Gateway with an OData GET request, the same request for each message, and gives the answer as a Map or as JSON text.",
-    "description" : "Reads data from an SAP NetWeaver Gateway with an OData GET request, the same request for each message, and gives the answer as a Map or as JSON text.\n\nUse it to fetch business data from SAP, such as flights, orders or materials, for example on a schedule with `timer-source`, and pass it on to another system.\n\nInput: any body; it is not sent. The request is always the `command` option, added to `url`; headers on the message cannot change it.\n\nOutput: when it is used inside a route, the body afterwards is the answer of the gateway. By default it is a Map, and the outer `d` entry of the OData answer is removed, so the body holds the `results` list or the fields of the entity. With `jsonAsMap` set to false it is JSON text, and with `json` set to false it is XML text in the Atom format.\n\nGood to know: the body is never sent, so this Kamelet cannot create or change data in SAP. A response that is not JSON fails the message while `json` and `jsonAsMap` are true.",
-    "group" : "SAP NetWeaver",
-    "namespace" : "API",
     "provider" : "Apache Software Foundation"
   }, {
     "name" : "scp-sink",
@@ -2468,36 +2288,6 @@
     "description" : "Keeps only the Kafka records whose topic name matches a regular expression, and drops all others.\n\nUse it to handle the records of only some topics, after a `kafka-source` whose `topic` lists several topics or is a pattern, for example only those of `orders-eu`. To keep or drop messages by another header use `header-matches-filter-action`.\n\nInput: a message from `kafka-source`, with the name of the topic in the `CamelKafkaTopic` header.\n\nOutput: the same message, unchanged, when `regex` matches the whole topic name. Otherwise the message is dropped and nothing is sent on.\n\nGood to know: the expression must match the whole name: `orders` does not keep the records of `orders-eu`, but `orders.*` does. A message without the `CamelKafkaTopic` header is dropped.",
     "group" : "Actions",
     "namespace" : "Kafka",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "twitter-directmessage-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "Twitter Direct Message Source",
-    "summary" : "Reads the direct messages of a Twitter (X) account, by asking Twitter at a regular interval, one message per direct message.",
-    "description" : "Reads the direct messages of a Twitter (X) account, by asking Twitter at a regular interval, one message per direct message.\n\nUse it to react to private messages sent to your company account, for example to open a support case or to forward them to a team chat. To read public tweets, use `twitter-search-source` or `twitter-timeline-source`.\n\nOutput: the body is the direct message as JSON text, with its `text`, its `id`, the `senderId` and the `recipientId`. The `CamelTwitterEventType` header is `DIRECT_MESSAGE`.\n\nGood to know: it reads the messages of the account that owns `accessToken`, both the ones it received and the ones it sent; compare `senderId` to tell them apart. At the first check, every direct message that Twitter still lists (the last 30 days) is sent, then only new ones, every 30 seconds. It does not remember what it read: after a restart, it sends them all again. It uses version 1.1 of the Twitter API, and the app needs the permission to read direct messages.",
-    "group" : "Twitter",
-    "namespace" : "Social",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "twitter-search-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "Twitter Search Source",
-    "summary" : "Reads the new tweets that match a search, such as a word, a hashtag or a mention, by asking Twitter (X) at a regular interval, one message per tweet.",
-    "description" : "Reads the new tweets that match a search, such as a word, a hashtag or a mention, by asking Twitter (X) at a regular interval, one message per tweet.\n\nUse it to follow what people say about a brand, a product or an event, for example to collect mentions for analysis or to alert a team. To follow the tweets of one account, use `twitter-timeline-source`.\n\nOutput: the body is the tweet as JSON text, with its `text`, its `id`, its `lang`, the time it was created and the `user` who wrote it. The `CamelTwitterEventType` header is `STATUS`.\n\nGood to know: it searches every 30 seconds. The first search sends up to 5 matching tweets, and each later search sends at most 5 tweets newer than the last one it saw, so on a busy search some tweets are missed. It does not remember what it read: after a restart, it starts over as on the first search. It uses the standard search of version 1.1 of the Twitter API.",
-    "group" : "Twitter",
-    "namespace" : "Social",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "twitter-timeline-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "Twitter Timeline Source",
-    "summary" : "Reads the new tweets that one Twitter (X) account posts, by asking Twitter at a regular interval, one message per tweet.",
-    "description" : "Reads the new tweets that one Twitter (X) account posts, by asking Twitter at a regular interval, one message per tweet.\n\nUse it to follow an account, such as a news feed, a status page or a partner, and pass on what it posts, for example to a chat or a database. To follow a word or a hashtag across all accounts, use `twitter-search-source`.\n\nOutput: the body is the tweet as JSON text, with its `text`, its `id`, the time it was created and the `user` who wrote it. The `CamelTwitterEventType` header is `STATUS`.\n\nGood to know: it checks every 30 seconds. The first check sends the 5 most recent tweets of the account, and each later check sends at most 5 tweets newer than the last one it saw. It does not remember what it read: after a restart, it starts again with the most recent tweets. It uses version 1.1 of the Twitter API.",
-    "group" : "Twitter",
-    "namespace" : "Social",
     "provider" : "Apache Software Foundation"
   }, {
     "name" : "value-to-key-action",
