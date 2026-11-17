@@ -19,8 +19,8 @@ Only one of access key/secret key or default credentials provider could be used
 
 For more information, see the https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials.html[AWS credentials documentation]
 
-=== Required Headers
+=== Headers
 
-The Kamelet expects the following headers to be set:
+The Kamelet reads the following optional header:
 
-- `instanceIds` / `ce-instanceids`: as a comma separated list of EC2 instance ids.
+- `instanceIds` / `ce-instanceids`: as a comma separated list of EC2 instance ids. Without it, the status of all the running instances of the region is returned.

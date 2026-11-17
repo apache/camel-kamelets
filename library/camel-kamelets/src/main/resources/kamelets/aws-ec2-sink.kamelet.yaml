@@ -31,65 +31,93 @@ metadata:
 spec:
   definition:
     title: "AWS EC2 Sink"
-    description: Check the status of EC2 instances
+    description: |-
+      Asks Amazon EC2 for the status of virtual machines (instances), such as whether they run and pass their health checks, each time a message arrives.
+
+      Use it to check regularly that your EC2 instances are running and healthy, for example every few minutes from `timer-source`, and raise an alert when a check fails.
+
+      Input: the body is not used. The optional `instanceIds` header (or `ce-instanceids`) is a comma-separated list of the IDs of the instances to check, such as `i-0abc123,i-0def456`; without it, the status of all the running instances of the region is returned.
+
+      Output: the body is the answer of AWS, a `DescribeInstanceStatusResponse` object of the AWS SDK for Java (not JSON text), with for each instance its ID, availability zone, state (such as `running`) and the results of the instance and system status checks. When there are more results than fit, the `CamelAwsEC2NextToken` header holds the token of the next page.
+
+      Good to know: it only reads; it never starts, stops or changes an instance. With Camel 4.23, the `instanceIds` header is ignored, and the status of all the instances is returned.
     required:
       - region
     type: object
     properties:
       accessKey:
         title: Access Key
-        description: The access key obtained from AWS.
+        description: "The access key ID of an IAM user, which AWS gives when you create an access key for the user (in the AWS console: IAM, Users, Security credentials). Use it together with `secretKey`, or leave both empty and set `useDefaultCredentialsProvider` or `useProfileCredentialsProvider` instead."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       secretKey:
         title: Secret Key
-        description: The secret key obtained from AWS.
+        description: The secret access key that goes with `accessKey`. AWS shows it only once, when the access key is created.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       region:
         title: AWS Region
-        description: The AWS region to access.
+        description: The AWS region of the instances, such as `eu-west-1`.
         type: string
+        example: eu-west-1
         enum: ["ap-south-1", "eu-south-1", "us-gov-east-1", "me-central-1", "ca-central-1", "eu-central-1", "us-iso-west-1", "us-west-1", "us-west-2", "af-south-1", "eu-north-1", "eu-west-3", "eu-west-2", "eu-west-1", "ap-northeast-3", "ap-northeast-2", "ap-northeast-1", "me-south-1", "sa-east-1", "ap-east-1", "cn-north-1", "us-gov-west-1", "ap-southeast-1", "ap-southeast-2", "us-iso-east-1", "ap-southeast-3", "us-east-1", "us-east-2", "cn-northwest-1", "us-isob-east-1", "aws-global", "aws-cn-global", "aws-us-gov-global", "aws-iso-global", "aws-iso-b-global"]
       useDefaultCredentialsProvider:
         title: Default Credentials Provider
-        description: If true, the EC2 client loads credentials through a default credentials provider. If false, it uses the basic authentication method (access key and secret key).
+        description: "If true, the credentials are found the way the AWS SDK finds them: from the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables, the shared credentials file, or the IAM role of the machine, container or pod it runs on. Then `accessKey` and `secretKey` are not needed."
         type: boolean
         default: false
       useProfileCredentialsProvider:
         title: Profile Credentials Provider
-        description: Set whether the EC2 client should expect to load credentials through a profile credentials provider.
+        description: If true, the credentials are read from a profile of the AWS credentials file (`~/.aws/credentials`), the one named in `profileCredentialsName`.
         type: boolean
         default: false
       useSessionCredentials:
         title: Session Credentials
-        description: Set whether the EC2 client should expect to use Session Credentials. This is useful in situation in which the user needs to assume a IAM role for doing operations in EC2.
+        description: "If true, it logs in with temporary credentials, such as those of an assumed IAM role: `accessKey`, `secretKey` and `sessionToken` together."
         type: boolean
         default: false
       profileCredentialsName:
         title: Profile Credentials Name
-        description: If using a profile credentials provider this parameter sets the profile name.
+        description: The name of the profile to use from the AWS credentials file. Only used when `useProfileCredentialsProvider` is true.
         type: string
       sessionToken:
         title: Session Token
-        description: Amazon AWS Session Token used when the user needs to assume a IAM role.
+        description: The session token of temporary credentials, which AWS gives together with their access key and secret key. Only used when `useSessionCredentials` is true.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       uriEndpointOverride:
         title: Overwrite Endpoint URI
-        description: The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option.
+        description: The address to send the requests to instead of the usual AWS address, such as `http://localhost:4566` for LocalStack. Only used when `overrideEndpoint` is true.
         type: string
+        example: http://localhost:4566
       overrideEndpoint:
         title: Endpoint Overwrite
-        description: Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option.
+        description: If true, the requests go to the address in `uriEndpointOverride` instead of AWS, for example to test against LocalStack.
         type: boolean
         default: false
+  dataTypes:
+    in:
+      headers:
+        instanceIds:
+          title: Instance IDs
+          description: A comma-separated list of the IDs of the instances to check, such as `i-0abc123,i-0def456`. When it is not set, `ce-instanceids` is used, and without either the status of all the running instances is returned.
+          type: string
+        ce-instanceids:
+          title: Instance IDs (CloudEvents)
+          description: The IDs of the instances to check, when the message is a CloudEvent. Used only when `instanceIds` is not set.
+          type: string
+    out:
+      headers:
+        CamelAwsEC2NextToken:
+          title: Next Token
+          description: Set when there are more results than fit; the token of the next page.
+          type: string
   dependencies:
     - "camel:aws2-ec2"
     - "camel:kamelet"

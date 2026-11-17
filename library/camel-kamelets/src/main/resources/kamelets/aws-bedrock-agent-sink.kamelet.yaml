@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "AWS Bedrock Agent Sink"
-    description: Manage the data source ingestion jobs of an AWS Bedrock knowledge base.
+    description: |-
+      Starts, lists or looks up the ingestion jobs of an Amazon Bedrock knowledge base, which load the documents of a data source, such as an S3 bucket, into the knowledge base.
+
+      Use it to refresh a knowledge base after its documents changed, for example to start an ingestion job when new files arrive in the bucket of the data source, or every night from `timer-source`, and to check how the job went. To ask questions of the knowledge base, use `aws-bedrock-agent-runtime-sink`.
+
+      Input: the body is not used. For `getIngestionJob`, the `CamelAwsBedrockAgentIngestionJobId` header is the ID of the job to look up, and is required.
+
+      Output: when it is used inside a route, the body afterwards depends on the operation: for `startIngestionJob` the ID of the new job, as text; for `listIngestionJobs` a List of job summaries; for `getIngestionJob` the job, an object of the AWS SDK for Java, with its status, such as `IN_PROGRESS`, `COMPLETE` or `FAILED`, also in the `CamelAwsBedrockAgentIngestionJobStatus` header.
+
+      Good to know: an ingestion job runs in the background, and `startIngestionJob` returns at once; to follow it, copy the ID from the body into the `CamelAwsBedrockAgentIngestionJobId` header and use `getIngestionJob`. The operation, the knowledge base and the data source come only from the options; headers cannot change them.
     required:
       - knowledgeBaseId
       - dataSourceId
@@ -38,73 +47,90 @@ spec:
     type: object
     properties:
       knowledgeBaseId:
-        title: Knowledge Base Id
-        description: The Knowledge Base the ingestion job belongs to.
+        title: Knowledge Base ID
+        description: The ID of the knowledge base, a code of 10 letters and digits shown in the Bedrock console.
         type: string
+        example: AB12CD34EF
       dataSourceId:
-        title: Data Source Id
-        description: The data source to ingest. Required by the startIngestionJob operation.
+        title: Data Source ID
+        description: The ID of the data source of the knowledge base whose documents are loaded, a code of 10 letters and digits shown in the Bedrock console. Needed by all three operations.
         type: string
+        example: GH56IJ78KL
       operation:
         title: Operation
-        description: The ingestion job operation to perform.
+        description: "What to do: `startIngestionJob` starts loading the documents of the data source into the knowledge base; `listIngestionJobs` lists the ingestion jobs of the data source; `getIngestionJob` looks up the job whose ID is in the `CamelAwsBedrockAgentIngestionJobId` header."
         type: string
         default: startIngestionJob
         enum: ["startIngestionJob", "listIngestionJobs", "getIngestionJob"]
       accessKey:
         title: Access Key
-        description: The access key obtained from AWS.
+        description: "The access key ID of an IAM user, which AWS gives when you create an access key for the user (in the AWS console: IAM, Users, Security credentials). Use it together with `secretKey`, or leave both empty and set `useDefaultCredentialsProvider` or `useProfileCredentialsProvider` instead."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       secretKey:
         title: Secret Key
-        description: The secret key obtained from AWS.
+        description: The secret access key that goes with `accessKey`. AWS shows it only once, when the access key is created.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       region:
         title: AWS Region
-        description: The AWS region to access.
+        description: The AWS region of the knowledge base, such as `eu-west-1`.
         type: string
+        example: eu-west-1
         enum: ["us-east-1", "us-east-2", "us-west-2", "us-gov-west-1", "ap-northeast-1", "ap-northeast-2", "ap-south-1", "ap-southeast-1", "ap-southeast-2", "ca-central-1", "eu-central-1", "eu-central-2", "eu-west-1", "eu-west-2", "eu-west-3", "sa-east-1"]
       useDefaultCredentialsProvider:
         title: Default Credentials Provider
-        description: If true, the SDK looks for credentials through the default provider chain rather than the accessKey and secretKey properties.
+        description: "If true, the credentials are found the way the AWS SDK finds them: from the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables, the shared credentials file, or the IAM role of the machine, container or pod it runs on. Then `accessKey` and `secretKey` are not needed."
         type: boolean
         default: false
       useProfileCredentialsProvider:
         title: Profile Credentials Provider
-        description: Set whether the Bedrock client should expect to load credentials through a profile credentials provider.
+        description: If true, the credentials are read from a profile of the AWS credentials file (`~/.aws/credentials`), the one named in `profileCredentialsName`.
         type: boolean
         default: false
       useSessionCredentials:
         title: Session Credentials
-        description: Set whether the Bedrock client should expect to use session credentials. This is useful in a session token scenario.
+        description: "If true, it logs in with temporary credentials, such as those of an assumed IAM role: `accessKey`, `secretKey` and `sessionToken` together."
         type: boolean
         default: false
       sessionToken:
         title: Session Token
-        description: Amazon AWS Session Token used when the user needs to assume an IAM role.
+        description: The session token of temporary credentials, which AWS gives together with their access key and secret key. Only used when `useSessionCredentials` is true.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       profileCredentialsName:
         title: Profile Credentials Name
-        description: If using a profile credentials provider, this parameter states the profile name.
+        description: The name of the profile to use from the AWS credentials file. Only used when `useProfileCredentialsProvider` is true.
         type: string
       uriEndpointOverride:
         title: Overwrite Endpoint URI
-        description: The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option.
+        description: The address to send the requests to instead of the usual AWS address, such as `http://localhost:4566` for LocalStack. Only used when `overrideEndpoint` is true.
         type: string
+        example: http://localhost:4566
       overrideEndpoint:
         title: Endpoint Overwrite
-        description: Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option.
+        description: If true, the requests go to the address in `uriEndpointOverride` instead of AWS, for example to test against LocalStack.
         type: boolean
         default: false
+  dataTypes:
+    in:
+      headers:
+        CamelAwsBedrockAgentIngestionJobId:
+          title: Ingestion Job ID
+          description: The ID of the job to look up with `getIngestionJob`, as given by `startIngestionJob`.
+          type: string
+    out:
+      headers:
+        CamelAwsBedrockAgentIngestionJobStatus:
+          title: Ingestion Job Status
+          description: For `getIngestionJob`, the status of the job, such as `IN_PROGRESS`, `COMPLETE` or `FAILED`.
+          type: string
   dependencies:
     - "camel:aws-bedrock"
     - "camel:kamelet"

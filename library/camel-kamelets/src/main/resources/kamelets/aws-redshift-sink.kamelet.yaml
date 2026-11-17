@@ -30,7 +30,16 @@ metadata:
 spec:
   definition:
     title: "AWS Redshift Sink"
-    description: Send data to an AWS Redshift Database. This Kamelet expects a JSON-formatted body. Use key:value pairs to map the JSON fields and parameters.
+    description: |-
+      Runs an SQL statement, such as an INSERT, on an Amazon Redshift database for each message, with the values taken from the JSON body.
+
+      Use it to load events or records, such as orders or page views, into a table of a Redshift data warehouse, or to update rows when something changes. To read rows from Redshift, use `aws-redshift-source`.
+
+      Input: the body is a JSON object, as JSON text, such as `{"username":"alice","city":"Rome"}`. Each `:#name` in `query` takes the value of the field with that name, else of the header with that name. The statement runs once per message.
+
+      Output: when it is used inside a route, the body afterwards is the JSON object parsed as a Map, and the `CamelSqlUpdateCount` header holds the number of rows changed.
+
+      Good to know: a body that is not a JSON object fails, and so does a body that lacks a field named in `query` when no header has that name either. It logs in with a database user and password, not with AWS keys, and connects with the Amazon Redshift JDBC driver, which uses TLS by default.
     required:
       - serverName
       - username
@@ -41,39 +50,47 @@ spec:
     properties:
       serverName:
         title: Server Name
-        description: The server name for the data source.
+        description: "The host name of the Redshift cluster: its endpoint, as shown in the Redshift console, without the port and the database name."
         type: string
-        example: localhost
+        example: my-cluster.abc123xyz789.eu-west-1.redshift.amazonaws.com
       serverPort:
         title: Server Port
-        description: The server port for the AWS RedShi data source.
+        description: The port of the cluster. Redshift uses 5439 unless it was changed when the cluster was created.
         type: string
         default: 5439
       username:
         title: Username
-        description: The username to access a secured AWS Redshift Database.
+        description: The database user to log in as, such as the admin user of the cluster. This is a user of the database, not an AWS access key.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access a secured AWS Redshift Database.
+        description: The password of `username`, set when the cluster or the user was created.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       query:
         title: Query
-        description: The query to execute against the AWS Redshift Database.
+        description: The SQL statement to run for each message. Write `:#name` where the value of the field `name` of the body goes; the values are passed as parameters, never pasted into the SQL text.
         type: string
         example: 'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
       databaseName:
         title: Database Name
-        description: The name of the AWS Redshift Database.
+        description: The name of the database in the cluster, such as `dev`, the database a new cluster has.
         type: string
+        example: dev
   types:
     in:
       mediaType: application/json
+  dataTypes:
+    out:
+      headers:
+        CamelSqlUpdateCount:
+          title: Update Count
+          description: The number of rows the statement changed.
+          type: integer
   dependencies:
   - "camel:jackson"
   - "camel:kamelet"

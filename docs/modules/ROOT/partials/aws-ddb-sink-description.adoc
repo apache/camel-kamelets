@@ -21,19 +21,20 @@ For more information, see the https://docs.aws.amazon.com/sdk-for-java/latest/de
 
 === Expected Data format for sink
 
-This Kamelet expects a JSON-formatted body and it must include the primary key values that define the DynamoDB item. The mapping between the JSON fields and table attribute values is done by key. For example, for  '{"username":"oscerd", "city":"Rome"}' input, the Kamelet inserts or update an item in the specified AWS DynamoDB table and sets the values for the 'username' and 'city' attributes. 
-      
+This Kamelet expects a JSON object, as JSON text, and it must include the primary key values that define the DynamoDB item. The mapping between the JSON fields and table attribute values is done by key. For example, for the input `{"username":"oscerd", "city":"Rome"}`, the Kamelet inserts or replaces an item in the specified AWS DynamoDB table and sets the values for the `username` and `city` attributes.
+
 For PutItem operation the Json body defines all item attributes.
 For DeleteItem operation the Json body defines only the primary key attributes that identify the item to delete.
-For UpdateItem operation the Json body defines both key attributes to identify the item to be updated and all item attributes tht get updated on the item.
-      
-The given JSON body can use `operation`, `key` and `item` as top level properties that are mapped to the respective attribute value maps.
+For UpdateItem operation the Json body defines both key attributes to identify the item to be updated and all item attributes that get updated on the item.
+
+The given JSON body can use `key` and `item` as top level properties that are mapped to the respective attribute value maps:
 
 [source,json]
-----      
-      {
-        "operation": "PutItem"
-        "key": {},
-        "item": {}
-      }
-----   
+----
+{
+  "key": {"username": "oscerd"},
+  "item": {"city": "Rome"}
+}
+----
+
+Choose the operation with the `operation` option, or for one message with the `CamelAwsDdbOperation` header. Do not put an `operation` field in the body: depending on the Camel version it is ignored, and the item is then replaced as with PutItem, or the message fails.

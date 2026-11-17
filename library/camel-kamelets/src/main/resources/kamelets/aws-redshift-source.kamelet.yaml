@@ -30,7 +30,14 @@ metadata:
 spec:
   definition:
     title: "AWS Redshift Source"
-    description: Query data from an AWS Redshift Database.
+    description: |-
+      Runs an SQL query on an Amazon Redshift database at regular intervals, and sends each row of the result as a message.
+
+      Use it to pick up records from a Redshift data warehouse, such as new orders or daily figures, and pass them on to another system. To write to Redshift, use `aws-redshift-sink`.
+
+      Output: one message per row. The body is the row as a JSON object, in JSON text, with the column names as field names, such as `{"id":1,"username":"alice","city":"Rome"}`. The `Content-Type` header is `application/json`.
+
+      Good to know: the query runs again every `delay` milliseconds, and returns the same rows each time unless they change; set `consumedQuery` to mark or delete each row once it has been sent. It logs in with a database user and password, not with AWS keys, and connects with the Amazon Redshift JDBC driver, which uses TLS by default.
     required:
       - serverName
       - username
@@ -41,44 +48,45 @@ spec:
     properties:
       serverName:
         title: Server Name
-        description: The server name for the data source.
+        description: "The host name of the Redshift cluster: its endpoint, as shown in the Redshift console, without the port and the database name."
         type: string
-        example: localhost
+        example: my-cluster.abc123xyz789.eu-west-1.redshift.amazonaws.com
       serverPort:
         title: Server Port
-        description: The server port for the data source.
+        description: The port of the cluster. Redshift uses 5439 unless it was changed when the cluster was created.
         type: string
         default: 5439
       username:
         title: Username
-        description: The username to access a secured AWS Redshift Database.
+        description: The database user to log in as, such as the admin user of the cluster. This is a user of the database, not an AWS access key.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password to access a secured AWS Redshift Database.
+        description: The password of `username`, set when the cluster or the user was created.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       query:
         title: Query
-        description: The query to execute against the AWS Redshift Database.
+        description: The SQL query to run at each poll. Each row of the result becomes a message.
         type: string
-        example: 'INSERT INTO accounts (username,city) VALUES (:#username,:#city)'
+        example: SELECT * FROM orders WHERE exported = false
       databaseName:
         title: Database Name
-        description: The name of the AWS Redshift Database.
+        description: The name of the database in the cluster, such as `dev`, the database a new cluster has.
         type: string
+        example: dev
       consumedQuery:
         title: Consumed Query
-        description: A query to run on a tuple consumed.
+        description: An SQL statement to run after each row has been sent, to mark it as done or delete it, so that it is not read again. Write `:#name` where the value of the column `name` of the row goes.
         type: string
-        example: 'DELETE FROM accounts where user_id = :#user_id'
+        example: UPDATE orders SET exported = true WHERE id = :#id
       delay:
         title: Delay
-        description: The number of milliseconds before the next poll from the AWS Redshift database.
+        description: How long to wait between two runs of the query, in milliseconds.
         type: integer
         default: 500
   types:
