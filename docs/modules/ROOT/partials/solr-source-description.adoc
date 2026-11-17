@@ -1,12 +1,14 @@
 == Solr Source Kamelet Description
 
-=== Authentication methods
+=== Connection and authentication
 
-This Kamelet connects to Solr over plain HTTP. For a Solr with Basic authentication, set the `username` and `password` properties; leave them out for a Solr without login.
+This Kamelet connects to Solr over plain HTTP by default. For a Solr that is reached with HTTPS, set `enableSSL` to true. When Solr uses a self-signed certificate, or one that Java does not trust, give the certificate of Solr, or of the certificate authority that signed it, in `certificate`, encoded in base64 on one line, for example with `base64 -w0 solr.crt`.
+
+For a Solr with Basic authentication, set the `username` and `password` properties; leave them out for a Solr without login.
 
 === Output format
 
-The Kamelet runs the configured query at every `period`, and produces one message per query: the answer of Solr as JSON text, with the documents found under `response`. Every query returns all the matching documents again, not only the new ones.
+The Kamelet runs the configured query at every `period`, and produces one message per query: the answer of Solr as JSON text, with the documents found under `response`. Every query returns all the matching documents again, not only the new ones, but at most `size` of them, or 10 with the usual Solr settings when `size` is not set.
 
 === Configuration
 
@@ -16,6 +18,8 @@ The Kamelet requires the following properties:
 - `collection`: the collection, or the core, to query
 - `query`: the query, in the Solr query syntax, such as `status_s:new`
 - `period`: the time between two queries, in milliseconds
+
+Optional properties include `size` (the most documents each query returns), `enableSSL` and `certificate` (HTTPS), and `username` and `password` (Basic authentication).
 
 === Usage example
 
