@@ -16,3 +16,30 @@ This Kamelet supports Google Cloud authentication through service account keys. 
 === Message Publishing
 
 The Kamelet publishes messages to the specified Google Cloud Pub/Sub topic, enabling reliable message delivery and processing across distributed systems.
+
+=== Message Ordering
+
+Pub/Sub delivers the messages in any order. To have the messages of one customer, order or device delivered in the order they were published, give them the same ordering key in the `CamelGooglePubsubOrderingKey` header, here the `customerId` field of the JSON body, set `messageOrderingEnabled` to true, and publish to a regional endpoint with `pubsubEndpoint`:
+
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:kafka-source"
+      parameters:
+        topic: "orders"
+        bootstrapServers: "my-cluster-kafka-bootstrap:9092"
+      steps:
+        - setHeader:
+            name: CamelGooglePubsubOrderingKey
+            jsonpath: "$.customerId"
+        - to:
+            uri: "kamelet:google-pubsub-sink"
+            parameters:
+              projectId: "my-project-123"
+              destinationName: "orders"
+              messageOrderingEnabled: true
+              pubsubEndpoint: "europe-west1-pubsub.googleapis.com:443"
+----
+
+The subscription must have message ordering enabled too, for example with `gcloud pubsub subscriptions create orders-sub --topic=orders --enable-message-ordering`. A message with an ordering key fails when `messageOrderingEnabled` is not true. Without `pubsubEndpoint`, the messages are published to the global endpoint, the order is only kept within one region, and a warning is logged.

@@ -39,7 +39,7 @@ spec:
 
       Output: the message is unchanged, with the ID that Pub/Sub gave the published message in the `CamelGooglePubsubMessageId` header.
 
-      Good to know: the topic must exist; a message sent to a topic that does not exist fails. Without `serviceAccountKey`, it logs in with the Application Default Credentials of the environment where it runs.
+      Good to know: the topic must exist; a message sent to a topic that does not exist fails. Without `serviceAccountKey`, it logs in with the Application Default Credentials of the environment where it runs. Pub/Sub delivers the messages in any order. To have the messages with the same `CamelGooglePubsubOrderingKey` header delivered in the order they were published, set `messageOrderingEnabled` to true and `pubsubEndpoint` to a regional endpoint, and enable message ordering on the subscription. A message with that header fails when `messageOrderingEnabled` is not true.
     required:
       - projectId
       - destinationName
@@ -62,7 +62,23 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      messageOrderingEnabled:
+        title: Message Ordering Enabled
+        description: If true, the messages with the same `CamelGooglePubsubOrderingKey` header are published in the order they come in, so that a subscription with message ordering enabled delivers them in that order. When it is not set, it is false, and a message with that header fails. Set `pubsubEndpoint` too, as the order is only kept for messages published to the same region; without it, a warning is logged.
+        type: boolean
+      pubsubEndpoint:
+        title: Pub/Sub Endpoint
+        description: The Pub/Sub service to publish to, as host and port, such as the regional endpoint `europe-west1-pubsub.googleapis.com:443`. When it is not set, it is the global endpoint `pubsub.googleapis.com:443`, which may route the messages to different regions.
+        type: string
+        example: europe-west1-pubsub.googleapis.com:443
+        pattern: "^[A-Za-z0-9.-]+:[0-9]+$"
   dataTypes:
+    in:
+      headers:
+        CamelGooglePubsubOrderingKey:
+          title: Ordering Key
+          description: The messages with the same ordering key, such as a customer ID, are delivered in the order they were published, when `messageOrderingEnabled` is true and the subscription has message ordering enabled. A message with this header fails when `messageOrderingEnabled` is not true.
+          type: string
     out:
       headers:
         CamelGooglePubsubMessageId:
@@ -78,4 +94,4 @@ spec:
       uri: kamelet:source
       steps:
         - to:
-            uri: "google-pubsub://{{projectId}}:{{destinationName}}?serviceAccountKey=base64:{{?serviceAccountKey}}"
+            uri: "google-pubsub://{{projectId}}:{{destinationName}}?messageOrderingEnabled={{?messageOrderingEnabled}}&pubsubEndpoint={{?pubsubEndpoint}}&serviceAccountKey=base64:{{?serviceAccountKey}}"

@@ -18,3 +18,21 @@ This Kamelet expects JSON text as input: a JSON object for one row, or a JSON ar
 === Data Processing
 
 The Kamelet automatically unmarshals JSON data using Jackson before sending it to the specified BigQuery table.
+
+=== Insert IDs
+
+A message that is sent again, for example after a failure, adds its rows again. With `useAsInsertId`, the value of a field of each row is sent as the insert ID of the row, and BigQuery uses it to drop, on a best-effort basis, a row that it received with the same insert ID shortly before. The field must hold text: a message with a row whose field holds a number fails. A row without the field is sent without an insert ID.
+
+[source,yaml]
+----
+- to:
+    uri: "kamelet:google-bigquery-sink"
+    parameters:
+      projectId: "my-project-123"
+      dataset: "shop"
+      table: "orders"
+      serviceAccountKey: "{{gcp.serviceAccountKey}}"
+      useAsInsertId: "orderId"
+----
+
+For a body such as `{"orderId": "o-1001", "item": "book"}`, the insert ID of the row is `o-1001`. In a JSON array, each row gets the insert ID of its own field.

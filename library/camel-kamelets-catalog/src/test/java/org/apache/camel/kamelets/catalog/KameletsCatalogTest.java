@@ -231,8 +231,8 @@ public class KameletsCatalogTest {
         verifyHeaders("google-bigquery-sink", 4);
         verifyHeaders("google-calendar-source", 1);
         verifyHeaders("google-mail-source", 6);
-        verifyHeaders("google-pubsub-sink", 1);
-        verifyHeaders("google-pubsub-source", 3);
+        verifyHeaders("google-pubsub-sink", 2);
+        verifyHeaders("google-pubsub-source", 5);
         verifyHeaders("google-sheets-source", 5);
         verifyHeaders("google-storage-source", 4);
         verifyHeaders("google-storage-sink", 3);
