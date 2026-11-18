@@ -18,3 +18,33 @@ You can also use the Profile Credentials Provider, by setting the `useProfileCre
 Only one of access key/secret key or default credentials provider could be used
 
 For more information, see the https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials.html[AWS credentials documentation]
+
+=== Reading the attributes of a message
+
+By default the Kamelet reads only the body of each message. Two options ask SQS for the attributes too:
+
+- **Message Attribute Names** (`messageAttributeNames`): the message attributes, which the sender sets on a message. Use `All`, a comma-separated list of names, or a name that ends in `.*` for all the names with that start, such as `trace.*`.
+- **System Attribute Names** (`attributeNames`): the attributes that SQS keeps for each message, such as `SentTimestamp` (in milliseconds since 1970) and `ApproximateReceiveCount`. Use `All` or a comma-separated list of names.
+
+Each attribute that is read becomes a header of the same name, so the next steps can use it as `customer` or `SentTimestamp`. The values are:
+
+[width="100%",cols="1,3",options="header"]
+|===
+| Attribute | Header value
+| String | Text.
+| Number | Text, such as `5`. With a type label such as `Number.int`, a number.
+| Binary | Bytes, as an AWS SDK `SdkBytes`.
+| System attribute | Text.
+|===
+
+A message attribute whose name starts with `Camel` does not become a header. It is still in the `CamelAwsSqsMessageAttributes` header, a Map from each name to an AWS SDK `MessageAttributeValue`.
+
+For example, to read all the message attributes and the time each message was sent:
+
+[source,yaml]
+----
+queueNameOrArn: orders
+region: eu-west-1
+messageAttributeNames: All
+attributeNames: SentTimestamp
+----
