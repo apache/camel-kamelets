@@ -40,7 +40,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: a file with the same name is replaced. Missing directories are created.
+      Good to know: a file with the same name is replaced, unless `fileExist` says otherwise. Missing directories are created.
     required:
       - accountName
       - shareName
@@ -77,6 +77,11 @@ spec:
         type: string
         default: "."
         example: inbox/orders
+      fileExist:
+        title: If File Exists
+        description: What to do when a file with the same name is already in the directory. `Override` replaces it. `Fail` keeps it and fails the message. `Ignore` keeps it and drops the new content, without an error. When it is not set, `Override`.
+        type: string
+        enum: ["Override", "Fail", "Ignore"]
   dataTypes:
     in:
       headers:
@@ -133,4 +138,4 @@ spec:
                       simple:
                         expression: "${exchangeId}"
         - to:
-            uri: "azure-files://{{accountName}}/{{shareName}}/{{directoryName}}?credentialType={{credentialType}}&sharedKey=RAW({{?sharedKey}})"
+            uri: "azure-files://{{accountName}}/{{shareName}}/{{directoryName}}?credentialType={{credentialType}}&sharedKey=RAW({{?sharedKey}})&fileExist={{?fileExist}}"

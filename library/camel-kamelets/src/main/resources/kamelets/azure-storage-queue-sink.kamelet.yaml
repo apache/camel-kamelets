@@ -40,7 +40,7 @@ spec:
 
       Output: the body afterwards is `true`, and headers such as `CamelAzureStorageQueueMessageId` and `CamelAzureStorageQueueExpirationTime` describe the message sent.
 
-      Good to know: the queue must exist: a missing queue fails the message. An `expiration` that is a plain number, such as `600`, fails the message.
+      Good to know: the queue must exist, or a message fails, unless `createQueue` is true. A message can be held back for a while before readers see it, with `visibilityTimeout`. An `expiration` that is a plain number, such as `600`, fails the message.
     required:
       - accountName
       - queueName
@@ -72,6 +72,16 @@ spec:
         type: string
         default: "SHARED_ACCOUNT_KEY"
         enum: ["SHARED_ACCOUNT_KEY", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY"]
+      createQueue:
+        title: Create Queue
+        description: If true, the queue is created when it does not exist yet, before each message is sent. The login must be allowed to create queues. When it is not set, the queue must exist, or the message fails.
+        type: boolean
+      visibilityTimeout:
+        title: Visibility Timeout
+        description: How long each message stays hidden after it is added, before readers of the queue can receive it, as an ISO-8601 duration such as `PT30S` (30 seconds) or `PT1H` (one hour). Use it to delay the handling of a message. At most 7 days, and shorter than the time the message stays in the queue (`expiration`, 7 days by default); a longer value fails the message. A plain number is read as milliseconds, not seconds. When it is not set, a message can be received at once.
+        type: string
+        example: PT5M
+        pattern: "^P(\\d+D)?(T(\\d+H)?(\\d+M)?(\\d+(\\.\\d+)?S)?)?$"
   dataTypes:
     in:
       headers:
@@ -111,4 +121,4 @@ spec:
                         simple:
                           expression: "${header[ce-expiration]}"
         - to:
-            uri: "azure-storage-queue://{{accountName}}/{{queueName}}?accessKey=RAW({{accessKey}})&credentialType={{credentialType}}"
+            uri: "azure-storage-queue://{{accountName}}/{{queueName}}?accessKey=RAW({{accessKey}})&credentialType={{credentialType}}&createQueue={{?createQueue}}&visibilityTimeout={{?visibilityTimeout}}"

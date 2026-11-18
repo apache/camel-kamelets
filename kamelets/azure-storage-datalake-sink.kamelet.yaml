@@ -40,12 +40,9 @@ spec:
 
       Output: the body afterwards is `true`.
 
-      Good to know: by default it logs in as an app registration, with `clientId`, `clientSecret` and `tenantId`, so that app needs a role on the account that allows writing, such as Storage Blob Data Contributor.
+      Good to know: the file is written at the top of the file system, or in `directoryName`. By default it logs in as an app registration, with `clientId`, `clientSecret` and `tenantId`, so that app needs a role on the account that allows writing, such as Storage Blob Data Contributor. It can log in with an account key (`accountKey`) or a SAS token (`sasSignature`) instead.
     required:
       - accountName
-      - clientId
-      - clientSecret
-      - tenantId
       - fileSystemName
     type: object
     properties:
@@ -58,21 +55,21 @@ spec:
         example: mydatalake
       clientId:
         title: Client ID
-        description: The application (client) ID of an app registration (service principal) in Microsoft Entra ID that has access to the account, from the Overview page of the app registration in the Azure portal. Used when `credentialType` is `CLIENT_SECRET`, the default.
+        description: The application (client) ID of an app registration (service principal) in Microsoft Entra ID that has access to the account, from the Overview page of the app registration in the Azure portal. Required when `credentialType` is `CLIENT_SECRET`, the default.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       clientSecret:
         title: Client Secret
-        description: "A client secret of the app registration, from the Azure portal: the app registration, then Certificates & secrets. Used when `credentialType` is `CLIENT_SECRET`, the default."
+        description: "A client secret of the app registration, from the Azure portal: the app registration, then Certificates & secrets. Required when `credentialType` is `CLIENT_SECRET`, the default."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       tenantId:
         title: Tenant ID
-        description: The directory (tenant) ID of the app registration, from its Overview page in the Azure portal. Used when `credentialType` is `CLIENT_SECRET`, the default.
+        description: The directory (tenant) ID of the app registration, from its Overview page in the Azure portal. Required when `credentialType` is `CLIENT_SECRET`, the default.
         type: string
         format: password
         x-descriptors:
@@ -90,6 +87,26 @@ spec:
         type: string
         default: "CLIENT_SECRET"
         enum: ["CLIENT_SECRET", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY", "AZURE_SAS", "SERVICE_CLIENT_INSTANCE"]
+      accountKey:
+        title: Account Key
+        description: "An access key of the storage account, from the Azure portal: the storage account, then Security + networking, then Access keys. Used when `credentialType` is `SHARED_KEY_CREDENTIAL`."
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      sasSignature:
+        title: SAS Token
+        description: "A shared access signature (SAS) token that gives access to the account or the file system, such as `sv=2022-11-02&ss=b&srt=co&sp=rwc&se=2026-12-31T00:00:00Z&sig=...`, without a leading `?`. Create it in the Azure portal under Shared access signature of the storage account, or under Shared access tokens of the container. It must allow creating and writing. Used when `credentialType` is `AZURE_SAS`."
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      directoryName:
+        title: Directory Name
+        description: The directory of the file system to write the files to, such as `exports/2026`, without a `/` at the start or the end. The name of each file is put after it, so the `file` header `sales.csv` is written as `exports/2026/sales.csv`, and `2026/q1.csv` as `exports/2026/2026/q1.csv`. When it is not set, the files are written at the top of the file system.
+        type: string
+        example: exports/2026
+        pattern: "^[^/'$?#]([^'$?#]*[^/'$?#])?$"
   dataTypes:
     in:
       headers:
@@ -135,13 +152,26 @@ spec:
                     expression:
                       simple:
                         expression: "${exchangeId}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{?directoryName}}' != ''"
+                steps:
+                  - setHeader:
+                      name: CamelAzureStorageDataLakeFileName
+                      expression:
+                        simple:
+                          expression: "{{?directoryName}}/${header[CamelAzureStorageDataLakeFileName]}"
         - to:
             uri: azure-storage-datalake
             parameters:
               accountName: "{{accountName}}"
               fileSystemName: "{{fileSystemName}}"
-              clientId: "{{clientId}}"
-              clientSecret: "RAW({{clientSecret}})"
+              clientId: "{{?clientId}}"
+              clientSecret: "RAW({{?clientSecret}})"
               credentialType: "{{credentialType}}"
               operation: upload
-              tenantId: "{{tenantId}}"
+              tenantId: "{{?tenantId}}"
+              accountKey: "RAW({{?accountKey}})"
+              sasSignature: "RAW({{?sasSignature}})"

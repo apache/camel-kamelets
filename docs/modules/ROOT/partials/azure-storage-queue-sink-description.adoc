@@ -25,3 +25,28 @@ For more information, see the https://learn.microsoft.com/en-us/java/api/overvie
 === Optional Headers
 
 In the header, you can set the `expiration` / `ce-expiration` property to determine how long an event remains in the Azure Storage queue. Use `PnDTnHnMn.nS.` format. For example, `PT20.345S` parses as 20.345 seconds and `P2D` parses as 2 days. A plain number, such as `600`, fails the message. If you do not set the property in the header, the message expires after 7 days.
+
+=== Example with a Queue Created on First Use and a Delayed Message
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: "reminder"
+        period: 60000
+      steps:
+        - to:
+            uri: "kamelet:azure-storage-queue-sink"
+            parameters:
+              accountName: "mystorageaccount"
+              accessKey: "the-access-key"
+              queueName: "reminders"
+              createQueue: true
+              visibilityTimeout: "PT10M"
+----
+
+The `reminders` queue is created if it does not exist yet. Each message is hidden for 10 minutes after it is added, so a
+reader of the queue receives it 10 minutes later. **visibilityTimeout** is an ISO-8601 duration of at most 7 days, and
+must be shorter than the time the message stays in the queue (`expiration`, 7 days by default), or the message fails.

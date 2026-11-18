@@ -1,0 +1,39 @@
+== Azure Storage Blob Data Lake Source Kamelet Description
+
+=== Authentication methods
+
+In this Kamelet, you can use these Azure authentication methods:
+
+- Client secret: `CLIENT_SECRET` (default), with **clientId**, **clientSecret** and **tenantId**
+- Shared key credentials: `SHARED_KEY_CREDENTIAL`, with **accountKey**
+- Azure SAS: `AZURE_SAS`, with **sasSignature**
+- Azure Identity mechanism: `AZURE_IDENTITY`
+- Service client instance: `SERVICE_CLIENT_INSTANCE`
+
+For more information, see the https://learn.microsoft.com/en-us/java/api/overview/azure/identity-readme[Azure Identity documentation]
+
+=== Example with a Directory and a File Name Pattern
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:azure-storage-datalake-source"
+      parameters:
+        accountName: "mydatalake"
+        fileSystemName: "raw-data"
+        credentialType: "SHARED_KEY_CREDENTIAL"
+        accountKey: "the-account-key"
+        directoryName: "exports"
+        recursive: true
+        regex: ".*\\.csv"
+        delay: 60000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Every minute, all the CSV files in the `exports` directory and the directories below it are read, such as
+`exports/a.csv` and `exports/2026/c.csv`. **regex** must match the whole path of the file from the top of the file
+system. The files are not deleted or moved, so they are read again at every poll. To read one file only, give its path
+in **fileName**.
