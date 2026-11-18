@@ -35,11 +35,11 @@ spec:
 
       Use it to send notifications, alerts or reports by email, for example tell a team when an order fails or send a daily summary.
 
-      Input: the body is the text of the email. With a `Content-Type` header of `text/html`, the email is sent as HTML. The `ce-subject`, `ce-from`, `ce-to` and `ce-cc` headers set the subject, the sender, the recipients and the copy recipients of one email, in place of the options; several addresses are separated by commas. Other mail headers on the message, such as `To` or `Bcc`, are removed and not used.
+      Input: the body is the text of the email. It is sent as the type in `contentType`; when that is not set, as the type in the `Content-Type` header, such as `text/html` for an HTML email, and otherwise as plain text. The `ce-subject`, `ce-from`, `ce-to` and `ce-cc` headers set the subject, the sender, the recipients and the copy recipients of one email, each in place of its option; several addresses are separated by commas. Other mail headers on the message, such as `To`, `Bcc` or `Reply-To`, are removed and not used, so the blind copy recipients and the reply address come only from the `bcc` and `replyTo` options.
 
       Output: the message is unchanged. The `CamelMailMessageId` header holds the ID of the email that was sent.
 
-      Good to know: each email needs a sender, recipients and a subject, from the options or from the `ce-from`, `ce-to` and `ce-subject` headers. The default protocol, `smtps`, connects with TLS from the start, usually on port 465, and checks the certificate of the server. For a server that uses STARTTLS, usually on port 587, set `protocol` to `smtp` and `startTls` to true: the connection is then encrypted before the login, the certificate and the host name of the server are checked, and sending fails when the server does not offer STARTTLS. With `smtp` alone, the connection, the password and the emails are not encrypted.
+      Good to know: each email needs a sender, recipients and a subject, from the options or from the `ce-from`, `ce-to` and `ce-subject` headers. The default protocol, `smtps`, connects with TLS from the start, usually on port 465, and checks the certificate of the server. For a server that uses STARTTLS, usually on port 587, set `protocol` to `smtp` and `startTls` to true: the connection is then encrypted before the login, the certificate and the host name of the server are checked, and sending fails when the server does not offer STARTTLS. With `smtp` alone, the connection, the password and the emails are not encrypted. The certificate is checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword`, and `camel.component.smtps.useGlobalSslContextParameters=true` for `smtps` or `camel.component.smtp.useGlobalSslContextParameters=true` for `smtp` with `startTls`: that trust store then replaces the one of Java for every connection of the application with that protocol.
     required:
       - connectionHost
       - username
@@ -94,6 +94,28 @@ spec:
         example: Order failed
         title: Subject
         type: string
+      cc:
+        title: Cc
+        description: The copy recipients of the emails; several addresses are separated by commas. The `ce-cc` header replaces it for one message.
+        example: manager@example.com
+        type: string
+      bcc:
+        title: Bcc
+        description: The blind copy recipients of the emails; several addresses are separated by commas. They receive each email, and the other recipients do not see them. Messages cannot change them.
+        example: archive@example.com
+        type: string
+      replyTo:
+        title: Reply To
+        description: The address that replies to the emails go to, in place of the sender; several addresses are separated by commas. Messages cannot change it.
+        example: support@example.com
+        type: string
+        pattern: "^[^\\r\\n]*@[^\\r\\n]*$"
+      contentType:
+        title: Content Type
+        description: The type of the text in the body of every email, such as `text/html` to send HTML emails. When it is set, the `Content-Type` header of the message is not used. When it is not set, that header sets the type, and without it the emails are sent as plain text (`text/plain`). Some sources set that header, such as `timer-source`, which sets `text/plain` by default.
+        example: text/html
+        type: string
+        pattern: "^[A-Za-z0-9.+-]+/[A-Za-z0-9.+-]+(\\s*;.*)?$"
   dataTypes:
     in:
       headers:
@@ -111,11 +133,11 @@ spec:
           type: string
         ce-cc:
           title: Cc
-          description: The copy recipients of the email, separated by commas.
+          description: The copy recipients of the email, separated by commas, in place of the `cc` option.
           type: string
         Content-Type:
           title: Content Type
-          description: The type of the text in the body, such as `text/html` to send an HTML email.
+          description: The type of the text in the body, such as `text/html` to send an HTML email. Not used when the `contentType` option is set.
           type: string
     out:
       headers:
@@ -167,6 +189,10 @@ spec:
                       expression:
                         simple:
                           expression: "${header[ce-from]}"
+        # The mail component takes the recipients either all from the To,
+        # Cc and Bcc headers or, when there is none, all from the to, cc and
+        # bcc options. Put the options into the headers, so that a ce-to or
+        # ce-cc header replaces only its own option, and bcc is always kept.
         - choice:
             when:
               - expression:
@@ -178,6 +204,15 @@ spec:
                       expression:
                         simple:
                           expression: "${header[ce-to]}"
+              - expression:
+                  constant:
+                    expression: "{{?to}}"
+                steps:
+                  - setHeader:
+                      name: To
+                      expression:
+                        constant:
+                          expression: "{{?to}}"
         - choice:
             when:
               - expression:
@@ -189,10 +224,43 @@ spec:
                       expression:
                         simple:
                           expression: "${header[ce-cc]}"
+              - expression:
+                  constant:
+                    expression: "{{?cc}}"
+                steps:
+                  - setHeader:
+                      name: Cc
+                      expression:
+                        constant:
+                          expression: "{{?cc}}"
+        - choice:
+            when:
+              - expression:
+                  constant:
+                    expression: "{{?bcc}}"
+                steps:
+                  - setHeader:
+                      name: Bcc
+                      expression:
+                        constant:
+                          expression: "{{?bcc}}"
+        # A contentType option is the type of every email: a Content-Type
+        # header from an earlier step, such as the text/plain one of
+        # timer-source, must not replace it.
+        - choice:
+            when:
+              - expression:
+                  constant:
+                    expression: "{{?contentType}}"
+                steps:
+                  - removeHeader:
+                      name: Content-Type
+                  - removeHeader:
+                      name: CamelMailContentType
         - removeHeaders:
             pattern: ce-*
         - to:
-            uri: "{{protocol}}:{{connectionHost}}:{{connectionPort}}?subject={{?subject}}&from={{?from}}&to={{?to}}&username={{username}}&password={{password}}&useHeaderSubject=true&useHeaderFrom=true&useHeaderRecipients=true&mail.smtp.starttls.enable={{?startTls}}&mail.smtp.starttls.required={{?startTls}}"
+            uri: "{{protocol}}:{{connectionHost}}:{{connectionPort}}?subject={{?subject}}&from={{?from}}&to={{?to}}&username={{username}}&password={{password}}&useHeaderSubject=true&useHeaderFrom=true&useHeaderRecipients=true&mail.smtp.starttls.enable={{?startTls}}&mail.smtp.starttls.required={{?startTls}}&replyTo=RAW({{?replyTo}})&contentType=RAW({{?contentType}})"
             # camel-mail ignores the Subject / From / To / Cc headers unless
             # these are enabled; without them the ce-* mappings above are
             # dead code. Reply-To stays disabled - it is not part of the

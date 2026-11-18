@@ -2,7 +2,7 @@
 
 === Authentication
 
-This Kamelet requires username and password authentication to connect to an IMAP mail server. It always connects with TLS (IMAPS) and checks the certificate of the server.
+This Kamelet requires username and password authentication to connect to an IMAP mail server. It always connects with TLS (IMAPS) and checks the certificate and the host name of the server.
 
 === Configuration
 
@@ -14,8 +14,29 @@ The Mail IMAP Source Kamelet supports the following configurations:
 - **Password** (`password`): Email account password (required)
 - **Fetch Size** (`fetchSize`): The most emails to read at each check (default: 10, -1 for no limit)
 - **Delay** (`delay`): Milliseconds between two checks of the mailbox (default: 60000)
+- **Folder Name** (`folderName`): The folder to read (default: `INBOX`)
+- **Unread Only** (`unseen`): Set to `false` to read the emails that are already read too
+- **Delete** (`delete`), **Move To** (`moveTo`), **Copy To** (`copyTo`): What to do with each email once it is processed
+- **Peek** (`peek`): Keeps an email unread while it is processed (on by default)
+- **Skip Failed Email** (`skipFailedMessage`): Skips an email that cannot be read at all
+- **Search From**, **Search To**, **Search Subject**, **Search Subject or Body** (`searchFrom`, `searchTo`, `searchSubject`, `searchSubjectOrBody`): Read only the emails that match
 
-The Kamelet reads only the unread emails of the `INBOX` folder, and marks each one as read. Emails are not deleted.
+By default, the Kamelet reads only the unread emails of the `INBOX` folder, and marks each one as read. Emails are not deleted.
+
+=== What Happens to an Email
+
+[width="100%",cols="2,3,3",options="header"]
+|===
+| Options | Once the email is processed | When processing the email fails
+| none | Stays in the folder, marked as read. | Stays unread, and is read again at the next check.
+| `delete: true` | Deleted from the folder. | Stays unread, and is read again at the next check.
+| `moveTo: Processed` | Moved to `Processed`, marked as read. The folder is created when it does not exist. | Stays unread, and is read again at the next check.
+| `copyTo: Archive` | Stays in the folder, marked as read. An unread copy is put in `Archive`. | Stays unread, not copied, and is read again at the next check.
+| `peek: false` | As above. | Marked as read, and not read again.
+| `unseen: false` without `delete` or `moveTo` | Stays in the folder, and is read again at every check. | Read again at every check.
+|===
+
+An email that cannot be read at all, such as one with a broken format, fails the whole check of the mailbox, so no email is read until it is removed. With `skipFailedMessage: true`, it is skipped and stays unread, and the other emails are read.
 
 === Output Format
 
@@ -55,6 +76,45 @@ The body is the text of the email; for an email with several parts, it is the te
         - to:
             uri: "kamelet:log-sink"
 ----
+
+=== Example: Invoices from a Supplier
+
+Read the emails from one sender with `invoice` in the subject, from a subfolder, and move each one to `Processed` once it is processed:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mail-imap-source"
+      parameters:
+        connectionHost: "mail.example.com"
+        connectionPort: "993"
+        username: "accounts@example.com"
+        password: "mailpass"
+        folderName: "INBOX/Suppliers"
+        searchFrom: "billing@supplier.example"
+        searchSubject: "invoice"
+        moveTo: "Processed"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Every search option that is set must match. The mail server does the search, without telling upper and lower case apart. Some servers match only a whole address in `searchFrom` and `searchTo`, so give the whole address.
+
+=== Trusting a Private Certificate Authority
+
+The certificate of the server is checked against the certificate authorities that Java trusts. For a server with a certificate from a private or self-signed authority, put that authority in a trust store file (JKS or PKCS12), and set these application properties with Camel JBang or Camel Main:
+
+[source,properties]
+----
+camel.ssl.enabled=true
+camel.ssl.trustStore=file:/etc/mail/truststore.p12
+camel.ssl.trustStorePassword=changeit
+camel.component.imaps.useGlobalSslContextParameters=true
+----
+
+That trust store then replaces the one of Java for every IMAPS connection of the application. The host name of the server is still checked.
 
 === Security Considerations
 

@@ -17,6 +17,10 @@ This Kamelet sends emails through SMTP servers with configurable authentication 
 - **From**: Sender email address
 - **To**: Recipients, separated by commas
 - **Subject**: Email subject line
+- **Cc**: Copy recipients, separated by commas
+- **Bcc**: Blind copy recipients, separated by commas
+- **Reply To**: The address that replies go to, in place of the sender
+- **Content Type**: The type of the text in the body, such as `text/html` (default: plain text)
 
 **From**, **To** and **Subject** can be left empty when every message carries the matching `ce-from`, `ce-to` and `ce-subject` header.
 
@@ -45,10 +49,43 @@ startTls: true
 The Kamelet supports various email headers through CloudEvents:
 - `ce-subject`: Override email subject
 - `ce-from`: Override sender address
-- `ce-to`: Override recipient address
-- `ce-cc`: Add CC recipients
+- `ce-to`: Override the `to` recipients
+- `ce-cc`: Override the `cc` recipients
 
-Other mail headers on the message, such as `To`, `Cc` or `Bcc`, are removed. A `Content-Type` header of `text/html` sends the body as an HTML email.
+Each header replaces only its own option: with a `ce-to` header, the `cc` and `bcc` recipients of the options still receive the email. Other mail headers on the message, such as `To`, `Cc`, `Bcc` or `Reply-To`, are removed, so the blind copy recipients and the reply address come only from the options. A `Content-Type` header, such as `text/html`, sets the type of one email when the `contentType` option is not set; when it is set, the header is not used.
+
+For example, to send HTML emails to a team, with a copy to a manager, a blind copy to an archive mailbox, and replies to the support address:
+
+[source,yaml]
+----
+connectionHost: smtp.example.com
+username: alerts@example.com
+password: secret
+from: alerts@example.com
+to: team@example.com
+cc: manager@example.com
+bcc: archive@example.com
+replyTo: support@example.com
+contentType: text/html
+subject: Order failed
+----
+
+=== Trusting a Private Certificate Authority
+
+The certificate of the server is checked against the certificate authorities that Java trusts. For a server with a certificate from a private or self-signed authority, put that authority in a trust store file (JKS or PKCS12), and set these application properties with Camel JBang or Camel Main:
+
+[source,properties]
+----
+camel.ssl.enabled=true
+camel.ssl.trustStore=file:/etc/mail/truststore.p12
+camel.ssl.trustStorePassword=changeit
+# with protocol smtps
+camel.component.smtps.useGlobalSslContextParameters=true
+# with protocol smtp and startTls true
+camel.component.smtp.useGlobalSslContextParameters=true
+----
+
+That trust store then replaces the one of Java for every connection of the application with that protocol. The host name of the server is still checked.
 
 === Usage
 
