@@ -10,12 +10,50 @@ poll. Set `useView` to true to poll a MapReduce view instead, selected with
 
 === Writing the Statement
 
-The statement runs in the bucket scope, so the keyspace is the collection rather than the
-bucket name - use `_default` for the default collection.
+The statement runs in the scope set by `scope`, or in the `_default` scope when it is not set, so the
+keyspace is a collection of that scope rather than the bucket name - use `_default` for the default collection.
 
 It must also alias the document id as `__id`, because the consumer skips any row without
 that field. A query that omits it produces a source that polls without emitting anything:
 
 ----
 SELECT META().id AS __id, * FROM _default
+----
+
+=== Example with a Scope and a Collection
+
+Without `statement`, set `scope` and `collection` to read all the documents of that collection. Each row is
+`{"<collection>":<the document>,"__id":"<document ID>"}`. With `processedStrategy` set to `delete`, each document is
+deleted from the collection once its message has been processed, so it is sent only once. A message that fails keeps
+its document, and the next poll sends it again.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:couchbase-source"
+      parameters:
+        protocol: "http"
+        couchbaseHostname: "couchbase.example.com"
+        bucket: "shop"
+        scope: "sales"
+        collection: "inbox"
+        processedStrategy: "delete"
+        delay: 5000
+        username: "{{couchbase.username}}"
+        password: "{{couchbase.password}}"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+A `statement` runs in `scope` too, so it names the collection alone. With `fullDocument` true, or `processedStrategy`
+`delete`, also set `collection` to the collection the statement reads: the documents are read, or deleted, in
+`collection`, the default collection when it is not set.
+
+[source,yaml,subs='+attributes,macros']
+----
+scope: "sales"
+collection: "orders"
+statement: "SELECT META().id AS __id, o.* FROM orders o WHERE o.status = 'new'"
 ----

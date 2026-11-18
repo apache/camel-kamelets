@@ -31,15 +31,15 @@ spec:
   definition:
     title: "Couchbase Sink"
     description: |-
-      Stores each message as a document in a Couchbase bucket, under a document ID that the Kamelet counts up or that a header gives.
+      Stores each message as a document in a Couchbase bucket, or deletes a document, under a document ID that the Kamelet counts up or that a header gives.
 
-      Use it to save events, orders or other records as JSON documents in Couchbase, for example each message that arrives on a Kafka topic. To read documents, use `couchbase-source`.
+      Use it to save events, orders or other records as JSON documents in Couchbase, for example each message that arrives on a Kafka topic, or to delete the documents that messages name. To read documents, use `couchbase-source`.
 
-      Input: the body is the document. JSON text is stored as a JSON document; other text is stored as a JSON string. With `autoStartId` true, the default, the documents get the IDs `1`, `2`, `3` and so on, counted from `startingId`, and the `CamelCouchbaseId` header is ignored. With `autoStartId` false, the `CamelCouchbaseId` header is the ID, and it is required.
+      Input: the body is the document. JSON text is stored as a JSON document; other text is stored as a JSON string. With `autoStartId` true, the default, the documents get the IDs `1`, `2`, `3` and so on, counted from `startingId`, and the `CamelCouchbaseId` header is ignored. With `autoStartId` false, the `CamelCouchbaseId` header is the ID; a message without it uses `key`, and fails when `key` is not set either. With `operation` `CCB_DEL`, the body is not used.
 
-      Output: the body afterwards is `true`.
+      Output: the body afterwards is `true`. After a delete, it is the result of Couchbase as text, such as `MutationResult{cas=0x18e92f09b4bf0000, ...}`.
 
-      Good to know: a document that already has the ID is replaced. The count starts again at `startingId` each time the integration starts, so with `autoStartId` true a restart overwrites the documents stored before. Set `autoStartId` to false and give each message its own ID to avoid that. The connection is not encrypted, also with `protocol` set to `https`.
+      Good to know: a document that already has the ID is replaced. The count starts again at `startingId` each time the integration starts, so with `autoStartId` true a restart overwrites the documents stored before. Set `autoStartId` to false and give each message its own ID to avoid that. The documents go to the default collection of the bucket unless `collection` is set, in `scope`; a collection that does not exist makes each message wait and fail with `AmbiguousTimeoutException` (10 seconds by default, see `retryAttempts`). The connection is not encrypted, also with `protocol` set to `https`.
     required:
       - protocol
       - couchbaseHostname
@@ -63,7 +63,7 @@ spec:
         default: 8091
       bucket:
         title: Bucket
-        description: The name of the bucket to store the documents in, in its default collection.
+        description: The name of the bucket to store the documents in. They go to its default collection, unless `collection` is set.
         type: string
         example: orders
       username:
@@ -91,15 +91,69 @@ spec:
         example: couchbase://couchbase.example.com:11210
       autoStartId:
         title: Automatic IDs
-        description: If true, the documents get the IDs `startingId`, `startingId` + 1, and so on, and the `CamelCouchbaseId` header is ignored. If false, each message must carry its document ID in the `CamelCouchbaseId` header.
+        description: If true, the documents get the IDs `startingId`, `startingId` + 1, and so on, and the `CamelCouchbaseId` header and `key` are ignored. If false, each message must carry its document ID in the `CamelCouchbaseId` header, or `key` must be set.
         type: boolean
         default: true
+      key:
+        title: Document ID
+        description: The document ID to use for a message without the `CamelCouchbaseId` header, when `autoStartId` is false. Every such message then writes, or deletes, the same document. When it is not set, a message without the header fails with `No document id`.
+        type: string
+        pattern: "^[^\\r\\n]{1,250}$"
+        example: latest-status
+      scope:
+        title: Scope
+        description: The scope of the bucket that holds `collection`. It is only used together with `collection`. When it is not set, the `_default` scope is used.
+        type: string
+        pattern: "^[A-Za-z0-9_%-]{1,251}$"
+        example: sales
+      collection:
+        title: Collection
+        description: The collection to store the documents in, or delete them from, in `scope`. The collection must exist; if it does not, each message waits and then fails with `AmbiguousTimeoutException`. When it is not set, the default collection of the bucket is used, and `scope` is ignored.
+        type: string
+        pattern: "^[A-Za-z0-9_%-]{1,251}$"
+        example: orders
+      operation:
+        title: Operation
+        description: "What to do with each message: `CCB_PUT` stores the body as the document, replacing a document with the same ID, and `CCB_DEL` deletes the document with the ID. Deleting a document that does not exist fails the message with `Document with the given id not found`. To delete, also set `autoStartId` to false, or the Kamelet deletes the documents `startingId`, `startingId` + 1, and so on. When it is not set, `CCB_PUT` is used."
+        type: string
+        enum: ["CCB_PUT", "CCB_DEL"]
+        example: CCB_DEL
+      persistTo:
+        title: Persist To
+        description: "On how many nodes a stored document must be saved to disk before the message is done: 0 (not waited for), 1 (the active node), or 2, 3 or 4 (the active node and replicas). A number higher than the bucket can give, such as 2 for a bucket without replicas, fails every message with `Not enough replicas configured on the bucket`, but only after the document has been stored. Not used with `operation` `CCB_DEL`. When it is not set, 0 is used."
+        type: integer
+        enum: [0, 1, 2, 3, 4]
+      replicateTo:
+        title: Replicate To
+        description: "To how many replicas a stored document must be copied before the message is done, from 0 to 3. The bucket must be set up with that many replicas, on as many other nodes. Otherwise every message fails, such as with `Not enough replicas configured on the bucket`, but only after the document has been stored. Not used with `operation` `CCB_DEL`. When it is not set, 0 is used."
+        type: integer
+        enum: [0, 1, 2, 3]
+      connectTimeout:
+        title: Connect Timeout
+        description: How long one attempt to connect to a node of the cluster may take, in milliseconds, before the Kamelet tries again. A message that waits for the connection still fails after the time that `retryAttempts`, `retryPause` and `operationTimeout` give. When it is not set, 30000 (30 seconds) is used.
+        type: integer
+        example: 10000
+      retryAttempts:
+        title: Retry Attempts
+        description: "Together with `retryPause`, how long a write or delete may take: it fails after `retryAttempts` × `retryPause` milliseconds, or after `operationTimeout` if that is longer. Within that time, a write or delete that fails for a reason that can pass, such as a collection that is not known yet or a bucket that is still opening, is tried again every `retryPause` milliseconds. When it is not set, 2 is used, which with the default `retryPause` gives 10 seconds."
+        type: integer
+        example: 3
+      retryPause:
+        title: Retry Pause
+        description: How long to wait before trying a write or delete again, in milliseconds. It also sets how long a write or delete may take; see `retryAttempts`. When it is not set, 5000 (5 seconds) is used.
+        type: integer
+        example: 1000
+      operationTimeout:
+        title: Operation Timeout
+        description: How long a write or delete may take, in milliseconds, when it is longer than `retryAttempts` × `retryPause`. When it is not set, 2500 is used, so the time from `retryAttempts` and `retryPause`, 10 seconds by default, applies.
+        type: integer
+        example: 30000
   dataTypes:
     in:
       headers:
         CamelCouchbaseId:
           title: Document ID
-          description: The ID of the document to store. Required when `autoStartId` is false; ignored when it is true.
+          description: The ID of the document to store or delete. Used when `autoStartId` is false, and then required unless `key` is set; ignored when it is true.
           type: string
   dependencies:
     - "camel:couchbase"
@@ -120,3 +174,13 @@ spec:
               password: "RAW({{password}})"
               startingIdForInsertsFrom: "{{startingId}}"
               username: "RAW({{username}})"
+              key: "RAW({{?key}})"
+              scope: "RAW({{?scope}})"
+              collection: "RAW({{?collection}})"
+              operation: "{{?operation}}"
+              persistTo: "{{?persistTo}}"
+              replicateTo: "{{?replicateTo}}"
+              connectTimeout: "{{?connectTimeout}}"
+              producerRetryAttempts: "{{?retryAttempts}}"
+              producerRetryPause: "{{?retryPause}}"
+              queryTimeout: "{{?operationTimeout}}"

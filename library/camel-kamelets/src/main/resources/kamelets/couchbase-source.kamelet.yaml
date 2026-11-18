@@ -35,9 +35,9 @@ spec:
 
       Use it to pass the documents of a Couchbase bucket on to another system, for example to copy them to a search index or a data warehouse. To store documents, use `couchbase-sink`.
 
-      Output: the body is one result row as JSON text. Without `statement`, the query reads all the documents of the default collection, and a row is `{"<bucket>":<the document>,"__id":"<document ID>"}`. The `CamelCouchbaseId` header holds the ID of the document.
+      Output: the body is one result row as JSON text. Without `statement`, the query reads all the documents of the default collection, and a row is `{"<bucket>":<the document>,"__id":"<document ID>"}`. With `collection` set, it reads that collection of `scope`, and a row is `{"<collection>":<the document>,"__id":"<document ID>"}`. The `CamelCouchbaseId` header holds the ID of the document.
 
-      Good to know: the query runs again every `delay` milliseconds and nothing marks a document as read, so the same documents are sent on every run. A `statement` must name the document ID `__id` (`SELECT META().id AS __id, ...`), or its rows are skipped. With `fullDocument` set to true, the body is an object of the Couchbase SDK instead of JSON text. The connection is not encrypted, also with `protocol` set to `https`.
+      Good to know: the query runs again every `delay` milliseconds and, unless `processedStrategy` is `delete`, nothing marks a document as read, so the same documents are sent on every run. With `delete`, each document is deleted once its message has been processed. A `statement` must name the document ID `__id` (`SELECT META().id AS __id, ...`), or its rows are skipped. With `fullDocument` set to true, the body is an object of the Couchbase SDK instead of JSON text. The connection is not encrypted, also with `protocol` set to `https`.
     required:
       - protocol
       - couchbaseHostname
@@ -61,7 +61,7 @@ spec:
         default: 8091
       bucket:
         title: Bucket
-        description: The name of the bucket to read the documents from.
+        description: The name of the bucket to read the documents from. They are read from its default collection, unless `collection` is set.
         type: string
         example: orders
       username:
@@ -84,7 +84,7 @@ spec:
         example: couchbase://couchbase.example.com:11210
       statement:
         title: SQL++ Statement
-        description: The SQL++ (N1QL) query to run on each poll, instead of reading all documents. It runs in the scope of the bucket, so name the collection, such as `_default`, not the bucket. It must return the document ID as `__id`, or its rows are skipped. Not used when `useView` is true.
+        description: The SQL++ (N1QL) query to run on each poll, instead of reading all documents. It runs in `scope`, the `_default` scope of the bucket when `scope` is not set, so name a collection of that scope, such as `_default` or `orders`, not the bucket. It must return the document ID as `__id`, or its rows are skipped. Not used when `useView` is true.
         type: string
         example: "SELECT META().id AS __id, * FROM _default"
       useView:
@@ -127,6 +127,24 @@ spec:
         description: How long to wait after one poll before the next, in milliseconds.
         type: integer
         default: 500
+      scope:
+        title: Scope
+        description: The scope of the bucket to read from. A `statement` runs in this scope, so a collection named in it is one of this scope. When it is not set, the `_default` scope is used.
+        type: string
+        pattern: "^[A-Za-z0-9_%-]{1,251}$"
+        example: sales
+      collection:
+        title: Collection
+        description: The collection to read from, in `scope`. Without `statement`, the query reads all its documents. With `fullDocument` true or `processedStrategy` `delete`, the documents are read or deleted in this collection, also when a `statement` reads another one. When it is not set, the default collection of the bucket is used.
+        type: string
+        pattern: "^[A-Za-z0-9_%-]{1,251}$"
+        example: orders
+      processedStrategy:
+        title: Processed Strategy
+        description: "What to do with a document once its message has been processed: `none` leaves it, so the next poll sends it again, and `delete` deletes it from `collection`. A message that fails keeps its document, so a later poll sends it again. When it is not set, `none` is used."
+        type: string
+        enum: ["none", "delete"]
+        example: delete
   dataTypes:
     out:
       headers:
@@ -157,6 +175,9 @@ spec:
         useView: "{{useView}}"
         username: "RAW({{username}})"
         viewName: "{{viewName}}"
+        scope: "RAW({{?scope}})"
+        collection: "RAW({{?collection}})"
+        consumerProcessedStrategy: "{{?processedStrategy}}"
       steps:
         - to:
             uri: kamelet:sink
