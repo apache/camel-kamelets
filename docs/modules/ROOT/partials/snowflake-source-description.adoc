@@ -2,7 +2,13 @@
 
 === Authentication methods
 
-This Kamelet connects to Snowflake with the user name and password of a Snowflake user, set in `username` and `password`.
+This Kamelet logs in to Snowflake as the Snowflake user `username`, either with `password` or with a key pair. A Snowflake user of type SERVICE, meant for applications, cannot log in with a password, and Snowflake is phasing out sign-in with a password alone for the other users too, so use a key pair for an integration. When a key is set, the password is not used.
+
+- `privateKey` is the private key file in PEM format, encoded in base64 on a single line, such as the output of `base64 -w0 rsa_key.p8`.
+- `privateKeyFile` is instead the path of that file, such as a Kubernetes Secret mounted as a file. Set one of `privateKey` and `privateKeyFile`, not both.
+- `privateKeyPassphrase` is the passphrase of the key, when it is encrypted.
+
+Snowflake's guide to https://docs.snowflake.com/en/user-guide/key-pair-auth[key-pair authentication] shows how to make the key pair, such as with `openssl genrsa 2048 | openssl pkcs8 -topk8 -inform PEM -out rsa_key.p8 -nocrypt`, and how to set the public key on the user with `ALTER USER ... SET RSA_PUBLIC_KEY`.
 
 === Output format
 
@@ -14,7 +20,7 @@ The Kamelet requires database connection parameters:
 
 - `instanceUrl`: the host name of your Snowflake account, such as `myorg-myaccount.snowflakecomputing.com`
 - `databaseName` (optional): the Snowflake database that holds the tables
-- `username` and `password`: the Snowflake user to log in as
+- `username`: the Snowflake user to log in as, with `password`, or with a key pair in `privateKey` or `privateKeyFile`
 - `query`: the SQL query to run, such as `SELECT * FROM accounts WHERE processed = false`
 - `consumedQuery` (optional): an SQL statement run for each row once it is sent, to mark the row as read or delete it, such as `UPDATE accounts SET processed = true WHERE id = :#id`
 
@@ -31,6 +37,28 @@ The route below logs each account that is not processed yet, and marks it as pro
         instanceUrl: "myorg-myaccount.snowflakecomputing.com"
         username: "dbuser"
         password: "dbpass"
+        databaseName: "SHOP"
+        query: "SELECT * FROM accounts WHERE processed = false"
+        consumedQuery: "UPDATE accounts SET processed = true WHERE id = :#id"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with a Key Pair
+
+The same route, logged in with a key pair. The key file comes from a Kubernetes Secret mounted at `/etc/snowflake`, and the passphrase of the key from a property.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:snowflake-source"
+      parameters:
+        instanceUrl: "myorg-myaccount.snowflakecomputing.com"
+        username: "ORDERS_SERVICE"
+        privateKeyFile: "/etc/snowflake/rsa_key.p8"
+        privateKeyPassphrase: "{{snowflake.key.passphrase}}"
         databaseName: "SHOP"
         query: "SELECT * FROM accounts WHERE processed = false"
         consumedQuery: "UPDATE accounts SET processed = true WHERE id = :#id"

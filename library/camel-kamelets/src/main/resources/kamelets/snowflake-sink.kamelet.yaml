@@ -39,11 +39,10 @@ spec:
 
       Output: the body afterwards is the JSON object as a Map, and the `CamelSqlUpdateCount` header holds the number of rows the statement changed. When `query` is a SELECT, the body is instead a List of the rows found, each a Map, and the `CamelSqlRowCount` header holds their number.
 
-      Good to know: a message fails when its body is not a JSON object (a JSON array or plain text, for example), or when it has no value for a parameter of `query`. The values are sent to the database apart from the SQL text, so the content of a message cannot change the statement. Do not write `?` in `query`, not even in a quoted string: the Kamelet then fails to start.
+      Good to know: a message fails when its body is not a JSON object (a JSON array or plain text, for example), or when it has no value for a parameter of `query`. The values are sent to the database apart from the SQL text, so the content of a message cannot change the statement. Do not write `?` in `query`, not even in a quoted string: the Kamelet then fails to start. Log in with `password`, or with a key pair in `privateKey` or `privateKeyFile`: a Snowflake user of type SERVICE, meant for applications, cannot log in with a password. When a key is set, the password is not used.
     required:
       - instanceUrl
       - username
-      - password
       - query
     type: object
     properties:
@@ -60,7 +59,26 @@ spec:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password of the Snowflake user `username`.
+        description: The password of the Snowflake user `username`. Leave it empty to log in with a key pair instead, set in `privateKey` or `privateKeyFile`; when a key is set, the password is not used. A Snowflake user of type SERVICE cannot log in with a password, and Snowflake is phasing out sign-in with a password alone for the other users too. With neither a password nor a key, every connection fails with `Missing password`.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      privateKey:
+        title: Private Key
+        description: 'The private key to log in with instead of a password: the key file in PEM format, encoded in base64 on a single line, such as the output of `base64 -w0 rsa_key.p8`. The PEM text itself, which starts with `-----BEGIN`, is not accepted. The matching public key must be set on the user with `ALTER USER ... SET RSA_PUBLIC_KEY`. Set this or `privateKeyFile`, not both: with both, every connection fails.'
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      privateKeyFile:
+        title: Private Key File
+        description: 'The path of the private key file to log in with instead of a password, in PEM format, such as `rsa_key.p8` made as the Snowflake guide to key-pair authentication shows. In Kubernetes, mount the Secret that holds the key as a file. The matching public key must be set on the user with `ALTER USER ... SET RSA_PUBLIC_KEY`. A path that does not exist makes every connection fail with `Invalid parameter value null`.'
+        type: string
+        example: /etc/snowflake/rsa_key.p8
+      privateKeyPassphrase:
+        title: Private Key Passphrase
+        description: 'The passphrase of the key in `privateKey` or `privateKeyFile`, when the key is encrypted: its PEM text then starts with `-----BEGIN ENCRYPTED PRIVATE KEY-----`. Without it, or with a wrong one, every connection fails.'
         type: string
         format: password
         x-descriptors:
@@ -106,9 +124,12 @@ spec:
         factoryMethod: createDataSource
         properties:
           user: "{{username}}"
-          password: "{{password}}"
+          password: "{{password:}}"
           url: "jdbc:snowflake://{{instanceUrl}}"
           databaseName: "{{?databaseName}}"
+          properties[private_key_base64]: "{{?privateKey}}"
+          properties[private_key_file]: "{{?privateKeyFile}}"
+          properties[private_key_pwd]: "{{?privateKeyPassphrase}}"
     from:
       uri: kamelet:source
       steps:
