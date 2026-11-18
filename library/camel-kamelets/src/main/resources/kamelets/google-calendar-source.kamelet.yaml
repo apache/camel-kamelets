@@ -37,14 +37,10 @@ spec:
 
       Output: the body is the event as JSON text, with the fields of the Google Calendar API such as `id`, `summary`, `start` and `attendees`. The `CamelGoogleCalendarEventId` header gives the ID of the event.
 
-      Good to know: by default it only receives the events that have not ended yet at the time of the poll (`consumeFromNow`). With `syncFlow` set to true, each poll after the first asks only for the events that are new or changed since the previous one. It logs in to Google with OAuth: an OAuth client of a Google Cloud project, and an access token and a refresh token of a Google account that may read the calendar.
+      Good to know: by default it only receives the events that have not ended yet at the time of the poll (`consumeFromNow`). Each poll asks for one page of up to `maxResults` events (10 by default), the events that changed least recently first, so the same events can come again on every poll. With `considerLastUpdate` set to true, each poll reads all the pages, and after the first poll only the events that changed since the last one received. With `syncFlow` set to true, each poll after the first asks only for the events that are new or changed since the previous one; do not combine it with `query` or `considerLastUpdate`. It logs in to Google either with OAuth (an OAuth client of a Google Cloud project, and an access token and a refresh token of a Google account that may read the calendar), or with the key of a service account in `serviceAccountKey`, which reads the calendars shared with it, or the calendar of the user in `delegate`.
     required:
       - index
       - calendarId
-      - clientId
-      - accessToken
-      - refreshToken
-      - clientSecret
       - applicationName
     type: object
     properties:
@@ -60,32 +56,53 @@ spec:
         example: primary
       clientId:
         title: Client ID
-        description: The client ID of an OAuth client, created in the Google Cloud console under APIs & Services > Credentials, in a project where the Google Calendar API is enabled.
+        description: The client ID of an OAuth client, created in the Google Cloud console under APIs & Services > Credentials, in a project where the Google Calendar API is enabled. Not needed when logging in with `serviceAccountKey`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       clientSecret:
         title: Client Secret
-        description: The client secret of the OAuth client of `clientId`.
+        description: The client secret of the OAuth client of `clientId`. Not needed when logging in with `serviceAccountKey`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       accessToken:
         title: Access Token
-        description: An OAuth 2 access token of the Google account, with access to Google Calendar. It expires after about an hour; the Kamelet then gets a new one with `refreshToken`.
+        description: An OAuth 2 access token of the Google account, with access to Google Calendar. It expires after about an hour; the Kamelet then gets a new one with `refreshToken`. Not needed when logging in with `serviceAccountKey`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       refreshToken:
         title: Refresh Token
-        description: An OAuth 2 refresh token of the Google account, which the Kamelet uses to get a new access token when the current one expires. You get it together with the access token, for example from the Google OAuth 2.0 Playground.
+        description: An OAuth 2 refresh token of the Google account, which the Kamelet uses to get a new access token when the current one expires. You get it together with the access token, for example from the Google OAuth 2.0 Playground. Not needed when logging in with `serviceAccountKey`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      serviceAccountKey:
+        title: Service Account Key
+        description: "The JSON key of a Google service account, to log in with instead of OAuth: `file:` followed by the path of the key file, `classpath:` followed by a resource of the application, or `base64:` followed by the Base64 encoding of the key. Create the key in the Google Cloud console under IAM & Admin > Service Accounts > Keys. The service account reads the calendars that are shared with its email address, or the calendar of the user in `delegate`. Only used when `clientId` and `clientSecret` are not set."
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+        pattern: "^(file|classpath|base64):.+"
+        example: file:/etc/google/service-account.json
+      delegate:
+        title: Delegate User
+        description: The email address of a user of your Google Workspace, whose calendar the service account of `serviceAccountKey` reads on their behalf. A Workspace administrator must first allow the client ID of the service account, with the scope of `scopes`, under Security > Access and data control > API controls > Domain-wide delegation. Only used with `serviceAccountKey`.
+        type: string
+        pattern: "^[^@\\s]+@[^@\\s]+$"
+        example: alice@example.com
+      scopes:
+        title: Scopes
+        description: The permissions to ask Google for when logging in with `serviceAccountKey`, as URLs separated by commas, such as `https://www.googleapis.com/auth/calendar.readonly` to only read. When it is not set, `https://www.googleapis.com/auth/calendar` is used. Only used with `serviceAccountKey`.
+        type: string
+        pattern: "^https://[^,\\s]+(,https://[^,\\s]+)*$"
+        example: https://www.googleapis.com/auth/calendar.readonly
       delay:
         title: Delay
         description: How long to wait between two polls of the calendar, in milliseconds. For example, 60000 is one minute.
@@ -107,6 +124,21 @@ spec:
         description: If true, only the events that have not ended yet at the time of each poll are read. If false, past events are read too.
         type: boolean
         default: true
+      maxResults:
+        title: Max Results
+        description: The most events to ask Google for at once, in one page. Each poll reads one page, or all the pages when `considerLastUpdate` is true. When it is not set, 10 is used.
+        type: integer
+        example: 50
+      query:
+        title: Search Text
+        description: Only read the events that contain this text, as the search box of Google Calendar finds them, for example in their title, description, location or attendees. Do not combine it with `syncFlow`.
+        type: string
+        pattern: "^[^\\x00-\\x1f]+$"
+        example: standup
+      considerLastUpdate:
+        title: Only Changed Events
+        description: If true, each poll reads all the pages, and each poll after the first asks only for the events that changed since the last one received, so an event comes again only when it changes. When it is not set, it is false. Do not combine it with `syncFlow`.
+        type: boolean
   dataTypes:
     out:
       default: json
@@ -151,7 +183,7 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "google-calendar-stream://{{index}}?accessToken=RAW({{accessToken}})&applicationName={{applicationName}}&calendarId={{calendarId}}&clientId=RAW({{clientId}})&clientSecret=RAW({{clientSecret}})&consumeFromNow={{consumeFromNow}}&delay={{delay}}&refreshToken=RAW({{refreshToken}})&syncFlow={{syncFlow}}"
+      uri: "google-calendar-stream://{{index}}?accessToken=RAW({{?accessToken}})&applicationName={{applicationName}}&calendarId={{calendarId}}&clientId=RAW({{?clientId}})&clientSecret=RAW({{?clientSecret}})&considerLastUpdate={{?considerLastUpdate}}&consumeFromNow={{consumeFromNow}}&delay={{delay}}&delegate=RAW({{?delegate}})&maxResults={{?maxResults}}&query=RAW({{?query}})&refreshToken=RAW({{?refreshToken}})&scopes={{?scopes}}&serviceAccountKey=RAW({{?serviceAccountKey}})&syncFlow={{syncFlow}}"
       steps:
         - marshal:
             json: {}

@@ -94,6 +94,21 @@ spec:
         description: "Extra settings for the Amazon Redshift JDBC driver, as `name=value` pairs separated by `;`, such as `loginTimeout=30`. When it is not set, the driver connects with TLS, as it does by default. The value is not hidden like a password, and it can show in the log when the integration starts, so do not put a password in it."
         type: string
         example: loginTimeout=30
+      maxTotal:
+        title: Max Connections
+        description: The most connections to the database that the Kamelet opens at the same time. While it sends the rows of a poll, the Kamelet keeps one connection, and `consumedQuery` needs a second one, so do not set it to 1 when you use it. When all of them are in use, the next message waits for one to be free, as long as `maxWaitMillis` allows. When it is not set, the limit is 8.
+        type: integer
+        example: 20
+      maxIdle:
+        title: Max Idle Connections
+        description: The most unused connections to keep open for later. A connection that is given back when this many are unused already is closed. When it is not set, up to 8 are kept open.
+        type: integer
+        example: 2
+      maxWaitMillis:
+        title: Max Wait
+        description: How long to wait for a free connection when `maxTotal` connections are in use, in milliseconds. After that, the message fails. When it is not set, it waits as long as it takes.
+        type: integer
+        example: 5000
   types:
     out:
       mediaType: application/json
@@ -117,6 +132,9 @@ spec:
           url: "jdbc:redshift://{{serverName}}:{{serverPort}}/{{databaseName}}"
           driverClassName: com.amazon.redshift.jdbc.Driver
           connectionProperties: "{{?connectionProperties}}"
+          maxTotal: "{{?maxTotal}}"
+          maxIdle: "{{?maxIdle}}"
+          maxWaitMillis: "{{?maxWaitMillis}}"
     from:
       uri: "{{local-sql-redshift-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume=RAW({{?consumedQuery}})&delay={{delay}}"
       steps:

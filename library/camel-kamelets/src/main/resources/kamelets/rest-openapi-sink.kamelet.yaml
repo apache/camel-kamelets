@@ -35,7 +35,7 @@ spec:
 
       Use it to call an API that publishes an OpenAPI (Swagger) document without writing its URLs by hand, for example to create a customer or look up an order in a service of your company. For a call to a fixed URL, use `http-sink`.
 
-      Input: the body is the request body, such as JSON text, and is sent with the content type the specification gives for the operation. The path and query parameters of the operation come from headers of the same name: for `/pets/\{petId}`, set the `petId` header. The other headers of the message, except the Camel ones, are sent as HTTP headers.
+      Input: the body is the request body, such as JSON text, and is sent with the content type the specification gives for the operation, or the one in `produces`. The path and query parameters of the operation come from headers of the same name: for `/pets/\{petId}`, set the `petId` header. The other headers of the message, except the Camel ones, are sent as HTTP headers.
 
       Output: when it is used inside a route, the body afterwards is the response of the API, as bytes, with the headers of the response and its status code in `CamelHttpResponseCode`.
 
@@ -71,6 +71,18 @@ spec:
         description: If true, each request is checked against the specification before it is sent. A request that does not match it, such as one without a required parameter, fails the message and is not sent.
         type: boolean
         default: false
+      consumes:
+        title: Accepted Response Types
+        description: The content types of the response to ask the API for, sent as the `Accept` header, in place of the ones the specification lists for the responses of the operation. Separate several types with commas, without spaces, such as `application/json,text/csv`. An `Accept` header on the message is sent instead.
+        type: string
+        example: "application/json"
+        pattern: "^[A-Za-z0-9*][A-Za-z0-9!$^_.+*/=;,-]*$"
+      produces:
+        title: Request Content Type
+        description: The content type of the request body, sent as the `Content-Type` header, such as `application/json`, in place of the one the specification gives for the request body of the operation. A `Content-Type` header on the message is sent instead.
+        type: string
+        example: "application/merge-patch+json"
+        pattern: "^[A-Za-z0-9*][A-Za-z0-9!$^_.+*/=;,-]*$"
   dependencies:
   - "camel:rest-openapi"
   - "camel:http"
@@ -87,3 +99,5 @@ spec:
               basePath: "{{?basePath}}"
               requestValidationEnabled: "{{clientRequestValidation}}"
               host: "{{?host}}"
+              consumes: "RAW({{?consumes}})"
+              produces: "RAW({{?produces}})"

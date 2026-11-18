@@ -16,6 +16,8 @@ The JMS Apache Artemis Source Kamelet supports the following configurations:
 - **Durable Subscription**, **Shared Subscription**, **Subscription Name** and **Client ID**: a durable or shared
   subscription to a topic (see below)
 - **Message Selector**: receive only the messages that match a condition on their properties and headers
+- **Transacted**, **Acknowledgement Mode** and **Concurrent Consumers**: delivering a message again when its flow
+  fails, and processing several messages at the same time (see below)
 
 === Output Format
 
@@ -112,6 +114,38 @@ message. From a queue, the other messages stay on the queue.
         - to:
             uri: "kamelet:log-sink"
 ----
+
+=== Redelivery when the flow fails
+
+By default, the source removes each message from the queue when it receives it, so a message whose flow fails is lost.
+With `transacted` set to `true`, each message is received in a transaction that is committed only once the flow has
+processed it. When the flow fails, the transaction is rolled back and the broker delivers the message again, with the
+header `JMSRedelivered` set to `true`.
+
+After 10 attempts, the default of the broker (`max-delivery-attempts`), Artemis moves the message to the dead letter
+queue, `DLQ` by default.
+
+`concurrentConsumers` processes several messages of the queue at the same time, each in a thread of its own; the
+messages are then no longer processed in the order of the queue.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:jms-apache-artemis-source"
+      parameters:
+        brokerURL: "tcp://artemis.example.com:61616"
+        destinationName: "orders.queue"
+        transacted: true
+        concurrentConsumers: 5
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+`acknowledgementModeName` set to `CLIENT_ACKNOWLEDGE` also delivers a message again when its flow fails, without a
+transaction. `DUPS_OK_ACKNOWLEDGE` acknowledges the messages in batches: it is faster, but the messages processed since
+the last batch are delivered again after a crash.
 
 === Connection Management
 

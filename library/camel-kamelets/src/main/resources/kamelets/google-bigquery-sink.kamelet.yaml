@@ -39,7 +39,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the parsed JSON: a Map for one row, or a List of Maps.
 
-      Good to know: the table must exist with its columns. A message with a field that is not a column of the table, or with a body that is not JSON, fails, and none of its rows are inserted.
+      Good to know: the table must exist with its columns. A message with a field that is not a column of the table, or with a body that is not JSON, fails, and none of its rows are inserted. A message that is sent again, for example after a failure, adds its rows again, unless `useAsInsertId` names a field that identifies each row.
     required:
       - projectId
       - dataset
@@ -69,6 +69,12 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      useAsInsertId:
+        title: Insert ID Field
+        description: The name of a field of each row whose value is sent as the insert ID of the row, such as `orderId`. BigQuery uses the insert ID to drop, on a best-effort basis, a row that it received with the same insert ID shortly before, such as a message sent again after a failed attempt. The field must hold text, such as `"o-1001"`; a message with a row whose field holds a number fails, and none of its rows are inserted. A row without the field is sent without an insert ID. When it is not set, no row has an insert ID, and a row sent twice is added twice.
+        type: string
+        example: orderId
+        pattern: "^[A-Za-z_][A-Za-z0-9_]*$"
   types:
     in:
       mediaType: application/json
@@ -89,3 +95,4 @@ spec:
               datasetId: "{{dataset}}"
               tableId: "{{table}}"
               serviceAccountKey: "RAW(base64:{{serviceAccountKey}})"
+              useAsInsertId: "{{?useAsInsertId}}"

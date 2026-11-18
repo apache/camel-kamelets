@@ -37,11 +37,9 @@ spec:
 
       Output: the body is a FHIR Bundle of type `searchset`, as JSON text, with the number of resources found (`total`) and the resources themselves under `entry`. The `Content-Type` header is `application/fhir+json`.
 
-      Good to know: a new search starts about every half second, and every search returns all the matching resources again, not only the new ones; add a filter such as `_lastUpdated` to `url` to narrow it. `username` and `password` are required, even for a server without login.
+      Good to know: a new search starts about every half second unless `delay` is set, and every search returns all the matching resources again, not only the new ones; add a filter such as `_lastUpdated` to `url` to narrow it. Log in with `username` and `password`, or with `accessToken`, or leave them out for a server without login; when both kinds are set, both are sent.
     required:
       - serverUrl
-      - username
-      - password
     type: object
     properties:
       serverUrl:
@@ -69,13 +67,48 @@ spec:
         enum: ["DSTU2", "DSTU2_HL7ORG", "DSTU2_1", "DSTU3", "R4", "R5"]
       username:
         title: Username
-        description: The user to log in to the server as, with Basic authentication.
+        description: The user to log in to the server as, with Basic authentication. Leave it out for a server without login.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       password:
         title: Password
         description: The password of `username`, for Basic authentication.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      delay:
+        title: Delay
+        description: How long to wait after a search before the next one starts, in milliseconds. For example, 60000 is one minute. When it is not set, it is 500 (half a second).
+        type: integer
+        example: 60000
+      accessToken:
+        title: Access Token
+        description: An OAuth access token, sent as a Bearer token, for a server that uses OAuth, such as SMART on FHIR. Use it instead of `username` and `password`.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      proxyHost:
+        title: Proxy Host
+        description: The host name of an HTTP proxy to reach the server through. Use it with `proxyPort`.
+        type: string
+        example: proxy.example.com
+      proxyPort:
+        title: Proxy Port
+        description: The port of the HTTP proxy in `proxyHost`.
+        type: integer
+        example: 3128
+      proxyUser:
+        title: Proxy User
+        description: The user to log in to the HTTP proxy as, when the proxy needs a login.
+        type: string
+        x-descriptors:
+        - urn:camel:group:credentials
+      proxyPassword:
+        title: Proxy Password
+        description: The password of `proxyUser` for the HTTP proxy.
         type: string
         format: password
         x-descriptors:
@@ -93,7 +126,7 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "fhir://search/searchByUrl?encoding={{encoding}}&fhirVersion={{fhirVersion}}&password=RAW({{password}})&prettyPrint={{prettyPrint}}&serverUrl={{serverUrl}}&url={{url}}&username=RAW({{username}})"
+      uri: "fhir://search/searchByUrl?accessToken=RAW({{?accessToken}})&delay={{?delay}}&encoding={{encoding}}&fhirVersion={{fhirVersion}}&password=RAW({{?password}})&prettyPrint={{prettyPrint}}&proxyHost={{?proxyHost}}&proxyPassword=RAW({{?proxyPassword}})&proxyPort={{?proxyPort}}&proxyUser=RAW({{?proxyUser}})&serverUrl={{serverUrl}}&url={{url}}&username=RAW({{?username}})"
       steps:
         - marshal:
             fhirJson:

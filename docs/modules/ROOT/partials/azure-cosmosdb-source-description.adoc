@@ -18,3 +18,34 @@ The order of evaluation for `AZURE_IDENTITY` is the following:
  - Azure Powershell
 
 For more information, see the https://learn.microsoft.com/en-us/java/api/overview/azure/identity-readme[Azure Identity documentation]
+
+=== Reading the change feed
+
+The Kamelet keeps its position in the lease container. These options change how it reads:
+
+- `startFromBeginning`: if true, the first start reads all the items of the container. Once a position is saved, the source continues from it.
+- `maxItemCount`: the largest number of items in one message, 100 by default.
+- `feedPollDelay`: how long to wait before checking again for new changes, in milliseconds, 5000 by default. A smaller value receives changes sooner, with more requests to Cosmos DB.
+- `leasePrefix`: two integrations that read the same container with the same lease container share one position, and each change goes to only one of them. Give each integration its own `leasePrefix` to have each receive every change.
+- `hostName`: the name the source marks its leases with. Without it, the source takes a new random name at each start, and after a crash waits up to a minute for the leases of its previous run to expire. With a name that stays the same, it continues at once. Give each copy that runs at the same time its own name.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:azure-cosmosdb-source"
+      parameters:
+        databaseEndpoint: "https://my-account.documents.azure.com:443/"
+        accountKey: "{{cosmos.key}}"
+        databaseName: "shop"
+        containerName: "orders"
+        createLeaseContainerIfNotExists: true
+        startFromBeginning: true
+        maxItemCount: 10
+        feedPollDelay: 1000
+        leasePrefix: "search-"
+        hostName: "orders-search-1"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

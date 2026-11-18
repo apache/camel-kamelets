@@ -33,11 +33,13 @@ spec:
     description: |-
       Sends each message as a prompt to a generative AI model in Google Vertex AI, such as Gemini, and replaces the body with the answer of the model.
 
-      Use it to summarize, classify, translate or answer questions about text as it flows, for example to summarize support tickets or extract the topic of an email.
+      Use it to summarize, classify, translate or answer questions about text as it flows, for example to summarize support tickets or extract the topic of an email. To call a partner model of the Model Garden instead, such as Claude of Anthropic, set `operation` to `rawPredict` and `publisher`.
 
-      Input: the body is the prompt, as text; bytes and streams are read as text. The optional `CamelGoogleVertexAIPrompt` header gives the prompt instead of the body.
+      Input: the body is the prompt, as text; bytes and streams are read as text. The optional `CamelGoogleVertexAIPrompt` header gives the prompt instead of the body. With `rawPredict`, the header is not used: the body is the prompt as text, or a JSON request in the format of the publisher, such as the Messages API of Anthropic, which is sent as it is, with `anthropic_version` added for Anthropic.
 
-      Output: when it is used inside a route, the body afterwards is the answer of the model, as text, for the default `generateText` operation. The `CamelGoogleVertexAIFinishReason` header says why the model stopped, and the token counts are in the `CamelGoogleVertexAIPromptTokenCount`, `CamelGoogleVertexAICandidatesTokenCount` and `CamelGoogleVertexAITotalTokenCount` headers.
+      Output: when it is used inside a route, the body afterwards is the answer of the model, as text, for the default `generateText` operation; with `jsonMode` set to true, it is JSON text. The `CamelGoogleVertexAIFinishReason` header says why the model stopped, and the token counts are in the `CamelGoogleVertexAIPromptTokenCount`, `CamelGoogleVertexAICandidatesTokenCount` and `CamelGoogleVertexAITotalTokenCount` headers. With `rawPredict` and the publisher `anthropic`, the body afterwards is the text of the answer, and the `CamelGoogleVertexAIRawResponse` header has the whole answer as JSON text; with another publisher, the body is the answer of the model as JSON text.
+
+      Good to know: with a prompt as text and the publisher `anthropic`, `rawPredict` also sends `temperature`, `topP` and `topK`, as 0.7, 0.95 and 40 when they are not set, and `maxOutputTokens` as `max_tokens`, 1024 when it is not set. Send a JSON request as the body to choose the fields of the request yourself.
     required:
       - projectId
       - region
@@ -68,7 +70,7 @@ spec:
         - urn:camel:group:credentials
       operation:
         title: Operation
-        description: What to ask the model for. `generateText` (the default), `generateChat` and `generateCode` answer the prompt with text, `generateImage` gives a List of images, `generateEmbeddings` gives one vector of numbers per text, and `generateMultimodal` sends media together with the prompt. `rawPredict` fails, as it needs a publisher that this Kamelet cannot set.
+        description: What to ask the model for. `generateText` (the default), `generateChat` and `generateCode` answer the prompt with text, `generateImage` gives a List of images, `generateEmbeddings` gives one vector of numbers per text, and `generateMultimodal` sends media together with the prompt. `rawPredict` sends the body to a partner model of `publisher`, such as Claude.
         type: string
         default: generateText
         enum: ["generateText", "generateChat", "generateImage", "generateEmbeddings", "generateCode", "generateMultimodal", "rawPredict"]
@@ -92,6 +94,22 @@ spec:
         description: Only choose each next word among this many most likely ones, a whole number. When it is not set, 40 is used.
         type: string
         example: "40"
+      publisher:
+        title: Model Publisher
+        description: The publisher of a partner model of the Model Garden, for the `rawPredict` operation, such as `anthropic` for Claude, `meta` for Llama or `mistralai` for Mistral. The model of `modelId` is then called as `projects/<projectId>/locations/<region>/publishers/<publisher>/models/<modelId>`. Only used with `rawPredict`, which fails without it.
+        type: string
+        pattern: "^[a-z0-9-]+$"
+        example: anthropic
+      anthropicVersion:
+        title: Anthropic Version
+        description: The version of the Anthropic API to ask Claude for, sent as `anthropic_version` in each request, unless the JSON request of the body has one. When it is not set, `vertex-2023-10-16` is used. Only used with `rawPredict` and the publisher `anthropic`.
+        type: string
+        pattern: "^[A-Za-z0-9._-]+$"
+        example: vertex-2023-10-16
+      jsonMode:
+        title: JSON Mode
+        description: If true, the model is asked to answer with JSON (the response type `application/json`), so the body afterwards is JSON text. Say in the prompt which fields you want. Only used with `generateText`, `generateChat`, `generateCode` and `generateMultimodal`. When it is not set, it is false.
+        type: boolean
   dataTypes:
     in:
       headers:
@@ -117,6 +135,10 @@ spec:
           title: Total Token Count
           description: The number of tokens of the prompt and the answer together.
           type: integer
+        CamelGoogleVertexAIRawResponse:
+          title: Raw Response
+          description: With `rawPredict` and the publisher `anthropic`, the whole answer of the model, as JSON text.
+          type: string
   dependencies:
     - "camel:kamelet"
     - "camel:google-vertexai"
@@ -130,8 +152,11 @@ spec:
               projectId: "{{projectId}}"
               location: "{{region}}"
               modelId: "{{modelId}}"
+              anthropicVersion: "{{?anthropicVersion}}"
+              jsonMode: "{{?jsonMode}}"
               maxOutputTokens: "{{?maxOutputTokens}}"
               operation: "{{operation}}"
+              publisher: "{{?publisher}}"
               serviceAccountKey: "RAW({{?serviceAccountKey}})"
               temperature: "{{?temperature}}"
               topK: "{{?topK}}"

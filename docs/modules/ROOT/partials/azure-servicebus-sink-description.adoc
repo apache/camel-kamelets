@@ -51,3 +51,52 @@ moves them to its dead-letter queue. Set **sessionId** to send every message wit
 A reader of the queue receives the messages of a session in the order they were sent. The session ID is fixed for the
 Kamelet; the `CamelAzureServiceBusSessionId` header is not read. To spread messages over several sessions, use one sink
 for each session ID, for example behind a content-based router.
+
+=== Example Sending Binary Data
+
+The body is sent as text, so bytes that are not UTF-8 text, such as an image or a compressed file, are damaged. Set
+**binary** to `true` to send the bytes exactly as they are:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "file:/data/images"
+      steps:
+        - to:
+            uri: "kamelet:azure-servicebus-sink"
+            parameters:
+              topicOrQueueName: "images"
+              connectionString: "{{servicebus.connection-string}}"
+              binary: true
+----
+
+Text is sent as its UTF-8 bytes either way. With **binary**, a Map body fails to send: turn it into JSON text first,
+for example with `json-serialize-action`.
+
+=== Example with a Delay
+
+Set **scheduledEnqueueDelay** to have Service Bus hold each message for that many seconds before readers can receive
+it:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "timer:tick"
+      parameters:
+        period: 60000
+      steps:
+        - setBody:
+            constant: "Your order is ready for pickup"
+        - to:
+            uri: "kamelet:azure-servicebus-sink"
+            parameters:
+              topicOrQueueName: "reminders"
+              connectionString: "{{servicebus.connection-string}}"
+              scheduledEnqueueDelay: 600
+----
+
+The send returns at once, and the message appears in the queue ten minutes later, with that time as its enqueued time
+(`CamelAzureServiceBusEnqueuedTime` for a reader). The delay is the same for every message, and counts from the clock
+of the integration.

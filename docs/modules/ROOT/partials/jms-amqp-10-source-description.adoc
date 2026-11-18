@@ -2,12 +2,11 @@
 
 === Login and TLS
 
-The Kamelet has no separate options for the login or TLS: they go in `remoteURI`, as settings of the Apache Qpid JMS
-client after `?`.
-
-- A login: `amqp://broker.example.com:5672?jms.username=app&jms.password=secret`
-- TLS: the `amqps://` scheme, with `transport.trustStoreLocation` and `transport.trustStorePassword` when the broker
-  certificate is not trusted by the Java runtime.
+- A login: `username` and `password`. `jms.username` and `jms.password` in `remoteURI`, as
+  `amqp://broker.example.com:5672?jms.username=app&jms.password=secret`, work too, but `username` and `password` are
+  used instead of them when they are set.
+- TLS: the `amqps://` scheme in `remoteURI`, with `transport.trustStoreLocation` and `transport.trustStorePassword`
+  after `?` when the broker certificate is not trusted by the Java runtime.
 
 === Output format
 
@@ -18,12 +17,15 @@ the message become headers.
 
 The Kamelet requires connection parameters for the AMQP 1.0 broker:
 
-- `remoteURI`: the address of the broker, with the login when the broker needs one
+- `remoteURI`: the address of the broker
+- `username` and `password`: the login, when the broker needs one
 - `destinationName`: the name of the queue or topic
 - `destinationType`: `queue` (the default) or `topic`
 - `subscriptionDurable`, `subscriptionShared`, `subscriptionName` and `clientId`: a durable or shared subscription to
   a topic (see below)
 - `selector`: receive only the messages that match a condition on their properties and headers
+- `transacted`, `acknowledgementModeName` and `concurrentConsumers`: delivering a message again when its flow fails,
+  and processing several messages at the same time (see below)
 
 === Usage example
 
@@ -33,7 +35,9 @@ The Kamelet requires connection parameters for the AMQP 1.0 broker:
     from:
       uri: "kamelet:jms-amqp-10-source"
       parameters:
-        remoteURI: "amqp://broker.example.com:5672?jms.username=app&jms.password=secret"
+        remoteURI: "amqp://broker.example.com:5672"
+        username: "app"
+        password: "secret"
         destinationName: "my-queue"
       steps:
         - to:
@@ -78,3 +82,39 @@ The JMS rules to know:
 
 With `selector`, the source receives only the messages that match it, a condition on the JMS properties and headers of
 the message, such as `priority > 5`. From a queue, the other messages stay on the queue.
+
+=== Redelivery when the flow fails
+
+By default, the source removes each message from the queue when it receives it, so a message whose flow fails is lost.
+With `transacted` set to `true`, each message is received in a transaction that is committed only once the flow has
+processed it. When the flow fails, the transaction is rolled back and the broker delivers the message again, with the
+header `JMSRedelivered` set to `true`.
+
+The broker decides how many times: Apache ActiveMQ Artemis moves the message to the dead letter queue, `DLQ`, after 10
+attempts by default.
+
+`concurrentConsumers` processes several messages of the queue at the same time, each in a thread of its own; the
+messages are then no longer processed in the order of the queue.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:jms-amqp-10-source"
+      parameters:
+        remoteURI: "amqp://broker.example.com:5672"
+        username: "app"
+        password: "secret"
+        destinationName: "orders.queue"
+        transacted: true
+        concurrentConsumers: 5
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+`acknowledgementModeName` set to `CLIENT_ACKNOWLEDGE` also delivers a message again when its flow fails, without a
+transaction, but the Qpid client does it by itself, with no limit, unless `remoteURI` sets
+`jms.redeliveryPolicy.maxRedeliveries`. Prefer `transacted`, which leaves the attempts and the dead letter queue to the
+broker. With the Qpid client, `DUPS_OK_ACKNOWLEDGE` acknowledges each message when it is received, as
+`AUTO_ACKNOWLEDGE` does.

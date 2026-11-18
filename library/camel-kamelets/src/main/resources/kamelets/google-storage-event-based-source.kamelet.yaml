@@ -37,7 +37,7 @@ spec:
 
       Output: by default, the body is the notification as JSON text (bytes): the metadata of the file, such as its name, size and content type. The `eventType` header says what happened (`OBJECT_FINALIZE` for a new or replaced file, `OBJECT_DELETE` for a deleted one), and the `objectId` and `bucketId` headers give the name of the file and of its bucket. With `getObject` set to true, the body of a new file in `bucketNameOrArn` is the content of the file, as bytes, with the `CamelGoogleCloudStorage...` headers of the file.
 
-      Good to know: every notification of the subscription comes out, also for other events and other buckets; `bucketNameOrArn` is only used to choose which new files to download. Downloading does not delete the file. A notification whose processing fails is not acknowledged, so Pub/Sub delivers it again.
+      Good to know: every notification of the subscription comes out, also for other events and other buckets; `bucketNameOrArn` is only used to choose which new files to download. Downloading does not delete the file. A notification whose processing fails is not acknowledged, so Pub/Sub delivers it again. With `ackMode` `NONE`, the route acknowledges each notification itself, through the `CamelGooglePubsubAcknowledge` header. On a subscription with a dead-letter topic, `maxDeliveryAttempts` stops a notification that keeps failing from being processed again.
     required:
       - projectId
       - subscriptionName
@@ -87,6 +87,16 @@ spec:
         description: If true, the body of a notification for a new or replaced file (`OBJECT_FINALIZE`) in `bucketNameOrArn` is replaced by the content of the file. If false, the body is the notification itself.
         type: boolean
         default: false
+      ackMode:
+        title: Acknowledge Mode
+        description: "When a notification is acknowledged. `AUTO`: once it has been processed; a notification whose processing fails is given back (nack), so that Pub/Sub delivers it again. `NONE`: never by the Kamelet; the route acknowledges each notification itself, for example with the Simple expression `${header.CamelGooglePubsubAcknowledge.ack($\\{exchange})}`, or gives it back with `nack`. A notification that is not acknowledged is delivered again: with `synchronousPull`, once the acknowledgement deadline of the subscription has passed; otherwise only after an hour, for which its deadline is extended. When it is not set, it is `AUTO`."
+        type: string
+        enum: ["AUTO", "NONE"]
+      maxDeliveryAttempts:
+        title: Max Delivery Attempts
+        description: A notification that Pub/Sub has delivered this many times is given back (nack) without being processed. Pub/Sub delivers it again until the maximum of delivery attempts of the subscription is reached, and then moves it to the dead-letter topic. Pub/Sub only counts the deliveries on a subscription with a dead-letter topic; on another subscription, this option does nothing. When it is not set, the maximum of the dead-letter policy of the subscription is read when the Kamelet starts, which needs the permission `pubsub.subscriptions.get`; when it cannot be read, a warning is logged and there is no limit. Set it to 0 for no limit.
+        type: integer
+        example: 5
   dataTypes:
     out:
       headers:
@@ -110,6 +120,14 @@ spec:
           title: Message ID
           description: The ID of the Pub/Sub message of the notification.
           type: string
+        CamelGooglePubsubDeliveryAttempt:
+          title: Delivery Attempt
+          description: How many times Pub/Sub has delivered the notification, 1 the first time. Only set on a subscription with a dead-letter topic.
+          type: integer
+        CamelGooglePubsubAcknowledge:
+          title: Acknowledge
+          description: Only with `ackMode` `NONE`. The object to acknowledge the notification with, by calling its `ack(exchange)` method, or to give it back with `nack(exchange)`.
+          type: object
   dependencies:
     - "camel:kamelet"
     - "camel:google-pubsub"
@@ -117,7 +135,7 @@ spec:
     - "camel:jackson3"
   template:
     from:
-      uri: "google-pubsub://{{projectId}}:{{subscriptionName}}?concurrentConsumers={{concurrentConsumers}}&maxMessagesPerPoll={{maxMessagesPerPoll}}&serviceAccountKey=RAW(base64:{{serviceAccountKey}})&synchronousPull={{synchronousPull}}"
+      uri: "google-pubsub://{{projectId}}:{{subscriptionName}}?ackMode={{?ackMode}}&concurrentConsumers={{concurrentConsumers}}&maxDeliveryAttempts={{?maxDeliveryAttempts}}&maxMessagesPerPoll={{maxMessagesPerPoll}}&serviceAccountKey=RAW(base64:{{serviceAccountKey}})&synchronousPull={{synchronousPull}}"
       steps:
         - choice:
             precondition: true

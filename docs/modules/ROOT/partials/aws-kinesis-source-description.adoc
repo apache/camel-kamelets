@@ -58,6 +58,28 @@ By default (`iteratorType` is `TRIM_HORIZON`) the Kamelet reads the stream from 
 
 The records written while the integration was stopped are then not read. To start at a given record, set `iteratorType` to `AT_SEQUENCE_NUMBER` or `AFTER_SEQUENCE_NUMBER` and `sequenceNumber` to its sequence number; to start at a given time, set `iteratorType` to `AT_TIMESTAMP` and `messageTimestamp` to the time, such as `2026-11-17T08:00:00Z`. The Kamelet does not remember where it stopped: it starts at the same place on each start. The KCL consumer below does not use `iteratorType`.
 
+=== One shard, and smaller polls
+
+By default the Kamelet reads all the shards of the stream, and up to 1000 records from each shard in one poll. To read one shard only, set `shardId` to its ID, as `aws kinesis list-shards` shows it. To read fewer records in one poll, set `maxResultsPerRequest`: the rest of the records are read in the next polls, `delay` apart.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:aws-kinesis-source"
+      parameters:
+        useDefaultCredentialsProvider: true
+        region: "eu-west-1"
+        stream: "kamelets"
+        shardId: "shardId-000000000001"
+        maxResultsPerRequest: 100
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+When the stream is resharded, for example when the number of shards is changed, the old shards are closed and new ones take their place. Without `shardId`, the Kamelet goes on with the new shards, and `shardClosed` says what it does about a closed shard once it has read its last record: `ignore` (the default) logs a warning once, and `silent` logs nothing. With `fail`, each later poll fails with an error and a stack trace in the log, for as long as the closed shard is listed, which is 24 hours by default; the records of the other shards are still read.
+
 === Usage example with KCL Consumer
 
 You could consume the stream content with the KCL support
@@ -73,6 +95,7 @@ You could consume the stream content with the KCL support
         region: "eu-west-1"
         asyncClient: true
         useKclConsumers: true
+        applicationName: "orders-processor"
       steps:
       - to: 
           uri: "kamelet:log-sink"
@@ -83,6 +106,8 @@ You could consume the stream content with the KCL support
 With the `useKclConsumers` enabled, you won't have to deal with shard iteration directly. Everything is managed by the AWS Kinesis client library and the KCL layer.
 
 As a side note you need to remember that the KCL consumer will need access to DynamoDB and Cloudwatch services from AWS, so it will create clients to these services under the hood and it will use them.
+
+The KCL keeps its state in a DynamoDB table named after `applicationName`, `orders-processor` above, which it creates; without `applicationName`, the table is named after the stream. Copies of the integration with the same `applicationName` share the shards of the stream. Give each integration that reads the same stream its own `applicationName`, so that each one reads all the records.
 
 === Through an HTTP Proxy
 

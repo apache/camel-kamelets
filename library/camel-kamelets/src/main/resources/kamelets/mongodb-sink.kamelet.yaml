@@ -31,15 +31,15 @@ spec:
   definition:
     title: "MongoDB Sink"
     description: |-
-      Inserts each message as a new document into a collection of a MongoDB database.
+      Writes each message to a collection of a MongoDB database: inserts it as a new document, or, with `operation`, replaces or updates a stored document.
 
-      Use it to store events, orders or other records as documents in MongoDB, for example each message that arrives on a Kafka topic. To read documents, use `mongodb-source` or `mongodb-changes-stream-source`.
+      Use it to store events, orders or other records as documents in MongoDB, for example each message that arrives on a Kafka topic, to keep a copy of records by their ID (`save`), or to change fields of a document, such as the stock of a product (`update`). To read documents, use `mongodb-source` or `mongodb-changes-stream-source`.
 
-      Input: the body is one document, as a JSON object in text, such as `{"item":"book","qty":2}`. When it has no `_id` field, MongoDB gives the document a new ObjectId. A JSON array, or text that is not JSON, fails.
+      Input: with `insert` (the default) and `save`, the body is one document, as a JSON object in text, such as `{"item":"book","qty":2}`. When it has no `_id` field, MongoDB gives the document a new ObjectId. With `update`, the body is a JSON array in text of two objects: the filter that selects the document and the changes, such as `[{"sku":"A1"},{"$set":{"qty":3}}]`. An ObjectId is written as `{"$oid":"..."}`. Text that is not JSON fails.
 
-      Output: the body afterwards is the document that was stored, as a Map with its `_id`, and the `CamelMongoOid` header holds that `_id`.
+      Output: with `insert`, the body afterwards is the document that was stored, as a Map with its `_id`. With `save` and `update`, it is the result that MongoDB returns. With `insert` and `save`, the `CamelMongoOid` header holds the `_id` of the document. With `update`, the `CamelMongoDbRecordsMatched` and `CamelMongoDbRecordsAffected` headers say how many documents matched the filter and how many were changed.
 
-      Good to know: a document whose `_id` is already in the collection fails: the Kamelet only inserts, and the `db-upsert` and `ce-dbupsert` headers do not change that. With `createCollection` false, the default, the Kamelet fails to start when the collection does not exist yet. Set either `hosts` or `connectionString`. With `hosts`, it connects with TLS by default; set `ssl` to false for a MongoDB without TLS, such as a local one. With `connectionString`, such as the `mongodb+srv://` string of MongoDB Atlas, it connects only as that string says, and `hosts`, `username`, `password`, `ssl` and `sslValidationEnabled` are not used. For a user defined in a database other than `admin`, use `connectionString` with `authSource`.
+      Good to know: with `insert`, a document whose `_id` is already in the collection fails; `save` replaces it instead. `save` replaces the whole document, so fields that are not in the body are removed. `update` changes only the first document that matches, and nothing when none matches, unless `upsert` is true. The `db-upsert` and `ce-dbupsert` headers are not used. With `createCollection` false, the default, the Kamelet fails to start when the collection does not exist yet. Set either `hosts` or `connectionString`. With `hosts`, it connects with TLS by default; set `ssl` to false for a MongoDB without TLS, such as a local one. With `connectionString`, such as the `mongodb+srv://` string of MongoDB Atlas, it connects only as that string says, and `hosts`, `username`, `password`, `ssl` and `sslValidationEnabled` are not used. For a user defined in a database other than `admin`, use `connectionString` with `authSource`.
     required:
       - collection
       - database
@@ -60,7 +60,7 @@ spec:
         example: "mongodb+srv://myuser:mypassword@cluster0.abcde.mongodb.net/?retryWrites=true&w=majority"
       collection:
         title: MongoDB Collection
-        description: The name of the collection to insert the documents into.
+        description: The name of the collection to write the documents to.
         type: string
         example: orders
       password:
@@ -93,7 +93,7 @@ spec:
         example: shop
       writeConcern:
         title: Write Concern
-        description: How many MongoDB servers must confirm an insert before it counts as done, such as `MAJORITY` for most members of a replica set. When it is not set, MongoDB acknowledges each insert (`ACKNOWLEDGED`).
+        description: How many MongoDB servers must confirm a write before it counts as done, such as `MAJORITY` for most members of a replica set. When it is not set, MongoDB acknowledges each write (`ACKNOWLEDGED`).
         type: string
         enum: ["ACKNOWLEDGED", "W1", "W2", "W3", "UNACKNOWLEDGED", "JOURNALED", "MAJORITY"]
       createCollection:
@@ -101,6 +101,16 @@ spec:
         description: If true, the collection is created when the Kamelet starts, if it does not exist. If false, the Kamelet fails to start when the collection does not exist.
         type: boolean
         default: false
+      operation:
+        title: Operation
+        description: "What to do with each message. `insert` adds the body as a new document, and fails when its `_id` is already in the collection. `save` replaces the document that has the `_id` of the body as a whole, or adds the body when there is none or the body has no `_id`. `update` changes the first document that matches a filter: the body is the filter and the changes, such as `[{\"sku\":\"A1\"},{\"$set\":{\"qty\":3}}]`, and the changes must use update operators such as `$set`, `$inc` or `$unset`."
+        type: string
+        enum: ["insert", "save", "update"]
+        default: insert
+      upsert:
+        title: Insert When Missing
+        description: Only used when `operation` is `update`. If true, a filter that matches no document inserts a new one, made of the fields of the filter and the changes, such as `{"sku":"A1","qty":3}`, and the next message with the same filter updates it. If false or not set, a filter that matches no document changes nothing.
+        type: boolean
   types:
     in:
       mediaType: application/json
@@ -109,8 +119,16 @@ spec:
       headers:
         CamelMongoOid:
           title: Document ID
-          description: The `_id` of the document that was inserted, an ObjectId when MongoDB made it.
+          description: The `_id` of the document that was inserted or saved, an ObjectId when MongoDB made it. Only set by `insert` and `save`.
           type: string
+        CamelMongoDbRecordsMatched:
+          title: Documents Matched
+          description: How many documents matched the filter of an `update`, 0 or 1. Only set by `update`.
+          type: integer
+        CamelMongoDbRecordsAffected:
+          title: Documents Changed
+          description: How many documents an `update` changed, 0 or 1. It is 0 when the document already had the values, and when `upsert` inserted a new one. Only set by `update`.
+          type: integer
   dependencies:
     - "camel:kamelet"
     - "camel:mongodb"
@@ -132,5 +150,24 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{operation}}' == 'update' && ${body} !is 'java.util.List'"
+                steps:
+                  - convertBodyTo:
+                      type: java.lang.String
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{operation}}' == 'update' && '{{?upsert}}' != ''"
+                steps:
+                  - setHeader:
+                      name: CamelMongoDbUpsert
+                      expression:
+                        constant:
+                          expression: "{{?upsert}}"
         - to:
-            uri: "{{local-mongodb}}:test?createCollection={{?createCollection}}&writeConcern={{?writeConcern}}&collection={{collection}}&database={{database}}&operation=insert&connectionUriString=RAW({{?connectionString}})"
+            uri: "{{local-mongodb}}:test?createCollection={{?createCollection}}&writeConcern={{?writeConcern}}&collection={{collection}}&database={{database}}&operation={{operation}}&connectionUriString=RAW({{?connectionString}})"

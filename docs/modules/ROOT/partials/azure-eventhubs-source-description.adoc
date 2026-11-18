@@ -43,3 +43,34 @@ By default the Kamelet reads as the `$Default` consumer group. To read the same 
 ----
 
 Each consumer group has its own saved position in `blobContainerName`, so the integrations can share the container. A consumer group without a saved position starts with the events that arrive after the integration starts. With a consumer group that does not exist, the integration starts but receives nothing, and logs a warning that the messaging entity could not be found.
+
+=== Connecting with a connection string
+
+Instead of `namespaceName`, `eventhubName`, `sharedAccessName` and `sharedAccessKey`, you can set `connectionString`, as the Azure portal shows it under the namespace or the event hub, then Settings, Shared access policies, the policy. The connection string must end with `;EntityPath=` and the name of the event hub. The connection string of a policy of the event hub has it; for one of a policy of the namespace, add it. Without it, the integration fails to start with the error `'eventHubName' cannot be an empty string`.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:azure-eventhubs-source"
+      parameters:
+        connectionString: "Endpoint=sb://my-namespace.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=...;EntityPath=orders"
+        blobAccountName: "mystorageaccount"
+        blobAccessKey: "{{storage.key}}"
+        blobContainerName: "eventhub-checkpoints"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+The connection string holds the key, so keep it in a secret, like `sharedAccessKey`.
+
+=== How often the position is saved
+
+For each partition, the Kamelet saves how far it has read (a checkpoint) in `blobContainerName` after `checkpointBatchSize` events, 500 by default, or `checkpointBatchTimeout` milliseconds, 5000 by default, after the first event since the last checkpoint, whichever comes first. After a restart, it reads again the events that came after the last checkpoint. To read fewer events again, save the position more often, at the cost of more writes to the storage account:
+
+[source,yaml,subs='+attributes,macros']
+----
+        checkpointBatchSize: 100
+        checkpointBatchTimeout: 1000
+----

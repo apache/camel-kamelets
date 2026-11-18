@@ -31,13 +31,13 @@ spec:
   definition:
     title: "HTTP Source"
     description: |-
-      Fetches a web address with an HTTP GET request at a regular interval, and sends each response as a message.
+      Fetches a web address with an HTTP request, a GET unless `method` says otherwise, at a regular interval, and sends each response as a message.
 
       Use it to poll a REST API, a feed or a status page for its current data, for example fetch the state of the orders every minute. To receive the requests that other systems send instead, use `webhook-source`.
 
       Output: the body is the body of the response, as bytes. The headers of the response, such as `Content-Type`, are copied to the message, and `CamelHttpResponseCode` holds the status code.
 
-      Good to know: it fetches the address every `period` and sends a message for each response, even when the data has not changed. A response with a status code outside `okStatusCodeRange`, which is `200-299` when it is not set, sends no message: the error is logged, and the address is fetched again at the next period. Log in either with `authUsername` and `authPassword`, with a static token in `authBearerToken`, or with `oauth2ClientId`, `oauth2ClientSecret` and `oauth2TokenEndpoint`: the Kamelet then gets a token from that URL and sends it as a Bearer token. The certificate of an `https://` service is checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.https.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every `https://` call of the application.
+      Good to know: it fetches the address every `period` and sends a message for each response, even when the data has not changed. A response with a status code outside `okStatusCodeRange`, which is `200-299` when it is not set, sends no message: the error is logged, and the address is fetched again at the next period. Log in either with `authUsername` and `authPassword`, with a static token in `authBearerToken`, or with `oauth2ClientId`, `oauth2ClientSecret` and `oauth2TokenEndpoint`: the Kamelet then gets a token from that URL and sends it as a Bearer token. To go through an HTTP proxy, set `proxyHost` and `proxyPort`, and `proxyUser` and `proxyPassword` when the proxy asks for a login; an `https://` address goes through the proxy too. The certificate of an `https://` service is checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.https.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every `https://` call of the application.
     required:
     - url
     type: object
@@ -60,6 +60,40 @@ spec:
         type: string
         example: "https://api.example.com/v1/orders/status"
         pattern: "^(http|https)://.*"
+      method:
+        title: Method
+        description: The HTTP method of the request, such as `POST` for an API that expects one to return data. When it is not set, it is `GET`. The request has no body.
+        type: string
+        enum: ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "TRACE", "PATCH"]
+        example: POST
+      followRedirects:
+        title: Follow Redirects
+        description: If true, a redirect, a response with a status code such as 301, 302 or 307, is followed to the address in its `Location` header, and the response from there is sent as the message. When it is not set, the redirect is not followed, so it sends no message unless its status code is in `okStatusCodeRange`.
+        type: boolean
+      proxyHost:
+        title: Proxy Host
+        description: The host name or IP address of an HTTP proxy to send the requests through, without the port. Use it with `proxyPort`; the proxy is used only when both are set.
+        type: string
+        example: proxy.example.com
+        pattern: "^[A-Za-z0-9._-]+$"
+      proxyPort:
+        title: Proxy Port
+        description: The port of the HTTP proxy in `proxyHost`.
+        type: integer
+        example: 3128
+      proxyUser:
+        title: Proxy User
+        description: The user to log in to the HTTP proxy as, when the proxy asks for a login. Use it with `proxyPassword`.
+        type: string
+        x-descriptors:
+        - urn:camel:group:credentials
+      proxyPassword:
+        title: Proxy Password
+        description: The password of `proxyUser` for the HTTP proxy.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
       okStatusCodeRange:
         title: OK Status Codes
         description: The status codes of a response that is sent as a message, as ranges such as `200-299` and single codes, separated by commas without spaces. When it is not set, it is `200-299`. List the 2xx codes too, for example `200-299,404` to also send the 404 responses.
@@ -154,6 +188,12 @@ spec:
         - to:
             uri: "{{url}}"
             parameters:
+              httpMethod: "{{?method}}"
+              followRedirects: "{{?followRedirects}}"
+              proxyHost: "{{?proxyHost}}"
+              proxyPort: "{{?proxyPort}}"
+              proxyAuthUsername: "{{?proxyUser}}"
+              proxyAuthPassword: "RAW({{?proxyPassword}})"
               authMethod: "{{?authMethod}}"
               authUsername: "{{?authUsername}}"
               authPassword: "RAW({{?authPassword}})"

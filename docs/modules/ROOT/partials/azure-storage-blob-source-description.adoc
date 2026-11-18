@@ -6,6 +6,7 @@ In this Kamelet, you can use these Azure authentication methods:
 
 - Azure Identity mechanism:  `AZURE_IDENTITY`
 - Plain Shared Account Key:  `SHARED_ACCOUNT_KEY`
+- Shared access signature (SAS) token:  `AZURE_SAS`, with the token in `sasToken`
 
 The order of evaluation for `AZURE_IDENTITY` is the following:
 
@@ -20,3 +21,41 @@ The order of evaluation for `AZURE_IDENTITY` is the following:
 To log in as an app registration (a service principal), set `credentialType` to `AZURE_IDENTITY` and provide `clientId`, `clientSecret`, and `tenantId`: when all three are set, they are used instead of the order above. `CLIENT_SECRET` does not use these three properties.
 
 For more information, see the https://learn.microsoft.com/en-us/java/api/overview/azure/identity-readme[Azure Identity documentation]
+
+=== Log in with a SAS Token
+
+A shared access signature (SAS) token gives access to the storage account, or to one container, with the permissions
+and the expiry chosen when it was made, without handing out an access key. Create one in the Azure portal: the storage
+account, then *Security + networking*, then *Shared access signature*, or the container, then *Shared access tokens*.
+Set **credentialType** to `AZURE_SAS` and **sasToken** to the token, without the URL in front of it; a leading `?` is
+allowed. The source needs the List and Read permissions, and also Delete with **deleteAfterRead**, or Write and Delete with **moveAfterRead**. A token that lacks a permission, or has expired, fails with status 403.
+
+=== Example: Read Some of the Blobs and Move Them Once Read
+
+By default the source reads every blob of the container on every poll. Use **prefix** or **regex** to read only some of
+them, and **moveAfterRead** to move each blob to another container once it has been processed:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:azure-storage-blob-source"
+      parameters:
+        accountName: "mystorageaccount"
+        containerName: "uploads"
+        credentialType: "AZURE_SAS"
+        sasToken: "sv=2022-11-02&ss=b&srt=sco&sp=rwdl&se=2026-12-31T00:00:00Z&spr=https&sig=..."
+        prefix: "in/"
+        moveAfterRead: true
+        destinationContainer: "processed"
+      steps:
+        - to: "log:blob?showHeaders=true"
+----
+
+The source reads only the blobs whose name starts with `in/`, such as `in/orders.csv` and `in/2026/report.csv`. Once a
+blob has been processed, it is copied to the container `processed` under the same name, `in/orders.csv`, and deleted
+from `uploads`. The container `processed` must exist: when the copy fails, the blob stays in `uploads` and is read again
+on the next poll.
+
+To select blobs by a pattern instead, set **regex** to a Java regular expression that matches the whole name, such as
+`.*\.csv` for the CSV files in any folder. When **regex** is set, **prefix** is ignored.

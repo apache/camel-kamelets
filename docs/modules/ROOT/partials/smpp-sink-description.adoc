@@ -5,9 +5,81 @@
 The message body is sent as the short message text. The recipient is the `CamelSmppDestAddr` header when it is
 set, and the `destAddr` option otherwise.
 
+=== Delivery Receipts
+
+The Kamelet asks the SMSC for a delivery receipt of each SMS. The SMSC sends the receipts to a receiver logged in to
+it, such as `smpp-source`, not to this Kamelet. `registeredDelivery` says which receipts to ask for:
+
+[width="100%",cols="1,4",options="header"]
+|===
+| `registeredDelivery` | Receipts
+| not set, or `1` | A receipt whether the SMS reached the phone or not
+| `2` | A receipt only when the SMS failed
+| `0` | No receipt
+|===
+
+=== Sender and Recipient Numbers
+
+The type of number (TON) and the numbering plan (NPI) tell the SMSC how to read `sourceAddr` and the recipient
+address. When they are not set, both are `0` (unknown), and the SMSC guesses. Common settings:
+
+[width="100%",cols="2,1,1,3",options="header"]
+|===
+| Address | TON | NPI | Example
+| A phone number with its country code | `1` | `1` | `4598765432`
+| A name as the sender | `5` | `0` | `MyShop`
+|===
+
+Set them with `sourceAddrTon` and `sourceAddrNpi` for the sender, and `destAddrTon` and `destAddrNpi` for the
+recipient. Ask your SMS provider which values it expects.
+
+=== Text in Any Language
+
+The text is encoded with `encoding`, ISO-8859-1 by default, so characters it cannot hold, such as Cyrillic, Greek or
+emoji, are sent as `?`. To send text in any language, set both `alphabet` and `dataCoding` to `8` (UCS-2): `alphabet`
+encodes the text as UCS-2, and `dataCoding` marks the SMS as UCS-2 so that the phone can read it. One SMS then holds 70
+characters instead of 160.
+
+To send binary data, such as a body of bytes, set both `alphabet` and `dataCoding` to `4`: the bytes are sent as they
+are.
+
 === Connection
 
 The Kamelet binds to the SMSC when the integration starts, so an unreachable SMSC makes the
 integration fail to start, rather than failing each message.
 
+Every `enquireLinkTimer` milliseconds, one minute by default, the Kamelet checks that the connection is alive. A lower
+value finds a lost connection sooner.
+
 Set `usingSSL` to secure the connection with TLS, where the SMSC supports it.
+
+=== Example with Delivery Receipts and Unicode Text
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: "Ihr Paket ist unterwegs. Ваша посылка в пути."
+        period: 3600000
+      steps:
+        - to:
+            uri: "kamelet:smpp-sink"
+            parameters:
+              host: "smsc.example.com"
+              systemId: "myaccount"
+              password: "{{smpp.password}}"
+              sourceAddr: "MyShop"
+              sourceAddrTon: 5
+              sourceAddrNpi: 0
+              destAddr: "4598765432"
+              destAddrTon: 1
+              destAddrNpi: 1
+              registeredDelivery: 1
+              alphabet: 8
+              dataCoding: 8
+              enquireLinkTimer: 30000
+----
+
+The delivery receipts of these SMS arrive at an `smpp-source` logged in to the same SMSC.

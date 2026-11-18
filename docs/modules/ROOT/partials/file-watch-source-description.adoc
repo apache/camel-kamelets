@@ -6,6 +6,8 @@ The File Watch Source Kamelet monitors files or directories for changes and emit
 
 - **File Path**: The path of the directory to monitor (required). It must be a directory, not a single file; it is created when it does not exist
 - **Events**: The types of filesystem events to watch for (default: "CREATE,MODIFY,DELETE")
+- **Include Files (Wildcards)**: A wildcard pattern for the path of the files whose changes to send, such as `**/*.csv` (not set by default: all files)
+- **Recursive**: Whether the changes in the subdirectories are sent too (default: true)
 
 === Event Types
 
@@ -19,7 +21,7 @@ You can specify multiple events by separating them with commas.
 
 === Output Format
 
-The body of each message is the file that changed. The `CamelFileEventType` header holds the kind of event (`CREATE`, `MODIFY` or `DELETE`), `CamelFileName` the path relative to the watched directory, and `CamelFileAbsolutePath` the full path. Subdirectories are watched too. A deleted file, or a directory, has no content to read.
+The body of each message is the file that changed. The `CamelFileEventType` header holds the kind of event (`CREATE`, `MODIFY` or `DELETE`), `CamelFileName` the path relative to the watched directory, and `CamelFileAbsolutePath` the full path. Subdirectories are watched too, unless **Recursive** is false. A deleted file, or a directory, has no content to read.
 
 === Volume Mounting
 
@@ -73,3 +75,25 @@ This example only monitors for modifications of the files in the `/var/log/myapp
 ----
 
 This example monitors for file creation and deletion events in the documents directory.
+
+=== Example with a File Pattern
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:file-watch-source"
+      parameters:
+        filePath: "/data/incoming"
+        events: "CREATE"
+        antInclude: "**/*.csv"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+This sends a message for each new CSV file in `/data/incoming` and its subdirectories, and for no other file or
+directory. The pattern matches the path below `filePath`, such as `2026/orders.csv`: `*` matches any part of a name and
+`**` any number of directories, so `*.csv` alone matches only the files directly in `/data/incoming`. Upper and lower
+case differ. With `recursive: false`, only the changes directly in `filePath` are sent, which includes a new
+subdirectory itself but not the files in it.

@@ -39,7 +39,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the response of the function, and the `CamelHttpResponseCode` header its status code.
 
-      Good to know: a response with a status code outside 200 to 299 fails the message. The `key` is sent as the `code` query parameter of the request.
+      Good to know: a response with a status code outside 200 to 299 fails the message. The `key` is sent as the `code` query parameter of the request, or, when `keyInHeader` is true, in the `x-functions-key` header, which keeps it out of the address of the request that error messages show.
     required:
       - url
     type: object
@@ -58,11 +58,15 @@ spec:
         enum: ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "TRACE", "PATCH"]
       key:
         title: Key
-        description: "A function key, or the master key, from the Azure portal: the function, then Function Keys. Needed when the authorization level of the function is `function` or `admin`; leave it empty for `anonymous`."
+        description: "A function key, or the master key, from the Azure portal: the function, then Function Keys. Needed when the authorization level of the function is `function` or `admin`; leave it empty for `anonymous`. It is sent as the `code` query parameter, or in the `x-functions-key` header when `keyInHeader` is true."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      keyInHeader:
+        title: Key in Header
+        description: If true, the `key` is sent in the `x-functions-key` HTTP header instead of the `code` query parameter. Azure Functions accepts either. The address of the request, which error messages show, then does not hold the key, and the header is removed from the message after a successful call. Requires `key`. When not set, or false, the key is sent as `code`.
+        type: boolean
   dependencies:
   - "camel:vertx-http"
   - "camel:kamelet"
@@ -77,8 +81,28 @@ spec:
             expression:
               constant:
                 expression: "{{method}}"
-        - to:
-            uri: vertx-http
-            parameters:
-              httpUri: "{{url}}"
-              code: "RAW({{?key}})"
+        - choice:
+            precondition: true
+            when:
+              - expression:
+                  simple:
+                    expression: "{{keyInHeader:false}} == true"
+                steps:
+                  - setHeader:
+                      name: x-functions-key
+                      expression:
+                        constant:
+                          expression: "{{key}}"
+                  - to:
+                      uri: vertx-http
+                      parameters:
+                        httpUri: "{{url}}"
+                  - removeHeader:
+                      name: x-functions-key
+            otherwise:
+              steps:
+                - to:
+                    uri: vertx-http
+                    parameters:
+                      httpUri: "{{url}}"
+                      code: "RAW({{?key}})"

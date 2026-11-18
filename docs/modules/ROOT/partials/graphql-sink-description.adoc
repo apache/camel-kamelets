@@ -2,7 +2,7 @@
 
 === GraphQL Operations
 
-This Kamelet sends the GraphQL query or mutation in the message body to a GraphQL endpoint, with an HTTP POST, and returns the answer of the server.
+This Kamelet sends a GraphQL query or mutation, from the message body or from a file, to a GraphQL endpoint, with an HTTP POST, and returns the answer of the server.
 
 === Required Configuration
 
@@ -15,3 +15,32 @@ This Kamelet sends the GraphQL query or mutation in the message body to a GraphQ
 === Usage
 
 The body of each message must be the text of the query or mutation, such as `{ books { title } }`. The answer of the server, JSON text with `data` and `errors`, becomes the body of the message, for the next steps of a route.
+
+=== Query from a File
+
+With `queryFile`, the query comes from a file, `file:` followed by its path, or `classpath:` followed by a resource in the application, and the body is not sent as the query. The values of the variables of the query come from `variables`, as a JSON object. When the file defines several operations, `operationName` picks the one to run.
+
+[source,yaml]
+----
+- to:
+    uri: "kamelet:graphql-sink"
+    parameters:
+      url: "https://api.example.com/graphql"
+      queryFile: "file:/etc/graphql/books.graphql"
+      operationName: AddBook
+      variables: '{"title":"Dune","year":1965}'
+----
+
+With this file, `AddBook` runs with `$title` set to `Dune` and `$year` set to 1965:
+
+[source,graphql]
+----
+query ListBooks { books { title } }
+mutation AddBook($title: String!, $year: Int) { addBook(title: $title, year: $year) { id } }
+----
+
+When `variables` is not set, a body that is a Map, such as JSON parsed into a Map, is sent as the variables. Any other body is not sent.
+
+=== Proxy
+
+To send the requests through an HTTP proxy, set `proxyHost` to its host and port, such as `proxy.example.com:3128`. A proxy that asks for a login is not supported.

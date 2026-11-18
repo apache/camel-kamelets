@@ -31,15 +31,15 @@ spec:
   definition:
     title: "Infinispan Sink"
     description: |-
-      Stores the body of each message under a key in a cache of a remote Infinispan server, or in Red Hat Data Grid.
+      Stores the body of each message under a key in a cache of a remote Infinispan server, or in Red Hat Data Grid, or removes the entry of the key.
 
-      Use it to share data between applications through an Infinispan cache, for example the latest status of each order or a lookup table that other services read. To react to the changes in a cache, use `infinispan-source`.
+      Use it to share data between applications through an Infinispan cache, for example the latest status of each order or a lookup table that other services read, or to keep an entry only for a while, such as a session. To react to the changes in a cache, use `infinispan-source`.
 
-      Input: the body is the value to store, as text. The `key` header (or `ce-key`) is the key; without one, a new unique id is used as the key, so each message adds a new entry. A value that is already under the key is replaced.
+      Input: the body is the value to store, as text. The `key` header (or `ce-key`) is the key; without one, a new unique id is used as the key, so each message adds a new entry. What is done depends on `operation`. By default (`PUT`), a value that is already under the key is replaced. `PUTIFABSENT` keeps a value that is already there, and `REPLACE` stores the body only under a key that has a value. `REMOVE` deletes the entry of the key: with an empty body always, and with a body only when the value stored is equal to the body.
 
-      Output: when it is used inside a route, the message has no body afterwards.
+      Output: when it is used inside a route, the message has no body afterwards. With `REMOVE` and a body, the body afterwards is `true` when the entry was deleted and `false` when it was not.
 
-      Good to know: the cache must already exist on the server. A body that the Infinispan client cannot store, such as a Map, fails the message; turn it into JSON text first, for example with `json-serialize-action`. Recent Infinispan servers do not accept the default `saslMechanism` of `DIGEST-MD5`: set it to `SCRAM-SHA-512`. The connection has no TLS.
+      Good to know: the cache must already exist on the server. A body that the Infinispan client cannot store, such as a Map, fails the message; turn it into JSON text first, for example with `json-serialize-action`. With `lifespan` or `maxIdle`, the entries are removed after that time. Recent Infinispan servers do not accept the default `saslMechanism` of `DIGEST-MD5`: set it to `SCRAM-SHA-512`. The connection has TLS only when `sslTruststoreLocation` is set, together with `sslSniHostName`.
     required:
       - cacheName
       - hosts
@@ -59,7 +59,7 @@ spec:
         example: "infinispan.example.com:11222"
       secure:
         title: Secure
-        description: If true, it logs in with `username` and `password`. Set it to false only for a server that needs no login. It does not turn on TLS.
+        description: If true, it logs in with `username` and `password`. Set it to false only for a server that needs no login. It does not turn on TLS; `sslTruststoreLocation` does.
         type: boolean
         default: true
       username:
@@ -91,6 +91,53 @@ spec:
         description: The name of the server, used when logging in. Keep the default unless your Infinispan administrator changed it.
         type: string
         default: "infinispan"
+      operation:
+        title: Operation
+        description: What to do with each message. `PUT` stores the body under the key, and replaces a value that is already there. `PUTIFABSENT` stores it only when the key has no value yet. `REPLACE` stores it only when the key already has a value. `REMOVE` deletes the entry of the key; with a body, it deletes it only when the value stored is equal to the body. When it is not set, `PUT` is used.
+        type: string
+        enum: ["PUT", "PUTIFABSENT", "REPLACE", "REMOVE"]
+        example: REMOVE
+      lifespan:
+        title: Lifespan
+        description: How long an entry stays in the cache after it is stored, in the unit of `lifespanTimeUnit`. The entry is then removed. When it is not set, the entry does not expire, unless the cache on the server sets a lifespan. Not used with `REMOVE`.
+        type: integer
+        example: 60
+      lifespanTimeUnit:
+        title: Lifespan Time Unit
+        description: The unit of `lifespan`. Only used when `lifespan` is set.
+        type: string
+        enum: ["MILLISECONDS", "SECONDS", "MINUTES", "HOURS", "DAYS"]
+        default: SECONDS
+      maxIdle:
+        title: Max Idle Time
+        description: How long an entry stays in the cache when it is not read or written, in the unit of `maxIdleTimeUnit`. The entry is then removed. It works with or without `lifespan`. When it is not set, an entry is not removed for being idle, unless the cache on the server sets it. Not used with `REMOVE`.
+        type: integer
+        example: 300
+      maxIdleTimeUnit:
+        title: Max Idle Time Unit
+        description: The unit of `maxIdle`. Only used when `maxIdle` is set.
+        type: string
+        enum: ["MILLISECONDS", "SECONDS", "MINUTES", "HOURS", "DAYS"]
+        default: SECONDS
+      sslTruststoreLocation:
+        title: Trust Store Location
+        description: The path of a file with the certificate of the server, or of the authority that signed it, to connect with TLS. It is a trust store in PKCS12 or JKS format, which needs `sslTruststorePassword`, or a PEM file with the certificates, such as `ca.crt`, which needs no password. Setting it turns on TLS, and `sslSniHostName` is then required. The Infinispan client does not use the certificates that Java trusts by default, so a server with a certificate from a public authority needs this file too. When it is not set, the connection has no TLS.
+        type: string
+        example: "/etc/infinispan/truststore.p12"
+        pattern: "^[^&?#]+$"
+      sslTruststorePassword:
+        title: Trust Store Password
+        description: The password of the trust store file in `sslTruststoreLocation`. Not needed for a PEM file.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      sslSniHostName:
+        title: TLS Server Name
+        description: The host name of the server as its certificate names it, such as `infinispan.example.com`. Required with `sslTruststoreLocation`. It is sent to the server when the connection starts (SNI), and the certificate of the server must be for this name, or the connection fails. Setting it without `sslTruststoreLocation` fails at start.
+        type: string
+        example: "infinispan.example.com"
+        pattern: "^[A-Za-z0-9.-]+$"
   dataTypes:
     in:
       headers:
@@ -144,5 +191,51 @@ spec:
             expression:
               simple:
                 expression: "${body}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{?lifespan}}' != ''"
+                steps:
+                  - setHeader:
+                      name: CamelInfinispanLifespanTime
+                      expression:
+                        simple:
+                          expression: "{{?lifespan}}"
+                  - setHeader:
+                      name: CamelInfinispanTimeUnit
+                      expression:
+                        simple:
+                          expression: "{{lifespanTimeUnit}}"
+              - expression:
+                  simple:
+                    expression: "'{{?maxIdle}}' != ''"
+                steps:
+                  - setHeader:
+                      name: CamelInfinispanLifespanTime
+                      expression:
+                        simple:
+                          expression: "-1"
+                  - setHeader:
+                      name: CamelInfinispanTimeUnit
+                      expression:
+                        simple:
+                          expression: "SECONDS"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{?maxIdle}}' != ''"
+                steps:
+                  - setHeader:
+                      name: CamelInfinispanMaxIdleTime
+                      expression:
+                        simple:
+                          expression: "{{?maxIdle}}"
+                  - setHeader:
+                      name: CamelInfinispanMaxIdleTimeUnit
+                      expression:
+                        simple:
+                          expression: "{{maxIdleTimeUnit}}"
         - to:
-            uri: "{{local-infinispan}}:{{cacheName}}?hosts={{hosts}}&secure={{secure}}&username={{username}}&password=RAW({{password}})&saslMechanism={{saslMechanism}}&securityRealm={{securityRealm}}&securityServerName={{securityServerName}}"
+            uri: "{{local-infinispan}}:{{cacheName}}?hosts={{hosts}}&secure={{secure}}&username={{username}}&password=RAW({{password}})&saslMechanism={{saslMechanism}}&securityRealm={{securityRealm}}&securityServerName={{securityServerName}}&operation={{?operation}}&configurationProperties[trust_store_file_name]={{?sslTruststoreLocation}}&configurationProperties[trust_store_password]=RAW({{?sslTruststorePassword}})&configurationProperties[sni_host_name]={{?sslSniHostName}}"

@@ -38,7 +38,7 @@ spec:
 
       Output: the body is a JSON object, as JSON text, that describes one change: `eventName` is `INSERT`, `MODIFY` or `REMOVE`, and `dynamodb` holds the key of the item (`keys`) and, depending on the view type of the stream, the item before (`oldImage`) and after (`newImage`) the change, with the type of each attribute. The headers give the ID and the name of the event.
 
-      Good to know: DynamoDB Streams must be enabled on the table, with the view type that holds the images you need, such as new and old images. By default it reads only the changes made after it starts. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: DynamoDB Streams must be enabled on the table, with the view type that holds the images you need, such as new and old images. By default it reads only the changes made after it starts, up to 100 in one poll; set `maxResultsPerRequest` to read fewer at a time. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - table
       - region
@@ -116,6 +116,11 @@ spec:
         description: How long to wait between two reads of the stream, in milliseconds.
         type: integer
         default: 500
+      maxResultsPerRequest:
+        title: Max Changes Per Poll
+        description: The most changes it reads in one poll, from 1 to 1000. The number is shared between the shards of the stream that it reads, at least 1 each. When it is not set, it is 100. With a lower number, a burst of changes takes more polls, `delay` apart, to read.
+        type: integer
+        example: 50
       proxyHost:
         title: Proxy Host
         description: The host name or IP address of an HTTP proxy to send the calls to AWS through, such as the proxy of a company network. Used only together with `proxyPort`. When it is not set, the calls go straight to AWS.
@@ -203,6 +208,7 @@ spec:
         proxyHost: "{{?proxyHost}}"
         proxyPort: "{{?proxyPort}}"
         proxyProtocol: "{{?proxyProtocol}}"
+        maxResultsPerRequest: "{{?maxResultsPerRequest}}"
       steps:
         - transformDataType:
             toType: aws2-ddb:application-x-struct

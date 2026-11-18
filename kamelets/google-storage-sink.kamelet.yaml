@@ -39,7 +39,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards describes the uploaded file (its bucket, name, size and generation), not its content, and the `CamelGoogleCloudStorageObjectName` header holds the name of the file.
 
-      Good to know: a file with the same name is overwritten. The bucket must exist, unless `autoCreateBucket` is true. Without `serviceAccountKey`, it logs in with the Application Default Credentials of the environment where it runs.
+      Good to know: a file with the same name is overwritten. With `objectName`, every message overwrites the same file. The bucket must exist, unless `autoCreateBucket` is true; a bucket it creates is in `storageLocation`, `US-EAST1` when that is not set. Without `serviceAccountKey`, it logs in with the Application Default Credentials of the environment where it runs, or with Workload Identity Federation when `useWorkloadIdentityFederation` is true.
     required:
       - bucketNameOrArn
     type: object
@@ -61,6 +61,34 @@ spec:
         description: If true, the bucket is created when it does not exist yet. The service account then needs the permission to create buckets in the project.
         type: boolean
         default: false
+      objectName:
+        title: Object Name
+        description: The name of the file in the bucket, with its folders, such as `status/latest.json`. When it is set, every message is written to that file, whatever the `file` and `ce-file` headers say.
+        type: string
+        example: status/latest.json
+        pattern: "^[^\\r\\n]+$"
+      storageLocation:
+        title: Storage Location
+        description: The location of the bucket that `autoCreateBucket` creates, such as a region (`europe-west1`) or a multi-region (`EU`). Only used when the bucket is created. When it is not set, it is `US-EAST1`.
+        type: string
+        example: EU
+        pattern: "^[A-Za-z0-9-]+$"
+      useWorkloadIdentityFederation:
+        title: Use Workload Identity Federation
+        description: If true, it logs in with Workload Identity Federation instead of `serviceAccountKey`, which is then ignored. It uses the credential configuration file in `workloadIdentityConfig` or, when that is not set, the Application Default Credentials. When it is not set, it is false.
+        type: boolean
+      workloadIdentityConfig:
+        title: Workload Identity Configuration
+        description: "Where to load the Workload Identity Federation credential configuration file from: the JSON file of type `external_account` that `gcloud iam workload-identity-pools create-cred-config` creates, which tells how to exchange a token of another identity provider, such as AWS, Azure or Kubernetes, for Google credentials. Prefix the path with `file:`, `classpath:`, `http:` or `https:`. Only used when `useWorkloadIdentityFederation` is true."
+        type: string
+        example: "file:/var/run/secrets/gcp/credential-config.json"
+        pattern: "^(file|classpath|http|https):.+$"
+      impersonatedServiceAccount:
+        title: Impersonated Service Account
+        description: The email of a service account to act as, with the credentials of Workload Identity Federation, so that the Kamelet gets the permissions of that service account. The federated identity needs the Service Account Token Creator role on it. Only used when `useWorkloadIdentityFederation` is true.
+        type: string
+        example: storage-writer@my-project-123.iam.gserviceaccount.com
+        pattern: "^[^@\\s]+@[^@\\s]+$"
   dataTypes:
     in:
       headers:
@@ -114,4 +142,4 @@ spec:
                       simple:
                         expression: "${exchangeId}"
         - to:
-            uri: "google-storage://{{bucketNameOrArn}}?autoCreateBucket={{autoCreateBucket}}&serviceAccountKey=RAW(base64:{{?serviceAccountKey}})"
+            uri: "google-storage://{{bucketNameOrArn}}?autoCreateBucket={{autoCreateBucket}}&impersonatedServiceAccount={{?impersonatedServiceAccount}}&objectName=RAW({{?objectName}})&serviceAccountKey=RAW(base64:{{?serviceAccountKey}})&storageLocation={{?storageLocation}}&useWorkloadIdentityFederation={{?useWorkloadIdentityFederation}}&workloadIdentityConfig={{?workloadIdentityConfig}}"

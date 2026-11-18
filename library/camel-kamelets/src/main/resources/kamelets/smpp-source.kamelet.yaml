@@ -37,7 +37,7 @@ spec:
 
       Output: the body is the text of the SMS. The `CamelSmppSourceAddr` header is the phone number of the sender, `CamelSmppDestAddr` the number it was sent to, and `CamelSmppMessageType` is `DeliverSm` for an SMS and `DeliveryReceipt` for a delivery receipt, whose body is the text of the receipt and whose fields are in other `CamelSmpp` headers.
 
-      Good to know: it logs in to the SMSC as a receiver when the integration starts, and the integration fails to start when the SMSC cannot be reached. The SMSC decides which messages it gets, from `systemId` and `addressRange`. It connects with no TLS unless `usingSSL` is true.
+      Good to know: it logs in to the SMSC as a receiver when the integration starts, and the integration fails to start when the SMSC cannot be reached. The SMSC sends a delivery receipt for each SMS that `smpp-sink` sent with `registeredDelivery` `1` (its default), or `2` when the SMS failed: the `CamelSmppId` header of the receipt is the ID that `smpp-sink` got for the SMS, and `CamelSmppStatus` its final state, such as `DELIVRD`. The SMSC decides which messages it gets, from `systemId` and `addressRange`. It connects with no TLS unless `usingSSL` is true.
     required:
     - host
     type: object
@@ -86,6 +86,12 @@ spec:
         description: "Whether to secure the connection to the SMSC with TLS (the smpps protocol). The SMSC must support it, usually on another port."
         type: boolean
         default: false
+      enquireLinkTimer:
+        title: "Enquire Link Interval"
+        description: "How often to check that the connection to the SMSC is alive with an enquire_link, in milliseconds. When it is not set, it is 60000, which is one minute. A lower value finds a lost connection sooner."
+        type: integer
+        minimum: 1
+        example: 30000
   dataTypes:
     out:
       headers:
@@ -116,6 +122,7 @@ spec:
         systemId: "RAW({{systemId}})"
         systemType: "{{?systemType}}"
         usingSSL: "{{usingSSL}}"
+        enquireLinkTimer: "{{?enquireLinkTimer}}"
       steps:
         - to:
             uri: kamelet:sink

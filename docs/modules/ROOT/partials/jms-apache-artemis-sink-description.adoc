@@ -25,3 +25,32 @@ new connection for each message. The pool is set with these options:
 - `maxSessionsPerConnection`: the most sessions open at the same time on each connection (default: 500)
 - `maxIdleSessionsPerConnection`: how many unused sessions each connection keeps for reuse (default: 500)
 - `connectionIdleTimeout`: how long an unused connection stays open, in milliseconds (default: 30000)
+
+=== Persistence, priority and expiry
+
+By default, each message is persistent, has priority 4, and never expires. Three options change that for every message
+the sink sends:
+
+- `deliveryPersistent`: `false` sends non-persistent messages, which are faster, but lost when the broker stops.
+- `priority`: from 0 (lowest) to 9 (highest). Of the messages waiting on a queue, the broker delivers those with the
+  highest priority first.
+- `timeToLive`: how long a message may wait to be received, in milliseconds. An expired message is not delivered: Artemis moves it to the queue `ExpiryQueue`.
+
+`jmsMessageType` sends every message as a text message (`Text`) or a bytes message (`Bytes`), whatever the body, for a
+receiver that expects one kind.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:webhook-source"
+      steps:
+        - to:
+            uri: "kamelet:jms-apache-artemis-sink"
+            parameters:
+              brokerURL: "tcp://artemis.example.com:61616"
+              destinationName: "alerts.queue"
+              priority: 7
+              timeToLive: 60000
+              jmsMessageType: "Text"
+----

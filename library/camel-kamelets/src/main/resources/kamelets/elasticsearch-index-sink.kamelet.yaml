@@ -39,7 +39,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the id of the document, as text.
 
-      Good to know: a body that is not JSON fails the message, and so does a message with no index, from the option or the header. It connects with TLS by default (`enableSSL`); for a server with a self-signed certificate, give its certificate in `certificate`.
+      Good to know: a body that is not JSON fails the message, and so does a message with no index, from the option or the header. It connects with TLS by default (`enableSSL`). For a cluster whose certificate is self-signed, or signed by a private certificate authority (CA), give the certificate of that CA in `certificate`; without it, the message fails with `PKIX path building failed`. When Elasticsearch does not answer, the message fails after 30 seconds; `connectionTimeout` and `socketTimeout` change that.
     required:
       - clusterName
       - hostAddresses
@@ -80,8 +80,18 @@ spec:
         example: orders
       certificate:
         title: Certificate
-        description: The certificate of the certificate authority (CA) that signed the certificate of the cluster, such as the `http_ca.crt` file of Elasticsearch, as PEM text encoded in base64. Needed when the cluster uses a self-signed certificate.
+        description: The certificate of the certificate authority (CA) that signed the certificate of the cluster, such as the `http_ca.crt` file that Elasticsearch generates, as a PEM or DER file encoded in base64 on one line, such as the output of `base64 -w0 http_ca.crt` (`base64 -i http_ca.crt` on macOS). Needed when the cluster uses a self-signed certificate, or one signed by a private CA. When it is set, only this CA is trusted; when it is not set, the certificates that Java trusts are used.
         type: string
+      connectionTimeout:
+        title: Connection Timeout
+        description: How long to wait for the connection to Elasticsearch, in milliseconds. When it is not set, it is 30000, which is 30 seconds.
+        type: integer
+        example: 5000
+      socketTimeout:
+        title: Socket Timeout
+        description: How long to wait for data from Elasticsearch, in milliseconds. When Elasticsearch sends nothing for this long, during the TLS handshake or while it stores the document, the message fails with a `SocketTimeoutException`. When it is not set, it is 30000, which is 30 seconds.
+        type: integer
+        example: 10000
   dataTypes:
     in:
       headers:
@@ -165,4 +175,4 @@ spec:
         - unmarshal:
             json: {}
         - to:
-            uri: "{{local-es}}:{{clusterName}}?operation=INDEX&hostAddresses={{hostAddresses}}&enableSSL={{enableSSL}}&indexName={{?indexName}}&certificatePath=base64:{{?certificate}}"
+            uri: "{{local-es}}:{{clusterName}}?operation=INDEX&hostAddresses={{hostAddresses}}&enableSSL={{enableSSL}}&indexName={{?indexName}}&certificatePath=RAW(base64:{{?certificate}})&connectionTimeout={{?connectionTimeout}}&socketTimeout={{?socketTimeout}}"

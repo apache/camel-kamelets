@@ -30,6 +30,23 @@ In this Kamelet you could use the following headers for metrics:
 - `metric-dimension-name` / `ce-metricdimensionname` for the dimension name.
 - `metric-dimension-value` / `ce-metricdimensionvalue` for the dimension value.
 
+=== The Same Metric for Every Message
+
+To send the same metric for every message, set `metricName`, and `metricValue` and `metricUnit` if needed, instead of the headers. A header wins over the option, so a message can still send another metric. Without a value, the value is 1, and without a unit, the unit is `Count`: with only `metricName`, the metric counts the messages.
+
+The step that sends to the Kamelet, in a route:
+
+[source,yaml,subs='+attributes,macros']
+----
+- to:
+    uri: "kamelet:aws-cloudwatch-sink"
+    parameters:
+      cwNamespace: "MyApp/Orders"
+      region: "eu-west-1"
+      useDefaultCredentialsProvider: true
+      metricName: "OrdersProcessed"
+----
+
 === Through an HTTP Proxy
 
 Where AWS can be reached only through an HTTP proxy, as in many company networks, set `proxyHost` and `proxyPort` to the proxy. `proxyProtocol` is how the Kamelet talks to the proxy itself, not to AWS: it is `HTTPS` when it is not set, so set it to `HTTP` for a proxy that takes plain HTTP, such as Squid. The calls to AWS stay encrypted, as the proxy only passes them on. The Kamelet has no option for a proxy user or password.

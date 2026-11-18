@@ -16,7 +16,77 @@ Optional settings include:
 - Port (defaults to 8091)
 - Starting ID for document inserts (defaults to 1)
 - Auto start ID flag (defaults to true)
+- Scope and collection to store the documents in
+- A fixed document ID (`key`) for messages without the `CamelCouchbaseId` header
+- The operation, `CCB_PUT` to store or `CCB_DEL` to delete
+- Durability (`persistTo`, `replicateTo`) and timeouts (`connectTimeout`, `retryAttempts`, `retryPause`, `operationTimeout`)
 
 === Document Storage
 
-Documents are stored in the specified Couchbase bucket. The Kamelet can automatically generate document IDs starting from a configurable starting point. The count starts again at the starting ID each time the integration starts, and a document that already has an ID is replaced, so a restart overwrites the documents stored before. To choose the IDs yourself, set `autoStartId` to false and give each message its ID in the `CamelCouchbaseId` header.
+Documents are stored in the specified Couchbase bucket. The Kamelet can automatically generate document IDs starting from a configurable starting point. The count starts again at the starting ID each time the integration starts, and a document that already has an ID is replaced, so a restart overwrites the documents stored before. To choose the IDs yourself, set `autoStartId` to false and give each message its ID in the `CamelCouchbaseId` header. A message without the header then uses `key`, and fails with `No document id` when `key` is not set either.
+
+=== Example with a Scope and a Collection
+
+Without `collection`, the documents go to the default collection of the bucket, and `scope` is not used. Set both to
+store them in a collection of your own. The collection must exist: if it does not, each message waits and fails with
+`AmbiguousTimeoutException`. Here each order is stored in the `orders` collection of the `sales` scope, under the
+order number the message carries in its `CamelCouchbaseId` header:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:kafka-source"
+      parameters:
+        topic: "orders"
+        bootstrapServers: "kafka.example.com:9092"
+        saslAuthType: "NONE"
+      steps:
+        - setHeader:
+            name: CamelCouchbaseId
+            jq: ".orderId"
+        - to:
+            uri: "kamelet:couchbase-sink"
+            parameters:
+              protocol: "http"
+              couchbaseHostname: "couchbase.example.com"
+              bucket: "shop"
+              scope: "sales"
+              collection: "orders"
+              autoStartId: false
+              username: "{{couchbase.username}}"
+              password: "{{couchbase.password}}"
+----
+
+=== Example Deleting Documents
+
+With `operation` set to `CCB_DEL`, each message deletes the document whose ID it carries in the `CamelCouchbaseId`
+header, and the body is not used. Also set `autoStartId` to false, or the Kamelet deletes the documents `1`, `2`, `3`
+and so on. Deleting a document that does not exist fails the message with `Document with the given id not found`.
+
+[source,yaml,subs='+attributes,macros']
+----
+- to:
+    uri: "kamelet:couchbase-sink"
+    parameters:
+      protocol: "http"
+      couchbaseHostname: "couchbase.example.com"
+      bucket: "shop"
+      scope: "sales"
+      collection: "orders"
+      autoStartId: false
+      operation: "CCB_DEL"
+      username: "{{couchbase.username}}"
+      password: "{{couchbase.password}}"
+----
+
+=== Durability and Timeouts
+
+`persistTo` and `replicateTo` make each write wait until the document is saved to disk, or copied to replicas, on that
+many nodes. The bucket must have the replicas: if it does not, the document is still stored, but the message fails with
+`Not enough replicas configured on the bucket`. They do not apply to `CCB_DEL`.
+
+A write or delete fails after `retryAttempts` × `retryPause` milliseconds, 2 × 5000 = 10 seconds by default, or after
+`operationTimeout` when that is longer. For example, `retryAttempts: 1`, `retryPause: 1000` and `operationTimeout: 4000`
+make a write that cannot be done fail after 4 seconds, trying again every second. `connectTimeout` is how long one attempt
+to connect to a node may take, 30 seconds by default.

@@ -32,15 +32,15 @@ spec:
   definition:
     title: "AWS SES Sink"
     description: |-
-      Sends each message as a plain-text email through Amazon SES (Simple Email Service), to the addresses in the `to` header.
+      Sends each message as a plain-text email through Amazon SES (Simple Email Service), to the addresses in the `to` header or the `to` option.
 
       Use it to send notifications, alerts or confirmations by email from an integration, such as an order confirmation or an alert when a job fails.
 
-      Input: the body is the text of the email, as plain text. The `to` header (or `ce-to`) is required: one or more recipient addresses, separated by commas. The optional `subject` header (or `ce-subject`) is the subject; without it, the subject is a generated ID. The optional `reply-to-addresses` header (or `ce-reply-to-addresses`) is a comma-separated list of addresses that replies go to.
+      Input: the body is the text of the email, as plain text. The `to` header (or `ce-to`) gives one or more recipient addresses, separated by commas; it is required unless the `to` option is set. The optional `subject` header (or `ce-subject`) is the subject; without it and without the `subject` option, the subject is a generated ID. The optional `reply-to-addresses` header (or `ce-reply-to-addresses`) is a comma-separated list of addresses that replies go to. Each of these headers takes precedence over the option of the same purpose.
 
       Output: the message is unchanged. The `CamelAwsSesMessageId` header gives the ID that SES gave the email.
 
-      Good to know: a message without a `to` header fails. The `from` address must be verified in SES, and while the SES account is in the sandbox, the recipients must be verified too. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: a message without a `to` header fails, unless the `to` option is set. The `cc`, `bcc`, `returnPath` and `configurationSet` options apply to every email. The `from` address, and `returnPath` when it is set, must be verified in SES, and while the SES account is in the sandbox, the recipients must be verified too. A `configurationSet` that does not exist in SES makes every email fail. To reach a local stand-in of AWS, use `overrideEndpoint` and `uriEndpointOverride`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - from
       - region
@@ -115,20 +115,70 @@ spec:
         type: string
         enum: ["HTTP", "HTTPS"]
         example: HTTP
+      to:
+        title: To
+        description: The addresses to send every email to, separated by commas, such as `ops@example.com,oncall@example.com`. A `to` header on the message takes precedence. When it is not set, the `to` header is required.
+        example: ops@example.com
+        type: string
+        pattern: "^[^ ,@]+@[^ ,@]+( *, *[^ ,@]+@[^ ,@]+)*$"
+      cc:
+        title: Cc
+        description: The addresses to send a copy of every email to (Cc), separated by commas. The recipients see them.
+        example: team@example.com
+        type: string
+        pattern: "^[^ ,@]+@[^ ,@]+( *, *[^ ,@]+@[^ ,@]+)*$"
+      bcc:
+        title: Bcc
+        description: The addresses to send a blind copy of every email to (Bcc), separated by commas. The other recipients do not see them.
+        example: archive@example.com
+        type: string
+        pattern: "^[^ ,@]+@[^ ,@]+( *, *[^ ,@]+@[^ ,@]+)*$"
+      subject:
+        title: Subject
+        description: The subject of every email. A `subject` header on the message takes precedence. When it is not set, and there is no `subject` header, the subject is a generated ID.
+        example: Order confirmation
+        type: string
+      replyToAddresses:
+        title: Reply-To Addresses
+        description: The addresses that replies go to, separated by commas, such as `support@example.com`. A `reply-to-addresses` header on the message takes precedence. When it is not set, the emails have no Reply-To, and replies go to `from`.
+        example: support@example.com
+        type: string
+        pattern: "^[^ ,@]+@[^ ,@]+( *, *[^ ,@]+@[^ ,@]+)*$"
+      returnPath:
+        title: Return Path
+        description: The address that bounces and complaints are sent to, such as `bounces@example.com`. It must be verified in SES, as `from` is. When it is not set, they go to the `from` address.
+        example: bounces@example.com
+        type: string
+        pattern: "^[^ ,@]+@[^ ,@]+$"
+      configurationSet:
+        title: Configuration Set
+        description: The name of an SES configuration set to send the emails with, such as `my-configuration-set`, for example to publish their delivery, bounce, open and click events to CloudWatch, SNS or Firehose. It must exist in SES in the region, or every email fails with `ConfigurationSetDoesNotExist`.
+        example: my-configuration-set
+        type: string
+        pattern: "^[A-Za-z0-9_-]+$"
+      overrideEndpoint:
+        title: Endpoint Overwrite
+        description: If true, it connects to the address in `uriEndpointOverride` instead of to SES. Use it for a local stand-in of AWS such as LocalStack or Floci, or for a VPC endpoint of SES.
+        type: boolean
+      uriEndpointOverride:
+        title: Overwrite Endpoint URI
+        description: The address to connect to instead of AWS, as a URL such as `http://localhost:4566` for LocalStack. Only used when `overrideEndpoint` is true.
+        example: http://localhost:4566
+        type: string
   dataTypes:
     in:
       headers:
         to:
           title: To
-          description: The addresses to send the email to, separated by commas. `ce-to` works too. Required.
+          description: The addresses to send the email to, separated by commas. `ce-to` works too. Required unless the `to` option is set, which it takes precedence over.
           type: string
         subject:
           title: Subject
-          description: The subject of the email. `ce-subject` works too. Without it, the subject is a generated ID.
+          description: The subject of the email. `ce-subject` works too. It takes precedence over the `subject` option. Without both, the subject is a generated ID.
           type: string
         reply-to-addresses:
           title: Reply-To Addresses
-          description: The addresses that replies go to, separated by commas. `ce-reply-to-addresses` works too.
+          description: The addresses that replies go to, separated by commas. `ce-reply-to-addresses` works too. It takes precedence over the `replyToAddresses` option.
           type: string
   dependencies:
     - "camel:aws2-ses"
@@ -159,11 +209,18 @@ spec:
                           expression: "${header[ce-subject]}"
             otherwise:
               steps:
-                - setHeader:
-                    name: CamelAwsSesSubject
-                    expression:
-                      simple:
-                        expression: "${exchangeId}"
+                - choice:
+                    precondition: true
+                    when:
+                      - expression:
+                          simple:
+                            expression: "${propertiesExist:!subject}"
+                        steps:
+                          - setHeader:
+                              name: CamelAwsSesSubject
+                              expression:
+                                simple:
+                                  expression: "${exchangeId}"
         - choice:
             when:
               - expression:
@@ -205,4 +262,4 @@ spec:
                         simple:
                           expression: "${header[ce-reply-to-addresses]}"
         - to:
-            uri: "aws2-ses://{{from}}?accessKey=RAW({{?accessKey}})&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}&proxyHost={{?proxyHost}}&proxyPort={{?proxyPort}}&proxyProtocol={{?proxyProtocol}}"
+            uri: "aws2-ses://{{from}}?accessKey=RAW({{?accessKey}})&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}&proxyHost={{?proxyHost}}&proxyPort={{?proxyPort}}&proxyProtocol={{?proxyProtocol}}&to=RAW({{?to}})&cc=RAW({{?cc}})&bcc=RAW({{?bcc}})&subject=RAW({{?subject}})&replyToAddresses=RAW({{?replyToAddresses}})&returnPath=RAW({{?returnPath}})&configurationSet={{?configurationSet}}&overrideEndpoint={{?overrideEndpoint}}&uriEndpointOverride={{?uriEndpointOverride}}"

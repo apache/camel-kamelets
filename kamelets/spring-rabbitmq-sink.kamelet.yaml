@@ -35,7 +35,7 @@ spec:
 
       Use it to hand work or events to applications that read from RabbitMQ queues. Use `spring-rabbitmq-source` to read from them.
 
-      Input: the body is the payload, as text or bytes. Text is sent with the content type `text/plain`, and bytes with `application/octet-stream`. A Map fails, and so does an empty body: turn structured data into JSON text first, for example with `json-serialize-action`. The headers of the message, except the Camel ones, are sent as headers of the RabbitMQ message.
+      Input: the body is the payload, as text or bytes. Text is sent with the content type `text/plain`, and bytes with `application/octet-stream`, unless `contentType` says otherwise. A Map fails: turn structured data into JSON text first, for example with `json-serialize-action`, and set `contentType` to `application/json`. A message with no body fails, unless `allowNullBody` is true. The headers of the message, except the Camel ones, are sent as headers of the RabbitMQ message.
 
       Output: the message is unchanged.
 
@@ -129,6 +129,16 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      allowNullBody:
+        title: "Allow Null Body"
+        description: "If true, a message with no body is sent as an empty RabbitMQ message, with the content type `application/octet-stream`, or the one in `contentType`. When it is not set, a message with no body fails."
+        type: boolean
+      contentType:
+        title: "Content Type"
+        description: "The content type to send every message with, such as `application/json` or `application/json; charset=utf-8`, so that the applications that read it know its format. When it is not set, text is sent as `text/plain`, and bytes as `application/octet-stream`."
+        type: string
+        example: "application/json"
+        pattern: "^[A-Za-z0-9!#$&^_.+-]+/[A-Za-z0-9!#$&^_.+-]+( *; *[A-Za-z0-9!#$&^_.+-]+=[A-Za-z0-9!#$&^_.+-]+)*$"
   dependencies:
     - "camel:spring-rabbitmq"
     - "camel:kamelet"
@@ -155,6 +165,17 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{?contentType}}' != ''"
+                steps:
+                  - setHeader:
+                      name: CamelSpringRabbitmqContentType
+                      expression:
+                        constant:
+                          expression: "{{?contentType}}"
         - to:
-            uri: "spring-rabbitmq://{{exchangeName}}?autoDeclareProducer={{autoDeclareProducer}}&confirm={{confirm}}&confirmTimeout={{confirmTimeout}}&connectionFactory=#bean:{{connectionFactory}}&queues={{?queues}}&routingKey={{?routingKey}}"
+            uri: "spring-rabbitmq://{{exchangeName}}?autoDeclareProducer={{autoDeclareProducer}}&confirm={{confirm}}&confirmTimeout={{confirmTimeout}}&connectionFactory=#bean:{{connectionFactory}}&queues={{?queues}}&routingKey={{?routingKey}}&allowNullBody={{?allowNullBody}}"
             pattern: InOnly

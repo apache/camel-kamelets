@@ -23,7 +23,29 @@ For more information, see the https://docs.aws.amazon.com/sdk-for-java/latest/de
 
 The Kamelet reads the following optional header:
 
-- `instanceIds` / `ce-instanceids`: as a comma separated list of EC2 instance ids. Without it, the status of all the running instances of the region is returned.
+- `instanceIds` / `ce-instanceids`: as a comma separated list of EC2 instance ids. Without it, the status of all the running instances of the region is returned. To start, stop or reboot, it is required.
+
+=== Starting, Stopping and Rebooting Instances
+
+By default, the Kamelet only reads the status of the instances. Set `operation` to choose another action:
+
+ - `describeInstancesStatus` (the default): the status of the instances and the results of their status checks.
+ - `describeInstances`: the full details of the instances, such as their type, image, IP addresses and tags.
+ - `startInstances`, `stopInstances` and `rebootInstances`: start, stop or reboot the instances in the `instanceIds` header. Without the header, the message fails with `Instances Ids must be specified`.
+
+The Kamelet cannot create or terminate instances.
+
+For example, to stop test machines every evening, a route sends a message with the `instanceIds` header to this step:
+
+[source,yaml,subs='+attributes,macros']
+----
+- to:
+    uri: "kamelet:aws-ec2-sink"
+    parameters:
+      region: "eu-west-1"
+      useDefaultCredentialsProvider: true
+      operation: "stopInstances"
+----
 
 === Through an HTTP Proxy
 

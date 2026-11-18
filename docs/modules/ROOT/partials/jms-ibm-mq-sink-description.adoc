@@ -15,3 +15,48 @@ The Kamelet supports both queue and topic destinations. The destination type can
 === SSL/TLS Support
 
 Optional SSL/TLS encryption can be enabled by configuring the `sslCipherSuite` property with an appropriate cipher suite.
+The IBM MQ client checks the certificate of the queue manager against the trust store of the Java runtime, and sends
+the client certificate from its key store: set them with the Java system properties `javax.net.ssl.trustStore` and
+`javax.net.ssl.keyStore`, with their passwords. Camel's own TLS settings (`camel.ssl.*`) do not apply to the IBM MQ
+client.
+
+=== Multi-instance queue manager
+
+For a multi-instance queue manager, list its instances in `connectionNameList`, such as
+`mq1.example.com(1414),mq2.example.com(1414)`. The client tries them in order and connects to the first that
+answers. `serverName` and `serverPort` take the place of the first address of the list, so set them to the first
+instance too.
+
+=== Persistence, priority and expiry
+
+By default, each message is persistent, has priority 4, and never expires. Three options change that for every message
+the sink sends:
+
+- `deliveryPersistent`: `false` sends non-persistent messages, which are faster, but lost when the queue manager stops.
+- `priority`: from 0 (lowest) to 9 (highest). Of the messages waiting on a queue, the queue manager delivers those with the
+  highest priority first.
+- `timeToLive`: how long a message may wait to be received, in milliseconds. An expired message is not delivered: the queue manager removes it.
+
+`jmsMessageType` sends every message as a text message (`Text`) or a bytes message (`Bytes`), whatever the body, for a
+receiver that expects one kind.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:webhook-source"
+      steps:
+        - to:
+            uri: "kamelet:jms-ibm-mq-sink"
+            parameters:
+              serverName: "mq.example.com"
+              serverPort: 1414
+              queueManager: "QM1"
+              channel: "DEV.APP.SVRCONN"
+              username: "app"
+              password: "passw0rd"
+              destinationName: "DEV.QUEUE.1"
+              priority: 7
+              timeToLive: 60000
+              jmsMessageType: "Text"
+----

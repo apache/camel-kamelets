@@ -32,13 +32,13 @@ spec:
   definition:
     title: "Azure Storage Blob Source"
     description: |-
-      Reads the files (blobs) in a container of Azure Blob Storage, one message per blob, and can delete each blob once it has been read.
+      Reads the files (blobs) in a container of Azure Blob Storage, one message per blob, and can delete each blob, or move it to another container, once it has been read.
 
       Use it to process files that another system drops into a container, such as uploaded documents, exported reports or log files. To react to new blobs through Event Grid events instead of reading the container over and over, use `azure-storage-blob-event-based-source`.
 
       Output: the body is the content of the blob, as a stream of bytes. The headers give the name of the blob (`CamelAzureStorageBlobBlobName`, with its folder path), its type, content type, size, ETag and last-modified time.
 
-      Good to know: blobs are kept after they are read, so the same blobs are read again on every poll, every 500 milliseconds by default; set `deleteAfterRead` to true to delete each blob once it has been processed. It reads all the blobs of the container, those in virtual folders too. With `deleteAfterRead`, the blob deleted is the one named in the `CamelAzureStorageBlobBlobName` header when processing ends, so do not change that header.
+      Good to know: blobs are kept after they are read, so the same blobs are read again on every poll, every 500 milliseconds by default; set `deleteAfterRead` to true to delete each blob once it has been processed, or `moveAfterRead` to move it to another container. It reads all the blobs of the container, those in virtual folders too, unless `prefix` or `regex` narrows them down. With `deleteAfterRead`, the blob deleted is the one named in the `CamelAzureStorageBlobBlobName` header when processing ends, so do not change that header.
     required:
       - accountName
       - containerName
@@ -84,6 +84,14 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      sasToken:
+        title: SAS Token
+        description: "A shared access signature (SAS) token for the storage account or for the container, from the Azure portal: the storage account, then Security + networking, then Shared access signature, or the container, then Shared access tokens. Used when `credentialType` is `AZURE_SAS`. Give the token only, such as `sv=2022-11-02&ss=b&srt=sco&sp=rl&se=2026-12-31T00:00:00Z&spr=https&sig=...`, with or without the leading `?`, not the whole SAS URL. It needs the List and Read permissions, and also Delete with `deleteAfterRead`, or Write and Delete with `moveAfterRead`."
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+        pattern: "^\\??[A-Za-z]+=[^&]*(&[A-Za-z]+=[^&]*)*$"
       delay:
         title: Delay
         description: How long to wait between two polls of the container, in milliseconds.
@@ -94,12 +102,32 @@ spec:
         description: If true, each blob is deleted from the container once it has been processed. When false, the blobs stay and are read again on every poll.
         type: boolean
         default: false
+      prefix:
+        title: Blob Name Prefix
+        description: Reads only the blobs whose name starts with this text, such as `in/` for the blobs in the virtual folder `in` and its subfolders, or `invoice-`. Ignored when `regex` is set. When neither is set, all the blobs of the container are read.
+        type: string
+        example: "in/"
+      regex:
+        title: Blob Name Pattern
+        description: "Reads only the blobs whose whole name, with its virtual folder path, matches this Java regular expression, such as `.*\\.csv` for the CSV files in any folder, or `in/[^/]*\\.csv` for those directly in the folder `in`. It must match the whole name: `csv` alone matches no blob. When it is set, `prefix` is ignored, and the names of all the blobs of the container are listed on each poll and then filtered."
+        type: string
+        example: ".*\\.csv"
+      moveAfterRead:
+        title: Move Blob After Read
+        description: If true, each blob is moved to `destinationContainer` once it has been processed. It is copied there under the same name, with its virtual folder path, and then deleted from `containerName`. If the copy fails, for example because `destinationContainer` does not exist, the blob is kept and read again on the next poll, and a warning is logged. When both `moveAfterRead` and `deleteAfterRead` are true, the blob is moved.
+        type: boolean
+      destinationContainer:
+        title: Destination Container
+        description: The name of the container, in the same storage account, to move the blobs to when `moveAfterRead` is true, such as `processed`. It must exist. A container name has 3 to 63 lowercase letters, digits and hyphens. Required with `moveAfterRead`, without it the Kamelet does not start.
+        type: string
+        pattern: "^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$"
+        example: processed
       credentialType:
         title: Credential Type
-        description: "How to log in to the storage account. `SHARED_ACCOUNT_KEY`, the default, uses `accessKey`. `AZURE_IDENTITY` uses `clientId`, `clientSecret` and `tenantId` when all three are set, and otherwise the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login. Do not use `CLIENT_SECRET`: it does not use the three client options."
+        description: "How to log in to the storage account. `SHARED_ACCOUNT_KEY`, the default, uses `accessKey`. `AZURE_SAS` uses `sasToken`. `AZURE_IDENTITY` uses `clientId`, `clientSecret` and `tenantId` when all three are set, and otherwise the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login. Do not use `CLIENT_SECRET`: it does not use the three client options."
         type: string
         default: "SHARED_ACCOUNT_KEY"
-        enum: ["SHARED_ACCOUNT_KEY", "AZURE_IDENTITY", "CLIENT_SECRET"]
+        enum: ["SHARED_ACCOUNT_KEY", "AZURE_SAS", "AZURE_IDENTITY", "CLIENT_SECRET"]
   dataTypes:
     out:
       default: binary
@@ -182,7 +210,12 @@ spec:
         azureClientSecret: "RAW({{?clientSecret}})"
         azureTenantId: "RAW({{?tenantId}})"
         credentialType: "{{credentialType}}"
+        sasToken: "RAW({{?sasToken}})"
         delay: "{{delay}}"
+        prefix: "RAW({{?prefix}})"
+        regex: "RAW({{?regex}})"
+        moveAfterRead: "{{?moveAfterRead}}"
+        destinationContainer: "{{?destinationContainer}}"
       steps:
         - to:
             uri: kamelet:sink
@@ -191,7 +224,7 @@ spec:
             when:
               - expression:
                   simple:
-                    expression: "${properties:deleteAfterRead:false}"
+                    expression: "${properties:deleteAfterRead:false} == true && ${properties:moveAfterRead:false} != true"
                 steps:
                   - to:
                       uri: azure-storage-blob
@@ -203,5 +236,6 @@ spec:
                         azureClientSecret: "RAW({{?clientSecret}})"
                         azureTenantId: "RAW({{?tenantId}})"
                         credentialType: "{{credentialType}}"
+                        sasToken: "RAW({{?sasToken}})"
                         operation: deleteBlob
 

@@ -56,7 +56,7 @@ public class KameletsCatalogTest {
     @Test
     void testGetKameletsDefinition() throws Exception {
         Definition props = catalog.getKameletDefinition("aws-sqs-source");
-        assertEquals(26, props.getProperties().keySet().size());
+        assertEquals(29, props.getProperties().keySet().size());
         assertTrue(props.getProperties().containsKey("queueNameOrArn"));
         assertTrue(props.getProperties().containsKey("deleteAfterRead"));
         assertTrue(props.getProperties().containsKey("accessKey"));
@@ -76,6 +76,9 @@ public class KameletsCatalogTest {
         assertTrue(props.getProperties().containsKey("messageAttributeNames"));
         assertTrue(props.getProperties().containsKey("attributeNames"));
         assertTrue(props.getProperties().containsKey("visibilityTimeout"));
+        assertTrue(props.getProperties().containsKey("concurrentConsumers"));
+        assertTrue(props.getProperties().containsKey("extendMessageVisibility"));
+        assertTrue(props.getProperties().containsKey("queueOwnerAWSAccountId"));
     }
 
     @Test
@@ -231,8 +234,8 @@ public class KameletsCatalogTest {
         verifyHeaders("google-bigquery-sink", 4);
         verifyHeaders("google-calendar-source", 1);
         verifyHeaders("google-mail-source", 6);
-        verifyHeaders("google-pubsub-sink", 1);
-        verifyHeaders("google-pubsub-source", 3);
+        verifyHeaders("google-pubsub-sink", 2);
+        verifyHeaders("google-pubsub-source", 5);
         verifyHeaders("google-sheets-source", 5);
         verifyHeaders("google-storage-source", 4);
         verifyHeaders("google-storage-sink", 3);
@@ -260,7 +263,7 @@ public class KameletsCatalogTest {
         verifyHeaders("minio-source", 5);
         verifyHeaders("minio-sink", 2);
         verifyHeaders("mongodb-changes-stream-source", 3);
-        verifyHeaders("mongodb-sink", 1);
+        verifyHeaders("mongodb-sink", 3);
         verifyHeaders("mongodb-source", 3);
         verifyHeaders("mqtt-sink", 3);
         verifyHeaders("mqtt-source", 2);
@@ -274,7 +277,7 @@ public class KameletsCatalogTest {
         verifyHeaders("oracle-database-source", 1);
         verifyHeaders("postgresql-sink", 2);
         verifyHeaders("postgresql-source", 1);
-        verifyHeaders("pulsar-sink", 2);
+        verifyHeaders("pulsar-sink", 3);
         verifyHeaders("pulsar-source", 5);
         verifyHeaders("redis-sink", 4);
         verifyHeaders("redis-source", 1);

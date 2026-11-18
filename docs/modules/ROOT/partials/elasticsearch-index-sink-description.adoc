@@ -8,9 +8,41 @@ This Kamelet expects JSON-formatted data as input and outputs plain text respons
 
 This Kamelet supports username and password authentication for connecting to ElasticSearch clusters.
 
-=== SSL Configuration
+=== Trusting a Private Certificate Authority
 
-SSL connection is enabled by default. You can provide a base64-encoded certificate for secure connections to your ElasticSearch cluster.
+The Kamelet connects with HTTPS by default (`enableSSL`). The certificate of the cluster is checked against the certificate authorities (CA) that Java trusts, so a cluster whose certificate is self-signed, or signed by a private CA, fails with `PKIX path building failed`.
+
+Give the certificate of that CA in `certificate`, as a PEM or DER file encoded in base64 on one line. Elasticsearch generates such a CA when it starts with security on, in `config/certs/http_ca.crt`. Encode it with `base64 -w0 http_ca.crt` (`base64 -i http_ca.crt` on macOS). Only this CA is trusted then.
+
+=== Timeouts
+
+When Elasticsearch does not answer, the message fails after 30 seconds. `connectionTimeout` is how long to wait for the connection, and `socketTimeout` how long to wait for data from Elasticsearch, both in milliseconds.
+
+=== Example
+
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: '{"order": 42, "status": "shipped"}'
+        contentType: application/json
+      steps:
+        - to:
+            uri: "kamelet:elasticsearch-index-sink"
+            parameters:
+              hostAddresses: "es.example.com:9200"
+              clusterName: "quickstart"
+              indexName: "orders"
+              user: "elastic"
+              password: "{{search.password}}"
+              certificate: "{{search.ca}}"
+              connectionTimeout: 5000
+              socketTimeout: 10000
+----
+
+Here `search.ca` is an application property that holds the certificate of the CA, encoded in base64.
 
 === Index Configuration
 

@@ -24,3 +24,35 @@ For more information, see the https://learn.microsoft.com/en-us/java/api/overvie
 In the headers, you can optionally set the `itemPartitionKey` / `ce-itemPartitionKey` property to specify the partition key for a specific item.
 
 If you do not set the property in the header, you'll need to use the static property `itemPartitionKey`. A message without a partition key fails.
+
+=== Creating or replacing items
+
+With `operation` `createItem`, the default, an item whose `id` already exists in the same partition fails with the error `The document already exists`. With `upsertItem`, the item is created, or replaces the existing item with the same `id` and partition key value, as a whole.
+
+=== Creating the database and the container
+
+The database and the container must exist, unless `createDatabaseIfNotExists` and `createContainerIfNotExists` are true. A new container takes `containerPartitionKeyPath` as its partition key, such as `/region`; without it, each message fails with the error `containerPartitionKeyPath cannot be empty!`. For a container that exists, `containerPartitionKeyPath` is not used.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:kafka-source"
+      parameters:
+        topic: "orders"
+        bootstrapServers: "kafka.example.com:9092"
+        saslAuthType: "NONE"
+      steps:
+        - to:
+            uri: "kamelet:azure-cosmosdb-sink"
+            parameters:
+              databaseEndpoint: "https://my-account.documents.azure.com:443/"
+              accountKey: "{{cosmos.key}}"
+              databaseName: "shop"
+              containerName: "orders"
+              itemPartitionKey: "EU"
+              operation: "upsertItem"
+              createDatabaseIfNotExists: true
+              createContainerIfNotExists: true
+              containerPartitionKeyPath: "/region"
+----

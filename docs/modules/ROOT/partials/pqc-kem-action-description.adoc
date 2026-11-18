@@ -1,0 +1,65 @@
+== PQC Key Encapsulation/Decapsulation Action Kamelet Description
+
+=== Key Pair
+
+Without `keyStore` or `keyPair`, the key pair of the post-quantum algorithm is created when the application starts. An encapsulation can then be opened only by the same running application.
+
+To open an encapsulation after a restart, or in another application, keep the key pair in a key store. Java 24 and later can make an ML-KEM key pair with `keytool`. A key pair of a KEM cannot sign its own certificate, so `keytool` needs a signing key pair in the same key store, given with `-signer`, such as an ML-DSA one:
+
+[source,bash]
+----
+keytool -genkeypair -alias signer -keyalg ML-DSA -dname CN=signer \
+  -validity 365 -keystore pqc.p12 -storetype PKCS12 -storepass changeit
+keytool -genkeypair -alias kem -keyalg ML-KEM -groupname ML-KEM-768 -dname CN=kem -signer signer \
+  -validity 365 -keystore pqc.p12 -storetype PKCS12 -storepass changeit
+----
+
+The key store is a Java `KeyStore` object, defined in the application, and referred to with `#bean:` followed by its name. Set `keyPairAlias` to the alias of the key pair, and `keyStorePassword` to the password of the key store, which must also be the password of the key pair.
+
+When the application has exactly one Java `KeyStore`, or one `KeyPair`, the Camel PQC component uses it even when `keyStore` or `keyPair` is not set. With a key store, `keyPairAlias` and `keyStorePassword` must then be set too, else the messages fail.
+
+=== Key Length
+
+`symmetricKeyLength` is the length of the secret key in bits, 256 when it is not set. Use the same length to create and to open an encapsulation. Set it to 128 for `SEED` and `SM4`, which take only 128-bit keys: with 256, the integration fails to start.
+
+=== Example
+
+The following route creates a 128-bit AES key and its encapsulation with the key pair `kem` of the key store `pqc.p12`, and then takes the same key out of the encapsulation again. The key store is loaded by a Groovy script in the `beans` section, so that no Java class has to be written; Groovy needs the `camel-groovy` dependency, which Camel JBang adds by itself.
+
+[source,yaml,subs='+attributes,macros']
+----
+- beans:
+    - name: pqcKeyStore
+      type: java.security.KeyStore
+      scriptLanguage: groovy
+      script: "java.security.KeyStore.getInstance(new File('pqc.p12'), '{{pqc.keystore.password}}'.toCharArray())"
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 10000
+        message: "start"
+      steps:
+        - to:
+            uri: "kamelet:pqc-kem-action"
+            parameters:
+              operation: generateSecretKeyEncapsulation
+              keyEncapsulationAlgorithm: MLKEM
+              symmetricKeyAlgorithm: AES
+              symmetricKeyLength: 128
+              keyStore: "#bean:pqcKeyStore"
+              keyPairAlias: kem
+              keyStorePassword: "{{pqc.keystore.password}}"
+        - to:
+            uri: "kamelet:pqc-kem-action"
+            parameters:
+              operation: extractSecretKeyEncapsulation
+              keyEncapsulationAlgorithm: MLKEM
+              symmetricKeyAlgorithm: AES
+              symmetricKeyLength: 128
+              keyStore: "#bean:pqcKeyStore"
+              keyPairAlias: kem
+              keyStorePassword: "{{pqc.keystore.password}}"
+        - to:
+            uri: "kamelet:log-sink"
+----

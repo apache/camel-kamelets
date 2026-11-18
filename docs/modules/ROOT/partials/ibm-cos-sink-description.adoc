@@ -80,6 +80,34 @@ You can specify a fixed key name for all uploaded objects:
               keyName: "data/myfile.txt"
 ----
 
+==== Deleting the local file after the upload
+
+When the body is a local file, such as the file of `file-watch-source`, `deleteAfterWrite` deletes it from the local disk once it has been uploaded. A body that is not a file is uploaded, and nothing is deleted. This example uploads each new file of `/var/outbox` under its own name, and then deletes it.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:file-watch-source"
+      parameters:
+        filePath: "/var/outbox"
+        events: "CREATE"
+      steps:
+        - to:
+            uri: "kamelet:insert-header-action"
+            parameters:
+              name: "file"
+              value: "$\{header.CamelFileName}"
+        - to:
+            uri: "kamelet:ibm-cos-sink"
+            parameters:
+              bucketName: "my-bucket"
+              apiKey: "{{ibm.api.key}}"
+              serviceInstanceId: "{{ibm.service.instance.id}}"
+              endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
+              deleteAfterWrite: true
+----
+
 ==== Using multi-part upload for large files
 
 For large files, you can enable multi-part upload:

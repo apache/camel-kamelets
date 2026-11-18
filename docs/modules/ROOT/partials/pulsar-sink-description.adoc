@@ -28,3 +28,39 @@ Designed for cloud-native deployments with:
 - Kubernetes integration
 - Multi-cloud support
 - Serverless computing integration
+
+=== Message Key
+
+The optional `key` header becomes the key of the message. Pulsar keeps the messages with the same key in order on one
+partition, and a `KEY_SHARED` subscription hands them to the same receiver. `pulsar-source` sets the `key` header, so
+the key is kept when one Kamelet feeds the other. The `CamelPulsarProducerMessageKey` header takes precedence over `key`.
+
+A batch of messages goes to one receiver of a `KEY_SHARED` subscription as a whole, whatever the keys in it. Set
+`batchingEnabled` to `false` to have the keys spread over the receivers.
+
+=== Usage example
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: "order placed"
+      steps:
+        - setHeader:
+            name: key
+            constant: "customer-7"
+        - to:
+            uri: "kamelet:pulsar-sink"
+            parameters:
+              serviceUrl: "pulsar://localhost:6650"
+              topicType: "persistent"
+              tenant: "public"
+              namespaceName: "default"
+              topic: "orders"
+              batchingEnabled: false
+----
+
+For TLS, use a `pulsar+ssl://` address in `serviceUrl`. The Kamelet has no trust store option: the certificate of
+Pulsar is checked against the Java trust store of the integration, which `javax.net.ssl.trustStore` can point at.

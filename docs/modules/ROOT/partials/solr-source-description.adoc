@@ -19,7 +19,13 @@ The Kamelet requires the following properties:
 - `query`: the query, in the Solr query syntax, such as `status_s:new`
 - `period`: the time between two queries, in milliseconds
 
-Optional properties include `size` (the most documents each query returns), `enableSSL` and `certificate` (HTTPS), and `username` and `password` (Basic authentication).
+Optional properties include `size` (the most documents each query returns), `requestHandler` (the search handler that runs the query), `connectionTimeout` and `requestTimeout`, `enableSSL` and `certificate` (HTTPS), and `username` and `password` (Basic authentication).
+
+=== Request handler and timeouts
+
+The query runs on the `/select` handler of the collection. To run it on another search handler, defined in the configuration of the collection, for example with its own defaults or filters, give its path in `requestHandler`, such as `/query`.
+
+When Solr does not answer, the query fails only after 10 minutes. `requestTimeout` is how long to wait for the answer of Solr to each query, and `connectionTimeout` how long to wait for the connection, both in milliseconds. A query that fails is logged, and the next one runs at the next period.
 
 === Usage example
 
@@ -33,6 +39,25 @@ Optional properties include `size` (the most documents each query returns), `ena
         collection: "products"
         query: "status_s:new"
         period: 60000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with more than 10 documents and a timeout
+
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:solr-source"
+      parameters:
+        servers: "solr.example.com:8983"
+        collection: "orders"
+        query: "status_s:new"
+        period: 60000
+        size: 500
+        requestTimeout: 30000
       steps:
         - to:
             uri: "kamelet:log-sink"

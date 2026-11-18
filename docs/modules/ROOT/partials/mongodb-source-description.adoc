@@ -18,6 +18,8 @@ The MongoDB Source Kamelet supports the following configurations:
 - **SSL**: Whether to connect with TLS (default: true); set it to false for a MongoDB without TLS
 - **Tail Track Increasing Field**: A field whose value grows with each new document
 - **Persistent Tail Tracking**: Remember the last document read across restarts (needs the increasing field)
+- **Tail Tracking Name** (`persistentId`): The name the place is stored under; give each source its own
+- **Tail Tracking Database** and **Collection** (`tailTrackDb`, `tailTrackCollection`): Where the place is stored
 
 === Output Format
 
@@ -43,7 +45,13 @@ The Kamelet reads the documents of a capped collection with a tailable cursor: f
 
 === Example with Persistent Tail Tracking
 
-The Kamelet stores the `seq` value of the last document read in the `camelTailTracking` collection of the same database, and after a restart goes on from there.
+The Kamelet stores the `seq` value of the last document read, and after a restart goes on from there. It stores it
+when the integration stops, so after a crash it reads again the documents since the last stop.
+
+The place is stored in a document named after `persistentId`, in the `camelTailTracking` collection of the same
+database. Give each source its own `persistentId`: sources without one share a single place, and a restarted source
+then reads documents again or skips them. Set `tailTrackDb` and `tailTrackCollection` to store the place elsewhere,
+for example when the user may only read the database of the events:
 
 [source,yaml,subs='+attributes,macros']
 ----
@@ -58,10 +66,16 @@ The Kamelet stores the `seq` value of the last document read in the `camelTailTr
         password: "mongopass"
         tailTrackIncreasingField: "seq"
         persistentTailTracking: true
+        persistentId: "events-to-kafka"
+        tailTrackDb: "camelstate"
+        tailTrackCollection: "trackers"
       steps:
         - to:
             uri: "kamelet:log-sink"
 ----
+
+The place is then the document `{ persistentId: "events-to-kafka", lastTrackingValue: 42 }` in
+`camelstate.trackers`.
 
 === Capped Collections
 
@@ -104,4 +118,11 @@ For a user defined in the `shop` database, on a MongoDB without TLS:
 [source,yaml,subs='+attributes,macros']
 ----
 connectionString: "mongodb://shopuser:shoppass@mongo1.example.com:27017,mongo2.example.com:27017/?authSource=shop&replicaSet=rs0"
+----
+
+To read from a secondary member of a replica set, and so take load off the primary, add `readPreference`:
+
+[source,yaml,subs='+attributes,macros']
+----
+connectionString: "mongodb://mongouser:mongopass@mongo1.example.com:27017,mongo2.example.com:27017,mongo3.example.com:27017/?replicaSet=rs0&readPreference=secondaryPreferred"
 ----

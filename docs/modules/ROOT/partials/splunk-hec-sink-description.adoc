@@ -41,3 +41,27 @@ Ideal for sending various types of data to Splunk for:
 - Security event correlation
 - Business intelligence and reporting
 - Machine learning and anomaly detection
+
+=== Event and Raw Endpoints
+
+By default the Kamelet sends to the event endpoint, `/services/collector/event`, and Splunk takes the index, the
+source and the source type of each event from `index`, `source` and `sourceType`. With `splunkEndpoint` set to
+`/services/collector/raw`, Splunk stores the whole JSON object that the Kamelet sends as the raw text of the event.
+The index, the source and the source type then come from the token, or from query parameters on the path:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 10000
+        message: "hello"
+      steps:
+        - to:
+            uri: "kamelet:splunk-hec-sink"
+            parameters:
+              splunkUrl: "my_server.splunkcloud.com:8088"
+              token: "12345678-1234-1234-1234-123456789012"
+              splunkEndpoint: "/services/collector/raw?index=main&sourcetype=_json"
+----

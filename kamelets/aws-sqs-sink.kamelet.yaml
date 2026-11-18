@@ -41,7 +41,7 @@ spec:
 
       Output: the message is unchanged. The `CamelAwsSqsMessageId` header gives the ID of the SQS message.
 
-      Good to know: the queue is looked up by listing the queues, which needs the `sqs:ListQueues` permission besides `sqs:SendMessage`. To reach a local stand-in of AWS, use `overrideEndpoint` and `uriEndpointOverride`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: unless `queueURL`, `queueOwnerAWSAccountId` or an ARN in `queueNameOrArn` gives the address of the queue, the queue is looked up by listing the queues, which needs the `sqs:ListQueues` permission besides `sqs:SendMessage`. `delaySeconds` keeps each message hidden for a while after it is sent. `serverSideEncryptionEnabled` with `kmsMasterKeyId` changes the queue itself when the integration starts, so that SQS encrypts its messages with that KMS key. To reach a local stand-in of AWS, use `overrideEndpoint` and `uriEndpointOverride`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - queueNameOrArn
       - region
@@ -142,6 +142,41 @@ spec:
         type: string
         enum: ["HTTP", "HTTPS"]
         example: HTTP
+      queueURL:
+        title: Queue URL
+        description: The full address of the queue, as the SQS console shows it. When it is set, the messages are sent to it, and the queue is not looked up by listing the queues, which needs the `sqs:ListQueues` permission.
+        example: https://sqs.eu-west-1.amazonaws.com/123456789012/orders
+        type: string
+        pattern: "^https?://[^\\s]+$"
+      queueOwnerAWSAccountId:
+        title: Queue Owner AWS Account ID
+        description: The 12-digit ID of the AWS account that owns the queue, such as `123456789012`. When it is set, the address of the queue is built from the account, `region` and the queue name, and the queue is not looked up by listing the queues. Use it for a queue of another AWS account, or when the credentials may not list the queues. An ARN in `queueNameOrArn` gives the account too.
+        example: "123456789012"
+        type: string
+        pattern: "^[0-9]{12}$"
+      delaySeconds:
+        title: Delay Seconds
+        description: How long SQS keeps each message hidden after it is sent, before a reader can receive it, in seconds, from 0 to 900 (15 minutes). Use it to process a message later, such as a retry in a minute. When it is not set, the delay of the queue is used, which is 0 for a new queue.
+        example: 60
+        type: integer
+        minimum: "0"
+        maximum: "900"
+      messageHeaderExceededLimit:
+        title: Too Many Headers
+        description: "What to do when a message has more than 10 headers to send as message attributes, the most that SQS takes: `WARN` sends 10 of them and logs a warning for each other one, `WARN_ONCE` sends 10 and logs one warning, `IGNORE` sends 10 without a warning, and `FAIL` fails the message, which is not sent. The 10 that are sent are the first 10 in the order the headers were set on the message. When it is not set, it is `WARN`."
+        example: FAIL
+        type: string
+        enum: ["WARN", "WARN_ONCE", "IGNORE", "FAIL"]
+      serverSideEncryptionEnabled:
+        title: Server-Side Encryption
+        description: "If true, the queue is set to encrypt its messages with the key of AWS KMS in `kmsMasterKeyId` (SSE-KMS). It changes the queue itself: when the integration starts, an existing queue is updated, which needs the `sqs:SetQueueAttributes` permission, and a queue that `autoCreateQueue` creates is created with it. Without `kmsMasterKeyId`, it has no effect."
+        type: boolean
+      kmsMasterKeyId:
+        title: KMS Key ID
+        description: The key of AWS KMS for the queue to encrypt its messages with, as its key ID, such as `1234abcd-12ab-34cd-56ef-1234567890ab`, an alias, such as `alias/aws/sqs`, or its ARN. Only used when `serverSideEncryptionEnabled` is true.
+        example: alias/aws/sqs
+        type: string
+        pattern: "^[A-Za-z0-9:/_-]+$"
   dependencies:
     - "camel:aws2-sqs"
     - "camel:kamelet"
@@ -169,3 +204,9 @@ spec:
               proxyHost: "{{?proxyHost}}"
               proxyPort: "{{?proxyPort}}"
               proxyProtocol: "{{?proxyProtocol}}"
+              queueUrl: "{{?queueURL}}"
+              queueOwnerAWSAccountId: "{{?queueOwnerAWSAccountId}}"
+              delaySeconds: "{{?delaySeconds}}"
+              messageHeaderExceededLimit: "{{?messageHeaderExceededLimit}}"
+              serverSideEncryptionEnabled: "{{?serverSideEncryptionEnabled}}"
+              kmsMasterKeyId: "{{?kmsMasterKeyId}}"

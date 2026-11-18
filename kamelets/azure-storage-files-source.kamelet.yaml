@@ -38,7 +38,7 @@ spec:
 
       Output: the body is the content of the file, which converts to text, bytes or a stream. The `CamelFileName` header is the path of the file from `directoryName`, `CamelFileNameOnly` its name, and `CamelFileLength` and `CamelFileLastModified` its size and last-modified time.
 
-      Good to know: files are kept after they are read, so the same files are read again on every poll, every 500 milliseconds by default; set `deleteAfterRead` to true to delete each file once it has been processed. Subdirectories are read only when `recursive` is true.
+      Good to know: files are kept after they are read, so the same files are read again on every poll, every 500 milliseconds by default. To read each file only once, set `deleteAfterRead` to true to delete it, set `move` to a directory such as `.done` to move it, or set `noop` to true to leave it in place and remember the files read, in memory or, with `idempotentRepository`, across restarts. Subdirectories are read only when `recursive` is true. `include` and `antInclude` read only the files whose names match.
     required:
       - accountName
       - shareName
@@ -70,7 +70,7 @@ spec:
         default: 500
       deleteAfterRead:
         title: Auto-delete File
-        description: If true, each file is deleted from the share once it has been processed. When false, the files stay and are read again on every poll.
+        description: If true, each file is deleted from the share once it has been processed. When false, the files stay and are read again on every poll, unless `move` or `noop` is set. When `move` is set too, the integration fails to start.
         type: boolean
         default: false
       credentialType:
@@ -90,6 +90,35 @@ spec:
         description: If true, also reads the files in the subdirectories of `directoryName`.
         type: boolean
         default: false
+      maxMessagesPerPoll:
+        title: Max Files Per Poll
+        description: The most files to read at each poll, such as 100. The other files are read at the next polls. Use it to start slowly on a share that holds many files. When it is not set, all files are read at each poll.
+        type: integer
+        example: 100
+      include:
+        title: Include
+        description: A regular expression that the name of a file must match, as a whole and ignoring case, to be read, such as `.*\.(csv|txt)`. It is matched against the name of the file without its directory. When it is not set, all files are read.
+        type: string
+        example: ".*\\.csv"
+      antInclude:
+        title: Ant Include
+        description: Wildcard patterns, separated by commas, that the path of a file below `directoryName` must match to be read, such as `**/*.csv`. `*` matches any part of a name, and `**` any number of directories. When it is not set, all files are read.
+        type: string
+        example: "**/*.csv"
+      move:
+        title: Move After Read
+        description: Where to move each file on the share once it has been read and handed on successfully, so that it is not read again, also after a restart. A directory name, such as `.done`, is relative to the directory of the file. A path that ends with the name of the file, such as `done/$\{date:now:yyyyMMdd}/$\{file:name}`, is relative to `directoryName`, where `$\{file:name}` is the name of the file and `$\{date:now:yyyyMMdd}` today's date. A directory whose name starts with a dot is never read, which matters when `recursive` is true. Missing directories are created. When it is not set, files stay where they are. When `deleteAfterRead` is true too, the integration fails to start.
+        type: string
+        example: ".done"
+      noop:
+        title: Leave Files Untouched
+        description: If true, the files are left where they are, and each file is read only once while the integration runs. The list of the files read is kept in memory, so the files are all read again after a restart, unless `idempotentRepository` keeps the list elsewhere. `move` is not used then.
+        type: boolean
+      idempotentRepository:
+        title: Files Read Store
+        description: The name of a bean that keeps the list of the files read, so that the files left on the share are not read again after a restart, such as a `FileIdempotentRepository` that keeps the list in a file. Declare the bean in the integration, for example under `beans` in YAML. Only used when `noop` is true.
+        type: string
+        example: readFiles
   dataTypes:
     out:
       default: binary
@@ -178,7 +207,7 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "azure-files:{{accountName}}/{{shareName}}/{{directoryName}}?credentialType={{credentialType}}&delay={{delay}}&delete={{deleteAfterRead}}&recursive={{recursive}}&sharedKey=RAW({{?sharedKey}})"
+      uri: "azure-files:{{accountName}}/{{shareName}}/{{directoryName}}?credentialType={{credentialType}}&delay={{delay}}&delete={{deleteAfterRead}}&recursive={{recursive}}&sharedKey=RAW({{?sharedKey}})&maxMessagesPerPoll={{?maxMessagesPerPoll}}&include=RAW({{?include}})&antInclude=RAW({{?antInclude}})&move=RAW({{?move}})&noop={{?noop}}&idempotentRepository=#bean:{{?idempotentRepository}}"
       steps:
         - to:
             uri: kamelet:sink

@@ -39,7 +39,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: when `index`, `source` and `sourceType` are not set, the events go to the index `camel` with the source and source type `camel`, so set them for your Splunk. The `host` field of the event is the IP address of the machine that runs the integration, unless `hostPayload` is set. It connects with HTTPS and checks the certificate of the server, unless `https` or `skipTlsVerify` say otherwise.
+      Good to know: when `index`, `source` and `sourceType` are not set, the events go to the index `camel` with the source and source type `camel`, so set them for your Splunk. The `host` field of the event is the IP address of the machine that runs the integration, unless `hostPayload` is set. It connects with HTTPS and checks the certificate of the server, unless `https` or `skipTlsVerify` say otherwise. It sends to the event endpoint `/services/collector/event`; with `splunkEndpoint` set to `/services/collector/raw`, Splunk stores the whole JSON object as raw text instead, and `index`, `source` and `sourceType` no longer apply. A response other than 200, such as a wrong path, fails the message.
     required:
       - splunkUrl
       - token
@@ -57,6 +57,12 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      splunkEndpoint:
+        title: Splunk Endpoint
+        description: The path of the HTTP Event Collector endpoint to send to, starting with `/`, optionally followed by query parameters. When it is not set, it is `/services/collector/event`. With `/services/collector/raw`, Splunk stores the whole JSON object that the Kamelet sends as the text of the event, and takes the index, source and source type from the token and from query parameters, not from `index`, `source` and `sourceType`, such as `/services/collector/raw?index=main&sourcetype=_json`.
+        type: string
+        example: /services/collector/raw
+        pattern: "^/[^\\s]*$"
       hostPayload:
         title: Host of the Event
         description: The value of the `host` field of every event, such as the name of the machine or application that the events are about. It is not the address of Splunk. When it is not set, the IP address of the machine that runs the integration is used.
@@ -116,6 +122,7 @@ spec:
             uri: splunk-hec
             parameters:
               splunkURL: "{{splunkUrl}}"
+              splunkEndpoint: "RAW({{?splunkEndpoint}})"
               bodyOnly: "{{?bodyOnly}}"
               headersOnly: "{{?headersOnly}}"
               host: "{{?hostPayload}}"

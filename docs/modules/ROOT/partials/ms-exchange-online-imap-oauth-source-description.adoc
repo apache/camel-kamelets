@@ -11,7 +11,7 @@ From the app registration, use the Directory (tenant) ID as `tenantId`, the Appl
 
 === Output format
 
-The Kamelet reads the unread emails of the `INBOX` folder, one message per email, and marks each email as read. Emails stay in the mailbox. The body is the text of the email; for an email with several parts (text and HTML, attachments), it is the multipart content, which reads as the text of the first part. The headers of the email, such as `Subject`, `From`, `To` and `Date`, are copied to the message.
+By default, the Kamelet reads the unread emails of the `INBOX` folder, one message per email, and marks each email as read. Emails stay in the mailbox. The body is the text of the email; for an email with several parts (text and HTML, attachments), it is the multipart content, which reads as the text of the first part. The headers of the email, such as `Subject`, `From`, `To` and `Date`, are copied to the message.
 
 === Usage example
 
@@ -25,6 +25,37 @@ The Kamelet reads the unread emails of the `INBOX` folder, one message per email
         clientId: "{{exchange.clientId}}"
         clientSecret: "{{exchange.clientSecret}}"
         username: "orders@example.com"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Choosing and Moving Emails
+
+These options work as in `mail-imap-source`:
+
+- `folderName`: the folder to read, such as `Inbox/Orders` (default: `INBOX`).
+- `unseen`: set to `false` to read the emails that are already read too.
+- `delete`, `moveTo`, `copyTo`: what to do with each email once it is processed. A folder in `moveTo` or `copyTo` is created when it does not exist.
+- `peek`: keeps an email unread while it is processed, so that an email whose processing fails is read again at the next check (on by default).
+- `skipFailedMessage`: skips an email that cannot be read at all, such as one with a broken format, instead of failing every check of the mailbox.
+- `searchFrom`, `searchTo`, `searchSubject`, `searchSubjectOrBody`: read only the emails that match. Every search option that is set must match.
+
+For example, to read the orders from one sender and move each one to the `Processed` folder:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ms-exchange-online-imap-oauth-source"
+      parameters:
+        tenantId: "11111111-2222-3333-4444-555555555555"
+        clientId: "{{exchange.clientId}}"
+        clientSecret: "{{exchange.clientSecret}}"
+        username: "orders@example.com"
+        searchFrom: "orders@shop.example"
+        searchSubject: "order"
+        moveTo: "Processed"
       steps:
         - to:
             uri: "kamelet:log-sink"

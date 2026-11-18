@@ -32,15 +32,15 @@ spec:
   definition:
     title: "AWS EC2 Sink"
     description: |-
-      Asks Amazon EC2 for the status of virtual machines (instances), such as whether they run and pass their health checks, each time a message arrives.
+      Asks Amazon EC2 for the status of virtual machines (instances), such as whether they run and pass their health checks, each time a message arrives, or starts, stops or reboots them.
 
-      Use it to check regularly that your EC2 instances are running and healthy, for example every few minutes from `timer-source`, and raise an alert when a check fails.
+      Use it to check regularly that your EC2 instances are running and healthy, for example every few minutes from `timer-source`, and raise an alert when a check fails, or to start and stop test machines on a schedule.
 
-      Input: the body is not used. The optional `instanceIds` header (or `ce-instanceids`) is a comma-separated list of the IDs of the instances to check, such as `i-0abc123,i-0def456`; without it, the status of all the running instances of the region is returned.
+      Input: the body is not used. The `instanceIds` header (or `ce-instanceids`) is a comma-separated list of the IDs of the instances, such as `i-0abc123,i-0def456`. For the status, it is optional; without it, the status of all the running instances of the region is returned. To start, stop or reboot, it is required.
 
-      Output: the body is the answer of AWS, a `DescribeInstanceStatusResponse` object of the AWS SDK for Java (not JSON text), with for each instance its ID, availability zone, state (such as `running`) and the results of the instance and system status checks. When there are more results than fit, the `CamelAwsEC2NextToken` header holds the token of the next page.
+      Output: the body is the answer of AWS, an object of the AWS SDK for Java (not JSON text). By default, a `DescribeInstanceStatusResponse`, with for each instance its ID, availability zone, state (such as `running`) and the results of the instance and system status checks. When there are more results than fit, the `CamelAwsEC2NextToken` header holds the token of the next page. `describeInstances` gives a `DescribeInstancesResponse`, and `startInstances` and `stopInstances` a `StartInstancesResponse` or `StopInstancesResponse` with the previous and the new state of each instance, such as `stopped` and `pending`. `rebootInstances` leaves the body as it was.
 
-      Good to know: it only reads; it never starts, stops or changes an instance. With Camel 4.23, the `instanceIds` header is ignored, and the status of all the instances is returned. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: by default it only reads, and never starts, stops or changes an instance; `operation` chooses another action. It cannot create or terminate instances. With Camel 4.23, the `instanceIds` header is ignored: the status of all the instances is returned, and start, stop and reboot reach no instance. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - region
     type: object
@@ -118,16 +118,23 @@ spec:
         type: string
         enum: ["HTTP", "HTTPS"]
         example: HTTP
+      operation:
+        title: Operation
+        description: "What to do with each message: `describeInstancesStatus` gives the status of the instances and the results of their status checks; `describeInstances` gives their full details, such as type, image, IP addresses and tags; `startInstances`, `stopInstances` and `rebootInstances` start, stop or reboot the instances in the `instanceIds` header, which is then required."
+        type: string
+        default: describeInstancesStatus
+        example: stopInstances
+        enum: ["describeInstancesStatus", "describeInstances", "startInstances", "stopInstances", "rebootInstances"]
   dataTypes:
     in:
       headers:
         instanceIds:
           title: Instance IDs
-          description: A comma-separated list of the IDs of the instances to check, such as `i-0abc123,i-0def456`. When it is not set, `ce-instanceids` is used, and without either the status of all the running instances is returned.
+          description: A comma-separated list of the IDs of the instances, such as `i-0abc123,i-0def456`. When it is not set, `ce-instanceids` is used. For the status, without either the status of all the running instances is returned; to start, stop or reboot, one of them is required.
           type: string
         ce-instanceids:
           title: Instance IDs (CloudEvents)
-          description: The IDs of the instances to check, when the message is a CloudEvent. Used only when `instanceIds` is not set.
+          description: The IDs of the instances, when the message is a CloudEvent. Used only when `instanceIds` is not set.
           type: string
     out:
       headers:
@@ -143,11 +150,12 @@ spec:
       uri: kamelet:source
       steps:
         # Strip the whole camel-aws2-ec2 header family up-front, before this
-        # Kamelet applies its own contract below: the operation is pinned to the
-        # read-only describeInstancesStatus and instanceIds / ce-instanceids is
-        # the only interface the definition advertises. Using a pattern also
-        # covers CamelAwsEC2* keys the component may add in the future. The
-        # pagination headers that describeInstancesStatus itself reads are kept.
+        # Kamelet applies its own contract below: the operation comes only from
+        # the operation option (by default the read-only describeInstancesStatus)
+        # and instanceIds / ce-instanceids is the only interface the definition
+        # advertises. Using a pattern also covers CamelAwsEC2* keys the component
+        # may add in the future. The pagination headers that
+        # describeInstancesStatus and describeInstances read are kept.
         - removeHeaders:
             pattern: CamelAwsEC2*
             excludePattern: CamelAwsEC2(NextToken|MaxResults)
@@ -176,7 +184,7 @@ spec:
             parameters:
               label: ec2-route
               accessKey: "RAW({{?accessKey}})"
-              operation: describeInstancesStatus
+              operation: "{{operation}}"
               overrideEndpoint: "{{overrideEndpoint}}"
               profileCredentialsName: "{{?profileCredentialsName}}"
               region: "{{region}}"

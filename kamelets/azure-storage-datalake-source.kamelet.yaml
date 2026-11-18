@@ -38,12 +38,9 @@ spec:
 
       Output: the body is the content of the file, as a stream of bytes. The `CamelAzureStorageDataLakeFileName` header is the name of the file, and other headers give its size, content type, ETag and last-modified time.
 
-      Good to know: it neither deletes nor moves the files, so it reads all of them again on every poll, every 500 milliseconds by default. It reads the files at the top of the file system: files in directories are not read.
+      Good to know: it neither deletes nor moves the files, so it reads all of them again on every poll, every 500 milliseconds by default. It reads the files at the top of the file system, or of `directoryName`; the files in directories below are read only when `recursive` is true. `regex` keeps only the files whose path matches, and `fileName` reads one file. Log in as an app registration with `clientId`, `clientSecret` and `tenantId` (the default), or with an account key (`accountKey`) or a SAS token (`sasSignature`).
     required:
       - accountName
-      - clientId
-      - clientSecret
-      - tenantId
       - fileSystemName
     type: object
     properties:
@@ -56,21 +53,21 @@ spec:
         example: mydatalake
       clientId:
         title: Client ID
-        description: The application (client) ID of an app registration (service principal) in Microsoft Entra ID that has access to the account, from the Overview page of the app registration in the Azure portal. Used when `credentialType` is `CLIENT_SECRET`, the default.
+        description: The application (client) ID of an app registration (service principal) in Microsoft Entra ID that has access to the account, from the Overview page of the app registration in the Azure portal. Required when `credentialType` is `CLIENT_SECRET`, the default.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       clientSecret:
         title: Client Secret
-        description: "A client secret of the app registration, from the Azure portal: the app registration, then Certificates & secrets. Used when `credentialType` is `CLIENT_SECRET`, the default."
+        description: "A client secret of the app registration, from the Azure portal: the app registration, then Certificates & secrets. Required when `credentialType` is `CLIENT_SECRET`, the default."
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       tenantId:
         title: Tenant ID
-        description: The directory (tenant) ID of the app registration, from its Overview page in the Azure portal. Used when `credentialType` is `CLIENT_SECRET`, the default.
+        description: The directory (tenant) ID of the app registration, from its Overview page in the Azure portal. Required when `credentialType` is `CLIENT_SECRET`, the default.
         type: string
         format: password
         x-descriptors:
@@ -93,6 +90,41 @@ spec:
         type: string
         default: "CLIENT_SECRET"
         enum: ["CLIENT_SECRET", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY", "AZURE_SAS", "SERVICE_CLIENT_INSTANCE"]
+      accountKey:
+        title: Account Key
+        description: "An access key of the storage account, from the Azure portal: the storage account, then Security + networking, then Access keys. Used when `credentialType` is `SHARED_KEY_CREDENTIAL`."
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      sasSignature:
+        title: SAS Token
+        description: "A shared access signature (SAS) token that gives access to the account or the file system, such as `sv=2022-11-02&ss=b&srt=co&sp=rl&se=2026-12-31T00:00:00Z&sig=...`, without a leading `?`. Create it in the Azure portal under Shared access signature of the storage account, or under Shared access tokens of the container. It must allow listing and reading. Used when `credentialType` is `AZURE_SAS`."
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      directoryName:
+        title: Directory Name
+        description: The directory of the file system to read the files from, such as `exports/2026`. When it is not set, the top of the file system. The `CamelAzureStorageDataLakeFileName` header is still the path of the file from the top of the file system, such as `exports/2026/sales.csv`.
+        type: string
+        example: exports/2026
+        pattern: "^[^?#]+$"
+      recursive:
+        title: Recursive
+        description: If true, also reads the files in the directories below the top of the file system, or below `directoryName`. When it is not set, only the files directly in it are read.
+        type: boolean
+      regex:
+        title: File Name Pattern
+        description: A regular expression that the path of a file, from the top of the file system, must match as a whole to be read, such as `.*\.csv` for all CSV files, or `exports/.*\.csv`. It is case-sensitive. When it is not set, all files are read.
+        type: string
+        example: ".*\\.csv"
+      fileName:
+        title: File Name
+        description: The path of one file to read, from the top of the file system, such as `exports/sales.csv`. Only this file is read, on every poll, and `directoryName`, `recursive` and `regex` are not used. When the file does not exist, each poll fails with a warning in the log.
+        type: string
+        example: exports/sales.csv
+        pattern: "^[^?#]+$"
   dataTypes:
     out:
       default: binary
@@ -240,11 +272,17 @@ spec:
       parameters:
         accountName: "{{accountName}}"
         fileSystemName: "{{fileSystemName}}"
-        clientId: "RAW({{clientId}})"
-        clientSecret: "RAW({{clientSecret}})"
+        clientId: "RAW({{?clientId}})"
+        clientSecret: "RAW({{?clientSecret}})"
         credentialType: "{{credentialType}}"
         delay: "{{delay}}"
-        tenantId: "RAW({{tenantId}})"
+        tenantId: "RAW({{?tenantId}})"
+        accountKey: "RAW({{?accountKey}})"
+        sasSignature: "RAW({{?sasSignature}})"
+        path: "RAW({{?directoryName}})"
+        recursive: "{{?recursive}}"
+        regex: "RAW({{?regex}})"
+        fileName: "RAW({{?fileName}})"
       steps:
         - to:
             uri: kamelet:sink
