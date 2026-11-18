@@ -41,6 +41,36 @@ On Kubernetes, with an IAM role given to the pod through IRSA or EKS Pod Identit
 
 The role needs the permission to receive and delete the messages of the queue and, with `getObject`, to read the files of the bucket.
 
+=== Example with Long Polling and a Longer Visibility Timeout
+
+By default, the Kamelet asks the queue for events every `delay` milliseconds, and each request returns at once, even when
+the queue is empty. With **waitTimeSeconds**, a request waits up to that many seconds for an event to arrive, so an
+empty queue costs far fewer requests, and a new event is still received as soon as it arrives. **maxMessagesPerPoll**
+is the most events received in one request (1 to 10; 10 when it is not set). **visibilityTimeout** is how long a
+received event stays hidden from other readers: set it longer than processing one event takes, such as fetching a
+large file with `getObject`, or the event is received a second time while it is still being processed. An event that
+fails stays in the queue and is received again when this time ends.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:aws-s3-event-based-source"
+      parameters:
+        queueNameOrArn: "s3-events"
+        region: "eu-west-1"
+        useDefaultCredentialsProvider: true
+        getObject: true
+        waitTimeSeconds: 20
+        maxMessagesPerPoll: 5
+        visibilityTimeout: 300
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+When they are not set, the wait time and the visibility timeout of the queue are used.
+
 === Required Setup
 
 To use this Kamelet you'll need to set up Eventbridge on your bucket and subscribe Eventbridge bus to an SQS Queue.
