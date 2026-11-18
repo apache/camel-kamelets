@@ -34,16 +34,15 @@ spec:
     description: |-
       Translates the text of each message from one language into another with Amazon Translate.
 
-      Use it to translate customer messages, support tickets or product descriptions, for example from Italian into English before they are analyzed or stored.
+      Use it to translate customer messages, support tickets or product descriptions, for example from Italian into English before they are analyzed or stored, also when the messages come in several languages.
 
       Input: the body is the text to translate.
 
       Output: the body is the translated text.
 
-      Good to know: both languages are fixed by the options. Only the listed language codes can be chosen, although Amazon Translate knows more languages. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: the target language is fixed by `targetLanguage`. The source language is fixed by `sourceLanguage`, or, with `autodetectSourceLanguage`, Amazon Translate detects it in each message. Only the listed language codes can be chosen, although Amazon Translate knows more languages. With `terminologyNames`, your own translations of terms, such as product and brand names, are applied. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - region
-      - sourceLanguage
       - targetLanguage
     type: object
     properties:
@@ -69,7 +68,7 @@ spec:
         enum: ["ap-south-1", "eu-south-1", "us-gov-east-1", "me-central-1", "ca-central-1", "eu-central-1", "us-iso-west-1", "us-west-1", "us-west-2", "af-south-1", "eu-north-1", "eu-west-3", "eu-west-2", "eu-west-1", "ap-northeast-3", "ap-northeast-2", "ap-northeast-1", "me-south-1", "sa-east-1", "ap-east-1", "cn-north-1", "us-gov-west-1", "ap-southeast-1", "ap-southeast-2", "us-iso-east-1", "ap-southeast-3", "us-east-1", "us-east-2", "cn-northwest-1", "us-isob-east-1", "aws-global", "aws-cn-global", "aws-us-gov-global", "aws-iso-global", "aws-iso-b-global"]
       sourceLanguage:
         title: Source Language
-        description: The language of the text, as a language code, such as `it` for Italian or `en` for English.
+        description: The language of the text, as a language code, such as `it` for Italian or `en` for English. Required, unless `autodetectSourceLanguage` is true; without either, a message fails unless it carries the `CamelAwsTranslateSourceLanguage` header.
         type: string
         example: it
         enum: ["ar", "zh", "zh-TW", "cs", "da", "nl", "en", "fi", "fr", "de", "he", "hi", "id", "it", "ja", "ko", "ms", "no", "fa", "pl", "pt", "ru", "es", "sv", "tr"]
@@ -122,6 +121,17 @@ spec:
         type: string
         enum: ["HTTP", "HTTPS"]
         example: HTTP
+      autodetectSourceLanguage:
+        title: Detect Source Language
+        description: If true, Amazon Translate detects the language of each message, so messages in different languages can be translated into `targetLanguage`; `sourceLanguage` is then not used. When it is not set, the language is `sourceLanguage`.
+        type: boolean
+        example: true
+      terminologyNames:
+        title: Terminology Names
+        description: The name of a custom terminology to apply, such as `product-names`. A custom terminology is a list of terms with their translations, such as brand names that must not be translated, which you create in Amazon Translate beforehand. Several names are separated by commas. When it is not set, no custom terminology is used.
+        type: string
+        pattern: "^([A-Za-z0-9-]_?)+(,([A-Za-z0-9-]_?)+)*$"
+        example: product-names
   dependencies:
     - "camel:kamelet"
     - "camel:aws2-translate"
@@ -129,5 +139,16 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{?terminologyNames}}' != ''"
+                steps:
+                  - setHeader:
+                      name: CamelAwsTranslateTerminologyNames
+                      expression:
+                        simple:
+                          expression: "${split('{{?terminologyNames}}',',')}"
         - to:
-            uri: "aws2-translate://translate?accessKey=RAW({{?accessKey}})&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&sourceLanguage={{sourceLanguage}}&targetLanguage={{targetLanguage}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}&proxyHost={{?proxyHost}}&proxyPort={{?proxyPort}}&proxyProtocol={{?proxyProtocol}}"
+            uri: "aws2-translate://translate?accessKey=RAW({{?accessKey}})&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&sourceLanguage={{?sourceLanguage}}&targetLanguage={{targetLanguage}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}&proxyHost={{?proxyHost}}&proxyPort={{?proxyPort}}&proxyProtocol={{?proxyProtocol}}&autodetectSourceLanguage={{?autodetectSourceLanguage}}"

@@ -49,6 +49,21 @@ The following output formats are supported:
 
 Set the `textType` parameter to `SSML` to use Speech Synthesis Markup Language for fine-grained control over pronunciation, volume, pitch, and speech rate.
 
+=== Pronunciation Lexicons
+
+A pronunciation lexicon says how to pronounce given words, for example to say `W3C` as `World Wide Web Consortium`. Store the lexicon in Polly beforehand, in the PLS format, and name it in `lexiconNames`; several names are separated by commas.
+
+[source,yaml,subs='+attributes,macros']
+----
+- to:
+    uri: "kamelet:aws-polly-sink"
+    parameters:
+      region: "eu-west-1"
+      useDefaultCredentialsProvider: true
+      voiceId: "Joanna"
+      lexiconNames: "w3c"
+----
+
 === Through an HTTP Proxy
 
 Where AWS can be reached only through an HTTP proxy, as in many company networks, set `proxyHost` and `proxyPort` to the proxy. `proxyProtocol` is how the Kamelet talks to the proxy itself, not to AWS: it is `HTTPS` when it is not set, so set it to `HTTP` for a proxy that takes plain HTTP, such as Squid. The calls to AWS stay encrypted, as the proxy only passes them on. The Kamelet has no option for a proxy user or password.

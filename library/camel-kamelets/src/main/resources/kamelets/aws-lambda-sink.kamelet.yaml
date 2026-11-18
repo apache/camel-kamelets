@@ -40,7 +40,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is what the function returned, as text (JSON text for most functions). The `CamelAwsLambdaStatusCode` header holds the status code of the call.
 
-      Good to know: an error raised inside the function does not fail the message: the body is then the error that the function reported, and the `CamelAwsLambdaFunctionError` header is set, for example to `Unhandled`. A function that does not exist fails the message. Each call waits until the function ends. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: an error raised inside the function does not fail the message: the body is then the error that the function reported, and the `CamelAwsLambdaFunctionError` header is set, for example to `Unhandled`. A function that does not exist fails the message. Each call waits until the function ends; the function cannot be called asynchronously (invocation type `Event`). Set `operation` to read the settings, versions or aliases of the function instead of calling it, or to publish a new version; the body afterwards is then the answer of AWS, an object of the AWS SDK for Java, such as a `GetFunctionConfigurationResponse` (not JSON text). To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - function
       - region
@@ -114,6 +114,12 @@ spec:
         type: string
         enum: ["HTTP", "HTTPS"]
         example: HTTP
+      operation:
+        title: Operation
+        description: "What to do with each message: `invokeFunction` calls the function; `getFunction` and `getFunctionConfiguration` read the settings of the function, such as its runtime, memory and timeout (`getFunction` adds the location of its code and its tags); `listVersions` and `listAliases` list its published versions and aliases; `publishVersion` publishes the current code and settings as a new version; `listFunctions` lists all the functions of the region. Only `invokeFunction` uses the body. When it is not set, the function is called."
+        type: string
+        example: getFunctionConfiguration
+        enum: ["invokeFunction", "getFunction", "getFunctionConfiguration", "listVersions", "listAliases", "publishVersion", "listFunctions"]
   dataTypes:
     out:
       headers:
@@ -147,3 +153,4 @@ spec:
               proxyHost: "{{?proxyHost}}"
               proxyPort: "{{?proxyPort}}"
               proxyProtocol: "{{?proxyProtocol}}"
+              operation: "{{?operation}}"

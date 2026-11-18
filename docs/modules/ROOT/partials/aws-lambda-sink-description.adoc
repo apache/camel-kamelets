@@ -19,6 +19,32 @@ Only one of access key/secret key or default credentials provider could be used
 
 For more information, see the https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials.html[AWS credentials documentation]
 
+=== Reading the Settings of a Function or Publishing a Version
+
+By default, the Kamelet calls the function for each message and waits for its result. Set `operation` to do something else with the function named in `function`:
+
+ - `getFunction` and `getFunctionConfiguration`: read the settings of the function, such as its runtime, memory and timeout; `getFunction` adds the location of its code and its tags.
+ - `listVersions` and `listAliases`: list the published versions and the aliases of the function.
+ - `publishVersion`: publish the current code and settings of the function as a new version.
+ - `listFunctions`: list all the functions of the region.
+
+These operations do not use the body. The body afterwards is the answer of AWS, an object of the AWS SDK for Java, such as a `GetFunctionConfigurationResponse`, not JSON text.
+
+The function cannot be called asynchronously (invocation type `Event`): each call waits until the function ends.
+
+The step that sends to the Kamelet, in a route, to publish a new version of the function:
+
+[source,yaml,subs='+attributes,macros']
+----
+- to:
+    uri: "kamelet:aws-lambda-sink"
+    parameters:
+      function: "my-function"
+      region: "eu-west-1"
+      useDefaultCredentialsProvider: true
+      operation: "publishVersion"
+----
+
 === Through an HTTP Proxy
 
 Where AWS can be reached only through an HTTP proxy, as in many company networks, set `proxyHost` and `proxyPort` to the proxy. `proxyProtocol` is how the Kamelet talks to the proxy itself, not to AWS: it is `HTTPS` when it is not set, so set it to `HTTP` for a proxy that takes plain HTTP, such as Squid. The calls to AWS stay encrypted, as the proxy only passes them on. The Kamelet has no option for a proxy user or password.
