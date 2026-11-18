@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased](https://github.com/apache/camel-kamelets/tree/HEAD)
+
+[Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.22.2...HEAD)
+
+**Closed issues:**
+
+- Proposal: Kamelets to deprecate, merge or remove [\#3162](https://github.com/apache/camel-kamelets/issues/3162)
+- KameletsCatalog: load the Kamelets on demand, without a class path scan \(camel catalog kamelet takes 720 ms\) [\#3133](https://github.com/apache/camel-kamelets/issues/3133)
+
 ## [v4.22.2](https://github.com/apache/camel-kamelets/tree/v4.22.2) (2026-11-05)
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.23.0...v4.22.2)
