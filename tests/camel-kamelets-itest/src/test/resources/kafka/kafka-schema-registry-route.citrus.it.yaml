@@ -1,0 +1,71 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: kafka-schema-registry-route-test
+variables:
+  - name: "kafka.deserializeHeaders"
+    value: "true"
+  - name: "kafka.topic"
+    value: "my-topic-registry"
+  - name: "kafka.message"
+    value: '{"id":1,"item":"camel"}'
+actions:
+  # Create Kafka infrastructure, Redpanda has a schema registry with the Confluent API
+  - testcontainers:
+      start:
+        redpanda: {}
+
+  # Create Camel JBang integration, the Confluent serde jars are in the Confluent Maven repository
+  - camel:
+      cli:
+        run:
+          args:
+            - "--repos=confluent"
+          integration:
+            file: "kafka/kafka-schema-registry-route.yaml"
+            systemProperties:
+              file: "kafka/application.properties"
+              properties:
+                - name: kafka.schemaRegistryUrl
+                  value: "${CITRUS_TESTCONTAINERS_REDPANDA_SCHEMA_REGISTRY_ADDRESS}"
+                - name: http.sink.url
+                  value: "http://localhost:${kafka.sink.server.port}/result"
+
+  # kafka-sink writes the record with a JSON Schema, kafka-source reads it and emits JSON text
+  - http:
+      server: "kafkaSinkServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          body:
+            data: |
+              ${kafka.message}
+
+  # The record was written through the schema registry
+  - http:
+      client: "${CITRUS_TESTCONTAINERS_REDPANDA_SCHEMA_REGISTRY_ADDRESS}/subjects/${kafka.topic}-value/versions/latest"
+      sendRequest:
+        GET: {}
+
+  - http:
+      client: "${CITRUS_TESTCONTAINERS_REDPANDA_SCHEMA_REGISTRY_ADDRESS}/subjects/${kafka.topic}-value/versions/latest"
+      receiveResponse:
+        response:
+          status: 200
+          body:
+            data: |
+              {"subject":"${kafka.topic}-value","version":"@ignore@","id":"@ignore@","schemaType":"JSON","schema":"@ignore@"}

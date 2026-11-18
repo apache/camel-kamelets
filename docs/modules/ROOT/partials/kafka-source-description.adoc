@@ -43,6 +43,8 @@ deployment allows it.
   `true`
 - **topicIsPattern**: Treat `topic` as a regular expression rather than a literal list,
   default `false`
+- **schemaRegistryVendor** / **schemaRegistryUrl** / **schemaFormat** / **schemaRegistryRegion** /
+  **schemaRegistryName**: Read the records with their schema from a schema registry, see below
 
 === Output Format
 
@@ -61,6 +63,43 @@ that are not Camel internals, so a downstream consumer does not have to read the
 The `CamelKafka*` headers are left on the exchange as well, so consumers already reading them
 keep working. The Kafka record headers are passed through separately, controlled by the
 `deserializeHeaders` property.
+
+=== Schema registry
+
+When the records are written with a schema kept in a schema registry, set `schemaRegistryVendor`, `schemaRegistryUrl`
+and, for JSON Schema, `schemaFormat: json` (the default is `avro`). The Kamelet reads each value with its schema and
+turns it into JSON text, so the next step gets text as without a registry: an Avro record becomes, for example,
+`{"id": 7, "item": "camel"}`.
+
+[width="100%",cols="1,1,3",options="header"]
+|===
+| `schemaRegistryVendor` | `schemaFormat` | Registry
+| `confluent` | `avro`, `json` | Confluent Schema Registry, and the registries with the same API, such as the one of Redpanda and Karapace. `schemaRegistryUrl` is the URL of the registry, such as `http://localhost:8081`.
+| `apicurio` | `avro` | Apicurio Registry 3.x. `schemaRegistryUrl` is the URL of the registry API, such as `http://localhost:8080/apis/registry/v3`.
+| `aws-glue` | `avro`, `json` | AWS Glue Schema Registry. Set `schemaRegistryRegion`, unless the environment has the region (such as `AWS_REGION`), and `schemaRegistryName`, unless the registry is `default-registry`. `schemaRegistryUrl` is not needed. The AWS credentials are taken from the AWS default credentials chain.
+| `azure` | `avro` | Azure Schema Registry of Event Hubs. `schemaRegistryUrl` is the fully qualified name of the namespace, such as `my-namespace.servicebus.windows.net`. The sink needs `schemaGroup`. The credentials are taken by the Azure `DefaultAzureCredential`, such as from the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` variables.
+|===
+
+The serde jars of the vendor are not part of the Kamelet. Camel JBang downloads them by itself; the Confluent jars are
+in the Confluent Maven repository, not in Maven Central, so run with `--repos=confluent`. In a Maven project, add the
+jar of the vendor and format, such as `io.confluent:kafka-avro-serializer`, and for Confluent the repository
+`https://packages.confluent.io/maven/`. A `confluent` or `apicurio` registry that requires a login is not supported yet.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:kafka-source"
+      parameters:
+        topic: orders
+        bootstrapServers: "localhost:9092"
+        saslAuthType: NONE
+        schemaRegistryVendor: confluent
+        schemaRegistryUrl: "http://localhost:8081"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
 
 === Usage Example
 

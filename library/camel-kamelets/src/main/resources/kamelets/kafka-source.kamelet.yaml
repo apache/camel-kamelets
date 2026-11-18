@@ -33,11 +33,11 @@ spec:
     description: |-
       Receives each record from one or more topics in Apache Kafka, or in a Kafka-compatible service such as Amazon MSK, Confluent Cloud or Redpanda.
 
-      Use it to react to events or data that other applications publish, such as orders, sensor readings or changes from a database. To get many records in one message use `kafka-batch-source`. When the records are written with a schema kept in a schema registry, use one of the `kafka-*-registry-*` sources instead.
+      Use it to react to events or data that other applications publish, such as orders, sensor readings or changes from a database. To get many records in one message use `kafka-batch-source`. When the records are written with a schema kept in a schema registry, such as Confluent Schema Registry, Redpanda or Apicurio Registry, set `schemaRegistryVendor`.
 
-      Output: the body is the value of the record, as text. A record without a value (a tombstone) gives a message with no body. The `kafka-topic`, `kafka-key`, `kafka-partition`, `kafka-offset` and `kafka-timestamp` (in milliseconds since 1970) headers say where the record came from. They are also set as `ce-kafkatopic`, `ce-kafkakey` and so on, and as the `CamelKafka*` headers that the Kafka actions read. The record headers become message headers, as text unless `deserializeHeaders` is false.
+      Output: the body is the value of the record, as text. With `schemaRegistryVendor`, the value is read with its schema from the registry and the body is JSON text, such as `{"id": 7, "item": "camel"}` for an Avro record. A record without a value (a tombstone) gives a message with no body. The `kafka-topic`, `kafka-key`, `kafka-partition`, `kafka-offset` and `kafka-timestamp` (in milliseconds since 1970) headers say where the record came from. They are also set as `ce-kafkatopic`, `ce-kafkakey` and so on, and as the `CamelKafka*` headers that the Kafka actions read. The record headers become message headers, as text unless `deserializeHeaders` is false.
 
-      Good to know: `saslAuthType` has no default and must be set; `NONE` connects with no login and no TLS. A new consumer group starts at the newest records, unless `autoOffsetReset` is `earliest`. Without `consumerGroup`, every start uses a new group, so the records sent while the integration was stopped are skipped.
+      Good to know: `saslAuthType` has no default and must be set; `NONE` connects with no login and no TLS. A new consumer group starts at the newest records, unless `autoOffsetReset` is `earliest`. Without `consumerGroup`, every start uses a new group, so the records sent while the integration was stopped are skipped. With `schemaRegistryVendor`, the integration needs the serde jars of the vendor, which Camel JBang downloads by itself; for `confluent` add the Confluent Maven repository, as in `camel run --repos=confluent`. With `aws-glue` and `azure`, the serde logs in with the credentials of the environment the integration runs in: the AWS default credentials chain, or the Azure `DefaultAzureCredential` (such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` variables). A `confluent` or `apicurio` registry that requires a login is not supported yet.
     required:
       - topic
       - bootstrapServers
@@ -161,6 +161,30 @@ spec:
         description: "If true, `topic` is a regular expression, such as `orders-.*`, and the Kamelet reads from every topic whose name matches it."
         type: boolean
         default: false
+      schemaRegistryVendor:
+        title: Schema Registry Vendor
+        description: "The schema registry that holds the schemas of the record values: `confluent`, also for registries with the Confluent API such as Redpanda and Karapace; `apicurio` (Apicurio Registry 3.x); `aws-glue` (AWS Glue Schema Registry); or `azure` (Azure Schema Registry of Event Hubs). It sets the value deserializer and the registry properties, and its jars must be added to the integration (see below). Leave it unset when the records do not use a schema registry."
+        type: string
+        enum: ["confluent", "apicurio", "aws-glue", "azure"]
+      schemaRegistryUrl:
+        title: Schema Registry URL
+        description: "The URL of the schema registry: for `confluent` such as `http://localhost:8081`; for `apicurio` the URL of the registry API, such as `http://localhost:8080/apis/registry/v3`; for `azure` the fully qualified name of the Event Hubs namespace, such as `my-namespace.servicebus.windows.net`. Required when `schemaRegistryVendor` is set, except for `aws-glue`, where it can override the endpoint of the Glue service."
+        type: string
+        pattern: "^(https?://)?[^\\s]+$"
+      schemaRegistryRegion:
+        title: Schema Registry Region
+        description: "The AWS region of the AWS Glue Schema Registry, such as `eu-west-1`. When not set, the region is taken from the environment, such as the `AWS_REGION` variable. Only used when `schemaRegistryVendor` is `aws-glue`."
+        type: string
+      schemaRegistryName:
+        title: Schema Registry Name
+        description: "The name of the registry in AWS Glue. When not set, it is `default-registry`. Only used when `schemaRegistryVendor` is `aws-glue`."
+        type: string
+      schemaFormat:
+        title: Schema Format
+        description: "The format of the record values in the schema registry: `avro` or `json` (JSON Schema). With `apicurio` and `azure`, use `avro`. Only used when `schemaRegistryVendor` is set."
+        type: string
+        enum: ["avro", "json"]
+        default: avro
   dataTypes:
     out:
       headers:
@@ -205,6 +229,7 @@ spec:
           description: "The same as `kafka-timestamp`."
           type: integer
   dependencies:
+    - "camel:jackson3"
     - "camel:kafka"
     - "camel:kamelet"
   template:
@@ -217,6 +242,8 @@ spec:
       uri: kafka
       parameters:
         topic: "{{topic}}"
+        additionalProperties.region: "{{?schemaRegistryRegion}}"
+        additionalProperties.registry.name: "{{?schemaRegistryName}}"
         allowManualCommit: "{{allowManualCommit}}"
         autoCommitEnable: "{{autoCommitEnable}}"
         autoOffsetReset: "{{autoOffsetReset}}"
@@ -230,6 +257,9 @@ spec:
         saslAuthType: "{{saslAuthType}}"
         saslPassword: "RAW({{?saslPassword}})"
         saslUsername: "{{?saslUsername}}"
+        schemaFormat: "{{schemaFormat}}"
+        schemaRegistryURL: "{{?schemaRegistryUrl}}"
+        schemaRegistryVendor: "{{?schemaRegistryVendor}}"
         sslKeyPassword: "RAW({{?sslKeyPassword}})"
         sslKeystoreLocation: "{{?sslKeystoreLocation}}"
         sslKeystorePassword: "RAW({{?sslKeystorePassword}})"
@@ -294,5 +324,24 @@ spec:
             expression:
               simple:
                 expression: "${header[CamelKafkaTimestamp]}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{?schemaRegistryVendor}}' != '' && '{{schemaFormat}}' == 'json' && ${body} != null && ${body} !is 'java.lang.String'"
+                steps:
+                  - marshal:
+                      json:
+                        library: Jackson
+                  - convertBodyTo:
+                      type: java.lang.String
+              - expression:
+                  simple:
+                    expression: "'{{?schemaRegistryVendor}}' != '' && ${body} != null && ${body} !is 'java.lang.String'"
+                steps:
+                  - setBody:
+                      expression:
+                        simple:
+                          expression: "${body.toString()}"
         - to:
             uri: kamelet:sink

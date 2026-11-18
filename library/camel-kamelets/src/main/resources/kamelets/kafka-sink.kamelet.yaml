@@ -33,13 +33,13 @@ spec:
     description: |-
       Sends each message as a record to a topic in Apache Kafka, or in a Kafka-compatible service such as Amazon MSK, Confluent Cloud or Redpanda.
 
-      Use it to publish events or data for other applications to read, such as orders, sensor readings or changes from a database. When the records must follow a schema kept in a schema registry, use one of the `kafka-*-registry-*` sinks instead.
+      Use it to publish events or data for other applications to read, such as orders, sensor readings or changes from a database. To write the records with a schema kept in a schema registry, such as Confluent Schema Registry, Redpanda or Apicurio Registry, set `schemaRegistryVendor`.
 
-      Input: the body becomes the value of the record, as text. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The optional `key` header (or `kafka-key`, `ce-key`, `ce-kafkakey`) becomes the key of the record, and the optional `partition-key` header (or `ce-partitionkey`) is the number of the partition to write to. The other headers of the message, except the Camel ones, are sent as record headers.
+      Input: the body becomes the value of the record, as text. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. With `schemaRegistryVendor` and `schemaFormat` `json`, the body must be JSON text (or a Map), and the record is written with a JSON Schema; with `avro`, `confluent` and `apicurio` write a text body as an Avro string, while `aws-glue` needs an Avro record. With `azure`, set `schemaGroup`. The optional `key` header (or `kafka-key`, `ce-key`, `ce-kafkakey`) becomes the key of the record, and the optional `partition-key` header (or `ce-partitionkey`) is the number of the partition to write to. The other headers of the message, except the Camel ones, are sent as record headers.
 
       Output: the message is unchanged.
 
-      Good to know: `saslAuthType` has no default and must be set; `NONE` connects with no login and no TLS, as a local Kafka expects. A managed Kafka service needs one of the other types.
+      Good to know: `saslAuthType` has no default and must be set; `NONE` connects with no login and no TLS, as a local Kafka expects. A managed Kafka service needs one of the other types. With `schemaRegistryVendor`, the integration needs the serde jars of the vendor, which Camel JBang downloads by itself; for `confluent` add the Confluent Maven repository, as in `camel run --repos=confluent`. With `aws-glue` and `azure`, the serde logs in with the credentials of the environment the integration runs in: the AWS default credentials chain, or the Azure `DefaultAzureCredential` (such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` variables). A `confluent` or `apicurio` registry that requires a login is not supported yet. The sink registers a schema made from the message, which with `json` accepts any JSON object; it does not check the message against a schema that is already registered for the topic.
     required:
       - topic
       - bootstrapServers
@@ -122,7 +122,36 @@ spec:
         format: password
         x-descriptors:
           - urn:camel:group:credentials
+      schemaRegistryVendor:
+        title: Schema Registry Vendor
+        description: "The schema registry that holds the schemas of the record values: `confluent`, also for registries with the Confluent API such as Redpanda and Karapace; `apicurio` (Apicurio Registry 3.x); `aws-glue` (AWS Glue Schema Registry); or `azure` (Azure Schema Registry of Event Hubs). It sets the value serializer and the registry properties, and its jars must be added to the integration (see below). Leave it unset when the records do not use a schema registry."
+        type: string
+        enum: ["confluent", "apicurio", "aws-glue", "azure"]
+      schemaRegistryUrl:
+        title: Schema Registry URL
+        description: "The URL of the schema registry: for `confluent` such as `http://localhost:8081`; for `apicurio` the URL of the registry API, such as `http://localhost:8080/apis/registry/v3`; for `azure` the fully qualified name of the Event Hubs namespace, such as `my-namespace.servicebus.windows.net`. Required when `schemaRegistryVendor` is set, except for `aws-glue`, where it can override the endpoint of the Glue service."
+        type: string
+        pattern: "^(https?://)?[^\\s]+$"
+      schemaRegistryRegion:
+        title: Schema Registry Region
+        description: "The AWS region of the AWS Glue Schema Registry, such as `eu-west-1`. When not set, the region is taken from the environment, such as the `AWS_REGION` variable. Only used when `schemaRegistryVendor` is `aws-glue`."
+        type: string
+      schemaRegistryName:
+        title: Schema Registry Name
+        description: "The name of the registry in AWS Glue. When not set, it is `default-registry`. Only used when `schemaRegistryVendor` is `aws-glue`."
+        type: string
+      schemaGroup:
+        title: Schema Group
+        description: "The schema group in the Azure Schema Registry that the schemas of the records are registered in. Required when `schemaRegistryVendor` is `azure`."
+        type: string
+      schemaFormat:
+        title: Schema Format
+        description: "The format of the record values in the schema registry: `avro` or `json` (JSON Schema). With `apicurio` and `azure`, use `avro`. Only used when `schemaRegistryVendor` is set."
+        type: string
+        enum: ["avro", "json"]
+        default: avro
   dependencies:
+    - "camel:jackson3"
     - "camel:kafka"
     - "camel:kamelet"
   template:
@@ -187,10 +216,22 @@ spec:
                       expression:
                         simple:
                           expression: "${header[ce-partitionkey]}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{?schemaRegistryVendor}}' != '' && '{{schemaFormat}}' == 'json' && ${body} != null && ${body} !is 'java.util.Map' && ${body} !is 'java.util.List'"
+                steps:
+                  - unmarshal:
+                      json:
+                        library: Jackson
         - to:
             uri: kafka
             parameters:
               topic: "{{topic}}"
+              additionalProperties.region: "{{?schemaRegistryRegion}}"
+              additionalProperties.registry.name: "{{?schemaRegistryName}}"
+              additionalProperties.schema.group: "{{?schemaGroup}}"
               brokers: "{{bootstrapServers}}"
               oauthClientId: "{{?oauthClientId}}"
               oauthClientSecret: "RAW({{?oauthClientSecret}})"
@@ -199,6 +240,9 @@ spec:
               saslAuthType: "{{saslAuthType}}"
               saslPassword: "RAW({{?saslPassword}})"
               saslUsername: "{{?saslUsername}}"
+              schemaFormat: "{{schemaFormat}}"
+              schemaRegistryURL: "{{?schemaRegistryUrl}}"
+              schemaRegistryVendor: "{{?schemaRegistryVendor}}"
               sslKeyPassword: "RAW({{?sslKeyPassword}})"
               sslKeystoreLocation: "{{?sslKeystoreLocation}}"
               sslKeystorePassword: "RAW({{?sslKeystorePassword}})"
