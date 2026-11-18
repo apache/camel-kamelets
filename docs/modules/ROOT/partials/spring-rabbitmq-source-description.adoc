@@ -13,8 +13,61 @@ JSON. The headers of the RabbitMQ message become headers.
 === Queues, exchanges and bindings
 
 With `autoDeclare` set to false (the default), the queue in `queues` must already exist and be bound to the exchange.
-With `autoDeclare` set to true, the Kamelet creates a `direct` exchange named `exchangeName`, the queue, and the
-binding with `routingKey` when it starts.
+With `autoDeclare` set to true, the Kamelet creates the exchange named `exchangeName`, the queue, and the binding with
+`routingKey` when it starts. The exchange is a `direct` exchange unless `exchangeType` is `fanout`, `headers` or
+`topic`. With `topic`, `routingKey` is a pattern: `orders.*` matches `orders.new` but not `orders.eu.new`, and
+`orders.#` matches both. When the exchange or the queue already exists with other settings, such as another type or
+another dead letter exchange, the Kamelet fails to start.
+
+=== Parallel processing
+
+One consumer processes one message at a time. With `concurrentConsumers`, that many consumers receive from the queue,
+each on its own channel, and process messages in parallel, so not in order. `prefetchCount` is how many messages
+RabbitMQ sends ahead to each consumer before they are acknowledged (250 when it is not set). Both show in the RabbitMQ
+management UI, on the consumers of the queue.
+
+With `acknowledgeMode` set to `NONE`, RabbitMQ removes each message from the queue as soon as it is delivered: a
+message whose processing fails is then lost, and does not go to the dead letter exchange.
+
+=== Retries and dead letters
+
+When the processing of a message fails, the Kamelet tries it again `maximumRetryAttempts` times (5 when it is not set),
+`retryDelay` milliseconds apart (1000 when it is not set). When it still fails, RabbitMQ drops it, or sends it to the
+dead letter exchange of the queue.
+
+With `autoDeclare` set to true, the Kamelet can set up the dead letter exchange too: it creates the exchange in
+`deadLetterExchange` (of type `deadLetterExchangeType`, `direct` when it is not set), creates the queue in `queues` with
+it as its dead letter exchange and `deadLetterRoutingKey` as its dead letter routing key, and creates the queue in
+`deadLetterQueue` bound to the exchange with that key. `deadLetterQueue` needs `deadLetterRoutingKey`. With
+`autoDeclare` false, these options are not used: set the dead letter exchange on the queue in RabbitMQ instead, for
+example with a policy.
+
+The following route tries a failing message 3 times in all, 2 seconds apart, and then moves it to the queue
+`orders.dlq`. The message there has an `x-death` header that says which queue it failed in.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:spring-rabbitmq-source"
+      parameters:
+        host: "localhost"
+        port: 5672
+        exchangeName: "orders"
+        queues: "orders"
+        routingKey: "new-order"
+        autoDeclare: true
+        concurrentConsumers: 4
+        prefetchCount: 10
+        maximumRetryAttempts: 2
+        retryDelay: 2000
+        deadLetterExchange: "orders.dlx"
+        deadLetterRoutingKey: "failed"
+        deadLetterQueue: "orders.dlq"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
 
 === Usage example
 

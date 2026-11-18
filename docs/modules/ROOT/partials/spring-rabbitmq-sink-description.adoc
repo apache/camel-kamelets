@@ -43,3 +43,32 @@ RabbitMQ provides enterprise-grade features:
 === Message Patterns
 
 Supports publish-subscribe and message queuing. It sends each message and does not wait for a reply.
+
+=== Content type
+
+Text is sent with the content type `text/plain`, and bytes with `application/octet-stream`. Set `contentType` to send
+every message with another content type, such as `application/json`, so that the applications that read the queue know
+the format. A message with no body fails, unless `allowNullBody` is true: then it is sent as an empty message.
+
+=== Usage example
+
+The following route publishes the JSON that is posted to `/orders` to the exchange `orders`, with the routing key
+`new-order` and the content type `application/json`:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:webhook-source"
+      parameters:
+        subpath: "orders"
+      steps:
+        - to:
+            uri: "kamelet:spring-rabbitmq-sink"
+            parameters:
+              host: "localhost"
+              port: 5672
+              exchangeName: "orders"
+              routingKey: "new-order"
+              contentType: "application/json"
+----

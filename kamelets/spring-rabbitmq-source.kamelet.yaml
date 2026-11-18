@@ -37,7 +37,7 @@ spec:
 
       Output: the body is text when the content type of the message starts with `text`, and bytes otherwise. The headers of the RabbitMQ message become headers, along with `CamelSpringRabbitmqExchangeName`, `CamelSpringRabbitmqRoutingKey` and `CamelSpringRabbitmqContentType`.
 
-      Good to know: with `autoDeclare` false, the default, the queue must exist already, bound to the exchange; until it does, the source keeps trying again. With `autoDeclare` true, it creates the exchange as a `direct` exchange, the queue in `queues` and the binding with `routingKey`. Without `queues`, it reads from a new queue with a generated name. A message whose processing fails is tried 5 times, one second apart, and then dropped, or sent to the dead letter exchange of the queue when RabbitMQ has one. It connects with no TLS unless `protocol` is `amqps`. With `amqps`, the certificate of the broker must be trusted by Java, or by the trust store in `sslTruststoreLocation`, and must name the host in `host`; otherwise it cannot connect.
+      Good to know: with `autoDeclare` false, the default, the queue must exist already, bound to the exchange; until it does, the source keeps trying again. With `autoDeclare` true, it creates the exchange, as a `direct` exchange unless `exchangeType` says otherwise, the queue in `queues` and the binding with `routingKey`; when the exchange or the queue exists already with other settings, such as another type or another dead letter exchange, the source fails to start. Without `queues`, it reads from a new queue with a generated name. A message whose processing fails is tried 6 times, one second apart (see `maximumRetryAttempts` and `retryDelay`), and then dropped, or sent to the dead letter exchange of the queue when it has one, such as the one in `deadLetterExchange`. One consumer processes one message at a time; `concurrentConsumers` processes several in parallel, so not in order. It connects with no TLS unless `protocol` is `amqps`. With `amqps`, the certificate of the broker must be trusted by Java, or by the trust store in `sslTruststoreLocation`, and must name the host in `host`; otherwise it cannot connect.
     required:
       - host
       - port
@@ -110,6 +110,59 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      exchangeType:
+        title: "Exchange Type"
+        description: "The type of the exchange that the source creates when `autoDeclare` is true: `direct`, `fanout`, `headers` or `topic`. When it is not set, it is `direct`. With `topic`, `routingKey` can be a pattern: `orders.*` matches `orders.new`, and `orders.#` also matches `orders.eu.new`. Not used when `autoDeclare` is false."
+        type: string
+        enum: ["direct", "fanout", "headers", "topic"]
+      concurrentConsumers:
+        title: "Concurrent Consumers"
+        description: "How many consumers receive from the queue at the same time, each on its own channel, so that as many messages are processed in parallel. When it is not set, there is one consumer, and the messages are processed one at a time."
+        type: integer
+        example: 4
+      prefetchCount:
+        title: "Prefetch Count"
+        description: "How many messages RabbitMQ sends ahead to each consumer, before they are acknowledged. When it is not set, it is 250."
+        type: integer
+        example: 10
+      acknowledgeMode:
+        title: "Acknowledge Mode"
+        description: "When RabbitMQ removes a message from the queue: with `AUTO`, once it has been processed, or has failed after the retries; with `NONE`, as soon as it is delivered, so a message whose processing fails is lost and does not go to the dead letter exchange. When it is not set, `AUTO` is used."
+        type: string
+        enum: ["AUTO", "NONE"]
+      maximumRetryAttempts:
+        title: "Maximum Retry Attempts"
+        description: "How many times a message whose processing fails is tried again, after the first try. When it is not set, it is tried again 5 times, so 6 times in all. With 0, it is not tried again."
+        type: integer
+        example: 3
+      retryDelay:
+        title: "Retry Delay"
+        description: "How long to wait before a failing message is tried again, in milliseconds. When it is not set, it waits 1000 milliseconds."
+        type: integer
+        example: 5000
+      deadLetterExchange:
+        title: "Dead Letter Exchange"
+        description: "The exchange that RabbitMQ sends a message to when its processing still fails after the retries. The source creates this exchange, and creates the queue in `queues` with it as its dead letter exchange. Needs `autoDeclare` true; with `autoDeclare` false, it is not used, and the dead letter exchange must be set on the queue in RabbitMQ, for example with a policy."
+        type: string
+        example: "orders.dlx"
+        pattern: "^[A-Za-z0-9_.:-]+$"
+      deadLetterRoutingKey:
+        title: "Dead Letter Routing Key"
+        description: "The routing key that a failed message is sent to `deadLetterExchange` with, and that binds `deadLetterQueue` to it. When it is not set, a failed message keeps the routing key it was published with. Needs `deadLetterExchange` and `autoDeclare` true."
+        type: string
+        example: "failed"
+        pattern: "^[A-Za-z0-9_.:-]+$"
+      deadLetterQueue:
+        title: "Dead Letter Queue"
+        description: "A queue that the source creates and binds to `deadLetterExchange` with `deadLetterRoutingKey`, to keep the failed messages. Needs `deadLetterExchange`, `deadLetterRoutingKey` and `autoDeclare` true; without `deadLetterRoutingKey`, the source fails to start."
+        type: string
+        example: "orders.dlq"
+        pattern: "^[A-Za-z0-9_.:-]+$"
+      deadLetterExchangeType:
+        title: "Dead Letter Exchange Type"
+        description: "The type of the exchange that the source creates in `deadLetterExchange`: `direct`, `fanout`, `headers` or `topic`. When it is not set, it is `direct`."
+        type: string
+        enum: ["direct", "fanout", "headers", "topic"]
   dataTypes:
     out:
       headers:
@@ -147,7 +200,7 @@ spec:
         constructors:
           0: "#bean:{{rabbitConnectionFactory}}"
     from:
-      uri: "spring-rabbitmq://{{exchangeName}}?autoDeclare={{autoDeclare}}&connectionFactory=#bean:{{connectionFactory}}&queues={{?queues}}&routingKey={{?routingKey}}"
+      uri: "spring-rabbitmq://{{exchangeName}}?autoDeclare={{autoDeclare}}&connectionFactory=#bean:{{connectionFactory}}&queues={{?queues}}&routingKey={{?routingKey}}&exchangeType={{?exchangeType}}&concurrentConsumers={{?concurrentConsumers}}&prefetchCount={{?prefetchCount}}&acknowledgeMode={{?acknowledgeMode}}&maximumRetryAttempts={{?maximumRetryAttempts}}&retryDelay={{?retryDelay}}&deadLetterExchange={{?deadLetterExchange}}&deadLetterRoutingKey={{?deadLetterRoutingKey}}&deadLetterQueue={{?deadLetterQueue}}&deadLetterExchangeType={{?deadLetterExchangeType}}"
       steps:
         - to:
             uri: kamelet:sink
