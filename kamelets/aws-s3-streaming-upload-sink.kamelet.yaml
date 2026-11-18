@@ -36,11 +36,11 @@ spec:
 
       Use it to store a stream of small records, such as log lines, events or sensor readings, as a few large files instead of one file per message. To upload one file per message, use `aws-s3-sink`.
 
-      Input: the body is added to the end of the current file as it is, as text, bytes or a stream. Nothing is put between two messages: end each message with a line break if the file must have one record per line. Headers are not used: the names of the files come from `keyName`.
+      Input: the body is added to the end of the current file as it is, as text, bytes or a stream. Nothing is put between two messages: end each message with a line break if the file must have one record per line. The names of the files come from `keyName`, not from headers.
 
       Output: the message is unchanged. The message that completes a file gets the `CamelAwsS3ETag` header of that file.
 
-      Good to know: a file is uploaded when it has `batchMessageNumber` messages or `batchSize` bytes, or when `streamingUploadTimeout` has passed; until then it is not in the bucket. With the default `namingStrategy` of `progressive`, the first file is named `keyName`, such as `logs/app.log`, and the next ones `logs/app-1.log`, `logs/app-2.log` and so on. With `restartingPolicy` set to `override`, a new run starts again from `keyName` and replaces the files of the earlier run.
+      Good to know: a file is uploaded when it has `batchMessageNumber` messages or `batchSize` bytes, or when `streamingUploadTimeout` has passed; until then it is not in the bucket. With the default `namingStrategy` of `progressive`, the first file is named `keyName`, such as `logs/app.log`, and the next ones `logs/app-1.log`, `logs/app-2.log` and so on. With `restartingPolicy` set to `override`, a new run starts again from `keyName` and replaces the files of the earlier run. To encrypt the files with a key of AWS KMS, as a bucket policy may require, set `useAwsKMS` and `awsKMSKeyId`; `storageClass` sets their storage class.
     required:
       - bucketNameOrArn
       - region
@@ -149,6 +149,26 @@ spec:
         description: If true, the bucket name is put in the path of the address (`https://host/my-bucket/key`) instead of in the host name (`https://my-bucket.host/key`). S3-compatible storage such as MinIO often needs it.
         type: boolean
         default: false
+      useAwsKMS:
+        title: Use AWS KMS
+        description: "If true, each file is encrypted in S3 with a key of AWS KMS (SSE-KMS): the key in `awsKMSKeyId`. Use it when the bucket policy requires SSE-KMS, or a key of your own. The credentials need the permission to use the key (`kms:GenerateDataKey`), and readers of the files the permission to decrypt with it (`kms:Decrypt`). Without `awsKMSKeyId`, the key that AWS manages for S3 (`aws/s3`) is used."
+        type: boolean
+      awsKMSKeyId:
+        title: AWS KMS Key ID
+        description: The KMS key to encrypt the files with, as its key ID, such as `1234abcd-12ab-34cd-56ef-1234567890ab`, or its ARN, such as `arn:aws:kms:eu-west-1:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab`. Use the ARN for a key of another AWS account. Only used when `useAwsKMS` is true.
+        example: arn:aws:kms:eu-west-1:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab
+        type: string
+        pattern: "^[A-Za-z0-9:/_-]+$"
+      useSSES3:
+        title: Use SSE-S3
+        description: If true, the upload asks S3 to encrypt each file with keys that S3 manages (SSE-S3, `AES256`), in the `x-amz-server-side-encryption` header that some bucket policies require. S3 encrypts new files this way anyway, unless the bucket is set to another encryption. Do not combine it with `useAwsKMS`.
+        type: boolean
+      storageClass:
+        title: Storage Class
+        description: "The storage class of the files: `STANDARD`, `STANDARD_IA`, `ONEZONE_IA`, `INTELLIGENT_TIERING`, `GLACIER_IR`, `GLACIER`, `DEEP_ARCHIVE` or `REDUCED_REDUNDANCY`. A file in `GLACIER` or `DEEP_ARCHIVE` must be restored before it can be read. When it is not set, the files are stored as `STANDARD`. A `CamelAwsS3StorageClass` header on the message takes precedence."
+        example: STANDARD_IA
+        type: string
+        pattern: "^[A-Z_]+$"
   dependencies:
     - "camel:aws2-s3"
     - "camel:kamelet"
@@ -157,4 +177,4 @@ spec:
       uri: kamelet:source
       steps:
         - to:
-            uri: "aws2-s3:{{bucketNameOrArn}}?accessKey=RAW({{?accessKey}})&autoCreateBucket={{autoCreateBucket}}&batchMessageNumber={{batchMessageNumber}}&batchSize={{batchSize}}&forcePathStyle={{forcePathStyle}}&keyName={{keyName}}&namingStrategy={{namingStrategy}}&overrideEndpoint={{overrideEndpoint}}&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&restartingPolicy={{restartingPolicy}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&streamingUploadMode=true&streamingUploadTimeout={{?streamingUploadTimeout}}&uriEndpointOverride={{?uriEndpointOverride}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}"
+            uri: "aws2-s3:{{bucketNameOrArn}}?accessKey=RAW({{?accessKey}})&autoCreateBucket={{autoCreateBucket}}&batchMessageNumber={{batchMessageNumber}}&batchSize={{batchSize}}&forcePathStyle={{forcePathStyle}}&keyName={{keyName}}&namingStrategy={{namingStrategy}}&overrideEndpoint={{overrideEndpoint}}&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&restartingPolicy={{restartingPolicy}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&streamingUploadMode=true&streamingUploadTimeout={{?streamingUploadTimeout}}&uriEndpointOverride={{?uriEndpointOverride}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}&useAwsKMS={{?useAwsKMS}}&awsKMSKeyId={{?awsKMSKeyId}}&useSSES3={{?useSSES3}}&storageClass={{?storageClass}}"

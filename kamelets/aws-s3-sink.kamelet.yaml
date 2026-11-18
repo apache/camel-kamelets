@@ -41,7 +41,7 @@ spec:
 
       Output: the message is unchanged. The `CamelAwsS3Key` and `CamelAwsS3ETag` headers give the key and the ETag of the uploaded file.
 
-      Good to know: a file with the same key is replaced without warning. When `keyName` is set, the `file` header is ignored and every message replaces the same file. To copy files from `aws-s3-source` under their own names, set the `file` header from its `CamelAwsS3Key` header first. It also works with S3-compatible storage, such as MinIO, through `overrideEndpoint`, `uriEndpointOverride` and `forcePathStyle`.
+      Good to know: a file with the same key is replaced without warning. When `keyName` is set, the `file` header is ignored and every message replaces the same file. To copy files from `aws-s3-source` under their own names, set the `file` header from its `CamelAwsS3Key` header first. It also works with S3-compatible storage, such as MinIO, through `overrideEndpoint`, `uriEndpointOverride` and `forcePathStyle`. To encrypt the files with a key of AWS KMS, as a bucket policy may require, set `useAwsKMS` and `awsKMSKeyId`; `storageClass` sets their storage class.
     required:
       - bucketNameOrArn
       - region
@@ -124,6 +124,26 @@ spec:
         description: The key (the path of the file in the bucket) to write every message to, such as `reports/latest.csv`. When it is set, the `file` header is not used and each message replaces the file of the previous one. When it is not set, the key comes from the `file` header, or is a generated unique ID.
         example: reports/latest.csv
         type: string
+      useAwsKMS:
+        title: Use AWS KMS
+        description: "If true, each file is encrypted in S3 with a key of AWS KMS (SSE-KMS): the key in `awsKMSKeyId`. Use it when the bucket policy requires SSE-KMS, or a key of your own. The credentials need the permission to use the key (`kms:GenerateDataKey`), and readers of the files the permission to decrypt with it (`kms:Decrypt`). Without `awsKMSKeyId`, it has no effect."
+        type: boolean
+      awsKMSKeyId:
+        title: AWS KMS Key ID
+        description: The KMS key to encrypt the files with, as its key ID, such as `1234abcd-12ab-34cd-56ef-1234567890ab`, or its ARN, such as `arn:aws:kms:eu-west-1:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab`. Use the ARN for a key of another AWS account. Only used when `useAwsKMS` is true.
+        example: arn:aws:kms:eu-west-1:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab
+        type: string
+        pattern: "^[A-Za-z0-9:/_-]+$"
+      useSSES3:
+        title: Use SSE-S3
+        description: If true, the upload asks S3 to encrypt each file with keys that S3 manages (SSE-S3, `AES256`), in the `x-amz-server-side-encryption` header that some bucket policies require. S3 encrypts new files this way anyway, unless the bucket is set to another encryption. Do not combine it with `useAwsKMS`.
+        type: boolean
+      storageClass:
+        title: Storage Class
+        description: "The storage class of the files: `STANDARD`, `STANDARD_IA`, `ONEZONE_IA`, `INTELLIGENT_TIERING`, `GLACIER_IR`, `GLACIER`, `DEEP_ARCHIVE` or `REDUCED_REDUNDANCY`. A file in `GLACIER` or `DEEP_ARCHIVE` must be restored before it can be read. When it is not set, the files are stored as `STANDARD`. A `CamelAwsS3StorageClass` header on the message takes precedence."
+        example: STANDARD_IA
+        type: string
+        pattern: "^[A-Z_]+$"
   dataTypes:
     in:
       headers:
@@ -177,4 +197,4 @@ spec:
                                 simple:
                                   expression: "${exchangeId}"
         - to:
-            uri: "aws2-s3:{{bucketNameOrArn}}?accessKey=RAW({{?accessKey}})&autoCreateBucket={{autoCreateBucket}}&forcePathStyle={{forcePathStyle}}&keyName={{?keyName}}&overrideEndpoint={{overrideEndpoint}}&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&uriEndpointOverride={{?uriEndpointOverride}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}"
+            uri: "aws2-s3:{{bucketNameOrArn}}?accessKey=RAW({{?accessKey}})&autoCreateBucket={{autoCreateBucket}}&forcePathStyle={{forcePathStyle}}&keyName={{?keyName}}&overrideEndpoint={{overrideEndpoint}}&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&uriEndpointOverride={{?uriEndpointOverride}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}&useAwsKMS={{?useAwsKMS}}&awsKMSKeyId={{?awsKMSKeyId}}&useSSES3={{?useSSES3}}&storageClass={{?storageClass}}"

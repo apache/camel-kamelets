@@ -39,10 +39,8 @@ spec:
 
       Output: the body is the EventBridge event, as JSON text: `detail-type` says what happened (such as `Object Created` or `Object Deleted`), `detail.bucket.name` is the bucket and `detail.object.key` the key of the file. With `getObject` set to true, the event of a file uploaded with a simple upload (PutObject) carries the content of the file instead, as a stream, with the `CamelAwsS3ProducedBucketName` and `CamelAwsS3ProducedKey` headers; the other events then come as parsed JSON (a Jackson `JsonNode`).
 
-      Good to know: it needs a setup in AWS. In the properties of the bucket, turn on sending events to Amazon EventBridge; then create an EventBridge rule for the events of source `aws.s3` and that bucket, with the queue as its target. Each event is deleted from the queue once it has been processed, unless `deleteAfterRead` is false. The files stay in the bucket. `getObject` skips files created by a multipart upload or a copy, and never connects through `uriEndpointOverride`.
+      Good to know: it needs a setup in AWS. In the properties of the bucket, turn on sending events to Amazon EventBridge; then create an EventBridge rule for the events of source `aws.s3` and that bucket, with the queue as its target. Each event is deleted from the queue once it has been processed, unless `deleteAfterRead` is false. The files stay in the bucket. `getObject` skips files created by a multipart upload or a copy, and never connects through `uriEndpointOverride`. It logs in to the queue and, with `getObject`, to the bucket with `accessKey` and `secretKey`, or without keys, through the IAM role or the AWS profile of the environment, with `useDefaultCredentialsProvider` or `useProfileCredentialsProvider`.
     required:
-      - accessKey
-      - secretKey
       - queueNameOrArn
       - region
     type: object
@@ -59,7 +57,7 @@ spec:
         default: true
       accessKey:
         title: Access Key
-        description: The access key ID of an IAM user, which you create in the AWS console under IAM, Users, Security credentials. Use it together with `secretKey`.
+        description: The access key ID of an IAM user, which you create in the AWS console under IAM, Users, Security credentials. Use it together with `secretKey`. Leave both out when `useDefaultCredentialsProvider` or `useProfileCredentialsProvider` is true.
         type: string
         format: password
         x-descriptors:
@@ -117,6 +115,31 @@ spec:
         description: If true, the queue is created when it does not exist. A name that ends in `.fifo` creates a FIFO queue. The credentials need the permission to create queues.
         type: boolean
         default: false
+      useDefaultCredentialsProvider:
+        title: Default Credentials Provider
+        description: "If true, the credentials are found in the environment instead of in `accessKey` and `secretKey`: the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables, the `~/.aws/credentials` file, or the IAM role of the EC2 instance, ECS task or Kubernetes pod the integration runs on."
+        type: boolean
+      useProfileCredentialsProvider:
+        title: Profile Credentials Provider
+        description: If true, the credentials are read from a named profile in the AWS credentials file (`~/.aws/credentials`), as the AWS CLI does. Name the profile in `profileCredentialsName`.
+        type: boolean
+      useSessionCredentials:
+        title: Session Credentials
+        description: "If true, it logs in with temporary credentials: `accessKey`, `secretKey` and `sessionToken`, such as the ones AWS STS gives when you assume an IAM role."
+        type: boolean
+      profileCredentialsName:
+        title: Profile Credentials Name
+        description: The name of the profile in the AWS credentials file. Only used when `useProfileCredentialsProvider` is true; when it is not set, the default profile is used.
+        example: production
+        type: string
+        pattern: "^[A-Za-z0-9_.@-]+$"
+      sessionToken:
+        title: Session Token
+        description: The session token of temporary credentials, which comes with their access key and secret key, for example from AWS STS when you assume an IAM role. Only used when `useSessionCredentials` is true.
+        type: string
+        format: password
+        x-descriptors:
+          - 'urn:camel:group:credentials'
       amazonAWSHost:
         title: AWS Host
         description: The host name of AWS. Leave it as `amazonaws.com` for AWS. Any other value is the address to connect to instead, as `host:port`, together with `protocol`; `uriEndpointOverride` does the same.
@@ -155,7 +178,7 @@ spec:
         default: false
       getObject:
         title: Get Object
-        description: If true, for an event of a file uploaded with a simple upload (PutObject), it fetches the file and sends its content instead of the event. It connects to S3 with `accessKey`, `secretKey` and `region` only, not with `uriEndpointOverride`.
+        description: If true, for an event of a file uploaded with a simple upload (PutObject), it fetches the file and sends its content instead of the event. It connects to S3 with the same credentials as the queue and with `region`, not with `uriEndpointOverride`.
         type: boolean
         default: false
   dataTypes:
@@ -196,6 +219,11 @@ spec:
         region: "{{region}}"
         secretKey: "RAW({{?secretKey}})"
         uriEndpointOverride: "{{?uriEndpointOverride}}"
+        useDefaultCredentialsProvider: "{{?useDefaultCredentialsProvider}}"
+        useProfileCredentialsProvider: "{{?useProfileCredentialsProvider}}"
+        profileCredentialsName: "{{?profileCredentialsName}}"
+        useSessionCredentials: "{{?useSessionCredentials}}"
+        sessionToken: "RAW({{?sessionToken}})"
       steps:
         - choice:
             precondition: true
@@ -229,7 +257,7 @@ spec:
                                   jsonpath:
                                     expression: "$.detail.bucket.name"
                             - toD:
-                                uri: "aws2-s3:${exchangeProperty.aws-s3-bucket}?accessKey={{accessKey}}&secretKey={{secretKey}}&region={{region}}&operation=getObject&keyName=${exchangeProperty.aws-s3-name}"
+                                uri: "aws2-s3:${exchangeProperty.aws-s3-bucket}?accessKey=RAW({{?accessKey}})&secretKey=RAW({{?secretKey}})&region={{region}}&operation=getObject&keyName=${exchangeProperty.aws-s3-name}&useDefaultCredentialsProvider={{?useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{?useProfileCredentialsProvider}}&profileCredentialsName={{?profileCredentialsName}}&useSessionCredentials={{?useSessionCredentials}}&sessionToken=RAW({{?sessionToken}})"
         - to:
             uri: kamelet:sink
 
