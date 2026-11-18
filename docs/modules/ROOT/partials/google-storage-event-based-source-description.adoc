@@ -26,6 +26,8 @@ Optional parameters:
 - `synchronousPull`: Specifies to synchronously pull batches of messages (default: false)
 - `maxMessagesPerPoll`: The maximum number of messages to receive from the server in a single API call
 - `concurrentConsumers`: The number of parallel streams to consume from the subscription
+- `ackMode`: `AUTO` (when not set) or `NONE`, see below
+- `maxDeliveryAttempts`: How many deliveries of a notification to process at most, on a subscription with a dead-letter topic
 
 === Usage example
 
@@ -54,3 +56,27 @@ spec:
       apiVersion: v1
       name: my-service
 ```
+
+=== Acknowledging Notifications
+
+With `ackMode` not set, or `AUTO`, a notification is acknowledged once it has been processed, and given back to Pub/Sub when its processing fails, so that Pub/Sub delivers it again.
+
+With `ackMode: NONE`, the route acknowledges each notification itself, with the object in the `CamelGooglePubsubAcknowledge` header, as described for the Google Pubsub Source Kamelet. A notification that is not acknowledged is delivered again: with `synchronousPull`, once the acknowledgement deadline of the subscription has passed; otherwise after an hour.
+
+On a subscription with a dead-letter topic, a notification that has been delivered `maxDeliveryAttempts` times is given back without being processed, until Pub/Sub moves it to the dead-letter topic. When `maxDeliveryAttempts` is not set, the maximum of the dead-letter policy of the subscription is used.
+
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:google-storage-event-based-source"
+      parameters:
+        projectId: "my-project-123"
+        subscriptionName: "bucket-events-sub"
+        serviceAccountKey: "{{gcp.serviceAccountKey}}"
+        bucketNameOrArn: "my-bucket"
+        maxDeliveryAttempts: 3
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

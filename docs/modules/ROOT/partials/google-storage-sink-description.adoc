@@ -12,9 +12,46 @@ This Kamelet supports Google Cloud service account authentication. The service a
 
 - **Service Account Key**: The JSON key file of a service account, encoded in Base64
 - **Auto Create Bucket**: Automatically creates the bucket if it doesn't exist (defaults to false)
+- **Storage Location**: The location of the bucket that Auto Create Bucket creates (when not set: `US-EAST1`)
+- **Object Name**: A fixed name of the object, for every message
+- **Workload Identity Federation**: `useWorkloadIdentityFederation`, `workloadIdentityConfig` and `impersonatedServiceAccount`, as described for the Google Storage Source Kamelet
 
 === Optional Headers
 
 In the header, you can optionally set the `file` / `ce-file` property to specify the name of the object to upload.
 
 If you do not set the property in the header, the Kamelet uses a generated unique name for the object. An object with the same name is overwritten.
+
+=== A Fixed Object Name
+
+With `objectName`, every message is written to the same object, whatever the `file` and `ce-file` headers say. For example, to keep the latest status in one file:
+
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 60000
+        message: '{"status": "ok"}'
+      steps:
+        - to:
+            uri: "kamelet:google-storage-sink"
+            parameters:
+              bucketNameOrArn: "my-bucket"
+              objectName: "status/latest.json"
+----
+
+=== Creating the Bucket
+
+With `autoCreateBucket: true`, a bucket that does not exist is created when the Kamelet starts, in `storageLocation`, such as a region (`europe-west1`) or a multi-region (`EU`). When `storageLocation` is not set, the bucket is created in `US-EAST1`. A bucket that exists is used as it is.
+
+[source,yaml]
+----
+- to:
+    uri: "kamelet:google-storage-sink"
+    parameters:
+      bucketNameOrArn: "my-bucket"
+      autoCreateBucket: true
+      storageLocation: "EU"
+----

@@ -24,6 +24,9 @@ Optional parameters:
 - `synchronousPull`: Specifies to synchronously pull batches of messages (default: false)
 - `maxMessagesPerPoll`: The maximum number of messages to receive from the server in a single API call (default: 1)
 - `concurrentConsumers`: The number of parallel streams to consume from the subscription (default: 1)
+- `ackMode`: `AUTO` (when not set) or `NONE`, see below
+- `maxDeliveryAttempts`: How many deliveries of a message to process at most, on a subscription with a dead-letter topic
+- `maxAckExtensionPeriod`: How long, in seconds, a message that is not acknowledged yet is kept (when not set: 3600)
 
 === Usage example
 
@@ -51,3 +54,48 @@ spec:
       apiVersion: v1
       name: my-service
 ```
+
+=== Acknowledging Messages
+
+With `ackMode` not set, or `AUTO`, a message is acknowledged once it has been processed. A message whose processing fails is given back to Pub/Sub, which delivers it again.
+
+With `ackMode: NONE`, the Kamelet does not acknowledge the messages. The route does it, with the object in the `CamelGooglePubsubAcknowledge` header, for example once the message has been stored:
+
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:google-pubsub-source"
+      parameters:
+        projectId: "my-project-123"
+        subscriptionName: "orders-sub"
+        ackMode: NONE
+        synchronousPull: true
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+        - script:
+            groovy: "request.headers.CamelGooglePubsubAcknowledge.ack(exchange)"
+----
+
+Call `nack` instead of `ack` to have Pub/Sub deliver the message again right away. A message that is neither acknowledged nor given back is delivered again: with `synchronousPull`, once the acknowledgement deadline of the subscription has passed; otherwise once `maxAckExtensionPeriod` has passed, which is one hour when it is not set.
+
+=== Dead-Letter Topic
+
+On a subscription with a dead-letter topic, Pub/Sub counts the deliveries of each message, and moves a message to the dead-letter topic once it has been delivered as many times as the dead-letter policy allows. The count is in the `CamelGooglePubsubDeliveryAttempt` header.
+
+A message that has been delivered `maxDeliveryAttempts` times is given back without being processed, until Pub/Sub moves it. When `maxDeliveryAttempts` is not set, the Kamelet reads the maximum of the dead-letter policy when it starts, so the last delivery is not processed. That needs the permission `pubsub.subscriptions.get`; when the policy cannot be read, a warning is logged, and every delivery is processed. With `maxDeliveryAttempts: 0`, every delivery is processed.
+
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:google-pubsub-source"
+      parameters:
+        projectId: "my-project-123"
+        subscriptionName: "orders-sub"
+        maxDeliveryAttempts: 3
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

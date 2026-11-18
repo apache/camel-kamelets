@@ -22,6 +22,11 @@ Optional parameters:
 - `deleteAfterRead`: Specifies to delete objects after consuming them (default: true)
 - `autoCreateBucket`: Specifies to automatically create the Google Cloud Storage bucket (default: false)
 - `prefix`: The prefix which is used in the BlobListOptions to only consume objects we are interested in
+- `moveAfterRead` and `destinationBucket`: Move each file to another bucket after it has been read
+- `includeBody`: Set it to false to read only the description of each file, not its content (when not set: true)
+- `includeFolders`: Set it to false to skip the folder markers, the empty objects whose name ends with `/` (when not set: true)
+- `delay`: How long to wait between two reads of the bucket, in milliseconds (when not set: 500)
+- `useWorkloadIdentityFederation`, `workloadIdentityConfig` and `impersonatedServiceAccount`: Log in with Workload Identity Federation, see below
 
 === Usage example
 
@@ -48,3 +53,46 @@ spec:
       apiVersion: v1
       name: my-service
 ```
+
+=== Moving Files to Another Bucket
+
+With `moveAfterRead`, each file that has been processed is copied to `destinationBucket`, under the same name, and then deleted from the bucket it was read from. A file whose processing fails stays where it is. To read a large bucket only once a minute, and to move the files without downloading their content:
+
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:google-storage-source"
+      parameters:
+        bucketNameOrArn: "my-bucket"
+        moveAfterRead: true
+        destinationBucket: "my-archive-bucket"
+        includeBody: false
+        delay: 60000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+With `includeBody: false`, the body is empty, and the headers describe the file, such as `CamelGoogleCloudStorageObjectName` and `CamelGoogleCloudStorageContentLength`. The destination bucket must exist: when it does not, a warning is logged, and the file stays in its bucket and is read again on every poll. With `deleteAfterRead: false`, the file is copied and kept, so it is read and copied again on every poll.
+
+=== Workload Identity Federation
+
+To run without a service account key, outside Google Cloud, the Kamelet can exchange a token of another identity provider, such as AWS, Azure or a Kubernetes service account, for Google credentials. Create the credential configuration file with `gcloud iam workload-identity-pools create-cred-config`, and point `workloadIdentityConfig` at it:
+
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:google-storage-source"
+      parameters:
+        bucketNameOrArn: "my-bucket"
+        useWorkloadIdentityFederation: true
+        workloadIdentityConfig: "file:/var/run/secrets/gcp/credential-config.json"
+        impersonatedServiceAccount: "storage-reader@my-project-123.iam.gserviceaccount.com"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+With `impersonatedServiceAccount`, the Kamelet acts as that service account, which needs the Service Account Token Creator role granted to the federated identity. Without `workloadIdentityConfig`, the Application Default Credentials are used, which on GKE with Workload Identity need no setting at all.

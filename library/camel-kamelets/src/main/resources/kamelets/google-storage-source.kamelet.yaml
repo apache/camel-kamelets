@@ -37,7 +37,7 @@ spec:
 
       Output: the body is the content of the file, as a stream. The headers give the bucket name (`CamelGoogleCloudStorageBucketName`), the object name, that is the path of the file in the bucket (`CamelGoogleCloudStorageObjectName`), the content type and the ETag of the file.
 
-      Good to know: files are deleted from the bucket after they are read, unless `deleteAfterRead` is set to false; then the same files are read again on every poll, about twice a second. A file whose processing fails is not deleted, and is read again on the next poll. Without `serviceAccountKey`, it logs in with the Application Default Credentials of the environment where it runs.
+      Good to know: files are deleted from the bucket after they are read, unless `deleteAfterRead` is set to false; then the same files are read again on every poll, about twice a second, or every `delay` milliseconds. With `moveAfterRead`, they are copied to `destinationBucket` first. A file whose processing fails is not deleted or moved, and is read again on the next poll. Without `serviceAccountKey`, it logs in with the Application Default Credentials of the environment where it runs, or with Workload Identity Federation when `useWorkloadIdentityFederation` is true.
     required:
       - bucketNameOrArn
     type: object
@@ -74,6 +74,45 @@ spec:
         description: A regular expression that the whole name of a file must match for the file to be read, such as `.*\.csv` for the CSV files only. The name includes the folders, as in `inbox/orders.csv`.
         type: string
         example: '.*\.csv'
+      moveAfterRead:
+        title: Move Objects After Read
+        description: If true, each file is copied to `destinationBucket` after it has been read, under the same name, and then deleted from this bucket unless `deleteAfterRead` is false. A file whose processing fails is not moved. When it is not set, it is false.
+        type: boolean
+      destinationBucket:
+        title: Destination Bucket
+        description: The name of the bucket to move the files to, without `gs://`. Only used when `moveAfterRead` is true. The bucket must exist; when it does not, a warning is logged and each file stays in its bucket, so it is read again on every poll.
+        type: string
+        example: my-archive-bucket
+        pattern: "^[a-z0-9][a-z0-9._-]*[a-z0-9]$"
+      includeBody:
+        title: Include Body
+        description: If true, the body is the content of the file. If false, the content is not downloaded, the body is empty, and only the headers describe the file, such as its size in `CamelGoogleCloudStorageContentLength`. When it is not set, it is true.
+        type: boolean
+      includeFolders:
+        title: Include Folders
+        description: If true, folder markers, that is empty objects whose name ends with `/`, are read as files too. Set it to false to skip them. When it is not set, it is true.
+        type: boolean
+      delay:
+        title: Delay
+        description: How long to wait between two reads of the bucket, in milliseconds. For example, 60000 is one minute. When it is not set, it is 500.
+        type: integer
+        example: 60000
+      useWorkloadIdentityFederation:
+        title: Use Workload Identity Federation
+        description: If true, it logs in with Workload Identity Federation instead of `serviceAccountKey`, which is then ignored. It uses the credential configuration file in `workloadIdentityConfig` or, when that is not set, the Application Default Credentials. When it is not set, it is false.
+        type: boolean
+      workloadIdentityConfig:
+        title: Workload Identity Configuration
+        description: "Where to load the Workload Identity Federation credential configuration file from: the JSON file of type `external_account` that `gcloud iam workload-identity-pools create-cred-config` creates, which tells how to exchange a token of another identity provider, such as AWS, Azure or Kubernetes, for Google credentials. Prefix the path with `file:`, `classpath:`, `http:` or `https:`. Only used when `useWorkloadIdentityFederation` is true."
+        type: string
+        example: "file:/var/run/secrets/gcp/credential-config.json"
+        pattern: "^(file|classpath|http|https):.+$"
+      impersonatedServiceAccount:
+        title: Impersonated Service Account
+        description: The email of a service account to act as, with the credentials of Workload Identity Federation, so that the Kamelet gets the permissions of that service account. The federated identity needs the Service Account Token Creator role on it. Only used when `useWorkloadIdentityFederation` is true.
+        type: string
+        example: storage-reader@my-project-123.iam.gserviceaccount.com
+        pattern: "^[^@\\s]+@[^@\\s]+$"
   dataTypes:
     out:
       default: binary
@@ -131,7 +170,18 @@ spec:
     - "camel:jackson3"
   template:
     from:
-      uri: "google-storage://{{bucketNameOrArn}}?autoCreateBucket={{autoCreateBucket}}&deleteAfterRead={{deleteAfterRead}}&filter={{?filter}}&prefix={{?prefix}}&serviceAccountKey=base64:{{?serviceAccountKey}}"
+      uri: "google-storage://{{bucketNameOrArn}}?autoCreateBucket={{autoCreateBucket}}&delay={{?delay}}&deleteAfterRead={{deleteAfterRead}}&destinationBucket={{?destinationBucket}}&filter={{?filter}}&impersonatedServiceAccount={{?impersonatedServiceAccount}}&includeBody={{?includeBody}}&includeFolders={{?includeFolders}}&moveAfterRead={{?moveAfterRead}}&prefix={{?prefix}}&serviceAccountKey=base64:{{?serviceAccountKey}}&useWorkloadIdentityFederation={{?useWorkloadIdentityFederation}}&workloadIdentityConfig={{?workloadIdentityConfig}}"
       steps:
+        - choice:
+            precondition: true
+            when:
+              - expression:
+                  simple:
+                    expression: "${properties:includeBody:true} == 'false'"
+                steps:
+                  - setBody:
+                      expression:
+                        constant:
+                          expression: ""
         - to:
             uri: kamelet:sink
