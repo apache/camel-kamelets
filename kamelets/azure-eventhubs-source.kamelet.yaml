@@ -38,7 +38,7 @@ spec:
 
       Output: the body is the body of the event, as bytes. The headers give its partition (`CamelAzureEventHubsPartitionId`), offset, sequence number and the time it was enqueued, and `CamelAzureEventHubsMetadata` holds the custom properties of the event.
 
-      Good to know: when no position has been saved yet, it starts with the events that arrive after it starts, not the older ones. It reads as the `$Default` consumer group. It saves its position (a checkpoint) in `blobContainerName` every 500 events or every 5 seconds, so after a restart some events can be read again.
+      Good to know: when no position has been saved yet, it starts with the events that arrive after it starts, not the older ones. It reads as the `$Default` consumer group, or as the one in `consumerGroupName`, and each consumer group has its own saved position. It saves its position (a checkpoint) in `blobContainerName` every 500 events or every 5 seconds, so after a restart some events can be read again.
     required:
       - namespaceName
       - eventhubName
@@ -57,6 +57,11 @@ spec:
         description: The name of the event hub in the namespace to receive the events from.
         type: string
         example: orders
+      consumerGroupName:
+        title: Consumer Group
+        description: "The consumer group to read as. Each consumer group receives every event of the event hub and has its own saved position, so two integrations that read the same event hub with different consumer groups both receive every event. The consumer group must exist: create it in the Azure portal, under the event hub, then Entities, Consumer groups. With a consumer group that does not exist, the integration starts but receives nothing, and logs a warning that the messaging entity could not be found. When not set, it reads as `$Default`, the consumer group every event hub has."
+        type: string
+        example: billing
       sharedAccessName:
         title: Shared Access Name
         description: "The name of a shared access policy of the namespace or of the event hub, such as `RootManageSharedAccessKey`, from the Azure portal: the namespace or the event hub, then Settings, Shared access policies. Used when `credentialType` is `CONNECTION_STRING`, the default."
@@ -162,7 +167,7 @@ spec:
   - "camel:jackson"
   template:
     from:
-      uri: "azure-eventhubs://{{namespaceName}}/{{eventhubName}}?blobAccessKey=RAW({{blobAccessKey}})&blobAccountName={{blobAccountName}}&blobContainerName={{blobContainerName}}&credentialType={{credentialType}}&sharedAccessKey=RAW({{?sharedAccessKey}})&sharedAccessName={{?sharedAccessName}}"
+      uri: "azure-eventhubs://{{namespaceName}}/{{eventhubName}}?blobAccessKey=RAW({{blobAccessKey}})&blobAccountName={{blobAccountName}}&blobContainerName={{blobContainerName}}&credentialType={{credentialType}}&consumerGroupName={{?consumerGroupName}}&sharedAccessKey=RAW({{?sharedAccessKey}})&sharedAccessName={{?sharedAccessName}}"
       steps:
         - to:
             uri: kamelet:sink
