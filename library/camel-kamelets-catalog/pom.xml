@@ -111,6 +111,12 @@
             <scope>test</scope>
             <version>${junit-jupiter-version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <scope>test</scope>
+            <version>${junit-jupiter-version}</version>
+        </dependency>
         <!-- KameletsCanonicalTest: loads every Kamelet with the YAML DSL to find the compact notation -->
         <dependency>
             <groupId>org.apache.camel</groupId>
@@ -121,6 +127,25 @@
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-yaml-dsl</artifactId>
+            <version>${camel.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- SpringRabbitmqKameletTlsTest: runs the RabbitMQ Kamelets against a local TLS server -->
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core-languages</artifactId>
+            <version>${camel.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-kamelet</artifactId>
+            <version>${camel.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-spring-rabbitmq</artifactId>
             <version>${camel.version}</version>
             <scope>test</scope>
         </dependency>
