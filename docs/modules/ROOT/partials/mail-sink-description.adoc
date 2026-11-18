@@ -12,12 +12,33 @@ This Kamelet sends emails through SMTP servers with configurable authentication 
 === Optional Configuration
 
 - **Connection Port**: SMTP port (defaults to 465)
-- **Protocol**: `smtps` (the default, TLS from the start) or `smtp` (no encryption)
+- **Protocol**: `smtps` (the default, TLS from the start) or `smtp` (no encryption, unless **STARTTLS** is on)
+- **STARTTLS**: with `smtp`, switch the connection to TLS before logging in, as most mail providers ask for on port 587
 - **From**: Sender email address
 - **To**: Recipients, separated by commas
 - **Subject**: Email subject line
 
 **From**, **To** and **Subject** can be left empty when every message carries the matching `ce-from`, `ce-to` and `ce-subject` header.
+
+=== Connecting to the SMTP Server
+
+[width="100%",cols="1,1,1,3",options="header"]
+|===
+| Protocol | STARTTLS | Usual port | Connection
+| `smtps` | (not used) | 465 | TLS from the start. The certificate of the server is checked.
+| `smtp` | `true` | 587 | Starts without TLS, then switches to TLS with STARTTLS before logging in. The certificate and the host name of the server are checked. Sending fails when the server does not offer STARTTLS, so the password is never sent as clear text.
+| `smtp` | not set or `false` | 25 | No encryption: the password and the emails are sent as clear text. A server that offers the login only after STARTTLS, such as Gmail or Office 365 on port 587, rejects the emails.
+|===
+
+For example, to send through a provider on port 587:
+
+[source,yaml]
+----
+connectionHost: smtp.example.com
+connectionPort: 587
+protocol: smtp
+startTls: true
+----
 
 === Email Headers Support
 
