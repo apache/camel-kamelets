@@ -4,6 +4,30 @@
 
 The Kamelet supports username/password authentication.
 
+The Kamelet has no TLS option. It connects without TLS, so a cluster that accepts only TLS connections refuses it.
+
+=== The local datacenter
+
+The Kamelet connects to the nodes in `connectionHost` as members of one datacenter, the local datacenter, and runs the
+statements only on the nodes of that datacenter. It is `datacenter1` unless `datacenter` says otherwise, the name a
+Cassandra installed with its default settings uses. When the datacenter of the cluster has another name, set
+`datacenter` to it, or the Kamelet fails to start with `No node was available to execute the query` (with
+`prepareStatements` false, it starts and each message fails with that error instead).
+
+The name of the datacenter is on the `Datacenter:` line of `nodetool status`, or in the `data_center` column of
+`SELECT data_center FROM system.local` in `cqlsh`.
+
+For example, for a cluster whose datacenter is called `dc-east`:
+
+[source,yaml]
+----
+connectionHost: cassandra1.example.com,cassandra2.example.com
+connectionPort: 9042
+keyspace: customers
+datacenter: dc-east
+query: INSERT INTO accounts (id, username, city) VALUES (?, ?, ?)
+----
+
 === Payload
 
 With `jsonPayload` set to true, the default, the body must be a JSON array that holds the values of the `?` markers of
