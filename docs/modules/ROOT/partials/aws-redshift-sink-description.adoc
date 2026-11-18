@@ -19,3 +19,19 @@ Here is example input for the example query:
 ----
 { "username":"oscerd", "city":"Rome"}
 ----
+
+=== Connection Pool
+
+The Kamelet keeps a pool of connections to the database:
+
+* `maxTotal`: the most connections it opens at the same time, 8 when not set.
+* `maxIdle`: the most unused connections it keeps open, 8 when not set.
+* `maxWaitMillis`: how long a message waits for a free connection when `maxTotal` are in use, in milliseconds, before
+  it fails. When not set, it waits as long as it takes.
+
+[source,yaml,subs='+attributes,macros']
+----
+maxTotal: 4
+maxIdle: 2
+maxWaitMillis: 5000
+----
