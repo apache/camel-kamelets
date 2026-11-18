@@ -39,7 +39,7 @@ spec:
 
       Output: the message is unchanged. The `CamelFileNameProduced` header is set to the path of the file on the server.
 
-      Good to know: a file with the same name is replaced, unless `fileExist` says otherwise. Log in with `username` and either `password` or a private key. The key of the server must be in a known_hosts file, `knownHostsUri` or else `~/.ssh/known_hosts` of the user that runs the integration, or the connection fails. A file name that points outside `directoryName` fails the message.
+      Good to know: a file with the same name is replaced, unless `fileExist` says otherwise. A file is uploaded under its real name from the start, so a reader that polls the directory can pick it up half-written. To prevent that, set `tempPrefix` to upload it under a temporary name and rename it once it is complete, or `doneFileName` to write an empty done file next to it once it is complete. Log in with `username` and either `password` or a private key. The key of the server must be in a known_hosts file, `knownHostsUri` or else `~/.ssh/known_hosts` of the user that runs the integration, or the connection fails. A file name that points outside `directoryName` fails the message.
     required:
       - connectionHost
       - connectionPort
@@ -130,6 +130,16 @@ spec:
         description: If true, `directoryName`, and any subdirectory in the `CamelFileName` header, is created on the server when it does not exist.
         type: boolean
         default: true
+      tempPrefix:
+        title: Temporary Name Prefix
+        description: A prefix for the name a file is uploaded under. Once the upload is complete, the file is renamed to its real name, so a reader that skips the names with this prefix never picks up a half-written file. `sftp-source`, like other readers built with Camel, skips the names that start with a dot, so a prefix such as `.tmp-`, which uploads `orders.csv` as `.tmp-orders.csv`, works with it as it is. A prefix that ends with `/`, such as `.inprogress/`, uploads the file into that subdirectory first, and the subdirectory is created when it does not exist, unless `autoCreate` is false. When it is not set, a file is uploaded under its real name from the start. With `fileExist` `Override`, a file of the same name is deleted when the upload starts, not when it ends. It cannot be combined with `fileExist` `Append`, and every message fails when both are set. `username` must be allowed to rename files.
+        type: string
+        example: ".tmp-"
+      doneFileName:
+        title: Done File Name
+        description: The name of an empty file to write next to each file once the file is complete, so that a reader knows the file can be read. `$\{file:name}` stands for the name of the file and `$\{file:name.noext}` for the name without its extension, so `$\{file:name}.done` writes `orders.csv.done`, and `$\{file:name.noext}.ready` writes `orders.ready`. A fixed name, such as `ready`, is written again after each file. No other `$\{...}` is allowed, and with one the file is uploaded but then the message fails. With `tempPrefix`, the done file is written after the file has its real name. When it is not set, no done file is written.
+        type: string
+        example: "${file:name}.done"
   dataTypes:
     in:
       headers:
@@ -194,6 +204,7 @@ spec:
               host: "{{connectionHost}}"
               port: "{{connectionPort}}"
               directoryName: "{{directoryName}}"
+              doneFileName: "RAW({{?doneFileName}})"
               autoCreate: "{{autoCreate}}"
               binary: "{{binary}}"
               fileExist: "{{fileExist}}"
@@ -204,5 +215,6 @@ spec:
               privateKeyPassphrase: "RAW({{?privateKeyPassphrase}})"
               privateKeyUri: "RAW({{?privateKeyUri}})"
               strictHostKeyChecking: "{{?strictHostKeyChecking}}"
+              tempPrefix: "RAW({{?tempPrefix}})"
               useUserKnownHostsFile: "{{?useUserKnownHostsFile}}"
               username: "RAW({{?username}})"
