@@ -37,3 +37,44 @@ Without it, the driver uses TLS only when the server offers it, and does not che
 ----
 connectionProperties: "sslmode=require"
 ----
+
+=== Writing Several Rows from One Message
+
+With `batch` set to true, the body can be a JSON array of objects. `query` runs once for each object, and all of them
+are written in one database transaction: when one of them fails, none is written. The `CamelSqlUpdateCount` header
+then holds the number of rows written for the whole message. A single JSON object still works.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "timer:accounts?repeatCount=1"
+      steps:
+        - setBody:
+            constant: '[{"username":"oscerd","city":"Rome"},{"username":"ann","city":"Oslo"}]'
+        - to:
+            uri: "kamelet:postgresql-sink"
+            parameters:
+              serverName: "db.example.com"
+              username: "dbuser"
+              password: "dbpass"
+              databaseName: "shop"
+              query: "INSERT INTO accounts (username,city) VALUES (:#username,:#city)"
+              batch: true
+----
+
+=== Connection Pool
+
+The Kamelet keeps a pool of connections to the database:
+
+* `maxTotal`: the most connections it opens at the same time, 8 when not set.
+* `maxIdle`: the most unused connections it keeps open, 8 when not set.
+* `maxWaitMillis`: how long a message waits for a free connection when `maxTotal` are in use, in milliseconds, before
+  it fails. When not set, it waits as long as it takes.
+
+[source,yaml,subs='+attributes,macros']
+----
+maxTotal: 4
+maxIdle: 2
+maxWaitMillis: 5000
+----

@@ -35,9 +35,9 @@ spec:
 
       Use it to pick up the rows that another application adds to a table, such as new orders or events, and pass them on to another system. To write rows, use `oracle-database-sink`.
 
-      Output: the body is one row as JSON text, an object with the column names as keys, such as `{"ID":1,"USERNAME":"oscerd","CITY":"Rome"}` (Oracle gives the names in upper case). The `Content-Type` header is `application/json`.
+      Output: the body is one row as JSON text, an object with the column names as keys, such as `{"ID":1,"USERNAME":"oscerd","CITY":"Rome"}` (Oracle gives the names in upper case). When `useIterator` is false, the body is instead one JSON array with all the rows of a poll. The `Content-Type` header is `application/json`.
 
-      Good to know: the query runs again half a second after the previous run, so the same rows are sent again and again, unless `consumedQuery` marks or deletes each row once it is sent and `query` leaves such rows out: for example `SELECT * FROM accounts WHERE processed = false` with `UPDATE accounts SET processed = true WHERE id = :#id`. When the next step fails for a row, `consumedQuery` is not run for it, and the row is read again. A query that finds no rows sends nothing. `query` cannot contain `?`. The format of date and time columns in the JSON depends on the Camel version. The JDBC driver of Oracle Database is not included: add `mvn:com.oracle.database.jdbc:ojdbc17` to the dependencies of the integration. Camel JBang (`camel run`) adds it by itself.
+      Good to know: the query runs again `delay` milliseconds after the previous run, so the same rows are sent again and again, unless `consumedQuery` marks or deletes each row once it is sent and `query` leaves such rows out: for example `SELECT * FROM accounts WHERE processed = false` with `UPDATE accounts SET processed = true WHERE id = :#id`. When the next step fails for a row, `consumedQuery` is not run for it, and the row is read again, unless `onConsumeFailed` marks it. A query that finds no rows sends nothing. `maxMessagesPerPoll` limits how many rows one poll sends. `query` cannot contain `?`. The format of date and time columns in the JSON depends on the Camel version. The JDBC driver of Oracle Database is not included: add `mvn:com.oracle.database.jdbc:ojdbc17` to the dependencies of the integration. Camel JBang (`camel run`) adds it by itself.
     required:
       - serverName
       - username
@@ -84,6 +84,54 @@ spec:
         description: An SQL statement to run after each row has been sent on, to mark the row as read or to delete it, so that `query` does not return it again. Write `:#column` where the value of a column of that row goes, such as `:#id`. When it is not set, nothing is changed, and the same rows are read on every poll.
         type: string
         example: UPDATE accounts SET processed = true WHERE id = :#id
+      delay:
+        title: Delay
+        description: How long to wait after one run of `query` before the next, in milliseconds.
+        type: integer
+        default: 500
+      onConsumeFailed:
+        title: Failed Row Query
+        description: An SQL statement to run instead of `consumedQuery` when the next step fails for a row, to mark the row as failed so that `query` leaves it out. Write `:#column` where the value of a column of that row goes, such as `:#id`. When it is not set, nothing is changed for a failed row, and it is read again on the next poll.
+        type: string
+        example: UPDATE accounts SET failed = true WHERE id = :#id
+      onConsumeBatchComplete:
+        title: Poll Complete Query
+        description: An SQL statement to run once after all the rows of one poll have been sent on, such as an UPDATE that marks them all at once. It cannot use `:#column`. It does not run when the query finds no rows. A row added after `query` ran is not sent in this poll, so make sure the statement does not mark it.
+        type: string
+        example: UPDATE poll_status SET last_poll = CURRENT_TIMESTAMP
+      maxMessagesPerPoll:
+        title: Max Rows Per Poll
+        description: The most rows to read in one poll. The other rows are read by the next polls, as long as `consumedQuery` marks the rows that were sent and `query` leaves them out. When it is not set, every row that `query` returns is sent.
+        type: integer
+        example: 100
+      initialDelay:
+        title: Initial Delay
+        description: How long to wait after the start before the first run of `query`, in milliseconds. When it is not set, the first run is one second after the start.
+        type: integer
+        example: 10000
+      useIterator:
+        title: One Message Per Row
+        description: 'Whether to send each row as a message of its own. When false, all the rows of one poll are sent as one message, a JSON array of objects, such as `[{"id":1},{"id":2}]`. `consumedQuery` and `onConsumeFailed` then cannot use `:#column`, but `onConsumeBatchComplete` can mark all the rows at once. When it is not set, each row is a message.'
+        type: boolean
+      routeEmptyResultSet:
+        title: Send Empty Result
+        description: Whether to send a message with an empty JSON array, `[]`, when `query` finds no rows. Only used when `useIterator` is false. When it is not set, nothing is sent when no rows are found.
+        type: boolean
+      maxTotal:
+        title: Max Connections
+        description: The most connections to the database that the Kamelet opens at the same time. While it sends the rows of a poll, the Kamelet keeps one connection, and `consumedQuery`, `onConsumeFailed` and `onConsumeBatchComplete` each need a second one, so do not set it to 1 when you use them. When all of them are in use, the next message waits for one to be free, as long as `maxWaitMillis` allows. When it is not set, the limit is 8.
+        type: integer
+        example: 20
+      maxIdle:
+        title: Max Idle Connections
+        description: The most unused connections to keep open for later. A connection that is given back when this many are unused already is closed. When it is not set, up to 8 are kept open.
+        type: integer
+        example: 2
+      maxWaitMillis:
+        title: Max Wait
+        description: How long to wait for a free connection when `maxTotal` connections are in use, in milliseconds. After that, the message fails. When it is not set, it waits as long as it takes.
+        type: integer
+        example: 5000
   types:
     out:
       mediaType: application/json
@@ -92,7 +140,7 @@ spec:
       headers:
         Content-Type:
           title: Content Type
-          description: Always `application/json`, as the body is a JSON object.
+          description: Always `application/json`, as the body is JSON.
           type: string
   dependencies:
   - "camel:jackson3"
@@ -112,8 +160,11 @@ spec:
           password: "{{password}}"
           url: "jdbc:oracle:thin:@{{serverName}}:{{serverPort}}/{{databaseName}}"
           driverClassName: oracle.jdbc.driver.OracleDriver
+          maxTotal: "{{?maxTotal}}"
+          maxIdle: "{{?maxIdle}}"
+          maxWaitMillis: "{{?maxWaitMillis}}"
     from:
-      uri: "{{local-sql-oracle-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume=RAW({{?consumedQuery}})"
+      uri: "{{local-sql-oracle-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume=RAW({{?consumedQuery}})&delay={{delay}}&initialDelay={{?initialDelay}}&maxMessagesPerPoll={{?maxMessagesPerPoll}}&onConsumeFailed=RAW({{?onConsumeFailed}})&onConsumeBatchComplete=RAW({{?onConsumeBatchComplete}})&useIterator={{?useIterator}}&routeEmptyResultSet={{?routeEmptyResultSet}}"
       steps:
         - marshal:
             json: {}

@@ -94,3 +94,76 @@ Set `sslMode=REQUIRED` to always use TLS.
 ----
 connectionProperties: "sslMode=REQUIRED"
 ----
+
+=== Reading Rows in Batches
+
+`maxMessagesPerPoll` limits how many rows one poll sends. The other rows are read by the next polls, because
+`consumedQuery` marks the rows that were sent and `query` leaves them out. `onConsumeFailed` marks a row when the next
+step fails for it, so that it is not read again and again. `initialDelay` sets how long to wait before the first poll,
+in milliseconds (one second when not set).
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mysql-source"
+      parameters:
+        serverName: "db.example.com"
+        username: "dbuser"
+        password: "dbpass"
+        databaseName: "shop"
+        query: "SELECT * FROM accounts WHERE processed = 0 AND failed = 0"
+        consumedQuery: "UPDATE accounts SET processed = 1 WHERE id = :#id"
+        onConsumeFailed: "UPDATE accounts SET failed = 1 WHERE id = :#id"
+        maxMessagesPerPoll: 100
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== All the Rows of a Poll in One Message
+
+With `useIterator` set to false, each poll that finds rows sends one message: a JSON array with all of them. Set
+`routeEmptyResultSet` to true to also get a message, `[]`, from a poll that finds none.
+
+`consumedQuery` and `onConsumeFailed` cannot use `:#column` in this mode. `onConsumeBatchComplete` runs once after the
+message is sent, and can mark all the rows at once. A row added after `query` ran is not in the message, so such a
+statement must not mark it: the example below is only safe when nothing adds rows while the Kamelet polls.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mysql-source"
+      parameters:
+        serverName: "db.example.com"
+        username: "dbuser"
+        password: "dbpass"
+        databaseName: "shop"
+        query: "SELECT * FROM accounts WHERE processed = 0"
+        useIterator: false
+        onConsumeBatchComplete: "UPDATE accounts SET processed = 1 WHERE processed = 0"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Connection Pool
+
+The Kamelet keeps a pool of connections to the database:
+
+* `maxTotal`: the most connections it opens at the same time, 8 when not set.
+* `maxIdle`: the most unused connections it keeps open, 8 when not set.
+* `maxWaitMillis`: how long a message waits for a free connection when `maxTotal` are in use, in milliseconds, before
+  it fails. When not set, it waits as long as it takes.
+
+While it sends the rows of a poll, the source keeps one connection, and `consumedQuery`, `onConsumeFailed` and
+`onConsumeBatchComplete` each need a second one. Do not set `maxTotal` to 1 when you use them: they then wait for a
+connection for ever, or fail after `maxWaitMillis`.
+
+[source,yaml,subs='+attributes,macros']
+----
+maxTotal: 4
+maxIdle: 2
+maxWaitMillis: 5000
+----
