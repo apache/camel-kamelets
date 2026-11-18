@@ -7,6 +7,7 @@ The HTTP Source Kamelet periodically fetches data from an HTTP endpoint. It supp
 - **URL**: The HTTP endpoint to fetch data from (required, must start with http:// or https://)
 - **Period**: The interval between fetches in milliseconds (default: 10000)
 - **Content Type**: The Accept header content type for the request (default: "application/json")
+- **Method**: The HTTP method of the request (default: GET)
 
 === Logging In
 
@@ -118,6 +119,50 @@ Only a response with a status code in `okStatusCodeRange` is sent as a message. 
 ----
 
 The `CamelHttpResponseCode` header of the message then tells a 404 from a 200. Setting only `404` would stop the 200 responses.
+
+=== Method
+
+The request is a `GET` when `method` is not set. Some APIs return data only for a `POST`; set `method: POST` for them. The request has no body.
+
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:http-source"
+      parameters:
+        url: "https://api.example.com/v1/reports/search"
+        method: POST
+        period: 60000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Going Through a Proxy
+
+To fetch the address through an HTTP proxy, set `proxyHost` and `proxyPort`. The proxy is used only when both are set. When the proxy asks for a login, also set `proxyUser` and `proxyPassword`: they are sent after the proxy answers 407 and asks for them.
+
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:http-source"
+      parameters:
+        url: "https://api.example.com/v1/orders/status"
+        proxyHost: proxy.example.com
+        proxyPort: 3128
+        proxyUser: "{{proxy.user}}"
+        proxyPassword: "{{proxy.password}}"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+An `https://` address goes through the proxy too, in a tunnel.
+
+=== Following Redirects
+
+A redirect, a response with a status code such as 301, 302 or 307, is not followed when `followRedirects` is not set: it sends no message, the error is logged, and the address is fetched again at the next period. With `followRedirects: true`, the address in the `Location` header of the response is fetched, and its response is sent as the message.
 
 === Trusting a Private Certificate Authority
 

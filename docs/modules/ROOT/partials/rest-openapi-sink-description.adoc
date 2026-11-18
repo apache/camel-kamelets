@@ -8,6 +8,23 @@ This Kamelet provides integration with RESTful APIs that are documented using Op
 
 Uses the OpenAPI specification to find the method, the path, the parameters and the content type of the operation given in `operation`. The path and query parameters come from headers with the same names as the parameters: for `/pets/\{petId}`, set the `petId` header. A missing path parameter is not an error: the request is sent with `\{petId}` in the path. The Kamelet has no authentication options.
 
+=== Content Types
+
+The `Accept` and `Content-Type` headers of the request come from the specification: the content types of the responses of the operation, and the content type of its request body. `consumes` replaces the `Accept` header, and `produces` the `Content-Type` header, for an API whose specification lists other types than the ones it should be called with:
+
+[source,yaml]
+----
+- to:
+    uri: "kamelet:rest-openapi-sink"
+    parameters:
+      specification: "https://api.example.com/openapi.json"
+      operation: updateCustomer
+      produces: "application/merge-patch+json"
+      consumes: "application/json"
+----
+
+Separate several types in `consumes` with commas, without spaces, such as `application/json,text/csv`. An `Accept` or `Content-Type` header on the message is sent instead of these options.
+
 === HTTP Operations
 
 Supports various HTTP operations (GET, POST, PUT, DELETE, etc.) as defined in the OpenAPI specification, providing comprehensive REST API integration capabilities.
