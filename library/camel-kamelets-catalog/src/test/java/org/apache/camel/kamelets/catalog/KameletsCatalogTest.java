@@ -56,7 +56,7 @@ public class KameletsCatalogTest {
     @Test
     void testGetKameletsDefinition() throws Exception {
         Definition props = catalog.getKameletDefinition("aws-sqs-source");
-        assertEquals(21, props.getProperties().keySet().size());
+        assertEquals(23, props.getProperties().keySet().size());
         assertTrue(props.getProperties().containsKey("queueNameOrArn"));
         assertTrue(props.getProperties().containsKey("deleteAfterRead"));
         assertTrue(props.getProperties().containsKey("accessKey"));
@@ -73,6 +73,8 @@ public class KameletsCatalogTest {
         assertTrue(props.getProperties().containsKey("greedy"));
         assertTrue(props.getProperties().containsKey("maxMessagesPerPoll"));
         assertTrue(props.getProperties().containsKey("waitTimeSeconds"));
+        assertTrue(props.getProperties().containsKey("messageAttributeNames"));
+        assertTrue(props.getProperties().containsKey("attributeNames"));
         assertTrue(props.getProperties().containsKey("visibilityTimeout"));
     }
 

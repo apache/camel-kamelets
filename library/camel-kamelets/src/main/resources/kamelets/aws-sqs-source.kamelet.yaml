@@ -37,7 +37,7 @@ spec:
 
       Use it to process work that other systems put in a queue, such as orders, jobs or notifications, or the events that SNS, S3 or EventBridge send to a queue. For the events of an S3 bucket, `aws-s3-event-based-source` can also fetch the files.
 
-      Output: the body is the body of the SQS message, as text. The headers give the message ID (`CamelAwsSqsMessageId`), the receipt handle and the MD5 checksum of the body. The message attributes of the SQS message are not read.
+      Output: the body is the body of the SQS message, as text. The headers give the message ID (`CamelAwsSqsMessageId`), the receipt handle and the MD5 checksum of the body. The message attributes, which the sender sets on a message, are read only when `messageAttributeNames` names them, and the system attributes of SQS, such as `SentTimestamp`, only when `attributeNames` names them. Each attribute that is read becomes a header of the same name, except a message attribute whose name starts with `Camel`.
 
       Good to know: a message is deleted only after it has been processed without error; a message that fails stays in the queue and is received again when its visibility timeout ends. With `deleteAfterRead` set to false, the messages stay in the queue and are received again and again. Without `queueURL`, the queue is looked up by listing the queues, which needs the `sqs:ListQueues` permission.
     required:
@@ -162,6 +162,16 @@ spec:
         example: 30
         type: integer
         minimum: "0"
+      messageAttributeNames:
+        title: Message Attribute Names
+        description: "The message attributes to read: `All`, or a comma-separated list of names, such as `customer,priority`. A name that ends in `.*`, such as `trace.*`, reads the attributes whose names start with `trace.`. Each attribute that is read becomes a header of the same name: a String attribute as text, a Number attribute as text, or as a number when its type has a label such as `Number.int`, and a Binary attribute as bytes (an AWS SDK `SdkBytes`). A message attribute whose name starts with `Camel` is not made a header. When it is not set, no message attribute is read."
+        example: All
+        type: string
+      attributeNames:
+        title: System Attribute Names
+        description: "Which of the system attributes that SQS keeps for each message to read: `All`, or a comma-separated list of names from `SenderId`, `SentTimestamp`, `ApproximateReceiveCount`, `ApproximateFirstReceiveTimestamp`, `SequenceNumber`, `MessageDeduplicationId`, `MessageGroupId`, `AWSTraceHeader` and `DeadLetterQueueSourceArn`. A name that is not one of these is ignored, with a warning in the log. Each attribute that is read becomes a header of the same name, as text; the timestamps are in milliseconds since 1970. When it is not set, no system attribute is read."
+        example: SentTimestamp,ApproximateReceiveCount
+        type: string
   dataTypes:
     out:
       default: text
@@ -181,11 +191,11 @@ spec:
           type: string
         CamelAwsSqsAttributes:
           title: System Attributes
-          description: A Map of the system attributes of the message, such as `SentTimestamp`. The Kamelet asks for none, so it is empty.
+          description: A Map of the system attributes that `attributeNames` asks for, such as `SentTimestamp`, with their values as text. Its keys are AWS SDK `MessageSystemAttributeName` values, not text, so read one attribute from its own header instead. Empty when `attributeNames` is not set.
           type: object
         CamelAwsSqsMessageAttributes:
           title: Message Attributes
-          description: A Map of the message attributes of the message. The Kamelet asks for none, so it is empty.
+          description: A Map of the message attributes that `messageAttributeNames` asks for, from the name of each attribute to an AWS SDK `MessageAttributeValue`, which holds its data type and its value. It also holds the attributes whose names start with `Camel`. Empty when `messageAttributeNames` is not set.
           type: object
       types:
         text:
@@ -227,11 +237,13 @@ spec:
         queueNameOrArn: "{{queueNameOrArn}}"
         accessKey: "RAW({{?accessKey}})"
         amazonAWSHost: "{{?amazonAWSHost}}"
+        attributeNames: "{{?attributeNames}}"
         autoCreateQueue: "{{autoCreateQueue}}"
         delay: "{{delay}}"
         deleteAfterRead: "{{deleteAfterRead}}"
         greedy: "{{greedy}}"
         maxMessagesPerPoll: "{{maxMessagesPerPoll}}"
+        messageAttributeNames: "{{?messageAttributeNames}}"
         overrideEndpoint: "{{overrideEndpoint}}"
         profileCredentialsName: "{{?profileCredentialsName}}"
         protocol: "{{?protocol}}"
