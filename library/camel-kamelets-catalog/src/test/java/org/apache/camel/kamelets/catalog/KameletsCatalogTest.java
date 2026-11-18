@@ -274,7 +274,7 @@ public class KameletsCatalogTest {
         verifyHeaders("oracle-database-source", 1);
         verifyHeaders("postgresql-sink", 2);
         verifyHeaders("postgresql-source", 1);
-        verifyHeaders("pulsar-sink", 2);
+        verifyHeaders("pulsar-sink", 3);
         verifyHeaders("pulsar-source", 5);
         verifyHeaders("redis-sink", 4);
         verifyHeaders("redis-source", 1);

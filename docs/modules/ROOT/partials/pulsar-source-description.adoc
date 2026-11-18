@@ -6,6 +6,10 @@ With no `authenticationClass`, the Kamelet connects without a login. For a token
 `org.apache.pulsar.client.impl.auth.AuthenticationToken` and `authenticationParams` to `token:` followed by the token.
 For TLS, use a `pulsar+ssl://` address in `serviceUrl`.
 
+The Kamelet has no trust store option: over TLS, the certificate of Pulsar is checked against the Java trust store of
+the integration. For a certificate signed by a private authority, put the authority in a trust store and point the JVM
+at it, for example with `JAVA_TOOL_OPTIONS="-Djavax.net.ssl.trustStore=/etc/pulsar/truststore.jks -Djavax.net.ssl.trustStorePassword=changeit"`.
+
 === Output format
 
 The body is the Pulsar payload, as bytes; it is not turned into JSON. The headers give the topic, the key, the
@@ -31,6 +35,37 @@ expression, and the Kamelet reads from every matching topic of the namespace.
         namespaceName: "default"
         topic: "orders"
         subscriptionName: "orders-processor"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with Slow Processing and a Dead Letter Topic
+
+A message that is not processed within `ackTimeoutMillis` (10 seconds when not set) is delivered again, and so
+processed twice. When the processing of a message can take longer, raise it, or set it to `0` to turn this off.
+
+A message whose processing fails is delivered again and again. With a `SHARED` or `KEY_SHARED` subscription,
+`maxRedeliverCount` stops this: after that many failed deliveries, the message goes to `deadLetterTopic`. With an
+`EXCLUSIVE` or `FAILOVER` subscription, `maxRedeliverCount` is ignored.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:pulsar-source"
+      parameters:
+        serviceUrl: "pulsar://localhost:6650"
+        topicType: "persistent"
+        tenant: "public"
+        namespaceName: "default"
+        topic: "orders"
+        subscriptionName: "orders-processor"
+        subscriptionType: "SHARED"
+        ackTimeoutMillis: 60000
+        maxRedeliverCount: 3
+        negativeAckRedeliveryDelayMicros: 5000000
+        deadLetterTopic: "persistent://public/default/orders-dlq"
       steps:
         - to:
             uri: "kamelet:log-sink"

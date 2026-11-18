@@ -31,9 +31,13 @@ spec:
   dataTypes:
     in:
       headers:
+        key:
+          title: "Message Key"
+          description: "Optional. The key of the message, which keeps the messages with the same key in order on one partition. Used when `CamelPulsarProducerMessageKey` is not set."
+          type: string
         CamelPulsarProducerMessageKey:
           title: "Message Key"
-          description: "Optional. The key of the message, which keeps the messages with the same key in order on one partition."
+          description: "Optional. The key of the message, which keeps the messages with the same key in order on one partition. Takes precedence over `key`."
           type: string
         CamelPulsarProducerMessageProperties:
           title: "Message Properties"
@@ -49,11 +53,11 @@ spec:
 
       Use it to publish events or data for other applications to read from Pulsar, such as orders or sensor readings. Use `pulsar-source` to read them.
 
-      Input: the body is the payload, as text or bytes. A Map fails: turn it into JSON text first, for example with `json-serialize-action`. The headers of the message are not sent as Pulsar properties; to set properties, put a Map in the `CamelPulsarProducerMessageProperties` header. The optional `CamelPulsarProducerMessageKey` header becomes the key of the message.
+      Input: the body is the payload, as text or bytes. A Map fails: turn it into JSON text first, for example with `json-serialize-action`. The headers of the message are not sent as Pulsar properties; to set properties, put a Map in the `CamelPulsarProducerMessageProperties` header. The optional `key` header becomes the key of the message, as the `key` header that `pulsar-source` sets; the `CamelPulsarProducerMessageKey` header takes precedence over it.
 
       Output: the message is unchanged.
 
-      Good to know: it connects with no TLS and no login, unless `serviceUrl` starts with `pulsar+ssl://` and `authenticationClass` is set. It connects when the integration starts, and the integration fails to start when Pulsar cannot be reached, unless `lazyStart` is true.
+      Good to know: it connects with no TLS and no login, unless `serviceUrl` starts with `pulsar+ssl://` and `authenticationClass` is set. Over TLS, the certificate of Pulsar must be signed by an authority that the Java trust store of the integration trusts; for a private one, point `javax.net.ssl.trustStore` at a trust store with it, as the Kamelet has no trust store option. It connects when the integration starts, and the integration fails to start when Pulsar cannot be reached, unless `lazyStart` is true.
     required:
       - topicType
       - topic
@@ -97,7 +101,7 @@ spec:
         type: string
       batchingEnabled:
         title: "Enable Batching"
-        description: "If true, messages sent close together are grouped and sent to Pulsar in one batch."
+        description: "If true, messages sent close together are grouped and sent to Pulsar in one batch. A batch goes to one receiver of a `KEY_SHARED` subscription as a whole, whatever the keys of its messages; set it to false to have the keys spread over the receivers."
         type: boolean
         default: true
       batchingMaxMessages:
@@ -156,5 +160,16 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${header[key]} != null && ${header[CamelPulsarProducerMessageKey]} == null"
+                steps:
+                  - setHeader:
+                      name: CamelPulsarProducerMessageKey
+                      expression:
+                        simple:
+                          expression: "${header[key]}"
         - to:
             uri: "pulsar:{{topicType}}/{{tenant}}/{{namespaceName}}/{{topic}}?authenticationClass={{?authenticationClass}}&authenticationParams={{?authenticationParams}}&batchingEnabled={{?batchingEnabled}}&batchingMaxMessages={{?batchingMaxMessages}}&batchingMaxPublishDelayMicros={{?batchingMaxPublishDelayMicros}}&blockIfQueueFull={{?blockIfQueueFull}}&compressionType={{?compressionType}}&initialSequenceId={{?initialSequenceId}}&lazyStartProducer={{?lazyStart}}&maxPendingMessages={{?maxPendingMessages}}&messageRoutingMode={{?messageRoutingMode}}&producerName={{?producerName}}&sendTimeoutMs={{?sendTimeoutMs}}&serviceUrl=RAW({{serviceUrl}})"
