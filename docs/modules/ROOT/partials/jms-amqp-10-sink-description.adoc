@@ -11,3 +11,41 @@ The Kamelet supports both queue and topic destinations. The destination type can
 === AMQP 1.0 Protocol
 
 This sink uses the AMQP 1.0 protocol for sending messages to the broker. AMQP 1.0 is an open standard messaging protocol that provides reliable, secure, and interoperable messaging.
+
+=== Login and TLS
+
+A broker that needs a login takes it in the `username` and `password` options. `jms.username` and `jms.password` in
+`remoteURI` work too, but `username` and `password` are used instead of them when they are set. For TLS, use the
+`amqps://` scheme in `remoteURI`, with `transport.trustStoreLocation` and `transport.trustStorePassword` after `?` when
+the broker certificate is not trusted by the Java runtime.
+
+=== Persistence, priority and expiry
+
+By default, each message is persistent, has priority 4, and never expires. Three options change that for every message
+the sink sends:
+
+- `deliveryPersistent`: `false` sends non-persistent messages, which are faster, but lost when the broker stops.
+- `priority`: from 0 (lowest) to 9 (highest). Of the messages waiting on a queue, the broker delivers those with the
+  highest priority first.
+- `timeToLive`: how long a message may wait to be received, in milliseconds. An expired message is not delivered; Apache ActiveMQ Artemis moves it to the queue `ExpiryQueue`.
+
+`jmsMessageType` sends every message as a text message (`Text`) or a bytes message (`Bytes`), whatever the body, for a
+receiver that expects one kind.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:webhook-source"
+      steps:
+        - to:
+            uri: "kamelet:jms-amqp-10-sink"
+            parameters:
+              remoteURI: "amqp://broker.example.com:5672"
+              username: "app"
+              password: "secret"
+              destinationName: "alerts.queue"
+              priority: 7
+              timeToLive: 60000
+              jmsMessageType: "Text"
+----

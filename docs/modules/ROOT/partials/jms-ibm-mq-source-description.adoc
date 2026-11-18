@@ -27,6 +27,9 @@ The Kamelet requires IBM MQ specific connection parameters:
 - `channel`: IBM MQ channel name
 - `username` and `password`: the login
 - `destinationName`: The destination queue name
+- `connectionNameList`: the instances of a multi-instance queue manager (see below)
+- `transacted`, `acknowledgementModeName` and `concurrentConsumers`: delivering a message again when its flow fails,
+  and processing several messages at the same time (see below)
 
 === Usage example
 
@@ -92,3 +95,83 @@ The JMS rules to know:
 
 With `selector`, the source receives only the messages that match it, a condition on the JMS properties and headers of
 the message, such as `priority > 5`. From a queue, the other messages stay on the queue.
+
+=== TLS
+
+Set `sslCipherSuite` to a cipher suite that matches the cipher spec of the channel, such as
+`TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` for `ANY_TLS12_OR_HIGHER`. The IBM MQ client checks the certificate of the
+queue manager against the trust store of the Java runtime, and sends the client certificate from its key store when
+the channel asks for one (`SSLCAUTH(REQUIRED)`). The Kamelet has no options for them: set the Java system properties,
+for example in `JAVA_TOOL_OPTIONS`:
+
+[source,bash]
+----
+export JAVA_TOOL_OPTIONS="-Djavax.net.ssl.trustStore=/etc/mq/truststore.p12 -Djavax.net.ssl.trustStorePassword=changeit -Djavax.net.ssl.keyStore=/etc/mq/client.p12 -Djavax.net.ssl.keyStorePassword=changeit"
+----
+
+Camel's own TLS settings (`camel.ssl.*`) do not apply to the IBM MQ client.
+
+=== Multi-instance queue manager
+
+For a multi-instance queue manager, list its instances in `connectionNameList`, as `host(port)` separated by commas.
+The client tries them in order and connects to the first that answers. `serverName` and `serverPort` take the place of
+the first address of the list, so set them to the first instance too.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:jms-ibm-mq-source"
+      parameters:
+        serverName: "mq1.example.com"
+        serverPort: 1414
+        connectionNameList: "mq1.example.com(1414),mq2.example.com(1414)"
+        queueManager: "QM1"
+        channel: "DEV.APP.SVRCONN"
+        username: "app"
+        password: "passw0rd"
+        destinationName: "DEV.QUEUE.1"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Redelivery when the flow fails
+
+By default, the source removes each message from the queue when it receives it, so a message whose flow fails is lost.
+With `transacted` set to `true`, each message is received in a transaction that is committed only once the flow has
+processed it. When the flow fails, the transaction is rolled back and the queue manager delivers the message again, with the
+header `JMSRedelivered` set to `true`.
+
+Give the queue a backout threshold and a backout queue, such as
+`ALTER QLOCAL(DEV.QUEUE.1) BOTHRESH(3) BOQNAME(DEV.DEAD.LETTER.QUEUE)`: once the message has been delivered that many
+times, the client moves it to the backout queue. The user of the Kamelet needs the authority to put messages on the
+backout queue with their context (`put` and `passall`), or the source stops receiving from the queue. Without a backout threshold (`BOTHRESH(0)`, the default),
+a message that always fails is delivered again and again.
+
+`concurrentConsumers` processes several messages of the queue at the same time, each in a thread of its own; the
+messages are then no longer processed in the order of the queue.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:jms-ibm-mq-source"
+      parameters:
+        serverName: "mq.example.com"
+        serverPort: 1414
+        queueManager: "QM1"
+        channel: "DEV.APP.SVRCONN"
+        username: "app"
+        password: "passw0rd"
+        destinationName: "DEV.QUEUE.1"
+        transacted: true
+        concurrentConsumers: 5
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+`acknowledgementModeName` set to `CLIENT_ACKNOWLEDGE` also delivers a message again when its flow fails, without a
+transaction. `DUPS_OK_ACKNOWLEDGE` acknowledges the messages in batches: it is faster, but the messages processed since
+the last batch are delivered again after a crash.
