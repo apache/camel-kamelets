@@ -37,7 +37,7 @@ spec:
 
       Output: the body is JSON text, the answer of Solr: `responseHeader`, and under `response` the list of the documents found, each with its fields. The `Content-Type` header is `application/json`.
 
-      Good to know: every query returns all the matching documents again, not only the new ones; filter on a date in the query to get only new documents. Each query returns only the first documents found: as many as `size`, or 10 with the usual Solr settings when `size` is not set. It connects with plain HTTP by default; set `enableSSL` to true for a Solr that is reached with HTTPS, and give the certificate in `certificate` when Solr uses a self-signed certificate.
+      Good to know: every query returns all the matching documents again, not only the new ones; filter on a date in the query to get only new documents. Each query returns only the first documents found: as many as `size`, or 10 with the usual Solr settings when `size` is not set. It connects with plain HTTP by default; set `enableSSL` to true for a Solr that is reached with HTTPS, and give the certificate in `certificate` when Solr uses a self-signed certificate. The query runs on the `/select` handler of the collection, or on the one in `requestHandler`. When Solr does not answer, the query fails only after 10 minutes; set `requestTimeout` to fail sooner. A query that fails is logged, and the next one runs at the next period.
     required:
       - period
       - servers
@@ -93,6 +93,22 @@ spec:
         title: Certificate
         description: The certificate of Solr, or of the certificate authority (CA) that signed it, as a PEM or DER file encoded in base64 on one line, such as the output of `base64 -w0 solr.crt` (`base64 -i solr.crt` on macOS). Needed when Solr uses a self-signed certificate, or one that Java does not trust. When it is not set, the certificates that Java trusts are used. Only used when `enableSSL` is true.
         type: string
+      requestHandler:
+        title: Request Handler
+        description: The path of the search handler of the collection that runs the query, such as `/query` or `/newOrders`, a handler defined in the configuration of the collection, for example with its own defaults or filters. When it is not set, `/select` is used.
+        type: string
+        pattern: "^/[A-Za-z0-9_./-]+$"
+        example: "/query"
+      connectionTimeout:
+        title: Connection Timeout
+        description: How long to wait for the connection to Solr, in milliseconds. When it is not set, it is 60000, which is one minute.
+        type: integer
+        example: 5000
+      requestTimeout:
+        title: Request Timeout
+        description: How long to wait for the answer of Solr to each query, in milliseconds. When Solr has not answered in time, the query fails, the error is logged, and the next query runs at the next period. When it is not set, it is 600000, which is 10 minutes.
+        type: integer
+        example: 30000
   types:
     out:
       mediaType: application/json
@@ -126,7 +142,7 @@ spec:
         - removeHeader:
             name: content-type
         - to:
-            uri: "solr:{{servers}}/solr/?password=RAW({{?password}})&username=RAW({{?username}})&enableSSL={{enableSSL}}&certificatePath=RAW(base64:{{?certificate}})&size={{?size}}"
+            uri: "solr:{{servers}}/solr/?password=RAW({{?password}})&username=RAW({{?username}})&enableSSL={{enableSSL}}&certificatePath=RAW(base64:{{?certificate}})&size={{?size}}&requestHandler={{?requestHandler}}&connectionTimeout={{?connectionTimeout}}&requestTimeout={{?requestTimeout}}"
         - marshal:
             json:
               library: Jackson
