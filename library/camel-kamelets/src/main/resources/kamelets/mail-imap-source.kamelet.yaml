@@ -31,13 +31,13 @@ spec:
   definition:
     title: "Mail IMAP Source"
     description: |-
-      Reads the unread emails in the inbox of a mailbox over IMAP, one message per email, and marks each email as read.
+      Reads the unread emails in a folder of a mailbox over IMAP, by default the inbox, one message per email, and marks each email as read.
 
       Use it to start a flow from incoming email, for example turn support requests into tickets, or process the orders and invoices that customers send by email. For a Microsoft 365 mailbox that needs an OAuth login, use `ms-exchange-online-imap-oauth-source`, and for Gmail through its API, use `google-mail-source`.
 
       Output: the body is the text of the email. For an email with several parts, such as text and HTML or attachments, it is the text of the first part; attachments are not in the body. The `ce-subject`, `ce-from`, `ce-to` and `ce-cc` headers hold the subject and the addresses, and the headers of the email, such as `Subject`, `From`, `Date` and `Message-ID`, are copied too.
 
-      Good to know: emails stay in the mailbox, marked as read, and emails that are already read are skipped. It reads only the `INBOX` folder. It always connects with TLS (IMAPS) and checks the certificate of the server. It checks for new email once a minute by default (`delay`).
+      Good to know: by default it reads the `INBOX` folder, emails stay in the folder, marked as read, and emails that are already read are skipped. Set `delete` or `moveTo` to remove the emails once they are processed, `unseen` to false to read the emails that are already read too, and the search options, such as `searchFrom` or `searchSubject`, to read only some emails; an email must match every search option that is set. An email whose processing fails stays unread and is read again at the next check. An email that cannot be read at all, such as one with a broken format, fails every check of the mailbox until it is removed, unless `skipFailedMessage` is true. It always connects with TLS (IMAPS), and checks the certificate and the host name of the server against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.imaps.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every IMAPS connection of the application. It checks for new email once a minute by default (`delay`).
     required:
     - connectionHost
     - connectionPort
@@ -78,6 +78,64 @@ spec:
         description: How long to wait between two checks of the mailbox, in milliseconds. The default, 60000, is one minute.
         type: integer
         default: 60000
+      folderName:
+        title: Folder Name
+        description: The folder to read the emails from. When it is not set, the Kamelet reads the `INBOX` folder. A subfolder is written with the separator of the server, usually `/` or `.`, such as `INBOX/Orders`. When the folder does not exist, each check of the mailbox fails with a warning in the log.
+        type: string
+        example: INBOX/Orders
+        pattern: "^[^\\r\\n%*]+$"
+      unseen:
+        title: Unread Only
+        description: Whether to read only the emails that are not marked as read. When it is not set, only unread emails are read. When false, the emails that are already read are read too; without `delete` or `moveTo`, every email in the folder is then read again at each check.
+        type: boolean
+      delete:
+        title: Delete
+        description: Whether to delete each email from the folder once it is processed. When it is not set, emails stay in the folder, marked as read. An email whose processing fails is not deleted.
+        type: boolean
+      moveTo:
+        title: Move To
+        description: The folder to move each email to once it is processed, such as `Processed`. The folder is created when it does not exist. The email is then no longer in the folder that is read. An email whose processing fails is not moved.
+        type: string
+        example: Processed
+        pattern: "^[^\\r\\n%*]+$"
+      copyTo:
+        title: Copy To
+        description: The folder to copy each email to once it is processed, such as `Archive`. The folder is created when it does not exist. The email also stays in the folder that is read, and the copy is not marked as read. An email whose processing fails is not copied.
+        type: string
+        example: Archive
+        pattern: "^[^\\r\\n%*]+$"
+      peek:
+        title: Peek
+        description: Whether to keep an email unread while it is processed, so that an email whose processing fails stays unread and is read again at the next check. When it is not set, this is on. When false, an email is marked as read as soon as it is read, and an email whose processing fails is not read again.
+        type: boolean
+      skipFailedMessage:
+        title: Skip Failed Email
+        description: Whether to skip an email that cannot be read at all, such as one with a broken format, and go on with the other emails. When it is not set, such an email fails the whole check of the mailbox, again at each check, and no email is read until it is removed from the folder. A skipped email stays in the folder, unread, and no error is logged.
+        type: boolean
+      searchFrom:
+        title: Search From
+        description: Read only the emails whose sender contains this text, such as `billing@supplier.example`. Upper and lower case are the same. The mail server does the search, and some servers match only a whole address, so give the whole address to be safe.
+        type: string
+        example: billing@supplier.example
+        pattern: "^[^\\r\\n]+$"
+      searchTo:
+        title: Search To
+        description: Read only the emails whose `To` recipients contain this text, such as an address. The copy recipients (`Cc`) are not searched. Upper and lower case are the same. The mail server does the search, and some servers match only a whole address, so give the whole address to be safe.
+        type: string
+        example: orders@example.com
+        pattern: "^[^\\r\\n]+$"
+      searchSubject:
+        title: Search Subject
+        description: Read only the emails whose subject contains this text, such as `invoice`. Upper and lower case are the same.
+        type: string
+        example: invoice
+        pattern: "^[^\\r\\n]+$"
+      searchSubjectOrBody:
+        title: Search Subject or Body
+        description: Read only the emails whose subject or text contains this text, such as `refund`. Upper and lower case are the same.
+        type: string
+        example: refund
+        pattern: "^[^\\r\\n]+$"
   dataTypes:
     out:
       headers:
@@ -110,6 +168,20 @@ spec:
         fetchSize: "{{fetchSize}}"
         password: "RAW({{password}})"
         username: "RAW({{username}})"
+        folderName: "RAW({{?folderName}})"
+        unseen: "{{?unseen}}"
+        delete: "{{?delete}}"
+        moveTo: "RAW({{?moveTo}})"
+        copyTo: "RAW({{?copyTo}})"
+        peek: "{{?peek}}"
+        skipFailedMessage: "{{?skipFailedMessage}}"
+        # With a search, the component takes unseen from the search, so
+        # pass it there too.
+        searchTerm.unseen: "{{?unseen}}"
+        searchTerm.from: "RAW({{?searchFrom}})"
+        searchTerm.to: "RAW({{?searchTo}})"
+        searchTerm.subject: "RAW({{?searchSubject}})"
+        searchTerm.subjectOrBody: "RAW({{?searchSubjectOrBody}})"
       steps:
         - setHeader:
             name: ce-subject

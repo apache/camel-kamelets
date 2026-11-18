@@ -31,6 +31,12 @@ variables:
     value: "announcements@demo.org"
   - name: "mail.subject"
     value: "Kamelet workshop"
+  - name: "mail.cc"
+    value: "organizers@demo.org"
+  - name: "mail.bcc"
+    value: "archive@demo.org"
+  - name: "mail.replyTo"
+    value: "questions@demo.org"
   - name: "mail.message"
     value: "Camel rocks!"
 actions:
@@ -54,20 +60,30 @@ actions:
                   value: "${mail.to}"
                 - name: "mail.subject"
                   value: "${mail.subject}"
+                - name: "mail.cc"
+                  value: "${mail.cc}"
+                - name: "mail.bcc"
+                  value: "${mail.bcc}"
+                - name: "mail.replyTo"
+                  value: "${mail.replyTo}"
                 - name: "mail.message"
                   value: "${mail.message}"
   # Verify mail event
   - receive:
       endpoint: mailServer
       message:
+        headers:
+          - name: "citrus_mail_reply_to"
+            value: "${mail.replyTo}"
         body:
           data: |
             {
               "from": "${mail.from}",
               "to": "${mail.to}",
+              "cc": "${mail.cc}",
               "subject": "${mail.subject}",
               "body": {
-                "contentType": "@startsWith('text/plain')@",
+                "contentType": "@startsWith('text/html')@",
                 "content": "${mail.message}",
               }
             }
