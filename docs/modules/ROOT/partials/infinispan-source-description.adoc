@@ -6,7 +6,7 @@ This Kamelet uses username and password authentication to connect to Infinispan 
 
 - Username and password for Infinispan authentication
 - Host information for the Infinispan instance
-- Optionally, security settings (login enabled by default with `secure`; the connection has no TLS)
+- Optionally, security settings (login enabled by default with `secure`; TLS when `sslTruststoreLocation` is set)
 
 === Output format
 
@@ -23,6 +23,30 @@ The Kamelet requires the following parameters:
 
 Optional parameters:
 - `secure`: If the Infinispan instance is secured or not (default: true)
+- `sslTruststoreLocation`: A trust store (PKCS12 or JKS, with `sslTruststorePassword`) or a PEM file with the certificate of the server, or of the authority that signed it. Setting it turns on TLS.
+- `sslSniHostName`: The host name the certificate of the server is for. Required with `sslTruststoreLocation`.
+
+=== Example with TLS
+
+The Infinispan client checks the certificate of the server against the file in `sslTruststoreLocation` only: it does not use the certificates that Java trusts by default.
+
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:infinispan-source"
+      parameters:
+        cacheName: "orders"
+        hosts: "infinispan.example.com:11222"
+        username: "camel"
+        password: "secret"
+        saslMechanism: "SCRAM-SHA-512"
+        sslTruststoreLocation: "/etc/infinispan/truststore.p12"
+        sslTruststorePassword: "changeit"
+        sslSniHostName: "infinispan.example.com"
+      steps:
+        - to: "log:orders"
+----
 
 === Usage example
 

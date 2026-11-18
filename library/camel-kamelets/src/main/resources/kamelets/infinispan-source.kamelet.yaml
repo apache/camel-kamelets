@@ -37,7 +37,7 @@ spec:
 
       Output: the message has no body: the event is in headers. `infinispan-event-type` is the kind of event, such as `CLIENT_CACHE_ENTRY_CREATED`, `infinispan-key` the key of the entry, `infinispan-cache-name` the name of the cache and `infinispan-entry-version` the version of the entry. The same values are in `ce-infinispaneventtype`, `ce-infinispankey`, `ce-infinispancachename` and `ce-infinispanentryversion`. To read the value, look up the key in the cache.
 
-      Good to know: only the changes made while the integration runs are received. The cache must already exist on the server. Recent Infinispan servers do not accept the default `saslMechanism` of `DIGEST-MD5`: set it to `SCRAM-SHA-512`. The connection has no TLS.
+      Good to know: only the changes made while the integration runs are received. The cache must already exist on the server. Recent Infinispan servers do not accept the default `saslMechanism` of `DIGEST-MD5`: set it to `SCRAM-SHA-512`. The connection has TLS only when `sslTruststoreLocation` is set, together with `sslSniHostName`.
     required:
       - cacheName
       - hosts
@@ -57,7 +57,7 @@ spec:
         example: "infinispan.example.com:11222"
       secure:
         title: Secure
-        description: If true, it logs in with `username` and `password`. Set it to false only for a server that needs no login. It does not turn on TLS.
+        description: If true, it logs in with `username` and `password`. Set it to false only for a server that needs no login. It does not turn on TLS; `sslTruststoreLocation` does.
         type: boolean
         default: true
       username:
@@ -89,6 +89,25 @@ spec:
         description: The name of the server, used when logging in. Keep the default unless your Infinispan administrator changed it.
         type: string
         default: "infinispan"
+      sslTruststoreLocation:
+        title: Trust Store Location
+        description: The path of a file with the certificate of the server, or of the authority that signed it, to connect with TLS. It is a trust store in PKCS12 or JKS format, which needs `sslTruststorePassword`, or a PEM file with the certificates, such as `ca.crt`, which needs no password. Setting it turns on TLS, and `sslSniHostName` is then required. The Infinispan client does not use the certificates that Java trusts by default, so a server with a certificate from a public authority needs this file too. When it is not set, the connection has no TLS.
+        type: string
+        example: "/etc/infinispan/truststore.p12"
+        pattern: "^[^&?#]+$"
+      sslTruststorePassword:
+        title: Trust Store Password
+        description: The password of the trust store file in `sslTruststoreLocation`. Not needed for a PEM file.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      sslSniHostName:
+        title: TLS Server Name
+        description: The host name of the server as its certificate names it, such as `infinispan.example.com`. Required with `sslTruststoreLocation`. It is sent to the server when the connection starts (SNI), and the certificate of the server must be for this name, or the connection fails. Setting it without `sslTruststoreLocation` fails at start.
+        type: string
+        example: "infinispan.example.com"
+        pattern: "^[A-Za-z0-9.-]+$"
       eventTypes:
         title: Event Types
         description: The kinds of events to receive, separated by commas without spaces. `CLIENT_CACHE_ENTRY_CREATED`, `CLIENT_CACHE_ENTRY_MODIFIED`, `CLIENT_CACHE_ENTRY_REMOVED` and `CLIENT_CACHE_ENTRY_EXPIRED` are changes of an entry; `CLIENT_CACHE_FAILOVER` tells that the connection moved to another server of the cluster.
@@ -123,7 +142,7 @@ spec:
       - name: local-infinispan
         type: "#class:org.apache.camel.component.infinispan.remote.InfinispanRemoteComponent"
     from:
-      uri: "{{local-infinispan}}:{{cacheName}}?hosts={{hosts}}&secure={{secure}}&username={{username}}&password={{password}}&saslMechanism={{saslMechanism}}&securityRealm={{securityRealm}}&securityServerName={{securityServerName}}&eventTypes={{eventTypes}}"
+      uri: "{{local-infinispan}}:{{cacheName}}?hosts={{hosts}}&secure={{secure}}&username={{username}}&password={{password}}&saslMechanism={{saslMechanism}}&securityRealm={{securityRealm}}&securityServerName={{securityServerName}}&eventTypes={{eventTypes}}&configurationProperties[trust_store_file_name]={{?sslTruststoreLocation}}&configurationProperties[trust_store_password]=RAW({{?sslTruststorePassword}})&configurationProperties[sni_host_name]={{?sslSniHostName}}"
       steps:
         - setHeader:
             name: infinispan-cache-name
