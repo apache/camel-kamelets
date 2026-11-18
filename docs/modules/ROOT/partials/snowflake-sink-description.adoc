@@ -12,6 +12,16 @@ Uses the Snowflake JDBC driver for native connectivity to Snowflake instances. T
 
 Requires configuration of the Snowflake instance URL (e.g., `instance.snowflakecomputing.com`) which uniquely identifies your Snowflake account and region.
 
+=== Authentication Methods
+
+The Kamelet logs in to Snowflake as the Snowflake user `username`, either with `password` or with a key pair. A Snowflake user of type SERVICE, meant for applications, cannot log in with a password, and Snowflake is phasing out sign-in with a password alone for the other users too, so use a key pair for an integration. When a key is set, the password is not used.
+
+- `privateKey` is the private key file in PEM format, encoded in base64 on a single line, such as the output of `base64 -w0 rsa_key.p8`.
+- `privateKeyFile` is instead the path of that file, such as a Kubernetes Secret mounted as a file. Set one of `privateKey` and `privateKeyFile`, not both.
+- `privateKeyPassphrase` is the passphrase of the key, when it is encrypted.
+
+Snowflake's guide to https://docs.snowflake.com/en/user-guide/key-pair-auth[key-pair authentication] shows how to make the key pair, such as with `openssl genrsa 2048 | openssl pkcs8 -topk8 -inform PEM -out rsa_key.p8 -nocrypt`, and how to set the public key on the user with `ALTER USER ... SET RSA_PUBLIC_KEY`.
+
 === Data Processing
 
 Processes JSON input data through unmarshalling before executing SQL queries. This enables seamless integration with JSON-based data pipelines and streaming applications.
@@ -23,3 +33,25 @@ Supports parameterized SQL queries using named parameters that map to JSON data 
 === Cloud-Native Features
 
 Snowflake's cloud-native architecture provides automatic scaling, performance optimization, and enterprise-grade security, making this Kamelet suitable for large-scale data operations.
+
+=== Example with a Key Pair
+
+The route below stores each order posted to a webhook as a row, logged in with a key pair. The key, encoded in base64, comes from a property, such as one set from a Kubernetes Secret.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:webhook-source"
+      parameters:
+        subpath: "orders"
+      steps:
+        - to:
+            uri: "kamelet:snowflake-sink"
+            parameters:
+              instanceUrl: "myorg-myaccount.snowflakecomputing.com"
+              username: "ORDERS_SERVICE"
+              privateKey: "{{snowflake.private.key}}"
+              databaseName: "SHOP"
+              query: "INSERT INTO orders (id,customer) VALUES (:#id,:#customer)"
+----
