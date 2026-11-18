@@ -23,4 +23,31 @@ For more information, see the https://learn.microsoft.com/en-us/java/api/overvie
 
 In the headers, you can optionally set the `partition-id` / `ce-partition-id` property to specify the partition id for a specific item.
 
-If you do not set the property in the header, Azure Event Hubs will do that for you.
+If you set neither the header nor `partitionKey`, Azure Event Hubs chooses the partition.
+
+=== Sending all events to the same partition
+
+Event Hubs keeps the order of the events only within a partition. To read the events in the order they were sent, set `partitionKey`: Event Hubs sends all the events with the same partition key to the same partition, which it chooses from the key. Do not set the `partition-id` header as well: a message with both fails with the error `Both partitionKey and partitionId are set`.
+
+=== Connecting with a connection string
+
+Instead of `namespaceName`, `eventhubName`, `sharedAccessName` and `sharedAccessKey`, you can set `connectionString`. It must end with `;EntityPath=` and the name of the event hub, which the connection string of a policy of the namespace does not have: add it.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:kafka-source"
+      parameters:
+        topic: "orders"
+        bootstrapServers: "kafka.example.com:9092"
+        saslAuthType: "NONE"
+      steps:
+        - to:
+            uri: "kamelet:azure-eventhubs-sink"
+            parameters:
+              connectionString: "Endpoint=sb://my-namespace.servicebus.windows.net/;SharedAccessKeyName=send-policy;SharedAccessKey=...;EntityPath=orders"
+              partitionKey: "orders"
+----
+
+The connection string holds the key, so keep it in a secret, like `sharedAccessKey`.

@@ -38,10 +38,8 @@ spec:
 
       Output: the body is the body of the event, as bytes. The headers give its partition (`CamelAzureEventHubsPartitionId`), offset, sequence number and the time it was enqueued, and `CamelAzureEventHubsMetadata` holds the custom properties of the event.
 
-      Good to know: when no position has been saved yet, it starts with the events that arrive after it starts, not the older ones. It reads as the `$Default` consumer group, or as the one in `consumerGroupName`, and each consumer group has its own saved position. It saves its position (a checkpoint) in `blobContainerName` every 500 events or every 5 seconds, so after a restart some events can be read again.
+      Good to know: log in with `sharedAccessName` and `sharedAccessKey`, with `connectionString`, or with `credentialType` `AZURE_IDENTITY`. Set `namespaceName` and `eventhubName` unless `connectionString` is set. When no position has been saved yet, it starts with the events that arrive after it starts, not the older ones. It reads as the `$Default` consumer group, or as the one in `consumerGroupName`, and each consumer group has its own saved position. For each partition, it saves its position (a checkpoint) in `blobContainerName` after `checkpointBatchSize` events (500 when not set), or `checkpointBatchTimeout` milliseconds (5000 when not set) after the first event since the last checkpoint, whichever comes first. The events read after the last checkpoint are read again after a restart.
     required:
-      - namespaceName
-      - eventhubName
       - blobAccountName
       - blobAccessKey
       - blobContainerName
@@ -49,12 +47,12 @@ spec:
     properties:
       namespaceName:
         title: Event Hubs Namespace
-        description: The name of the Event Hubs namespace, the first part of its address `<namespaceName>.servicebus.windows.net`.
+        description: "The name of the Event Hubs namespace, the first part of its address `<namespaceName>.servicebus.windows.net`. Required unless `connectionString` is set: with neither, the integration fails to start with the error `ConnectionString, ProducerAsyncClient or Namespace and EventHub name must be set`."
         type: string
         example: my-namespace
       eventhubName:
         title: Event Hub Name
-        description: The name of the event hub in the namespace to receive the events from.
+        description: The name of the event hub in the namespace to receive the events from. Required unless `connectionString` is set.
         type: string
         example: orders
       consumerGroupName:
@@ -72,6 +70,13 @@ spec:
       sharedAccessKey:
         title: Shared Access Key
         description: The primary or secondary key of the shared access policy named in `sharedAccessName`.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      connectionString:
+        title: Connection String
+        description: "A connection string of a shared access policy, such as `Endpoint=sb://my-namespace.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=...;EntityPath=orders`, from the Azure portal: the namespace or the event hub, then Settings, Shared access policies, the policy, Connection string. Use it instead of `namespaceName`, `eventhubName`, `sharedAccessName` and `sharedAccessKey`, which are then not used. It must end with `;EntityPath=` and the name of the event hub: the connection string of a policy of the event hub has it, and one of a policy of the namespace does not, so add it. Without it, the integration fails to start with the error `'eventHubName' cannot be an empty string`. Used when `credentialType` is `CONNECTION_STRING`, the default."
         type: string
         format: password
         x-descriptors:
@@ -99,6 +104,16 @@ spec:
         type: string
         default: "CONNECTION_STRING"
         enum: ["CONNECTION_STRING", "AZURE_IDENTITY"]
+      checkpointBatchSize:
+        title: Checkpoint Batch Size
+        description: After how many events of a partition the source saves its position (a checkpoint) for that partition. A smaller number reads fewer events again after a restart, but writes to the blob container more often. When not set, 500.
+        type: integer
+        example: 100
+      checkpointBatchTimeout:
+        title: Checkpoint Batch Timeout
+        description: How long after the first event since the last checkpoint of a partition the source saves its position for that partition, when `checkpointBatchSize` events have not arrived by then, in milliseconds. When not set, 5000 (5 seconds).
+        type: integer
+        example: 1000
   dataTypes:
     out:
       default: binary
@@ -167,7 +182,7 @@ spec:
   - "camel:jackson3"
   template:
     from:
-      uri: "azure-eventhubs://{{namespaceName}}/{{eventhubName}}?blobAccessKey=RAW({{blobAccessKey}})&blobAccountName={{blobAccountName}}&blobContainerName={{blobContainerName}}&credentialType={{credentialType}}&consumerGroupName={{?consumerGroupName}}&sharedAccessKey=RAW({{?sharedAccessKey}})&sharedAccessName={{?sharedAccessName}}"
+      uri: "azure-eventhubs://{{?namespaceName}}/{{?eventhubName}}?blobAccessKey=RAW({{blobAccessKey}})&blobAccountName={{blobAccountName}}&blobContainerName={{blobContainerName}}&credentialType={{credentialType}}&consumerGroupName={{?consumerGroupName}}&sharedAccessKey=RAW({{?sharedAccessKey}})&sharedAccessName={{?sharedAccessName}}&connectionString=RAW({{?connectionString}})&checkpointBatchSize={{?checkpointBatchSize}}&checkpointBatchTimeout={{?checkpointBatchTimeout}}"
       steps:
         - to:
             uri: kamelet:sink

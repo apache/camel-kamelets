@@ -36,24 +36,21 @@ spec:
 
       Use it to publish events, such as clicks, sensor readings or changes, for stream processing or for other applications to read. To receive them, use `azure-eventhubs-source`.
 
-      Input: the body becomes the body of the event: text, bytes or a stream. A Map fails: turn it into JSON text first, for example with `json-serialize-action`. A List is sent as one event per element. The optional `partition-id` header (or `ce-partition-id`) is the partition to send to, such as `0`; without it, Event Hubs chooses one.
+      Input: the body becomes the body of the event: text, bytes or a stream. A Map fails: turn it into JSON text first, for example with `json-serialize-action`. A List is sent as one event per element. The optional `partition-id` header (or `ce-partition-id`) is the partition to send to, such as `0`; without it, and without `partitionKey`, Event Hubs chooses one.
 
       Output: the message is unchanged.
 
-      Good to know: the shared access policy needs the Send right.
-    required:
-      - namespaceName
-      - eventhubName
+      Good to know: log in with `sharedAccessName` and `sharedAccessKey`, with `connectionString`, or with `credentialType` `AZURE_IDENTITY`. Set `namespaceName` and `eventhubName` unless `connectionString` is set. The shared access policy needs the Send right. With `partitionKey` set, a message with a `partition-id` or `ce-partition-id` header fails.
     type: object
     properties:
       namespaceName:
         title: Event Hubs Namespace
-        description: The name of the Event Hubs namespace, the first part of its address `<namespaceName>.servicebus.windows.net`.
+        description: "The name of the Event Hubs namespace, the first part of its address `<namespaceName>.servicebus.windows.net`. Required unless `connectionString` is set: with neither, the integration fails to start with the error `ConnectionString, ProducerAsyncClient or Namespace and EventHub name must be set`."
         type: string
         example: my-namespace
       eventhubName:
         title: Event Hub Name
-        description: The name of the event hub in the namespace to send the events to.
+        description: The name of the event hub in the namespace to send the events to. Required unless `connectionString` is set.
         type: string
         example: orders
       sharedAccessName:
@@ -70,12 +67,24 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      connectionString:
+        title: Connection String
+        description: "A connection string of a shared access policy, such as `Endpoint=sb://my-namespace.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=...;EntityPath=orders`, from the Azure portal: the namespace or the event hub, then Settings, Shared access policies, the policy, Connection string. Use it instead of `namespaceName`, `eventhubName`, `sharedAccessName` and `sharedAccessKey`, which are then not used. It must end with `;EntityPath=` and the name of the event hub: the connection string of a policy of the event hub has it, and one of a policy of the namespace does not, so add it. Without it, the integration fails to start with the error `'eventHubName' cannot be an empty string`. Used when `credentialType` is `CONNECTION_STRING`, the default."
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
       credentialType:
         title: Credential Type
         description: How to log in to Event Hubs. `CONNECTION_STRING`, the default, uses `sharedAccessName` and `sharedAccessKey`. `AZURE_IDENTITY` uses the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login.
         type: string
         default: "CONNECTION_STRING"
         enum: ["CONNECTION_STRING", "AZURE_IDENTITY"]
+      partitionKey:
+        title: Partition Key
+        description: A partition key for all the events, such as `orders`. Event Hubs sends all the events with the same partition key to the same partition, which it chooses from the key, so they are read in the order they were sent. Use it instead of the `partition-id` header, as a message with both fails. When not set, each event goes to the partition in its `partition-id` header, or Event Hubs chooses one.
+        type: string
+        example: orders
   dataTypes:
     in:
       headers:
@@ -115,4 +124,4 @@ spec:
                         simple:
                           expression: "${header[ce-partition-id]}"
         - to:
-            uri: "azure-eventhubs://{{namespaceName}}/{{eventhubName}}?credentialType={{credentialType}}&sharedAccessKey=RAW({{?sharedAccessKey}})&sharedAccessName={{?sharedAccessName}}"
+            uri: "azure-eventhubs://{{?namespaceName}}/{{?eventhubName}}?credentialType={{credentialType}}&sharedAccessKey=RAW({{?sharedAccessKey}})&sharedAccessName={{?sharedAccessName}}&connectionString=RAW({{?connectionString}})&partitionKey=RAW({{?partitionKey}})"

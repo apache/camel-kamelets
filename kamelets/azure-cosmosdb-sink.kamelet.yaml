@@ -32,7 +32,7 @@ spec:
   definition:
     title: "Azure CosmosDB Sink"
     description: |-
-      Creates an item (a JSON document) in a container of Azure Cosmos DB for each message, from the JSON object in the body.
+      Creates or replaces an item (a JSON document) in a container of Azure Cosmos DB for each message, from the JSON object in the body.
 
       Use it to store orders, events or profiles as JSON documents in Cosmos DB. To receive the changes made to a container, use `azure-cosmosdb-source`.
 
@@ -40,7 +40,7 @@ spec:
 
       Output: the body afterwards is the item as it was created, as a Map, with the fields that Cosmos DB adds.
 
-      Good to know: a message without a partition key value fails, and so does an item whose `id` already exists in the same partition: the sink creates items and never replaces them.
+      Good to know: a message without a partition key value fails. With `operation` `createItem`, the default, an item whose `id` already exists in the same partition fails; with `upsertItem`, it replaces the existing item. The database and the container must exist, unless `createDatabaseIfNotExists` and `createContainerIfNotExists` are true; a new container needs `containerPartitionKeyPath`.
     required:
       - databaseName
       - containerName
@@ -57,6 +57,26 @@ spec:
         description: The name of the container in the database to create the items in.
         type: string
         example: orders
+      operation:
+        title: Operation
+        description: What to do with each item. `createItem` creates the item, and fails when an item with the same `id` already exists in the same partition. `upsertItem` creates the item, or replaces the existing item with the same `id` in the same partition with it, as a whole.
+        type: string
+        default: createItem
+        enum: ["createItem", "upsertItem"]
+      createDatabaseIfNotExists:
+        title: Autocreate Database
+        description: If true, the database `databaseName` is created when it does not exist. When not set, or false, a missing database fails each message.
+        type: boolean
+      createContainerIfNotExists:
+        title: Autocreate Container
+        description: If true, the container `containerName` is created when it does not exist, with `containerPartitionKeyPath` as its partition key; then `containerPartitionKeyPath` is required. When not set, or false, a missing container fails each message.
+        type: boolean
+      containerPartitionKeyPath:
+        title: Container Partition Key Path
+        description: The partition key of the container to create when `createContainerIfNotExists` is true, as the path of a field of the items, such as `/region`. Not used for a container that exists.
+        type: string
+        pattern: ^/\S+$
+        example: /region
       accountKey:
         title: Account Key
         description: "The primary or secondary key of the Azure Cosmos DB account, from the Azure portal: the account, then Settings, Keys. Used when `credentialType` is `SHARED_ACCOUNT_KEY`, the default."
@@ -129,6 +149,30 @@ spec:
                                 expression:
                                   simple:
                                     expression: "${header[ce-itemPartitionKey]}"
+        - choice:
+            precondition: true
+            when:
+              - expression:
+                  simple:
+                    expression: "${propertiesExist:createDatabaseIfNotExists}"
+                steps:
+                  - setHeader:
+                      name: CamelAzureCosmosDbCreateDatabaseIfNotExist
+                      expression:
+                        constant:
+                          expression: "{{createDatabaseIfNotExists}}"
+        - choice:
+            precondition: true
+            when:
+              - expression:
+                  simple:
+                    expression: "${propertiesExist:createContainerIfNotExists}"
+                steps:
+                  - setHeader:
+                      name: CamelAzureCosmosDbCreateContainerIfNotExist
+                      expression:
+                        constant:
+                          expression: "{{createContainerIfNotExists}}"
         - unmarshal:
             json: {}
         - to:
@@ -140,5 +184,8 @@ spec:
               credentialType: "{{credentialType}}"
               databaseEndpoint: "{{databaseEndpoint}}"
               itemPartitionKey: "{{?itemPartitionKey}}"
-              operation: createItem
+              operation: "{{operation}}"
+              createDatabaseIfNotExists: "{{?createDatabaseIfNotExists}}"
+              createContainerIfNotExists: "{{?createContainerIfNotExists}}"
+              containerPartitionKeyPath: "{{?containerPartitionKeyPath}}"
 
