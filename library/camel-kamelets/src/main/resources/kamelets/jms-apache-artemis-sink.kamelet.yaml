@@ -36,11 +36,11 @@ spec:
 
       Use it to hand work to another application through a queue, such as orders to process, or to publish events on a topic for every application that listens. For another broker that speaks AMQP 1.0, use `jms-amqp-10-sink`.
 
-      Input: text is sent as a JMS text message, bytes as a JMS bytes message, and a Map as a JMS map message. The headers of the message, except the Camel ones, are sent along as JMS properties of the message.
+      Input: text is sent as a JMS text message, bytes as a JMS bytes message, and a Map as a JMS map message; `jmsMessageType` sends text or bytes as the other kind. The headers of the message, except the Camel ones, are sent along as JMS properties of the message.
 
       Output: the message is unchanged.
 
-      Good to know: Messages go to a queue unless `destinationType` is `topic`, and a message sent to a topic reaches only the receivers subscribed at that moment. It connects with no TLS unless `brokerURL` asks for it, and logs in with `username` and `password` when they are set. It keeps its connections to the broker in a pool and reuses them for the next messages. It does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does.
+      Good to know: Messages go to a queue unless `destinationType` is `topic`, and a message sent to a topic reaches only the receivers subscribed at that moment. Messages are persistent, with priority 4, and never expire, unless `deliveryPersistent`, `priority` and `timeToLive` say otherwise. It connects with no TLS unless `brokerURL` asks for it, and logs in with `username` and `password` when they are set. It keeps its connections to the broker in a pool and reuses them for the next messages. It does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does.
     required:
       - destinationName
       - brokerURL
@@ -89,6 +89,27 @@ spec:
         description: "How long a connection of the pool can stay unused before it is closed, in milliseconds. For example, 30000 is 30 seconds."
         type: integer
         default: 30000
+      deliveryPersistent:
+        title: "Persistent Delivery"
+        description: "Whether the broker stores each message on disk, so that it survives a restart of the broker. False sends non-persistent messages, which are faster but lost when the broker stops. When it is not set, the messages are persistent."
+        type: boolean
+      timeToLive:
+        title: "Time to Live"
+        description: "How long each message may wait to be received, in milliseconds, such as 60000 for one minute. A message still waiting after that time expires: the broker does not deliver it, and moves it to the queue `ExpiryQueue` (the default of the broker). When it is not set, the messages never expire."
+        type: integer
+        example: 60000
+      priority:
+        title: "Priority"
+        description: "The JMS priority of each message, from 0 (lowest) to 9 (highest). Of the messages waiting on a queue, the broker delivers those with the highest priority first. When it is not set, 4."
+        type: integer
+        minimum: 0
+        maximum: 9
+        example: 7
+      jmsMessageType:
+        title: "JMS Message Type"
+        description: "The kind of JMS message to send, whatever the body: `Text` sends a text message, and `Bytes` a bytes message, for a receiver that expects one kind. When it is not set, the kind follows the body: text is sent as a text message, and bytes as a bytes message."
+        type: string
+        enum: ["Text", "Bytes"]
   dependencies:
   - "camel:jms"
   - "camel:kamelet"
@@ -118,4 +139,8 @@ spec:
             parameters:
               destinationType: "{{destinationType}}"
               destinationName: "{{destinationName}}"
+              deliveryPersistent: "{{?deliveryPersistent}}"
+              timeToLive: "{{?timeToLive}}"
+              priority: "{{?priority}}"
+              jmsMessageType: "{{?jmsMessageType}}"
               connectionFactory: "#bean:{{pooledFactoryBean}}"
