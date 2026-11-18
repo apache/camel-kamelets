@@ -63,7 +63,6 @@ public enum KameletPrefixSchemeEnum {
     google_storage("google-storage", "google-storage"),
     graphql("graphql", "graphql"),
     http("http", "http"),
-    http_secured("http-secured", "http"),
     infinispan("infinispan", "infinispan"),
     jira_add_comment("jira-add-comment", "jira"),
     jira_add_issue("jira-add-issue", "jira"),
