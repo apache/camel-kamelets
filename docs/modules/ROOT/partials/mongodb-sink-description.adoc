@@ -14,7 +14,58 @@ Optional username and password authentication is supported for secured MongoDB i
 
 === Write Operations
 
-The Kamelet performs insert operations into the specified collection. A document whose `_id` is already in the collection fails; the `db-upsert` and `ce-dbupsert` headers do not change that.
+The `operation` option says what the Kamelet does with each message:
+
+[width="100%",cols="1,2,2",options="header"]
+|===
+| `operation` | Body | What happens
+| `insert` (default)
+| One document as a JSON object, such as `{"_id":"o-1","item":"book","qty":2}`
+| The document is added. A document whose `_id` is already in the collection fails.
+| `save`
+| One document as a JSON object, such as `{"_id":"o-1","item":"book","qty":5}`
+| The stored document with the same `_id` is replaced as a whole: fields that are not in the body are removed. When
+  there is none, or the body has no `_id`, the document is added.
+| `update`
+| A JSON array of the filter and the changes, such as `[{"sku":"A1"},{"$set":{"qty":3}}]`
+| The first document that matches the filter is changed. The changes must use update operators, such as `$set`,
+  `$inc` or `$unset`. When no document matches, nothing is written, unless `upsert` is true.
+|===
+
+An ObjectId is written in the body as `{"$oid":"6afd00000000000000000001"}`. With `insert` and `save`, the
+`CamelMongoOid` header holds the `_id` of the document. With `update`, the `CamelMongoDbRecordsMatched` and
+`CamelMongoDbRecordsAffected` headers say how many documents matched and how many were changed. The `db-upsert` and
+`ce-dbupsert` headers are not used.
+
+=== Example with Update and Upsert
+
+With `upsert` true, the first message for a product inserts `{"sku":"A1","qty":2}`, and each later one updates it:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:kafka-source"
+      parameters:
+        topic: "stock"
+        bootstrapServers: "kafka.example.com:9092"
+        saslAuthType: "NONE"
+      steps:
+        # each record is a JSON array such as [{"sku":"A1"},{"$set":{"qty":2}}]
+        - to:
+            uri: "kamelet:mongodb-sink"
+            parameters:
+              hosts: "mongo1.example.com:27017"
+              username: "mongouser"
+              password: "mongopass"
+              database: "shop"
+              collection: "stock"
+              operation: "update"
+              upsert: true
+----
+
+To keep a copy of records by their ID instead, set `operation` to `save` and send each record as a document with its
+`_id`.
 
 === Write Concerns
 
