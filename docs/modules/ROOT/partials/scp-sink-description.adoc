@@ -10,7 +10,7 @@ Uses SSH protocol for authentication and encryption, providing strong security f
 
 === Remote File Placement
 
-Transfers files to the home directory of `username` on the remote server. The file name comes from the `CamelFileName` header, which may include subdirectories; without it, a unique name is generated. A file with the same name is replaced. To choose another directory on the server, use the SFTP Sink Kamelet.
+Transfers files to `directoryName` on the remote server, or to the home directory of `username` when it is not set. A path without a leading `/` is relative to the home directory. The directory must exist: when it does not, each file is written as a file with the name of the directory. The file name comes from the `CamelFileName` header, which may include subdirectories, which are created; without it, a unique name is generated. A file with the same name is replaced. To create a missing directory, or to keep or append to existing files, use the SFTP Sink Kamelet.
 
 === Network Efficiency
 
@@ -32,3 +32,32 @@ Supports multiple authentication methods:
 === Cross-Platform Support
 
 Works across different operating systems and platforms, providing consistent secure file transfer capabilities regardless of the target system architecture.
+
+=== Usage Example
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: "Hello"
+      steps:
+        - setHeader:
+            name: CamelFileName
+            constant: "hello.txt"
+        - to:
+            uri: "kamelet:scp-sink"
+            parameters:
+              serverName: "files.example.com"
+              serverPort: "22"
+              username: "scpuser"
+              password: "scppass"
+              knownHostsUri: "/etc/scp/known_hosts"
+              directoryName: "incoming/reports"
+              chmod: "640"
+----
+
+This copies `hello.txt` to `incoming/reports` in the home directory of `scpuser`, with the permissions `640`. The
+umask of the server can take permissions away: with the usual umask 022, the default `664` gives `644`. A file that
+already exists keeps its permissions, and only its content is replaced.

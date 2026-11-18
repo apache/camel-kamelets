@@ -12,7 +12,7 @@ FTPS provides secure file transfer over encrypted connections using SSL/TLS prot
 
 Requires:
 - Connection host (FTPS server hostname)
-- Connection port (defaults to 21)
+- Connection port (defaults to 21; usually 990 with implicit TLS)
 - Username and password credentials
 - Directory name for file operations
 
@@ -24,6 +24,7 @@ Requires:
 - **Auto-create Directories**: Automatically creates missing directories (enabled by default)
 - **Temporary Name Prefix**: Upload each file under a temporary name, such as `.tmp-orders.csv`, and rename it to its real name once it is complete (not set by default)
 - **Done File Name**: Write an empty done file next to each file once it is complete, such as `orders.csv.done` (not set by default)
+- **Implicit TLS**: Use implicit TLS, usually on port 990, instead of explicit TLS on the normal FTP port (default: false)
 
 === Optional Headers
 
@@ -70,3 +71,29 @@ with a dot, so it never reads a half-written file; another reader can wait for t
 `${file:name}` stands for the name of the file and `${file:name.noext}` for the name without its extension; no other
 `${...}` is allowed. The user needs the right to rename files on the server. **tempPrefix** cannot be combined with
 **fileExist** set to `Append`, and with `Override` a file of the same name is deleted when the upload starts.
+
+=== Example with Implicit TLS
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: "Hello"
+      steps:
+        - to:
+            uri: "kamelet:ftps-sink"
+            parameters:
+              connectionHost: "ftps.example.com"
+              connectionPort: "990"
+              username: "ftpsuser"
+              password: "ftpspass"
+              directoryName: "/upload"
+              implicit: true
+              passiveMode: true
+----
+
+By default the Kamelet uses explicit TLS: it connects to the normal FTP port, usually 21, and then switches to TLS.
+A server that uses implicit TLS, usually on port 990, expects an encrypted connection from the start: set
+**Implicit TLS** for it.

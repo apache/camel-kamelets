@@ -140,6 +140,17 @@ spec:
         description: The name of an empty file to write next to each file once the file is complete, so that a reader knows the file can be read. `$\{file:name}` stands for the name of the file and `$\{file:name.noext}` for the name without its extension, so `$\{file:name}.done` writes `orders.csv.done`, and `$\{file:name.noext}.ready` writes `orders.ready`. A fixed name, such as `ready`, is written again after each file. No other `$\{...}` is allowed, and with one the file is uploaded but then the message fails. With `tempPrefix`, the done file is written after the file has its real name. When it is not set, no done file is written.
         type: string
         example: "${file:name}.done"
+      chmod:
+        title: File Permissions
+        description: The permissions to give each file once it is written, as three octal digits, such as `640` for read and write by the owner and read by the group. They are set on a file that already existed too. When it is not set, a new file gets the permissions the server gives it, usually `644`, and a file that already existed keeps its own.
+        type: string
+        pattern: "^[0-7]{3}$"
+        example: "640"
+      serverAliveInterval:
+        title: Server Alive Interval
+        description: How often to check, in milliseconds, that the server still answers while no data comes from it. When the server misses a check, the connection is closed, and the next message makes a new one. Use it to notice a lost connection soon, for example behind a firewall that drops idle connections. When it is not set, no checks are made.
+        type: integer
+        example: 30000
   dataTypes:
     in:
       headers:
@@ -204,6 +215,7 @@ spec:
               host: "{{connectionHost}}"
               port: "{{connectionPort}}"
               directoryName: "{{directoryName}}"
+              chmod: "{{?chmod}}"
               doneFileName: "RAW({{?doneFileName}})"
               autoCreate: "{{autoCreate}}"
               binary: "{{binary}}"
@@ -214,6 +226,7 @@ spec:
               privateKeyFile: "RAW({{?privateKeyFile}})"
               privateKeyPassphrase: "RAW({{?privateKeyPassphrase}})"
               privateKeyUri: "RAW({{?privateKeyUri}})"
+              serverAliveInterval: "{{?serverAliveInterval}}"
               strictHostKeyChecking: "{{?strictHostKeyChecking}}"
               tempPrefix: "RAW({{?tempPrefix}})"
               useUserKnownHostsFile: "{{?useUserKnownHostsFile}}"

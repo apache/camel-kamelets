@@ -69,3 +69,29 @@ with a dot, so it never reads a half-written file; another reader can wait for t
 `${file:name}` stands for the name of the file and `${file:name.noext}` for the name without its extension; no other
 `${...}` is allowed. The user needs the right to rename files on the server. **tempPrefix** cannot be combined with
 **fileExist** set to `Append`, and with `Override` a file of the same name is deleted when the upload starts.
+
+=== Example with File Permissions
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: "Hello"
+      steps:
+        - to:
+            uri: "kamelet:sftp-sink"
+            parameters:
+              connectionHost: "sftp.example.com"
+              username: "sftpuser"
+              password: "sftppass"
+              directoryName: "/upload"
+              chmod: "640"
+              serverAliveInterval: 30000
+----
+
+Each file gets the permissions `640` once it is written, read and write for its owner and read for the group, also
+when it replaced a file with other permissions. Without **File Permissions**, a new file gets the permissions the
+server gives it, usually `644`. **Server Alive Interval** checks every 30 seconds without data that the server still
+answers, and closes the connection when it does not, so that the next message makes a new one.

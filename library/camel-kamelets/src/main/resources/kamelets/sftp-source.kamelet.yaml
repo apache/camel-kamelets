@@ -35,9 +35,9 @@ spec:
 
       Use it to collect the files that a partner or another system drops on a server you reach with SSH, such as orders, invoices or exports. For an FTP server use `ftp-source` or `ftps-source`.
 
-      Output: the body is the content of the file, as bytes. The `file` and `ce-file` headers hold the name of the file, with its path below `directoryName` when `recursive` is true, such as `2026/orders.csv`. `CamelFileName` holds the same name, and `CamelFileLength` the size of the file in bytes.
+      Output: the body is the content of the file, as bytes, or as a stream when `streamDownload` is true. The `file` and `ce-file` headers hold the name of the file, with its path below `directoryName` when `recursive` is true, such as `2026/orders.csv`. `CamelFileName` holds the same name, and `CamelFileLength` the size of the file in bytes.
 
-      Good to know: files are not deleted or moved after they are read, unless `delete` is true or `move` is set. A file is read only once while the integration runs (`idempotent`), but the files left on the server are all read again after a restart; to read each file only once, also across restarts, set `move` to a directory such as `.done`, set `delete` to true, or keep the list of the files read in a file with `idempotentRepository`. Log in with `username` and either `password` or a private key. The key of the server must be in a known_hosts file, `knownHostsUri` or else `~/.ssh/known_hosts` of the user that runs the integration, or the connection fails.
+      Good to know: files are not deleted or moved after they are read, unless `delete` is true or `move` is set. A file is read only once while the integration runs (`idempotent`), but the files left on the server are all read again after a restart; to read each file only once, also across restarts, set `move` to a directory such as `.done`, set `delete` to true, or keep the list of the files read in a file with `idempotentRepository`. To read only some of the files, set `include`, `exclude` or `antInclude`. To leave a file alone while another program is still writing it, set `readLock`. Log in with `username` and either `password` or a private key. The key of the server must be in a known_hosts file, `knownHostsUri` or else `~/.ssh/known_hosts` of the user that runs the integration, or the connection fails.
     required:
       - connectionHost
       - connectionPort
@@ -157,6 +157,71 @@ spec:
         description: Where to move a file on the server when it could not be handed on, for example because the next step failed, so that it is not read over and over. The same format as `move`, such as `.error`. When it is not set, a file that fails stays where it is and is read again at every poll. It can be set together with `delete` or `move`.
         type: string
         example: ".error"
+      include:
+        title: Include Files
+        description: A regular expression that the name of a file must match to be read, such as `.*\.csv` for the CSV files. The whole name must match, upper and lower case count as the same, and only the name is matched, not its directory. The other files stay on the server. When it is not set, all the files are read.
+        type: string
+        example: '.*\.csv'
+      exclude:
+        title: Exclude Files
+        description: A regular expression for the names of the files not to read, such as `.*\.(tmp|part)`. The whole name must match, upper and lower case count as the same, and only the name is matched, not its directory. A file it matches is not read, even when `include` or `antInclude` matches it too.
+        type: string
+        example: '.*\.(tmp|part)'
+      antInclude:
+        title: Include Files (Wildcards)
+        description: Wildcard patterns, separated by commas, that the path of a file must match to be read, such as `*.csv,*.xml`. The path is relative to `directoryName`, such as `2026/orders.csv` when `recursive` is true. `*` matches any part of a name and `**` any number of directories, so `*.csv` matches the CSV files in `directoryName` only, and `**/*.csv` those in the subdirectories too. Upper and lower case differ. When it is not set, all the files are read.
+        type: string
+        example: '**/*.csv'
+      preMove:
+        title: Move Before Read
+        description: Where to move each file on the server before it is read, so that another reader of the same directory does not take it too. The same format as `move`, such as `.inprogress`, a directory next to the file. `move`, `moveFailed` and `delete` then act on the file in its new place, so with `move` set to `.done` the file ends up in `.inprogress/.done`. When it is not set, a file is read where it is.
+        type: string
+        example: ".inprogress"
+      readLock:
+        title: Wait Until Written
+        description: How to make sure that another program has finished writing a file before it is read. `changed` reads a file once its size and modification time have not changed between two checks 5 seconds apart, or, with `readLockMinAge`, once the file is that old. A file still changing after 20 seconds is skipped until the next poll, and while a file is checked the other files wait. `changed` never reads an empty file. `rename` reads a file once it can be renamed. `none` reads the files as they are. When it is not set, `none`.
+        type: string
+        enum: ["none", "changed", "rename"]
+        example: changed
+      readLockMinAge:
+        title: Minimum File Age
+        description: 'Only used when `readLock` is `changed`: how old a file must be, in milliseconds, before it is read, counted from its modification time on the server. For example, 60000 leaves a file alone until it has not been changed for one minute. A file that is not old enough is skipped until the next poll, after 20 seconds of checks. The clocks of the server and of the integration must agree.'
+        type: integer
+        example: 60000
+      delay:
+        title: Poll Interval
+        description: How long to wait between two polls of the directory, in milliseconds. For example, 60000 polls once a minute. When it is not set, 500.
+        type: integer
+        example: 60000
+      maxMessagesPerPoll:
+        title: Max Files Per Poll
+        description: The largest number of files to read in one poll, such as 100. The other files are read at the next polls. The poll takes the first files the server lists, and `sortBy` sorts only these. When it is not set, or 0, all the files found are read.
+        type: integer
+        example: 100
+      sortBy:
+        title: Sort By
+        description: The order in which the files of a poll are read. `file:name` sorts them by name, `file:modified` by modification time and `file:length` by size. Put `reverse:` before it for the reverse order, such as `reverse:file:modified` for the newest first. Separate several sorts with `;`, such as `file:modified;file:name`. When it is not set, the files are read in the order the server lists them.
+        type: string
+        example: file:modified
+      streamDownload:
+        title: Stream Download
+        description: 'If true, each file is read from the server while it is handed on, instead of being downloaded into memory first, and the body is a stream. Use it for files too large for memory. It saves memory only when the integration does not keep the stream in memory either: set `camel.main.streamCachingSpoolEnabled=true`, which writes large bodies to a temporary file, or turn stream caching off. When it is not set, false.'
+        type: boolean
+      connectTimeout:
+        title: Connect Timeout
+        description: How long to wait for the connection to the SFTP server, in milliseconds. A connection that fails is tried 3 times before the poll is skipped. When it is not set, 10000.
+        type: integer
+        example: 10000
+      socketTimeout:
+        title: Socket Timeout
+        description: How long the connection may stay without an answer from the server, in milliseconds, before it is closed and the poll fails. It is not used when `serverAliveInterval` is set. When it is not set, 300000 (5 minutes).
+        type: integer
+        example: 60000
+      serverAliveInterval:
+        title: Server Alive Interval
+        description: How often to check, in milliseconds, that the server still answers while no data comes from it. When the server misses a check, the connection is closed and the poll fails, and a new connection is made at the next poll. Use it to notice a lost connection soon, for example behind a firewall that drops idle connections. When it is set, `socketTimeout` is not used. When it is not set, no checks are made.
+        type: integer
+        example: 30000
   dataTypes:
     out:
       headers:
@@ -186,29 +251,48 @@ spec:
         host: "{{connectionHost}}"
         port: "{{connectionPort}}"
         directoryName: "{{directoryName}}"
+        antInclude: "RAW({{?antInclude}})"
         autoCreate: "{{autoCreate}}"
         binary: "{{binary}}"
+        connectTimeout: "{{?connectTimeout}}"
+        delay: "{{?delay}}"
         delete: "{{delete}}"
+        exclude: "RAW({{?exclude}})"
         idempotent: "{{idempotent}}"
         idempotentRepository: "#bean:{{?idempotentRepository}}"
         ignoreFileNotFoundOrPermissionError: "{{ignoreFileNotFoundOrPermissionError}}"
+        include: "RAW({{?include}})"
         knownHostsUri: "RAW({{?knownHostsUri}})"
+        maxMessagesPerPoll: "{{?maxMessagesPerPoll}}"
         move: "{{?move}}"
         moveFailed: "{{?moveFailed}}"
         passiveMode: "{{passiveMode}}"
         password: "RAW({{?password}})"
+        preMove: "{{?preMove}}"
         privateKeyFile: "RAW({{?privateKeyFile}})"
         privateKeyPassphrase: "RAW({{?privateKeyPassphrase}})"
         privateKeyUri: "RAW({{?privateKeyUri}})"
+        readLock: "{{?readLock}}"
+        readLockMinAge: "{{?readLockMinAge}}"
         recursive: "{{recursive}}"
+        serverAliveInterval: "{{?serverAliveInterval}}"
+        sortBy: "RAW({{?sortBy}})"
+        soTimeout: "{{?socketTimeout}}"
+        streamDownload: "{{?streamDownload}}"
         strictHostKeyChecking: "{{?strictHostKeyChecking}}"
         useUserKnownHostsFile: "{{?useUserKnownHostsFile}}"
         username: "RAW({{?username}})"
       steps:
-        - setBody:
-            expression:
-              simple:
-                expression: "${body.getBody()}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${body} is 'org.apache.camel.component.file.GenericFile'"
+                steps:
+                  - setBody:
+                      expression:
+                        simple:
+                          expression: "${body.getBody()}"
         - setHeader:
             name: file
             expression:
