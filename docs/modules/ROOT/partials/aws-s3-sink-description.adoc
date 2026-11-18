@@ -26,3 +26,36 @@ In the header, you can optionally set the `file` / `ce-file` property to specify
 If you do not set the property in the header, the Kamelet uses a generated unique ID for the file name.
 
 When the `keyName` option is set, the `file` / `ce-file` header is not used, and every message is written to that key, replacing the previous file.
+
+=== Example with Encryption by a KMS Key and a Storage Class
+
+A bucket policy can require every file to be encrypted with a given key of AWS KMS (SSE-KMS); an upload without it is
+refused with `AccessDenied`. Set **useAwsKMS** and **awsKMSKeyId** to encrypt the files with that key, and
+**storageClass** to store them in another class than `STANDARD`:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:kafka-source"
+      parameters:
+        topic: "invoices"
+        bootstrapServers: "kafka.example.com:9092"
+        saslAuthType: "NONE"
+      steps:
+        - to:
+            uri: "kamelet:aws-s3-sink"
+            parameters:
+              bucketNameOrArn: "my-bucket"
+              region: "eu-west-1"
+              useDefaultCredentialsProvider: true
+              useAwsKMS: true
+              awsKMSKeyId: "arn:aws:kms:eu-west-1:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
+              storageClass: "STANDARD_IA"
+----
+
+The credentials need the permission to use the key (`kms:GenerateDataKey`), and whoever reads the files the permission
+to decrypt with it (`kms:Decrypt`). Without **awsKMSKeyId**, **useAwsKMS** has no effect. To ask for the encryption with keys that S3 manages
+(SSE-S3) instead, as some bucket policies require, set **useSSES3** to `true`. The storage class can be any class of
+S3, such as `STANDARD_IA`, `INTELLIGENT_TIERING` or `GLACIER_IR`; a file in `GLACIER` or `DEEP_ARCHIVE` must be restored
+before it can be read. A `CamelAwsS3StorageClass` header on the message takes precedence over **storageClass**.

@@ -2,10 +2,47 @@
 
 === Authentication methods
 
-Access Key/Secret Key is the basic method for authenticating to the AWS SQS Service.
+The Kamelet logs in with the same credentials to the SQS queue and, when `getObject` is true, to the bucket. It can use:
+
+- an access key and a secret key, in `accessKey` and `secretKey`;
+- temporary credentials, such as the ones AWS STS gives when you assume an IAM role, with `useSessionCredentials` set to `true` and `accessKey`, `secretKey` and `sessionToken`;
+- the credentials of the environment, with `useDefaultCredentialsProvider` set to `true`, and no keys;
+- a profile of the AWS credentials file (`~/.aws/credentials`), with `useProfileCredentialsProvider` set to `true` and the name of the profile in `profileCredentialsName`, and no keys.
+
+The order of evaluation for Default Credentials Provider is the following:
+
+ - Java system properties - `aws.accessKeyId` and `aws.secretKey`.
+ - Environment variables - `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+ - Web Identity Token from AWS STS, which is how an IAM role reaches a pod on Amazon EKS (IRSA).
+ - The shared credentials and config files.
+ - Container credentials - loaded when the environment variable `AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` (Amazon ECS) or `AWS_CONTAINER_CREDENTIALS_FULL_URI` (EKS Pod Identity) is set.
+ - Amazon EC2 Instance profile credentials.
+
+For more information, see the https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials.html[AWS credentials documentation]
+
+=== Example with the IAM Role of the Pod
+
+On Kubernetes, with an IAM role given to the pod through IRSA or EKS Pod Identity, no keys are needed:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:aws-s3-event-based-source"
+      parameters:
+        queueNameOrArn: "s3-events"
+        region: "eu-west-1"
+        useDefaultCredentialsProvider: true
+        getObject: true
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+The role needs the permission to receive and delete the messages of the queue and, with `getObject`, to read the files of the bucket.
 
 === Required Setup
 
 To use this Kamelet you'll need to set up Eventbridge on your bucket and subscribe Eventbridge bus to an SQS Queue.
-      
+
 For doing this you'll need to enable Eventbridge notification on your bucket and creating a rule on Eventbridge console related to all the events on S3 bucket and pointing to the SQS Queue specified as parameter in this Kamelet.
