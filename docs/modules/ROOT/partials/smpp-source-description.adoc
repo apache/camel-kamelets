@@ -6,7 +6,38 @@ The short message text is emitted as the message body. Details of the received P
 the `CamelSmpp*` headers the component sets, such as `CamelSmppMessageType`,
 `CamelSmppStatus` and `CamelSmppOptionalParameters`.
 
+=== Delivery Receipts
+
+The SMSC sends a delivery receipt for each SMS that `smpp-sink` sent with `registeredDelivery` `1`, its default, and
+for each failed SMS with `registeredDelivery` `2`. A receipt has `CamelSmppMessageType` `DeliveryReceipt`. Its
+`CamelSmppId` header is the ID that `smpp-sink` got for the SMS in its own `CamelSmppId` header, and `CamelSmppStatus`
+is the final state of the SMS, such as `DELIVRD` or `UNDELIV`.
+
 === Address Range
 
 `addressRange` is the consumer side option that tells the SMSC which messages to route to
 this ESME, as defined in section 5.2.7 of the SMPP 3.4 specification.
+
+=== Connection
+
+Every `enquireLinkTimer` milliseconds, one minute by default, the Kamelet checks that the connection is alive. A lower
+value finds a lost connection sooner, and the Kamelet then connects again.
+
+=== Example with Delivery Receipts
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:smpp-source"
+      parameters:
+        host: "smsc.example.com"
+        systemId: "myaccount"
+        password: "{{smpp.password}}"
+        enquireLinkTimer: 30000
+      steps:
+        - filter:
+            simple: "$\{header.CamelSmppMessageType} == 'DeliveryReceipt'"
+            steps:
+              - log: "SMS $\{header.CamelSmppId} ended as $\{header.CamelSmppStatus}"
+----

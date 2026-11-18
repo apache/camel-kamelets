@@ -35,11 +35,11 @@ spec:
 
       Use it to send alerts, one-time codes or notifications by SMS, through an SMS provider or operator that offers SMPP access. Use `smpp-source` to receive SMS replies and delivery receipts.
 
-      Input: the body is the text of the SMS. The phone number to send it to comes from the `CamelSmppDestAddr` header when it is set, and from `destAddr` otherwise. A text longer than one SMS (140 bytes) is split, cut or refused, as `splittingPolicy` says.
+      Input: the body is the text of the SMS. The phone number to send it to comes from the `CamelSmppDestAddr` header when it is set, and from `destAddr` otherwise. A text longer than one SMS (160 characters, or 70 with `alphabet` `8`) is split, cut or refused, as `splittingPolicy` says.
 
       Output: the message is unchanged, with the IDs that the SMSC gave the SMS in the `CamelSmppId` header (a List), and how many SMS were sent in `CamelSmppSentMessageCount`.
 
-      Good to know: the defaults of `sourceAddr` (1616) and `destAddr` (1717) are test numbers: set them, or set `CamelSmppDestAddr` on each message. It logs in to the SMSC when the integration starts, and the integration fails to start when the SMSC cannot be reached. It connects with no TLS unless `usingSSL` is true.
+      Good to know: the defaults of `sourceAddr` (1616) and `destAddr` (1717) are test numbers: set them, or set `CamelSmppDestAddr` on each message. It asks the SMSC for a delivery receipt of each SMS, which `smpp-source` receives: set `registeredDelivery` to `0` to not ask for them. The text is encoded with `encoding`, so characters it cannot hold, such as Cyrillic or emoji in ISO-8859-1, are sent as `?`: for text in any language, set `alphabet` and `dataCoding` to `8`. It logs in to the SMSC when the integration starts, and the integration fails to start when the SMSC cannot be reached. It connects with no TLS unless `usingSSL` is true.
     required:
     - host
     type: object
@@ -92,7 +92,7 @@ spec:
         default: "ISO-8859-1"
       splittingPolicy:
         title: "Splitting Policy"
-        description: "What to do with a text longer than one SMS (140 bytes): `ALLOW` splits it into several SMS, `TRUNCATE` cuts it at 140 bytes, and `REJECT` fails the message."
+        description: "What to do with a text longer than one SMS (160 characters, or 70 with `alphabet` `8`): `ALLOW` splits it into several SMS, `TRUNCATE` cuts it to fit in one SMS, and `REJECT` fails the message."
         type: string
         default: ALLOW
         enum: ["ALLOW", "TRUNCATE", "REJECT"]
@@ -101,6 +101,55 @@ spec:
         description: "Whether to secure the connection to the SMSC with TLS (the smpps protocol). The SMSC must support it, usually on another port."
         type: boolean
         default: false
+      registeredDelivery:
+        title: "Delivery Receipt"
+        description: "Which delivery receipts to ask the SMSC for: `1` for a receipt whether the SMS reached the phone or not, `2` only when it failed, and `0` for none. When it is not set, it is `1`. The SMSC sends the receipts to a receiver logged in to it, such as `smpp-source`: this Kamelet does not get them."
+        type: integer
+        enum: [0, 1, 2]
+        example: 0
+      sourceAddrTon:
+        title: "Sender Type Of Number"
+        description: "The type of number (TON) of `sourceAddr`: `0` unknown, `1` international, `2` national, `3` network specific, `4` subscriber number, `5` alphanumeric (a name instead of a number), `6` abbreviated. When it is not set, it is `0`. Use `5` to send from a name, such as `MyShop`, and `1`, with `1` in `sourceAddrNpi`, for a number with its country code."
+        type: integer
+        enum: [0, 1, 2, 3, 4, 5, 6]
+        example: 5
+      sourceAddrNpi:
+        title: "Sender Numbering Plan"
+        description: "The numbering plan indicator (NPI) of `sourceAddr`: `0` unknown, `1` ISDN (E.164, the plan of phone numbers), `3` data (X.121), `4` telex, `6` land mobile (E.212), `8` national, `9` private, `10` ERMES, `14` internet (IP), `18` WAP client ID. When it is not set, it is `0`."
+        type: integer
+        enum: [0, 1, 3, 4, 6, 8, 9, 10, 14, 18]
+        example: 1
+      destAddrTon:
+        title: "Recipient Type Of Number"
+        description: "The type of number (TON) of the recipient address, from `destAddr` or `CamelSmppDestAddr`: `0` unknown, `1` international, `2` national, `3` network specific, `4` subscriber number, `5` alphanumeric, `6` abbreviated. When it is not set, it is `0`. Use `1`, with `1` in `destAddrNpi`, for a phone number with its country code, such as `4598765432`."
+        type: integer
+        enum: [0, 1, 2, 3, 4, 5, 6]
+        example: 1
+      destAddrNpi:
+        title: "Recipient Numbering Plan"
+        description: "The numbering plan indicator (NPI) of the recipient address: `0` unknown, `1` ISDN (E.164, the plan of phone numbers), `3` data (X.121), `4` telex, `6` land mobile (E.212), `8` national, `9` private, `10` ERMES, `14` internet (IP), `18` WAP client ID. When it is not set, it is `0`."
+        type: integer
+        enum: [0, 1, 3, 4, 6, 8, 9, 10, 14, 18]
+        example: 1
+      dataCoding:
+        title: "Data Coding"
+        description: "The data coding the SMS is marked with, from 0 to 127, which tells the phone how to read its bytes, as in section 5.2.19 of the SMPP 3.4 specification: `0` the default alphabet of the SMSC, `3` Latin-1, `4` 8-bit binary, `8` UCS-2 (Unicode). When it is not set, it is `0`. It does not change how the text is encoded into bytes, which `alphabet` and `encoding` do: for text in any language, such as Cyrillic or emoji, set both `alphabet` and `dataCoding` to `8`."
+        type: integer
+        minimum: 0
+        maximum: 127
+        example: 8
+      alphabet:
+        title: "Alphabet"
+        description: "How to turn the body into the bytes of the SMS: `0` encodes the text with `encoding`, `4` sends a body of bytes as it is (8-bit binary data) and encodes text with `encoding`, and `8` encodes the text as UCS-2 (UTF-16), which can hold text in any language. When it is not set, it is `0`, and characters that `encoding` cannot hold, such as Cyrillic in ISO-8859-1, are sent as `?`. It does not change the data coding the SMS is marked with: set `dataCoding` to the same value."
+        type: integer
+        enum: [0, 4, 8]
+        example: 8
+      enquireLinkTimer:
+        title: "Enquire Link Interval"
+        description: "How often to check that the connection to the SMSC is alive with an enquire_link, in milliseconds. When it is not set, it is 60000, which is one minute. A lower value finds a lost connection sooner."
+        type: integer
+        minimum: 1
+        example: 30000
   dataTypes:
     in:
       headers:
@@ -128,3 +177,11 @@ spec:
               systemId: "RAW({{systemId}})"
               systemType: "{{?systemType}}"
               usingSSL: "{{usingSSL}}"
+              registeredDelivery: "{{?registeredDelivery}}"
+              sourceAddrTon: "{{?sourceAddrTon}}"
+              sourceAddrNpi: "{{?sourceAddrNpi}}"
+              destAddrTon: "{{?destAddrTon}}"
+              destAddrNpi: "{{?destAddrNpi}}"
+              dataCoding: "{{?dataCoding}}"
+              alphabet: "{{?alphabet}}"
+              enquireLinkTimer: "{{?enquireLinkTimer}}"
