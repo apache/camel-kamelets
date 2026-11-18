@@ -37,6 +37,27 @@ You could consume the stream content directly
             uri: "kamelet:log-sink"
 ----
 
+=== Where it starts reading
+
+By default (`iteratorType` is `TRIM_HORIZON`) the Kamelet reads the stream from its oldest record each time the integration starts, so the records are read again after a restart. To read only the records written after the integration started, set `iteratorType` to `LATEST`:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:aws-kinesis-source"
+      parameters:
+        useDefaultCredentialsProvider: true
+        region: "eu-west-1"
+        stream: "kamelets"
+        iteratorType: "LATEST"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+The records written while the integration was stopped are then not read. To start at a given record, set `iteratorType` to `AT_SEQUENCE_NUMBER` or `AFTER_SEQUENCE_NUMBER` and `sequenceNumber` to its sequence number; to start at a given time, set `iteratorType` to `AT_TIMESTAMP` and `messageTimestamp` to the time, such as `2026-11-17T08:00:00Z`. The Kamelet does not remember where it stopped: it starts at the same place on each start. The KCL consumer below does not use `iteratorType`.
+
 === Usage example with KCL Consumer
 
 You could consume the stream content with the KCL support
