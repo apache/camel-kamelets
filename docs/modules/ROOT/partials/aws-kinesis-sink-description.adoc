@@ -26,3 +26,22 @@ In the header, you can optionally set the `partition` / `ce-partition` property 
 If you do not set the property in the header, the Kamelet uses a generated unique ID for the partition key.
 
 You can also set the `sequence-number` / `ce-sequencenumber` property in the header to specify the Sequence number.
+
+=== Through an HTTP Proxy
+
+Where AWS can be reached only through an HTTP proxy, as in many company networks, set `proxyHost` and `proxyPort` to the proxy. `proxyProtocol` is how the Kamelet talks to the proxy itself, not to AWS: it is `HTTPS` when it is not set, so set it to `HTTP` for a proxy that takes plain HTTP, such as Squid. The calls to AWS stay encrypted, as the proxy only passes them on. The Kamelet has no option for a proxy user or password.
+
+The step that sends to the Kamelet, in a route:
+
+[source,yaml,subs='+attributes,macros']
+----
+- to:
+    uri: "kamelet:aws-kinesis-sink"
+    parameters:
+      stream: "clickstream"
+      region: "eu-west-1"
+      useDefaultCredentialsProvider: true
+      proxyHost: "proxy.example.com"
+      proxyPort: 3128
+      proxyProtocol: "HTTP"
+----

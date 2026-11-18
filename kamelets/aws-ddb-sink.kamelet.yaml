@@ -40,7 +40,7 @@ spec:
 
       Output: the body is unchanged. The `CamelAwsDdbAttributes` header holds the attributes of the item before the change (`PutItem`, `DeleteItem`) or after it (`UpdateItem`).
 
-      Good to know: `PutItem`, the default, replaces the whole item that has the same key, so the attributes missing from the body are lost; use `UpdateItem` to change some attributes only. A body without the key of the table fails. Do not choose the operation with an `operation` field in the body: depending on the Camel version it is ignored, and the item is then replaced as with `PutItem`, or the message fails.
+      Good to know: `PutItem`, the default, replaces the whole item that has the same key, so the attributes missing from the body are lost; use `UpdateItem` to change some attributes only. A body without the key of the table fails. Do not choose the operation with an `operation` field in the body: depending on the Camel version it is ignored, and the item is then replaced as with `PutItem`, or the message fails. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - table
       - region
@@ -114,6 +114,23 @@ spec:
         description: If true, the requests go to the address in `uriEndpointOverride` instead of AWS, for example to test against LocalStack.
         type: boolean
         default: false
+      proxyHost:
+        title: Proxy Host
+        description: The host name or IP address of an HTTP proxy to send the calls to AWS through, such as the proxy of a company network. Used only together with `proxyPort`. When it is not set, the calls go straight to AWS.
+        type: string
+        pattern: "^[A-Za-z0-9._-]+$"
+        example: proxy.example.com
+      proxyPort:
+        title: Proxy Port
+        description: The port of the proxy in `proxyHost`, such as `3128` for Squid. Used only together with `proxyHost`.
+        type: integer
+        example: 3128
+      proxyProtocol:
+        title: Proxy Protocol
+        description: "How to talk to the proxy itself: `HTTP` or `HTTPS`. It is not the protocol of the calls to AWS, which stay encrypted, as the proxy only passes them on. When it is not set, it is `HTTPS`, which needs a proxy that takes TLS connections. Most company proxies, such as Squid, take plain HTTP: set `HTTP` for them. With the wrong one, every call fails, for example with `Unsupported or unrecognized SSL message`."
+        type: string
+        enum: ["HTTP", "HTTPS"]
+        example: HTTP
   dataTypes:
     # No 'default:' here on purpose. Declaring a default input type makes Camel
     # apply the aws2-ddb:application-json transformation at the kamelet:source
@@ -195,3 +212,6 @@ spec:
               useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
               useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
               useSessionCredentials: "{{useSessionCredentials}}"
+              proxyHost: "{{?proxyHost}}"
+              proxyPort: "{{?proxyPort}}"
+              proxyProtocol: "{{?proxyProtocol}}"

@@ -48,3 +48,21 @@ The following output formats are supported:
 === SSML Support
 
 Set the `textType` parameter to `SSML` to use Speech Synthesis Markup Language for fine-grained control over pronunciation, volume, pitch, and speech rate.
+
+=== Through an HTTP Proxy
+
+Where AWS can be reached only through an HTTP proxy, as in many company networks, set `proxyHost` and `proxyPort` to the proxy. `proxyProtocol` is how the Kamelet talks to the proxy itself, not to AWS: it is `HTTPS` when it is not set, so set it to `HTTP` for a proxy that takes plain HTTP, such as Squid. The calls to AWS stay encrypted, as the proxy only passes them on. The Kamelet has no option for a proxy user or password.
+
+The step that sends to the Kamelet, in a route:
+
+[source,yaml,subs='+attributes,macros']
+----
+- to:
+    uri: "kamelet:aws-polly-sink"
+    parameters:
+      region: "eu-west-1"
+      useDefaultCredentialsProvider: true
+      proxyHost: "proxy.example.com"
+      proxyPort: 3128
+      proxyProtocol: "HTTP"
+----

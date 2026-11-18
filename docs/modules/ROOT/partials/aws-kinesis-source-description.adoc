@@ -84,4 +84,25 @@ With the `useKclConsumers` enabled, you won't have to deal with shard iteration 
 
 As a side note you need to remember that the KCL consumer will need access to DynamoDB and Cloudwatch services from AWS, so it will create clients to these services under the hood and it will use them.
 
+=== Through an HTTP Proxy
 
+Where AWS can be reached only through an HTTP proxy, as in many company networks, set `proxyHost` and `proxyPort` to the proxy. `proxyProtocol` is how the Kamelet talks to the proxy itself, not to AWS: it is `HTTPS` when it is not set, so set it to `HTTP` for a proxy that takes plain HTTP, such as Squid. The calls to AWS stay encrypted, as the proxy only passes them on. The Kamelet has no option for a proxy user or password.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:aws-kinesis-source"
+      parameters:
+        stream: "clickstream"
+        region: "eu-west-1"
+        useDefaultCredentialsProvider: true
+        proxyHost: "proxy.example.com"
+        proxyPort: 3128
+        proxyProtocol: "HTTP"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+With `useKclConsumers`, the calls of the KCL to DynamoDB and CloudWatch go straight to AWS, without the proxy: the network must let them through.

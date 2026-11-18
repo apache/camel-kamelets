@@ -39,7 +39,7 @@ spec:
 
       Output: the body is the content of the file, as bytes. The headers give the bucket name, the key (the path of the file in the bucket), the content type and the ETag of the file.
 
-      Good to know: files are deleted from the bucket after they are read, unless `deleteAfterRead` is set to false; then the same files are read again on every poll. `moveAfterRead` moves them to another bucket instead. It also works with S3-compatible storage, such as MinIO, through `overrideEndpoint` and `uriEndpointOverride`.
+      Good to know: files are deleted from the bucket after they are read, unless `deleteAfterRead` is set to false; then the same files are read again on every poll. `moveAfterRead` moves them to another bucket instead. It also works with S3-compatible storage, such as MinIO, through `overrideEndpoint` and `uriEndpointOverride`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - bucketNameOrArn
       - region
@@ -155,6 +155,23 @@ spec:
         description: The most files to read at each poll. Use 0 or a negative number for no limit.
         type: integer
         default: 10
+      proxyHost:
+        title: Proxy Host
+        description: The host name or IP address of an HTTP proxy to send the calls to AWS through, such as the proxy of a company network. Used only together with `proxyPort`. When it is not set, the calls go straight to AWS.
+        type: string
+        pattern: "^[A-Za-z0-9._-]+$"
+        example: proxy.example.com
+      proxyPort:
+        title: Proxy Port
+        description: The port of the proxy in `proxyHost`, such as `3128` for Squid. Used only together with `proxyHost`.
+        type: integer
+        example: 3128
+      proxyProtocol:
+        title: Proxy Protocol
+        description: "How to talk to the proxy itself: `HTTP` or `HTTPS`. It is not the protocol of the calls to AWS, which stay encrypted, as the proxy only passes them on. When it is not set, it is `HTTPS`, which needs a proxy that takes TLS connections. Most company proxies, such as Squid, take plain HTTP: set `HTTP` for them. With the wrong one, every call fails, for example with `Unsupported or unrecognized SSL message`."
+        type: string
+        enum: ["HTTP", "HTTPS"]
+        example: HTTP
   dataTypes:
     out:
       default: binary
@@ -211,7 +228,7 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "aws2-s3:{{bucketNameOrArn}}?accessKey=RAW({{?accessKey}})&autoCreateBucket={{autoCreateBucket}}&delay={{delay}}&deleteAfterRead={{deleteAfterRead}}&destinationBucket={{?destinationBucket}}&destinationBucketPrefix={{?destinationBucketPrefix}}&destinationBucketSuffix={{?destinationBucketSuffix}}&forcePathStyle={{forcePathStyle}}&ignoreBody={{ignoreBody}}&maxMessagesPerPoll={{maxMessagesPerPoll}}&moveAfterRead={{moveAfterRead}}&overrideEndpoint={{overrideEndpoint}}&prefix={{?prefix}}&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&uriEndpointOverride={{?uriEndpointOverride}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}"
+      uri: "aws2-s3:{{bucketNameOrArn}}?accessKey=RAW({{?accessKey}})&autoCreateBucket={{autoCreateBucket}}&delay={{delay}}&deleteAfterRead={{deleteAfterRead}}&destinationBucket={{?destinationBucket}}&destinationBucketPrefix={{?destinationBucketPrefix}}&destinationBucketSuffix={{?destinationBucketSuffix}}&forcePathStyle={{forcePathStyle}}&ignoreBody={{ignoreBody}}&maxMessagesPerPoll={{maxMessagesPerPoll}}&moveAfterRead={{moveAfterRead}}&overrideEndpoint={{overrideEndpoint}}&prefix={{?prefix}}&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&uriEndpointOverride={{?uriEndpointOverride}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}&proxyHost={{?proxyHost}}&proxyPort={{?proxyPort}}&proxyProtocol={{?proxyProtocol}}"
       steps:
         - to:
             uri: kamelet:sink

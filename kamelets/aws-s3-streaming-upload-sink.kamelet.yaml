@@ -40,7 +40,7 @@ spec:
 
       Output: the message is unchanged. The message that completes a file gets the `CamelAwsS3ETag` header of that file.
 
-      Good to know: a file is uploaded when it has `batchMessageNumber` messages or `batchSize` bytes, or when `streamingUploadTimeout` has passed; until then it is not in the bucket. With the default `namingStrategy` of `progressive`, the first file is named `keyName`, such as `logs/app.log`, and the next ones `logs/app-1.log`, `logs/app-2.log` and so on. With `restartingPolicy` set to `override`, a new run starts again from `keyName` and replaces the files of the earlier run. To encrypt the files with a key of AWS KMS, as a bucket policy may require, set `useAwsKMS` and `awsKMSKeyId`; `storageClass` sets their storage class.
+      Good to know: a file is uploaded when it has `batchMessageNumber` messages or `batchSize` bytes, or when `streamingUploadTimeout` has passed; until then it is not in the bucket. With the default `namingStrategy` of `progressive`, the first file is named `keyName`, such as `logs/app.log`, and the next ones `logs/app-1.log`, `logs/app-2.log` and so on. With `restartingPolicy` set to `override`, a new run starts again from `keyName` and replaces the files of the earlier run. To encrypt the files with a key of AWS KMS, as a bucket policy may require, set `useAwsKMS` and `awsKMSKeyId`; `storageClass` sets their storage class. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - bucketNameOrArn
       - region
@@ -169,6 +169,23 @@ spec:
         example: STANDARD_IA
         type: string
         pattern: "^[A-Z_]+$"
+      proxyHost:
+        title: Proxy Host
+        description: The host name or IP address of an HTTP proxy to send the calls to AWS through, such as the proxy of a company network. Used only together with `proxyPort`. When it is not set, the calls go straight to AWS.
+        type: string
+        pattern: "^[A-Za-z0-9._-]+$"
+        example: proxy.example.com
+      proxyPort:
+        title: Proxy Port
+        description: The port of the proxy in `proxyHost`, such as `3128` for Squid. Used only together with `proxyHost`.
+        type: integer
+        example: 3128
+      proxyProtocol:
+        title: Proxy Protocol
+        description: "How to talk to the proxy itself: `HTTP` or `HTTPS`. It is not the protocol of the calls to AWS, which stay encrypted, as the proxy only passes them on. When it is not set, it is `HTTPS`, which needs a proxy that takes TLS connections. Most company proxies, such as Squid, take plain HTTP: set `HTTP` for them. With the wrong one, every call fails, for example with `Unsupported or unrecognized SSL message`."
+        type: string
+        enum: ["HTTP", "HTTPS"]
+        example: HTTP
   dependencies:
     - "camel:aws2-s3"
     - "camel:kamelet"
@@ -177,4 +194,4 @@ spec:
       uri: kamelet:source
       steps:
         - to:
-            uri: "aws2-s3:{{bucketNameOrArn}}?accessKey=RAW({{?accessKey}})&autoCreateBucket={{autoCreateBucket}}&batchMessageNumber={{batchMessageNumber}}&batchSize={{batchSize}}&forcePathStyle={{forcePathStyle}}&keyName={{keyName}}&namingStrategy={{namingStrategy}}&overrideEndpoint={{overrideEndpoint}}&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&restartingPolicy={{restartingPolicy}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&streamingUploadMode=true&streamingUploadTimeout={{?streamingUploadTimeout}}&uriEndpointOverride={{?uriEndpointOverride}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}&useAwsKMS={{?useAwsKMS}}&awsKMSKeyId={{?awsKMSKeyId}}&useSSES3={{?useSSES3}}&storageClass={{?storageClass}}"
+            uri: "aws2-s3:{{bucketNameOrArn}}?accessKey=RAW({{?accessKey}})&autoCreateBucket={{autoCreateBucket}}&batchMessageNumber={{batchMessageNumber}}&batchSize={{batchSize}}&forcePathStyle={{forcePathStyle}}&keyName={{keyName}}&namingStrategy={{namingStrategy}}&overrideEndpoint={{overrideEndpoint}}&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&restartingPolicy={{restartingPolicy}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&streamingUploadMode=true&streamingUploadTimeout={{?streamingUploadTimeout}}&uriEndpointOverride={{?uriEndpointOverride}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}&useAwsKMS={{?useAwsKMS}}&awsKMSKeyId={{?awsKMSKeyId}}&useSSES3={{?useSSES3}}&storageClass={{?storageClass}}&proxyHost={{?proxyHost}}&proxyPort={{?proxyPort}}&proxyProtocol={{?proxyProtocol}}"

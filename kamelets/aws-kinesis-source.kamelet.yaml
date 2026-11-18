@@ -39,7 +39,7 @@ spec:
 
       Output: the body is the data of the record, as bytes. The headers give the partition key, the sequence number, the shard ID and the arrival time of the record.
 
-      Good to know: by default it reads the stream from its oldest record, and again from the oldest record each time the integration starts: it does not remember where it stopped, so records are read again after a restart. Set `iteratorType` to `LATEST` to read only the records written after it started; the records written while it was stopped are then not read. `iteratorType` can also start at a sequence number or at a time, again on each start. Records are not removed: Kinesis keeps them for the retention period of the stream. With `useKclConsumers` it reads through the Kinesis Client Library instead, which keeps where it stopped in a DynamoDB table and does not use `iteratorType`, and the body is a `ByteBuffer` rather than bytes.
+      Good to know: by default it reads the stream from its oldest record, and again from the oldest record each time the integration starts: it does not remember where it stopped, so records are read again after a restart. Set `iteratorType` to `LATEST` to read only the records written after it started; the records written while it was stopped are then not read. `iteratorType` can also start at a sequence number or at a time, again on each start. Records are not removed: Kinesis keeps them for the retention period of the stream. With `useKclConsumers` it reads through the Kinesis Client Library instead, which keeps where it stopped in a DynamoDB table and does not use `iteratorType`, and the body is a `ByteBuffer` rather than bytes. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. With `useKclConsumers`, the calls of the KCL to DynamoDB and CloudWatch go straight to AWS, without the proxy and without `uriEndpointOverride`.
     required:
       - stream
       - region
@@ -135,7 +135,7 @@ spec:
         default: false
       useKclConsumers:
         title: KCL Consumer
-        description: If true, it reads the stream with the Kinesis Client Library (KCL), which shares the shards between the running copies of the integration. The KCL also uses DynamoDB and CloudWatch in the same account, so the credentials need access to them. Set `asyncClient` to true too.
+        description: If true, it reads the stream with the Kinesis Client Library (KCL), which shares the shards between the running copies of the integration. The KCL also uses DynamoDB and CloudWatch in the same account, so the credentials need access to them. Set `asyncClient` to true too. The calls of the KCL to DynamoDB and CloudWatch always go straight to AWS, without the proxy and without `uriEndpointOverride`.
         type: boolean
         default: false
       kclDisableCloudwatchMetricsExport:
@@ -143,6 +143,23 @@ spec:
         description: If true, the Kinesis Client Library does not send its metrics to CloudWatch. Only used when `useKclConsumers` is true.
         type: boolean
         default: false
+      proxyHost:
+        title: Proxy Host
+        description: The host name or IP address of an HTTP proxy to send the calls to AWS through, such as the proxy of a company network. Used only together with `proxyPort`. When it is not set, the calls go straight to AWS.
+        type: string
+        pattern: "^[A-Za-z0-9._-]+$"
+        example: proxy.example.com
+      proxyPort:
+        title: Proxy Port
+        description: The port of the proxy in `proxyHost`, such as `3128` for Squid. Used only together with `proxyHost`.
+        type: integer
+        example: 3128
+      proxyProtocol:
+        title: Proxy Protocol
+        description: "How to talk to the proxy itself: `HTTP` or `HTTPS`. It is not the protocol of the calls to AWS, which stay encrypted, as the proxy only passes them on. When it is not set, it is `HTTPS`, which needs a proxy that takes TLS connections. Most company proxies, such as Squid, take plain HTTP: set `HTTP` for them. With the wrong one, every call fails, for example with `Unsupported or unrecognized SSL message`."
+        type: string
+        enum: ["HTTP", "HTTPS"]
+        example: HTTP
   types:
     out:
       mediaType: application/octet-stream
@@ -190,6 +207,9 @@ spec:
         useKclConsumers: "{{useKclConsumers}}"
         useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
         useSessionCredentials: "{{useSessionCredentials}}"
+        proxyHost: "{{?proxyHost}}"
+        proxyPort: "{{?proxyPort}}"
+        proxyProtocol: "{{?proxyProtocol}}"
       steps:
         - to:
             uri: kamelet:sink

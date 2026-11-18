@@ -28,3 +28,22 @@ Each event needs a resource ARN, a detail type and a source. Each comes from a h
 - the `detail-type` / `ce-detail-type` header, or the `detailType` option, to specify the detail type related to the event.
 
 - the `event-source` / `ce-event-source` / `ce-source` header, or the `eventSource` option, to specify the event source related to the event. The `eventSourcePrefix` option is put before it.
+
+=== Through an HTTP Proxy
+
+Where AWS can be reached only through an HTTP proxy, as in many company networks, set `proxyHost` and `proxyPort` to the proxy. `proxyProtocol` is how the Kamelet talks to the proxy itself, not to AWS: it is `HTTPS` when it is not set, so set it to `HTTP` for a proxy that takes plain HTTP, such as Squid. The calls to AWS stay encrypted, as the proxy only passes them on. The Kamelet has no option for a proxy user or password.
+
+The step that sends to the Kamelet, in a route:
+
+[source,yaml,subs='+attributes,macros']
+----
+- to:
+    uri: "kamelet:aws-eventbridge-sink"
+    parameters:
+      eventbusNameOrArn: "orders"
+      region: "eu-west-1"
+      useDefaultCredentialsProvider: true
+      proxyHost: "proxy.example.com"
+      proxyPort: 3128
+      proxyProtocol: "HTTP"
+----

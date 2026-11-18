@@ -39,6 +39,8 @@ spec:
       Input: the body is the question, as text. The optional `CamelAwsBedrockAgentRuntimeSessionId` header continues an earlier conversation: set it to the session ID of an earlier answer.
 
       Output: when it is used inside a route, the body afterwards is the answer, as text. The `CamelAwsBedrockAgentRuntimeSessionId` header holds the ID of the session, and the `CamelAwsBedrockAgentRuntimeCitations` header the passages of the documents the answer is based on, as objects of the AWS SDK for Java.
+
+      Good to know: to reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - modelId
       - knowledgeBaseId
@@ -111,6 +113,23 @@ spec:
         description: If true, the requests go to the address in `uriEndpointOverride` instead of AWS, for example to test against LocalStack.
         type: boolean
         default: false
+      proxyHost:
+        title: Proxy Host
+        description: The host name or IP address of an HTTP proxy to send the calls to AWS through, such as the proxy of a company network. Used only together with `proxyPort`. When it is not set, the calls go straight to AWS.
+        type: string
+        pattern: "^[A-Za-z0-9._-]+$"
+        example: proxy.example.com
+      proxyPort:
+        title: Proxy Port
+        description: The port of the proxy in `proxyHost`, such as `3128` for Squid. Used only together with `proxyHost`.
+        type: integer
+        example: 3128
+      proxyProtocol:
+        title: Proxy Protocol
+        description: "How to talk to the proxy itself: `HTTP` or `HTTPS`. It is not the protocol of the calls to AWS, which stay encrypted, as the proxy only passes them on. When it is not set, it is `HTTPS`, which needs a proxy that takes TLS connections. Most company proxies, such as Squid, take plain HTTP: set `HTTP` for them. With the wrong one, every call fails, for example with `Unsupported or unrecognized SSL message`."
+        type: string
+        enum: ["HTTP", "HTTPS"]
+        example: HTTP
   dataTypes:
     in:
       headers:
@@ -152,3 +171,6 @@ spec:
               useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
               useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
               useSessionCredentials: "{{useSessionCredentials}}"
+              proxyHost: "{{?proxyHost}}"
+              proxyPort: "{{?proxyPort}}"
+              proxyProtocol: "{{?proxyProtocol}}"

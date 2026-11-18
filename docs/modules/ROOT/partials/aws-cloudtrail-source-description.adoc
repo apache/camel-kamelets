@@ -18,3 +18,23 @@ You can also use the Profile Credentials Provider, by setting the `useProfileCre
 Only one of access key/secret key or default credentials provider could be used
 
 For more information, see the https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials.html[AWS credentials documentation]
+
+=== Through an HTTP Proxy
+
+Where AWS can be reached only through an HTTP proxy, as in many company networks, set `proxyHost` and `proxyPort` to the proxy. `proxyProtocol` is how the Kamelet talks to the proxy itself, not to AWS: it is `HTTPS` when it is not set, so set it to `HTTP` for a proxy that takes plain HTTP, such as Squid. The calls to AWS stay encrypted, as the proxy only passes them on. The Kamelet has no option for a proxy user or password.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:aws-cloudtrail-source"
+      parameters:
+        region: "eu-west-1"
+        useDefaultCredentialsProvider: true
+        proxyHost: "proxy.example.com"
+        proxyPort: 3128
+        proxyProtocol: "HTTP"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
