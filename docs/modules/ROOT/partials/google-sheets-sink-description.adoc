@@ -2,10 +2,11 @@
 
 === Authentication
 
-This Kamelet uses OAuth 2.0 authentication with Google Sheets API. You need to provide:
-- Client ID and Client Secret from your Google Cloud Console application
-- Access Token (typically expires after an hour)
-- Refresh Token for long-term usage (recommended)
+The Kamelet logs in to Google in one of three ways:
+
+- With OAuth 2.0: `clientId` and `clientSecret` of an OAuth client from your Google Cloud Console application, an `accessToken` (it expires after about an hour) and a `refreshToken` to get new ones. Do not set `scopes` with OAuth.
+- With a service account: its JSON key in `serviceAccountKey`, as `file:<path>`, `classpath:<resource>` or `base64:<Base64 of the key file>`, and `scopes`, such as `https://www.googleapis.com/auth/spreadsheets`. Share the spreadsheet with the email address of the service account as an editor, or set `delegate` to the email address of a user of your Google Workspace; a Workspace administrator must first allow the client ID of the service account, with these scopes, under Security > Access and data control > API controls > Domain-wide delegation.
+- With none of them set, the Application Default Credentials and `scopes`: the key file named in the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, or the service account of the Google Cloud machine it runs on.
 
 === Input Format
 
@@ -33,3 +34,25 @@ The Kamelet sets these headers from its options before it writes, so headers tha
 - `CamelGoogleSheets.majorDimension`: the `majorDimension` option
 - `CamelGoogleSheets.columnNames`: the `columnNames` option
 - `CamelGoogleSheets.valueInputOption`: the `valueInputOption` option
+
+=== Example with a Service Account
+
+Appends each message as a row to columns A and B of the spreadsheet, with the key of a service account the spreadsheet is shared with as an editor.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: '{"A": "Alice", "B": 3}'
+        contentType: "application/json"
+      steps:
+        - to:
+            uri: "kamelet:google-sheets-sink"
+            parameters:
+              spreadsheetId: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+              serviceAccountKey: "file:/etc/google/service-account.json"
+              scopes: "https://www.googleapis.com/auth/spreadsheets"
+              range: "A:B"
+----

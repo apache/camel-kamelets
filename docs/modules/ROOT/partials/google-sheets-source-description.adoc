@@ -2,12 +2,11 @@
 
 === Authentication methods
 
-This Kamelet uses OAuth 2.0 authentication to connect to Google Sheets. You need to provide:
+The Kamelet logs in to Google in one of three ways:
 
-- Client ID and Client Secret from your Google Cloud Console application
-- Access Token for immediate access (typically expires after an hour)
-- Refresh Token for long-term usage (allows automatic token renewal)
-- The Spreadsheet ID from which to read data
+- With OAuth 2.0: `clientId` and `clientSecret` of an OAuth client from your Google Cloud Console application, an `accessToken` (it expires after about an hour) and a `refreshToken` to get new ones. Do not set `scopes` with OAuth.
+- With a service account: its JSON key in `serviceAccountKey`, as `file:<path>`, `classpath:<resource>` or `base64:<Base64 of the key file>`, and `scopes`, such as `https://www.googleapis.com/auth/spreadsheets.readonly`. Share the spreadsheet with the email address of the service account, or set `delegate` to the email address of a user of your Google Workspace; a Workspace administrator must first allow the client ID of the service account, with these scopes, under Security > Access and data control > API controls > Domain-wide delegation.
+- With none of them set, the Application Default Credentials and `scopes`: the key file named in the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, or the service account of the Google Cloud machine it runs on.
 
 === Output format
 
@@ -15,13 +14,17 @@ The Kamelet produces spreadsheet data in JSON format from the specified Google S
 
 === Configuration
 
-The Kamelet requires the following parameters:
+The Kamelet requires the following parameter:
 
 - `spreadsheetId`: The Spreadsheet ID to be used as events source
-- `clientId`: Client ID of the sheets application
-- `clientSecret`: Client Secret of the sheets application
-- `accessToken`: OAuth 2 access token
-- `refreshToken`: OAuth 2 refresh token for long term usage
+
+To log in with OAuth: `clientId`, `clientSecret`, `accessToken` and `refreshToken`. To log in with a service account: `serviceAccountKey`, `scopes` and optionally `delegate`.
+
+Optional parameters about the cells:
+
+- `range`: The cells to read, such as `Sheet1!A2:C100`
+- `valueRenderOption`: `FORMATTED_VALUE` (as shown, such as `$1.50`, the default), `UNFORMATTED_VALUE` (numbers as numbers, such as `1.5`) or `FORMULA` (the formula, such as `=B2*2`)
+- `maxResults`: The most rows of each range to send, counted from the first; Google still returns the whole range
 
 === Usage example
 
@@ -48,3 +51,25 @@ spec:
       apiVersion: v1
       name: my-service
 ```
+
+=== Example with a Service Account
+
+Reads the first 100 rows of `Prices!A2:C` once, with numbers as numbers, with the key of a service account the spreadsheet is shared with.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:google-sheets-source"
+      parameters:
+        spreadsheetId: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+        serviceAccountKey: "file:/etc/google/service-account.json"
+        scopes: "https://www.googleapis.com/auth/spreadsheets.readonly"
+        range: "Prices!A2:C"
+        valueRenderOption: "UNFORMATTED_VALUE"
+        maxResults: 100
+        repeatCount: 1
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
