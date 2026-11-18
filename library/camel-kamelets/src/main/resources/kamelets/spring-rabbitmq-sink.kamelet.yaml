@@ -39,7 +39,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: it does not create the exchange, unless `autoDeclareProducer` is true. A message sent to an exchange that does not exist is lost without an error, unless publisher confirms are on (`publisherConfirmType` and `confirm`), and RabbitMQ drops a message that no queue is bound to take. It connects with no TLS unless `protocol` is `amqps`. It does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does.
+      Good to know: it does not create the exchange, unless `autoDeclareProducer` is true. A message sent to an exchange that does not exist is lost without an error, unless publisher confirms are on (`publisherConfirmType` and `confirm`), and RabbitMQ drops a message that no queue is bound to take. It connects with no TLS unless `protocol` is `amqps`. With `amqps`, the certificate of the broker must be trusted by Java, or by the trust store in `sslTruststoreLocation`, and must name the host in `host`; otherwise it cannot connect. It does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does.
     required:
       - host
       - port
@@ -113,22 +113,44 @@ spec:
         default: "/"
       protocol:
         title: "Protocol"
-        description: "`amqp` for a plain connection, or `amqps` for a connection encrypted with TLS."
+        description: "`amqp` for a plain connection, or `amqps` for a connection encrypted with TLS, which checks the certificate of the broker and its host name."
         type: string
         enum: ["amqp", "amqps"]
         default: "amqp"
+      sslTruststoreLocation:
+        title: "SSL Truststore Location"
+        description: "The location of a trust store, in JKS or PKCS12 format, with the certificate of the authority that signed the certificate of the broker, such as `file:/etc/rabbitmq/truststore.p12`, or `classpath:truststore.p12` for one on the classpath. A path without `file:` is looked up on the classpath. Needed only with `amqps` when the broker uses a certificate that Java does not trust by default, such as one from a private or self-signed authority. Not used with `amqp`."
+        type: string
+        example: "file:/etc/rabbitmq/truststore.p12"
+      sslTruststorePassword:
+        title: "SSL Truststore Password"
+        description: "The password of the trust store in `sslTruststoreLocation`."
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
   dependencies:
     - "camel:spring-rabbitmq"
     - "camel:kamelet"
   template:
     beans:
-      - name: connectionFactory
-        type: "#class:org.springframework.amqp.rabbit.connection.CachingConnectionFactory"
+      - name: rabbitConnectionFactory
+        type: "#class:com.rabbitmq.client.ConnectionFactory"
+        builderClass: org.springframework.amqp.rabbit.connection.RabbitConnectionFactoryBean
+        builderMethod: getObject
         properties:
-          username: "{{?username}}"
-          password: "{{?password}}"
+          singleton: false
           uri: "{{protocol}}://{{host}}:{{port}}"
           virtualHost: "{{vhost}}"
+          username: "{{?username}}"
+          password: "{{?password}}"
+          trustStore: "{{?sslTruststoreLocation}}"
+          trustStorePassphrase: "{{?sslTruststorePassword}}"
+      - name: connectionFactory
+        type: "#class:org.springframework.amqp.rabbit.connection.CachingConnectionFactory"
+        constructors:
+          0: "#bean:{{rabbitConnectionFactory}}"
+        properties:
           publisherConfirmType: "{{publisherConfirmType}}"
     from:
       uri: kamelet:source
