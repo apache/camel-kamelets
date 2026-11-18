@@ -39,7 +39,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: a plain NATS subject stores nothing: only the receivers subscribed at that moment get the message. With `jetstreamEnabled`, the message is stored in the stream `jetstreamName`, which must exist already, for example created by `nats-source`; otherwise sending fails. It connects with no TLS, and the integration fails to start when no server can be reached. It publishes the message and does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does.
+      Good to know: a plain NATS subject stores nothing: only the receivers subscribed at that moment get the message. With `jetstreamEnabled`, the message is stored in the stream `jetstreamName`, which must exist already, for example created by `nats-source`; otherwise sending fails. It connects with TLS when `secure` is true. The certificate of the server is checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.nats.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every NATS connection of the application that has `secure` set. The integration fails to start when no server can be reached, or when the server refuses the login. It publishes the message and does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does.
     required:
       - topic
       - servers
@@ -52,12 +52,22 @@ spec:
         type: string
       servers:
         title: "Servers"
-        description: "The addresses of one or more NATS servers, as `host:port` or `nats://host:port`, separated by commas. The usual NATS port is 4222. For a server that needs a login, put the user and password in the address, as `nats://user:password@host:4222`."
+        description: "The addresses of one or more NATS servers, as `host:port` or `nats://host:port`, separated by commas. The usual NATS port is 4222. For a server that needs a login, put the user and password in the address, as `nats://user:password@host:4222`, or a token, as `nats://token@host:4222`. To log in with a NATS credentials file instead, use `credentialsFilePath`."
         example: "nats://localhost:4222"
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      secure:
+        title: "Secure (TLS)"
+        description: "If true, it connects with TLS, which a server with TLS in its configuration requires; without it, such a server refuses the connection with `SSL required by server`. The certificate of the server is checked against the certificate authorities that Java trusts, or against the trust store set in the `camel.ssl` application properties when `camel.component.nats.useGlobalSslContextParameters` is true. An address that starts with `tls://` also connects with TLS, but uses that trust store only when `secure` is true. When not set, it connects with TLS only to a `tls://` address."
+        type: boolean
+      credentialsFilePath:
+        title: "Credentials File"
+        description: "A NATS credentials file (`.creds`) to log in with, which holds a user JWT and the NKey seed of the user. Servers with decentralized authentication, such as Synadia Cloud, use it. Start it with `file:` followed by the path of the file, or with `classpath:`, `http:` or `https:`. The `nsc generate creds` command makes one. A file that does not exist makes the integration fail to start, and a user that the server does not know is refused with `Authorization Violation`."
+        example: "file:/etc/nats/user.creds"
+        type: string
+        pattern: "^(file|classpath|http|https):.+"
       jetstreamEnabled:
         title: "JetStream Enabled"
         description: "If true, each message is published to the JetStream stream `jetstreamName`, which stores it, instead of to plain NATS. The stream must exist and take in the subject in `topic`."
@@ -89,3 +99,5 @@ spec:
               jetstreamEnabled: "{{?jetstreamEnabled}}"
               jetstreamName: "{{?jetstreamName}}"
               servers: "{{servers}}"
+              secure: "{{?secure}}"
+              credentialsFilePath: "{{?credentialsFilePath}}"
