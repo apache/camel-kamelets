@@ -39,10 +39,11 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: with the default `saslAuthType` of `NONE`, it connects with no login and no TLS, as a local Kafka expects. A managed Kafka service needs one of the other types.
+      Good to know: `saslAuthType` has no default and must be set; `NONE` connects with no login and no TLS, as a local Kafka expects. A managed Kafka service needs one of the other types.
     required:
       - topic
       - bootstrapServers
+      - saslAuthType
     type: object
     properties:
       topic:
@@ -57,9 +58,8 @@ spec:
         example: "broker1:9092,broker2:9092"
       saslAuthType:
         title: Authentication Type
-        description: Authentication type to use. Use NONE for no authentication, PLAIN or SCRAM_SHA_256/SCRAM_SHA_512 for username/password, SSL for certificate-based, OAUTH for OAuth 2.0, AWS_MSK_IAM for MSK, or KERBEROS for Kerberos.
+        description: "How to log in to Kafka. It has no default and must be set. `NONE` connects with no login and no TLS, as a local Kafka expects; `PLAIN`, `SCRAM_SHA_256` and `SCRAM_SHA_512` log in with `saslUsername` and `saslPassword`; `SSL` connects over TLS and logs in with the client certificate in `sslKeystoreLocation`, when set; `OAUTH` logs in with the `oauth` options; `AWS_MSK_IAM` (Amazon MSK) and `KERBEROS` take their credentials from the environment the integration runs in. All types except `NONE` connect over TLS."
         type: string
-        default: NONE
         enum: ["NONE", "PLAIN", "SCRAM_SHA_256", "SCRAM_SHA_512", "SSL", "OAUTH", "AWS_MSK_IAM", "KERBEROS"]
       saslUsername:
         title: Username
