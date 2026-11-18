@@ -39,7 +39,7 @@ spec:
 
       Output: the body is the EventBridge event, as JSON text: `detail-type` says what happened (such as `Object Created` or `Object Deleted`), `detail.bucket.name` is the bucket and `detail.object.key` the key of the file. With `getObject` set to true, the event of a file uploaded with a simple upload (PutObject) carries the content of the file instead, as a stream, with the `CamelAwsS3ProducedBucketName` and `CamelAwsS3ProducedKey` headers; the other events then come as parsed JSON (a Jackson `JsonNode`).
 
-      Good to know: it needs a setup in AWS. In the properties of the bucket, turn on sending events to Amazon EventBridge; then create an EventBridge rule for the events of source `aws.s3` and that bucket, with the queue as its target. Each event is deleted from the queue once it has been processed, unless `deleteAfterRead` is false. The files stay in the bucket. `getObject` skips files created by a multipart upload or a copy, and never connects through `uriEndpointOverride`. It logs in to the queue and, with `getObject`, to the bucket with `accessKey` and `secretKey`, or without keys, through the IAM role or the AWS profile of the environment, with `useDefaultCredentialsProvider` or `useProfileCredentialsProvider`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: it needs a setup in AWS. In the properties of the bucket, turn on sending events to Amazon EventBridge; then create an EventBridge rule for the events of source `aws.s3` and that bucket, with the queue as its target. Each event is deleted from the queue once it has been processed, unless `deleteAfterRead` is false; an event that fails stays in the queue and is received again when its visibility timeout (`visibilityTimeout`) ends. The files stay in the bucket. `getObject` skips files created by a multipart upload or a copy, and never connects through `uriEndpointOverride`. It logs in to the queue and, with `getObject`, to the bucket with `accessKey` and `secretKey`, or without keys, through the IAM role or the AWS profile of the environment, with `useDefaultCredentialsProvider` or `useProfileCredentialsProvider`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - queueNameOrArn
       - region
@@ -176,6 +176,26 @@ spec:
         description: If true, it polls again right away when the last poll received messages, instead of waiting for `delay`.
         type: boolean
         default: false
+      maxMessagesPerPoll:
+        title: Max Messages Per Poll
+        description: The most events to receive in one request to SQS, from 1 to 10. SQS may return fewer. When it is not set, it is 10.
+        type: integer
+        minimum: "1"
+        maximum: "10"
+        example: 5
+      waitTimeSeconds:
+        title: Wait Time
+        description: How long one request waits for an event to arrive when the queue is empty, in seconds, from 0 to 20 (long polling). It saves requests, and so cost, on a queue that is often empty. When it is not set, the wait time of the queue is used.
+        example: 20
+        type: integer
+        minimum: "0"
+        maximum: "20"
+      visibilityTimeout:
+        title: Visibility Timeout
+        description: How long a received event stays hidden from other readers, in seconds. If it is not deleted by then, it is received again. Set it longer than processing one event takes, such as fetching a large file with `getObject`. When it is not set, the visibility timeout of the queue is used (30 seconds for a new queue).
+        example: 120
+        type: integer
+        minimum: "0"
       getObject:
         title: Get Object
         description: If true, for an event of a file uploaded with a simple upload (PutObject), it fetches the file and sends its content instead of the event. It connects to S3 with the same credentials as the queue and with `region`, not with `uriEndpointOverride`.
@@ -244,6 +264,9 @@ spec:
         proxyHost: "{{?proxyHost}}"
         proxyPort: "{{?proxyPort}}"
         proxyProtocol: "{{?proxyProtocol}}"
+        maxMessagesPerPoll: "{{?maxMessagesPerPoll}}"
+        waitTimeSeconds: "{{?waitTimeSeconds}}"
+        visibilityTimeout: "{{?visibilityTimeout}}"
       steps:
         - choice:
             precondition: true

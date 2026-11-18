@@ -41,7 +41,7 @@ spec:
 
       Output: the message is unchanged. The `CamelAwsS3Key` and `CamelAwsS3ETag` headers give the key and the ETag of the uploaded file.
 
-      Good to know: a file with the same key is replaced without warning. When `keyName` is set, the `file` header is ignored and every message replaces the same file. To copy files from `aws-s3-source` under their own names, set the `file` header from its `CamelAwsS3Key` header first. It also works with S3-compatible storage, such as MinIO, through `overrideEndpoint`, `uriEndpointOverride` and `forcePathStyle`. To encrypt the files with a key of AWS KMS, as a bucket policy may require, set `useAwsKMS` and `awsKMSKeyId`; `storageClass` sets their storage class. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: a file with the same key is replaced without warning, unless `conditionalWritesEnabled` is true: then the upload of a key that exists already fails. When `keyName` is set, the `file` header is ignored and every message replaces the same file. To copy files from `aws-s3-source` under their own names, set the `file` header from its `CamelAwsS3Key` header first. It also works with S3-compatible storage, such as MinIO, through `overrideEndpoint`, `uriEndpointOverride` and `forcePathStyle`. To encrypt the files with a key of AWS KMS, as a bucket policy may require, set `useAwsKMS` and `awsKMSKeyId`; `storageClass` sets their storage class. One upload takes at most 5 GB; for larger files, set `multiPartUpload` to true, and each file of `partSize` or more is uploaded in parts. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - bucketNameOrArn
       - region
@@ -161,6 +161,19 @@ spec:
         type: string
         enum: ["HTTP", "HTTPS"]
         example: HTTP
+      multiPartUpload:
+        title: Multipart Upload
+        description: If true, a file of `partSize` bytes or more is uploaded in parts (an S3 multipart upload), one request per part, and S3 joins the parts into one file. Smaller files are uploaded in one request, as without it. Use it for files over 5 GB, which S3 does not take in one request. If the upload fails, it is aborted, so that S3 discards the parts sent so far, and the message fails. When it is not set, every file is uploaded in one request.
+        type: boolean
+      partSize:
+        title: Part Size
+        description: "The size of each part of a multipart upload, in bytes, such as `104857600` for 100 MB; the last part takes the rest. It is also the size from which a file is uploaded in parts. S3 takes parts of at least 5 MB (`5242880`), except the last one: with smaller parts, all the parts are sent and the upload then fails with `EntityTooSmall`. S3 takes at most 10,000 parts per file. Only used when `multiPartUpload` is true. When it is not set, it is 25 MB (`26214400`)."
+        example: 104857600
+        type: integer
+      conditionalWritesEnabled:
+        title: Conditional Writes
+        description: If true, a file is uploaded only when its key does not exist yet in the bucket (`If-None-Match`), so an existing file is never replaced. The upload of a key that exists fails with `PreconditionFailed` (status 412), and the message fails. Together with `keyName`, only the first message is stored. When it is not set, an existing file is replaced.
+        type: boolean
   dataTypes:
     in:
       headers:
@@ -214,4 +227,4 @@ spec:
                                 simple:
                                   expression: "${exchangeId}"
         - to:
-            uri: "aws2-s3:{{bucketNameOrArn}}?accessKey=RAW({{?accessKey}})&autoCreateBucket={{autoCreateBucket}}&forcePathStyle={{forcePathStyle}}&keyName={{?keyName}}&overrideEndpoint={{overrideEndpoint}}&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&uriEndpointOverride={{?uriEndpointOverride}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}&useAwsKMS={{?useAwsKMS}}&awsKMSKeyId={{?awsKMSKeyId}}&useSSES3={{?useSSES3}}&storageClass={{?storageClass}}&proxyHost={{?proxyHost}}&proxyPort={{?proxyPort}}&proxyProtocol={{?proxyProtocol}}"
+            uri: "aws2-s3:{{bucketNameOrArn}}?accessKey=RAW({{?accessKey}})&autoCreateBucket={{autoCreateBucket}}&forcePathStyle={{forcePathStyle}}&keyName={{?keyName}}&overrideEndpoint={{overrideEndpoint}}&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&uriEndpointOverride={{?uriEndpointOverride}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}&useAwsKMS={{?useAwsKMS}}&awsKMSKeyId={{?awsKMSKeyId}}&useSSES3={{?useSSES3}}&storageClass={{?storageClass}}&proxyHost={{?proxyHost}}&proxyPort={{?proxyPort}}&proxyProtocol={{?proxyProtocol}}&multiPartUpload={{?multiPartUpload}}&partSize={{?partSize}}&conditionalWritesEnabled={{?conditionalWritesEnabled}}"

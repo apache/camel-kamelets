@@ -21,15 +21,72 @@ For more information, see the https://docs.aws.amazon.com/sdk-for-java/latest/de
 
 === Headers
 
-The following header is required:
+The following header is required, unless the `to` option is set:
 
 - `to` / `ce-to` to provide a comma-separated list of email addresses.
 
 In the headers, you can optionally set the following properties:
 
-- `subject` / `ce-subject` property to specify the email subject. If you do not set this property in the header, the Kamelet uses a generated unique ID for the email subject.
+- `subject` / `ce-subject` property to specify the email subject. If you do not set this property in the header, nor the `subject` option, the Kamelet uses a generated unique ID for the email subject.
 
 - `reply-to-addresses` / `ce-reply-to-addresses` to provide a comma-separated list of reply-to email addresses.
+
+Each of these headers takes precedence over the option of the same purpose: `to`, `subject` and `replyToAddresses`.
+
+=== Example with Fixed Recipients and a Configuration Set
+
+When every email goes to the same people, such as the alerts of a job, set the recipients and the subject as options,
+and the messages need no headers. **cc** and **bcc** send a copy, and a blind copy, of every email. **returnPath** is the
+address that bounces and complaints go to; it must be verified in SES, as **from** is. **configurationSet** names an SES
+configuration set, which can publish the delivery, bounce, open and click events of the emails to CloudWatch, SNS or
+Firehose; it must exist in SES in the region, or every email fails with `ConfigurationSetDoesNotExist`.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:kafka-source"
+      parameters:
+        topic: "job-failures"
+        bootstrapServers: "kafka.example.com:9092"
+        saslAuthType: "NONE"
+      steps:
+        - to:
+            uri: "kamelet:aws-ses-sink"
+            parameters:
+              from: "noreply@example.com"
+              region: "eu-west-1"
+              useDefaultCredentialsProvider: true
+              to: "ops@example.com,oncall@example.com"
+              cc: "team-lead@example.com"
+              bcc: "archive@example.com"
+              subject: "Nightly job failed"
+              replyToAddresses: "support@example.com"
+              returnPath: "bounces@example.com"
+              configurationSet: "alerts"
+----
+
+The addresses are plain addresses, separated by commas, such as `ops@example.com,oncall@example.com`. A `to`, `subject`
+or `reply-to-addresses` header on a message still takes precedence over the option.
+
+=== Example with a Local Stand-in of AWS
+
+To test without AWS, point the Kamelet to a local stand-in that has SES, such as LocalStack or Floci, with
+**overrideEndpoint** and **uriEndpointOverride**:
+
+[source,yaml,subs='+attributes,macros']
+----
+- to:
+    uri: "kamelet:aws-ses-sink"
+    parameters:
+      from: "noreply@example.com"
+      region: "us-east-1"
+      accessKey: "test"
+      secretKey: "test"
+      to: "someone@example.com"
+      overrideEndpoint: true
+      uriEndpointOverride: "http://localhost:4566"
+----
 
 === Through an HTTP Proxy
 
