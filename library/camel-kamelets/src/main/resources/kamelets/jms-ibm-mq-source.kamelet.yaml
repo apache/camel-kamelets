@@ -38,7 +38,7 @@ spec:
 
       Output: the body is text for a JMS text message, and bytes for a bytes message. The JMS properties of the message become headers, along with the JMS headers such as `JMSMessageID` and `JMSTimestamp`, and IBM MQ details such as `JMSXUserID`, `JMS_IBM_PutDate` and `JMS_IBM_Format`.
 
-      Good to know: the IBM MQ client library is not included, as its licence is not the Apache one: add `mvn:com.ibm.mq:com.ibm.mq.jakarta.client` with a version to the dependencies of the integration (Camel JBang adds it by itself). From a queue, each message is removed when it is received, even when the rest of the flow then fails, and several copies of this source share the messages. From a topic (`destinationType` set to `topic`), it receives only the messages sent while it is connected, as the subscription is not durable. It connects with no TLS unless `sslCipherSuite` is set. When the queue manager cannot be reached, it starts anyway and tries again every 5 seconds.
+      Good to know: the IBM MQ client library is not included, as its licence is not the Apache one: add `mvn:com.ibm.mq:com.ibm.mq.jakarta.client` with a version to the dependencies of the integration (Camel JBang adds it by itself). From a queue, each message is removed when it is received, even when the rest of the flow then fails, and several copies of this source share the messages. From a topic (`destinationType` set to `topic`), it receives only the messages sent while it is connected, unless `subscriptionDurable` is true: then the queue manager keeps the messages sent while it is stopped, under `subscriptionName`. A durable subscription needs `clientId` unless it is shared (`subscriptionShared`, JMS 2.0), and only one connection may use a client ID at a time. With `selector`, it receives only the messages whose properties and headers match the selector. It connects with no TLS unless `sslCipherSuite` is set. When the queue manager cannot be reached, it starts anyway and tries again every 5 seconds.
     required:
       - serverName
       - serverPort
@@ -81,7 +81,8 @@ spec:
         type: string
       clientId:
         title: "Client ID"
-        description: "An optional JMS client ID for the connection, which names this application to the queue manager. Leave it empty unless your IBM MQ administrator asks for one."
+        description: "The JMS client ID of the connection, which names this application to the queue manager. A durable subscription that is not shared needs one: the queue manager keeps the subscription under the client ID and `subscriptionName`, so use the same client ID each time the source starts. Only one connection may use a client ID at a time: two running copies of this source need different client IDs. When it is not set, the connection has no client ID."
+        example: "orders-service"
         type: string
       username:
         title: "Username"
@@ -98,6 +99,26 @@ spec:
         title: "TLS Cipher Suite"
         description: "The TLS cipher suite to connect with, which must match the cipher spec of the channel on the queue manager. When it is set, the connection uses TLS; when it is not set, it does not."
         example: "TLS_RSA_WITH_AES_128_CBC_SHA256"
+        type: string
+      subscriptionDurable:
+        title: "Durable Subscription"
+        description: "Whether the subscription to a topic is durable. When it is true, the queue manager keeps the messages sent to the topic while this source is stopped or disconnected, and delivers them when it connects again; the queue manager keeps the subscription, and collects messages for it, until it is removed in the queue manager. Set `subscriptionName` with it, and `clientId` unless `subscriptionShared` is true. When it is false, the messages sent while the source is not connected are lost. Only for a topic: true makes `destinationName` a topic, even with `destinationType` set to `queue`."
+        type: boolean
+        default: false
+      subscriptionShared:
+        title: "Shared Subscription"
+        description: "Whether the subscription to a topic is shared: the copies of this source that use the same `subscriptionName` share the messages of the topic, each message going to one of them, instead of each copy receiving every message. A shared subscription needs no `clientId`. Combine it with `subscriptionDurable` for a durable subscription that several copies share. Needs IBM MQ 8 or later (JMS 2.0). Only for a topic: true makes `destinationName` a topic, even with `destinationType` set to `queue`."
+        type: boolean
+        default: false
+      subscriptionName:
+        title: "Subscription Name"
+        description: "The name of the durable or shared subscription to a topic, under which the queue manager keeps the subscription. Use the same name each time the source starts, to receive the messages kept while it was stopped. Set it whenever `subscriptionDurable` or `subscriptionShared` is true: without it, every source takes the same default name, so two sources with the same client ID, or two shared sources, take over one another's subscription. Not used otherwise."
+        example: "orders-audit"
+        type: string
+      selector:
+        title: "Message Selector"
+        description: "A JMS message selector: the source receives only the messages that match it. It is a condition, in a syntax like the WHERE clause of SQL, on the JMS properties and headers of the message, not on its body, such as `priority > 5` or `region = 'EU' AND JMSPriority >= 7`. From a queue, the messages that do not match stay on the queue. When it is not set, the source receives every message."
+        example: "priority > 5"
         type: string
   dataTypes:
     out:
@@ -140,6 +161,10 @@ spec:
       parameters:
         destinationType: "{{destinationType}}"
         destinationName: "{{destinationName}}"
+        subscriptionDurable: "{{subscriptionDurable}}"
+        subscriptionShared: "{{subscriptionShared}}"
+        subscriptionName: "{{?subscriptionName}}"
+        selector: "{{?selector}}"
         connectionFactory: "#bean:{{wmqConnectionFactory}}"
       steps:
         - to:

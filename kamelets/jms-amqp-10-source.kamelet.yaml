@@ -38,7 +38,7 @@ spec:
 
       Output: the body is text for a JMS text message, bytes for a bytes message, and a Map for a map message. The JMS properties of the message become headers, along with the JMS headers such as `JMSMessageID`, `JMSDestination`, `JMSTimestamp`, `JMSPriority` and `JMSRedelivered`.
 
-      Good to know: From a queue, each message is removed when it is received, even when the rest of the flow then fails, and several copies of this source share the messages. From a topic (`destinationType` set to `topic`), it receives only the messages sent while it is connected, as the subscription is not durable. The login and the TLS settings go in `remoteURI`: there are no separate options for them. When the broker cannot be reached, it starts anyway and tries again every 5 seconds.
+      Good to know: From a queue, each message is removed when it is received, even when the rest of the flow then fails, and several copies of this source share the messages. From a topic (`destinationType` set to `topic`), it receives only the messages sent while it is connected, unless `subscriptionDurable` is true: then the broker keeps the messages sent while it is stopped, under `subscriptionName`. A durable subscription needs `clientId` unless it is shared (`subscriptionShared`, JMS 2.0), and only one connection may use a client ID at a time. With `selector`, it receives only the messages whose properties and headers match the selector. The login and the TLS settings go in `remoteURI`: there are no separate options for them. When the broker cannot be reached, it starts anyway and tries again every 5 seconds.
     required:
       - destinationName
       - remoteURI
@@ -59,6 +59,31 @@ spec:
         description: "The address of the broker, as `amqp://host:port` (the AMQP port is usually 5672), or `amqps://host:port` for TLS. Settings of the Qpid JMS client go after `?`: `jms.username` and `jms.password` for a login, as `amqp://host:5672?jms.username=app&jms.password=secret`, and `transport.trustStoreLocation`, `transport.trustStorePassword`, `transport.keyStoreLocation` and `transport.keyStorePassword` for TLS."
         type: string
         example: "amqp://localhost:5672"
+      clientId:
+        title: "Client ID"
+        description: "The JMS client ID of the connection, which names this application to the broker. A durable subscription that is not shared needs one: the broker keeps the subscription under the client ID and `subscriptionName`, so use the same client ID each time the source starts. Only one connection may use a client ID at a time: two running copies of this source need different client IDs. When it is not set, the connection has no client ID."
+        example: "orders-service"
+        type: string
+      subscriptionDurable:
+        title: "Durable Subscription"
+        description: "Whether the subscription to a topic is durable. When it is true, the broker keeps the messages sent to the topic while this source is stopped or disconnected, and delivers them when it connects again; the broker keeps the subscription, and collects messages for it, until it is removed in the broker. Set `subscriptionName` with it, and `clientId` unless `subscriptionShared` is true. When it is false, the messages sent while the source is not connected are lost. Only for a topic: true makes `destinationName` a topic, even with `destinationType` set to `queue`."
+        type: boolean
+        default: false
+      subscriptionShared:
+        title: "Shared Subscription"
+        description: "Whether the subscription to a topic is shared: the copies of this source that use the same `subscriptionName` share the messages of the topic, each message going to one of them, instead of each copy receiving every message. A shared subscription needs no `clientId`. Combine it with `subscriptionDurable` for a durable subscription that several copies share. Needs a broker that supports JMS 2.0. Only for a topic: true makes `destinationName` a topic, even with `destinationType` set to `queue`."
+        type: boolean
+        default: false
+      subscriptionName:
+        title: "Subscription Name"
+        description: "The name of the durable or shared subscription to a topic, under which the broker keeps the subscription. Use the same name each time the source starts, to receive the messages kept while it was stopped. Set it whenever `subscriptionDurable` or `subscriptionShared` is true: without it, every source takes the same default name, so two sources with the same client ID, or two shared sources, take over one another's subscription. Not used otherwise."
+        example: "orders-audit"
+        type: string
+      selector:
+        title: "Message Selector"
+        description: "A JMS message selector: the source receives only the messages that match it. It is a condition, in a syntax like the WHERE clause of SQL, on the JMS properties and headers of the message, not on its body, such as `priority > 5` or `region = 'EU' AND JMSPriority >= 7`. From a queue, the messages that do not match stay on the queue. When it is not set, the source receives every message."
+        example: "priority > 5"
+        type: string
   dataTypes:
     out:
       headers:
@@ -93,6 +118,11 @@ spec:
       parameters:
         destinationType: "{{destinationType}}"
         destinationName: "{{destinationName}}"
+        subscriptionDurable: "{{subscriptionDurable}}"
+        subscriptionShared: "{{subscriptionShared}}"
+        subscriptionName: "{{?subscriptionName}}"
+        selector: "{{?selector}}"
+        clientId: "{{?clientId}}"
         connectionFactory: "#bean:{{connectionFactoryBean}}"
       steps:
         - to:

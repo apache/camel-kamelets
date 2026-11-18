@@ -47,3 +47,48 @@ The Kamelet requires IBM MQ specific connection parameters:
         - to:
             uri: "kamelet:log-sink"
 ----
+
+=== Durable topic subscription
+
+From a topic, the source receives by default only the messages published while it is connected. With
+`subscriptionDurable` set to `true`, the queue manager keeps the messages published while the source is stopped, and
+delivers them when it starts again. The queue manager keeps the subscription under the client ID and the subscription
+name, so use the same `clientId` and `subscriptionName` each time the source starts. The user `username` needs the
+authority to subscribe to the topic.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:jms-ibm-mq-source"
+      parameters:
+        serverName: "mq.example.com"
+        serverPort: 1414
+        queueManager: "QM1"
+        channel: "DEV.APP.SVRCONN"
+        username: "app"
+        password: "passw0rd"
+        destinationType: "topic"
+        destinationName: "orders/events"
+        subscriptionDurable: true
+        subscriptionName: "audit"
+        clientId: "audit-service"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+The JMS rules to know:
+
+- A durable subscription that is not shared needs a `clientId`.
+- Only one connection may use a client ID at a time: two running copies of the source need different client IDs.
+- To run several copies of the source on one durable subscription, set `subscriptionShared` to `true` as well, and
+  leave `clientId` empty: the copies share the messages of the topic by `subscriptionName`, each message going to one
+  of them. Shared subscriptions are part of JMS 2.0.
+- The durable subscription stays on the queue manager, and keeps collecting messages, until it is removed in the
+  queue manager.
+
+=== Message selector
+
+With `selector`, the source receives only the messages that match it, a condition on the JMS properties and headers of
+the message, such as `priority > 5`. From a queue, the other messages stay on the queue.
