@@ -39,7 +39,7 @@ spec:
 
       Output: the message is unchanged. The `CamelFileNameProduced` header is set to the path of the file on the server.
 
-      Good to know: a file with the same name is replaced, unless `fileExist` says otherwise. A file is uploaded under its real name from the start, so a reader that polls the directory can pick it up half-written. To prevent that, set `tempPrefix` to upload it under a temporary name and rename it once it is complete, or `doneFileName` to write an empty done file next to it once it is complete. It uses explicit TLS: it connects to the normal FTP port, usually 21, and then switches to TLS. A server that only accepts implicit TLS, usually on port 990, is not supported. A file name that points outside `directoryName` fails the message. Files are sent in ASCII (text) mode unless `binary` is true.
+      Good to know: a file with the same name is replaced, unless `fileExist` says otherwise. A file is uploaded under its real name from the start, so a reader that polls the directory can pick it up half-written. To prevent that, set `tempPrefix` to upload it under a temporary name and rename it once it is complete, or `doneFileName` to write an empty done file next to it once it is complete. By default it uses explicit TLS: it connects to the normal FTP port, usually 21, and then switches to TLS. For a server that uses implicit TLS, usually on port 990, set `implicit` to true. A file name that points outside `directoryName` fails the message. Files are sent in ASCII (text) mode unless `binary` is true.
     required:
       - connectionHost
       - connectionPort
@@ -55,7 +55,7 @@ spec:
         example: ftps.example.com
       connectionPort:
         title: Connection Port
-        description: The port of the FTPS server, usually 21. The Kamelet connects with explicit TLS, so use the normal FTP port, not the implicit TLS port 990.
+        description: The port of the FTPS server, usually 21, or 990 when `implicit` is true.
         type: string
         default: 21
       username:
@@ -107,6 +107,10 @@ spec:
         description: The name of an empty file to write next to each file once the file is complete, so that a reader knows the file can be read. `$\{file:name}` stands for the name of the file and `$\{file:name.noext}` for the name without its extension, so `$\{file:name}.done` writes `orders.csv.done`, and `$\{file:name.noext}.ready` writes `orders.ready`. A fixed name, such as `ready`, is written again after each file. No other `$\{...}` is allowed, and with one the file is uploaded but then the message fails. With `tempPrefix`, the done file is written after the file has its real name. When it is not set, no done file is written.
         type: string
         example: "${file:name}.done"
+      implicit:
+        title: Implicit TLS
+        description: 'If true, the connection uses implicit TLS: it is encrypted from the start, usually on port 990. If false, it uses explicit TLS: it connects to the normal FTP port, usually 21, and then switches to TLS. Use the mode the server expects; the other one fails to connect. When it is not set, false.'
+        type: boolean
   dataTypes:
     in:
       headers:
@@ -175,6 +179,7 @@ spec:
               autoCreate: "{{autoCreate}}"
               binary: "{{binary}}"
               fileExist: "{{fileExist}}"
+              implicit: "{{?implicit}}"
               passiveMode: "{{passiveMode}}"
               password: "RAW({{password}})"
               tempPrefix: "RAW({{?tempPrefix}})"

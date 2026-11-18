@@ -32,15 +32,15 @@ spec:
   definition:
     title: "SCP Sink"
     description: |-
-      Copies each message as a file to the home directory of a user on a remote server, with SCP (secure copy) over an SSH connection.
+      Copies each message as a file to a directory on a remote server, with SCP (secure copy) over an SSH connection.
 
-      Use it to copy files to a server you reach with SSH that does not offer SFTP, for example to drop a configuration or a report on a host. To choose the directory on the server, or to append to or keep existing files, use `sftp-sink` instead.
+      Use it to copy files to a server you reach with SSH that does not offer SFTP, for example to drop a configuration or a report on a host. To append to or keep existing files, or to create the directory when it is missing, use `sftp-sink` instead.
 
       Input: the body is the content of the file, as text, bytes or a stream. The name of the file comes from the `CamelFileName` header, which may hold subdirectories, such as `reports/data.csv`; without it, a unique name is generated.
 
       Output: the message is unchanged.
 
-      Good to know: files are written in the home directory of `username`, with the rights of that user, and a file with the same name is replaced. A file name that points outside the home directory fails the message. The key of the server is checked against the file in `knownHostsUri`, or else `~/.ssh/known_hosts` of the user that runs the integration, unless `strictHostKeyChecking` is `no`. Do not place it after messages from an untrusted source.
+      Good to know: files are written in `directoryName`, or else in the home directory of `username`, with the rights of that user, and a file with the same name is replaced. `directoryName` must exist: when it does not, every file is written as a file with the name of the directory. A file name that points outside the directory fails the message. The key of the server is checked against the file in `knownHostsUri`, or else `~/.ssh/known_hosts` of the user that runs the integration, unless `strictHostKeyChecking` is `no`. Do not place it after messages from an untrusted source.
     required:
       - serverName
       - serverPort
@@ -95,6 +95,18 @@ spec:
         description: If true, the key of the server is looked up in `~/.ssh/known_hosts` of the user that runs the integration.
         type: boolean
         default: true
+      directoryName:
+        title: Directory Name
+        description: The directory on the server to write the files to, such as `incoming/reports` or `/data/incoming`. A path without a leading `/` is relative to the home directory of `username`. It must exist, as it is not created; when it is missing, each file is written as a file with the name of the directory instead. When it is not set, the files are written in the home directory.
+        type: string
+        pattern: "^[A-Za-z0-9_./~@+=,-]*$"
+        example: incoming/reports
+      chmod:
+        title: File Permissions
+        description: The permissions to give each new file, as three octal digits, such as `640` for read and write by the owner and read by the group. The umask of the server can take some away, so with the usual umask 022 the `664` used when it is not set gives `644`. A file that already exists keeps its permissions, and only its content is replaced.
+        type: string
+        pattern: "^[0-7]{3}$"
+        example: "640"
   dataTypes:
     in:
       headers:
@@ -110,4 +122,4 @@ spec:
       uri: kamelet:source
       steps:
         - to:
-            uri: "scp:{{serverName}}:{{serverPort}}?knownHostsFile={{?knownHostsUri}}&password=RAW({{?password}})&privateKeyFile=RAW({{?privateKeyFile}})&privateKeyFilePassphrase=RAW({{?privateKeyPassphrase}})&strictHostKeyChecking={{?strictHostKeyChecking}}&useUserKnownHostsFile={{?useUserKnownHostsFile}}&username=RAW({{?username}})"
+            uri: "scp:{{serverName}}:{{serverPort}}/{{?directoryName}}?chmod={{?chmod}}&knownHostsFile={{?knownHostsUri}}&password=RAW({{?password}})&privateKeyFile=RAW({{?privateKeyFile}})&privateKeyFilePassphrase=RAW({{?privateKeyPassphrase}})&strictHostKeyChecking={{?strictHostKeyChecking}}&useUserKnownHostsFile={{?useUserKnownHostsFile}}&username=RAW({{?username}})"

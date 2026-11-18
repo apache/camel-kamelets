@@ -20,10 +20,23 @@ The SFTP Source Kamelet supports the following configurations:
 - **Delete**: Delete files after successful processing (default: false). When false, and **Move** is not set, files are left on the server; with **Idempotent**, they are skipped while the integration runs but read again after a restart
 - **Move**: Where to move each file on the server after it has been read, such as `.done`, so that it is not read again, also after a restart (not set by default). It cannot be combined with **Delete**
 - **Move Failed**: Where to move a file on the server when it could not be handed on, such as `.error` (not set by default). When not set, a file that fails is read again at every poll
+- **Include Files**: A regular expression that the name of a file must match to be read, such as `.*\.csv`; upper and lower case count as the same (not set by default)
+- **Exclude Files**: A regular expression for the names of the files not to read; it wins over **Include Files** and **Include Files (Wildcards)** (not set by default)
+- **Include Files (Wildcards)**: Wildcard patterns for the path below the directory, such as `*.csv` or `**/*.csv`; upper and lower case differ (not set by default)
+- **Move Before Read**: Where to move each file before it is read, such as `.inprogress` (not set by default)
+- **Wait Until Written**: `changed` reads a file only once it has stopped changing, `rename` once it can be renamed (default: none)
+- **Minimum File Age**: With `changed`, how old a file must be before it is read, in milliseconds (not set by default)
+- **Poll Interval**: How long to wait between two polls, in milliseconds (default: 500)
+- **Max Files Per Poll**: The largest number of files read in one poll (not set by default: all)
+- **Sort By**: The order of the files in a poll, such as `file:modified` or `reverse:file:name` (not set by default: the order of the server)
+- **Stream Download**: Read each file from the server while it is handed on, instead of into memory first (default: false)
+- **Connect Timeout**: How long to wait for the connection, in milliseconds (default: 10000)
+- **Socket Timeout**: How long the connection may stay without an answer, in milliseconds (default: 300000)
+- **Server Alive Interval**: How often to check that the server still answers, in milliseconds (not set by default)
 
 === Output Format
 
-The Kamelet outputs the file content as bytes and sets headers with file information:
+The Kamelet outputs the file content as bytes, or as a stream when **Stream Download** is true, and sets headers with file information:
 - `file`: The name of the processed file
 - `ce-file`: Cloud Events compatible file name header
 
@@ -139,3 +152,109 @@ put on the server again under the same name is not read again.
 ----
 
 This example deletes files after processing and disables idempotency to allow re-processing of files with the same name.
+
+=== Example with File Filters and Files Still Being Written
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:sftp-source"
+      parameters:
+        connectionHost: "sftp.example.com"
+        username: "sftpuser"
+        password: "sftppass"
+        directoryName: "/incoming"
+        recursive: true
+        antInclude: "**/*.csv"
+        exclude: "draft-.*"
+        readLock: "changed"
+        sortBy: "file:modified"
+        maxMessagesPerPoll: 100
+        delay: 60000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Once a minute, this reads the CSV files in `/incoming` and its subdirectories, except those whose names start with
+`draft-`, at most 100 of them in each poll, the oldest first. **Include Files (Wildcards)** matches the path below the
+directory, and upper and lower case differ: `*.csv` alone would match only the files directly in `/incoming`.
+**Include Files** and **Exclude Files** are regular expressions that match the name of the file alone, whatever the
+case. With **Max Files Per Poll**, a poll takes the first files the server lists and sorts only these.
+
+`readLock: changed` reads a file only once its size and modification time have not changed for 5 seconds, so a file
+that another program is still uploading is left alone. It never reads an empty file, and while it checks a file the
+other files wait. With **Minimum File Age**, a file is read only once it is that old instead.
+
+The files a poll reads can be moved out of the way first with **Move Before Read**, so that a second integration
+reading the same directory does not take them too:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:sftp-source"
+      parameters:
+        connectionHost: "sftp.example.com"
+        username: "sftpuser"
+        password: "sftppass"
+        directoryName: "/incoming"
+        preMove: ".inprogress"
+        move: ".done"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Each file is moved to `.inprogress` before it is read, and from there to `.done` once it has been handed on, so it
+ends up in `/incoming/.inprogress/.done`.
+
+=== Example with Large Files
+
+By default each file is downloaded into memory before it is handed on. For files too large for that, set
+**Stream Download**:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:sftp-source"
+      parameters:
+        connectionHost: "sftp.example.com"
+        username: "sftpuser"
+        password: "sftppass"
+        directoryName: "/exports"
+        streamDownload: true
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Camel keeps a message body that is a stream in memory too, unless told otherwise, so also set
+`camel.main.streamCachingSpoolEnabled=true` in the application properties: large bodies are then written to a
+temporary file. In a test with 256 MB of memory, a 400 MB file failed with an out of memory error without
+**Stream Download**, and with it but without spooling, and was read with both.
+
+=== Example with a Connection Check
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:sftp-source"
+      parameters:
+        connectionHost: "sftp.example.com"
+        username: "sftpuser"
+        password: "sftppass"
+        directoryName: "/incoming"
+        connectTimeout: 5000
+        serverAliveInterval: 30000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Every 30 seconds without data from the server, the integration checks that the server still answers. When it does
+not, the connection is closed, the poll fails, and the next poll connects again. Without **Server Alive Interval**, a
+connection that no longer answers is closed after **Socket Timeout**, 5 minutes by default.

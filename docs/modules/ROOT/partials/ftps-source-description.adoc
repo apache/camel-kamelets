@@ -22,6 +22,21 @@ The FTPS Source Kamelet supports the following configurations:
 - **Delete**: Delete files after successful processing (default: false)
 - **Move**: Where to move each file on the server after it has been read, such as `.done`, so that it is not read again, also after a restart (not set by default). It cannot be combined with **Delete**
 - **Move Failed**: Where to move a file on the server when it could not be handed on, such as `.error` (not set by default). When not set, a file that fails is read again at every poll
+- **Include Files**: A regular expression that the name of a file must match to be read, such as `.*\.csv`; upper and lower case count as the same (not set by default)
+- **Exclude Files**: A regular expression for the names of the files not to read; it wins over **Include Files** and **Include Files (Wildcards)** (not set by default)
+- **Include Files (Wildcards)**: Wildcard patterns for the path below the directory, such as `*.csv` or `**/*.csv`; upper and lower case differ (not set by default)
+- **Move Before Read**: Where to move each file before it is read, such as `.inprogress` (not set by default)
+- **Wait Until Written**: `changed` reads a file only once it has stopped changing, `rename` once it can be renamed (default: none)
+- **Minimum File Age**: With `changed`, how old a file must be before it is read, in milliseconds (not set by default)
+- **Poll Interval**: How long to wait between two polls, in milliseconds (default: 500)
+- **Max Files Per Poll**: The largest number of files read in one poll (not set by default: all)
+- **Sort By**: The order of the files in a poll, such as `file:modified` or `reverse:file:name` (not set by default: the order of the server)
+- **Stream Download**: Read each file from the server while it is handed on, instead of into memory first (default: false)
+- **Change Directory Stepwise**: Change into the directory of a file one level at a time; must be false with **Stream Download** (default: true)
+- **Connect Timeout**: How long to wait for the connection, in milliseconds (default: 10000)
+- **Socket Timeout**: How long to wait for the answer to a command, in milliseconds (default: 300000)
+- **Data Timeout**: How long to wait for data while a file or a listing is transferred, in milliseconds (default: 30000)
+- **Implicit TLS**: Use implicit TLS, usually on port 990, instead of explicit TLS (default: false)
 
 === Output Format
 
@@ -31,7 +46,7 @@ The Kamelet outputs file content as an `InputStream` and sets headers with file 
 
 === Security
 
-FTPS encrypts the connection of standard FTP with TLS. The Kamelet uses explicit FTPS (it switches to TLS on the normal FTP port).
+FTPS encrypts the connection of standard FTP with TLS. By default the Kamelet uses explicit FTPS: it switches to TLS on the normal FTP port. Set **Implicit TLS** for a server that uses implicit FTPS, usually on port 990.
 
 === Usage Example
 
@@ -72,7 +87,7 @@ FTPS encrypts the connection of standard FTP with TLS. The Kamelet uses explicit
             uri: "kamelet:log-sink"
 ----
 
-This example enables passive mode, binary transfer, and recursive directory processing. The Kamelet uses explicit FTPS: it connects to the normal FTP port and then switches to TLS. Servers that only accept implicit FTPS (usually on port 990) are not supported.
+This example enables passive mode, binary transfer, and recursive directory processing. The Kamelet uses explicit FTPS here: it connects to the normal FTP port and then switches to TLS.
 
 === Example with Files Moved After Reading
 
@@ -124,3 +139,141 @@ read in a file. Declare a `FileIdempotentRepository` bean that writes the list t
 
 The file must be on storage that survives a restart of the integration, such as a persistent volume. A file that is
 put on the server again under the same name is not read again.
+
+=== Example with File Filters and Files Still Being Written
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ftps-source"
+      parameters:
+        connectionHost: "ftps.example.com"
+        username: "ftpsuser"
+        password: "ftpspass"
+        directoryName: "/incoming"
+        recursive: true
+        antInclude: "**/*.csv"
+        exclude: "draft-.*"
+        readLock: "changed"
+        sortBy: "file:modified"
+        maxMessagesPerPoll: 100
+        delay: 60000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Once a minute, this reads the CSV files in `/incoming` and its subdirectories, except those whose names start with
+`draft-`, at most 100 of them in each poll, the oldest first. **Include Files (Wildcards)** matches the path below the
+directory, and upper and lower case differ: `*.csv` alone would match only the files directly in `/incoming`.
+**Include Files** and **Exclude Files** are regular expressions that match the name of the file alone, whatever the
+case. With **Max Files Per Poll**, a poll takes the first files the server lists and sorts only these.
+
+`readLock: changed` reads a file only once its size and modification time have not changed for 5 seconds, so a file
+that another program is still uploading is left alone. It never reads an empty file, and while it checks a file the
+other files wait. With **Minimum File Age**, a file is read only once it is that old instead. FTP servers list the
+modification time only to the minute and in their own time zone, so use **Minimum File Age** only when the server and
+the integration are in the same time zone; otherwise every file looks older or younger by the difference. **Sort By**
+`file:modified` is also only to the minute.
+
+The files a poll reads can be moved out of the way first with **Move Before Read**, so that a second integration
+reading the same directory does not take them too:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ftps-source"
+      parameters:
+        connectionHost: "ftps.example.com"
+        username: "ftpsuser"
+        password: "ftpspass"
+        directoryName: "/incoming"
+        preMove: ".inprogress"
+        move: ".done"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Each file is moved to `.inprogress` before it is read, and from there to `.done` once it has been handed on, so it
+ends up in `/incoming/.inprogress/.done`.
+
+=== Example with Large Files
+
+By default each file is downloaded into memory before it is handed on. For files too large for that, set
+**Stream Download**:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ftps-source"
+      parameters:
+        connectionHost: "ftps.example.com"
+        username: "ftpsuser"
+        password: "ftpspass"
+        directoryName: "/exports"
+        streamDownload: true
+        stepwise: false
+        binary: true
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Camel keeps a message body that is a stream in memory too, unless told otherwise, so also set
+`camel.main.streamCachingSpoolEnabled=true` in the application properties: large bodies are then written to a
+temporary file. In a test with 256 MB of memory, a 400 MB file failed with an out of memory error without
+**Stream Download**, and with it but without spooling, and was read with both. **Stream Download** needs
+**Change Directory Stepwise** set to false, or every file fails.
+
+=== Example with Timeouts
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ftps-source"
+      parameters:
+        connectionHost: "ftps.example.com"
+        username: "ftpsuser"
+        password: "ftpspass"
+        directoryName: "/incoming"
+        connectTimeout: 5000
+        socketTimeout: 60000
+        dataTimeout: 30000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+**Connect Timeout** is how long to wait for the connection and the first answer of the server; a connection that
+fails is tried 3 times before the poll is skipped. **Socket Timeout** is how long to wait for the answer to a command,
+5 minutes by default, and **Data Timeout** how long to wait for data while a file or the list of the files is
+transferred. When one of them runs out, the poll fails and the next poll connects again.
+
+=== Example with Implicit TLS
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ftps-source"
+      parameters:
+        connectionHost: "ftps.example.com"
+        connectionPort: "990"
+        username: "ftpsuser"
+        password: "ftpspass"
+        directoryName: "/incoming"
+        implicit: true
+        passiveMode: true
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+With implicit TLS the connection is encrypted from the start, usually on port 990. Use the mode the server expects:
+explicit TLS against an implicit server waits for an answer until **Connect Timeout** runs out, and implicit TLS
+against an explicit server fails at once.
