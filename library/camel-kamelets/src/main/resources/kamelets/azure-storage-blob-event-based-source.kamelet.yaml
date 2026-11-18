@@ -32,13 +32,13 @@ spec:
   definition:
     title: "Azure Storage Blob Event-based Source"
     description: |-
-      Receives the Event Grid events of an Azure Storage account from a Service Bus queue and can read the content of each new blob in a container.
+      Receives the Event Grid events of an Azure Storage account from a Service Bus queue or topic, and can read the content of each new blob in a container.
 
-      Use it to react quickly to new blobs, such as uploaded files, without reading the container over and over. It needs an Event Grid subscription on the storage account that sends the events, in the Event Grid schema, to a Service Bus queue. To read the container on a timer instead, use `azure-storage-blob-source`.
+      Use it to react quickly to new blobs, such as uploaded files, without reading the container over and over. It needs an Event Grid subscription on the storage account that sends the events, in the Event Grid schema, to a Service Bus queue, or to a topic so that other applications can receive the same events from subscriptions of their own. To read the container on a timer instead, use `azure-storage-blob-source`.
 
       Output: when `getBlob` is false, the default, the body is the Event Grid event as JSON (an Azure `BinaryData`, which converts to text or bytes). When `getBlob` is true, the body of a `Microsoft.Storage.BlobCreated` event for a blob of `containerName` is the content of that blob, as a stream of bytes; the other events are passed on as parsed JSON (a Jackson JSON node).
 
-      Good to know: with the default `serviceBusReceiveMode` of `RECEIVE_AND_DELETE`, an event is removed from the queue as soon as it is received, so an event whose processing fails is lost. With `getBlob`, only blobs at the top of the container can be read: an event for a blob in a virtual folder, such as `in/a.txt`, fails. It reads from a queue, not from a topic.
+      Good to know: with the default `serviceBusReceiveMode` of `RECEIVE_AND_DELETE`, an event is removed from the queue, or from the subscription of the topic, as soon as it is received, so an event whose processing fails is lost. With `getBlob`, only blobs at the top of the container can be read: an event for a blob in a virtual folder, such as `in/a.txt`, fails. Events are processed one at a time, in order, unless `maxConcurrentCalls` is set.
     required:
       - topicOrQueueName
       - connectionString
@@ -47,8 +47,8 @@ spec:
     type: object
     properties:
       topicOrQueueName:
-        title: Queue Name
-        description: The name of the Service Bus queue that the Event Grid subscription of the storage account sends its events to.
+        title: Queue or Topic Name
+        description: The name of the Service Bus queue, or of the topic when `serviceBusType` is `topic`, that the Event Grid subscription of the storage account sends its events to.
         type: string
         example: blob-events
       connectionString:
@@ -66,8 +66,19 @@ spec:
         enum: ["RECEIVE_AND_DELETE", "PEEK_LOCK"]
       subscriptionName:
         title: Subscription Name
-        description: "The name of a subscription of a Service Bus topic. Not used: this Kamelet reads from a queue."
+        description: The name of the subscription of the topic to read the events from. Required when `serviceBusType` is `topic`, without it the Kamelet does not start. Not used with a queue.
         type: string
+      serviceBusType:
+        title: Service Bus Type
+        description: "`queue` reads the events from the queue `topicOrQueueName`. `topic` reads them from the subscription `subscriptionName` of the topic `topicOrQueueName`. When it is not set, it reads from a queue."
+        type: string
+        enum: ["queue", "topic"]
+      maxConcurrentCalls:
+        title: Max Concurrent Events
+        description: How many events are processed at the same time. When it is not set, one at a time, in order. With a higher number, events are processed in parallel and can finish out of order.
+        type: integer
+        minimum: 1
+        example: 4
       accountName:
         title: Account Name
         description: The name of the storage account, as shown in the Azure portal under Storage accounts. It is the first part of the address of the account, `https://<accountName>.blob.core.windows.net`.
@@ -136,6 +147,8 @@ spec:
         connectionString: "RAW({{connectionString}})"
         serviceBusReceiveMode: "{{serviceBusReceiveMode}}"
         subscriptionName: "{{?subscriptionName}}"
+        serviceBusType: "{{?serviceBusType}}"
+        maxConcurrentCalls: "{{?maxConcurrentCalls}}"
       steps:
         - choice:
             precondition: true
