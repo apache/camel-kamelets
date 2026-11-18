@@ -38,3 +38,60 @@ The step that sends to the Kamelet, in a route:
       proxyPort: 3128
       proxyProtocol: "HTTP"
 ----
+
+=== Operations
+
+`operation` chooses what the Kamelet does with the question in the body:
+
+[width="100%",cols="1,3,2",options="header"]
+|===
+| `operation` | What it does | Options it needs
+| `retrieveAndGenerate` (default)
+| Finds the passages that match the question in the knowledge base, and has the model write the answer from them. The
+  body afterwards is the answer, as text.
+| `modelId`, `knowledgeBaseId`
+| `retrieve`
+| Only finds the passages, without an answer. The body afterwards is a List of the passages, each with its text
+  (`content.text`), its `score` and the `location` of its document. `numberOfResults` limits how many, and `searchType`
+  chooses between a `SEMANTIC` and a `HYBRID` search.
+| `knowledgeBaseId`
+| `invokeAgent`
+| Sends the question to a Bedrock agent, which answers it with its own instructions, knowledge bases and actions. The
+  body afterwards is the answer, as text.
+| `agentId`, `agentAliasId`
+|===
+
+The passages from `retrieve` are objects of the AWS SDK for Java, not JSON: turned into JSON as they are, each is an
+empty object. Take the parts you need in the next step. For example, to keep the text of the first passage:
+
+[source,yaml,subs='+attributes,macros']
+----
+- to:
+    uri: "kamelet:aws-bedrock-agent-runtime-sink"
+    parameters:
+      operation: "retrieve"
+      knowledgeBaseId: "AB12CD34EF"
+      numberOfResults: 3
+      searchType: "HYBRID"
+      region: "us-east-1"
+      useDefaultCredentialsProvider: true
+- setBody:
+    simple: "$\{body[0].content.text}"
+----
+
+To ask an agent, and continue the conversation with the session ID of the answer:
+
+[source,yaml,subs='+attributes,macros']
+----
+- to:
+    uri: "kamelet:aws-bedrock-agent-runtime-sink"
+    parameters:
+      operation: "invokeAgent"
+      agentId: "KX7Q2M9WZB"
+      agentAliasId: "TSTALIASID"
+      region: "us-east-1"
+      useDefaultCredentialsProvider: true
+----
+
+Without the `CamelAwsBedrockAgentRuntimeSessionId` header, each message starts a new session, and the header holds
+its ID afterwards. Send that ID in the header with the next question to continue the same conversation.

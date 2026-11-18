@@ -3,3 +3,23 @@
 === Authentication
 
 This Kamelet logs in to the Redshift database with a database user and password (`username` and `password`), not with AWS access keys. It connects with the Amazon Redshift JDBC driver, which uses TLS by default.
+
+=== Connection Pool
+
+The Kamelet keeps a pool of connections to the database:
+
+* `maxTotal`: the most connections it opens at the same time, 8 when not set.
+* `maxIdle`: the most unused connections it keeps open, 8 when not set.
+* `maxWaitMillis`: how long a message waits for a free connection when `maxTotal` are in use, in milliseconds, before
+  it fails. When not set, it waits as long as it takes.
+
+While it sends the rows of a poll, the source keeps one connection, and `consumedQuery` needs a second one. Do not set
+`maxTotal` to 1 when you use it: `consumedQuery` then waits for a connection for ever, or gives up after
+`maxWaitMillis`, and the row is not marked.
+
+[source,yaml,subs='+attributes,macros']
+----
+maxTotal: 4
+maxIdle: 2
+maxWaitMillis: 5000
+----

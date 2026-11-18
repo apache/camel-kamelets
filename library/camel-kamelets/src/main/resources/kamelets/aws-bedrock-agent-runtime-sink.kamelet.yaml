@@ -32,31 +32,57 @@ spec:
   definition:
     title: "AWS Bedrock Agent Runtime Sink"
     description: |-
-      Answers the question in each message from the documents of an Amazon Bedrock knowledge base, with a model that writes the answer from the passages it finds.
+      Answers the question in each message from the documents of an Amazon Bedrock knowledge base, or finds the passages of the documents that match it, or passes it to a Bedrock agent.
 
-      Use it to build a question-and-answer service or a chatbot over your own documents, such as manuals, policies or FAQs, loaded into a Bedrock knowledge base. To load new documents into the knowledge base, use `aws-bedrock-agent-sink`; to call a model without a knowledge base, use `aws-bedrock-text-sink`.
+      Use it to build a question-and-answer service or a chatbot over your own documents, such as manuals, policies or FAQs, loaded into a Bedrock knowledge base. Set `operation` to `retrieve` to get only the passages that match the question, for example to show them as search results or to give them to a model of your own. Set it to `invokeAgent` to ask a Bedrock agent that you have set up in the Bedrock console. To load new documents into the knowledge base, use `aws-bedrock-agent-sink`; to call a model without a knowledge base, use `aws-bedrock-text-sink`.
 
-      Input: the body is the question, as text. The optional `CamelAwsBedrockAgentRuntimeSessionId` header continues an earlier conversation: set it to the session ID of an earlier answer.
+      Input: the body is the question, as text. The optional `CamelAwsBedrockAgentRuntimeSessionId` header continues an earlier conversation, with `retrieveAndGenerate` and `invokeAgent`: set it to the session ID of an earlier answer.
 
-      Output: when it is used inside a route, the body afterwards is the answer, as text. The `CamelAwsBedrockAgentRuntimeSessionId` header holds the ID of the session, and the `CamelAwsBedrockAgentRuntimeCitations` header the passages of the documents the answer is based on, as objects of the AWS SDK for Java.
+      Output: when it is used inside a route, the body afterwards depends on `operation`. With `retrieveAndGenerate`, the default, and with `invokeAgent`, it is the answer, as text. The `CamelAwsBedrockAgentRuntimeSessionId` header holds the ID of the session, and the `CamelAwsBedrockAgentRuntimeCitations` header the passages of the documents the answer is based on, as objects of the AWS SDK for Java. With `retrieve`, the body is a List of the passages found, each an object of the AWS SDK for Java with the text of the passage (`content.text`), its `score` and the `location` of its document. The `CamelAwsBedrockAgentRuntimeRetrievedResults` header holds the same List.
 
-      Good to know: to reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: `retrieveAndGenerate` needs `modelId` and `knowledgeBaseId`, `retrieve` needs `knowledgeBaseId`, and `invokeAgent` needs `agentId` and `agentAliasId`; without them, `retrieve` and `invokeAgent` fail before they call Bedrock. The passages from `retrieve` are not JSON, and turned into JSON as they are, each is an empty object: take the parts you need in the next step, such as `$\{body[0].content.text}` in a Simple expression. With `invokeAgent` and no session ID, each message starts a new session. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
-      - modelId
-      - knowledgeBaseId
       - region
     type: object
     properties:
       modelId:
         title: Model ID
-        description: The ID of the Bedrock model that writes the answers from the parts of the documents that were found. It must be available in the region of the knowledge base.
+        description: The ID of the Bedrock model that writes the answers from the parts of the documents that were found. It must be available in the region of the knowledge base. Required when `operation` is `retrieveAndGenerate`; the other operations do not use it.
         type: string
         enum: ["anthropic.claude-instant-v1", "anthropic.claude-v2", "anthropic.claude-v2:1", "anthropic.claude-3-sonnet-20240229-v1:0"]
       knowledgeBaseId:
         title: Knowledge Base ID
-        description: The ID of the knowledge base to search, a code of 10 letters and digits shown in the Bedrock console.
+        description: The ID of the knowledge base to search, a code of 10 letters and digits shown in the Bedrock console. Required when `operation` is `retrieveAndGenerate` or `retrieve`; `invokeAgent` does not use it, as the agent has its own knowledge bases.
         type: string
         example: AB12CD34EF
+      operation:
+        title: Operation
+        description: "What to do with the question. `retrieveAndGenerate` finds the passages that match it in the knowledge base, and has the model in `modelId` write the answer from them. `retrieve` only finds the passages, and gives them without an answer. `invokeAgent` sends the question to the Bedrock agent in `agentId`, which answers it in its own way, for example with its own knowledge bases and actions."
+        type: string
+        enum: ["retrieveAndGenerate", "retrieve", "invokeAgent"]
+        default: retrieveAndGenerate
+      agentId:
+        title: Agent ID
+        description: The ID of the Bedrock agent to ask, a code of 10 letters and digits shown in the Bedrock console. Required when `operation` is `invokeAgent`; the other operations do not use it.
+        type: string
+        pattern: "^[0-9A-Za-z]{10}$"
+        example: KX7Q2M9WZB
+      agentAliasId:
+        title: Agent Alias ID
+        description: The ID of the alias of the agent in `agentId`, a code of 10 letters and digits shown in the Bedrock console. An alias points to one version of the agent; `TSTALIASID` is the alias of its working draft. Required when `operation` is `invokeAgent`.
+        type: string
+        pattern: "^[0-9A-Za-z]{10}$"
+        example: TSTALIASID
+      numberOfResults:
+        title: Number of Results
+        description: The most passages to give for each question. Only used when `operation` is `retrieve`. When it is not set, Bedrock decides how many.
+        type: integer
+        example: 10
+      searchType:
+        title: Search Type
+        description: "How to search the knowledge base for the passages: `SEMANTIC` looks for passages with the same meaning as the question, `HYBRID` also looks for the words of the question, which helps for names and codes. Only used when `operation` is `retrieve`. When it is not set, Bedrock decides."
+        type: string
+        enum: ["HYBRID", "SEMANTIC"]
       accessKey:
         title: Access Key
         description: "The access key ID of an IAM user, which AWS gives when you create an access key for the user (in the AWS console: IAM, Users, Security credentials). Use it together with `secretKey`, or leave both empty and set `useDefaultCredentialsProvider` or `useProfileCredentialsProvider` instead."
@@ -145,7 +171,11 @@ spec:
           type: string
         CamelAwsBedrockAgentRuntimeCitations:
           title: Citations
-          description: The passages of the documents the answer is based on, as a List of objects of the AWS SDK for Java.
+          description: The passages of the documents the answer is based on, as a List of objects of the AWS SDK for Java. Set by `retrieveAndGenerate` and `invokeAgent`.
+          type: array
+        CamelAwsBedrockAgentRuntimeRetrievedResults:
+          title: Retrieved Results
+          description: The passages that `retrieve` found, as a List of objects of the AWS SDK for Java, the same as the body.
           type: array
   dependencies:
     - "camel:aws-bedrock"
@@ -154,14 +184,36 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{?numberOfResults}}' != ''"
+                steps:
+                  - setHeader:
+                      name: CamelAwsBedrockAgentRuntimeNumberOfResults
+                      expression:
+                        constant:
+                          expression: "{{?numberOfResults}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{?searchType}}' != ''"
+                steps:
+                  - setHeader:
+                      name: CamelAwsBedrockAgentRuntimeSearchType
+                      expression:
+                        constant:
+                          expression: "{{?searchType}}"
         - to:
             uri: aws-bedrock-agent-runtime
             parameters:
               label: bedrock-knowledge
               accessKey: "RAW({{?accessKey}})"
-              knowledgeBaseId: "{{knowledgeBaseId}}"
-              modelId: "{{modelId}}"
-              operation: retrieveAndGenerate
+              knowledgeBaseId: "{{?knowledgeBaseId}}"
+              modelId: "{{?modelId}}"
+              operation: "{{operation}}"
               overrideEndpoint: "{{overrideEndpoint}}"
               profileCredentialsName: "{{?profileCredentialsName}}"
               region: "{{region}}"
@@ -174,3 +226,5 @@ spec:
               proxyHost: "{{?proxyHost}}"
               proxyPort: "{{?proxyPort}}"
               proxyProtocol: "{{?proxyProtocol}}"
+              agentId: "{{?agentId}}"
+              agentAliasId: "{{?agentAliasId}}"
