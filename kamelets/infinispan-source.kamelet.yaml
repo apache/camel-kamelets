@@ -123,7 +123,7 @@ spec:
       - name: local-infinispan
         type: "#class:org.apache.camel.component.infinispan.remote.InfinispanRemoteComponent"
     from:
-      uri: "{{local-infinispan}}:{{cacheName}}?hosts={{hosts}}&secure={{secure}}&username={{username}}&password={{password}}&saslMechanism={{saslMechanism}}&securityRealm={{securityRealm}}&securityServerName={{securityServerName}}&eventTypes={{eventTypes}}"
+      uri: "{{local-infinispan}}:{{cacheName}}?hosts={{hosts}}&secure={{secure}}&username={{username}}&password=RAW({{password}})&saslMechanism={{saslMechanism}}&securityRealm={{securityRealm}}&securityServerName={{securityServerName}}&eventTypes={{eventTypes}}"
       steps:
         - setHeader:
             name: infinispan-cache-name

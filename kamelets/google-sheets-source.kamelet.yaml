@@ -186,7 +186,7 @@ spec:
   - "camel:google-sheets"
   template:
     from:
-      uri: "google-sheets-stream://{{spreadsheetId}}?accessToken=RAW({{accessToken}})&applicationName={{?applicationName}}&clientId={{clientId}}&clientSecret=RAW({{clientSecret}})&delay={{delay}}&majorDimension={{majorDimension}}&range={{?range}}&refreshToken=RAW({{refreshToken}})&repeatCount={{?repeatCount}}&splitResults={{splitResults}}"
+      uri: "google-sheets-stream://{{spreadsheetId}}?accessToken=RAW({{accessToken}})&applicationName={{?applicationName}}&clientId=RAW({{clientId}})&clientSecret=RAW({{clientSecret}})&delay={{delay}}&majorDimension={{majorDimension}}&range={{?range}}&refreshToken=RAW({{refreshToken}})&repeatCount={{?repeatCount}}&splitResults={{splitResults}}"
       steps:
         - marshal:
             json: {}

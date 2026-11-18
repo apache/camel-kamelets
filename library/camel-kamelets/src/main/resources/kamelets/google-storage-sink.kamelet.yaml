@@ -114,4 +114,4 @@ spec:
                       simple:
                         expression: "${exchangeId}"
         - to:
-            uri: "google-storage://{{bucketNameOrArn}}?autoCreateBucket={{autoCreateBucket}}&serviceAccountKey=base64:{{?serviceAccountKey}}"
+            uri: "google-storage://{{bucketNameOrArn}}?autoCreateBucket={{autoCreateBucket}}&serviceAccountKey=RAW(base64:{{?serviceAccountKey}})"

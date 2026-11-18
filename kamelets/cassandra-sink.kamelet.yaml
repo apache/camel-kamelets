@@ -135,4 +135,4 @@ spec:
         - removeHeader:
             name: CamelCqlQuery
         - to:
-            uri: "{{local-sql-cassandraql-sink}}://{{connectionHost}}:{{connectionPort}}/{{keyspace}}?username={{?username}}&password={{?password}}&datacenter={{?datacenter}}&prepareStatements={{prepareStatements}}&consistencyLevel={{consistencyLevel}}&cql=RAW({{query}})&extraTypeCodecs={{?extraTypeCodecs}}"
+            uri: "{{local-sql-cassandraql-sink}}://{{connectionHost}}:{{connectionPort}}/{{keyspace}}?username={{?username}}&password=RAW({{?password}})&datacenter={{?datacenter}}&prepareStatements={{prepareStatements}}&consistencyLevel={{consistencyLevel}}&cql=RAW({{query}})&extraTypeCodecs={{?extraTypeCodecs}}"

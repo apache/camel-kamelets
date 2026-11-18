@@ -131,7 +131,7 @@ spec:
     - "camel:jackson3"
   template:
     from:
-      uri: "google-storage://{{bucketNameOrArn}}?autoCreateBucket={{autoCreateBucket}}&deleteAfterRead={{deleteAfterRead}}&filter={{?filter}}&prefix={{?prefix}}&serviceAccountKey=base64:{{?serviceAccountKey}}"
+      uri: "google-storage://{{bucketNameOrArn}}?autoCreateBucket={{autoCreateBucket}}&deleteAfterRead={{deleteAfterRead}}&filter={{?filter}}&prefix={{?prefix}}&serviceAccountKey=RAW(base64:{{?serviceAccountKey}})"
       steps:
         - to:
             uri: kamelet:sink

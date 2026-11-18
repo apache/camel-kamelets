@@ -240,11 +240,11 @@ spec:
       parameters:
         accountName: "{{accountName}}"
         fileSystemName: "{{fileSystemName}}"
-        clientId: "{{clientId}}"
+        clientId: "RAW({{clientId}})"
         clientSecret: "RAW({{clientSecret}})"
         credentialType: "{{credentialType}}"
         delay: "{{delay}}"
-        tenantId: "{{tenantId}}"
+        tenantId: "RAW({{tenantId}})"
       steps:
         - to:
             uri: kamelet:sink

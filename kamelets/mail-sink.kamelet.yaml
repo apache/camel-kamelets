@@ -192,7 +192,7 @@ spec:
         - removeHeaders:
             pattern: ce-*
         - to:
-            uri: "{{protocol}}:{{connectionHost}}:{{connectionPort}}?subject={{?subject}}&from={{?from}}&to={{?to}}&username={{username}}&password={{password}}&useHeaderSubject=true&useHeaderFrom=true&useHeaderRecipients=true&mail.smtp.starttls.enable={{?startTls}}&mail.smtp.starttls.required={{?startTls}}"
+            uri: "{{protocol}}:{{connectionHost}}:{{connectionPort}}?subject={{?subject}}&from={{?from}}&to={{?to}}&username={{username}}&password=RAW({{password}})&useHeaderSubject=true&useHeaderFrom=true&useHeaderRecipients=true&mail.smtp.starttls.enable={{?startTls}}&mail.smtp.starttls.required={{?startTls}}"
             # camel-mail ignores the Subject / From / To / Cc headers unless
             # these are enabled; without them the ce-* mappings above are
             # dead code. Reply-To stays disabled - it is not part of the

@@ -196,8 +196,8 @@ spec:
       parameters:
         topic: "{{topic}}"
         additionalProperties.apicurio.auth.client.id: "{{apicurioAuthClientId}}"
-        additionalProperties.apicurio.auth.client.secret: "{{apicurioAuthClientSecret}}"
-        additionalProperties.apicurio.auth.password: "{{apicurioAuthPassword}}"
+        additionalProperties.apicurio.auth.client.secret: "RAW({{apicurioAuthClientSecret}})"
+        additionalProperties.apicurio.auth.password: "RAW({{apicurioAuthPassword}})"
         additionalProperties.apicurio.auth.realm: "{{apicurioAuthRealm}}"
         additionalProperties.apicurio.auth.service.url: "{{apicurioAuthServiceUrl}}"
         additionalProperties.apicurio.auth.username: "{{apicurioAuthUsername}}"

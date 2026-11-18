@@ -145,4 +145,4 @@ spec:
               simple:
                 expression: "${body}"
         - to:
-            uri: "{{local-infinispan}}:{{cacheName}}?hosts={{hosts}}&secure={{secure}}&username={{username}}&password={{password}}&saslMechanism={{saslMechanism}}&securityRealm={{securityRealm}}&securityServerName={{securityServerName}}"
+            uri: "{{local-infinispan}}:{{cacheName}}?hosts={{hosts}}&secure={{secure}}&username={{username}}&password=RAW({{password}})&saslMechanism={{saslMechanism}}&securityRealm={{securityRealm}}&securityServerName={{securityServerName}}"

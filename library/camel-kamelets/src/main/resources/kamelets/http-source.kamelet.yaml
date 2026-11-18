@@ -156,10 +156,10 @@ spec:
             parameters:
               authMethod: "{{?authMethod}}"
               authUsername: "{{?authUsername}}"
-              authPassword: "{{?authPassword}}"
+              authPassword: "RAW({{?authPassword}})"
               authBearerToken: "RAW({{?authBearerToken}})"
-              oauth2ClientId: "{{?oauth2ClientId}}"
-              oauth2ClientSecret: "{{?oauth2ClientSecret}}"
+              oauth2ClientId: "RAW({{?oauth2ClientId}})"
+              oauth2ClientSecret: "RAW({{?oauth2ClientSecret}})"
               oauth2Scope: "{{?oauth2Scope}}"
               oauth2TokenEndpoint: "{{?oauth2TokenEndpoint}}"
               authenticationPreemptive: "{{authenticationPreemptive}}"

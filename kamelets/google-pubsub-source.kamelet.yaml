@@ -96,7 +96,7 @@ spec:
     - "camel:jackson3"
   template:
     from:
-      uri: "google-pubsub://{{projectId}}:{{subscriptionName}}?concurrentConsumers={{concurrentConsumers}}&maxMessagesPerPoll={{maxMessagesPerPoll}}&serviceAccountKey=base64:{{?serviceAccountKey}}&synchronousPull={{synchronousPull}}"
+      uri: "google-pubsub://{{projectId}}:{{subscriptionName}}?concurrentConsumers={{concurrentConsumers}}&maxMessagesPerPoll={{maxMessagesPerPoll}}&serviceAccountKey=RAW(base64:{{?serviceAccountKey}})&synchronousPull={{synchronousPull}}"
       steps:
         - to:
             uri: kamelet:sink
