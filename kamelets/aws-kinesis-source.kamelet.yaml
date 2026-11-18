@@ -39,7 +39,7 @@ spec:
 
       Output: the body is the data of the record, as bytes. The headers give the partition key, the sequence number, the shard ID and the arrival time of the record.
 
-      Good to know: by default it reads the stream from its oldest record, and again from the oldest record each time the integration starts: it does not remember where it stopped, so records are read again after a restart. Set `iteratorType` to `LATEST` to read only the records written after it started; the records written while it was stopped are then not read. `iteratorType` can also start at a sequence number or at a time, again on each start. Records are not removed: Kinesis keeps them for the retention period of the stream. With `useKclConsumers` it reads through the Kinesis Client Library instead, which keeps where it stopped in a DynamoDB table and does not use `iteratorType`, and the body is a `ByteBuffer` rather than bytes. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. With `useKclConsumers`, the calls of the KCL to DynamoDB and CloudWatch go straight to AWS, without the proxy and without `uriEndpointOverride`.
+      Good to know: by default it reads the stream from its oldest record, and again from the oldest record each time the integration starts: it does not remember where it stopped, so records are read again after a restart. Set `iteratorType` to `LATEST` to read only the records written after it started; the records written while it was stopped are then not read. `iteratorType` can also start at a sequence number or at a time, again on each start. Records are not removed: Kinesis keeps them for the retention period of the stream. It reads all the shards of the stream, up to 1000 records from each in one poll: set `shardId` to read one shard only, and `maxResultsPerRequest` to read fewer records in one poll. When the stream is resharded, it goes on with the new shards; with `shardClosed` set to `fail`, every poll also fails with an error in the log, but the records are still read. With `useKclConsumers` it reads through the Kinesis Client Library instead, which keeps where it stopped in a DynamoDB table named after `applicationName`, or after the stream, and does not use `iteratorType`, `shardId`, `maxResultsPerRequest` or `shardClosed`; the body is then a `ByteBuffer` rather than bytes. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. With `useKclConsumers`, the calls of the KCL to DynamoDB and CloudWatch go straight to AWS, without the proxy and without `uriEndpointOverride`.
     required:
       - stream
       - region
@@ -128,6 +128,23 @@ spec:
         description: How long to wait between two polls of the stream, in milliseconds.
         type: integer
         default: 500
+      maxResultsPerRequest:
+        title: Max Records Per Poll
+        description: The most records it reads from each shard in one poll, from 1 to 10000. When it is not set, it is 1000. Not used when `useKclConsumers` is true.
+        type: integer
+        example: 100
+      shardId:
+        title: Shard ID
+        description: The ID of the one shard to read, such as `shardId-000000000000`, as the AWS console or `aws kinesis list-shards` shows it. When it is not set, it reads all the shards of the stream. Not used when `useKclConsumers` is true.
+        type: string
+        pattern: "^shardId-[0-9]+$"
+        example: shardId-000000000000
+      shardClosed:
+        title: Closed Shard
+        description: "What to do when it has read the last record of a closed shard. A shard is closed when the stream is resharded, for example when the number of shards is changed, and new shards take its place. `ignore` logs a warning once and goes on with the other shards, and so does `silent`, without the warning. With `fail`, each later poll fails with an error and a stack trace in the log, for as long as the closed shard is listed, which is 24 hours by default; the records of the other shards are still read. When it is not set, it is `ignore`. Not used when `useKclConsumers` is true."
+        type: string
+        enum: ["ignore", "silent", "fail"]
+        example: ignore
       asyncClient:
         title: Async Client
         description: If true, it uses the asynchronous Kinesis client of the AWS SDK. `useKclConsumers` needs it.
@@ -143,6 +160,12 @@ spec:
         description: If true, the Kinesis Client Library does not send its metrics to CloudWatch. Only used when `useKclConsumers` is true.
         type: boolean
         default: false
+      applicationName:
+        title: KCL Application Name
+        description: "The name of the application for the Kinesis Client Library. The KCL keeps where it stopped, and which copy of the integration reads which shard, in a DynamoDB table of this name, which it creates. Copies of the integration with the same name share the shards of the stream; give another integration that reads the same stream its own name, so that it reads all the records too. When it is not set, it is the name of the stream. Only used when `useKclConsumers` is true."
+        type: string
+        pattern: "^[A-Za-z0-9_.-]{3,255}$"
+        example: orders-processor
       proxyHost:
         title: Proxy Host
         description: The host name or IP address of an HTTP proxy to send the calls to AWS through, such as the proxy of a company network. Used only together with `proxyPort`. When it is not set, the calls go straight to AWS.
@@ -210,6 +233,10 @@ spec:
         proxyHost: "{{?proxyHost}}"
         proxyPort: "{{?proxyPort}}"
         proxyProtocol: "{{?proxyProtocol}}"
+        maxResultsPerRequest: "{{?maxResultsPerRequest}}"
+        shardId: "{{?shardId}}"
+        shardClosed: "{{?shardClosed}}"
+        applicationName: "{{?applicationName}}"
       steps:
         - to:
             uri: kamelet:sink

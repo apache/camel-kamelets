@@ -38,7 +38,7 @@ spec:
 
       Output: the body is the CloudTrail record of the event, as JSON text. The headers give the ID, the name (such as `GetSecretValue`), the source (such as `secretsmanager.amazonaws.com`) and the user name of the event.
 
-      Good to know: it looks up the management events that CloudTrail keeps for the region, which go back 90 days, so when it starts it also reads events from before. It remembers which events it read only while it runs: after a restart it reads them again. Nothing is removed from CloudTrail. An event can be looked up only some minutes after it happened. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: it looks up the management events that CloudTrail keeps for the region, and reads the events that happen after it starts. It remembers where it is only while it runs: the events that happen while it is stopped are not read. Nothing is removed from CloudTrail. An event can be looked up only some minutes after it happened, and sometimes after a newer event: every `lookBackInterval` it looks up the last `lookBackWindow` again, and reads the events it missed. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - region
     type: object
@@ -110,6 +110,16 @@ spec:
         description: Read only the events of this AWS service, given as its address, such as `s3.amazonaws.com` or `secretsmanager.amazonaws.com`. When it is not set, the events of all services are read.
         type: string
         example: secretsmanager.amazonaws.com
+      lookBackWindow:
+        title: Look Back Window
+        description: How far back it looks up the events again, in milliseconds, to read the events that CloudTrail made visible after a newer one. When it is not set, it is 600000, ten minutes. 0 turns the second lookup off, and then such a late event is not read. Needs Camel 4.24 or later.
+        type: integer
+        example: 600000
+      lookBackInterval:
+        title: Look Back Interval
+        description: How often it looks up the `lookBackWindow` again, in milliseconds. A late event is read at most this long after it became visible. When it is not set, it is 60000, one minute. It must be above 0 unless `lookBackWindow` is 0, or the integration does not start. Needs Camel 4.24 or later.
+        type: integer
+        example: 60000
       proxyHost:
         title: Proxy Host
         description: The host name or IP address of an HTTP proxy to send the calls to AWS through, such as the proxy of a company network. Used only together with `proxyPort`. When it is not set, the calls go straight to AWS.
@@ -200,6 +210,8 @@ spec:
         proxyHost: "{{?proxyHost}}"
         proxyPort: "{{?proxyPort}}"
         proxyProtocol: "{{?proxyProtocol}}"
+        lookBackWindow: "{{?lookBackWindow}}"
+        lookBackInterval: "{{?lookBackInterval}}"
       steps:
         - to:
             uri: kamelet:sink

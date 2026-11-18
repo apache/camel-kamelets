@@ -19,6 +19,25 @@ Only one of access key/secret key or default credentials provider could be used
 
 For more information, see the https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials.html[AWS credentials documentation]
 
+=== Events That Become Visible Late
+
+The Kamelet reads the events that happen after it starts. CloudTrail can make an event visible some minutes after it happened, and after a newer event, which the Kamelet has then already read past. So every `lookBackInterval` (one minute when it is not set) the Kamelet looks up the last `lookBackWindow` (ten minutes when it is not set) again, and reads the events it has not read yet. Set `lookBackWindow` to 0 to turn this off, or set a shorter `lookBackInterval` to read a late event sooner, at the cost of more lookups. Both options need Camel 4.24 or later.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:aws-cloudtrail-source"
+      parameters:
+        region: "eu-west-1"
+        useDefaultCredentialsProvider: true
+        lookBackWindow: 900000
+        lookBackInterval: 30000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
 === Through an HTTP Proxy
 
 Where AWS can be reached only through an HTTP proxy, as in many company networks, set `proxyHost` and `proxyPort` to the proxy. `proxyProtocol` is how the Kamelet talks to the proxy itself, not to AWS: it is `HTTPS` when it is not set, so set it to `HTTP` for a proxy that takes plain HTTP, such as Squid. The calls to AWS stay encrypted, as the proxy only passes them on. The Kamelet has no option for a proxy user or password.
