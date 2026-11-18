@@ -93,6 +93,16 @@ public final class CatalogValidator {
             "cassandra-sink",
             "data-type-action");
 
+    /**
+     * The parameters of a kamelet: endpoint that the kamelet: component takes for itself (KameletComponent and
+     * KameletEndpoint in apache/camel): templateId, routeId, location and uuid are removed, and the endpoint options
+     * are bound to the kamelet: endpoint. None of them reaches the template.
+     */
+    static final Set<String> RESERVED_PROPERTY_NAMES = new TreeSet<>(Set.of(
+            "templateId", "routeId", "location", "uuid",
+            "block", "timeout", "failIfNoConsumers", "noErrorHandler", "advancedOptions",
+            "bridgeErrorHandler", "exceptionHandler", "exchangePattern", "lazyStartProducer"));
+
     private CatalogValidator() {
     }
 
@@ -215,6 +225,7 @@ public final class CatalogValidator {
         }
         verifyAnnotations(kamelets, errors);
         verifyDescriptors(kamelets, errors);
+        verifyReservedPropertyNames(kamelets, errors);
         verifyDuplicates(kamelets, errors);
         verifySummary(kamelets, errors);
         verifyAttributeReferences(kamelets, errors);
@@ -400,6 +411,25 @@ public final class CatalogValidator {
                     if (!seen.add(d)) {
                         errors.add("property " + q(e.getKey()) + " in kamelet " + q(k.name)
                                 + " lists the x-descriptor " + q(d) + " more than once");
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * A Kamelet property must not have the name of a parameter that the kamelet: component takes for itself: such
+     * a parameter of kamelet:my-sink?name=value never reaches the template. location is where the Kamelet is
+     * loaded from, so the Kamelet is not found at all; the others configure the kamelet: endpoint instead.
+     */
+    static void verifyReservedPropertyNames(List<KameletInfo> kamelets, List<String> errors) {
+        for (KameletInfo k : kamelets) {
+            for (String key : k.properties().keySet()) {
+                for (String reserved : RESERVED_PROPERTY_NAMES) {
+                    if (reserved.equalsIgnoreCase(key)) {
+                        errors.add("property " + q(key) + " in kamelet " + q(k.name) + " has the name of the "
+                                + q(reserved) + " option of the kamelet: component, which takes it for itself and"
+                                + " does not pass it on to the template: choose another name");
                     }
                 }
             }

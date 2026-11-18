@@ -35,7 +35,7 @@ Upload data to an IBM COS bucket:
               apiKey: "{{ibm.api.key}}"
               serviceInstanceId: "{{ibm.service.instance.id}}"
               endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
-              location: "us-south"
+              region: "us-south"
 ----
 
 ==== Auto-creating buckets
@@ -55,7 +55,7 @@ The Kamelet can automatically create the bucket if it doesn't exist:
               apiKey: "{{ibm.api.key}}"
               serviceInstanceId: "{{ibm.service.instance.id}}"
               endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
-              location: "us-south"
+              region: "us-south"
               autoCreateBucket: true
 ----
 
@@ -76,7 +76,7 @@ You can specify a fixed key name for all uploaded objects:
               apiKey: "{{ibm.api.key}}"
               serviceInstanceId: "{{ibm.service.instance.id}}"
               endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
-              location: "us-south"
+              region: "us-south"
               keyName: "data/myfile.txt"
 ----
 
@@ -97,7 +97,7 @@ For large files, you can enable multi-part upload:
               apiKey: "{{ibm.api.key}}"
               serviceInstanceId: "{{ibm.service.instance.id}}"
               endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
-              location: "us-south"
+              region: "us-south"
               multiPartUpload: true
               partSize: 52428800
 ----
@@ -121,7 +121,7 @@ You can specify different storage classes for cost optimization:
               apiKey: "{{ibm.api.key}}"
               serviceInstanceId: "{{ibm.service.instance.id}}"
               endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
-              location: "us-south"
+              region: "us-south"
               storageClass: "STANDARD"
 ----
 

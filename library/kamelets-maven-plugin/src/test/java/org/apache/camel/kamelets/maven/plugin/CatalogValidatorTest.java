@@ -18,6 +18,7 @@ package org.apache.camel.kamelets.maven.plugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,6 +80,42 @@ public class CatalogValidatorTest {
         assertEquals(List.of(), verifyAttributeReferences(
                 "Sets `$\\{body}` and `{\\{body}}`, with `{{headers.name}}`, `{ \"id\": 1 }` and `{}`.",
                 "A path such as `/pets/\\{petId}`."));
+    }
+
+    @Test
+    void aPropertyNamedLikeAnOptionOfTheKameletComponent() {
+        List<String> errors = verifyReservedPropertyNames("bucketName", "location");
+
+        assertEquals(List.of("property \"location\" in kamelet \"a-sink\" has the name of the \"location\" option of the"
+                + " kamelet: component, which takes it for itself and does not pass it on to the template: choose"
+                + " another name"), errors);
+    }
+
+    @Test
+    void everyOptionOfTheKameletComponentIsReservedWhateverItsCase() {
+        assertEquals(1, verifyReservedPropertyNames("templateId").size());
+        assertEquals(1, verifyReservedPropertyNames("routeId").size());
+        assertEquals(1, verifyReservedPropertyNames("uuid").size());
+        assertEquals(1, verifyReservedPropertyNames("timeout").size());
+        assertEquals(1, verifyReservedPropertyNames("lazyStartProducer").size());
+        assertEquals(1, verifyReservedPropertyNames("Location").size());
+    }
+
+    @Test
+    void otherPropertyNamesAreFine() {
+        assertEquals(List.of(), verifyReservedPropertyNames("region", "lazyStart", "connectTimeout", "locationId"));
+    }
+
+    private static List<String> verifyReservedPropertyNames(String... names) {
+        Map<String, Object> properties = new LinkedHashMap<>();
+        for (String name : names) {
+            properties.put(name, Map.of("type", "string", "title", "Option", "description", "An option."));
+        }
+        Map<String, Object> doc = Map.of("spec", Map.of("definition", Map.of("properties", properties)));
+        List<String> errors = new ArrayList<>();
+        CatalogValidator.verifyReservedPropertyNames(
+                List.of(new CatalogValidator.KameletInfo("a-sink", new File("a-sink.kamelet.yaml"), doc)), errors);
+        return errors;
     }
 
     private static List<String> verifyAttributeReferences(String description, String propertyDescription) {

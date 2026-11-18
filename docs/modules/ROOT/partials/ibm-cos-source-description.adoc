@@ -26,7 +26,7 @@ You can consume objects from an IBM COS bucket and delete them after processing:
         apiKey: "{{ibm.api.key}}"
         serviceInstanceId: "{{ibm.service.instance.id}}"
         endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
-        location: "us-south"
+        region: "us-south"
       steps:
         - to:
             uri: "kamelet:log-sink"
@@ -48,7 +48,7 @@ To consume objects without deleting them, set `deleteAfterRead` to false:
         apiKey: "{{ibm.api.key}}"
         serviceInstanceId: "{{ibm.service.instance.id}}"
         endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
-        location: "us-south"
+        region: "us-south"
         deleteAfterRead: false
       steps:
         - to:
@@ -69,7 +69,7 @@ Instead of deleting objects, you can move them to another bucket:
         apiKey: "{{ibm.api.key}}"
         serviceInstanceId: "{{ibm.service.instance.id}}"
         endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
-        location: "us-south"
+        region: "us-south"
         deleteAfterRead: false
         moveAfterRead: true
         destinationBucket: "archive-bucket"
@@ -93,7 +93,7 @@ You can filter objects using a prefix:
         apiKey: "{{ibm.api.key}}"
         serviceInstanceId: "{{ibm.service.instance.id}}"
         endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
-        location: "us-south"
+        region: "us-south"
         prefix: "inbox/"
       steps:
         - to:
@@ -116,7 +116,7 @@ To consume only object metadata without the body, set `includeBody` to false:
         apiKey: "{{ibm.api.key}}"
         serviceInstanceId: "{{ibm.service.instance.id}}"
         endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
-        location: "us-south"
+        region: "us-south"
         includeBody: false
       steps:
         - to:
