@@ -22,6 +22,37 @@ Supports multiple authentication methods:
 - OAuth 2.0 access tokens
 - Basic authentication with username and password
 
+=== Timeouts, Compression and Summary
+
+The connection to the server, and the answer to each request, each time out after 10 seconds unless
+`connectionTimeout` and `socketTimeout` say otherwise. `compress` sends the resource compressed with GZIP.
+`summary` asks the server for a short answer, with the FHIR `_summary` parameter; the server still stores the whole
+resource. `validationMode` `NEVER` skips the read of `/metadata` before the first message, for a server that does
+not serve it.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:kafka-source"
+      parameters:
+        topic: "admissions"
+        bootstrapServers: "localhost:9092"
+      steps:
+        - to:
+            uri: "kamelet:fhir-sink"
+            parameters:
+              serverUrl: "https://fhir.example.com/fhir"
+              apiName: "CREATE"
+              methodName: "resource"
+              accessToken: "my-oauth-token"
+              connectionTimeout: 5000
+              socketTimeout: 60000
+              compress: true
+              summary: "TRUE"
+              validationMode: "NEVER"
+----
+
 === Proxy Support
 
 The Kamelet can be configured to work through HTTP proxies with optional authentication.

@@ -40,7 +40,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the outcome of the operation, as a Java object of the HAPI FHIR library, with the id of the resource; it is not JSON.
 
-      Good to know: a body that is not a valid FHIR resource of the chosen `fhirVersion` fails the message. Operations that do not take a resource, such as `READ` or `SEARCH`, fail.
+      Good to know: a body that is not a valid FHIR resource of the chosen `fhirVersion` fails the message. Operations that do not take a resource, such as `READ` or `SEARCH`, fail. Before the first message, it reads the capability statement of the server at `/metadata`, unless `validationMode` is `NEVER`. A server that does not answer within `connectionTimeout` and `socketTimeout`, 10 seconds each when they are not set, fails the message.
     required:
     - serverUrl
     - apiName
@@ -89,6 +89,31 @@ spec:
         description: "If true, the connection to the server is set up at the first message instead of when the integration starts, so that the integration can start while the server is not reachable. The first message then takes a little longer."
         type: boolean
         default: false
+      connectionTimeout:
+        title: Connection Timeout
+        description: How long to wait for the connection to the server to be set up, in milliseconds. When it is not set, it is 10000 (10 seconds). A server that cannot be reached in time fails the message.
+        type: integer
+        example: 5000
+      socketTimeout:
+        title: Socket Timeout
+        description: How long to wait for the answer of the server to a request, in milliseconds. When it is not set, it is 10000 (10 seconds). A server that does not answer in time fails the message, so raise it for a slow server.
+        type: integer
+        example: 60000
+      compress:
+        title: Compress
+        description: If true, the resource sent to the server is compressed with GZIP, with the header `Content-Encoding` set to `gzip`, which saves bandwidth for large resources. The server must accept GZIP requests.
+        type: boolean
+        example: true
+      summary:
+        title: Summary
+        description: Asks the server to answer with a short form of the resource, with the FHIR `_summary` parameter on every request, such as `TRUE` for the summary elements only, or `DATA` for all but the text. The server still stores the whole resource; only the answer, the body afterwards, is shorter. When it is not set, the server answers in full.
+        type: string
+        enum: ["COUNT", "TEXT", "DATA", "TRUE", "FALSE"]
+      validationMode:
+        title: Validation Mode
+        description: Whether the capability statement of the server, at `/metadata`, is read before the first message. With `ONCE`, a server that does not answer it fails the message; `NEVER` does not read it, for a server without `/metadata`. When it is not set, it is `ONCE`.
+        type: string
+        enum: ["NEVER", "ONCE"]
       proxyHost:
         title: Proxy Host
         description: The host name of an HTTP proxy to reach the server through. Use it with `proxyPort`.
@@ -159,4 +184,4 @@ spec:
                         prettyPrint: "{{prettyPrint}}"
                         fhirVersion: "{{fhirVersion}}"
         - to:
-            uri: "fhir://{{apiName}}/{{methodName}}?accessToken=RAW({{?accessToken}})&encoding={{encoding}}&fhirVersion={{fhirVersion}}&inBody=resource&lazyStartProducer={{lazyStart}}&log={{log}}&password=RAW({{?password}})&prettyPrint={{prettyPrint}}&proxyHost={{?proxyHost}}&proxyPassword=RAW({{?proxyPassword}})&proxyPort={{?proxyPort}}&proxyUser=RAW({{?proxyUser}})&serverUrl={{serverUrl}}&username=RAW({{?username}})"
+            uri: "fhir://{{apiName}}/{{methodName}}?accessToken=RAW({{?accessToken}})&compress={{?compress}}&connectionTimeout={{?connectionTimeout}}&encoding={{encoding}}&fhirVersion={{fhirVersion}}&inBody=resource&lazyStartProducer={{lazyStart}}&log={{log}}&password=RAW({{?password}})&prettyPrint={{prettyPrint}}&proxyHost={{?proxyHost}}&proxyPassword=RAW({{?proxyPassword}})&proxyPort={{?proxyPort}}&proxyUser=RAW({{?proxyUser}})&serverUrl={{serverUrl}}&socketTimeout={{?socketTimeout}}&summary={{?summary}}&username=RAW({{?username}})&validationMode={{?validationMode}}"
