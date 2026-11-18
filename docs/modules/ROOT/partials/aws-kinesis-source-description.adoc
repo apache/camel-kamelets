@@ -78,7 +78,7 @@ By default the Kamelet reads all the shards of the stream, and up to 1000 record
             uri: "kamelet:log-sink"
 ----
 
-When the stream is resharded, for example when the number of shards is changed, the old shards are closed and new ones take their place. Without `shardId`, the Kamelet goes on with the new shards, and `shardClosed` says what it does about a closed shard once it has read its last record: `ignore` (the default) logs a warning once, and `silent` logs nothing. With `fail`, each later poll fails with an error and reads no records, from any shard.
+When the stream is resharded, for example when the number of shards is changed, the old shards are closed and new ones take their place. Without `shardId`, the Kamelet goes on with the new shards, and `shardClosed` says what it does about a closed shard once it has read its last record: `ignore` (the default) logs a warning once, and `silent` logs nothing. With `fail`, each later poll fails with an error and a stack trace in the log, for as long as the closed shard is listed, which is 24 hours by default; the records of the other shards are still read.
 
 === Usage example with KCL Consumer
 
