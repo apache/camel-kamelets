@@ -1,9 +1,39 @@
 == NATS Source Kamelet Description
 
-=== Authentication
+=== Login
 
-The Kamelet has no login options. For a server that needs a user and password, put them in the address in `servers`,
-as `nats://user:password@host:4222`. The Kamelet has no TLS options.
+For a server that needs a user and password, put them in the address in `servers`, as
+`nats://user:password@host:4222`, or put a token there, as `nats://token@host:4222`.
+
+For a server with decentralized authentication, such as Synadia Cloud, log in with a NATS credentials file (`.creds`),
+which holds a user JWT and the NKey seed of the user. Set its location in `credentialsFilePath`, as `file:` followed by
+the path of the file. The `nsc generate creds` command makes one.
+
+=== TLS with a Private Certificate Authority
+
+With `secure: true` the Kamelet connects with TLS, which a server with TLS in its configuration requires, and checks
+the certificate of the server against the certificate authorities that Java trusts. When the server has a certificate
+from a private or self-signed authority, put the certificate of that authority in a trust store file (JKS or PKCS12),
+and set it in the application properties, as the global TLS settings of Camel. With Camel JBang or Camel Main, in
+`application.properties`:
+
+[source,properties]
+----
+camel.ssl.enabled=true
+camel.ssl.trustStore=file:/etc/nats/truststore.p12
+camel.ssl.trustStorePassword=changeit
+camel.component.nats.useGlobalSslContextParameters=true
+----
+
+That trust store then replaces the one of Java for every NATS connection of the application that has `secure` set.
+An address that starts with `tls://` also connects with TLS, but it uses that trust store only when `secure` is true.
+
+=== Running several copies: queue groups
+
+Each copy of the integration receives every message of the subject. To share the messages instead, so that each
+message is processed by only one copy, give every copy the same `queueName`. NATS then delivers each message to one
+member of the queue group. This works only without JetStream: with `jetstreamEnabled`, each copy still receives every
+message of the stream.
 
 === Output format
 
@@ -25,6 +55,24 @@ the subject in `topic` when it does not exist. Each time it starts, it reads the
       parameters:
         servers: "nats://localhost:4222"
         topic: "orders.created"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with TLS, a Credentials File and a Queue Group
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:nats-source"
+      parameters:
+        servers: "tls://nats.example.com:4222"
+        topic: "orders.created"
+        secure: true
+        credentialsFilePath: "file:/etc/nats/app-user.creds"
+        queueName: "order-workers"
       steps:
         - to:
             uri: "kamelet:log-sink"
