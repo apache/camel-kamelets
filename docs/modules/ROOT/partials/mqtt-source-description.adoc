@@ -13,8 +13,10 @@ The MQTT Source Kamelet supports the following configurations:
 - **Username**: Username for MQTT authentication (optional)
 - **Password**: Password for MQTT authentication (optional)
 - **Client ID**: MQTT client identifier; a unique one is generated when it is not set. Two clients with the same ID push each other off the broker.
+- **Quality of Service** (`qos`): the highest QoS to receive messages with, 0, 1 or 2; 2 when it is not set
+- **SSL Truststore Location** and **SSL Truststore Password**: a trust store file (JKS or PKCS12) with the certificate authority of the broker, for an `ssl://` broker with a certificate from a private or self-signed authority
 
-The Kamelet subscribes with QoS 2 and a clean session, so it receives only the messages published while it is connected. It has no options to change the QoS or the session.
+The Kamelet subscribes with a clean session, so it receives only the messages published while it is connected, plus, when it subscribes, the last retained message of each matching topic. It has no option to change the session.
 
 === Output Format
 
@@ -57,6 +59,13 @@ The Kamelet outputs the MQTT message payload as bytes, with the `CamelMqttTopic`
 
 === Example with SSL/TLS
 
+With an `ssl://` address the Kamelet connects with TLS, checks the certificate and the host name of the broker, and trusts the certificate authorities that Java trusts by default. When the broker has a certificate from a private or self-signed authority, put the certificate of that authority in a trust store file and set `sslTruststoreLocation` and `sslTruststorePassword`; the Kamelet then trusts the authorities in that file instead.
+
+[source,bash]
+----
+keytool -importcert -alias mqtt-ca -file ca.crt -keystore truststore.jks -storepass changeit
+----
+
 [source,yaml,subs='+attributes,macros']
 ----
 - route:
@@ -67,6 +76,8 @@ The Kamelet outputs the MQTT message payload as bytes, with the `CamelMqttTopic`
         brokerUrl: "ssl://mqtt.example.com:8883"
         username: "mqttuser"
         password: "mqttpass"
+        sslTruststoreLocation: "/etc/mqtt/truststore.jks"
+        sslTruststorePassword: "changeit"
       steps:
         - to:
             uri: "kamelet:log-sink"
@@ -78,4 +89,18 @@ The Kamelet outputs the MQTT message payload as bytes, with the `CamelMqttTopic`
 - **QoS 1**: At least once delivery (acknowledged delivery)
 - **QoS 2**: Exactly once delivery (assured delivery)
 
-The Kamelet subscribes with QoS 2; a message is received with the lower of that and the QoS it was published with.
+The Kamelet subscribes with the QoS in `qos`, or 2 when it is not set; a message is received with the lower of that and the QoS it was published with. The `CamelMqttQoS` header tells which.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mqtt-source"
+      parameters:
+        topic: "sensors/#"
+        brokerUrl: "tcp://mqtt.example.com:1883"
+        qos: 1
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

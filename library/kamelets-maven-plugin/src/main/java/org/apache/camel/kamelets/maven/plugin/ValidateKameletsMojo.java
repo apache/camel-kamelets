@@ -136,7 +136,16 @@ public class ValidateKameletsMojo extends AbstractMojo {
                                 // a multi value option takes its entries by prefix: mail.imaps.auth.mechanisms on imaps
                                 boolean prefixed = ce.stream().anyMatch(o -> o.isMultiValue() && o.getPrefix() != null
                                         && !o.getPrefix().isEmpty() && entry.getKey().startsWith(o.getPrefix()));
-                                if (!ceInternal.contains(entry.getKey()) && !prefixed) {
+                                // a Map or Properties option takes its entries as option[key]:
+                                // sslClientProps[com.ibm.ssl.trustStore] on paho
+                                String key = entry.getKey();
+                                int bracket = key.indexOf('[');
+                                boolean mapEntry = bracket > 0 && key.endsWith("]")
+                                        && ce.stream().anyMatch(o -> o.getName().equals(key.substring(0, bracket))
+                                                && o.getJavaType() != null
+                                                && (o.getJavaType().equals("java.util.Properties")
+                                                        || o.getJavaType().startsWith("java.util.Map")));
+                                if (!ceInternal.contains(key) && !prefixed && !mapEntry) {
                                     getLog().error("Kamelet Name: " + name);
                                     getLog().error("Scheme Name: " + cleanName);
                                     getLog().error("Parameter: " + entry.getKey());

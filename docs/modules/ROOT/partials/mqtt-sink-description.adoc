@@ -27,4 +27,47 @@ MQTT's lightweight nature makes it ideal for:
 
 === Quality of Service
 
-MQTT supports different Quality of Service levels for message delivery guarantees. This Kamelet publishes every message with QoS 2 (exactly once), not retained, and has no option to change that.
+MQTT supports different Quality of Service levels for message delivery guarantees. Set them with `qos`:
+
+- **QoS 0**: at most once, with no confirmation from the broker
+- **QoS 1**: at least once; a message can arrive twice
+- **QoS 2**: exactly once (used when `qos` is not set)
+
+A subscriber receives each message with the lower of this and the QoS it subscribed with.
+
+=== Retained Messages
+
+With `retained: true`, the broker keeps the last message of the topic and gives it to every client that subscribes to the topic later, for example the last known state of a device. Each retained message replaces the one before. When `retained` is not set, the broker does not keep the messages.
+
+=== TLS with a Private Certificate Authority
+
+With an `ssl://` address the Kamelet connects with TLS, checks the certificate and the host name of the broker, and trusts the certificate authorities that Java trusts by default. When the broker has a certificate from a private or self-signed authority, put the certificate of that authority in a trust store file (JKS or PKCS12) and set `sslTruststoreLocation` and `sslTruststorePassword`. The Kamelet then trusts the authorities in that file instead.
+
+[source,bash]
+----
+keytool -importcert -alias mqtt-ca -file ca.crt -keystore truststore.jks -storepass changeit
+----
+
+=== Example with QoS 1, Retained and TLS
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: "online"
+        period: 60000
+      steps:
+        - to:
+            uri: "kamelet:mqtt-sink"
+            parameters:
+              topic: "devices/gateway-1/status"
+              brokerUrl: "ssl://mqtt.example.com:8883"
+              username: "mqttuser"
+              password: "mqttpass"
+              qos: 1
+              retained: true
+              sslTruststoreLocation: "/etc/mqtt/truststore.jks"
+              sslTruststorePassword: "changeit"
+----

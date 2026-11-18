@@ -37,7 +37,7 @@ spec:
 
       Output: the body is the payload, as bytes. The `CamelMqttTopic` header is the topic the message was published to, and `CamelMqttQoS` its quality of service.
 
-      Good to know: it receives only the messages published while it is connected. Each running copy needs its own `clientId`: two clients with the same ID keep pushing each other off the broker and lose messages. When it is not set, a unique one is generated. It connects with no TLS unless `brokerUrl` starts with `ssl://`, and the integration fails to start when the broker cannot be reached.
+      Good to know: it receives only the messages published while it is connected, plus, when it subscribes, the last retained message of each matching topic. It subscribes with quality of service 2 (exactly once) unless `qos` is set. Each running copy needs its own `clientId`: two clients with the same ID keep pushing each other off the broker and lose messages. When it is not set, a unique one is generated. It connects with no TLS unless `brokerUrl` starts with `ssl://`. With TLS it checks the certificate and the host name of the broker, and trusts the certificate authorities that Java trusts by default, or instead the ones in `sslTruststoreLocation`. The integration fails to start when the broker cannot be reached or fails these checks.
     required:
     - topic
     - brokerUrl
@@ -50,7 +50,7 @@ spec:
         example: "sensors/#"
       brokerUrl:
         title: "Broker URL"
-        description: "The address of the MQTT broker, as `tcp://host:port` (usually port 1883), or `ssl://host:port` for TLS (usually port 8883)."
+        description: "The address of the MQTT broker, as `tcp://host:port` (usually port 1883), or `ssl://host:port` for TLS (usually port 8883). For a broker with a certificate from a private or self-signed authority, also set `sslTruststoreLocation`."
         type: string
         example: "tcp://mosquitto:1883"
       clientId:
@@ -67,6 +67,24 @@ spec:
       password:
         title: "Password"
         description: "The password to log in to the broker with, for the user `username`."
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      qos:
+        title: "Quality of Service"
+        description: "The highest quality of service to receive messages with: 0 (at most once, with no confirmation), 1 (at least once, a message can arrive twice) or 2 (exactly once). The broker sends each message with the lower of this and the quality of service it was published with, which the `CamelMqttQoS` header tells. When it is not set, 2 is used."
+        type: integer
+        enum: [0, 1, 2]
+        example: 1
+      sslTruststoreLocation:
+        title: "SSL Truststore Location"
+        description: "The path of a trust store file, in JKS or PKCS12 format, with the certificate of the authority that signed the certificate of the broker. Needed only with an `ssl://` address when the broker uses a certificate that Java does not trust by default, such as one from a private or self-signed authority. Not used with `tcp://`."
+        type: string
+        example: "/etc/mqtt/truststore.jks"
+      sslTruststorePassword:
+        title: "SSL Truststore Password"
+        description: "The password of the trust store file in `sslTruststoreLocation`."
         type: string
         format: password
         x-descriptors:
@@ -94,6 +112,9 @@ spec:
         clientId: "{{?clientId}}"
         password: "RAW({{?password}})"
         userName: "RAW({{?username}})"
+        qos: "{{?qos}}"
+        "sslClientProps[com.ibm.ssl.trustStore]": "{{?sslTruststoreLocation}}"
+        "sslClientProps[com.ibm.ssl.trustStorePassword]": "RAW({{?sslTruststorePassword}})"
       steps:
         - to:
             uri: kamelet:sink
