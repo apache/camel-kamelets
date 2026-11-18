@@ -34,15 +34,17 @@ spec:
     description: |-
       Sends each message to a queue or a topic in Azure Service Bus, the Azure message broker.
 
-      Use it to hand work or events to other applications through Service Bus, such as orders to process, or notifications for all the subscribers of a topic. For simple storage queues, use `azure-storage-queue-sink`.
+      Use it to hand work or events to other applications through Service Bus, such as orders to process, or notifications for all the subscribers of a topic, now or after a delay. For simple storage queues, use `azure-storage-queue-sink`.
 
-      Input: the body is sent as text: text, bytes or a stream are read as text. A Map is sent as its text form, so turn it into JSON text first, for example with `json-serialize-action`. A List is sent as one message per element. The optional `CamelAzureServiceBusApplicationProperties` header, a Map, sets the custom properties of the message.
+      Input: the body is sent as text: text, bytes or a stream are read as text, so bytes that are not UTF-8 text, such as an image, are damaged. With `binary` set to `true`, the body is sent as bytes, exactly as they are, and text as its UTF-8 bytes. A Map is sent as its text form, so turn it into JSON text first, for example with `json-serialize-action`; with `binary`, a Map cannot be sent at all. A List is sent as one message per element. The optional `CamelAzureServiceBusApplicationProperties` header, a Map, sets the custom properties of the message.
 
       Output: the message is unchanged.
 
       Good to know: the shared access policy of the connection string needs the Send right.
 
       A queue created with sessions enabled accepts only messages with a session ID: without one, the send fails. A topic accepts them, but each of its subscriptions with sessions enabled moves them to its dead-letter queue. Set `sessionId` to send every message with that session ID; a reader of the queue or subscription then receives the messages of the session in the order they were sent. The session ID is fixed for the Kamelet: the `CamelAzureServiceBusSessionId` header is not read, so messages that must go to different sessions need one sink for each session ID.
+
+      Set `scheduledEnqueueDelay` to have Service Bus hold each message for that many seconds before readers can receive it, for example to send a reminder. The delay is the same for every message, and counts from the clock of the integration.
 
       To log in with an Azure identity instead of a connection string, set `credentialType` to `AZURE_IDENTITY` and `fullyQualifiedNamespace`, and leave `connectionString` unset.
     required:
@@ -85,16 +87,48 @@ spec:
         type: string
         pattern: "^.{1,128}$"
         example: customer-42
+      binary:
+        title: Binary
+        description: Set to `true` to send the body as bytes, exactly as they are, such as an image or a compressed file. When unset, the body is sent as text, and bytes that are not UTF-8 text are damaged. Text is sent as its UTF-8 bytes either way. With `binary`, a Map body fails to send, so turn it into JSON text first.
+        type: boolean
+      scheduledEnqueueDelay:
+        title: Scheduled Enqueue Delay
+        description: How many seconds Service Bus holds each message before readers can receive it. The message is accepted at once, and appears in the queue or topic once the delay is over, with that time as its enqueued time. When unset, the message can be received straight away.
+        type: integer
+        minimum: 1
+        example: 600
   types:
     in:
       mediaType: application/octet-stream
   dependencies:
     - "camel:azure-servicebus"
+    - "camel:bean"
     - "camel:kamelet"
   template:
     from:
       uri: kamelet:source
       steps:
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{?scheduledEnqueueDelay}}' != ''"
+                steps:
+                  - setHeader:
+                      name: CamelAzureServiceBusProducerOperation
+                      expression:
+                        constant:
+                          expression: scheduleMessages
+                  - setHeader:
+                      name: CamelAzureServiceBusScheduledEnqueueTime
+                      expression:
+                        simple:
+                          expression: "${bean:type:java.time.OffsetDateTime?method=now()}"
+                  - setHeader:
+                      name: CamelAzureServiceBusScheduledEnqueueTime
+                      expression:
+                        simple:
+                          expression: "${header.CamelAzureServiceBusScheduledEnqueueTime.plusSeconds({{?scheduledEnqueueDelay}})}"
         - to:
             uri: azure-servicebus
             parameters:
@@ -105,3 +139,14 @@ spec:
               producerOperation: sendMessages
               serviceBusType: "{{serviceBusType}}"
               sessionId: "RAW({{?sessionId}})"
+              binary: "{{?binary}}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{?scheduledEnqueueDelay}}' != ''"
+                steps:
+                  - removeHeader:
+                      name: CamelAzureServiceBusProducerOperation
+                  - removeHeader:
+                      name: CamelAzureServiceBusScheduledEnqueueTime

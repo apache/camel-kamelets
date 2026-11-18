@@ -76,3 +76,50 @@ The dead-letter queue has no sessions, so leave **sessionEnabled** unset, even f
 dead-lettered message whose processing fails stays where it is: it is received again straight away, over and over,
 and holds up the dead letters behind it. `TRANSFER_DEAD_LETTER_QUEUE` reads the messages that could not be forwarded
 or transferred instead.
+
+=== Example Processing Messages in Parallel
+
+The messages are processed one at a time, in the order they arrive, unless a step of the integration works
+asynchronously, such as a delay. Set **maxConcurrentCalls** to process that many
+at the same time, for example when each message calls a slow service:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:azure-servicebus-source"
+      parameters:
+        topicOrQueueName: "orders"
+        connectionString: "{{servicebus.connection-string}}"
+        maxConcurrentCalls: 5
+      steps:
+        - to: "http://order-service/orders"
+----
+
+With 5, ten messages that take a second each are processed in about two seconds instead of ten, and in no particular
+order. With **sessionEnabled**, **maxConcurrentCalls** counts for each session: above 1, the messages of one session
+are processed at the same time too, and lose their order.
+
+=== Example Dead-Lettering Failed Messages
+
+By default, a message whose processing fails is given back and received again, until Service Bus moves it to the
+dead-letter queue after the maximum delivery count of the queue (10 by default). Set **enableDeadLettering** to `true`
+to move it there straight away:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:azure-servicebus-source"
+      parameters:
+        topicOrQueueName: "orders"
+        connectionString: "{{servicebus.connection-string}}"
+        enableDeadLettering: true
+      steps:
+        - to: "http://order-service/orders"
+----
+
+The dead-lettered message has the exception as its reason, such as `java.lang.IllegalStateException: Invalid order`,
+and its stack trace as the error description; read them back with **subQueue** set to `DEAD_LETTER_QUEUE`, in the
+`CamelAzureServiceBusDeadLetterReason` and `CamelAzureServiceBusDeadLetterErrorDescription` headers. It works only with
+the default **serviceBusReceiveMode**, `PEEK_LOCK`, and does nothing while reading the dead-letter queue itself.
