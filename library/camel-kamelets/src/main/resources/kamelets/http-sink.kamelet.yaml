@@ -39,7 +39,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the response of the service.
 
-      Good to know: a response with a status code of 300 or higher fails the message. The address and the method come only from the options; headers on the message cannot change where it is sent. Log in either with `authUsername` and `authPassword`, or with `oauth2ClientId`, `oauth2ClientSecret` and `oauth2TokenEndpoint`: the Kamelet then gets a token from that URL and sends it as a Bearer token. Without `authenticationPreemptive`, the user and password are sent only after the service asks for them with a 401 response.
+      Good to know: a response with a status code outside `okStatusCodeRange`, which is `200-299` when it is not set, fails the message. The address and the method come only from the options; headers on the message cannot change where it is sent. Log in either with `authUsername` and `authPassword`, with a static token in `authBearerToken`, or with `oauth2ClientId`, `oauth2ClientSecret` and `oauth2TokenEndpoint`: the Kamelet then gets a token from that URL and sends it as a Bearer token. Without `authenticationPreemptive`, the user and password, or the static token, are sent only after the service asks for them with a 401 response. The certificate of an `https://` service is checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.https.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every `https://` call of the application.
     required:
     - url
     type: object
@@ -56,14 +56,20 @@ spec:
         type: string
         default: POST
         enum: ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "TRACE", "PATCH"]
+      okStatusCodeRange:
+        title: OK Status Codes
+        description: The status codes of a response that do not fail the message, as ranges such as `200-299` and single codes, separated by commas without spaces. When it is not set, it is `200-299`. List the 2xx codes too, for example `200-299,404` to also accept 404.
+        type: string
+        example: "200-299,404"
+        pattern: "^[0-9]{3}(-[0-9]{3})?(,[0-9]{3}(-[0-9]{3})?)*$"
       authMethod:
         title: Authentication Method
-        description: The login methods to allow when the service asks for a login, as a comma-separated list of `Basic`, `Digest` and `NTLM`. Basic login with `authUsername` and `authPassword` works without it.
+        description: The login method, `Basic`, `Digest`, `NTLM`, or `Bearer` to send `authBearerToken`. Basic and Digest login with `authUsername` and `authPassword` work without it.
         type: string
         example: Basic
       authenticationPreemptive:
         title: Authentication Preemptive
-        description: If true, `authUsername` and `authPassword` are sent with Basic login on the first request. If false, they are sent only after the service answers 401 and asks for them, which takes a second request.
+        description: If true, `authUsername` and `authPassword` are sent with Basic login, or `authBearerToken` as a Bearer token, on the first request. If false, they are sent only after the service answers 401 and asks for them, which takes a second request.
         type: boolean
         default: false
       authUsername:
@@ -75,6 +81,13 @@ spec:
       authPassword:
         title: Authentication Password
         description: The password of `authUsername`.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      authBearerToken:
+        title: Bearer Token
+        description: A static token, such as an API key, sent in the `Authorization` header as `Bearer` followed by the token. Set `authMethod` to `Bearer` with it. Also set `authenticationPreemptive` to true, unless the service first answers 401 with a `WWW-Authenticate` header that asks for a Bearer token.
         type: string
         format: password
         x-descriptors:
@@ -137,8 +150,10 @@ spec:
               authMethod: "{{?authMethod}}"
               authUsername: "{{?authUsername}}"
               authPassword: "{{?authPassword}}"
+              authBearerToken: "RAW({{?authBearerToken}})"
               oauth2ClientId: "{{?oauth2ClientId}}"
               oauth2ClientSecret: "{{?oauth2ClientSecret}}"
               oauth2Scope: "{{?oauth2Scope}}"
               oauth2TokenEndpoint: "{{?oauth2TokenEndpoint}}"
               authenticationPreemptive: "{{authenticationPreemptive}}"
+              okStatusCodeRange: "{{?okStatusCodeRange}}"
