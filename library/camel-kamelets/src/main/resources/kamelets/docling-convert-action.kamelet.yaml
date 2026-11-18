@@ -32,15 +32,15 @@ spec:
   definition:
     title: "Docling Convert Action"
     description: |-
-      Turns each document, such as a PDF, an office document or an HTML page, into Markdown text with Docling, keeping its headings, lists and tables.
+      Turns each document, such as a PDF, an office document or an HTML page, into Markdown, HTML or plain text with Docling, keeping its headings, lists and tables.
 
       Use it to get well-structured text out of documents before an AI step, for example in front of `langchain4j-ingest-sink` to load them into a vector store. For plain text without a Docling server, use `tika-extract-text-action`.
 
       Input: the document, as bytes, a stream, a file or text. The header named in `documentIdHeader` (by default `CamelLangChain4jIngestDocumentId`) is the id of the document, if any; it is kept for `langchain4j-ingest-sink` further on.
 
-      Output: the body is the document as Markdown, as text. The headers of the message are kept.
+      Output: the body is the document as Markdown, as text, or as HTML or plain text with `operation`. The headers of the message are kept.
 
-      Good to know: to use a Docling Serve server, which is the usual setup, set both `useDoclingServe` to true and `doclingServeUrl`; otherwise it runs the `docling` command-line program, which must be installed on the machine of the integration. With `maxDocumentSize`, a larger document fails the message without being sent.
+      Good to know: to use a Docling Serve server, which is the usual setup, set both `useDoclingServe` to true and `doclingServeUrl`; otherwise it runs the `docling` command-line program, which must be installed on the machine of the integration. A server started with an API key needs `authenticationScheme` set to `API_KEY` and the key in `authenticationToken`. A conversion that takes longer than `processTimeout`, 30 seconds when it is not set, fails the message; the first conversion after a Docling Serve server starts, and a large PDF on a server without a GPU, can take longer than that. The text in images, such as scanned pages, is read with OCR unless `enableOcr` is false. With `maxDocumentSize`, a larger document fails the message without being sent.
     type: object
     properties:
       documentIdHeader:
@@ -64,6 +64,53 @@ spec:
         title: Use Docling Serve
         description: If true, the documents are converted by the Docling Serve server at `doclingServeUrl`. When it is not set, the `docling` command-line program is run on the machine of the integration.
         type: boolean
+      operation:
+        title: Operation
+        description: What the document is turned into. `CONVERT_TO_MARKDOWN`, the default, gives Markdown text. `CONVERT_TO_HTML` gives a whole HTML page, with its styles, as text. `EXTRACT_TEXT` gives the text without the Markdown marks of headings and images; tables are still drawn with `|` characters.
+        type: string
+        enum: ["CONVERT_TO_MARKDOWN", "CONVERT_TO_HTML", "EXTRACT_TEXT"]
+        default: CONVERT_TO_MARKDOWN
+      enableOcr:
+        title: Enable OCR
+        description: If false, the text in images, such as the pages of a scanned PDF, is not read (OCR, optical character recognition), which is faster, and a scanned page gives no text. If true, OCR is asked for, in `ocrLanguage`. When it is not set, a Docling Serve server uses its own setting, which is to read the images.
+        type: boolean
+      ocrLanguage:
+        title: OCR Language
+        description: The language of the text in images, as a code that the OCR engine knows, such as `en` or `de`, or `eng` or `iso:en` for Tesseract. The engine must have a model for the language, else the message fails. With Docling Serve, it is used only when `enableOcr` is true. When it is not set, `en` is used.
+        type: string
+        pattern: "[A-Za-z_:-]+"
+        example: de
+      forceOcr:
+        title: Force OCR
+        description: If true, every page is read with OCR, even a page that holds text, whose text is then replaced by what OCR reads. Use it for a PDF whose text layer is wrong. Only used with Docling Serve.
+        type: boolean
+      ocrEngine:
+        title: OCR Engine
+        description: The OCR engine that reads the images, which must be installed on the Docling Serve server, else the message fails; `OCRMAC` works only on a Mac. With `TESSERACT`, also set `enableOcr` to true and `ocrLanguage` to a language installed for it. When it is not set, the server chooses. Only used with Docling Serve.
+        type: string
+        enum: ["AUTO", "EASYOCR", "RAPIDOCR", "TESSERACT", "TESSEROCR", "OCRMAC"]
+      processTimeout:
+        title: Process Timeout
+        description: How long to wait for a document to be converted, in milliseconds. A slower conversion fails the message. With Docling Serve, it is how long to wait for the answer of the server. When it is not set, 30000 (30 seconds) is used, which is often too short for a large PDF.
+        type: integer
+        example: 300000
+      documentTimeout:
+        title: Document Timeout
+        description: How long the Docling Serve server may work on one document, in seconds. When the time is up, the server stops, and the body holds only the part of the document it converted, without failing the message. Only used with Docling Serve. When it is not set, the server uses its own limit.
+        type: integer
+        example: 120
+      authenticationScheme:
+        title: Authentication Scheme
+        description: How to send `authenticationToken` to the Docling Serve server. `API_KEY` sends it in the `X-Api-Key` header, which is what a Docling Serve server started with an API key (`DOCLING_SERVE_API_KEY`) expects. `BEARER` sends it in the `Authorization` header as `Bearer` followed by the token, for a server behind a gateway that asks for one. Set it together with `authenticationToken`.
+        type: string
+        enum: ["API_KEY", "BEARER"]
+      authenticationToken:
+        title: Authentication Token
+        description: The API key or token to log in to the Docling Serve server with, sent as `authenticationScheme` says. Only used with Docling Serve.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
   dataTypes:
     in:
       headers:
@@ -172,6 +219,16 @@ spec:
             parameters:
               operationId: convert
               contentInBody: true
+              authenticationScheme: "{{?authenticationScheme}}"
+              authenticationToken: "RAW({{?authenticationToken}})"
               doclingServeUrl: "{{?doclingServeUrl}}"
-              operation: CONVERT_TO_MARKDOWN
+              # the OCR switch is read as enableOCR by the docling command line, and as doOcr by Docling Serve
+              doOcr: "{{?enableOcr}}"
+              documentTimeout: "{{?documentTimeout}}"
+              enableOCR: "{{?enableOcr}}"
+              forceOcr: "{{?forceOcr}}"
+              ocrEngine: "{{?ocrEngine}}"
+              ocrLanguage: "{{?ocrLanguage}}"
+              operation: "{{operation}}"
+              processTimeout: "{{?processTimeout}}"
               useDoclingServe: "{{?useDoclingServe}}"

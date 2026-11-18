@@ -38,7 +38,7 @@ spec:
 
       Output: the body is the file, read as bytes unless `charset` is set. The `CamelLangChain4jIngestDocumentId` header is the path of the file relative to `directory`, such as `manuals/pump.pdf`, which `langchain4j-ingest-sink` uses as the document id. The usual file headers, such as `CamelFileName`, are set too.
 
-      Good to know: the files are never deleted or moved. A file is read again when its modification time or size changes, and `langchain4j-ingest-sink` then adds the new version next to the old one, unless it has an `idempotentRepository`, which skips it. The files already read are remembered in memory only, by default the last 1000, so after a restart every file is read again; set `idempotentRepository` to keep them. A file that is still being copied in is read only once it stops changing.
+      Good to know: the files are never deleted or moved. A file is read again when its modification time or size changes, and `langchain4j-ingest-sink` then adds the new version next to the old one, unless it has an `idempotentRepository`, which skips it. The files already read are remembered in memory only, by default the last 1000, so after a restart every file is read again; set `idempotentRepository` to keep them. A file that is still being copied in is read only once it stops changing; for a slow copy, which can pause for more than a second, set `readLockMinAge`.
     required:
       - directory
     type: object
@@ -67,6 +67,21 @@ spec:
       delay:
         title: Delay
         description: How long to wait between two looks at the directory, in milliseconds. When it is not set, the directory is looked at every 500 milliseconds; a longer delay, such as one minute, is usually enough for a knowledge base.
+        type: integer
+        example: 60000
+      initialDelay:
+        title: Initial Delay
+        description: How long to wait after the integration starts before the first look at the directory, in milliseconds. When it is not set, 1000 (one second) is used.
+        type: integer
+        example: 30000
+      maxMessagesPerPoll:
+        title: Max Messages Per Poll
+        description: The largest number of files to read in one look at the directory; the others are read in the next looks, one `delay` later. Use it to spread out the first load of a large directory. Which files come first is not defined. When it is not set, there is no limit.
+        type: integer
+        example: 100
+      readLockMinAge:
+        title: Read Lock Min Age
+        description: How long ago a file must have last changed before it is read, in milliseconds, such as 60000 for a file copied in slowly. It replaces the usual check, which reads each file only once its size and modification time have not changed for one second, so that an older file is read at once, and a newer one once it is old enough.
         type: integer
         example: 60000
       charset:
@@ -106,8 +121,11 @@ spec:
         # an edited file gets a new key and re-ingests
         idempotentKey: "${file:absolute.path}:${file:modified}:${file:size}"
         idempotentRepository: "{{?idempotentRepository}}"
+        initialDelay: "{{?initialDelay}}"
+        maxMessagesPerPoll: "{{?maxMessagesPerPoll}}"
         noop: true
         readLock: changed
+        readLockMinAge: "{{?readLockMinAge}}"
         recursive: "{{recursive}}"
       steps:
         - setHeader:

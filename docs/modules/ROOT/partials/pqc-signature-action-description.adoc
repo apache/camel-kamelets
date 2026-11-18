@@ -1,0 +1,49 @@
+== PQC Signature Action Kamelet Description
+
+=== Key Pair
+
+Without `keyStore` or `keyPair`, the key pair is created when the application starts. A signature can then be checked only by the same running application, and not after a restart.
+
+To sign with a key pair that stays the same, keep it in a key store. Java 24 and later can make an ML-DSA key pair with `keytool`:
+
+[source,bash]
+----
+keytool -genkeypair -alias signer -keyalg ML-DSA -groupname ML-DSA-65 -dname CN=signer \
+  -validity 365 -keystore pqc.p12 -storetype PKCS12 -storepass changeit
+----
+
+The key store is a Java `KeyStore` object, defined in the application, and referred to with `#bean:` followed by its name. Set `keyPairAlias` to the alias of the key pair, and `keyStorePassword` to the password of the key store, which must also be the password of the key pair. A signature made this way can be checked after a restart, and by any application that has the public key, which `keytool -exportcert` writes out as a certificate.
+
+When the application has exactly one Java `KeyStore`, or one `KeyPair`, the Camel PQC component uses it even when `keyStore` or `keyPair` is not set. With a key store, `keyPairAlias` and `keyStorePassword` must then be set too, else the messages fail.
+
+=== Example
+
+The following route signs a message every 10 seconds with the key pair `signer` of the key store `pqc.p12`. The key store is loaded by a Groovy script in the `beans` section, so that no Java class has to be written; Groovy needs the `camel-groovy` dependency, which Camel JBang adds by itself.
+
+[source,yaml,subs='+attributes,macros']
+----
+- beans:
+    - name: pqcKeyStore
+      type: java.security.KeyStore
+      scriptLanguage: groovy
+      script: "java.security.KeyStore.getInstance(new File('pqc.p12'), '{{pqc.keystore.password}}'.toCharArray())"
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 10000
+        message: "Hello"
+      steps:
+        - to:
+            uri: "kamelet:pqc-signature-action"
+            parameters:
+              operation: sign
+              signatureAlgorithm: MLDSA
+              keyStore: "#bean:pqcKeyStore"
+              keyPairAlias: signer
+              keyStorePassword: "{{pqc.keystore.password}}"
+        - to:
+            uri: "kamelet:log-sink"
+            parameters:
+              showHeaders: true
+----
