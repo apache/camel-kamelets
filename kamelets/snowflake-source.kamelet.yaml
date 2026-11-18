@@ -37,7 +37,7 @@ spec:
 
       Output: the body is one row as JSON text, an object with the column names as keys, such as `{"id":1,"username":"oscerd","city":"Rome"}`. The `Content-Type` header is `application/json`.
 
-      Good to know: the query runs again `delay` milliseconds after the previous run, so the same rows are sent again and again, unless `consumedQuery` marks or deletes each row once it is sent and `query` leaves such rows out: for example `SELECT * FROM accounts WHERE processed = false` with `UPDATE accounts SET processed = true WHERE id = :#id`. When the next step fails for a row, `consumedQuery` is not run for it, and the row is read again. A query that finds no rows sends nothing. `query` cannot contain `?`. The format of date and time columns in the JSON depends on the Camel version. Log in with `password`, or with a key pair in `privateKey` or `privateKeyFile`: a Snowflake user of type SERVICE, meant for applications, cannot log in with a password. When a key is set, the password is not used.
+      Good to know: the query runs again `delay` milliseconds after the previous run, so the same rows are sent again and again, unless `consumedQuery` marks or deletes each row once it is sent and `query` leaves such rows out: for example `SELECT * FROM accounts WHERE processed = false` with `UPDATE accounts SET processed = true WHERE id = :#id`. When the next step fails for a row, `consumedQuery` is not run for it, and the row is read again. A query that finds no rows sends nothing. `query` cannot contain `?`. The format of date and time columns in the JSON depends on the Camel version. Log in with `password`, or with a key pair in `privateKey` or `privateKeyFile`: a Snowflake user of type SERVICE, meant for applications, cannot log in with a password. When a key is set, the password is not used. `warehouse`, `schema` and `role` choose what the session uses; when they are not set, the defaults of the user apply, and a user with no default warehouse cannot run a query that needs one. Each poll logs in to Snowflake anew, as the Kamelet keeps no connection open between polls.
     required:
       - instanceUrl
       - username
@@ -91,6 +91,21 @@ spec:
         description: The Snowflake database that holds the tables `query` names.
         type: string
         example: SHOP
+      schema:
+        title: Schema
+        description: The schema of `databaseName` that holds the tables `query` names, such as `PUBLIC`. When it is not set, the default of the user applies. A table of another schema can still be named in full in `query`, as `SCHEMA.TABLE`.
+        type: string
+        example: SALES
+      warehouse:
+        title: Warehouse
+        description: The Snowflake virtual warehouse that runs the queries. When it is not set, the default warehouse of the user `username` is used, as set with `ALTER USER ... SET DEFAULT_WAREHOUSE`. With neither, a query that needs a warehouse fails.
+        type: string
+        example: COMPUTE_WH
+      role:
+        title: Role
+        description: The Snowflake role to run the queries as, which must be granted to the user `username`. When it is not set, the default role of the user is used, as set with `ALTER USER ... SET DEFAULT_ROLE`.
+        type: string
+        example: READER
       consumedQuery:
         title: Consumed Query
         description: An SQL statement to run after each row has been sent on, to mark the row as read or to delete it, so that `query` does not return it again. Write `:#column` where the value of a column of that row goes, such as `:#id`. When it is not set, nothing is changed, and the same rows are read on every poll.
@@ -131,6 +146,9 @@ spec:
           password: "{{password:}}"
           url: "jdbc:snowflake://{{instanceUrl}}"
           databaseName: "{{?databaseName}}"
+          schema: "{{?schema}}"
+          warehouse: "{{?warehouse}}"
+          role: "{{?role}}"
           properties[private_key_base64]: "{{?privateKey}}"
           properties[private_key_file]: "{{?privateKeyFile}}"
           properties[private_key_pwd]: "{{?privateKeyPassphrase}}"
