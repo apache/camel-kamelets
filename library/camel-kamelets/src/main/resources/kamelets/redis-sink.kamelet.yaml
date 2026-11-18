@@ -39,7 +39,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is what Redis answered, such as the value for `GET` or the new length of the list for `RPUSH`; for `SET` the body is unchanged.
 
-      Good to know: the default `command` is `GET`, which reads and stores nothing, so set it to the command you need. A body that is not text, such as a Map, fails the message; turn it into JSON text first, for example with `json-serialize-action`. It connects with no password and no TLS.
+      Good to know: the default `command` is `GET`, which reads and stores nothing, so set it to the command you need. A body that is not text, such as a Map, fails the message; turn it into JSON text first, for example with `json-serialize-action`. By default it connects with no password and no TLS, to database 0: set `password` (and `username` for an ACL user) for a Redis server that asks for a login, and `ssl` for one that needs TLS.
     required:
       - redisHost
       - redisPort
@@ -56,6 +56,30 @@ spec:
         description: The port of the Redis server, usually 6379.
         type: integer
         example: 6379
+      username:
+        title: Username
+        description: The Redis user to log in as, for a Redis server with access control lists (ACL, Redis 6 and later). Leave it empty to log in with `password` alone, as the `default` user.
+        type: string
+        x-descriptors:
+        - urn:camel:group:credentials
+      password:
+        title: Password
+        description: The password to log in to Redis with, the one set with `requirepass` or the password of the user in `username`. Leave it empty for a Redis server that does not ask for a password.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      database:
+        title: Database
+        description: The number of the Redis database to use, from 0 to 15 on a Redis server with the default settings. The commands run on this database.
+        type: integer
+        default: 0
+        example: 1
+      ssl:
+        title: Use TLS
+        description: "Whether to connect with TLS (SSL), for a Redis server that offers TLS on `redisPort`. The certificate of the server is checked: it must be trusted by Java, as one from a public certificate authority is, and name `redisHost`."
+        type: boolean
+        default: false
       command:
         title: Command
         description: The Redis command to run for each message, such as `SET` to store the body under the key, `RPUSH` or `LPUSH` to add it to a list, `SADD` to add it to a set, or `PUBLISH` to send it on a channel.
@@ -95,6 +119,18 @@ spec:
     - "camel:kamelet"
     - "camel:spring-redis"
   template:
+    beans:
+      - name: redisConnectionFactory
+        type: "#class:org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+        initMethod: afterPropertiesSet
+        destroyMethod: destroy
+        properties:
+          standaloneConfiguration.hostName: "{{redisHost}}"
+          standaloneConfiguration.port: "{{redisPort}}"
+          standaloneConfiguration.database: "{{database}}"
+          standaloneConfiguration.username: "{{?username}}"
+          password: "{{?password}}"
+          useSsl: "{{ssl}}"
     from:
       uri: kamelet:source
       steps:
@@ -165,3 +201,4 @@ spec:
               channels: "{{channels}}"
               command: "{{command}}"
               serializer: "#class:{{serializer}}"
+              connectionFactory: "#bean:{{redisConnectionFactory}}"
