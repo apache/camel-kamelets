@@ -18,3 +18,28 @@ The order of evaluation for `AZURE_IDENTITY` is the following:
  - Azure Powershell
 
 For more information, see the https://learn.microsoft.com/en-us/java/api/overview/azure/identity-readme[Azure Identity documentation]
+
+=== Reading with your own consumer group
+
+By default the Kamelet reads as the `$Default` consumer group. To read the same event hub from several integrations, each receiving every event, create a consumer group for each of them in the Azure portal (the event hub, then Entities, Consumer groups) and set it in `consumerGroupName`:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:azure-eventhubs-source"
+      parameters:
+        namespaceName: "my-namespace"
+        eventhubName: "orders"
+        sharedAccessName: "RootManageSharedAccessKey"
+        sharedAccessKey: "{{eventhubs.key}}"
+        blobAccountName: "mystorageaccount"
+        blobAccessKey: "{{storage.key}}"
+        blobContainerName: "eventhub-checkpoints"
+        consumerGroupName: "billing"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Each consumer group has its own saved position in `blobContainerName`, so the integrations can share the container. A consumer group without a saved position starts with the events that arrive after the integration starts. With a consumer group that does not exist, the integration starts but receives nothing, and logs a warning that the messaging entity could not be found.
