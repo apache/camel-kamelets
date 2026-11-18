@@ -37,18 +37,25 @@ spec:
 
       Output: the body is one document as JSON text. An `_id` that is an ObjectId comes out as an object with only its time (`timestamp` and `date`), not as the ID text, and the format of dates depends on the Camel version. The `CamelMongoDbDatabase` and `CamelMongoDbCollection` headers name where the document comes from.
 
-      Good to know: the collection must be capped (created with a fixed size), or the Kamelet fails to start. Each time the integration starts, it reads the whole collection again from the start, unless `persistentTailTracking` is true. It connects with TLS by default; set `ssl` to false for a MongoDB without TLS, such as a local one.
+      Good to know: the collection must be capped (created with a fixed size), or the Kamelet fails to start. Each time the integration starts, it reads the whole collection again from the start, unless `persistentTailTracking` is true. Set either `hosts` or `connectionString`. With `hosts`, it connects with TLS by default; set `ssl` to false for a MongoDB without TLS, such as a local one. With `connectionString`, such as the `mongodb+srv://` string of MongoDB Atlas, it connects only as that string says, and `hosts`, `username`, `password`, `ssl` and `sslValidationEnabled` are not used. For a user defined in a database other than `admin`, use `connectionString` with `authSource`.
     required:
-      - hosts
       - collection
       - database
     type: object
     properties:
       hosts:
         title: MongoDB Hosts
-        description: The address of one or more MongoDB servers, as `host:port`, separated by commas. MongoDB uses port 27017 unless it was set up otherwise. For a replica set, list its members.
+        description: The address of one or more MongoDB servers, as `host:port`, separated by commas. MongoDB uses port 27017 unless it was set up otherwise. For a replica set, list its members. Set either `hosts` or `connectionString`. When neither is set, the Kamelet fails to start with the error `The connection string contains an empty host`.
         type: string
         example: mongo1.example.com:27017,mongo2.example.com:27017
+      connectionString:
+        title: Connection String
+        description: "The MongoDB connection string, which starts with `mongodb://` or `mongodb+srv://`, such as the one MongoDB Atlas shows under Connect. Use it instead of `hosts` for MongoDB Atlas, for a user defined in a database other than `admin` (add `authSource`, such as `?authSource=shop`), or for settings such as `replicaSet` or `tls`. When it is set, `hosts`, `username`, `password`, `ssl` and `sslValidationEnabled` are not used. TLS is used as the string says: always with `mongodb+srv://`, and with `mongodb://` only when it has `tls=true`. Write `@`, `/`, `:` and `%` in the user name or the password as `%40`, `%2F`, `%3A` and `%25`."
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+        example: "mongodb+srv://myuser:mypassword@cluster0.abcde.mongodb.net/?retryWrites=true&w=majority"
       collection:
         title: MongoDB Collection
         description: The name of the capped collection to read.
@@ -56,25 +63,25 @@ spec:
         example: events
       password:
         title: MongoDB Password
-        description: The password of the MongoDB user `username`.
+        description: The password of the MongoDB user `username`. Write `@`, `/`, `:` and `%` in it as `%40`, `%2F`, `%3A` and `%25`.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
       username:
         title: MongoDB Username
-        description: The MongoDB user to log in as, defined in the `admin` database. Leave it empty for a MongoDB that does not ask for a login.
+        description: The MongoDB user to log in as, defined in the `admin` database. For a user defined in another database, use `connectionString` with `authSource` instead. Leave it empty for a MongoDB that does not ask for a login.
         type: string
         x-descriptors:
         - urn:camel:group:credentials
       ssl:
         title: Use TLS
-        description: Whether to connect with TLS (SSL). Set it to false for a MongoDB that does not offer TLS.
+        description: Whether to connect with TLS (SSL). Set it to false for a MongoDB that does not offer TLS. Not used with `connectionString`.
         type: boolean
         default: true
       sslValidationEnabled:
         title: Check TLS Certificate
-        description: Whether to check the certificate and the host name of the server when `ssl` is true. Set it to false only for tests, as the connection can then be intercepted.
+        description: Whether to check the certificate and the host name of the server when `ssl` is true. Set it to false only for tests, as the connection can then be intercepted. Not used with `connectionString`.
         type: boolean
         default: true
       database:
@@ -113,18 +120,20 @@ spec:
     - "camel:jackson"
   template:
     beans:
-      - name: local-mongodb
-        type: "#class:org.apache.camel.component.mongodb.MongoDbComponent"
       - name: mongo-client
         type: "#class:org.apache.camel.component.mongodb.SslAwareMongoClient"
         properties:
           password: "{{?password}}"
           username: "{{?username}}"
-          hosts: "{{hosts}}"
+          hosts: "{{hosts:}}"
           ssl: "{{ssl}}"
           sslValidationEnabled: "{{sslValidationEnabled}}"
+      - name: local-mongodb
+        type: "#class:org.apache.camel.component.mongodb.MongoDbComponent"
+        properties:
+          mongoConnection: "#{{mongo-client}}"
     from:
-      uri: "{{local-mongodb}}:test?collection={{collection}}&database={{database}}&persistentTailTracking={{persistentTailTracking}}&tailTrackIncreasingField={{?tailTrackIncreasingField}}&mongoConnection=#{{mongo-client}}"
+      uri: "{{local-mongodb}}:test?collection={{collection}}&database={{database}}&persistentTailTracking={{persistentTailTracking}}&tailTrackIncreasingField={{?tailTrackIncreasingField}}&connectionUriString=RAW({{?connectionString}})"
       steps:
         - marshal:
             json: {}

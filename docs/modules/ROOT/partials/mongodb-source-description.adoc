@@ -8,7 +8,9 @@ This Kamelet supports MongoDB authentication using username and password credent
 
 The MongoDB Source Kamelet supports the following configurations:
 
-- **Hosts**: MongoDB server hosts and ports (required)
+- **Hosts**: MongoDB server hosts and ports; set either this or the connection string
+- **Connection String**: a MongoDB connection string, such as the `mongodb+srv://` string of MongoDB Atlas, used
+  instead of the hosts, username, password and SSL settings
 - **Collection**: MongoDB collection name to read; it must be a capped collection (required)
 - **Database**: MongoDB database name (required)
 - **Username**: Username for authentication (optional)
@@ -68,4 +70,38 @@ The collection must be capped, or the Kamelet fails to start. A capped collectio
 [source,javascript]
 ----
 db.createCollection("events", { capped: true, size: 100000 })
+----
+
+=== Connecting with a connection string
+
+Set either `hosts` or `connectionString`. Use `connectionString` to connect to MongoDB Atlas with its
+`mongodb+srv://` string, to log in as a user defined in a database other than `admin` (with `authSource`), or to give
+other settings of the MongoDB connection string, such as `replicaSet` or `tls`. When it is set, `hosts`, `username`,
+`password`, `ssl` and `sslValidationEnabled` are not used, and TLS is used as the string says: always with
+`mongodb+srv://`, and with `mongodb://` only when it has `tls=true`.
+
+Write `@`, `/`, `:` and `%` in the user name or the password as `%40`, `%2F`, `%3A` and `%25`. The connection string
+holds the password, so keep it in a secret, like the `password` option.
+
+With MongoDB Atlas, copy the string from the Connect dialog of the cluster:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mongodb-source"
+      parameters:
+        connectionString: "mongodb+srv://myuser:mypassword@cluster0.abcde.mongodb.net/?retryWrites=true&w=majority"
+        database: "logs"
+        collection: "app_logs"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+For a user defined in the `shop` database, on a MongoDB without TLS:
+
+[source,yaml,subs='+attributes,macros']
+----
+connectionString: "mongodb://shopuser:shoppass@mongo1.example.com:27017,mongo2.example.com:27017/?authSource=shop&replicaSet=rs0"
 ----

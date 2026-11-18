@@ -4,8 +4,10 @@
 
 This Kamelet connects to MongoDB with:
 
-- Username and password authentication (optional), for a user defined in the `admin` database
-- TLS, on by default (`ssl`); set `ssl` to false for a MongoDB without TLS
+- `hosts`, with username and password authentication (optional) for a user defined in the `admin` database, and
+  TLS on by default (`ssl`); set `ssl` to false for a MongoDB without TLS
+- or a MongoDB connection string (`connectionString`), such as the `mongodb+srv://` string of MongoDB Atlas; see
+  below
 
 === Output format
 
@@ -17,7 +19,7 @@ Change streams need a replica set or a sharded cluster.
 
 The Kamelet requires database connection parameters:
 
-- `hosts`: the members of the replica set, as `host:port`
+- `hosts` (the members of the replica set, as `host:port`) or `connectionString`
 - `database` and `collection`: the collection to watch
 - `streamFilter` (optional): a `$match` stage that chooses the changes to send
 
@@ -40,4 +42,38 @@ The route below logs each document inserted into the `orders` collection.
       steps:
         - to:
             uri: "kamelet:log-sink"
+----
+
+=== Connecting with a connection string
+
+Set either `hosts` or `connectionString`. Use `connectionString` to connect to MongoDB Atlas with its
+`mongodb+srv://` string, to log in as a user defined in a database other than `admin` (with `authSource`), or to give
+other settings of the MongoDB connection string, such as `replicaSet` or `tls`. When it is set, `hosts`, `username`,
+`password`, `ssl` and `sslValidationEnabled` are not used, and TLS is used as the string says: always with
+`mongodb+srv://`, and with `mongodb://` only when it has `tls=true`.
+
+Write `@`, `/`, `:` and `%` in the user name or the password as `%40`, `%2F`, `%3A` and `%25`. The connection string
+holds the password, so keep it in a secret, like the `password` option.
+
+With MongoDB Atlas, copy the string from the Connect dialog of the cluster:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mongodb-changes-stream-source"
+      parameters:
+        connectionString: "mongodb+srv://myuser:mypassword@cluster0.abcde.mongodb.net/?retryWrites=true&w=majority"
+        database: "shop"
+        collection: "orders"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+For a user defined in the `shop` database, on a MongoDB without TLS:
+
+[source,yaml,subs='+attributes,macros']
+----
+connectionString: "mongodb://shopuser:shoppass@mongo1.example.com:27017,mongo2.example.com:27017/?authSource=shop&replicaSet=rs0"
 ----
