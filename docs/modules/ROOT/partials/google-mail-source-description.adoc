@@ -2,16 +2,18 @@
 
 === Authentication methods
 
-This Kamelet uses OAuth 2.0 authentication to connect to Google Mail. You need to provide:
+The Kamelet logs in to Google in one of two ways:
 
-- Client ID and Client Secret from your Google Cloud Console application
-- Access Token for immediate access (typically expires after an hour)
-- Refresh Token for long-term usage (allows automatic token renewal)
-- An application name of your choice, sent to Google with each call
+- With OAuth 2.0: `clientId` and `clientSecret` of an OAuth client from your Google Cloud Console application, an `accessToken` for immediate access (it expires after about an hour) and a `refreshToken` to get new ones.
+- With a service account: its JSON key in `serviceAccountKey`, as `file:<path>`, `classpath:<resource>` or `base64:<Base64 of the key file>`. It reads the mailbox of the user of your Google Workspace in `delegate`, and needs `scopes`, such as `https://www.googleapis.com/auth/gmail.modify`, which marking the emails as read needs. A Workspace administrator must first allow the client ID of the service account, with these scopes, under Security > Access and data control > API controls > Domain-wide delegation. The service account key is only used when `clientSecret` is not set; do not set `scopes` with OAuth.
+
+An application name of your choice is sent to Google with each call.
 
 === Output format
 
-The body is the text of the mail (its first part with content, such as the plain text part) as JSON text, that is the text in double quotes with JSON escapes. It supports two output data types:
+The body is the text of the mail (its first part with content, such as the plain text part) as JSON text, that is the text in double quotes with JSON escapes. With `raw` set to true, the body is instead the whole email, with its attachments, in the format of an `.eml` file (RFC 2822), encoded in base64url, as JSON text; the subject, sender and recipient headers are then not set.
+
+It supports two output data types:
 
 - **json**: Json representation of a Google Mail event object
 - **cloudevents**: Output data as CloudEvent V1 format with specific headers
@@ -39,17 +41,28 @@ For CloudEvents output format, additional headers are set:
 The Kamelet requires the following parameters:
 
 - `index`: An index for the google mail endpoint
+- `applicationName`: Google Mail application name
+
+To log in with OAuth:
+
 - `clientId`: Client ID of the gmail application
 - `clientSecret`: Client Secret of the gmail application
 - `accessToken`: OAuth 2 access token
 - `refreshToken`: OAuth 2 refresh token for long term usage
-- `applicationName`: Google Mail application name
-- `labels`: Comma separated list of labels to take into account (example: "INBOX"); when it is not set, the emails are not filtered by label
+
+To log in with a service account:
+
+- `serviceAccountKey`: The JSON key of the service account, such as `file:/etc/google/service-account.json`
+- `delegate`: The email address of the user whose mailbox to read
+- `scopes`: The permissions to ask for, such as `https://www.googleapis.com/auth/gmail.modify`
 
 Optional parameters:
 - `delay`: The number of milliseconds before the next poll (default: 500)
 - `markAsRead`: Mark the message as read once it has been consumed (default: true)
 - `query`: The query to execute on gmail box (default: "is:unread", example: "is:unread -category:(promotions OR social)")
+- `labels`: Comma separated list of labels to take into account (example: "INBOX"); when it is not set, the emails are not filtered by label
+- `maxResults`: The most emails to read at each poll (default: 10)
+- `raw`: The body is the whole email with its attachments, encoded in base64url (default: false)
 
 === Usage example
 
@@ -81,3 +94,26 @@ spec:
       apiVersion: v1
       name: my-service
 ```
+
+=== Example with a Service Account and Attachments
+
+Reads the unread emails of `support@example.com`, at most 20 at each poll, as whole emails with their attachments. Each body is a JSON string; remove the quotes and decode it as base64url to get the `.eml` content.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:google-mail-source"
+      parameters:
+        index: "support"
+        applicationName: "my-company-mail/1.0"
+        serviceAccountKey: "file:/etc/google/service-account.json"
+        delegate: "support@example.com"
+        scopes: "https://www.googleapis.com/auth/gmail.modify"
+        maxResults: 20
+        raw: true
+        delay: 60000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

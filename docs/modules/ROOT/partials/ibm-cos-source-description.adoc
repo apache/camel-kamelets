@@ -102,6 +102,28 @@ You can filter objects using a prefix:
 
 This consumes only objects with keys starting with `inbox/`.
 
+==== Reading one file
+
+To read one file of the bucket instead of all of them, set `fileName` to its key. With `deleteAfterRead` false, the same file is read again on every poll; with the default `deleteAfterRead`, it is read once and deleted, and each later poll logs a warning that the key does not exist, until a file with that key is uploaded again.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ibm-cos-source"
+      parameters:
+        bucketName: "my-bucket"
+        apiKey: "{{ibm.api.key}}"
+        serviceInstanceId: "{{ibm.service.instance.id}}"
+        endpointUrl: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
+        fileName: "config/prices.csv"
+        deleteAfterRead: false
+        delay: 60000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
 ==== Consuming only metadata
 
 To consume only object metadata without the body, set `includeBody` to false:

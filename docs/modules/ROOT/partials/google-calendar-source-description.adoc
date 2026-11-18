@@ -2,12 +2,12 @@
 
 === Authentication methods
 
-This Kamelet uses OAuth 2.0 authentication to connect to Google Calendar. You need to provide:
+The Kamelet logs in to Google in one of two ways:
 
-- Client ID and Client Secret from your Google Cloud Console application
-- Access Token for immediate access (typically expires after an hour)
-- Refresh Token for long-term usage (allows automatic token renewal)
-- An application name of your choice, sent to Google with each call
+- With OAuth 2.0: `clientId` and `clientSecret` of an OAuth client from your Google Cloud Console application, an `accessToken` for immediate access (it expires after about an hour) and a `refreshToken` to get new ones.
+- With a service account: its JSON key in `serviceAccountKey`, as `file:<path>`, `classpath:<resource>` or `base64:<Base64 of the key file>`. The service account reads the calendars shared with its email address. To read the calendar of a user of your Google Workspace, set `delegate` to the email address of the user; a Workspace administrator must first allow the client ID of the service account under Security > Access and data control > API controls > Domain-wide delegation, with the scope `https://www.googleapis.com/auth/calendar`, or the one set in `scopes`. The service account key is only used when `clientId` and `clientSecret` are not set.
+
+An application name of your choice is sent to Google with each call.
 
 === Output format
 
@@ -35,16 +35,30 @@ The Kamelet requires the following parameters:
 
 - `index`: An index for the Google Calendar endpoint
 - `calendarId`: The calendar ID to use as the source of event data
+- `applicationName`: The Google Calendar application name
+
+To log in with OAuth:
+
 - `clientId`: The Client ID of the Google Calendar application
 - `clientSecret`: The Client secret of the Google Calendar application
 - `accessToken`: The OAuth 2 access token
 - `refreshToken`: The OAuth 2 refresh token for long term usage
-- `applicationName`: The Google Calendar application name
+
+To log in with a service account:
+
+- `serviceAccountKey`: The JSON key of the service account, such as `file:/etc/google/service-account.json`
+- `delegate`: The email address of the user whose calendar to read, with domain-wide delegation
+- `scopes`: The permissions to ask for, such as `https://www.googleapis.com/auth/calendar.readonly` (default: `https://www.googleapis.com/auth/calendar`)
 
 Optional parameters:
 - `delay`: The number of milliseconds before the next poll (default: 500)
-- `syncFlow`: Specifies to sync events for incremental synchronization (default: false)
+- `syncFlow`: Specifies to sync events for incremental synchronization (default: false); do not combine it with `query` or `considerLastUpdate`
 - `consumeFromNow`: Specifies to consume events in the calendar from now on (default: true)
+- `maxResults`: The most events in one page; each poll reads one page, or all the pages with `considerLastUpdate` (default: 10)
+- `query`: Only read the events that contain this text, such as `standup`
+- `considerLastUpdate`: Each poll reads all the pages, and after the first only the events changed since the last one received (default: false)
+
+Each poll asks for the events that changed least recently first. Without `syncFlow` or `considerLastUpdate`, it reads the first page again on every poll, so the same events can come again.
 
 === Usage example
 
@@ -76,3 +90,28 @@ spec:
       apiVersion: v1
       name: my-service
 ```
+
+=== Example with a Service Account
+
+Reads the events of the calendar of `alice@example.com` that mention `standup`, with the key of a service account that has domain-wide delegation for the read-only scope. With `considerLastUpdate`, an event comes again only when it changes.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:google-calendar-source"
+      parameters:
+        index: "standups"
+        calendarId: "primary"
+        applicationName: "my-company-calendar/1.0"
+        serviceAccountKey: "file:/etc/google/service-account.json"
+        delegate: "alice@example.com"
+        scopes: "https://www.googleapis.com/auth/calendar.readonly"
+        query: "standup"
+        maxResults: 50
+        considerLastUpdate: true
+        delay: 60000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
