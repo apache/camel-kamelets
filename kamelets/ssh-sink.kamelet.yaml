@@ -39,12 +39,11 @@ spec:
 
       Output: the body afterwards is what the command printed on its standard output, as a stream. The `CamelSshExitValue` header holds the exit code of the command, and `CamelSshStderr` what it printed on its standard error, as a stream.
 
-      Good to know: it runs whatever command it receives, with the rights of `username`. Never send it messages from an untrusted source, and log in with an account that may do only what is needed. A command that ends with an exit code other than 0 does not fail the message: check `CamelSshExitValue`. The key of the server is checked only when `knownHostsResource` is set; without it, any server is accepted.
+      Good to know: it runs whatever command it receives, with the rights of `username`. Never send it messages from an untrusted source, and log in with an account that may do only what is needed. A command that ends with an exit code other than 0 does not fail the message: check `CamelSshExitValue`. Log in with `password`, or with a private key in `privateKeyResource` when the server does not take passwords; when a key is set, the password is not used. The key of the server is checked only when `knownHostsResource` is set; without it, any server is accepted. A server that is not listed in that file is still accepted, unless `failOnUnknownHost` is true.
     required:
       - connectionHost
       - connectionPort
       - username
-      - password
     type: object
     properties:
       connectionHost:
@@ -65,7 +64,20 @@ spec:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password of `username` on the SSH server.
+        description: The password of `username` on the SSH server. Leave it empty to log in with a private key in `privateKeyResource` instead; when a key is set, the password is not used. With neither of them set, every command fails with `No password provided`.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      privateKeyResource:
+        title: Private Key Resource
+        description: A private key to log in with instead of a password, starting with `file:` followed by the path of the key file, `classpath:`, `http:` or `https:`. The matching public key must be in the `authorized_keys` file of `username` on the server. OpenSSH keys, such as those made with `ssh-keygen`, and PEM keys can be read. A key that cannot be read, or a wrong passphrase, makes every command fail with `No key-pair to add`.
+        type: string
+        pattern: "^(http|https|file|classpath|ref|bean):.*"
+        example: file:/etc/ssh-keys/id_ed25519
+      privateKeyPassphrase:
+        title: Private Key Passphrase
+        description: The passphrase of the key in `privateKeyResource`, when the key is protected by one.
         type: string
         format: password
         x-descriptors:
@@ -76,6 +88,15 @@ spec:
         type: string
         pattern: "^(http|https|file|classpath|ref|bean):.*"
         example: file:/etc/ssh/known_hosts
+      failOnUnknownHost:
+        title: Fail On Unknown Host
+        description: If true, a server that is not listed in `knownHostsResource` is refused. When it is not set or false, such a server is accepted, and only a server that is listed with another key is refused. Only used when `knownHostsResource` is set.
+        type: boolean
+      connectTimeout:
+        title: Connect Timeout
+        description: How long to wait for the connection, for the login and for the command to start, each in milliseconds. It does not limit how long the command runs. When it is not set, it is 30000, which is 30 seconds.
+        type: integer
+        example: 10000
   types:
     in:
       mediaType: text/plain
@@ -101,4 +122,4 @@ spec:
       uri: kamelet:source
       steps:
         - to:
-            uri: "ssh://{{connectionHost}}:{{connectionPort}}?knownHostsResource={{?knownHostsResource}}&password=RAW({{password}})&username=RAW({{username}})"
+            uri: "ssh://{{connectionHost}}:{{connectionPort}}?certResource={{?privateKeyResource}}&certResourcePassword=RAW({{?privateKeyPassphrase}})&failOnUnknownHost={{?failOnUnknownHost}}&knownHostsResource={{?knownHostsResource}}&password=RAW({{?password}})&timeout={{?connectTimeout}}&username=RAW({{username}})"

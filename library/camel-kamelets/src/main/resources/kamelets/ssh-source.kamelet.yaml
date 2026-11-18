@@ -37,12 +37,11 @@ spec:
 
       Output: the body is what the command printed on its standard output, as text. The `CamelSshExitValue` header holds the exit code of the command, and `CamelSshStderr` what it printed on its standard error, as a stream.
 
-      Good to know: it runs `pollCommand` with the rights of `username`, so log in with an account that may do only what is needed. It runs it every half second by default; set `delay` to how often you need it. A command that fails still sends a message, with its exit code in `CamelSshExitValue`. The key of the server is checked only when `knownHostsResource` is set; without it, any server is accepted.
+      Good to know: it runs `pollCommand` with the rights of `username`, so log in with an account that may do only what is needed. It runs it every half second by default; set `delay` to how often you need it. A command that fails still sends a message, with its exit code in `CamelSshExitValue`. Log in with `password`, or with a private key in `privateKeyResource` when the server does not take passwords; when a key is set, the password is not used. The key of the server is checked only when `knownHostsResource` is set; without it, any server is accepted. A server that is not listed in that file is still accepted, unless `failOnUnknownHost` is true.
     required:
       - connectionHost
       - connectionPort
       - username
-      - password
       - pollCommand
     type: object
     properties:
@@ -64,7 +63,20 @@ spec:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password of `username` on the SSH server.
+        description: The password of `username` on the SSH server. Leave it empty to log in with a private key in `privateKeyResource` instead; when a key is set, the password is not used. With neither of them set, every run fails with `No password provided`.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      privateKeyResource:
+        title: Private Key Resource
+        description: A private key to log in with instead of a password, starting with `file:` followed by the path of the key file, `classpath:`, `http:` or `https:`. The matching public key must be in the `authorized_keys` file of `username` on the server. OpenSSH keys, such as those made with `ssh-keygen`, and PEM keys can be read. A key that cannot be read, or a wrong passphrase, makes every run fail with `No key-pair to add`.
+        type: string
+        pattern: "^(http|https|file|classpath|ref|bean):.*"
+        example: file:/etc/ssh-keys/id_ed25519
+      privateKeyPassphrase:
+        title: Private Key Passphrase
+        description: The passphrase of the key in `privateKeyResource`, when the key is protected by one.
         type: string
         format: password
         x-descriptors:
@@ -75,6 +87,15 @@ spec:
         type: string
         pattern: "^(http|https|file|classpath|ref|bean):.*"
         example: file:/etc/ssh/known_hosts
+      failOnUnknownHost:
+        title: Fail On Unknown Host
+        description: If true, a server that is not listed in `knownHostsResource` is refused. When it is not set or false, such a server is accepted, and only a server that is listed with another key is refused. Only used when `knownHostsResource` is set.
+        type: boolean
+      connectTimeout:
+        title: Connect Timeout
+        description: How long to wait for the connection, for the login and for the command to start, each in milliseconds. It does not limit how long the command runs. When it is not set, it is 30000, which is 30 seconds.
+        type: integer
+        example: 10000
       delay:
         title: Delay
         description: How long to wait between two runs of the command, in milliseconds. For example, 60000 is one minute.
@@ -102,7 +123,7 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "ssh://{{connectionHost}}:{{connectionPort}}?delay={{delay}}&knownHostsResource={{?knownHostsResource}}&password=RAW({{password}})&pollCommand={{pollCommand}}&username=RAW({{username}})"
+      uri: "ssh://{{connectionHost}}:{{connectionPort}}?delay={{delay}}&certResource={{?privateKeyResource}}&certResourcePassword=RAW({{?privateKeyPassphrase}})&failOnUnknownHost={{?failOnUnknownHost}}&knownHostsResource={{?knownHostsResource}}&password=RAW({{?password}})&pollCommand={{pollCommand}}&timeout={{?connectTimeout}}&username=RAW({{username}})"
       steps:
         - convertBodyTo:
             type: java.lang.String

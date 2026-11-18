@@ -10,7 +10,40 @@ The body of each message is run as a command in the shell of `username`, and the
 
 === Authentication Methods
 
-The Kamelet logs in with a username and a password. The key of the server is checked only when `knownHostsResource` is set; without it, any server is accepted.
+The Kamelet logs in as `username`, either with `password` or with a private key in `privateKeyResource`. Use the key when the server does not take passwords. When a key is set, the password is not used.
+
+- `privateKeyResource` is where to read the key from: `file:` followed by the path of the key file, `classpath:`, `http:` or `https:`. OpenSSH keys, such as those made with `ssh-keygen`, and PEM keys can be read. The matching public key must be in the `authorized_keys` file of `username` on the server.
+- `privateKeyPassphrase` is the passphrase of the key, when it has one.
+
+The key of the server is checked only when `knownHostsResource` is set; without it, any server is accepted. A server that is not listed in that file is still accepted, unless `failOnUnknownHost` is true. A server that is listed with another key is always refused. The lines of the file can be made with `ssh-keyscan`, such as `ssh-keyscan -p 22 server.example.com > known_hosts`.
+
+`connectTimeout` is how long to wait for the connection, for the login and for the command to start, in milliseconds (30000 when it is not set). It does not limit how long the command runs.
+
+=== Example with a Private Key
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:webhook-source"
+      parameters:
+        subpath: "restart"
+      steps:
+        - setBody:
+            constant: "systemctl restart myapp"
+        - to:
+            uri: "kamelet:ssh-sink"
+            parameters:
+              connectionHost: "server.example.com"
+              connectionPort: "22"
+              username: "deploy"
+              privateKeyResource: "file:/etc/ssh-keys/id_ed25519"
+              privateKeyPassphrase: "{{ssh.key.passphrase}}"
+              knownHostsResource: "file:/etc/ssh-keys/known_hosts"
+              failOnUnknownHost: true
+----
+
+The command is fixed in the route, not taken from the request, so that callers of the webhook cannot choose what runs on the server.
 
 === Security Features
 
@@ -18,6 +51,7 @@ SSH provides comprehensive security features:
 
 - Strong encryption for all communications
 - Host key verification, when `knownHostsResource` is set
+- Login with a private key, when `privateKeyResource` is set
 - User authentication and authorization
 - Session integrity and confidentiality
 

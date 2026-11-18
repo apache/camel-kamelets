@@ -2,7 +2,7 @@
 
 === Authentication
 
-This Kamelet supports SSH authentication using username and password credentials. It can execute commands on remote SSH servers and retrieve the output.
+The Kamelet logs in as `username`, either with `password` or with a private key in `privateKeyResource`. Use the key when the server does not take passwords. When a key is set, the password is not used. It runs the command on the server and sends what it printed.
 
 === Configuration
 
@@ -11,9 +11,13 @@ The SSH Source Kamelet supports the following configurations:
 - **Connection Host** (`connectionHost`): SSH server hostname or IP address (required)
 - **Connection Port** (`connectionPort`): SSH server port (default: 22)
 - **Username** (`username`): Username for SSH authentication (required)
-- **Password** (`password`): Password for SSH authentication (required)
+- **Password** (`password`): Password of `username`; leave it empty to log in with a private key
+- **Private Key Resource** (`privateKeyResource`): private key to log in with, such as `file:/etc/ssh-keys/id_ed25519`; OpenSSH and PEM keys can be read
+- **Private Key Passphrase** (`privateKeyPassphrase`): passphrase of the private key, when it has one
 - **Poll Command** (`pollCommand`): Command to execute on the remote server (required)
 - **Known Hosts Resource** (`knownHostsResource`): known_hosts file to verify the key of the server; without it, any server is accepted
+- **Fail On Unknown Host** (`failOnUnknownHost`): if true, a server that is not listed in `knownHostsResource` is refused; otherwise it is accepted
+- **Connect Timeout** (`connectTimeout`): milliseconds to wait for the connection, the login and the start of the command (default: 30000); it does not limit how long the command runs
 - **Delay** (`delay`): Milliseconds between two runs of the command (default: 500)
 
 === Output Format
@@ -34,6 +38,30 @@ The body is what the command printed on its standard output, as text. The exit c
         password: "sshpass"
         pollCommand: "tail -n 10 /var/log/application.log"
         delay: 30000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with a Private Key
+
+For a server that does not take passwords. The key of the server must be in the known_hosts file, which can be made with `ssh-keyscan -p 22 server.example.com > known_hosts`.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:ssh-source"
+      parameters:
+        connectionHost: "server.example.com"
+        connectionPort: "22"
+        username: "monitor"
+        privateKeyResource: "file:/etc/ssh-keys/id_ed25519"
+        privateKeyPassphrase: "{{ssh.key.passphrase}}"
+        knownHostsResource: "file:/etc/ssh-keys/known_hosts"
+        failOnUnknownHost: true
+        pollCommand: "df -h /"
+        delay: 60000
       steps:
         - to:
             uri: "kamelet:log-sink"
@@ -77,8 +105,8 @@ The body is what the command printed on its standard output, as text. The exit c
 
 === Security Considerations
 
-- Use strong passwords
-- Set `knownHostsResource` so that the key of the server is checked
+- Log in with a private key, or use strong passwords
+- Set `knownHostsResource`, and `failOnUnknownHost` to true, so that the key of the server is checked
 - Limit the commands that can be executed
 - Consider using dedicated monitoring users with restricted permissions
 - Monitor SSH access logs for security purposes
