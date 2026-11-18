@@ -29,3 +29,22 @@ In this Kamelet you could use the following headers for metrics:
 - `metric-timestamp` / `ce-metrictimestamp` for the metric timestamp.
 - `metric-dimension-name` / `ce-metricdimensionname` for the dimension name.
 - `metric-dimension-value` / `ce-metricdimensionvalue` for the dimension value.
+
+=== Through an HTTP Proxy
+
+Where AWS can be reached only through an HTTP proxy, as in many company networks, set `proxyHost` and `proxyPort` to the proxy. `proxyProtocol` is how the Kamelet talks to the proxy itself, not to AWS: it is `HTTPS` when it is not set, so set it to `HTTP` for a proxy that takes plain HTTP, such as Squid. The calls to AWS stay encrypted, as the proxy only passes them on. The Kamelet has no option for a proxy user or password.
+
+The step that sends to the Kamelet, in a route:
+
+[source,yaml,subs='+attributes,macros']
+----
+- to:
+    uri: "kamelet:aws-cloudwatch-sink"
+    parameters:
+      cwNamespace: "MyApp/Orders"
+      region: "eu-west-1"
+      useDefaultCredentialsProvider: true
+      proxyHost: "proxy.example.com"
+      proxyPort: 3128
+      proxyProtocol: "HTTP"
+----

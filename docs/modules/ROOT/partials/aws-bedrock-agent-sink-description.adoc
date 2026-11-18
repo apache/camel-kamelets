@@ -16,3 +16,23 @@ For the `getIngestionJob` operation the job id is taken from the
 deliberately reads from the message. Every other `CamelAwsBedrockAgent*` header is
 removed before the call, so an inbound message cannot change the operation, the
 knowledge base or the data source.
+
+=== Through an HTTP Proxy
+
+Where AWS can be reached only through an HTTP proxy, as in many company networks, set `proxyHost` and `proxyPort` to the proxy. `proxyProtocol` is how the Kamelet talks to the proxy itself, not to AWS: it is `HTTPS` when it is not set, so set it to `HTTP` for a proxy that takes plain HTTP, such as Squid. The calls to AWS stay encrypted, as the proxy only passes them on. The Kamelet has no option for a proxy user or password.
+
+The step that sends to the Kamelet, in a route:
+
+[source,yaml,subs='+attributes,macros']
+----
+- to:
+    uri: "kamelet:aws-bedrock-agent-sink"
+    parameters:
+      knowledgeBaseId: "AB12CD34EF"
+      dataSourceId: "GH56IJ78KL"
+      region: "eu-west-1"
+      useDefaultCredentialsProvider: true
+      proxyHost: "proxy.example.com"
+      proxyPort: 3128
+      proxyProtocol: "HTTP"
+----

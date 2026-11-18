@@ -38,3 +38,22 @@ The given JSON body can use `key` and `item` as top level properties that are ma
 ----
 
 Choose the operation with the `operation` option, or for one message with the `CamelAwsDdbOperation` header. Do not put an `operation` field in the body: depending on the Camel version it is ignored, and the item is then replaced as with PutItem, or the message fails.
+
+=== Through an HTTP Proxy
+
+Where AWS can be reached only through an HTTP proxy, as in many company networks, set `proxyHost` and `proxyPort` to the proxy. `proxyProtocol` is how the Kamelet talks to the proxy itself, not to AWS: it is `HTTPS` when it is not set, so set it to `HTTP` for a proxy that takes plain HTTP, such as Squid. The calls to AWS stay encrypted, as the proxy only passes them on. The Kamelet has no option for a proxy user or password.
+
+The step that sends to the Kamelet, in a route:
+
+[source,yaml,subs='+attributes,macros']
+----
+- to:
+    uri: "kamelet:aws-ddb-sink"
+    parameters:
+      table: "orders"
+      region: "eu-west-1"
+      useDefaultCredentialsProvider: true
+      proxyHost: "proxy.example.com"
+      proxyPort: 3128
+      proxyProtocol: "HTTP"
+----

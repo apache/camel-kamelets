@@ -40,7 +40,7 @@ spec:
 
       Output: the body is the answer of AWS, a `DescribeInstanceStatusResponse` object of the AWS SDK for Java (not JSON text), with for each instance its ID, availability zone, state (such as `running`) and the results of the instance and system status checks. When there are more results than fit, the `CamelAwsEC2NextToken` header holds the token of the next page.
 
-      Good to know: it only reads; it never starts, stops or changes an instance. With Camel 4.23, the `instanceIds` header is ignored, and the status of all the instances is returned.
+      Good to know: it only reads; it never starts, stops or changes an instance. With Camel 4.23, the `instanceIds` header is ignored, and the status of all the instances is returned. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - region
     type: object
@@ -101,6 +101,23 @@ spec:
         description: If true, the requests go to the address in `uriEndpointOverride` instead of AWS, for example to test against LocalStack.
         type: boolean
         default: false
+      proxyHost:
+        title: Proxy Host
+        description: The host name or IP address of an HTTP proxy to send the calls to AWS through, such as the proxy of a company network. Used only together with `proxyPort`. When it is not set, the calls go straight to AWS.
+        type: string
+        pattern: "^[A-Za-z0-9._-]+$"
+        example: proxy.example.com
+      proxyPort:
+        title: Proxy Port
+        description: The port of the proxy in `proxyHost`, such as `3128` for Squid. Used only together with `proxyHost`.
+        type: integer
+        example: 3128
+      proxyProtocol:
+        title: Proxy Protocol
+        description: "How to talk to the proxy itself: `HTTP` or `HTTPS`. It is not the protocol of the calls to AWS, which stay encrypted, as the proxy only passes them on. When it is not set, it is `HTTPS`, which needs a proxy that takes TLS connections. Most company proxies, such as Squid, take plain HTTP: set `HTTP` for them. With the wrong one, every call fails, for example with `Unsupported or unrecognized SSL message`."
+        type: string
+        enum: ["HTTP", "HTTPS"]
+        example: HTTP
   dataTypes:
     in:
       headers:
@@ -169,3 +186,6 @@ spec:
               useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
               useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
               useSessionCredentials: "{{useSessionCredentials}}"
+              proxyHost: "{{?proxyHost}}"
+              proxyPort: "{{?proxyPort}}"
+              proxyProtocol: "{{?proxyProtocol}}"

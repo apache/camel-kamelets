@@ -40,7 +40,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the response of SQS, and the `CamelAwsSqsSuccessfulMessageCount` and `CamelAwsSqsFailedMessageCount` headers say how many parts were sent and how many failed.
 
-      Good to know: the queue is looked up by listing the queues, which needs the `sqs:ListQueues` permission besides `sqs:SendMessage`.
+      Good to know: the queue is looked up by listing the queues, which needs the `sqs:ListQueues` permission besides `sqs:SendMessage`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - queueNameOrArn
       - region
@@ -130,6 +130,23 @@ spec:
         description: If true, it connects to the address in `uriEndpointOverride` instead of to AWS. Use it for a local stand-in of AWS such as LocalStack.
         type: boolean
         default: false        
+      proxyHost:
+        title: Proxy Host
+        description: The host name or IP address of an HTTP proxy to send the calls to AWS through, such as the proxy of a company network. Used only together with `proxyPort`. When it is not set, the calls go straight to AWS.
+        type: string
+        pattern: "^[A-Za-z0-9._-]+$"
+        example: proxy.example.com
+      proxyPort:
+        title: Proxy Port
+        description: The port of the proxy in `proxyHost`, such as `3128` for Squid. Used only together with `proxyHost`.
+        type: integer
+        example: 3128
+      proxyProtocol:
+        title: Proxy Protocol
+        description: "How to talk to the proxy itself: `HTTP` or `HTTPS`. It is not the protocol of the calls to AWS, which stay encrypted, as the proxy only passes them on. When it is not set, it is `HTTPS`, which needs a proxy that takes TLS connections. Most company proxies, such as Squid, take plain HTTP: set `HTTP` for them. With the wrong one, every call fails, for example with `Unsupported or unrecognized SSL message`."
+        type: string
+        enum: ["HTTP", "HTTPS"]
+        example: HTTP
   dataTypes:
     out:
       headers:
@@ -167,3 +184,6 @@ spec:
               useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
               useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
               useSessionCredentials: "{{useSessionCredentials}}"
+              proxyHost: "{{?proxyHost}}"
+              proxyPort: "{{?proxyPort}}"
+              proxyProtocol: "{{?proxyProtocol}}"

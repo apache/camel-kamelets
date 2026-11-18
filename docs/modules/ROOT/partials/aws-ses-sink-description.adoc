@@ -30,3 +30,22 @@ In the headers, you can optionally set the following properties:
 - `subject` / `ce-subject` property to specify the email subject. If you do not set this property in the header, the Kamelet uses a generated unique ID for the email subject.
 
 - `reply-to-addresses` / `ce-reply-to-addresses` to provide a comma-separated list of reply-to email addresses.
+
+=== Through an HTTP Proxy
+
+Where AWS can be reached only through an HTTP proxy, as in many company networks, set `proxyHost` and `proxyPort` to the proxy. `proxyProtocol` is how the Kamelet talks to the proxy itself, not to AWS: it is `HTTPS` when it is not set, so set it to `HTTP` for a proxy that takes plain HTTP, such as Squid. The calls to AWS stay encrypted, as the proxy only passes them on. The Kamelet has no option for a proxy user or password.
+
+The step that sends to the Kamelet, in a route:
+
+[source,yaml,subs='+attributes,macros']
+----
+- to:
+    uri: "kamelet:aws-ses-sink"
+    parameters:
+      from: "noreply@example.com"
+      region: "eu-west-1"
+      useDefaultCredentialsProvider: true
+      proxyHost: "proxy.example.com"
+      proxyPort: 3128
+      proxyProtocol: "HTTP"
+----
