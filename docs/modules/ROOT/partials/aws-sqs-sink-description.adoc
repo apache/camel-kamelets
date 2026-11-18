@@ -19,6 +19,40 @@ Only one of access key/secret key or default credentials provider could be used
 
 For more information, see the https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials.html[AWS credentials documentation]
 
+=== Delaying the Messages
+
+`delaySeconds` keeps each message hidden for that many seconds after it is sent, up to 900 (15 minutes), before a reader can receive it. Use it to process a message later, such as a retry in a minute.
+
+=== Without Permission to List the Queues
+
+By default the Kamelet finds the address of the queue by listing the queues, which needs the `sqs:ListQueues` permission. It does not list the queues when it is given the address:
+
+- **Queue URL** (`queueURL`): the full address of the queue, as the SQS console shows it.
+- **Queue Owner AWS Account ID** (`queueOwnerAWSAccountId`): the 12-digit ID of the account that owns the queue. The address is then built from the account, the region and the queue name. Use it for a queue of another AWS account too.
+- An ARN in **Queue Name** (`queueNameOrArn`), which holds the account.
+
+=== Too Many Headers
+
+An SQS message takes at most 10 message attributes. When a message has more than 10 headers to send, the first 10 are sent, and `messageHeaderExceededLimit` sets what happens to the others: `WARN` (the default) logs a warning for each one, `WARN_ONCE` logs one warning, `IGNORE` logs nothing, and `FAIL` fails the message, which is then not sent.
+
+=== Encrypting the Queue
+
+`serverSideEncryptionEnabled` and `kmsMasterKeyId` set the queue to encrypt its messages with a key of AWS KMS (SSE-KMS). They change the queue itself, not only the messages of this Kamelet: when the integration starts, an existing queue is updated, which needs the `sqs:SetQueueAttributes` permission, and a queue that `autoCreateQueue` creates is created with the key. `serverSideEncryptionEnabled` without `kmsMasterKeyId` has no effect.
+
+For example, to send to a queue without listing the queues, with each message delayed by one minute, and failing a message with too many headers:
+
+[source,yaml]
+----
+- to:
+    uri: "kamelet:aws-sqs-sink"
+    parameters:
+      queueNameOrArn: "orders"
+      region: "eu-west-1"
+      queueURL: "https://sqs.eu-west-1.amazonaws.com/123456789012/orders"
+      delaySeconds: 60
+      messageHeaderExceededLimit: "FAIL"
+----
+
 === Through an HTTP Proxy
 
 Where AWS can be reached only through an HTTP proxy, as in many company networks, set `proxyHost` and `proxyPort` to the proxy. `proxyProtocol` is how the Kamelet talks to the proxy itself, not to AWS: it is `HTTPS` when it is not set, so set it to `HTTP` for a proxy that takes plain HTTP, such as Squid. The calls to AWS stay encrypted, as the proxy only passes them on. The Kamelet has no option for a proxy user or password.
