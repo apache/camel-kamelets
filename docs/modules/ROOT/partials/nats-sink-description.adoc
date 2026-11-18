@@ -72,3 +72,35 @@ That trust store then replaces the one of Java for every NATS connection of the 
               secure: true
               credentialsFilePath: "file:/etc/nats/app-user.creds"
 ----
+
+=== JetStream
+
+A plain NATS subject stores nothing: only the receivers subscribed at that moment get the message. A JetStream stream
+stores the messages of the subjects it takes in. With `jetstreamEnabled: true`, the Kamelet waits until that stream
+has stored each message, and sending fails with `503 No Responders Available For Request` when no stream takes in the
+subject in `topic`. The stream must exist already: create it with `nats-source` and `jetstreamEnabled`, or with the
+`nats` command line tool:
+
+[source,bash]
+----
+nats stream add ORDERS --subjects "orders.created" --defaults
+----
+
+The sink does not use `jetstreamName`: the message goes to the stream that takes in the subject, whatever its name.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: "hello"
+        period: 5000
+      steps:
+        - to:
+            uri: "kamelet:nats-sink"
+            parameters:
+              servers: "nats://localhost:4222"
+              topic: "orders.created"
+              jetstreamEnabled: true
+----

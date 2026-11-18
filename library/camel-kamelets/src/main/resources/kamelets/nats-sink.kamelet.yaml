@@ -39,7 +39,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: a plain NATS subject stores nothing: only the receivers subscribed at that moment get the message. With `jetstreamEnabled`, the message is stored in the stream `jetstreamName`, which must exist already, for example created by `nats-source`; otherwise sending fails. It connects with TLS when `secure` is true. The certificate of the server is checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.nats.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every NATS connection of the application that has `secure` set. The integration fails to start when no server can be reached, or when the server refuses the login. It publishes the message and does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does.
+      Good to know: a plain NATS subject stores nothing: only the receivers subscribed at that moment get the message, unless a JetStream stream takes in the subject. With `jetstreamEnabled`, the sink waits until the stream that takes in the subject has stored the message, and sending fails with `503 No Responders Available For Request` when no stream takes it in. The stream must exist already, for example created by `nats-source`. On a server without JetStream, `jetstreamEnabled` is ignored and the message is published as plain NATS. It connects with TLS when `secure` is true. The certificate of the server is checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.nats.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every NATS connection of the application that has `secure` set. The integration fails to start when no server can be reached, or when the server refuses the login. It publishes the message and does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does.
     required:
       - topic
       - servers
@@ -70,17 +70,17 @@ spec:
         pattern: "^(file|classpath|http|https):.+"
       jetstreamEnabled:
         title: "JetStream Enabled"
-        description: "If true, each message is published to the JetStream stream `jetstreamName`, which stores it, instead of to plain NATS. The stream must exist and take in the subject in `topic`."
+        description: "If true, each message is published to JetStream, and the sink waits until the stream that takes in the subject in `topic` has stored it. Sending fails when no stream takes in the subject, or when the server does not answer within a few seconds."
         type: boolean
         default: false
       jetstreamName:
         title: "JetStream Stream Name"
-        description: "The name of the JetStream stream that stores the messages. Only used when `jetstreamEnabled` is true."
+        description: "Not used by the sink: the message is stored by the stream that takes in the subject in `topic`, whatever its name."
         example: "ORDERS"
         type: string
       jetstreamAsync:
         title: "JetStream Async"
-        description: "If true, JetStream calls are made without blocking a thread while waiting for the server to answer. Only used when `jetstreamEnabled` is true."
+        description: "How the sink waits for JetStream to confirm that it stored a message. Either way it waits before it sends the next message. When the server does not answer, sending fails after about 2 seconds when false, and after 2 to 8 seconds when true. Only used when `jetstreamEnabled` is true."
         type: boolean
         default: true
   dependencies:
