@@ -37,7 +37,7 @@ spec:
 
       Output: the body is JSON text, the answer of Solr: `responseHeader`, and under `response` the list of the documents found, each with its fields. The `Content-Type` header is `application/json`.
 
-      Good to know: every query returns all the matching documents again, not only the new ones; filter on a date in the query to get only new documents. Each query returns only the first documents found, 10 with the usual Solr settings. It connects with plain HTTP.
+      Good to know: every query returns all the matching documents again, not only the new ones; filter on a date in the query to get only new documents. Each query returns only the first documents found: as many as `size`, or 10 with the usual Solr settings when `size` is not set. It connects with plain HTTP by default; set `enableSSL` to true for a Solr that is reached with HTTPS, and give the certificate in `certificate` when Solr uses a self-signed certificate.
     required:
       - period
       - servers
@@ -66,6 +66,11 @@ spec:
         description: The query to run, in the Solr query syntax, as given in the `q` parameter of a Solr search, such as `*:*` for every document or `status_s:new`.
         type: string
         example: "status_s:new"
+      size:
+        title: Maximum Documents
+        description: The most documents each query returns, as the `rows` parameter of a Solr search. When it is not set, Solr decides, which is 10 with the usual Solr settings.
+        type: integer
+        example: 100
       username:
         title: Username
         description: The Solr user to log in as, with Basic authentication. Leave it out for a Solr without login.
@@ -79,6 +84,15 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      enableSSL:
+        title: Enable SSL
+        description: If true, it connects with HTTPS. Leave it false for a Solr that is reached with plain HTTP.
+        type: boolean
+        default: false
+      certificate:
+        title: Certificate
+        description: The certificate of Solr, or of the certificate authority (CA) that signed it, as a PEM or DER file encoded in base64 on one line, such as the output of `base64 -w0 solr.crt` (`base64 -i solr.crt` on macOS). Needed when Solr uses a self-signed certificate, or one that Java does not trust. When it is not set, the certificates that Java trusts are used. Only used when `enableSSL` is true.
+        type: string
   types:
     out:
       mediaType: application/json
@@ -112,7 +126,7 @@ spec:
         - removeHeader:
             name: content-type
         - to:
-            uri: "solr:{{servers}}/solr/?password=RAW({{?password}})&username=RAW({{?username}})"
+            uri: "solr:{{servers}}/solr/?password=RAW({{?password}})&username=RAW({{?username}})&enableSSL={{enableSSL}}&certificatePath=RAW(base64:{{?certificate}})&size={{?size}}"
         - marshal:
             json:
               library: Jackson
