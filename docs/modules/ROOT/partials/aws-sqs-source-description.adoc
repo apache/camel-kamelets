@@ -49,6 +49,40 @@ messageAttributeNames: All
 attributeNames: SentTimestamp
 ----
 
+=== Slow Messages and Parallel Processing
+
+A received message stays hidden from other readers for its visibility timeout, 30 seconds for a new queue. A message that takes longer to process is received again, by this or another reader, and processed twice. Set `extendMessageVisibility` to true, together with `visibilityTimeout`, to keep each message hidden for as long as it is processed: every half of `visibilityTimeout`, its visibility timeout is extended by `visibilityTimeout` seconds.
+
+By default one thread polls the queue, and the messages are processed one after the other. `concurrentConsumers` sets how many threads poll and process at the same time.
+
+For example, to process up to five slow messages at a time, without receiving any of them twice:
+
+[source,yaml]
+----
+queueNameOrArn: orders
+region: eu-west-1
+concurrentConsumers: 5
+visibilityTimeout: 60
+extendMessageVisibility: true
+----
+
+=== Without Permission to List the Queues
+
+By default the Kamelet finds the address of the queue by listing the queues, which needs the `sqs:ListQueues` permission. It does not list the queues when it is given the address:
+
+- **Queue URL** (`queueURL`): the full address of the queue, as the SQS console shows it.
+- **Queue Owner AWS Account ID** (`queueOwnerAWSAccountId`): the 12-digit ID of the account that owns the queue. The address is then built from the account, the region and the queue name. Use it for a queue of another AWS account too.
+- An ARN in **Queue Name** (`queueNameOrArn`), which holds the account.
+
+For example, for the queue `orders` of the account `123456789012`:
+
+[source,yaml]
+----
+queueNameOrArn: orders
+region: eu-west-1
+queueOwnerAWSAccountId: "123456789012"
+----
+
 === Through an HTTP Proxy
 
 Where AWS can be reached only through an HTTP proxy, as in many company networks, set `proxyHost` and `proxyPort` to the proxy. `proxyProtocol` is how the Kamelet talks to the proxy itself, not to AWS: it is `HTTPS` when it is not set, so set it to `HTTP` for a proxy that takes plain HTTP, such as Squid. The calls to AWS stay encrypted, as the proxy only passes them on. The Kamelet has no option for a proxy user or password.

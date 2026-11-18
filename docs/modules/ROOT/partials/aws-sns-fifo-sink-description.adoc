@@ -23,8 +23,41 @@ For more information, see the https://docs.aws.amazon.com/sdk-for-java/latest/de
 
 In the Kamelet you can optionally set the following header:
 
-- `subject` / `ce-subject`: the subject of the message
+- `subject` / `ce-subject`: the subject of the message. It takes precedence over the `subject` option.
 - `group` / `ce-group`: the message group ID. If you do not set it, each message gets a group of its own.
+
+=== The Subject
+
+The `subject` option sets the subject of every notification. A `subject` or `ce-subject` header on a message takes precedence over it. Email subscribers see the subject as the subject line, and an SQS queue subscribed to the topic gets it in the `Subject` field of the JSON notification. A subject is ASCII text without line breaks; a longer one than 100 characters is cut to 100.
+
+=== A Text for Each Kind of Subscriber
+
+With `messageStructure` set to `json`, the body is a JSON object with a `default` text for all subscribers and, optionally, a text for each protocol, such as `sqs`, `email` or `sms`. SNS rejects a body without `default`. For example, the body
+
+[source,json]
+----
+{"default": "Order 42 received", "email": "Your order 42 was received.", "sqs": "{\"orderId\": 42}"}
+----
+
+sends `{"orderId": 42}` to the SQS queues subscribed to the topic, and `Your order 42 was received.` to the email addresses.
+
+=== Encrypting a New Topic
+
+`serverSideEncryptionEnabled` and `kmsMasterKeyId` apply only to a topic that `autoCreateTopic` creates: the topic is then created to encrypt its messages with that key of AWS KMS. With `serverSideEncryptionEnabled` and no `kmsMasterKeyId`, the integration does not start when the topic must be created. They do not change a topic that exists already.
+
+For example:
+
+[source,yaml]
+----
+- to:
+    uri: "kamelet:aws-sns-fifo-sink"
+    parameters:
+      topicNameOrArn: "order-events.fifo"
+      region: "eu-west-1"
+      subject: "Order received"
+      messageStructure: "json"
+----
+
 
 === Through an HTTP Proxy
 

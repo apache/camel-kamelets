@@ -39,7 +39,7 @@ spec:
 
       Output: the body is the body of the SQS message, as text. The headers give the message ID (`CamelAwsSqsMessageId`), the receipt handle and the MD5 checksum of the body. The message attributes, which the sender sets on a message, are read only when `messageAttributeNames` names them, and the system attributes of SQS, such as `SentTimestamp`, only when `attributeNames` names them. Each attribute that is read becomes a header of the same name, except a message attribute whose name starts with `Camel`.
 
-      Good to know: a message is deleted only after it has been processed without error; a message that fails stays in the queue and is received again when its visibility timeout ends. With `deleteAfterRead` set to false, the messages stay in the queue and are received again and again. Without `queueURL`, the queue is looked up by listing the queues, which needs the `sqs:ListQueues` permission. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: a message is deleted only after it has been processed without error; a message that fails stays in the queue and is received again when its visibility timeout ends. With `deleteAfterRead` set to false, the messages stay in the queue and are received again and again. A message that takes longer to process than the visibility timeout is received a second time, by this or another reader: set `extendMessageVisibility` to keep it hidden for as long as it is processed. By default one message is processed at a time; `concurrentConsumers` processes several in parallel. Without `queueURL`, `queueOwnerAWSAccountId` or an ARN in `queueNameOrArn`, the queue is looked up by listing the queues, which needs the `sqs:ListQueues` permission. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - queueNameOrArn
       - region
@@ -172,6 +172,22 @@ spec:
         description: "Which of the system attributes that SQS keeps for each message to read: `All`, or a comma-separated list of names from `SenderId`, `SentTimestamp`, `ApproximateReceiveCount`, `ApproximateFirstReceiveTimestamp`, `SequenceNumber`, `MessageDeduplicationId`, `MessageGroupId`, `AWSTraceHeader` and `DeadLetterQueueSourceArn`. A name that is not one of these is ignored, with a warning in the log. Each attribute that is read becomes a header of the same name, as text; the timestamps are in milliseconds since 1970. When it is not set, no system attribute is read."
         example: SentTimestamp,ApproximateReceiveCount
         type: string
+      concurrentConsumers:
+        title: Concurrent Consumers
+        description: How many threads poll the queue and process its messages at the same time. When it is not set, one thread does, and the messages are processed one after the other. With more, they are processed in parallel, in no particular order.
+        example: 5
+        type: integer
+        minimum: "1"
+      extendMessageVisibility:
+        title: Extend Message Visibility
+        description: If true, a message is kept hidden from other readers for as long as it is processed, so a message that takes longer than the visibility timeout is not received a second time. It needs `visibilityTimeout`, without which the integration does not start. Every half of `visibilityTimeout`, the visibility timeout of the messages being processed is extended by `visibilityTimeout` seconds; the credentials need the `sqs:ChangeMessageVisibility` permission.
+        type: boolean
+      queueOwnerAWSAccountId:
+        title: Queue Owner AWS Account ID
+        description: The 12-digit ID of the AWS account that owns the queue, such as `123456789012`. When it is set, the address of the queue is built from the account, `region` and the queue name, and the queue is not looked up by listing the queues. Use it for a queue of another AWS account, or when the credentials may not list the queues. An ARN in `queueNameOrArn` gives the account too.
+        example: "123456789012"
+        type: string
+        pattern: "^[0-9]{12}$"
       proxyHost:
         title: Proxy Host
         description: The host name or IP address of an HTTP proxy to send the calls to AWS through, such as the proxy of a company network. Used only together with `proxyPort`. When it is not set, the calls go straight to AWS.
@@ -277,6 +293,9 @@ spec:
         proxyHost: "{{?proxyHost}}"
         proxyPort: "{{?proxyPort}}"
         proxyProtocol: "{{?proxyProtocol}}"
+        concurrentConsumers: "{{?concurrentConsumers}}"
+        extendMessageVisibility: "{{?extendMessageVisibility}}"
+        queueOwnerAWSAccountId: "{{?queueOwnerAWSAccountId}}"
       steps:
         - to:
             uri: kamelet:sink

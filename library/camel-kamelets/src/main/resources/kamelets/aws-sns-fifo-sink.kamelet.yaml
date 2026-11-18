@@ -36,11 +36,11 @@ spec:
 
       Use it to fan out ordered updates, such as the changes of one order or one account, to several FIFO queues at once. For a standard topic use `aws-sns-sink`.
 
-      Input: the body becomes the text of the notification, as text. The optional `group` header (or `ce-group`) is the message group ID, such as a customer ID: the messages of one group are delivered in order. Without it, each message is a group of its own. The optional `subject` header (or `ce-subject`) is the subject. The other headers of the message, except the Camel ones, are sent as SNS message attributes.
+      Input: the body becomes the text of the notification, as text. The optional `group` header (or `ce-group`) is the message group ID, such as a customer ID: the messages of one group are delivered in order. Without it, each message is a group of its own. The optional `subject` header (or `ce-subject`) is the subject; it takes precedence over the `subject` option. The other headers of the message, except the Camel ones, are sent as SNS message attributes.
 
       Output: the message is unchanged. The `CamelAwsSnsMessageId` header gives the ID of the published message.
 
-      Good to know: the name of the topic ends in `.fifo`. With `contentBasedDeduplication` false, the default, each message gets a unique deduplication ID, so SNS drops only a message sent twice by a retry; set it to true to drop messages with the same body, which the topic must allow. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: the name of the topic ends in `.fifo`. With `contentBasedDeduplication` false, the default, each message gets a unique deduplication ID, so SNS drops only a message sent twice by a retry; set it to true to drop messages with the same body, which the topic must allow. With `messageStructure` set to `json`, the body is a JSON object with a text for each kind of subscriber. `serverSideEncryptionEnabled` and `kmsMasterKeyId` apply only to a topic that `autoCreateTopic` creates. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - topicNameOrArn
       - region
@@ -135,6 +135,27 @@ spec:
         type: string
         enum: ["HTTP", "HTTPS"]
         example: HTTP
+      subject:
+        title: Subject
+        description: The subject of every notification, which email subscribers see as the subject line, and an SQS queue subscribed to the topic gets in the `Subject` field of the notification. A `subject` or `ce-subject` header on the message takes precedence. It is ASCII text without line breaks; a subject longer than 100 characters is cut to 100. When it is not set, only the messages with a header have a subject.
+        example: Order received
+        type: string
+        pattern: "^[ -~]+$"
+      messageStructure:
+        title: Message Structure
+        description: "Set it to `json` to send a different text to each kind of subscriber. The body is then a JSON object with a `default` text for all subscribers and, optionally, a text for each protocol, such as `{\"default\": \"Order 42 received\", \"email\": \"Your order 42 was received.\"}`; SNS rejects a body without `default`. When it is not set, the body is the text for all subscribers."
+        type: string
+        enum: ["json"]
+      serverSideEncryptionEnabled:
+        title: Server-Side Encryption
+        description: If true, a topic that `autoCreateTopic` creates is created to encrypt its messages with the key of AWS KMS in `kmsMasterKeyId`, which is then required. It does not change a topic that exists already.
+        type: boolean
+      kmsMasterKeyId:
+        title: KMS Key ID
+        description: The key of AWS KMS for a new topic to encrypt its messages with, as its key ID, such as `1234abcd-12ab-34cd-56ef-1234567890ab`, an alias, such as `alias/aws/sns`, or its ARN. Only used when `serverSideEncryptionEnabled` and `autoCreateTopic` are true and the topic does not exist yet.
+        example: alias/aws/sns
+        type: string
+        pattern: "^[A-Za-z0-9:/_-]+$"
   dataTypes:
     in:
       headers:
@@ -144,7 +165,7 @@ spec:
           type: string
         subject:
           title: Subject
-          description: The subject of the notification. `ce-subject` works too.
+          description: The subject of the notification. `ce-subject` works too. It takes precedence over the `subject` option.
           type: string
   dependencies:
   - "camel:aws2-sns"
@@ -231,6 +252,10 @@ spec:
                         proxyHost: "{{?proxyHost}}"
                         proxyPort: "{{?proxyPort}}"
                         proxyProtocol: "{{?proxyProtocol}}"
+                        subject: "RAW({{?subject}})"
+                        messageStructure: "{{?messageStructure}}"
+                        serverSideEncryptionEnabled: "{{?serverSideEncryptionEnabled}}"
+                        kmsMasterKeyId: "{{?kmsMasterKeyId}}"
             otherwise:
               steps:
                 - to:
@@ -253,3 +278,7 @@ spec:
                       proxyHost: "{{?proxyHost}}"
                       proxyPort: "{{?proxyPort}}"
                       proxyProtocol: "{{?proxyProtocol}}"
+                      subject: "RAW({{?subject}})"
+                      messageStructure: "{{?messageStructure}}"
+                      serverSideEncryptionEnabled: "{{?serverSideEncryptionEnabled}}"
+                      kmsMasterKeyId: "{{?kmsMasterKeyId}}"
