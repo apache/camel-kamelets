@@ -32,8 +32,8 @@ An address that starts with `tls://` also connects with TLS, but it uses that tr
 
 Each copy of the integration receives every message of the subject. To share the messages instead, so that each
 message is processed by only one copy, give every copy the same `queueName`. NATS then delivers each message to one
-member of the queue group. This works only without JetStream: with `jetstreamEnabled`, each copy still receives every
-message of the stream.
+member of the queue group. This works only without JetStream: with `jetstreamEnabled`, give every copy the same
+`durableName` instead (see below).
 
 === Output format
 
@@ -43,7 +43,38 @@ become headers too.
 === JetStream
 
 With `jetstreamEnabled` set to true, the Kamelet reads from the JetStream stream `jetstreamName`, and creates it for
-the subject in `topic` when it does not exist. Each time it starts, it reads the stream from the beginning.
+the subject in `topic` when it does not exist. Without `durableName`, each time it starts it reads the stream from the
+beginning, so the messages it already read are received again.
+
+=== Durable consumer: carry on after a restart
+
+With `durableName`, the server keeps a durable consumer for the Kamelet, and remembers which messages it acknowledged.
+After a restart, the Kamelet carries on with the first message that was not acknowledged: no message is lost and none
+is received again. A new durable consumer starts at the beginning of the stream.
+
+* A message is acknowledged once the integration has processed it. A message that fails is delivered again 5 seconds
+  later. Set `maxDeliver` to stop after that many deliveries; the message then stays in the stream.
+* When the integration stops abruptly, the messages it had not finished come back after 30 seconds, so the message in
+  progress can be received twice.
+* Copies of the integration with the same `durableName` share the messages: each message goes to only one of them.
+* `ackPolicy` says how the messages are acknowledged:
++
+[width="100%",cols="1,3",options="header"]
+|===
+| `ackPolicy` | A message that fails
+| `Explicit` (when not set) | is delivered again.
+| `All` | is delivered again, until a later message succeeds: acknowledging a message also acknowledges the earlier ones.
+| `None` | is not delivered again: JetStream counts a message as done when it sends it.
+|===
+
+On the server, the consumer is named after `durableName` with `-durable` added. It stays there when the integration is
+removed, and its `ackPolicy` and `maxDeliver` cannot be changed afterwards: the integration then logs
+`Existing consumer cannot be modified` and receives nothing. Delete it with the `nats` command line tool first:
+
+[source,bash]
+----
+nats consumer rm ORDERS order-processor-durable
+----
 
 === Usage example
 
@@ -73,6 +104,25 @@ the subject in `topic` when it does not exist. Each time it starts, it reads the
         secure: true
         credentialsFilePath: "file:/etc/nats/app-user.creds"
         queueName: "order-workers"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Example with a Durable JetStream Consumer
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:nats-source"
+      parameters:
+        servers: "nats://localhost:4222"
+        topic: "orders.created"
+        jetstreamEnabled: true
+        jetstreamName: "ORDERS"
+        durableName: "order-processor"
+        maxDeliver: 5
       steps:
         - to:
             uri: "kamelet:log-sink"

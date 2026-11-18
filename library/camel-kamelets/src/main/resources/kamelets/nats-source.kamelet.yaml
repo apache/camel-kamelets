@@ -37,7 +37,7 @@ spec:
 
       Output: the body is the payload, as bytes, unchanged. The `CamelNatsSubject` header is the subject, and the NATS headers of the message become headers too.
 
-      Good to know: without JetStream, it receives only the messages published while it is connected. With `jetstreamEnabled`, it creates the stream `jetstreamName` for the subject when it does not exist, and each time it starts it reads the stream from the beginning, so messages already read are received again. When several copies of the integration run, each copy receives every message, unless they share a `queueName`: then each message goes to only one of them. This works only without JetStream. It connects with TLS when `secure` is true. The certificate of the server is checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.nats.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every NATS connection of the application that has `secure` set. The integration fails to start when no server can be reached, or when the server refuses the login.
+      Good to know: without JetStream, it receives only the messages published while it is connected. With `jetstreamEnabled`, it creates the stream `jetstreamName` for the subject when it does not exist. Each time it starts it reads the stream from the beginning, so messages already read are received again, unless `durableName` is set: then it carries on after the last message it acknowledged. A message is acknowledged once it has been processed. A message that fails is delivered again 5 seconds later, with no end unless `maxDeliver` is set. When an integration with a `durableName` stops abruptly, the messages it had not finished come back after 30 seconds, so the one in progress can be received twice. When several copies of the integration run, each copy receives every message, unless they share a `queueName` (without JetStream) or a `durableName` (with JetStream): then each message goes to only one of them. It connects with TLS when `secure` is true. The certificate of the server is checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.nats.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every NATS connection of the application that has `secure` set. The integration fails to start when no server can be reached, or when the server refuses the login.
     required:
       - topic
       - servers
@@ -58,7 +58,7 @@ spec:
         - urn:camel:group:credentials
       queueName:
         title: "Queue Group"
-        description: "The name of a NATS queue group to join. The subscribers of `topic` that use the same queue group share its messages: each message goes to only one of them. Set the same name on every copy of the integration when you run several of them, so that each message is processed once; without it, each copy receives every message. Only used without JetStream: with `jetstreamEnabled`, each copy still receives every message of the stream."
+        description: "The name of a NATS queue group to join. The subscribers of `topic` that use the same queue group share its messages: each message goes to only one of them. Set the same name on every copy of the integration when you run several of them, so that each message is processed once; without it, each copy receives every message. Only used without JetStream: with `jetstreamEnabled`, each copy still receives every message of the stream, unless the copies share a `durableName`."
         example: "order-workers"
         type: string
         pattern: "^\\S+$"
@@ -84,9 +84,25 @@ spec:
         type: string
       jetstreamAsync:
         title: "JetStream Async"
-        description: "If true, JetStream calls are made without blocking a thread while waiting for the server to answer. Only used when `jetstreamEnabled` is true."
+        description: "Not used by the source, which receives the messages the same way whether it is true or false."
         type: boolean
         default: true
+      durableName:
+        title: "Durable Consumer Name"
+        description: "The name of a durable JetStream consumer: the server keeps it, and the position of the integration in the stream, when the integration stops. After a restart, it carries on with the first message that was not acknowledged, instead of reading the stream from the beginning. Copies of the integration with the same `durableName` share the messages: each message goes to only one of them. A new durable consumer starts at the beginning of the stream. On the server, the consumer is named after it with `-durable` added, such as `order-processor-durable`. It stays on the server when the integration is removed: delete it with `nats consumer rm <stream> <name>-durable`. Its `ackPolicy` and `maxDeliver` cannot be changed afterwards: the integration then logs `Existing consumer cannot be modified` and receives nothing, so delete the consumer first. Letters, digits, `-` and `_` only. Only used when `jetstreamEnabled` is true."
+        example: "order-processor"
+        type: string
+        pattern: "^[A-Za-z0-9_-]+$"
+      ackPolicy:
+        title: "Acknowledge Policy"
+        description: "How the messages are acknowledged to JetStream, so that it does not deliver them again. `Explicit`: each message on its own, once it has been processed; a message that fails is delivered again. `All`: the same, but acknowledging a message also acknowledges all the earlier ones, so a message that failed is not delivered again once a later message succeeds. `None`: JetStream counts a message as done when it sends it, so a message that fails is not delivered again. When not set, `Explicit`. Only used when `jetstreamEnabled` is true."
+        type: string
+        enum: ["Explicit", "All", "None"]
+      maxDeliver:
+        title: "Maximum Deliveries"
+        description: "How many times at most a message is delivered, the first time included. A message that fails is delivered again 5 seconds later, until it has been delivered this many times; it then stays in the stream but is not delivered again. When not set, a message that fails is delivered again with no end. Only used when `jetstreamEnabled` is true."
+        example: 5
+        type: integer
   types:
     out:
       mediaType: application/octet-stream
@@ -117,6 +133,9 @@ spec:
         secure: "{{?secure}}"
         credentialsFilePath: "{{?credentialsFilePath}}"
         queueName: "{{?queueName}}"
+        durableName: "{{?durableName}}"
+        ackPolicy: "{{?ackPolicy}}"
+        maxDeliver: "{{?maxDeliver}}"
       steps:
         - to:
             uri: kamelet:sink
