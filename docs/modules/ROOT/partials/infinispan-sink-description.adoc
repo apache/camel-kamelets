@@ -6,7 +6,8 @@ This Kamelet uses username and password authentication to connect to Infinispan 
 
 === Security Configuration
 
-- **Authentication**: Enabled by default (secure: true). It is a login with username and password, not TLS: the connection has no TLS.
+- **Authentication**: Enabled by default (secure: true). It is a login with username and password, not TLS.
+- **TLS**: Off by default. It is on when **sslTruststoreLocation** is set, and **sslSniHostName** is then required. See <<infinispan-sink-tls>>.
 - **SASL Mechanism**: DIGEST-MD5 (default). Recent Infinispan servers do not accept it: set `saslMechanism` to `SCRAM-SHA-512`.
 - **Security Realm**: "default" realm
 - **Security Server Name**: "infinispan" (default)
@@ -20,6 +21,53 @@ This Kamelet uses username and password authentication to connect to Infinispan 
 === Cache Operations
 
 The body of each message is stored as the value in the specified cache, which must already exist on the server. The key comes from a header, or is a new unique id.
+
+The **operation** option sets what is done with each message:
+
+[width="100%",cols="1,3",options="header"]
+|===
+| Operation | What it does
+| `PUT` (when not set) | Stores the body under the key, and replaces a value that is already there.
+| `PUTIFABSENT` | Stores the body only when the key has no value yet.
+| `REPLACE` | Stores the body only when the key already has a value.
+| `REMOVE` | Deletes the entry of the key. With an empty body, it is always deleted. With a body, it is deleted only when the value stored is equal to the body, and the body afterwards is `true` or `false`.
+|===
+
+=== Expiration
+
+With **lifespan**, an entry is removed that long after it is stored. With **maxIdle**, an entry is removed when it has not been read or written for that long. Both are in seconds unless **lifespanTimeUnit** or **maxIdleTimeUnit** says otherwise, and they can be used together. They apply to `PUT`, `PUTIFABSENT` and `REPLACE`.
+
+[[infinispan-sink-tls]]
+=== Example with TLS and Expiration
+
+The Infinispan client checks the certificate of the server against the file in **sslTruststoreLocation** only: it does not use the certificates that Java trusts by default. The file is a PKCS12 or JKS trust store with its password, or a PEM file such as the `ca.crt` of the server, without a password. **sslSniHostName** is the host name the certificate of the server is for.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kafka:sessions"
+      steps:
+        - setHeader:
+            name: key
+            simple: "$\{header.kafka.KEY}"
+        - to:
+            uri: "kamelet:infinispan-sink"
+            parameters:
+              cacheName: "sessions"
+              hosts: "infinispan.example.com:11222"
+              username: "camel"
+              password: "secret"
+              saslMechanism: "SCRAM-SHA-512"
+              sslTruststoreLocation: "/etc/infinispan/ca.crt"
+              sslSniHostName: "infinispan.example.com"
+              lifespan: 30
+              lifespanTimeUnit: "MINUTES"
+----
+
+Each record is stored under its Kafka key, over TLS, and removed from the cache 30 minutes later.
+
+To delete entries instead, set `operation: "REMOVE"` and send messages with an empty body and the `key` header.
 
 === Optional Headers
 
