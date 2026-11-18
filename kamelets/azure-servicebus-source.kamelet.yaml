@@ -34,14 +34,19 @@ spec:
     description: |-
       Receives the messages of a queue, or of a topic subscription, in Azure Service Bus, one message each.
 
-      Use it to process work or events that other applications send through Service Bus. To read new blobs from Event Grid events that arrive in a Service Bus queue, use `azure-storage-blob-event-based-source`.
+      Use it to process work or events that other applications send through Service Bus, including a queue with sessions, or to read the messages that Service Bus has dead-lettered. To read new blobs from Event Grid events that arrive in a Service Bus queue, use `azure-storage-blob-event-based-source`.
 
-      Output: the body is the body of the Service Bus message, as bytes. The headers give its ID (`CamelAzureServiceBusMessageId`), its custom properties (`CamelAzureServiceBusApplicationProperties`, a Map), its content type, correlation ID, subject, enqueued time and delivery count.
+      Output: the body is the body of the Service Bus message, as bytes. The headers give its ID (`CamelAzureServiceBusMessageId`), its custom properties (`CamelAzureServiceBusApplicationProperties`, a Map), its content type, correlation ID, subject, enqueued time and delivery count, its session ID (`CamelAzureServiceBusSessionId`) when it was sent with one, and, for a dead-lettered message, why it was dead-lettered (`CamelAzureServiceBusDeadLetterReason` and `CamelAzureServiceBusDeadLetterErrorDescription`).
 
       Good to know: with the default `serviceBusReceiveMode` of `PEEK_LOCK`, a message is removed only once it has been processed; a message whose processing fails is given back and received again, until Service Bus moves it to the dead-letter queue after the maximum delivery count (10 by default). With `RECEIVE_AND_DELETE`, a message is removed as soon as it is received, so a failure loses it. For a topic, set `serviceBusType` to `topic` and `subscriptionName`.
+
+      A queue or subscription created with sessions enabled can be read only with `sessionEnabled` set to `true`: without it, the integration starts but receives nothing, and logs a warning from Service Bus every few seconds (`It is not possible for an entity that requires sessions to create a non-sessionful message receiver`). With sessions, the messages of one session are received in the order they were sent, and the next one only once the previous one has been processed, unless a step of the integration works asynchronously, such as a delay. A message whose processing fails is received again before the next one of its session. `maxConcurrentSessions` sessions, 1 by default, are read at the same time; the messages of different sessions have no order between them.
+
+      To read the dead-letter queue, set `subQueue` to `DEAD_LETTER_QUEUE`, and leave `sessionEnabled` unset even when the queue has sessions, because the dead-letter queue has none. A dead-lettered message whose processing fails is not moved anywhere else: it is given back and received again straight away, over and over, and holds up the dead letters behind it.
+
+      To log in with an Azure identity instead of a connection string, set `credentialType` to `AZURE_IDENTITY` and `fullyQualifiedNamespace`, and leave `connectionString` unset.
     required:
       - topicOrQueueName
-      - connectionString
     type: object
     properties:
       topicOrQueueName:
@@ -51,7 +56,7 @@ spec:
         example: orders
       connectionString:
         title: Connection String
-        description: "The connection string of the Service Bus namespace, from the Azure portal: the namespace, then Settings, Shared access policies, a policy, Primary Connection String. It starts with `Endpoint=sb://`."
+        description: "The connection string of the Service Bus namespace, from the Azure portal: the namespace, then Settings, Shared access policies, a policy, Primary Connection String. It starts with `Endpoint=sb://`. Required with the default `credentialType`, `CONNECTION_STRING`."
         type: string
         format: password
         x-descriptors:
@@ -75,10 +80,31 @@ spec:
         enum: ["queue", "topic"]
       credentialType:
         title: Credential Type
-        description: How to log in to Service Bus. Keep `CONNECTION_STRING`, the default, which uses `connectionString`. `AZURE_IDENTITY` and `TOKEN_CREDENTIAL` also need the `fullyQualifiedNamespace` of the Camel component, which this Kamelet does not set.
+        description: How to log in to Service Bus. `CONNECTION_STRING`, the default, uses `connectionString`. `AZURE_IDENTITY` uses the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login, and needs `fullyQualifiedNamespace`. `TOKEN_CREDENTIAL` also needs `fullyQualifiedNamespace`, and a `com.azure.core.credential.TokenCredential` bean in the Camel registry.
         type: string
         default: "CONNECTION_STRING"
         enum: ["AZURE_IDENTITY", "CONNECTION_STRING", "TOKEN_CREDENTIAL"]
+      fullyQualifiedNamespace:
+        title: Fully Qualified Namespace
+        description: The host name of the Service Bus namespace, such as `my-namespace.servicebus.windows.net`, without `sb://` or `https://`. Required with `credentialType` `AZURE_IDENTITY` or `TOKEN_CREDENTIAL`; not used with `CONNECTION_STRING`, where the connection string names the namespace.
+        type: string
+        pattern: "^[A-Za-z0-9][A-Za-z0-9.-]*$"
+        example: my-namespace.servicebus.windows.net
+      sessionEnabled:
+        title: Sessions Enabled
+        description: Set to `true` to read a queue or subscription created with sessions enabled, which can be read no other way. The messages of one session are then received in the order they were sent, one after the other. Leave it unset for a queue or subscription without sessions, and for a dead-letter queue, which cannot be read with it.
+        type: boolean
+      maxConcurrentSessions:
+        title: Max Concurrent Sessions
+        description: With `sessionEnabled`, how many sessions are read at the same time, 1 when unset. The Kamelet keeps reading a session until it has had no message for a minute, so with 1, the messages of another session wait meanwhile. Messages of the same session are always received one at a time.
+        type: integer
+        minimum: 1
+        example: 8
+      subQueue:
+        title: Sub-Queue
+        description: Set to `DEAD_LETTER_QUEUE` to read the dead-letter queue of the queue or subscription, where Service Bus moves the messages that could not be delivered or processed, or to `TRANSFER_DEAD_LETTER_QUEUE` for the messages that could not be forwarded or transferred. Leave it unset to read the queue or subscription itself.
+        type: string
+        enum: ["DEAD_LETTER_QUEUE", "TRANSFER_DEAD_LETTER_QUEUE"]
   types:
     out:
       mediaType: application/octet-stream
@@ -113,6 +139,18 @@ spec:
           title: Delivery Count
           description: How many times the message has been delivered, this time included.
           type: integer
+        CamelAzureServiceBusSessionId:
+          title: Session ID
+          description: The session ID of the message, when the sender set one, as it must for a queue or subscription with sessions.
+          type: string
+        CamelAzureServiceBusDeadLetterReason:
+          title: Dead Letter Reason
+          description: For a message read from the dead-letter queue, why it was dead-lettered, such as `MaxDeliveryCountExceeded` for a message whose processing failed too many times.
+          type: string
+        CamelAzureServiceBusDeadLetterErrorDescription:
+          title: Dead Letter Error Description
+          description: For a message read from the dead-letter queue, the description of why it was dead-lettered.
+          type: string
   dependencies:
     - "camel:azure-servicebus"
     - "camel:kamelet"
@@ -121,11 +159,15 @@ spec:
       uri: azure-servicebus
       parameters:
         topicOrQueueName: "{{topicOrQueueName}}"
-        connectionString: "RAW({{connectionString}})"
+        connectionString: "RAW({{?connectionString}})"
         credentialType: "{{credentialType}}"
+        fullyQualifiedNamespace: "{{?fullyQualifiedNamespace}}"
         serviceBusReceiveMode: "{{serviceBusReceiveMode}}"
         serviceBusType: "{{serviceBusType}}"
         subscriptionName: "{{?subscriptionName}}"
+        sessionEnabled: "{{?sessionEnabled}}"
+        maxConcurrentSessions: "{{?maxConcurrentSessions}}"
+        subQueue: "{{?subQueue}}"
       steps:
         - setBody:
             expression:

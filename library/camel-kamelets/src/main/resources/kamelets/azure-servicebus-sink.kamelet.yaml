@@ -41,9 +41,12 @@ spec:
       Output: the message is unchanged.
 
       Good to know: the shared access policy of the connection string needs the Send right.
+
+      A queue created with sessions enabled accepts only messages with a session ID: without one, the send fails. A topic accepts them, but each of its subscriptions with sessions enabled moves them to its dead-letter queue. Set `sessionId` to send every message with that session ID; a reader of the queue or subscription then receives the messages of the session in the order they were sent. The session ID is fixed for the Kamelet: the `CamelAzureServiceBusSessionId` header is not read, so messages that must go to different sessions need one sink for each session ID.
+
+      To log in with an Azure identity instead of a connection string, set `credentialType` to `AZURE_IDENTITY` and `fullyQualifiedNamespace`, and leave `connectionString` unset.
     required:
       - topicOrQueueName
-      - connectionString
     type: object
     properties:
       topicOrQueueName:
@@ -53,7 +56,7 @@ spec:
         example: orders
       connectionString:
         title: Connection String
-        description: "The connection string of the Service Bus namespace, from the Azure portal: the namespace, then Settings, Shared access policies, a policy, Primary Connection String. It starts with `Endpoint=sb://`."
+        description: "The connection string of the Service Bus namespace, from the Azure portal: the namespace, then Settings, Shared access policies, a policy, Primary Connection String. It starts with `Endpoint=sb://`. Required with the default `credentialType`, `CONNECTION_STRING`."
         type: string
         format: password
         x-descriptors:
@@ -66,10 +69,22 @@ spec:
         enum: ["queue", "topic"]
       credentialType:
         title: Credential Type
-        description: How to log in to Service Bus. Keep `CONNECTION_STRING`, the default, which uses `connectionString`. `AZURE_IDENTITY` and `TOKEN_CREDENTIAL` also need the `fullyQualifiedNamespace` of the Camel component, which this Kamelet does not set.
+        description: How to log in to Service Bus. `CONNECTION_STRING`, the default, uses `connectionString`. `AZURE_IDENTITY` uses the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login, and needs `fullyQualifiedNamespace`. `TOKEN_CREDENTIAL` also needs `fullyQualifiedNamespace`, and a `com.azure.core.credential.TokenCredential` bean in the Camel registry.
         type: string
         default: "CONNECTION_STRING"
         enum: ["AZURE_IDENTITY", "CONNECTION_STRING", "TOKEN_CREDENTIAL"]
+      fullyQualifiedNamespace:
+        title: Fully Qualified Namespace
+        description: The host name of the Service Bus namespace, such as `my-namespace.servicebus.windows.net`, without `sb://` or `https://`. Required with `credentialType` `AZURE_IDENTITY` or `TOKEN_CREDENTIAL`; not used with `CONNECTION_STRING`, where the connection string names the namespace.
+        type: string
+        pattern: "^[A-Za-z0-9][A-Za-z0-9.-]*$"
+        example: my-namespace.servicebus.windows.net
+      sessionId:
+        title: Session ID
+        description: The session ID to send every message with, up to 128 characters, kept as written. Required to send to a queue, or to a topic subscription, with sessions enabled; a reader receives the messages of one session in the order they were sent. A queue without sessions accepts the session ID too, and ignores it.
+        type: string
+        pattern: "^.{1,128}$"
+        example: customer-42
   types:
     in:
       mediaType: application/octet-stream
@@ -84,7 +99,9 @@ spec:
             uri: azure-servicebus
             parameters:
               topicOrQueueName: "{{topicOrQueueName}}"
-              connectionString: "RAW({{connectionString}})"
+              connectionString: "RAW({{?connectionString}})"
               credentialType: "{{credentialType}}"
+              fullyQualifiedNamespace: "{{?fullyQualifiedNamespace}}"
               producerOperation: sendMessages
               serviceBusType: "{{serviceBusType}}"
+              sessionId: "RAW({{?sessionId}})"

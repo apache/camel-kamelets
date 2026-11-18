@@ -22,4 +22,32 @@ For more information, see the https://learn.microsoft.com/en-us/java/api/overvie
 
 For `TOKEN_CREDENTIAL` type, you'll need to add `com.azure.core.credential.TokenCredential` instance in the Camel registry.
 
-`AZURE_IDENTITY` and `TOKEN_CREDENTIAL` also need the fully qualified namespace of Service Bus, which this Kamelet does not set: configure the `fullyQualifiedNamespace` option of the Camel `azure-servicebus` component, or use `CONNECTION_STRING`.
+`AZURE_IDENTITY` and `TOKEN_CREDENTIAL` also need **fullyQualifiedNamespace**, the host name of the Service Bus namespace, such as `my-namespace.servicebus.windows.net`. Leave **connectionString** unset with them.
+
+=== Example with a Session ID
+
+A queue created with sessions enabled accepts only messages with a session ID; without one, the send fails with
+`The SessionId was not set on a message`. A topic accepts them, but each of its subscriptions with sessions enabled
+moves them to its dead-letter queue. Set **sessionId** to send every message with that session ID:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "timer:tick"
+      parameters:
+        period: 60000
+      steps:
+        - setBody:
+            constant: "order-1"
+        - to:
+            uri: "kamelet:azure-servicebus-sink"
+            parameters:
+              topicOrQueueName: "orders"
+              connectionString: "{{servicebus.connection-string}}"
+              sessionId: "customer-42"
+----
+
+A reader of the queue receives the messages of a session in the order they were sent. The session ID is fixed for the
+Kamelet; the `CamelAzureServiceBusSessionId` header is not read. To spread messages over several sessions, use one sink
+for each session ID, for example behind a content-based router.
