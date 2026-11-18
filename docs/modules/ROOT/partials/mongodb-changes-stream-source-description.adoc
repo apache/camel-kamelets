@@ -11,9 +11,68 @@ This Kamelet connects to MongoDB with:
 
 === Output format
 
-The Kamelet watches a collection with a MongoDB change stream, and sends one message for each change made after it starts, as JSON text: the new document for an insert or a replace, `null` for an update, and an object with the `_id` for a delete. The `CamelMongoDbStreamOperationType` header says which kind of change it is.
+The Kamelet watches a collection with a MongoDB change stream, and sends one message for each change made after it starts, as JSON text: the new document for an insert or a replace, the whole document for an update (see below), and an object with the `_id` for a delete. The `CamelMongoDbStreamOperationType` header says which kind of change it is.
 
 Change streams need a replica set or a sharded cluster.
+
+=== The document of an update
+
+MongoDB records an update as the fields that changed, not as the document. The `fullDocument` option says what the
+Kamelet sends as the body for an update:
+
+[width="100%",cols="1,3",options="header"]
+|===
+| `fullDocument` | Body for an update
+| `updateLookup` (default)
+| The whole document, read again from the collection when the change is sent. It can already hold later changes:
+  after three quick updates of `qty` to 2, 3 and 4, all three messages can show `qty` 4. It is `null` when the
+  document was deleted meanwhile. This costs MongoDB one more read for each update.
+| `default`
+| `null`. Only the `_id` header says which document changed.
+| `whenAvailable`
+| The document as it was right after this update, on a collection with change stream post-images turned on (see
+  below); `null` on another collection.
+| `required`
+| As `whenAvailable`, but on a collection without post-images, the Kamelet retries the update every second and sends
+  no later change.
+|===
+
+Inserts, replaces and deletes are sent the same with any value. A `streamFilter` on a field under `fullDocument`
+matches an update only when the body of the update is a document, so never with `default`.
+
+With `updateLookup`, an update whose document and changed fields are together larger than about 16 MB cannot be sent
+(MongoDB fails with `BSONObjectTooLarge`): the Kamelet retries it every second and sends no later change. Use
+`default` for a collection with such documents.
+
+To send each update with the document as it was right after that update, turn on post-images for the collection, as
+a user allowed to run `collMod`:
+
+[source,javascript]
+----
+db.runCommand({ collMod: "orders", changeStreamPreAndPostImages: { enabled: true } })
+----
+
+and set `fullDocument` to `whenAvailable`:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:mongodb-changes-stream-source"
+      parameters:
+        hosts: "mongo1.example.com:27017,mongo2.example.com:27017"
+        database: "shop"
+        collection: "orders"
+        username: "mongouser"
+        password: "mongopass"
+        fullDocument: "whenAvailable"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+With post-images turned on, MongoDB saves a copy of the document for each update in its `config.system.preimages`
+collection, which takes disk space until MongoDB removes it.
 
 === Configuration
 
@@ -22,6 +81,7 @@ The Kamelet requires database connection parameters:
 - `hosts` (the members of the replica set, as `host:port`) or `connectionString`
 - `database` and `collection`: the collection to watch
 - `streamFilter` (optional): a `$match` stage that chooses the changes to send
+- `fullDocument` (optional): what the body is for an update; by default the whole document
 
 === Usage example
 
