@@ -39,7 +39,7 @@ spec:
 
       Output: the body afterwards is an empty List for an INSERT, UPDATE or DELETE.
 
-      Good to know: with `jsonPayload` true, the default, a message fails when its body is not a JSON array, such as a JSON object. The values are sent apart from the statement, so the content of a message cannot change it. `ANY`, the default `consistencyLevel`, is the weakest level: a write counts as done even before a replica has stored it.
+      Good to know: with `jsonPayload` true, the default, a message fails when its body is not a JSON array, such as a JSON object. The values are sent apart from the statement, so the content of a message cannot change it. `ANY`, the default `consistencyLevel`, is the weakest level: a write counts as done even before a replica has stored it. When the datacenter of the cluster is not called `datacenter1`, set `datacenter` to its name, or the Kamelet fails to start with `No node was available to execute the query`. The Kamelet connects without TLS, so a cluster that accepts only TLS connections refuses it.
     required:
       - connectionHost
       - connectionPort
@@ -57,6 +57,11 @@ spec:
         description: The port the Cassandra nodes listen on for CQL clients, the same for all hosts. Cassandra uses 9042 unless it was set up otherwise.
         type: string
         example: 9042
+      datacenter:
+        title: Local Datacenter
+        description: The name of the Cassandra datacenter that the nodes in `connectionHost` belong to, as the `Datacenter` line of `nodetool status` shows it. The Kamelet runs the statements only on the nodes of this datacenter. When it is not set, `datacenter1` is used, the name a Cassandra installed with its default settings uses. A name that does not match makes the Kamelet fail to start with `No node was available to execute the query`, or each message fail with it when `prepareStatements` is false.
+        type: string
+        example: dc-east
       keyspace:
         title: Keyspace 
         description: The keyspace (the Cassandra name for a database) that holds the tables of `query`.
@@ -130,4 +135,4 @@ spec:
         - removeHeader:
             name: CamelCqlQuery
         - to:
-            uri: "{{local-sql-cassandraql-sink}}://{{connectionHost}}:{{connectionPort}}/{{keyspace}}?username={{?username}}&password={{?password}}&prepareStatements={{prepareStatements}}&consistencyLevel={{consistencyLevel}}&cql=RAW({{query}})&extraTypeCodecs={{?extraTypeCodecs}}"
+            uri: "{{local-sql-cassandraql-sink}}://{{connectionHost}}:{{connectionPort}}/{{keyspace}}?username={{?username}}&password={{?password}}&datacenter={{?datacenter}}&prepareStatements={{prepareStatements}}&consistencyLevel={{consistencyLevel}}&cql=RAW({{query}})&extraTypeCodecs={{?extraTypeCodecs}}"
