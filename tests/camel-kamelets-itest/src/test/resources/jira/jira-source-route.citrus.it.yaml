@@ -54,7 +54,37 @@ actions:
                 - name: "jira.jql"
                   value: "${jira.jql}"
 
-  # Verify latest issue request
+  # Verify myself request
+  - http:
+      server: "jiraServer"
+      receiveRequest:
+        GET:
+          path: "/rest/api/latest/myself"
+          headers:
+            - name: Authorization
+              value: "Basic citrus:encodeBase64(${jira.username}:${jira.password})"
+
+  - http:
+      server: "jiraServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              {
+                "name": "citrus",
+                "emailAddress": "citrus@example.com",
+                "displayName": "Citrus User",
+                "timeZone": "America/New_York",
+                "avatarUrls": {
+                  "48x48": "${jira.url}/secure/useravatar?ownerId=citrus&avatarId=10342"
+                }
+              }
+
+  # Verify latest issue request: there is no issue yet, so the first poll runs the plain JQL
   - http:
       server: "jiraServer"
       receiveRequest:
@@ -89,46 +119,8 @@ actions:
                   "expand": "",
                   "startAt": 0,
                   "maxResults": 1,
-                  "total": 1,
-                  "issues": [
-                      {
-                          "expand": "",
-                          "id": "${jira.issue.id}",
-                          "key": "${jira.issue.key}",
-                          "self": "${jira.url}/rest/api/latest/issue/${jira.issue.id}",
-                          "transitions": "${jira.url}/rest/api/latest/issue/${jira.issue.key}/transitions"
-                      }
-                  ]
-              }
-
-  # Verify myself request
-  - http:
-      server: "jiraServer"
-      receiveRequest:
-        GET:
-          path: "/rest/api/latest/myself"
-          headers:
-            - name: Authorization
-              value: "Basic citrus:encodeBase64(${jira.username}:${jira.password})"
-
-  - http:
-      server: "jiraServer"
-      sendResponse:
-        response:
-          status: 200
-          reasonPhrase: "OK"
-          version: "HTTP/1.1"
-          contentType: "application/json"
-          body:
-            data: |
-              {
-                "name": "citrus",
-                "emailAddress": "citrus@example.com",
-                "displayName": "Citrus User",
-                "timeZone": "America/New_York",
-                "avatarUrls": {
-                  "48x48": "${jira.url}/secure/useravatar?ownerId=citrus&avatarId=10342"
-                }
+                  "total": 0,
+                  "issues": []
               }
 
   # Verify search request
