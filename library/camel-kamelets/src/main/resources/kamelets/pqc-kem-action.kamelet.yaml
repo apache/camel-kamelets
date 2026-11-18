@@ -39,7 +39,7 @@ spec:
 
       Output: `generateSecretKeyEncapsulation` and `extractSecretKeyEncapsulation` give a Java object that holds the secret key and its encapsulation. `extractSecretKeyFromEncapsulation` gives the secret key, as a Java object. None of them is text or bytes, so the next step must be one that works with Java key objects.
 
-      Good to know: the key pair of the post-quantum algorithm is created when the application starts, and no option can set it, so an encapsulation can be opened only by the same running application.
+      Good to know: unless the key pair of the post-quantum algorithm comes from `keyStore` or `keyPair`, it is created when the application starts, so an encapsulation can be opened only by the same running application. With a key pair from a key store, it can be opened after a restart, and by any application that has the key store. When the application has exactly one Java `KeyStore`, or one `KeyPair`, it is used even when `keyStore` or `keyPair` is not set; `keyPairAlias` and `keyStorePassword` are then needed for the key store, else the messages fail.
     required:
     - keyEncapsulationAlgorithm
     - operation
@@ -58,9 +58,36 @@ spec:
         enum: ["generateSecretKeyEncapsulation","extractSecretKeyEncapsulation","extractSecretKeyFromEncapsulation"]
       symmetricKeyAlgorithm:
         title: Symmetric Key Algorithm
-        description: The symmetric cipher the secret key is for, such as `AES`, the usual choice. The cipher must accept a key of the length the Camel PQC component creates (256 bits in recent Camel versions); with one that does not, such as `SEED` or `SM4`, the integration fails to start.
+        description: The symmetric cipher the secret key is for, such as `AES`, the usual choice. The cipher must accept a key of the length in `symmetricKeyLength`, 256 bits when it is not set; with one that does not, such as `SEED` or `SM4` with 256 bits, the integration fails to start.
         type: string
         enum: ["AES","RC2","RC5","ARIA","CAMELLIA","CAST5","CAST6","CHACHA7539","DSTU7624","GOST28147","GOST3412_2015","GRAIN128","HC128","HC256","SALSA20","SEED","SM4","DESEDE"]
+      symmetricKeyLength:
+        title: Symmetric Key Length
+        description: The length of the secret key, in bits, such as 128 or 256 for `AES`. Use the same length in the steps that create and that open an encapsulation. When it is not set, 256 is used; set it to 128 for a cipher that takes only 128-bit keys, such as `SEED` or `SM4`.
+        type: integer
+        example: 128
+      keyStore:
+        title: Key Store
+        description: A Java `KeyStore` defined in the application, as `#bean:` followed by its name, that holds the key pair to use, such as a PKCS12 file made with `keytool` (Java 24 or later makes ML-KEM keys). The key pair is then the same after a restart, and in other applications that load the same key store. Set `keyPairAlias` and `keyStorePassword` with it; without both, no key pair is taken from the key store, none is created either, and the messages fail.
+        type: string
+        example: "#bean:pqcKeyStore"
+      keyPairAlias:
+        title: Key Pair Alias
+        description: The alias, the name in `keyStore`, of the ML-KEM key pair to use.
+        type: string
+        example: kem
+      keyStorePassword:
+        title: Key Store Password
+        description: The password of `keyStore`. It is also the password of the key pair in it, so both must be the same.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      keyPair:
+        title: Key Pair
+        description: A Java `KeyPair` of the algorithm, defined in the application, as `#bean:` followed by its name, to use instead of `keyStore`.
+        type: string
+        example: "#bean:pqcKeyPair"
   dependencies:
   - "camel:pqc"
   - "camel:kamelet"
@@ -73,5 +100,10 @@ spec:
             parameters:
               label: kem
               keyEncapsulationAlgorithm: "{{keyEncapsulationAlgorithm}}"
+              keyPair: "{{?keyPair}}"
+              keyPairAlias: "{{?keyPairAlias}}"
+              keyStore: "{{?keyStore}}"
+              keyStorePassword: "RAW({{?keyStorePassword}})"
               operation: "{{operation}}"
               symmetricKeyAlgorithm: "{{symmetricKeyAlgorithm}}"
+              symmetricKeyLength: "{{?symmetricKeyLength}}"
