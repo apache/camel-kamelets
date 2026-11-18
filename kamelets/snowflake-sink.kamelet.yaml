@@ -39,7 +39,7 @@ spec:
 
       Output: the body afterwards is the JSON object as a Map, and the `CamelSqlUpdateCount` header holds the number of rows the statement changed. When `query` is a SELECT, the body is instead a List of the rows found, each a Map, and the `CamelSqlRowCount` header holds their number.
 
-      Good to know: a message fails when its body is not a JSON object (a JSON array or plain text, for example), or when it has no value for a parameter of `query`. The values are sent to the database apart from the SQL text, so the content of a message cannot change the statement. Do not write `?` in `query`, not even in a quoted string: the Kamelet then fails to start. Log in with `password`, or with a key pair in `privateKey` or `privateKeyFile`: a Snowflake user of type SERVICE, meant for applications, cannot log in with a password. When a key is set, the password is not used.
+      Good to know: a message fails when its body is not a JSON object (a JSON array or plain text, for example), or when it has no value for a parameter of `query`. The values are sent to the database apart from the SQL text, so the content of a message cannot change the statement. Do not write `?` in `query`, not even in a quoted string: the Kamelet then fails to start. Log in with `password`, or with a key pair in `privateKey` or `privateKeyFile`: a Snowflake user of type SERVICE, meant for applications, cannot log in with a password. When a key is set, the password is not used. `warehouse`, `schema` and `role` choose what the session uses; when they are not set, the defaults of the user apply, and a user with no default warehouse cannot run a query that needs one. Each message logs in to Snowflake anew, as the Kamelet keeps no connection open between messages.
     required:
       - instanceUrl
       - username
@@ -93,6 +93,21 @@ spec:
         description: The Snowflake database that holds the tables `query` names.
         type: string
         example: SHOP
+      schema:
+        title: Schema
+        description: The schema of `databaseName` that holds the tables `query` names, such as `PUBLIC`. When it is not set, the default of the user applies. A table of another schema can still be named in full in `query`, as `SCHEMA.TABLE`.
+        type: string
+        example: SALES
+      warehouse:
+        title: Warehouse
+        description: The Snowflake virtual warehouse that runs the statements. When it is not set, the default warehouse of the user `username` is used, as set with `ALTER USER ... SET DEFAULT_WAREHOUSE`. With neither, a statement that needs a warehouse, such as an INSERT, fails.
+        type: string
+        example: COMPUTE_WH
+      role:
+        title: Role
+        description: The Snowflake role to run the statements as, which must be granted to the user `username`. When it is not set, the default role of the user is used, as set with `ALTER USER ... SET DEFAULT_ROLE`.
+        type: string
+        example: LOADER
   types:
     in:
       mediaType: application/json
@@ -127,6 +142,9 @@ spec:
           password: "{{password:}}"
           url: "jdbc:snowflake://{{instanceUrl}}"
           databaseName: "{{?databaseName}}"
+          schema: "{{?schema}}"
+          warehouse: "{{?warehouse}}"
+          role: "{{?role}}"
           properties[private_key_base64]: "{{?privateKey}}"
           properties[private_key_file]: "{{?privateKeyFile}}"
           properties[private_key_pwd]: "{{?privateKeyPassphrase}}"

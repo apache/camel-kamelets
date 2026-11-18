@@ -15,6 +15,15 @@ The Kamelet watches a collection with a MongoDB change stream, and sends one mes
 
 Change streams need a replica set or a sharded cluster.
 
+=== Restarts
+
+The Kamelet does not save where it stopped. Each time it starts, it sends only the changes made from then on, so the
+changes made while it is stopped, such as during a restart or an upgrade, are never sent. A system that must not miss a
+change has to catch up from the collection itself after a restart.
+
+The collection must exist when the Kamelet starts. Otherwise the Kamelet fails to start with
+`Collection ... does not exist on the database and createCollection is false`.
+
 === The document of an update
 
 MongoDB records an update as the fields that changed, not as the document. The `fullDocument` option says what the

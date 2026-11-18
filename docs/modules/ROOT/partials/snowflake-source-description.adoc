@@ -20,6 +20,7 @@ The Kamelet requires database connection parameters:
 
 - `instanceUrl`: the host name of your Snowflake account, such as `myorg-myaccount.snowflakecomputing.com`
 - `databaseName` (optional): the Snowflake database that holds the tables
+- `schema`, `warehouse` and `role` (optional): the schema of `databaseName` that holds the tables, the virtual warehouse that runs the queries, and the role to run them as. See below.
 - `username`: the Snowflake user to log in as, with `password`, or with a key pair in `privateKey` or `privateKeyFile`
 - `query`: the SQL query to run, such as `SELECT * FROM accounts WHERE processed = false`
 - `consumedQuery` (optional): an SQL statement run for each row once it is sent, to mark the row as read or delete it, such as `UPDATE accounts SET processed = true WHERE id = :#id`
@@ -44,6 +45,41 @@ The route below logs each account that is not processed yet, and marks it as pro
         - to:
             uri: "kamelet:log-sink"
 ----
+
+=== Warehouse, Schema and Role
+
+The Kamelet sends these with each login, so the session starts with them:
+
+- `warehouse`: the virtual warehouse that runs the queries, such as `COMPUTE_WH`.
+- `schema`: the schema of `databaseName` that holds the tables, such as `SALES`.
+- `role`: the role to run the queries as. It must be granted to the user.
+
+When one is not set, the default of the user applies, as set with `ALTER USER ... SET DEFAULT_WAREHOUSE`,
+`DEFAULT_NAMESPACE` or `DEFAULT_ROLE`. A user with no default warehouse needs `warehouse` for a query that reads a table.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:snowflake-source"
+      parameters:
+        instanceUrl: "myorg-myaccount.snowflakecomputing.com"
+        username: "ORDERS_SERVICE"
+        privateKeyFile: "/etc/snowflake/rsa_key.p8"
+        databaseName: "SHOP"
+        schema: "SALES"
+        warehouse: "REPORTING_WH"
+        role: "ORDERS_READER"
+        query: "SELECT * FROM accounts WHERE processed = false"
+        consumedQuery: "UPDATE accounts SET processed = true WHERE id = :#id"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+=== Connections
+
+The Kamelet keeps no connection to Snowflake open between polls: each poll logs in again, and starts a new session.
 
 === Example with a Key Pair
 
