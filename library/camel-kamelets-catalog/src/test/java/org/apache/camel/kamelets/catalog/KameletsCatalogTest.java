@@ -236,8 +236,6 @@ public class KameletsCatalogTest {
         verifyHeaders("google-storage-sink", 3);
         verifyHeaders("http-source", 2);
         verifyHeaders("http-sink", 14);
-        verifyHeaders("http-secured-source", 2);
-        verifyHeaders("http-secured-sink", 14);
         verifyHeaders("infinispan-source", 4);
         verifyHeaders("infinispan-sink", 2);
         verifyHeaders("jira-add-comment-sink", 1);

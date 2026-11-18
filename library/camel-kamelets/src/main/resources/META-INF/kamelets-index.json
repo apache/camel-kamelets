@@ -1020,26 +1020,6 @@
     "namespace" : "Transformation",
     "provider" : "Apache Software Foundation"
   }, {
-    "name" : "http-secured-sink",
-    "type" : "sink",
-    "supportLevel" : "Deprecated",
-    "title" : "Secured HTTP Sink",
-    "summary" : "Deprecated, use `http-sink` instead, which has the same login options: sends each message to a web service or REST API over HTTP or HTTPS, with a login.",
-    "description" : "Deprecated, use `http-sink` instead, which has the same login options: sends each message to a web service or REST API over HTTP or HTTPS, with a login.\n\nUse it to push data to a service that needs a login, such as a protected webhook, an internal REST API, or an API that gives out OAuth 2.0 tokens to applications. This Kamelet will be removed in a later release: `http-sink` now takes the same options, so change only the name of the Kamelet.\n\nInput: the body is sent as the request body, as text, bytes or a stream. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The `Content-Type` header is sent as the content type of the request, and the other headers of the message, except the Camel ones, are sent as HTTP headers.\n\nOutput: when it is used inside a route, the body afterwards is the response of the service.\n\nGood to know: a response with a status code of 300 or higher fails the message. The address and the method come only from the options; headers on the message cannot change where it is sent. Log in either with `authUsername` and `authPassword`, or with `oauth2ClientId`, `oauth2ClientSecret` and `oauth2TokenEndpoint`: the Kamelet then gets a token from that URL and sends it as a Bearer token. Without `authenticationPreemptive`, the user and password are sent only after the service asks for them with a 401 response.",
-    "group" : "HTTP",
-    "namespace" : "HTTP",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "http-secured-source",
-    "type" : "source",
-    "supportLevel" : "Deprecated",
-    "title" : "HTTP Secured Source",
-    "summary" : "Deprecated, use `http-source` instead, which has the same login options: fetches a web address at a regular interval with a login, one message per response.",
-    "description" : "Deprecated, use `http-source` instead, which has the same login options: fetches a web address at a regular interval with a login, one message per response.\n\nUse it to poll a protected REST API or feed for its current data, for example fetch the state of the orders every minute. This Kamelet will be removed in a later release: `http-source` now takes the same options, so change only the name of the Kamelet. To receive the requests that other systems send instead, use `webhook-source`.\n\nOutput: the body is the body of the response, as bytes. The headers of the response, such as `Content-Type`, are copied to the message, and `CamelHttpResponseCode` holds the status code.\n\nGood to know: it fetches the address every `period` and sends a message for each response, even when the data has not changed. A response with a status code of 300 or higher sends no message: the error is logged, and the address is fetched again at the next period. Log in either with `authUsername` and `authPassword`, or with `oauth2ClientId`, `oauth2ClientSecret` and `oauth2TokenEndpoint`: the Kamelet then gets a token from that URL and sends it as a Bearer token.",
-    "group" : "HTTP",
-    "namespace" : "HTTP",
-    "provider" : "Apache Software Foundation"
-  }, {
     "name" : "http-sink",
     "type" : "sink",
     "supportLevel" : "Stable",
@@ -1256,26 +1236,6 @@
     "title" : "JMS - IBM MQ Source",
     "summary" : "Receives each message from a queue or a topic of an IBM MQ queue manager, through JMS.",
     "description" : "Receives each message from a queue or a topic of an IBM MQ queue manager, through JMS.\n\nUse it to process work or events that other applications put on IBM MQ, such as an existing enterprise or mainframe system. Use `jms-ibm-mq-sink` to send to IBM MQ.\n\nOutput: the body is text for a JMS text message, and bytes for a bytes message. The JMS properties of the message become headers, along with the JMS headers such as `JMSMessageID` and `JMSTimestamp`, and IBM MQ details such as `JMSXUserID`, `JMS_IBM_PutDate` and `JMS_IBM_Format`.\n\nGood to know: the IBM MQ client library is not included, as its licence is not the Apache one: add `mvn:com.ibm.mq:com.ibm.mq.jakarta.client` with a version to the dependencies of the integration (Camel JBang adds it by itself). From a queue, each message is removed when it is received, even when the rest of the flow then fails, and several copies of this source share the messages. From a topic (`destinationType` set to `topic`), it receives only the messages sent while it is connected, unless `subscriptionDurable` is true: then the queue manager keeps the messages sent while it is stopped, under `subscriptionName`. A durable subscription needs `clientId` unless it is shared (`subscriptionShared`, JMS 2.0), and only one connection may use a client ID at a time. With `selector`, it receives only the messages whose properties and headers match the selector. It connects with no TLS unless `sslCipherSuite` is set. When the queue manager cannot be reached, it starts anyway and tries again every 5 seconds.",
-    "group" : "JMS",
-    "namespace" : "Messaging",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "jms-pooled-apache-artemis-sink",
-    "type" : "sink",
-    "supportLevel" : "Deprecated",
-    "title" : "JMS Pooled - Apache Artemis Sink",
-    "summary" : "Deprecated, use `jms-apache-artemis-sink` instead, which now has the same options: sends each message to a queue or a topic in an Apache ActiveMQ Artemis broker.",
-    "description" : "Deprecated, use `jms-apache-artemis-sink` instead, which now has the same options: sends each message to a queue or a topic in an Apache ActiveMQ Artemis broker.\n\nUse it to hand work to another application through a queue, or to publish events on a topic, when messages flow steadily: it reuses its connections, where `jms-apache-artemis-sink` connects anew for each message. This Kamelet will be removed in a later release: `jms-apache-artemis-sink` now takes the same options and reuses its connections too, so change only the name of the Kamelet.\n\nInput: text is sent as a JMS text message, bytes as a JMS bytes message, and a Map as a JMS map message. The headers of the message, except the Camel ones, are sent along as JMS properties of the message.\n\nOutput: the message is unchanged.\n\nGood to know: Messages go to a queue unless `destinationType` is `topic`, and a message sent to a topic reaches only the receivers subscribed at that moment. It connects with no TLS unless `brokerURL` asks for it. It does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does.",
-    "group" : "JMS",
-    "namespace" : "Messaging",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "jms-pooled-apache-artemis-source",
-    "type" : "source",
-    "supportLevel" : "Deprecated",
-    "title" : "JMS Pooled - Apache Artemis Source",
-    "summary" : "Deprecated, use `jms-apache-artemis-source` instead, which now has the same login options: receives each message from a queue or a topic in an Apache ActiveMQ Artemis broker.",
-    "description" : "Deprecated, use `jms-apache-artemis-source` instead, which now has the same login options: receives each message from a queue or a topic in an Apache ActiveMQ Artemis broker.\n\nUse it to process work that other applications put on a queue, or to react to events published on a topic, on a broker that needs a login. This Kamelet will be removed in a later release: `jms-apache-artemis-source` now takes `username` and `password`, so change the name of the Kamelet and drop the pool options, which a source does not need because it keeps its connection open.\n\nOutput: the body is text for a JMS text message, bytes for a bytes message, and a Map for a map message. The JMS properties of the message become headers, along with the JMS headers such as `JMSMessageID`, `JMSDestination`, `JMSTimestamp`, `JMSPriority` and `JMSRedelivered`.\n\nGood to know: From a queue, each message is removed when it is received, even when the rest of the flow then fails, and several copies of this source share the messages. From a topic (`destinationType` set to `topic`), it receives only the messages sent while it is connected, as the subscription is not durable. It connects with no TLS unless `brokerURL` asks for it. When the broker cannot be reached, it starts anyway and tries again every 5 seconds.",
     "group" : "JMS",
     "namespace" : "Messaging",
     "provider" : "Apache Software Foundation"
