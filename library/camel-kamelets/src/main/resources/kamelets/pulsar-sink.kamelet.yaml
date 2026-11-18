@@ -53,7 +53,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: it connects with no TLS and no login, unless `serviceUrl` starts with `pulsar+ssl://` and `authenticationClass` is set. It connects when the integration starts, and the integration fails to start when Pulsar cannot be reached, unless `lazyStartProducer` is true.
+      Good to know: it connects with no TLS and no login, unless `serviceUrl` starts with `pulsar+ssl://` and `authenticationClass` is set. It connects when the integration starts, and the integration fails to start when Pulsar cannot be reached, unless `lazyStart` is true.
     required:
       - topicType
       - topic
@@ -126,7 +126,7 @@ spec:
         description: "The sequence ID to count from: the first message gets this number plus one. With the default, -1, the first message gets 0. Pulsar uses sequence IDs to drop duplicates when deduplication is on."
         type: integer
         default: -1
-      lazyStartProducer:
+      lazyStart:
         title: "Lazy Start"
         description: "If true, the connection to Pulsar is made when the first message is sent, not when the integration starts. The integration then starts even when Pulsar cannot be reached, and the first message takes longer."
         type: boolean
@@ -157,4 +157,4 @@ spec:
       uri: kamelet:source
       steps:
         - to:
-            uri: "pulsar:{{topicType}}/{{tenant}}/{{namespaceName}}/{{topic}}?authenticationClass={{?authenticationClass}}&authenticationParams={{?authenticationParams}}&batchingEnabled={{?batchingEnabled}}&batchingMaxMessages={{?batchingMaxMessages}}&batchingMaxPublishDelayMicros={{?batchingMaxPublishDelayMicros}}&blockIfQueueFull={{?blockIfQueueFull}}&compressionType={{?compressionType}}&initialSequenceId={{?initialSequenceId}}&lazyStartProducer={{?lazyStartProducer}}&maxPendingMessages={{?maxPendingMessages}}&messageRoutingMode={{?messageRoutingMode}}&producerName={{?producerName}}&sendTimeoutMs={{?sendTimeoutMs}}&serviceUrl=RAW({{serviceUrl}})"
+            uri: "pulsar:{{topicType}}/{{tenant}}/{{namespaceName}}/{{topic}}?authenticationClass={{?authenticationClass}}&authenticationParams={{?authenticationParams}}&batchingEnabled={{?batchingEnabled}}&batchingMaxMessages={{?batchingMaxMessages}}&batchingMaxPublishDelayMicros={{?batchingMaxPublishDelayMicros}}&blockIfQueueFull={{?blockIfQueueFull}}&compressionType={{?compressionType}}&initialSequenceId={{?initialSequenceId}}&lazyStartProducer={{?lazyStart}}&maxPendingMessages={{?maxPendingMessages}}&messageRoutingMode={{?messageRoutingMode}}&producerName={{?producerName}}&sendTimeoutMs={{?sendTimeoutMs}}&serviceUrl=RAW({{serviceUrl}})"

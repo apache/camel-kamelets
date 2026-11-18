@@ -84,8 +84,8 @@ spec:
         description: The base address of the FHIR API of the server, the part before the resource type, starting with `http://` or `https://`.
         type: string
         example: "https://fhir.example.com/fhir"
-      lazyStartProducer:
-        title: Lazy Start Producer
+      lazyStart:
+        title: Lazy Start
         description: "If true, the connection to the server is set up at the first message instead of when the integration starts, so that the integration can start while the server is not reachable. The first message then takes a little longer."
         type: boolean
         default: false
@@ -159,4 +159,4 @@ spec:
                         prettyPrint: "{{prettyPrint}}"
                         fhirVersion: "{{fhirVersion}}"
         - to:
-            uri: "fhir://{{apiName}}/{{methodName}}?accessToken=RAW({{?accessToken}})&encoding={{encoding}}&fhirVersion={{fhirVersion}}&inBody=resource&lazyStartProducer={{lazyStartProducer}}&log={{log}}&password=RAW({{?password}})&prettyPrint={{prettyPrint}}&proxyHost={{?proxyHost}}&proxyPassword=RAW({{?proxyPassword}})&proxyPort={{?proxyPort}}&proxyUser=RAW({{?proxyUser}})&serverUrl={{serverUrl}}&username=RAW({{?username}})"
+            uri: "fhir://{{apiName}}/{{methodName}}?accessToken=RAW({{?accessToken}})&encoding={{encoding}}&fhirVersion={{fhirVersion}}&inBody=resource&lazyStartProducer={{lazyStart}}&log={{log}}&password=RAW({{?password}})&prettyPrint={{prettyPrint}}&proxyHost={{?proxyHost}}&proxyPassword=RAW({{?proxyPassword}})&proxyPort={{?proxyPort}}&proxyUser=RAW({{?proxyUser}})&serverUrl={{serverUrl}}&username=RAW({{?username}})"

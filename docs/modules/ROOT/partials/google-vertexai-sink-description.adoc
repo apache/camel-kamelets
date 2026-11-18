@@ -9,7 +9,7 @@ If you provide a service account key, give its location: `file:` followed by the
 === Required Configuration
 
 - **Project ID**: The Google Cloud Project ID
-- **Location**: The Google Cloud region where Vertex AI models are available (e.g., `us-central1`). When the Kamelet is used from a route as `kamelet:google-vertexai-sink?location=...`, the `location` is taken as the place to load the Kamelet from; set it as the property `camel.kamelet.google-vertexai-sink.location` instead
+- **Region**: The Google Cloud region where Vertex AI models are available (e.g., `us-central1`), which Vertex AI calls the location
 - **Model ID**: The model identifier to use for predictions (e.g., `gemini-2.5-pro`)
 
 === Optional Configuration

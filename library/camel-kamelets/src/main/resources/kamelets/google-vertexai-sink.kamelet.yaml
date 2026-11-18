@@ -38,11 +38,9 @@ spec:
       Input: the body is the prompt, as text; bytes and streams are read as text. The optional `CamelGoogleVertexAIPrompt` header gives the prompt instead of the body.
 
       Output: when it is used inside a route, the body afterwards is the answer of the model, as text, for the default `generateText` operation. The `CamelGoogleVertexAIFinishReason` header says why the model stopped, and the token counts are in the `CamelGoogleVertexAIPromptTokenCount`, `CamelGoogleVertexAICandidatesTokenCount` and `CamelGoogleVertexAITotalTokenCount` headers.
-
-      Good to know: used from a route as `kamelet:google-vertexai-sink?location=...`, the `location` option is taken as the place to load the Kamelet from and the Kamelet fails to start; set it as the property `camel.kamelet.google-vertexai-sink.location` instead.
     required:
       - projectId
-      - location
+      - region
       - modelId
     type: object
     properties:
@@ -51,9 +49,9 @@ spec:
         description: The ID of the Google Cloud project where Vertex AI is enabled, as shown in the Google Cloud console. It is the project ID, not the project name or number.
         type: string
         example: my-project-123
-      location:
-        title: Google Cloud Location
-        description: The Google Cloud region to call the model in, where the model is available.
+      region:
+        title: Google Cloud Region
+        description: The Google Cloud region to call the model in, where the model is available. Vertex AI calls it the location.
         type: string
         example: us-central1
       modelId:
@@ -130,7 +128,7 @@ spec:
             uri: google-vertexai
             parameters:
               projectId: "{{projectId}}"
-              location: "{{location}}"
+              location: "{{region}}"
               modelId: "{{modelId}}"
               maxOutputTokens: "{{?maxOutputTokens}}"
               operation: "{{operation}}"

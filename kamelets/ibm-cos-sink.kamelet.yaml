@@ -72,9 +72,9 @@ spec:
         description: The address of Cloud Object Storage for the region of the bucket, starting with `https://`, as listed under Endpoints in the Cloud Object Storage instance.
         type: string
         example: "https://s3.us-south.cloud-object-storage.appdomain.cloud"
-      location:
-        title: Location
-        description: The region of the bucket, such as `us-south` or `eu-gb`. It is information only; the region used is the one of `endpointUrl`.
+      region:
+        title: Region
+        description: The region of the bucket, such as `us-south` or `eu-gb`. It is information only, shown with the services the integration calls; the region used is the one of `endpointUrl`.
         type: string
         example: "us-south"
       autoCreateBucket:
@@ -168,7 +168,7 @@ spec:
               autoCreateBucket: "{{autoCreateBucket}}"
               endpointUrl: "{{endpointUrl}}"
               keyName: "{{?keyName}}"
-              location: "{{?location}}"
+              location: "{{?region}}"
               multiPartUpload: "{{multiPartUpload}}"
               partSize: "{{partSize}}"
               serviceInstanceId: "RAW({{serviceInstanceId}})"
