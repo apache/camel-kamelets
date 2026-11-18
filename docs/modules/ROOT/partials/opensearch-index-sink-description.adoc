@@ -24,3 +24,39 @@ OpenSearch is designed as a distributed search engine that can:
 === Open Source Alternative
 
 OpenSearch serves as an open-source alternative to Elasticsearch, maintaining compatibility while providing community-driven development and governance.
+
+=== Trusting a Private Certificate Authority
+
+The Kamelet connects with HTTPS by default (`enableSSL`). The certificate of the cluster is checked against the certificate authorities (CA) that Java trusts, so a cluster whose certificate is self-signed, or signed by a private CA, fails with `PKIX path building failed`.
+
+Give the certificate of that CA in `certificate`, as a PEM or DER file encoded in base64 on one line. The demo configuration of OpenSearch uses such a CA, in `config/root-ca.pem`. Encode it with `base64 -w0 root-ca.pem` (`base64 -i root-ca.pem` on macOS). Only this CA is trusted then.
+
+=== Timeouts
+
+When OpenSearch does not answer, the message fails after 30 seconds. `connectionTimeout` is how long to wait for the connection, and `socketTimeout` how long to wait for data from OpenSearch, both in milliseconds.
+
+=== Example
+
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: '{"order": 42, "status": "shipped"}'
+        contentType: application/json
+      steps:
+        - to:
+            uri: "kamelet:opensearch-index-sink"
+            parameters:
+              hostAddresses: "opensearch.example.com:9200"
+              clusterName: "opensearch-cluster"
+              indexName: "orders"
+              user: "admin"
+              password: "{{search.password}}"
+              certificate: "{{search.ca}}"
+              connectionTimeout: 5000
+              socketTimeout: 10000
+----
+
+Here `search.ca` is an application property that holds the certificate of the CA, encoded in base64.

@@ -34,3 +34,30 @@ Solr provides advanced search features including:
 - Spatial and geographical search
 - Complex query syntax and boosting
 - Analytics and aggregations
+
+=== Request Handler and Timeouts
+
+The documents are sent to the `/update` handler of the collection. To send them to another update handler, defined in the configuration of the collection, for example with its own update chain, give its path in `requestHandler`.
+
+When Solr does not answer, a message fails only after 10 minutes. `requestTimeout` is how long to wait for the answer of Solr to each message, and `connectionTimeout` how long to wait for the connection, both in milliseconds. Over plain HTTP, the Solr client first checks the server with a `HEAD` request, so the first message can wait twice as long.
+
+=== Example
+
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: '{"id": "order-42", "status_s": "shipped"}'
+        contentType: application/json
+      steps:
+        - to:
+            uri: "kamelet:solr-sink"
+            parameters:
+              servers: "solr.example.com:8983"
+              collection: "orders"
+              requestHandler: "/update/orders"
+              connectionTimeout: 5000
+              requestTimeout: 30000
+----
