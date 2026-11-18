@@ -29,3 +29,29 @@ The value is reduced to a single file name before use: any directory component i
 dropped, so `reports/2026/data.csv` is stored as `data.csv`. The file is always
 written inside the configured directory.
 
+=== Example that Never Replaces a File
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: "report"
+        period: 60000
+      steps:
+        - setHeader:
+            name: file
+            simple: "report-$\{date:now:yyyyMMdd}.txt"
+        - to:
+            uri: "kamelet:azure-storage-files-sink"
+            parameters:
+              accountName: "mystorageaccount"
+              shareName: "documents"
+              sharedKey: "the-access-key"
+              directoryName: "reports"
+              fileExist: "Fail"
+----
+
+The first message of the day writes `reports/report-20261118.txt`. The later messages of the same day fail, and the
+file is kept. With `Ignore` instead of `Fail`, they are dropped without an error.

@@ -38,7 +38,7 @@ spec:
 
       Output: the body is the text of the queue message (as a stream). The headers give its ID (`CamelAzureStorageQueueMessageId`), the times it was inserted and expires, its pop receipt, and how many times it has been received (`CamelAzureStorageQueueDequeueCount`).
 
-      Good to know: a message whose processing fails stays in the queue and is received again 30 seconds later, with a higher dequeue count.
+      Good to know: a received message is hidden from other readers while it is processed. When the processing fails, it stays in the queue and is received again once that time is over, 30 seconds by default (`visibilityTimeout`), with a higher dequeue count. The queue is checked for new messages every 500 milliseconds, unless `delay` says otherwise.
     required:
       - accountName
       - queueName
@@ -75,6 +75,17 @@ spec:
         type: string
         default: "SHARED_ACCOUNT_KEY"
         enum: ["SHARED_ACCOUNT_KEY", "SHARED_KEY_CREDENTIAL", "AZURE_IDENTITY"]
+      visibilityTimeout:
+        title: Visibility Timeout
+        description: How long a received message stays hidden from other readers of the queue, as an ISO-8601 duration such as `PT5M` (five minutes), from 1 second to 7 days. Once processed, the message is deleted. When the processing fails, the message is received again after this time. Set it longer than the processing of a message takes, as a message still being processed after this time can be received again, by another copy of the integration or, when a step waits without holding up the source, by this one, and is then processed twice. A plain number is read as milliseconds, not seconds. When it is not set, 30 seconds.
+        type: string
+        example: PT5M
+        pattern: "^P(\\d+D)?(T(\\d+H)?(\\d+M)?(\\d+(\\.\\d+)?S)?)?$"
+      delay:
+        title: Delay
+        description: How long to wait between two checks of the queue for new messages, in milliseconds. When it is not set, 500.
+        type: integer
+        example: 5000
   dataTypes:
     out:
       default: text
@@ -138,7 +149,7 @@ spec:
     - "camel:kamelet"
   template:
     from:
-      uri: "azure-storage-queue://{{accountName}}/{{queueName}}?accessKey=RAW({{accessKey}})&credentialType={{credentialType}}&maxMessages={{maxMessages}}"
+      uri: "azure-storage-queue://{{accountName}}/{{queueName}}?accessKey=RAW({{accessKey}})&credentialType={{credentialType}}&maxMessages={{maxMessages}}&visibilityTimeout={{?visibilityTimeout}}&delay={{?delay}}"
       steps:
         - to:
             uri: kamelet:sink

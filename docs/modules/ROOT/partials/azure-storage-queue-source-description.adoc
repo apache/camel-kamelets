@@ -21,3 +21,26 @@ The order of evaluation for `AZURE_IDENTITY` is the following:
  - Azure Powershell
 
 For more information, see the https://learn.microsoft.com/en-us/java/api/overview/azure/identity-readme[Azure Identity documentation]
+
+=== Example with Slow Processing
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:azure-storage-queue-source"
+      parameters:
+        accountName: "mystorageaccount"
+        accessKey: "the-access-key"
+        queueName: "orders"
+        visibilityTimeout: "PT5M"
+        delay: 5000
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+Each received message stays hidden from other readers for 5 minutes, instead of 30 seconds, so a message whose
+processing takes a few minutes is not received a second time while it is processed. A message whose processing fails is
+received again after these 5 minutes. The queue is checked for new messages every 5 seconds instead of every 500
+milliseconds.

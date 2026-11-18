@@ -25,3 +25,32 @@ For more information, see the https://learn.microsoft.com/en-us/java/api/overvie
 === Optional Headers
 
 In the headers, you can set the `file` / `ce-file` property to specify the filename to upload. If you do not set it, the file gets a generated unique name.
+
+=== Example with a Directory and an Account Key
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        message: "id,amount"
+        period: 60000
+      steps:
+        - setHeader:
+            name: file
+            simple: "sales-$\{date:now:yyyyMMddHHmmss}.csv"
+        - to:
+            uri: "kamelet:azure-storage-datalake-sink"
+            parameters:
+              accountName: "mydatalake"
+              fileSystemName: "raw-data"
+              credentialType: "SHARED_KEY_CREDENTIAL"
+              accountKey: "the-account-key"
+              directoryName: "exports/2026"
+----
+
+Each file is written to the `exports/2026` directory of the `raw-data` file system, such as
+`exports/2026/sales-20261118093000.csv`. With **credentialType** `AZURE_SAS`, give a SAS token in **sasSignature**
+instead of **accountKey**. **clientId**, **clientSecret** and **tenantId** are needed only with `CLIENT_SECRET`, the
+default.
