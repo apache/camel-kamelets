@@ -37,7 +37,7 @@ spec:
 
       Output: the body is the content of the file, as bytes. The `file` and `ce-file` headers hold the name of the file, with its path below `directoryName` when `recursive` is true, such as `2026/orders.csv`. `CamelFileName` holds the same name, and `CamelFileLength` the size of the file in bytes.
 
-      Good to know: files are not deleted or moved after they are read, unless `delete` is true. A file is read only once while the integration runs (`idempotent`), but the files left on the server are all read again after a restart; set `delete` to true to read each file only once. Log in with `username` and either `password` or a private key. The key of the server must be in a known_hosts file, `knownHostsUri` or else `~/.ssh/known_hosts` of the user that runs the integration, or the connection fails.
+      Good to know: files are not deleted or moved after they are read, unless `delete` is true or `move` is set. A file is read only once while the integration runs (`idempotent`), but the files left on the server are all read again after a restart; to read each file only once, also across restarts, set `move` to a directory such as `.done`, set `delete` to true, or keep the list of the files read in a file with `idempotentRepository`. Log in with `username` and either `password` or a private key. The key of the server must be in a known_hosts file, `knownHostsUri` or else `~/.ssh/known_hosts` of the user that runs the integration, or the connection fails.
     required:
       - connectionHost
       - connectionPort
@@ -84,9 +84,14 @@ spec:
         default: false
       idempotent:
         title: Skip Files Already Read
-        description: If true, a file is read only once while the integration runs, even when it stays on the server. The list of the files read is kept in memory, so after a restart the files still on the server are read again. If false, and `delete` is false, the same files are read again on every poll.
+        description: If true, a file is read only once while the integration runs, even when it stays on the server. The list of the files read is kept in memory, so after a restart the files still on the server are read again, unless `move` or `delete` takes them away, or `idempotentRepository` keeps the list elsewhere. If false, and neither `delete` nor `move` is set, the same files are read again on every poll.
         type: boolean
         default: true
+      idempotentRepository:
+        title: Files Read Store
+        description: The name of a bean that keeps the list of the files read, so that the files left on the server are not read again after a restart, such as a `FileIdempotentRepository` that keeps the list in a file. Declare the bean in the integration, for example under `beans` in YAML. Only used when `idempotent` is true. When it is not set, the list is kept in memory.
+        type: string
+        example: readFiles
       ignoreFileNotFoundOrPermissionError:
         title: Ignore Access Errors
         description: If true, a directory or a file that does not exist, or that `username` may not read, is skipped. If false, it causes an error.
@@ -139,9 +144,19 @@ spec:
         default: true
       delete:
         title: Delete
-        description: If true, each file is deleted from the server once it has been read and handed on successfully. Use it to read each file only once, also across restarts.
+        description: If true, each file is deleted from the server once it has been read and handed on successfully. Use it to read each file only once, also across restarts. To keep the files, set `move` instead.
         type: boolean
         default: false
+      move:
+        title: Move After Read
+        description: Where to move each file on the server once it has been read and handed on successfully, so that it is not read again, also after a restart. A directory name, such as `.done`, is relative to the directory of the file. A path that ends with the name of the file, such as `done/$\{date:now:yyyyMMdd}/$\{file:name}`, is relative to `directoryName`, where `$\{file:name}` is the name of the file and `$\{date:now:yyyyMMdd}` today's date. A directory whose name starts with a dot is never read, which matters when `recursive` is true. Missing directories are created, so `username` must be allowed to create directories and to rename files. When it is not set, files stay where they are. When `delete` is true too, the integration fails to start.
+        type: string
+        example: ".done"
+      moveFailed:
+        title: Move Failed Files To
+        description: Where to move a file on the server when it could not be handed on, for example because the next step failed, so that it is not read over and over. The same format as `move`, such as `.error`. When it is not set, a file that fails stays where it is and is read again at every poll. It can be set together with `delete` or `move`.
+        type: string
+        example: ".error"
   dataTypes:
     out:
       headers:
@@ -175,8 +190,11 @@ spec:
         binary: "{{binary}}"
         delete: "{{delete}}"
         idempotent: "{{idempotent}}"
+        idempotentRepository: "#bean:{{?idempotentRepository}}"
         ignoreFileNotFoundOrPermissionError: "{{ignoreFileNotFoundOrPermissionError}}"
         knownHostsUri: "RAW({{?knownHostsUri}})"
+        move: "{{?move}}"
+        moveFailed: "{{?moveFailed}}"
         passiveMode: "{{passiveMode}}"
         password: "RAW({{?password}})"
         privateKeyFile: "RAW({{?privateKeyFile}})"
