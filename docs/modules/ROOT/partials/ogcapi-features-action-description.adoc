@@ -1,0 +1,27 @@
+== OGC API Features Action Kamelet Description
+
+=== Timeouts
+
+`connectTimeout` limits how long to wait for the connection to the service, and `responseTimeout` how long to wait
+for its answer, both in milliseconds. A service that does not answer in time fails the message. When they are not
+set, the answer is awaited for up to 3 minutes.
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 60000
+        message: ""
+      steps:
+        - to:
+            uri: "kamelet:ogcapi-features-action"
+            parameters:
+              url: "https://features.example.com/ogcapi"
+              collection: "lakes"
+              connectTimeout: 5000
+              responseTimeout: 30000
+        - to:
+            uri: "kamelet:log-sink"
+----

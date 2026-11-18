@@ -39,7 +39,7 @@ spec:
 
       Output: the body is a GeoJSON feature collection, as JSON text, with at most `limit` features. The headers of the HTTP response, such as `Content-Type`, are set as headers.
 
-      Good to know: `split` does not change what the next step receives: it still gets the whole collection, once per message. An HTTP error from the server, such as an unknown collection, fails the message.
+      Good to know: `split` does not change what the next step receives: it still gets the whole collection, once per message. An HTTP error from the server, such as an unknown collection, fails the message. A service that cannot be reached within `connectTimeout`, or does not answer within `responseTimeout`, fails the message; when they are not set, it waits up to 3 minutes.
     required:
       - url
       - collection
@@ -78,6 +78,16 @@ spec:
         example: "property1=1&property2=dos"
         default: ""
         type: string
+      connectTimeout:
+        title: Connect Timeout
+        description: How long to wait for the connection to the service to be set up, in milliseconds. When it is not set, it waits up to 3 minutes, or less when the operating system gives up first. A service that cannot be reached in time fails the message.
+        type: integer
+        example: 5000
+      responseTimeout:
+        title: Response Timeout
+        description: How long to wait for the answer of the service once the request is sent, in milliseconds. When it is not set, it is 180000 (3 minutes). A service that does not answer in time fails the message.
+        type: integer
+        example: 30000
   types:
     in:
       mediaType: text/plain
@@ -107,6 +117,9 @@ spec:
               simple: {}
         - to:
             uri: "{{url}}/collections/{{collection}}/items"
+            parameters:
+              connectTimeout: "{{?connectTimeout}}"
+              responseTimeout: "{{?responseTimeout}}"
         - removeHeader:
             name: Accept
         - removeHeader:

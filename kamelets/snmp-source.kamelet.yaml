@@ -37,7 +37,7 @@ spec:
 
       Output: the body is XML text with one `entry` per value, each with its `oid` (the identifier of the value, such as `1.3.6.1.2.1.1.3.0` for the uptime) and its `value`, inside an `snmp` element. For a trap, the `peerAddress` header is the address of the device that sent it.
 
-      Good to know: with `type` set to `TRAP`, `host` and `port` are the address to listen on, not a device; traps are usually sent to port 162, but `port` is 161 by default, and a port below 1024 needs administrator rights on most systems. A device that does not answer a poll gives no message. SNMP v1 and v2c send the community string in clear text; prefer v3 when the device supports it.
+      Good to know: with `type` set to `TRAP`, `host` and `port` are the address to listen on, not a device; traps are usually sent to port 162, but `port` is 161 by default, and a port below 1024 needs administrator rights on most systems. A device that does not answer a poll gives no message: it is sent again `retries` times, each time after waiting `snmpTimeout` for the answer; when they are not set, that is 2 more times, after 1.5 seconds each. SNMP v1 and v2c send the community string in clear text; prefer v3 when the device supports it.
     required:
     - host
     type: object
@@ -74,6 +74,27 @@ spec:
         description: How long to wait between two polls, in milliseconds. For example, 60000 is one minute. Not used for `TRAP`.
         type: integer
         default: 60000
+      initialDelay:
+        title: Initial Delay
+        description: How long to wait before the first poll, in milliseconds. When it is not set, it is 1000 (one second). Not used for `TRAP`.
+        type: integer
+        example: 10000
+      snmpTimeout:
+        title: SNMP Timeout
+        description: How long to wait for the answer of the device to a poll, in milliseconds, before the poll is sent again or given up. When it is not set, it is 1500. Not used for `TRAP`.
+        type: integer
+        example: 5000
+      retries:
+        title: Retries
+        description: How many times a poll is sent again when the device does not answer within `snmpTimeout`. When it is not set, it is 2. Not used for `TRAP`.
+        type: integer
+        example: 0
+      snmpContextName:
+        title: SNMP Context Name
+        description: The SNMP v3 context to read the values from, for a device that serves several sets of values (contexts) under one address, such as one per virtual router. When it is not set, the default context of the device is read. Only used with `snmpVersion` 3, and not used for `TRAP`.
+        type: string
+        example: vrf-blue
+        pattern: "^[^\\s]+$"
       snmpVersion:
         title: SNMP Version
         description: The version of SNMP to use. 0 is v1, 1 is v2c and 3 is v3. It must match the version the device or the trap sender uses.
@@ -146,6 +167,10 @@ spec:
       parameters:
         host: "{{host}}"
         port: "{{port}}"
+        initialDelay: "{{?initialDelay}}"
+        retries: "{{?retries}}"
+        snmpContextName: "RAW({{?snmpContextName}})"
+        timeout: "{{?snmpTimeout}}"
         authenticationPassphrase: "RAW({{?authenticationPassphrase}})"
         authenticationProtocol: "{{?authenticationProtocol}}"
         delay: "{{delay}}"
