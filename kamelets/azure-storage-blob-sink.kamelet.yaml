@@ -86,12 +86,20 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      sasToken:
+        title: SAS Token
+        description: "A shared access signature (SAS) token for the storage account or for the container, from the Azure portal: the storage account, then Security + networking, then Shared access signature, or the container, then Shared access tokens. Used when `credentialType` is `AZURE_SAS`. Give the token only, such as `sv=2022-11-02&ss=b&srt=sco&sp=w&se=2026-12-31T00:00:00Z&spr=https&sig=...`, with or without the leading `?`, not the whole SAS URL. It needs the Write permission."
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+        pattern: "^\\??[A-Za-z]+=[^&]*(&[A-Za-z]+=[^&]*)*$"
       credentialType:
         title: Credential Type
-        description: "How to log in to the storage account. `SHARED_ACCOUNT_KEY`, the default, uses `accessKey`. `AZURE_IDENTITY` uses `clientId`, `clientSecret` and `tenantId` when all three are set, and otherwise the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login. Do not use `CLIENT_SECRET`: it does not use the three client options."
+        description: "How to log in to the storage account. `SHARED_ACCOUNT_KEY`, the default, uses `accessKey`. `AZURE_SAS` uses `sasToken`. `AZURE_IDENTITY` uses `clientId`, `clientSecret` and `tenantId` when all three are set, and otherwise the Azure identity of the environment, such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` environment variables, a managed identity or the Azure CLI login. Do not use `CLIENT_SECRET`: it does not use the three client options."
         type: string
         default: "SHARED_ACCOUNT_KEY"
-        enum: ["SHARED_ACCOUNT_KEY", "AZURE_IDENTITY", "CLIENT_SECRET"]
+        enum: ["SHARED_ACCOUNT_KEY", "AZURE_SAS", "AZURE_IDENTITY", "CLIENT_SECRET"]
   dataTypes:
     in:
       headers:
@@ -138,4 +146,4 @@ spec:
                       simple:
                         expression: "${exchangeId}"
         - to:
-            uri: "azure-storage-blob://{{accountName}}/{{containerName}}?accessKey=RAW({{?accessKey}})&azureClientId=RAW({{?clientId}})&azureClientSecret=RAW({{?clientSecret}})&azureTenantId={{?tenantId}}&credentialType={{credentialType}}&operation=uploadBlockBlob"
+            uri: "azure-storage-blob://{{accountName}}/{{containerName}}?accessKey=RAW({{?accessKey}})&azureClientId=RAW({{?clientId}})&azureClientSecret=RAW({{?clientSecret}})&azureTenantId={{?tenantId}}&credentialType={{credentialType}}&operation=uploadBlockBlob&sasToken=RAW({{?sasToken}})"

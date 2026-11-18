@@ -6,6 +6,7 @@ In this Kamelet, you can use these Azure authentication methods:
 
 - Azure Identity mechanism:  `AZURE_IDENTITY`
 - Plain Shared Account Key:  `SHARED_ACCOUNT_KEY`
+- Shared access signature (SAS) token:  `AZURE_SAS`, with the token in `sasToken`
 
 The order of evaluation for `AZURE_IDENTITY` is the following:
 
@@ -20,6 +21,14 @@ The order of evaluation for `AZURE_IDENTITY` is the following:
 To log in as an app registration (a service principal), set `credentialType` to `AZURE_IDENTITY` and provide `clientId`, `clientSecret`, and `tenantId`: when all three are set, they are used instead of the order above. `CLIENT_SECRET` does not use these three properties.
 
 For more information, see the https://learn.microsoft.com/en-us/java/api/overview/azure/identity-readme[Azure Identity documentation]
+
+=== Log in with a SAS Token
+
+A shared access signature (SAS) token gives access to the storage account, or to one container, with the permissions
+and the expiry chosen when it was made, without handing out an access key. Create one in the Azure portal: the storage
+account, then *Security + networking*, then *Shared access signature*, or the container, then *Shared access tokens*.
+Set **credentialType** to `AZURE_SAS` and **sasToken** to the token, without the URL in front of it; a leading `?` is
+allowed. The sink needs the Write permission. A token that lacks a permission, or has expired, fails with status 403.
 
 === Optional Headers
 

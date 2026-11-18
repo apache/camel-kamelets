@@ -4,7 +4,7 @@
 
 For this Kamelet the Connection string is the basic method for authenticating to the Azure Servicebus Queue.
 
-To use this Kamelet you'll need to set up Events on your Azure Storage Blob account and select as an endpoint an Azure Servicebus Queue, with the Event Grid event schema. The Kamelet reads from a queue, not from a topic.
+To use this Kamelet you'll need to set up Events on your Azure Storage Blob account and select as an endpoint an Azure Servicebus Queue or Topic, with the Event Grid event schema.
 
 For the Azure Storage Blob access, you can use these Azure authentication methods:
 
@@ -15,3 +15,31 @@ For the Azure Storage Blob access, you can use these Azure authentication method
 To log in as an app registration (a service principal), set `credentialType` to `AZURE_IDENTITY` and provide `clientId`, `clientSecret`, and `tenantId`: when all three are set, they are used instead of the identity of the environment. `CLIENT_SECRET` does not use these three properties.
 
 For more information, see the https://learn.microsoft.com/en-us/java/api/overview/azure/identity-readme[Azure Identity documentation]
+
+=== Example: Read the Events from a Topic
+
+When the events go to a Service Bus topic, so that other applications can receive them from subscriptions of their
+own, set **serviceBusType** to `topic`, **topicOrQueueName** to the name of the topic, and **subscriptionName** to the
+subscription this Kamelet reads from:
+
+[source,yaml,subs='+attributes,macros']
+----
+- route:
+    from:
+      uri: "kamelet:azure-storage-blob-event-based-source"
+      parameters:
+        connectionString: "Endpoint=sb://my-namespace.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=..."
+        serviceBusType: "topic"
+        topicOrQueueName: "blob-events"
+        subscriptionName: "invoice-processor"
+        maxConcurrentCalls: 4
+        accountName: "mystorageaccount"
+        containerName: "invoices"
+        accessKey: "..."
+        getBlob: true
+      steps:
+        - to: "log:blob"
+----
+
+Without **subscriptionName** the Kamelet does not start. **maxConcurrentCalls** processes
+up to four events at the same time; when it is not set, events are processed one at a time, in order.
