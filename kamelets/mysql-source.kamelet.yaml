@@ -37,7 +37,7 @@ spec:
 
       Output: the body is one row as JSON text, an object with the column names as keys, such as `{"id":1,"username":"oscerd","city":"Rome"}`. The `Content-Type` header is `application/json`.
 
-      Good to know: the query runs again `delay` milliseconds after the previous run, so the same rows are sent again and again, unless `consumedQuery` marks or deletes each row once it is sent and `query` leaves such rows out: for example `SELECT * FROM accounts WHERE processed = false` with `UPDATE accounts SET processed = true WHERE id = :#id`. When the next step fails for a row, `consumedQuery` is not run for it, and the row is read again. A query that finds no rows sends nothing. `query` cannot contain `?`. The format of date and time columns in the JSON depends on the Camel version. The JDBC driver of MySQL is not included: add `mvn:com.mysql:mysql-connector-j` to the dependencies of the integration. Camel JBang (`camel run`) adds it by itself.
+      Good to know: the query runs again `delay` milliseconds after the previous run, so the same rows are sent again and again, unless `consumedQuery` marks or deletes each row once it is sent and `query` leaves such rows out: for example `SELECT * FROM accounts WHERE processed = false` with `UPDATE accounts SET processed = true WHERE id = :#id`. When the next step fails for a row, `consumedQuery` is not run for it, and the row is read again. A query that finds no rows sends nothing. `query` cannot contain `?`. The format of date and time columns in the JSON depends on the Camel version. The JDBC driver of MySQL is not included: add `mvn:com.mysql:mysql-connector-j` to the dependencies of the integration. Camel JBang (`camel run`) adds it by itself. Without `connectionProperties`, the connection uses TLS only when the server offers it, and the certificate of the server is not checked: set `sslMode=REQUIRED` in `connectionProperties` to insist on TLS.
     required:
       - serverName
       - username
@@ -89,6 +89,11 @@ spec:
         description: How long to wait after one run of `query` before the next, in milliseconds.
         type: integer
         default: 500
+      connectionProperties:
+        title: Connection Properties
+        description: "Extra settings for the MySQL JDBC driver (Connector/J), as `name=value` pairs separated by `;`, such as `sslMode=REQUIRED;connectTimeout=10000`. Use it for TLS: `sslMode=REQUIRED` makes the connection use TLS, and `sslMode=DISABLED` turns TLS off. When it is not set, the driver uses TLS when the server offers it, without checking the certificate. The value is not hidden like a password, and it can show in the log when the integration starts, so do not put a password in it."
+        type: string
+        example: sslMode=REQUIRED
   types:
     out:
       mediaType: application/json
@@ -117,6 +122,7 @@ spec:
           password: "{{password}}"
           url: "jdbc:mysql://{{serverName}}:{{serverPort}}/{{databaseName}}"
           driverClassName: com.mysql.cj.jdbc.Driver
+          connectionProperties: "{{?connectionProperties}}"
     from:
       uri: "{{local-sql-mysql-source}}:{{query}}?dataSource=#bean:{{dsBean}}&onConsume=RAW({{?consumedQuery}})&delay={{delay}}"
       steps:

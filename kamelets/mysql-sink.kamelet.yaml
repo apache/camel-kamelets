@@ -39,7 +39,7 @@ spec:
 
       Output: the body afterwards is the JSON object as a Map, and the `CamelSqlUpdateCount` header holds the number of rows the statement changed. When `query` is a SELECT, the body is instead a List of the rows found, each a Map, and the `CamelSqlRowCount` header holds their number.
 
-      Good to know: a message fails when its body is not a JSON object (a JSON array or plain text, for example), or when it has no value for a parameter of `query`. The values are sent to the database apart from the SQL text, so the content of a message cannot change the statement. Do not write `?` in `query`, not even in a quoted string: the Kamelet then fails to start. The JDBC driver of MySQL is not included: add `mvn:com.mysql:mysql-connector-j` to the dependencies of the integration. Camel JBang (`camel run`) adds it by itself.
+      Good to know: a message fails when its body is not a JSON object (a JSON array or plain text, for example), or when it has no value for a parameter of `query`. The values are sent to the database apart from the SQL text, so the content of a message cannot change the statement. Do not write `?` in `query`, not even in a quoted string: the Kamelet then fails to start. The JDBC driver of MySQL is not included: add `mvn:com.mysql:mysql-connector-j` to the dependencies of the integration. Camel JBang (`camel run`) adds it by itself. Without `connectionProperties`, the connection uses TLS only when the server offers it, and the certificate of the server is not checked: set `sslMode=REQUIRED` in `connectionProperties` to insist on TLS.
     required:
       - serverName
       - username
@@ -81,6 +81,11 @@ spec:
         description: The name of the database to connect to on the MySQL server.
         type: string
         example: shop
+      connectionProperties:
+        title: Connection Properties
+        description: "Extra settings for the MySQL JDBC driver (Connector/J), as `name=value` pairs separated by `;`, such as `sslMode=REQUIRED;connectTimeout=10000`. Use it for TLS: `sslMode=REQUIRED` makes the connection use TLS, and `sslMode=DISABLED` turns TLS off. When it is not set, the driver uses TLS when the server offers it, without checking the certificate. The value is not hidden like a password, and it can show in the log when the integration starts, so do not put a password in it."
+        type: string
+        example: sslMode=REQUIRED
   types:
     in:
       mediaType: application/json
@@ -113,6 +118,7 @@ spec:
           password: "{{password}}"
           url: "jdbc:mysql://{{serverName}}:{{serverPort}}/{{databaseName}}"
           driverClassName: com.mysql.cj.jdbc.Driver
+          connectionProperties: "{{?connectionProperties}}"
     from:
       uri: kamelet:source
       steps:

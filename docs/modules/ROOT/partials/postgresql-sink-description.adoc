@@ -23,3 +23,17 @@ Here is example input for the example query:
 === Authentication
 
 The Kamelet requires username and password authentication to connect to the PostgreSQL database.
+
+=== Connecting with TLS
+
+Set `connectionProperties` to pass settings to the PostgreSQL JDBC driver, as `name=value` pairs separated by `;`.
+Without it, the driver uses TLS only when the server offers it, and does not check the certificate of the server.
+
+* `sslmode=require`: always use TLS, and fail when the server does not offer it.
+* `sslmode=verify-full;sslrootcert=/etc/certs/root.crt`: also check the certificate of the server against the CA
+  certificate in that file.
+
+[source,yaml,subs='+attributes,macros']
+----
+connectionProperties: "sslmode=require"
+----

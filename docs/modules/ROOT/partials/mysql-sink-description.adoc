@@ -19,3 +19,14 @@ Uses Apache Commons DBCP2 for efficient database connection pooling. This provid
 === Authentication and Security
 
 Requires username and password authentication for database access.
+
+=== Connecting with TLS
+
+Set `connectionProperties` to pass settings to the MySQL JDBC driver (Connector/J), as `name=value` pairs separated by
+`;`. Without it, the driver uses TLS only when the server offers it, and does not check the certificate of the server.
+Set `sslMode=REQUIRED` to always use TLS.
+
+[source,yaml,subs='+attributes,macros']
+----
+connectionProperties: "sslMode=REQUIRED"
+----
