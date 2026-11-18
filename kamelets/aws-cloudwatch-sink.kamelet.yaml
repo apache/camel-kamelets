@@ -32,15 +32,15 @@ spec:
   definition:
     title: "AWS CloudWatch Metrics Sink"
     description: |-
-      Sends one data point of a custom metric to Amazon CloudWatch for each message, with the name, the value and the unit of the metric taken from headers.
+      Sends one data point of a custom metric to Amazon CloudWatch for each message, with the name, the value and the unit of the metric taken from headers or options.
 
       Use it to record business or technical numbers from an integration, such as orders processed, items in stock or processing time, and to graph them or set alarms on them in CloudWatch.
 
-      Input: the body is not used. The `metric-name` header (or `ce-metricname`) is the name of the metric, and is required. The optional `metric-value` header (or `ce-metricvalue`) is the value, a number, 1 when it is not set. The optional `metric-unit` header (or `ce-metricunit`) is the unit, such as `Count`, `Seconds`, `Bytes` or `Percent`, `Count` when it is not set. The optional `metric-dimension-name` and `metric-dimension-value` headers (or `ce-metricdimensionname` and `ce-metricdimensionvalue`) add one dimension, such as `Region` and `eu`. The optional `metric-timestamp` header (or `ce-metrictimestamp`) is the time of the data point.
+      Input: the body is not used. The `metric-name` header (or `ce-metricname`) is the name of the metric; it is required unless the `metricName` option is set. The optional `metric-value` header (or `ce-metricvalue`) is the value, a number; when it is not set, the value is `metricValue`, or 1. The optional `metric-unit` header (or `ce-metricunit`) is the unit, such as `Count`, `Seconds`, `Bytes` or `Percent`; when it is not set, the unit is `metricUnit`, or `Count`. A header wins over the option. The optional `metric-dimension-name` and `metric-dimension-value` headers (or `ce-metricdimensionname` and `ce-metricdimensionvalue`) add one dimension, such as `Region` and `eu`. The optional `metric-timestamp` header (or `ce-metrictimestamp`) is the time of the data point.
 
       Output: the message is unchanged.
 
-      Good to know: a message without a metric name, or with a value that is not a number, fails. The time in `metric-timestamp` must be a Java `Instant` or `Date`: text is ignored, and then the data point gets the time it is sent. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: a message without a metric name, when `metricName` is not set either, fails, and so does a value that is not a number or a unit that CloudWatch does not know. Set the options to send the same metric for every message, for example `metricName` `OrdersProcessed` to count the messages. The time in `metric-timestamp` must be a Java `Instant` or `Date`: text is ignored, and then the data point gets the time it is sent. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - cwNamespace
       - region
@@ -51,6 +51,23 @@ spec:
         description: The namespace that groups your metrics in CloudWatch, such as `MyApp/Orders`. It must not start with `AWS/`, which is kept for the metrics of AWS services.
         example: MyApp/Orders
         type: string
+      metricName:
+        title: Metric Name
+        description: The name of the metric, such as `OrdersProcessed`, for the messages without a `metric-name` header. Up to 255 characters, which can be letters, digits, spaces and punctuation. When neither is set, the message fails.
+        type: string
+        pattern: "^[ -~]{1,255}$"
+        example: OrdersProcessed
+      metricValue:
+        title: Metric Value
+        description: The value of the data point, a number, for the messages without a `metric-value` header. When neither is set, the value is 1.
+        type: number
+        example: 1
+      metricUnit:
+        title: Metric Unit
+        description: The unit of the value, for the messages without a `metric-unit` header. When neither is set, the unit is `Count`.
+        type: string
+        enum: ["Seconds", "Microseconds", "Milliseconds", "Bytes", "Kilobytes", "Megabytes", "Gigabytes", "Terabytes", "Bits", "Kilobits", "Megabits", "Gigabits", "Terabits", "Percent", "Count", "Bytes/Second", "Kilobytes/Second", "Megabytes/Second", "Gigabytes/Second", "Terabytes/Second", "Bits/Second", "Kilobits/Second", "Megabits/Second", "Gigabits/Second", "Terabits/Second", "Count/Second", "None"]
+        example: Milliseconds
       accessKey:
         title: Access Key
         description: The access key ID of an IAM user, which you create in the AWS console under IAM, Users, Security credentials. Use it together with `secretKey`. Leave both out when `useDefaultCredentialsProvider` or `useProfileCredentialsProvider` is true.
@@ -130,15 +147,15 @@ spec:
       headers:
         metric-name:
           title: Metric Name
-          description: The name of the metric, such as `OrdersProcessed`. `ce-metricname` works too. Required.
+          description: The name of the metric, such as `OrdersProcessed`. `ce-metricname` works too. Required unless the `metricName` option is set.
           type: string
         metric-value:
           title: Metric Value
-          description: The value of the data point, a number. `ce-metricvalue` works too. 1 when it is not set.
+          description: The value of the data point, a number. `ce-metricvalue` works too. When it is not set, the value is the `metricValue` option, or 1.
           type: number
         metric-unit:
           title: Metric Unit
-          description: The unit of the value, such as `Count`, `Seconds`, `Bytes` or `Percent`. `ce-metricunit` works too. `Count` when it is not set.
+          description: The unit of the value, such as `Count`, `Seconds`, `Bytes` or `Percent`. `ce-metricunit` works too. When it is not set, the unit is the `metricUnit` option, or `Count`.
           type: string
         metric-dimension-name:
           title: Dimension Name
@@ -296,3 +313,6 @@ spec:
               proxyHost: "{{?proxyHost}}"
               proxyPort: "{{?proxyPort}}"
               proxyProtocol: "{{?proxyProtocol}}"
+              name: "RAW({{?metricName}})"
+              value: "{{?metricValue}}"
+              unit: "{{?metricUnit}}"
