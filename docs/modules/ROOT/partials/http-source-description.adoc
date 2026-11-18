@@ -8,9 +8,23 @@ The HTTP Source Kamelet periodically fetches data from an HTTP endpoint. It supp
 - **Period**: The interval between fetches in milliseconds (default: 10000)
 - **Content Type**: The Accept header content type for the request (default: "application/json")
 
-=== Authentication
+=== Logging In
 
-This is the basic HTTP source kamelet without authentication. For secured HTTP endpoints requiring authentication, use the HTTP Secured Source kamelet instead.
+The login options are all optional. Without them, the requests are sent without a login.
+
+[width="100%",cols="2,3,3",options="header"]
+|===
+| Login | Options | When the credentials are sent
+| Basic or Digest
+| `authUsername`, `authPassword`
+| After the service answers 401 and asks for them. With `authenticationPreemptive: true`, Basic credentials are sent with the first request.
+| Static token, such as an API key
+| `authMethod: Bearer`, `authBearerToken`
+| After the service answers 401 with a `WWW-Authenticate: Bearer` header. With `authenticationPreemptive: true`, with the first request, which most APIs need.
+| OAuth 2.0 client credentials
+| `oauth2ClientId`, `oauth2ClientSecret`, `oauth2TokenEndpoint`, optionally `oauth2Scope`
+| With every request: the Kamelet gets a token from `oauth2TokenEndpoint` and sends it as a Bearer token.
+|===
 
 === Output Format
 
@@ -65,6 +79,61 @@ The Kamelet outputs the HTTP response body and preserves any HTTP headers from t
 ----
 
 This example polls the endpoint every 5 seconds for status updates.
+
+=== Example with a Static Token
+
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:http-source"
+      parameters:
+        url: "https://api.example.com/v1/orders/status"
+        period: 60000
+        authMethod: Bearer
+        authBearerToken: "{{api.token}}"
+        authenticationPreemptive: true
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+The token is sent as the header `Authorization: Bearer` followed by the token.
+
+=== Status Codes That Send a Message
+
+Only a response with a status code in `okStatusCodeRange` is sent as a message. When the option is not set, it is `200-299`: a response with a status code of 300 or higher sends no message, the error is logged, and the address is fetched again at the next period. To also receive the responses with another code, such as 404 while a resource does not exist yet, list it together with the 2xx codes:
+
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:http-source"
+      parameters:
+        url: "https://api.example.com/v1/reports/today"
+        okStatusCodeRange: "200-299,404"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
+
+The `CamelHttpResponseCode` header of the message then tells a 404 from a 200. Setting only `404` would stop the 200 responses.
+
+=== Trusting a Private Certificate Authority
+
+The certificate of an `https://` service is checked against the certificate authorities that Java trusts. A service whose certificate is signed by a private certificate authority fails with `PKIX path building failed`.
+
+With Camel JBang or Camel Main, put the certificate of the authority in a trust store, for example with `keytool -importcert -file ca.crt -keystore truststore.p12 -storetype PKCS12`, and set these application properties:
+
+[source,properties]
+----
+camel.ssl.enabled = true
+camel.ssl.trustStore = file:/etc/certs/truststore.p12
+camel.ssl.trustStorePassword = changeit
+camel.component.https.useGlobalSslContextParameters = true
+----
+
+That trust store then replaces the one of Java for every `https://` call of the application, so it must also hold the authorities of any public service the application calls. The `http://` calls are not changed.
 
 === Scheduling Behavior
 
