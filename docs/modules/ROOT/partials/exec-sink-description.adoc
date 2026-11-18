@@ -4,6 +4,23 @@
 
 This Kamelet executes system commands on the local machine. It requires an executable command to be specified.
 
+=== Arguments
+
+The arguments of the program go in **Arguments**, separated by spaces. An argument that contains a space goes in double or single quotes. The program is started directly, not through a shell, so `*`, `$HOME`, `|`, `>` and `;` are passed to it as they are.
+
+For example, to run a script with two options in `/opt/scripts`, stop it after one minute, and fail the message when it does not end with exit code 0:
+
+[source,yaml]
+----
+executable: /opt/scripts/import-order.sh
+args: '--input /data/orders.csv --name "John Doe"'
+workingDir: /opt/scripts
+commandTimeout: 60000
+exitValues: "0"
+----
+
+The script gets four arguments: `--input`, `/data/orders.csv`, `--name` and `John Doe`.
+
 === Output
 
 The Kamelet returns the standard output (stdout) of the executed command as the response body.
