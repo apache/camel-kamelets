@@ -260,7 +260,7 @@ public class KameletsCatalogTest {
         verifyHeaders("minio-source", 5);
         verifyHeaders("minio-sink", 2);
         verifyHeaders("mongodb-changes-stream-source", 3);
-        verifyHeaders("mongodb-sink", 1);
+        verifyHeaders("mongodb-sink", 3);
         verifyHeaders("mongodb-source", 3);
         verifyHeaders("mqtt-sink", 3);
         verifyHeaders("mqtt-source", 2);

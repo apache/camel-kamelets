@@ -37,7 +37,7 @@ spec:
 
       Output: the body is one document as JSON text. An `_id` that is an ObjectId comes out as an object with only its time (`timestamp` and `date`), not as the ID text, and the format of dates depends on the Camel version. The `CamelMongoDbDatabase` and `CamelMongoDbCollection` headers name where the document comes from.
 
-      Good to know: the collection must be capped (created with a fixed size), or the Kamelet fails to start. Each time the integration starts, it reads the whole collection again from the start, unless `persistentTailTracking` is true. Set either `hosts` or `connectionString`. With `hosts`, it connects with TLS by default; set `ssl` to false for a MongoDB without TLS, such as a local one. With `connectionString`, such as the `mongodb+srv://` string of MongoDB Atlas, it connects only as that string says, and `hosts`, `username`, `password`, `ssl` and `sslValidationEnabled` are not used. For a user defined in a database other than `admin`, use `connectionString` with `authSource`.
+      Good to know: the collection must be capped (created with a fixed size), or the Kamelet fails to start. Each time the integration starts, it reads the whole collection again from the start, unless `persistentTailTracking` is true. It stores its place only when the integration stops, so after a crash it reads again the documents since the last stop. Set either `hosts` or `connectionString`. With `hosts`, it connects with TLS by default; set `ssl` to false for a MongoDB without TLS, such as a local one. With `connectionString`, such as the `mongodb+srv://` string of MongoDB Atlas, it connects only as that string says, and `hosts`, `username`, `password`, `ssl` and `sslValidationEnabled` are not used. For a user defined in a database other than `admin`, use `connectionString` with `authSource`. To read from a secondary member of a replica set, use `connectionString` with `readPreference=secondaryPreferred`.
     required:
       - collection
       - database
@@ -50,7 +50,7 @@ spec:
         example: mongo1.example.com:27017,mongo2.example.com:27017
       connectionString:
         title: Connection String
-        description: "The MongoDB connection string, which starts with `mongodb://` or `mongodb+srv://`, such as the one MongoDB Atlas shows under Connect. Use it instead of `hosts` for MongoDB Atlas, for a user defined in a database other than `admin` (add `authSource`, such as `?authSource=shop`), or for settings such as `replicaSet` or `tls`. When it is set, `hosts`, `username`, `password`, `ssl` and `sslValidationEnabled` are not used. TLS is used as the string says: always with `mongodb+srv://`, and with `mongodb://` only when it has `tls=true`. Write `@`, `/`, `:` and `%` in the user name or the password as `%40`, `%2F`, `%3A` and `%25`."
+        description: "The MongoDB connection string, which starts with `mongodb://` or `mongodb+srv://`, such as the one MongoDB Atlas shows under Connect. Use it instead of `hosts` for MongoDB Atlas, for a user defined in a database other than `admin` (add `authSource`, such as `?authSource=shop`), or for settings such as `replicaSet`, `tls` or `readPreference`, such as `readPreference=secondaryPreferred` to read from a secondary member of a replica set. When it is set, `hosts`, `username`, `password`, `ssl` and `sslValidationEnabled` are not used. TLS is used as the string says: always with `mongodb+srv://`, and with `mongodb://` only when it has `tls=true`. Write `@`, `/`, `:` and `%` in the user name or the password as `%40`, `%2F`, `%3A` and `%25`."
         type: string
         format: password
         x-descriptors:
@@ -91,7 +91,7 @@ spec:
         example: shop
       persistentTailTracking:
         title: Remember Last Document
-        description: If true, the Kamelet stores the `tailTrackIncreasingField` value of the last document it read in the `camelTailTracking` collection of the same database, and after a restart goes on from there instead of reading the whole collection again. Needs `tailTrackIncreasingField`.
+        description: If true, the Kamelet stores the `tailTrackIncreasingField` value of the last document it read, and after a restart goes on from there instead of reading the whole collection again. It stores it when the integration stops, so after a crash the documents since the last stop are read again. It is stored in the `camelTailTracking` collection of the same database (see `tailTrackDb` and `tailTrackCollection`), under the name in `persistentId`. Needs `tailTrackIncreasingField`.
         type: boolean
         default: false
       tailTrackIncreasingField:
@@ -99,6 +99,24 @@ spec:
         description: The name of a field whose value grows with each new document, such as a sequence number or a time, used to find the place to go on reading from. Required when `persistentTailTracking` is true.
         type: string
         example: seq
+      persistentId:
+        title: Tail Tracking Name
+        description: The name under which the place of this Kamelet is stored when `persistentTailTracking` is true. Give each source that stores its place in the same collection its own name. When it is not set, all of them share one place, so a restarted source reads documents again or skips them, as it goes on from the place another source stored.
+        type: string
+        pattern: "^[A-Za-z0-9_.:-]+$"
+        example: events-to-kafka
+      tailTrackDb:
+        title: Tail Tracking Database
+        description: The database to store the place in when `persistentTailTracking` is true. When it is not set, the place is stored in `database`. Use it when the MongoDB user may only read `database`; the user must be allowed to write to this one.
+        type: string
+        pattern: "^[A-Za-z0-9_-]+$"
+        example: camelstate
+      tailTrackCollection:
+        title: Tail Tracking Collection
+        description: The collection to store the place in when `persistentTailTracking` is true. When it is not set, `camelTailTracking`. MongoDB creates it, if it does not exist, when the Kamelet starts.
+        type: string
+        pattern: "^[A-Za-z0-9_.-]+$"
+        example: trackers
   dataTypes:
     out:
       headers:
@@ -133,7 +151,7 @@ spec:
         properties:
           mongoConnection: "#{{mongo-client}}"
     from:
-      uri: "{{local-mongodb}}:test?collection={{collection}}&database={{database}}&persistentTailTracking={{persistentTailTracking}}&tailTrackIncreasingField={{?tailTrackIncreasingField}}&connectionUriString=RAW({{?connectionString}})"
+      uri: "{{local-mongodb}}:test?collection={{collection}}&database={{database}}&persistentTailTracking={{persistentTailTracking}}&tailTrackIncreasingField={{?tailTrackIncreasingField}}&persistentId={{?persistentId}}&tailTrackDb={{?tailTrackDb}}&tailTrackCollection={{?tailTrackCollection}}&connectionUriString=RAW({{?connectionString}})"
       steps:
         - marshal:
             json: {}
