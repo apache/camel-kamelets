@@ -25,7 +25,15 @@
         username: "{{postgresql.username}}"
         password: "{{postgresql.password}}"
         query: "SELECT * FROM test_data"
+        consumedQuery: "DELETE FROM test_data WHERE id = :#id"
         delay: 1000
       steps:
-      - to:
-          uri: "kamelet:log-sink"
+        # what the Kamelet gives: the Java type of the body and the Content-Type
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
+        - to:
+            uri: "{{http.sink.url}}/result"

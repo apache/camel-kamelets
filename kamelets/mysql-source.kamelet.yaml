@@ -35,7 +35,7 @@ spec:
 
       Use it to pick up the rows that another application adds to a table, such as new orders or events, and pass them on to another system. To write rows, use `mysql-sink`.
 
-      Output: the body is one row as JSON text, an object with the column names as keys, such as `{"id":1,"username":"oscerd","city":"Rome"}`. When `useIterator` is false, the body is instead one JSON array with all the rows of a poll. The `Content-Type` header is `application/json`.
+      Output: the body is one row as JSON text in bytes, an object with the column names as keys, such as `{"id":1,"username":"oscerd","city":"Rome"}`. When `useIterator` is false, the body is instead one JSON array with all the rows of a poll. The `Content-Type` header is `application/json`.
 
       Good to know: the query runs again `delay` milliseconds after the previous run, so the same rows are sent again and again, unless `consumedQuery` marks or deletes each row once it is sent and `query` leaves such rows out: for example `SELECT * FROM accounts WHERE processed = false` with `UPDATE accounts SET processed = true WHERE id = :#id`. When the next step fails for a row, `consumedQuery` is not run for it, and the row is read again, unless `onConsumeFailed` marks it. A query that finds no rows sends nothing. `maxMessagesPerPoll` limits how many rows one poll sends. `query` cannot contain `?`. The format of date and time columns in the JSON depends on the Camel version. The JDBC driver of MySQL is not included: add `mvn:com.mysql:mysql-connector-j` to the dependencies of the integration. Camel JBang (`camel run`) adds it by itself. Without `connectionProperties`, the connection uses TLS only when the server offers it, and the certificate of the server is not checked: set `sslMode=REQUIRED` in `connectionProperties` to insist on TLS.
     required:
@@ -142,11 +142,17 @@ spec:
       mediaType: application/json
   dataTypes:
     out:
+      default: json
       headers:
         Content-Type:
           title: Content Type
           description: Always `application/json`, as the body is JSON.
           type: string
+      types:
+        json:
+          format: "application-json"
+          description: "One row as a JSON object, or with `useIterator` false a JSON array of all the rows of a poll, as JSON text in bytes."
+          mediaType: application/json
   dependencies:
   - "camel:jackson3"
   - "camel:kamelet"

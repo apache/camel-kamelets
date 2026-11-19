@@ -18,13 +18,48 @@
 import java.util.stream.Stream;
 
 import org.citrusframework.api.common.TestLoader;
+import org.citrusframework.container.SequenceAfterTest;
+import org.citrusframework.container.SequenceBeforeTest;
+import org.citrusframework.http.server.HttpServer;
 import org.citrusframework.junit.jupiter.CitrusSupport;
 import org.citrusframework.junit.jupiter.CitrusTestFactory;
 import org.citrusframework.junit.jupiter.CitrusTestFactorySupport;
+import org.citrusframework.spi.BindToRegistry;
+import org.citrusframework.util.SocketUtils;
 import org.junit.jupiter.api.DynamicTest;
+
+import static org.citrusframework.actions.CreateVariablesAction.Builder.createVariables;
+import static org.citrusframework.actions.PurgeEndpointAction.Builder.purgeEndpoints;
+import static org.citrusframework.http.endpoint.builder.HttpEndpoints.http;
 
 @CitrusSupport
 public class PostgresIT {
+
+    private static final String TESTS = "postgresql-.*";
+
+    private final int postgresServerPort = SocketUtils.findAvailableTcpPort();
+
+    @BindToRegistry
+    HttpServer postgresServer = http()
+                .server()
+                .port(postgresServerPort)
+                .timeout(60000L)
+                .autoStart(true)
+                .build();
+
+    @BindToRegistry
+    public SequenceBeforeTest beforePostgres() {
+        return new SequenceBeforeTest.Builder().onTests(TESTS).actions(
+                createVariables().variable("postgres.server.port", String.valueOf(postgresServerPort))
+        ).build();
+    }
+
+    @BindToRegistry
+    public SequenceAfterTest afterPostgres() {
+        return new SequenceAfterTest.Builder().onTests(TESTS).actions(
+                purgeEndpoints().endpoint(postgresServer)
+        ).build();
+    }
 
     @CitrusTestFactory
     public Stream<DynamicTest> postgres() {

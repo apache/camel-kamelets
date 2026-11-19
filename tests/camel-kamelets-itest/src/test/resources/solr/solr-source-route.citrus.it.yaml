@@ -63,7 +63,7 @@ actions:
                 - name: "http.sink.url"
                   value: "http://localhost:${search.server.port}"
 
-  # the answer of Solr as JSON: the documents found are the list under response
+  # the answer of Solr as JSON text in bytes: the documents found are the list under response
   - http:
       server: "searchServer"
       receiveRequest:
@@ -71,7 +71,7 @@ actions:
           path: "/result"
           headers:
             - name: "X-Body-Type"
-              value: 'org.apache.camel.converter.stream.InputStreamCache'
+              value: '[B'
             - name: "X-Content-Type"
               value: 'ct=application/json'
           body:

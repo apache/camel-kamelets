@@ -22,7 +22,8 @@ actions:
       start:
         mongodb: {}
 
-  # Create Camel JBang integration (sink)
+  # Create Camel JBang integration (sink): insert, save and update the document "order-1".
+  # The route waits for the answer of each HTTP request, so the stored document is checked before the answer.
   - camel:
       cli:
         run:
@@ -31,10 +32,94 @@ actions:
             file: "mongo/mongodb-sink-route.yaml"
             systemProperties:
               file: "mongo/application.properties"
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${mongo.server.port}"
 
-  # Verify MongoDB sink executed
-  - camel:
-      cli:
-        verify:
-          integration: "mongodb-sink-route"
-          logMessage: "hello-mongodb"
+  # insert: the body afterwards is the document that was stored
+  - http:
+      server: "mongoServer"
+      receiveRequest:
+        POST:
+          path: "/insert"
+          headers:
+            - name: "X-Body-Type"
+              value: 'org.bson.Document'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+            - name: "X-Oid"
+              value: 'order-1'
+          body:
+            data: '{"_id":"order-1","item":"book","qty":2}'
+  - createVariables:
+      variables:
+        - name: "mongodb.expected"
+          value: '{"_id":"order-1","item":"book","qty":2}'
+  - groovy:
+      script:
+        file: "mongo/findOrder.groovy"
+  - http:
+      server: "mongoServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # save: the whole document is replaced; the body afterwards is the result of MongoDB
+  - http:
+      server: "mongoServer"
+      receiveRequest:
+        POST:
+          path: "/save"
+          headers:
+            - name: "X-Body-Type"
+              value: "@startsWith('com.mongodb.client.result.UpdateResult')@"
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+            - name: "X-Oid"
+              value: 'order-1'
+  - createVariables:
+      variables:
+        - name: "mongodb.expected"
+          value: '{"_id":"order-1","item":"book","qty":5}'
+  - groovy:
+      script:
+        file: "mongo/findOrder.groovy"
+  - http:
+      server: "mongoServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # update: the filter matches the document, and $set adds the field status; the body afterwards is the result of MongoDB
+  - http:
+      server: "mongoServer"
+      receiveRequest:
+        POST:
+          path: "/update"
+          headers:
+            - name: "X-Body-Type"
+              value: "@startsWith('com.mongodb.client.result.UpdateResult')@"
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+            - name: "X-Matched"
+              value: '1'
+            - name: "X-Affected"
+              value: '1'
+  - createVariables:
+      variables:
+        - name: "mongodb.expected"
+          value: '{"_id":"order-1","item":"book","qty":5,"status":"shipped"}'
+  - groovy:
+      script:
+        file: "mongo/findOrder.groovy"
+  - http:
+      server: "mongoServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
