@@ -111,6 +111,11 @@ spec:
         description: If true, the model is asked to answer with JSON (the response type `application/json`), so the body afterwards is JSON text. Say in the prompt which fields you want. Only used with `generateText`, `generateChat`, `generateCode` and `generateMultimodal`. When it is not set, it is false.
         type: boolean
   dataTypes:
+    # No 'default:' here on purpose. A text-plain default would turn every
+    # body into text at the start of the Kamelet, but not every operation
+    # takes text: generateEmbeddings gives one vector per element of a List,
+    # generateMultimodal sends a file body as the media, and rawPredict
+    # writes a Map as the JSON request. See #3117.
     in:
       headers:
         CamelGoogleVertexAIPrompt:

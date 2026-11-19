@@ -52,7 +52,7 @@ actions:
           resources:
             - "AzureCosmosClient.java"
 
-  # Afterwards the body is the item as it was created, as a Map, with the fields that Cosmos DB adds
+  # Afterwards the body is the item as it was created, as a Map, with the fields that Cosmos DB adds, and the Content-Type application/json
   - http:
       server: "azureServer"
       receiveRequest:
@@ -63,7 +63,7 @@ actions:
             - name: "X-Body-Type"
               value: 'java.util.LinkedHashMap'
             - name: "X-Content-Type"
-              value: 'ct='
+              value: 'ct=application/json'
             - name: "X-Status-Code"
               value: '201'
           body:
