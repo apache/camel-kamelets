@@ -1,0 +1,58 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+- route:
+    from:
+      # The ID of the route of the Kamelet, so that the route can stop it
+      uri: "kamelet:aws-cloudtrail-source/cloudtrail-events"
+      parameters:
+        eventSource: "secretsmanager.amazonaws.com"
+        accessKey: "{{aws.accessKey}}"
+        secretKey: "{{aws.secretKey}}"
+        region: "{{aws.region}}"
+        overrideEndpoint: "true"
+        uriEndpointOverride: "{{aws.uriEndpointOverride}}"
+      steps:
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
+        - setHeader:
+            name: X-Event-Id
+            simple: '${header.CamelAwsCloudTrailEventId}'
+        - setHeader:
+            name: X-Event-Name
+            simple: '${header.CamelAwsCloudTrailEventName}'
+        - setHeader:
+            name: X-Event-Source
+            simple: '${header.CamelAwsCloudTrailEventSource}'
+        - setHeader:
+            name: X-Username
+            simple: '${header.CamelAwsCloudTrailEventUsername}'
+        - convertBodyTo:
+            type: String
+        - to:
+            uri: "{{http.sink.url}}/result"
+        # The Citrus HTTP server answers one lookup only: stop looking up events
+        - to:
+            uri: "controlbus:route"
+            parameters:
+              routeId: "cloudtrail-events"
+              action: "stop"
+              async: true

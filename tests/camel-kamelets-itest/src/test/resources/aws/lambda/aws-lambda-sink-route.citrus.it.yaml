@@ -1,0 +1,137 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: aws-lambda-sink-route-test
+# The body is the event of the function, and what the function returns becomes the body. The Citrus HTTP server
+# stands in for AWS Lambda: Floci runs functions in Docker containers, which it cannot reach from its own container.
+actions:
+  # The Kamelet has no uriEndpointOverride: the AWS SDK takes the endpoint from the environment
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "aws/lambda/aws-lambda-sink-route.yaml"
+            environment:
+              variables:
+                - name: "AWS_ENDPOINT_URL_LAMBDA"
+                  value: "http://localhost:${aws.sink.server.port}"
+            systemProperties:
+              file: "aws/aws-stand-in.properties"
+
+  # The function is called with the body as its event
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/2015-03-31/functions/enrich-order/invocations"
+          body:
+            data: '{"orderId":"A-1"}'
+
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          headers:
+            - name: "Content-Type"
+              value: 'application/json'
+            - name: "X-Amz-Executed-Version"
+              value: '$LATEST'
+          body:
+            data: '{"orderId":"A-1","status":"enriched"}'
+
+  # What the function returned is the body
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-Status-Code"
+              value: '200'
+            - name: "X-Function-Error"
+              value: 'error='
+          body:
+            data: '{"orderId":"A-1","status":"enriched"}'
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          body:
+            data: "OK"
+
+  # An error raised in the function does not fail the message
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/2015-03-31/functions/enrich-order/invocations"
+          body:
+            data: '{"orderId":"A-2"}'
+
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          headers:
+            - name: "Content-Type"
+              value: 'application/json'
+            - name: "X-Amz-Executed-Version"
+              value: '$LATEST'
+            - name: "X-Amz-Function-Error"
+              value: 'Unhandled'
+          body:
+            data: '{"errorMessage":"Order A-2 not found","errorType":"Exception"}'
+
+  # The body is the error that the function reported
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-Status-Code"
+              value: '200'
+            - name: "X-Function-Error"
+              value: 'error=Unhandled'
+          body:
+            data: '{"errorMessage":"Order A-2 not found","errorType":"Exception"}'
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          body:
+            data: "OK"

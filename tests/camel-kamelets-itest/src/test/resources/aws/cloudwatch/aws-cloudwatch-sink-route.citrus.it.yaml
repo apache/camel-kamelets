@@ -1,0 +1,86 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: aws-cloudwatch-sink-route-test
+# The headers give the name, value, unit and dimension of the metric; the data point arrives in CloudWatch
+variables:
+  - name: "cw.start"
+    value: 'citrus:currentDate(''yyyy-MM-dd'', ''-1d'')'
+  - name: "cw.end"
+    value: 'citrus:currentDate(''yyyy-MM-dd'', ''+2d'')'
+actions:
+  # Create AWS infrastructure (Floci container)
+  - testcontainers:
+      start:
+        localstack:
+          services:
+            - "CLOUD_WATCH"
+  - waitFor:
+      http:
+        url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "aws/cloudwatch/aws-cloudwatch-sink-route.yaml"
+            systemProperties:
+              file: "aws/floci.properties"
+
+  # The message is unchanged
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "metric-name"
+              value: 'OrdersProcessed'
+          body:
+            data: 'order ORD-1'
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          body:
+            data: "OK"
+
+  # The data point is in CloudWatch, with its dimension, value and unit
+  - http:
+      client: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+      sendRequest:
+        POST:
+          path: "/"
+          contentType: "application/x-www-form-urlencoded"
+          body:
+            data: 'Action=GetMetricStatistics&Version=2010-08-01&Namespace=Shop&MetricName=OrdersProcessed&Dimensions.member.1.Name=Shop&Dimensions.member.1.Value=Rome&StartTime=${cw.start}&EndTime=${cw.end}&Period=259200&Statistics.member.1=Sum'
+  - http:
+      client: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+      receiveResponse:
+        response:
+          status: 200
+          type: "plaintext"
+          body:
+            data: '@matches(''(?s).*<Label>OrdersProcessed</Label>.*<Sum>3.0</Sum><Unit>Count</Unit>.*'')@'

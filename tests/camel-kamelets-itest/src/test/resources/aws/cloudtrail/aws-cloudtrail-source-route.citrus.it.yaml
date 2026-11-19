@@ -1,0 +1,88 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: aws-cloudtrail-source-route-test
+# Each event that CloudTrail returns becomes a message. Floci does not record the API calls it serves, so its LookupEvents
+# returns no event: the Citrus HTTP server stands in for CloudTrail.
+actions:
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "aws/cloudtrail/aws-cloudtrail-source-route.yaml"
+            systemProperties:
+              file: "aws/aws-stand-in.properties"
+
+  # The events of the service of the eventSource option are looked up
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/"
+          headers:
+            - name: "X-Amz-Target"
+              value: 'com.amazonaws.cloudtrail.v20131101.CloudTrail_20131101.LookupEvents'
+        validate:
+          - jsonPath:
+              - expression: '$.LookupAttributes[0].AttributeKey'
+                value: 'EventSource'
+              - expression: '$.LookupAttributes[0].AttributeValue'
+                value: 'secretsmanager.amazonaws.com'
+
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          headers:
+            - name: "Content-Type"
+              value: 'application/x-amz-json-1.1'
+          body:
+            data: '{"Events":[{"EventId":"event-1","EventName":"GetSecretValue","EventSource":"secretsmanager.amazonaws.com","EventTime":1767261600,"Username":"alice","CloudTrailEvent":"{\"eventVersion\":\"1.08\",\"eventName\":\"GetSecretValue\",\"eventSource\":\"secretsmanager.amazonaws.com\",\"userIdentity\":{\"userName\":\"alice\"}}"}]}'
+
+  # The body is the CloudTrail record of the event, and the headers name the event
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: '[B'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-Event-Id"
+              value: 'event-1'
+            - name: "X-Event-Name"
+              value: 'GetSecretValue'
+            - name: "X-Event-Source"
+              value: 'secretsmanager.amazonaws.com'
+            - name: "X-Username"
+              value: 'alice'
+          body:
+            data: '{"eventVersion":"1.08","eventName":"GetSecretValue","eventSource":"secretsmanager.amazonaws.com","userIdentity":{"userName":"alice"}}'
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          body:
+            data: "OK"
