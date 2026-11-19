@@ -74,8 +74,6 @@ public enum KameletPrefixSchemeEnum {
     jms_apache_artemis("jms-apache-artemis", "jms"),
     jms_ibm_mq("jms-ibm-mq", "jms"),
     kafka("kafka", "kafka"),
-    kafka_azure("kafka-azure", "kafka"),
-    kafka_ssl("kafka-ssl", "kafka"),
     kafka_scram("kafka-scram", "kafka"),
     log("log", "log"),
     mail("mail", "imaps"),
