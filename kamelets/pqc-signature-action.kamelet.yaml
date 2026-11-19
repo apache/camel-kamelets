@@ -39,7 +39,7 @@ spec:
 
       Output: the body is unchanged. `sign` sets the `CamelPQCSignature` header to the signature, as bytes. `verify` sets the `CamelPQCVerification` header to true when the signature matches the body, and to false when it does not.
 
-      Good to know: unless the key pair comes from `keyStore` or `keyPair`, it is created when the application starts, so a signature can be checked only by the same running application, and not after a restart. With a key pair from a key store, a signature can be checked after a restart, and by any application that has the public key. When the application has exactly one Java `KeyStore`, or one `KeyPair`, it is used even when `keyStore` or `keyPair` is not set; `keyPairAlias` and `keyStorePassword` are then needed for the key store, else the messages fail. A `verify` without a `CamelPQCSignature` header fails the message.
+      Good to know: unless the key pair comes from `keyStore` or `keyPair`, it is created when the application starts, so a signature can be checked only by the same running application, and not after a restart. With a key pair from a key store, a signature can be checked after a restart, and by any application that has the public key. When the application has exactly one Java `KeyStore`, or one `KeyPair`, it is used even when `keyStore` or `keyPair` is not set; `keyPairAlias` and `keyStorePassword` are then needed for the key store, else the messages fail. A `verify` without a `CamelPQCSignature` header fails the message. Headers that start with `CamelPQC`, except `CamelPQCSignature`, are removed from the message first, so they cannot change what the Kamelet does.
     required:
     - signatureAlgorithm
     - operation
@@ -103,6 +103,9 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelPQC*
+            excludePattern: CamelPQCSignature
         - to:
             uri: pqc
             parameters:

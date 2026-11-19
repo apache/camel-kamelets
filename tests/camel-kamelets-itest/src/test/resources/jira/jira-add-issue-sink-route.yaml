@@ -26,22 +26,22 @@
         - to:
             uri: "kamelet:insert-header-action"
             parameters:
-              name: CamelJiraIssueProjectKey
+              name: ce-projectKey
               value: '{{jira.project.key}}'
         - to:
             uri: "kamelet:insert-header-action"
             parameters:
-              name: CamelJiraIssueTypeName
+              name: ce-issueTypeName
               value: '{{jira.issue.type}}'
         - to:
             uri: "kamelet:insert-header-action"
             parameters:
-              name: CamelJiraIssueSummary
+              name: ce-issueSummary
               value: '{{jira.issue.summary}}'
         - to:
             uri: "kamelet:insert-header-action"
             parameters:
-              name: CamelJiraIssueAssignee
+              name: ce-issueAssignee
               value: '{{jira.issue.assignee}}'
         - to:
             uri: "kamelet:log-action"

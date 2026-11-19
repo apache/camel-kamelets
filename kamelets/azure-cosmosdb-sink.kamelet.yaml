@@ -40,7 +40,7 @@ spec:
 
       Output: the body afterwards is the item as it was created, as a Map, with the fields that Cosmos DB adds.
 
-      Good to know: a message without a partition key value fails. With `operation` `createItem`, the default, an item whose `id` already exists in the same partition fails; with `upsertItem`, it replaces the existing item. The database and the container must exist, unless `createDatabaseIfNotExists` and `createContainerIfNotExists` are true; a new container needs `containerPartitionKeyPath`.
+      Good to know: a message without a partition key value fails. With `operation` `createItem`, the default, an item whose `id` already exists in the same partition fails; with `upsertItem`, it replaces the existing item. The database and the container must exist, unless `createDatabaseIfNotExists` and `createContainerIfNotExists` are true; a new container needs `containerPartitionKeyPath`. Headers that start with `CamelAzureCosmosDb` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - databaseName
       - containerName
@@ -122,6 +122,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelAzureCosmosDb*
         - choice:
             precondition: true
             when:

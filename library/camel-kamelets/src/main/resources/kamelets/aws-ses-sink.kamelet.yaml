@@ -40,7 +40,7 @@ spec:
 
       Output: the message is unchanged. The `CamelAwsSesMessageId` header gives the ID that SES gave the email.
 
-      Good to know: a message without a `to` header fails, unless the `to` option is set. The `cc`, `bcc`, `returnPath` and `configurationSet` options apply to every email. The `from` address, and `returnPath` when it is set, must be verified in SES, and while the SES account is in the sandbox, the recipients must be verified too. A `configurationSet` that does not exist in SES makes every email fail. To reach a local stand-in of AWS, use `overrideEndpoint` and `uriEndpointOverride`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: a message without a `to` header fails, unless the `to` option is set. The `cc`, `bcc`, `returnPath` and `configurationSet` options apply to every email. The `from` address, and `returnPath` when it is set, must be verified in SES, and while the SES account is in the sandbox, the recipients must be verified too. A `configurationSet` that does not exist in SES makes every email fail. To reach a local stand-in of AWS, use `overrideEndpoint` and `uriEndpointOverride`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsSes` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - from
       - region
@@ -187,6 +187,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelAwsSes*
         - choice:
             when:
               - expression:

@@ -25,7 +25,7 @@
       - setBody:
           constant: "hello-redis"
       - setHeader:
-          name: CamelRedis.Key
+          name: key
           constant: "test-key"
       - to:
           uri: "kamelet:redis-sink"

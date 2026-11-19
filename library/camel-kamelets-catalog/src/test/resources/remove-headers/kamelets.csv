@@ -1,0 +1,109 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# kamelet,pattern,excludePattern,a header it removes,the headers it keeps (separated by |)
+aws-bedrock-agent-runtime-sink,CamelAwsBedrock*,CamelAwsBedrockAgentRuntimeSessionId,CamelAwsBedrockAgentRuntimeOperation,CamelAwsBedrockAgentRuntimeSessionId
+aws-bedrock-text-sink,CamelAwsBedrock*,,CamelAwsBedrockOperation,
+aws-cloudwatch-sink,CamelAwsCw*,,CamelAwsCwOperation,
+aws-comprehend-sink,CamelAwsComprehend*,,CamelAwsComprehendOperation,
+aws-ddb-sink,CamelAwsDdb*,CamelAwsDdb(Operation|ReturnValues),CamelAwsDdbAttributeNames,CamelAwsDdbOperation|CamelAwsDdbReturnValues
+aws-eventbridge-sink,CamelAwsEventbridge*,,CamelAwsEventbridgeOperation,
+aws-kinesis-firehose-sink,CamelAwsKinesisFirehose*,,CamelAwsKinesisFirehoseOperation,
+aws-kinesis-sink,CamelAwsKinesis*,,CamelAwsKinesisPartitionKey,
+aws-lambda-sink,CamelAwsLambda*,,CamelAwsLambdaOperation,
+aws-polly-sink,CamelAwsPolly*,CamelAwsPollyVoiceId,CamelAwsPollyOperation,CamelAwsPollyVoiceId
+aws-s3-sink,CamelAwsS3*,CamelAwsS3(ContentType|StorageClass),CamelAwsS3OverrideBucketName,CamelAwsS3ContentType|CamelAwsS3StorageClass
+aws-s3-streaming-upload-sink,CamelAwsS3*,CamelAwsS3StorageClass,CamelAwsS3OverrideBucketName,CamelAwsS3StorageClass
+aws-secrets-manager-sink,CamelAwsSecretsManager*,,CamelAwsSecretsManagerOperation,
+aws-ses-sink,CamelAwsSes*,,CamelAwsSesReturnPath,
+aws-sns-fifo-sink,CamelAwsSns*,,CamelAwsSnsMessageStructure,
+aws-sns-sink,CamelAwsSns*,,CamelAwsSnsMessageStructure,
+aws-sqs-batch-sink,CamelAwsSqs*,,CamelAwsSqsOperation,
+aws-sqs-fifo-sink,CamelAwsSqs*,,CamelAwsSqsOperation,
+aws-sqs-sink,CamelAwsSqs*,,CamelAwsSqsOperation,
+aws-timestream-query-sink,CamelAwsTimestream*,,CamelAwsTimestreamOperation,
+aws-translate-action,CamelAwsTranslate*,,CamelAwsTranslateOperation,
+azure-cosmosdb-sink,CamelAzureCosmosDb*,,CamelAzureCosmosDbDatabaseName,
+azure-eventhubs-sink,CamelAzureEventHubs*,,CamelAzureEventHubsPartitionKey,
+azure-functions-sink,Camel(Rest)?Http.*,,CamelRestHttpUri,
+azure-servicebus-sink,CamelAzureServiceBus*,CamelAzureServiceBusApplicationProperties,CamelAzureServiceBusProducerOperation,CamelAzureServiceBusApplicationProperties
+azure-storage-blob-append-sink,CamelAzureStorageBlob*,,CamelAzureStorageBlobOperation,
+azure-storage-blob-sink,CamelAzureStorageBlob*,,CamelAzureStorageBlobOperation,
+azure-storage-datalake-sink,CamelAzureStorageDataLake*,,CamelAzureStorageDataLakeOperation,
+azure-storage-files-sink,Camel(File|OverruleFile).*,,CamelOverruleFileName,
+azure-storage-queue-sink,CamelAzureStorageQueue*,,CamelAzureStorageQueueOperation,
+ceph-sink,CamelAwsS3*,,CamelAwsS3OverrideBucketName,
+couchbase-sink,CamelCouchbase*,CamelCouchbaseId,CamelCouchbaseTtl,CamelCouchbaseId
+dns-dig-action,CamelDns*,,CamelDnsServer,
+dns-ip-action,CamelDns*,,CamelDnsServer,
+dns-lookup-action,CamelDns*,,CamelDnsServer,
+elasticsearch-index-sink,CamelElasticsearch*,,CamelElasticsearchOperation,
+fhir-sink,CamelFhir*,,CamelFhir.url,
+freemarker-template-action,CamelFreemarker*,,CamelFreemarkerResourceUri,
+ftp-sink,Camel(File|OverruleFile).*,CamelFileName,CamelOverruleFileName,CamelFileName
+ftps-sink,Camel(File|OverruleFile).*,CamelFileName,CamelOverruleFileName,CamelFileName
+google-bigquery-sink,CamelGoogleBigQuery*,,CamelGoogleBigQueryTableSuffix,
+google-pubsub-sink,CamelGooglePubsub*,CamelGooglePubsubOrderingKey,CamelGooglePubsubAttributes,CamelGooglePubsubOrderingKey
+google-sheets-sink,CamelGoogleSheets*,,CamelGoogleSheets.spreadsheetId,
+google-storage-sink,CamelGoogleCloudStorage*,,CamelGoogleCloudStorageOverrideBucketName,
+google-vertexai-sink,CamelGoogleVertexAI*,CamelGoogleVertexAIPrompt,CamelGoogleVertexAIOperation,CamelGoogleVertexAIPrompt
+ibm-cos-sink,CamelIBMCOS*,CamelIBMCOSKey,CamelIBMCOSOverrideBucketName,CamelIBMCOSKey
+ibm-watson-language-sink,CamelIBMWatsonLanguage*,CamelIBMWatsonLanguage(Text|Url),CamelIBMWatsonLanguageOperation,CamelIBMWatsonLanguageText|CamelIBMWatsonLanguageUrl
+infinispan-sink,CamelInfinispan*,,CamelInfinispanOperation,
+jira-add-comment-sink,CamelJira*,,CamelJiraIssueKey,
+jira-add-issue-sink,CamelJira*,,CamelJiraIssueKey,
+jira-transition-issue-sink,CamelJira*,,CamelJiraIssueKey,
+jira-update-issue-sink,CamelJira*,,CamelJiraIssueKey,
+jms-amqp-10-sink,CamelJms*,,CamelJmsDestination,
+jms-apache-artemis-sink,CamelJms*,,CamelJmsDestination,
+jms-ibm-mq-sink,CamelJms*,,CamelJmsDestination,
+jolt-transformation-action,CamelJolt*,,CamelJoltResourceUri,
+jslt-action,CamelJslt*,,CamelJsltResourceUri,
+jsonata-action,CamelJsonata*,,CamelJsonataResourceUri,
+kafka-apicurio-registry-not-secured-sink,CamelKafka*,CamelKafka(Key|OverrideTopic),CamelKafkaOverrideTimestamp,CamelKafkaKey|CamelKafkaOverrideTopic
+kafka-not-secured-apicurio-registry-sink,CamelKafka*,CamelKafka(Key|OverrideTopic),CamelKafkaOverrideTimestamp,CamelKafkaKey|CamelKafkaOverrideTopic
+kafka-sink,CamelKafka*,CamelKafka(Key|OverrideTopic),CamelKafkaOverrideTimestamp,CamelKafkaKey|CamelKafkaOverrideTopic
+minio-sink,CamelMinio*,,CamelMinioOverrideBucketName,
+mongodb-sink,CamelMongo*,,CamelMongoDbOperation,
+mqtt-sink,CamelPaho*,,CamelPahoOverrideTopic,
+mqtt5-sink,CamelPaho*,,CamelPahoMqtt5OverrideTopic,
+mustache-template-action,CamelMustache*,,CamelMustacheResourceUri,
+mvel-template-action,CamelMvel*,,CamelMvelResourceUri,
+nats-sink,CamelNats*,,CamelNatsQueueName,
+nominatim-geocode-action,CamelGeoCoder*,,CamelGeoCoderRegionName,
+ogcapi-features-action,Camel(Rest)?Http.*,,CamelRestHttpUri,
+opensearch-index-sink,CamelOpensearch*,,CamelOpensearchOperation,
+pdf-action,CamelPdf*,,CamelPdfProtectionPolicy,
+pqc-kem-action,CamelPQC*,,CamelPQCOperation,
+pqc-signature-action,CamelPQC*,CamelPQCSignature,CamelPQCOperation,CamelPQCSignature
+pulsar-sink,CamelPulsar*,CamelPulsarProducerMessage(Key|Properties),CamelPulsarProducerMessageEventTime,CamelPulsarProducerMessageKey|CamelPulsarProducerMessageProperties
+redis-sink,CamelRedis*,,CamelRedis.Destination,
+rest-openapi-sink,Camel(Rest)?Http.*,,CamelRestHttpUri,
+salesforce-composite-upsert-sink,CamelSalesforce*,,CamelSalesforceSObjectName,
+salesforce-create-sink,CamelSalesforce*,,CamelSalesforceSObjectName,
+salesforce-delete-sink,CamelSalesforce*,,CamelSalesforceSObjectName,
+salesforce-update-sink,CamelSalesforce*,,CamelSalesforceSObjectName,
+scp-sink,Camel(File|OverruleFile).*,CamelFileName,CamelOverruleFileName,CamelFileName
+sftp-sink,Camel(File|OverruleFile).*,CamelFileName,CamelOverruleFileName,CamelFileName
+smpp-sink,CamelSmpp*,CamelSmppDestAddr,CamelSmppCommand,CamelSmppDestAddr
+solr-sink,CamelSolr*,,CamelSolrOperation,
+splunk-hec-sink,CamelSplunkHEC*,,CamelSplunkHECIndexTime,
+spring-rabbitmq-sink,CamelSpringRabbitmq*,,CamelSpringRabbitmqRoutingOverrideKey,
+string-template-action,CamelStringTemplate*,,CamelStringTemplateResourceUri,
+telegram-sink,CamelTelegram*,,CamelTelegramChatId,
+velocity-template-action,CamelVelocity*,,CamelVelocityResourceUri,
+xj-identity-action,CamelXslt*,,CamelXsltResourceUri,
+xj-template-action,CamelXslt*,,CamelXsltResourceUri,

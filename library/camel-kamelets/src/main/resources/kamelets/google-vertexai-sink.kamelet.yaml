@@ -39,7 +39,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the answer of the model, as text, for the default `generateText` operation; with `jsonMode` set to true, it is JSON text. The `CamelGoogleVertexAIFinishReason` header says why the model stopped, and the token counts are in the `CamelGoogleVertexAIPromptTokenCount`, `CamelGoogleVertexAICandidatesTokenCount` and `CamelGoogleVertexAITotalTokenCount` headers. With `rawPredict` and the publisher `anthropic`, the body afterwards is the text of the answer, and the `CamelGoogleVertexAIRawResponse` header has the whole answer as JSON text; with another publisher, the body is the answer of the model as JSON text.
 
-      Good to know: with a prompt as text and the publisher `anthropic`, `rawPredict` also sends `temperature`, `topP` and `topK`, as 0.7, 0.95 and 40 when they are not set, and `maxOutputTokens` as `max_tokens`, 1024 when it is not set. Send a JSON request as the body to choose the fields of the request yourself.
+      Good to know: with a prompt as text and the publisher `anthropic`, `rawPredict` also sends `temperature`, `topP` and `topK`, as 0.7, 0.95 and 40 when they are not set, and `maxOutputTokens` as `max_tokens`, 1024 when it is not set. Send a JSON request as the body to choose the fields of the request yourself. Headers that start with `CamelGoogleVertexAI`, except `CamelGoogleVertexAIPrompt`, are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - projectId
       - region
@@ -146,6 +146,9 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelGoogleVertexAI*
+            excludePattern: CamelGoogleVertexAIPrompt
         - to:
             uri: google-vertexai
             parameters:

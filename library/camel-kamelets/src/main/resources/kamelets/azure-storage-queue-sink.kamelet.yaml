@@ -40,7 +40,7 @@ spec:
 
       Output: the body afterwards is `true`, and headers such as `CamelAzureStorageQueueMessageId` and `CamelAzureStorageQueueExpirationTime` describe the message sent.
 
-      Good to know: the queue must exist, or a message fails, unless `createQueue` is true. A message can be held back for a while before readers see it, with `visibilityTimeout`. An `expiration` that is a plain number, such as `600`, fails the message.
+      Good to know: the queue must exist, or a message fails, unless `createQueue` is true. A message can be held back for a while before readers see it, with `visibilityTimeout`. An `expiration` that is a plain number, such as `600`, fails the message. Headers that start with `CamelAzureStorageQueue` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - accountName
       - queueName
@@ -100,6 +100,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelAzureStorageQueue*
         - choice:
             when:
               - expression:

@@ -40,7 +40,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: log in with `sharedAccessName` and `sharedAccessKey`, with `connectionString`, or with `credentialType` `AZURE_IDENTITY`. Set `namespaceName` and `eventhubName` unless `connectionString` is set. The shared access policy needs the Send right. With `partitionKey` set, a message with a `partition-id` or `ce-partition-id` header fails.
+      Good to know: log in with `sharedAccessName` and `sharedAccessKey`, with `connectionString`, or with `credentialType` `AZURE_IDENTITY`. Set `namespaceName` and `eventhubName` unless `connectionString` is set. The shared access policy needs the Send right. Headers that start with `CamelAzureEventHubs` are removed from the message first, so they cannot change what the Kamelet does. With `partitionKey` set, a message with a `partition-id` or `ce-partition-id` header fails.
     type: object
     properties:
       namespaceName:
@@ -103,6 +103,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelAzureEventHubs*
         - choice:
             when:
               - expression:

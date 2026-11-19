@@ -39,7 +39,7 @@ spec:
 
       Output: when it is used inside a route, the message has no body afterwards. With `REMOVE` and a body, the body afterwards is `true` when the entry was deleted and `false` when it was not.
 
-      Good to know: the cache must already exist on the server. A body that the Infinispan client cannot store, such as a Map, fails the message; turn it into JSON text first, for example with `json-serialize-action`. With `lifespan` or `maxIdle`, the entries are removed after that time. Recent Infinispan servers do not accept the default `saslMechanism` of `DIGEST-MD5`: set it to `SCRAM-SHA-512`. The connection has TLS only when `sslTruststoreLocation` is set, together with `sslSniHostName`.
+      Good to know: the cache must already exist on the server. A body that the Infinispan client cannot store, such as a Map, fails the message; turn it into JSON text first, for example with `json-serialize-action`. With `lifespan` or `maxIdle`, the entries are removed after that time. Recent Infinispan servers do not accept the default `saslMechanism` of `DIGEST-MD5`: set it to `SCRAM-SHA-512`. The connection has TLS only when `sslTruststoreLocation` is set, together with `sslSniHostName`. Headers that start with `CamelInfinispan` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - cacheName
       - hosts
@@ -159,6 +159,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelInfinispan*
         - choice:
             when:
               - expression:

@@ -39,7 +39,7 @@ spec:
 
       Output: the message is unchanged. The `CamelFileNameProduced` header is set to the path of the file on the server.
 
-      Good to know: a file with the same name is replaced, unless `fileExist` says otherwise. A file is uploaded under its real name from the start, so a reader that polls the directory can pick it up half-written. To prevent that, set `tempPrefix` to upload it under a temporary name and rename it once it is complete, or `doneFileName` to write an empty done file next to it once it is complete. The connection and the login are not encrypted. A file name that points outside `directoryName` fails the message. Files are sent in ASCII (text) mode unless `binary` is true.
+      Good to know: a file with the same name is replaced, unless `fileExist` says otherwise. A file is uploaded under its real name from the start, so a reader that polls the directory can pick it up half-written. To prevent that, set `tempPrefix` to upload it under a temporary name and rename it once it is complete, or `doneFileName` to write an empty done file next to it once it is complete. The connection and the login are not encrypted. A file name that points outside `directoryName` fails the message. Files are sent in ASCII (text) mode unless `binary` is true. Headers that start with `CamelFile` or `CamelOverruleFile`, except `CamelFileName`, are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - connectionHost
       - connectionPort
@@ -135,6 +135,9 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: "Camel(File|OverruleFile).*"
+            excludePattern: CamelFileName
         - choice:
             when:
               - expression:

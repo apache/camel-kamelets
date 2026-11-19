@@ -39,7 +39,7 @@ spec:
 
       Output: with `insert`, the body afterwards is the document that was stored, as a Map with its `_id`. With `save` and `update`, it is the result that MongoDB returns. With `insert` and `save`, the `CamelMongoOid` header holds the `_id` of the document. With `update`, the `CamelMongoDbRecordsMatched` and `CamelMongoDbRecordsAffected` headers say how many documents matched the filter and how many were changed.
 
-      Good to know: with `insert`, a document whose `_id` is already in the collection fails; `save` replaces it instead. `save` replaces the whole document, so fields that are not in the body are removed. `update` changes only the first document that matches, and nothing when none matches, unless `upsert` is true. The `db-upsert` and `ce-dbupsert` headers are not used. With `createCollection` false, the default, the Kamelet fails to start when the collection does not exist yet. Set either `hosts` or `connectionString`. With `hosts`, it connects with TLS by default; set `ssl` to false for a MongoDB without TLS, such as a local one. With `connectionString`, such as the `mongodb+srv://` string of MongoDB Atlas, it connects only as that string says, and `hosts`, `username`, `password`, `ssl` and `sslValidationEnabled` are not used. For a user defined in a database other than `admin`, use `connectionString` with `authSource`.
+      Good to know: with `insert`, a document whose `_id` is already in the collection fails; `save` replaces it instead. `save` replaces the whole document, so fields that are not in the body are removed. `update` changes only the first document that matches, and nothing when none matches, unless `upsert` is true. The `db-upsert` and `ce-dbupsert` headers are not used. With `createCollection` false, the default, the Kamelet fails to start when the collection does not exist yet. Set either `hosts` or `connectionString`. With `hosts`, it connects with TLS by default; set `ssl` to false for a MongoDB without TLS, such as a local one. With `connectionString`, such as the `mongodb+srv://` string of MongoDB Atlas, it connects only as that string says, and `hosts`, `username`, `password`, `ssl` and `sslValidationEnabled` are not used. For a user defined in a database other than `admin`, use `connectionString` with `authSource`. Headers that start with `CamelMongo` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - collection
       - database
@@ -150,6 +150,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelMongo*
         - choice:
             when:
               - expression:

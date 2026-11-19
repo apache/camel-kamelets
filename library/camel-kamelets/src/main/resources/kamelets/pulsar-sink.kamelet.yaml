@@ -57,7 +57,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: it connects with no TLS and no login, unless `serviceUrl` starts with `pulsar+ssl://` and `authenticationClass` is set. Over TLS, the certificate of Pulsar must be signed by an authority that the Java trust store of the integration trusts; for a private one, point `javax.net.ssl.trustStore` at a trust store with it, as the Kamelet has no trust store option. It connects when the integration starts, and the integration fails to start when Pulsar cannot be reached, unless `lazyStart` is true.
+      Good to know: it connects with no TLS and no login, unless `serviceUrl` starts with `pulsar+ssl://` and `authenticationClass` is set. Over TLS, the certificate of Pulsar must be signed by an authority that the Java trust store of the integration trusts; for a private one, point `javax.net.ssl.trustStore` at a trust store with it, as the Kamelet has no trust store option. It connects when the integration starts, and the integration fails to start when Pulsar cannot be reached, unless `lazyStart` is true. Headers that start with `CamelPulsar`, except `CamelPulsarProducerMessageKey` and `CamelPulsarProducerMessageProperties`, are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - topicType
       - topic
@@ -160,6 +160,9 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelPulsar*
+            excludePattern: "CamelPulsarProducerMessage(Key|Properties)"
         - choice:
             when:
               - expression:

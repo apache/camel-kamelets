@@ -41,7 +41,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the response of EventBridge, and the `CamelAwsEventbridgeFailedEntryCount` header is 1 when EventBridge rejected the event, 0 otherwise.
 
-      Good to know: a message fails when it has no detail type, no source or no resource ARN, from a header or an option. `eventSourcePrefix` is put before every source. An event that EventBridge rejects, such as one whose body is not a JSON object, is not delivered; depending on the Camel version the message then fails, or it only sets `CamelAwsEventbridgeFailedEntryCount` to 1. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: a message fails when it has no detail type, no source or no resource ARN, from a header or an option. `eventSourcePrefix` is put before every source. An event that EventBridge rejects, such as one whose body is not a JSON object, is not delivered; depending on the Camel version the message then fails, or it only sets `CamelAwsEventbridgeFailedEntryCount` to 1. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsEventbridge` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - eventbusNameOrArn
       - region
@@ -169,6 +169,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelAwsEventbridge*
         - choice:
             when:
               - expression:

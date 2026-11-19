@@ -40,7 +40,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: the IBM MQ client library is not included, as its licence is not the Apache one: add `mvn:com.ibm.mq:com.ibm.mq.jakarta.client` with a version to the dependencies of the integration (Camel JBang adds it by itself). It connects as a client over the network, with no TLS unless `sslCipherSuite` is set; the trust store and the key store for TLS are those of the Java runtime (`javax.net.ssl.trustStore`, `javax.net.ssl.keyStore`). For a multi-instance queue manager, list its instances in `connectionNameList`. Messages go to a queue unless `destinationType` is `topic`, and a message sent to a topic reaches only the receivers subscribed at that moment. Messages are persistent, with priority 4, and never expire, unless `deliveryPersistent`, `priority` and `timeToLive` say otherwise. It does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does.
+      Good to know: the IBM MQ client library is not included, as its licence is not the Apache one: add `mvn:com.ibm.mq:com.ibm.mq.jakarta.client` with a version to the dependencies of the integration (Camel JBang adds it by itself). It connects as a client over the network, with no TLS unless `sslCipherSuite` is set; the trust store and the key store for TLS are those of the Java runtime (`javax.net.ssl.trustStore`, `javax.net.ssl.keyStore`). For a multi-instance queue manager, list its instances in `connectionNameList`. Messages go to a queue unless `destinationType` is `topic`, and a message sent to a topic reaches only the receivers subscribed at that moment. Messages are persistent, with priority 4, and never expire, unless `deliveryPersistent`, `priority` and `timeToLive` say otherwise. It does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does. Headers that start with `CamelJms` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - serverName
       - serverPort
@@ -149,6 +149,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelJms*
         - to:
             uri: jms
             pattern: InOnly

@@ -39,7 +39,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the response of the function, and the `CamelHttpResponseCode` header its status code.
 
-      Good to know: a response with a status code outside 200 to 299 fails the message. The `key` is sent as the `code` query parameter of the request, or, when `keyInHeader` is true, in the `x-functions-key` header, which keeps it out of the address of the request that error messages show.
+      Good to know: a response with a status code outside 200 to 299 fails the message. The `key` is sent as the `code` query parameter of the request, or, when `keyInHeader` is true, in the `x-functions-key` header, which keeps it out of the address of the request that error messages show. Headers that start with `CamelHttp` or `CamelRestHttp` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - url
     type: object
@@ -74,8 +74,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
-        - removeHeader:
-            name: CamelHttpUri
+        - removeHeaders:
+            pattern: "Camel(Rest)?Http.*"
         - setHeader:
             name: CamelHttpMethod
             expression:

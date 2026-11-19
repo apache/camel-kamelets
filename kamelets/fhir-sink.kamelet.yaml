@@ -40,7 +40,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the outcome of the operation, as a Java object of the HAPI FHIR library, with the id of the resource; it is not JSON.
 
-      Good to know: a body that is not a valid FHIR resource of the chosen `fhirVersion` fails the message. Operations that do not take a resource, such as `READ` or `SEARCH`, fail. Before the first message, it reads the capability statement of the server at `/metadata`, unless `validationMode` is `NEVER`. A server that does not answer within `connectionTimeout` and `socketTimeout`, 10 seconds each when they are not set, fails the message.
+      Good to know: a body that is not a valid FHIR resource of the chosen `fhirVersion` fails the message. Operations that do not take a resource, such as `READ` or `SEARCH`, fail. Headers that start with `CamelFhir` are removed from the message first, so they cannot change what the Kamelet does. Before the first message, it reads the capability statement of the server at `/metadata`, unless `validationMode` is `NEVER`. A server that does not answer within `connectionTimeout` and `socketTimeout`, 10 seconds each when they are not set, fails the message.
     required:
     - serverUrl
     - apiName
@@ -164,6 +164,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelFhir*
         - choice:
             precondition: true
             when:

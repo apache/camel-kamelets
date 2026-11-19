@@ -39,7 +39,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: a plain NATS subject stores nothing: only the receivers subscribed at that moment get the message, unless a JetStream stream takes in the subject. With `jetstreamEnabled`, the sink waits until the stream that takes in the subject has stored the message, and sending fails with `503 No Responders Available For Request` when no stream takes it in. The stream must exist already, for example created by `nats-source`. On a server without JetStream, `jetstreamEnabled` is ignored and the message is published as plain NATS. It connects with TLS when `secure` is true. The certificate of the server is checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.nats.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every NATS connection of the application that has `secure` set. The integration fails to start when no server can be reached, or when the server refuses the login. It publishes the message and does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does.
+      Good to know: a plain NATS subject stores nothing: only the receivers subscribed at that moment get the message, unless a JetStream stream takes in the subject. With `jetstreamEnabled`, the sink waits until the stream that takes in the subject has stored the message, and sending fails with `503 No Responders Available For Request` when no stream takes it in. The stream must exist already, for example created by `nats-source`. On a server without JetStream, `jetstreamEnabled` is ignored and the message is published as plain NATS. It connects with TLS when `secure` is true. The certificate of the server is checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.nats.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every NATS connection of the application that has `secure` set. The integration fails to start when no server can be reached, or when the server refuses the login. It publishes the message and does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does. Headers that start with `CamelNats` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - topic
       - servers
@@ -90,6 +90,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelNats*
         - to:
             uri: nats
             pattern: InOnly

@@ -40,7 +40,7 @@ spec:
 
       Output: the body is unchanged. The `CamelAwsDdbAttributes` header holds the attributes of the item before the change (`PutItem`, `DeleteItem`) or after it (`UpdateItem`).
 
-      Good to know: `PutItem`, the default, replaces the whole item that has the same key, so the attributes missing from the body are lost; use `UpdateItem` to change some attributes only. A body without the key of the table fails. Do not choose the operation with an `operation` field in the body: depending on the Camel version it is ignored, and the item is then replaced as with `PutItem`, or the message fails. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: `PutItem`, the default, replaces the whole item that has the same key, so the attributes missing from the body are lost; use `UpdateItem` to change some attributes only. A body without the key of the table fails. Do not choose the operation with an `operation` field in the body: depending on the Camel version it is ignored, and the item is then replaced as with `PutItem`, or the message fails. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsDdb`, except `CamelAwsDdbOperation` and `CamelAwsDdbReturnValues`, are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - table
       - region
@@ -190,6 +190,9 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelAwsDdb*
+            excludePattern: "CamelAwsDdb(Operation|ReturnValues)"
         - setProperty:
             name: operation
             expression:

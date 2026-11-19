@@ -40,7 +40,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: a file with the same name is replaced, unless `fileExist` says otherwise. Missing directories are created.
+      Good to know: a file with the same name is replaced, unless `fileExist` says otherwise. Missing directories are created. Headers that start with `CamelFile` or `CamelOverruleFile` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - accountName
       - shareName
@@ -100,6 +100,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: "Camel(File|OverruleFile).*"
         - choice:
             when:
               - expression:

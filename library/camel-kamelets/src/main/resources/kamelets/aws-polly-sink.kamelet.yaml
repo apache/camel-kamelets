@@ -40,7 +40,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the audio, as a stream in the format of `outputFormat`, and the `CamelAwsPollyContentType` header holds its content type, such as `audio/mpeg`.
 
-      Good to know: the stream can be read only once, so write it to a file or a bucket right away. A voice that is not available with the chosen `engine` fails the message. To change how words are pronounced, such as an abbreviation or a product name, store a pronunciation lexicon in Polly and name it in `lexiconNames`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: the stream can be read only once, so write it to a file or a bucket right away. A voice that is not available with the chosen `engine` fails the message. To change how words are pronounced, such as an abbreviation or a product name, store a pronunciation lexicon in Polly and name it in `lexiconNames`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsPolly`, except `CamelAwsPollyVoiceId`, are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - region
     type: object
@@ -176,6 +176,9 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelAwsPolly*
+            excludePattern: CamelAwsPollyVoiceId
         - to:
             uri: aws2-polly
             parameters:

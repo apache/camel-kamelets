@@ -40,7 +40,7 @@ spec:
 
       Output: the message is unchanged. The `CamelAwsSqsMessageId` header gives the ID of the SQS message.
 
-      Good to know: the name of the queue ends in `.fifo`. With `contentBasedDeduplication` false, the default, each message gets a unique deduplication ID, so SQS drops only a message sent twice by a retry; set it to true to drop messages with the same body, which the queue must allow. Unless `queueURL`, `queueOwnerAWSAccountId` or an ARN in `queueNameOrArn` gives the address of the queue, the queue is looked up by listing the queues, which needs the `sqs:ListQueues` permission besides `sqs:SendMessage`. A FIFO queue does not take a delay for each message, so this Kamelet has no `delaySeconds`. `serverSideEncryptionEnabled` with `kmsMasterKeyId` changes the queue itself when the integration starts, so that SQS encrypts its messages with that KMS key. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: the name of the queue ends in `.fifo`. With `contentBasedDeduplication` false, the default, each message gets a unique deduplication ID, so SQS drops only a message sent twice by a retry; set it to true to drop messages with the same body, which the queue must allow. Unless `queueURL`, `queueOwnerAWSAccountId` or an ARN in `queueNameOrArn` gives the address of the queue, the queue is looked up by listing the queues, which needs the `sqs:ListQueues` permission besides `sqs:SendMessage`. A FIFO queue does not take a delay for each message, so this Kamelet has no `delaySeconds`. `serverSideEncryptionEnabled` with `kmsMasterKeyId` changes the queue itself when the integration starts, so that SQS encrypts its messages with that KMS key. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsSqs` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - queueNameOrArn
       - region
@@ -188,6 +188,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelAwsSqs*
         - setProperty:
             name: contentBasedDeduplication
             expression:
