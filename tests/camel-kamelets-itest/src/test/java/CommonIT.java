@@ -133,6 +133,11 @@ public class CommonIT {
     }
 
     @CitrusTestFactory
+    public Stream<DynamicTest> json() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("json");
+    }
+
+    @CitrusTestFactory
     public Stream<DynamicTest> xj() {
         return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("xj");
     }
