@@ -65,6 +65,8 @@ if (context.getVariables().containsKey('ftp.tls') && Boolean.parseBoolean(contex
     ssl.setKeystoreType('PKCS12')
     ssl.setKeystorePassword('changeit')
     ssl.setKeyPassword('changeit')
+    // TLS 1.2, as the FTPS tests of camel-ftp use: with TLS 1.3 a download can hang now and then
+    ssl.setSslProtocol('TLSv1.2')
     def sslConfiguration = ssl.createSslConfiguration()
     listener.setSslConfiguration(sslConfiguration)
     listener.setImplicitSsl(false)
