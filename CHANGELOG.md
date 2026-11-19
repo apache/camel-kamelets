@@ -4,8 +4,14 @@
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.22.2...HEAD)
 
+**Fixed bugs:**
+
+- spring-rabbitmq-source/sink - check broker certificate and host name with amqps [\#3210](https://github.com/apache/camel-kamelets/issues/3210)
+
 **Closed issues:**
 
+- Schema registry Kamelets: deprecate the Apicurio ones, and support the Confluent Schema Registry? [\#3182](https://github.com/apache/camel-kamelets/issues/3182)
+- Remove the deprecated http-secured-\* and jms-pooled-apache-artemis-\* Kamelets [\#3180](https://github.com/apache/camel-kamelets/issues/3180)
 - Proposal: Kamelets to deprecate, merge or remove [\#3162](https://github.com/apache/camel-kamelets/issues/3162)
 - KameletsCatalog: load the Kamelets on demand, without a class path scan \(camel catalog kamelet takes 720 ms\) [\#3133](https://github.com/apache/camel-kamelets/issues/3133)
 
