@@ -39,7 +39,7 @@ spec:
 
       Output: the body is a GeoJSON feature collection, as JSON text, with at most `limit` features. The headers of the HTTP response, such as `Content-Type`, are set as headers.
 
-      Good to know: `split` does not change what the next step receives: it still gets the whole collection, once per message. An HTTP error from the server, such as an unknown collection, fails the message. Headers that start with `CamelHttp` or `CamelRestHttp` are removed from the message first, so they cannot change what the Kamelet does. A service that cannot be reached within `connectTimeout`, or does not answer within `responseTimeout`, fails the message; when they are not set, it waits up to 3 minutes.
+      Good to know: `split` does not change what the next step receives: it still gets the whole collection, once per message. An HTTP error from the server, such as an unknown collection, fails the message. Headers that start with `CamelHttp` or `CamelRestHttp` are removed from the message first, so they cannot change what the Kamelet does. The login comes only from the options: an `Authorization` or `Proxy-Authorization` header on the message is removed, so a credential that came with the message is not sent on. Log in either with `authUsername` and `authPassword`, with a static token in `authBearerToken`, or with `oauth2ClientId`, `oauth2ClientSecret` and `oauth2TokenEndpoint`: the Kamelet then gets a token from that URL and sends it as a Bearer token. Without `authenticationPreemptive`, the user and password, or the static token, are sent only after the service asks for them with a 401 response. A service that cannot be reached within `connectTimeout`, or does not answer within `responseTimeout`, fails the message; when they are not set, it waits up to 3 minutes.
     required:
       - url
       - collection
@@ -88,6 +88,64 @@ spec:
         description: How long to wait for the answer of the service once the request is sent, in milliseconds. When it is not set, it is 180000 (3 minutes). A service that does not answer in time fails the message.
         type: integer
         example: 30000
+      authMethod:
+        title: Authentication Method
+        description: The login method, `Basic`, `Digest`, `NTLM`, or `Bearer` to send `authBearerToken`. Basic and Digest login with `authUsername` and `authPassword` work without it.
+        type: string
+        example: Basic
+      authenticationPreemptive:
+        title: Authentication Preemptive
+        description: If true, `authUsername` and `authPassword` are sent with Basic login, or `authBearerToken` as a Bearer token, on the first request. If false, they are sent only after the service answers 401 and asks for them, which takes a second request.
+        type: boolean
+        default: false
+      authUsername:
+        title: Authentication Username
+        description: The user to log in as, together with `authPassword`.
+        type: string
+        x-descriptors:
+        - urn:camel:group:credentials
+      authPassword:
+        title: Authentication Password
+        description: The password of `authUsername`.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      authBearerToken:
+        title: Bearer Token
+        description: A static token, such as an API key, sent in the `Authorization` header as `Bearer` followed by the token. Set `authMethod` to `Bearer` with it. Also set `authenticationPreemptive` to true, unless the service first answers 401 with a `WWW-Authenticate` header that asks for a Bearer token.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      oauth2ClientId:
+        title: OAuth2 Client ID
+        description: The client ID of the application, as registered with the OAuth 2.0 provider. With `oauth2ClientSecret`, it is used to get a token from `oauth2TokenEndpoint` (client credentials grant).
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      oauth2ClientSecret:
+        title: OAuth2 Client Secret
+        description: The client secret of the application, as given by the OAuth 2.0 provider.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      oauth2TokenEndpoint:
+        title: OAuth2 Token URL
+        description: The URL to get the tokens from, as given by the OAuth 2.0 provider. The Kamelet logs in to it with `oauth2ClientId` and `oauth2ClientSecret`.
+        type: string
+        example: https://login.example.com/oauth2/token
+        x-descriptors:
+        - urn:camel:group:credentials
+      oauth2Scope:
+        title: OAuth2 Scope
+        description: The scope to ask for in the token request, when the OAuth 2.0 provider needs one.
+        type: string
+        example: orders.write
+        x-descriptors:
+        - urn:camel:group:credentials
   types:
     in:
       mediaType: text/plain
@@ -104,6 +162,10 @@ spec:
       steps:
         - removeHeaders:
             pattern: "Camel(Rest)?Http.*"
+        - removeHeader:
+            name: Authorization
+        - removeHeader:
+            name: Proxy-Authorization
         - setHeader:
             name: Accept
             expression:
@@ -122,6 +184,15 @@ spec:
             parameters:
               connectTimeout: "{{?connectTimeout}}"
               responseTimeout: "{{?responseTimeout}}"
+              authMethod: "{{?authMethod}}"
+              authUsername: "{{?authUsername}}"
+              authPassword: "RAW({{?authPassword}})"
+              authBearerToken: "RAW({{?authBearerToken}})"
+              authenticationPreemptive: "{{authenticationPreemptive}}"
+              oauth2ClientId: "RAW({{?oauth2ClientId}})"
+              oauth2ClientSecret: "RAW({{?oauth2ClientSecret}})"
+              oauth2TokenEndpoint: "{{?oauth2TokenEndpoint}}"
+              oauth2Scope: "{{?oauth2Scope}}"
         - removeHeader:
             name: Accept
         - removeHeader:
