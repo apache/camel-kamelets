@@ -101,6 +101,14 @@ spec:
   types:
     in:
       mediaType: application/json
+  dataTypes:
+    in:
+      default: json
+      types:
+        json:
+          format: "application-json"
+          description: "One document as a JSON object, or several as a JSON array, as JSON text in bytes."
+          mediaType: application/json
   dependencies:
   - "camel:solr"
   - "camel:jackson3"

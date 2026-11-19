@@ -37,7 +37,7 @@ spec:
 
       Input: the body is one JSON object, as text, such as `{"username":"oscerd","city":"Rome"}`. In `query`, write `:#username` where the value of the field `username` goes. When the object has no field of that name, the header of that name is used instead. Fields that `query` does not name are ignored. When `batch` is true, the body can also be a JSON array of such objects, and `query` runs once for each of them.
 
-      Output: the body afterwards is the JSON object as a Map, and the `CamelSqlUpdateCount` header holds the number of rows the statement changed. For a JSON array with `batch`, the body is a List of Maps, and the header holds the total for all of them. When `query` is a SELECT, the body is instead a List of the rows found, each a Map, and the `CamelSqlRowCount` header holds their number.
+      Output: the body afterwards is the JSON object as a Map, and the `CamelSqlUpdateCount` header holds the number of rows the statement changed. For a JSON array with `batch`, the body is a List of Maps, and the header holds the total for all of them. When `query` is a SELECT, the body is instead a List of the rows found, each a Map, and the `CamelSqlRowCount` header holds their number. The `Content-Type` header is set to `application/json`.
 
       Good to know: a message fails when its body is not a JSON object (plain text, for example, or a JSON array when `batch` is not true), or when it has no value for a parameter of `query`. With `batch`, all the rows of one message are written in one transaction: when one of them fails, none is written. The values are sent to the database apart from the SQL text, so the content of a message cannot change the statement. Do not write `?` in `query`, not even in a quoted string: the Kamelet then fails to start. The connection is encrypted and the certificate of the server is checked: for a self-signed certificate, as a new installation has, set `trustServerCertificate` to true. The JDBC driver of SQL Server is not included: add `mvn:com.microsoft.sqlserver:mssql-jdbc` to the dependencies of the integration. Camel JBang (`camel run`) adds it by itself.
     required:
@@ -114,6 +114,13 @@ spec:
     in:
       mediaType: application/json
   dataTypes:
+    in:
+      default: json
+      types:
+        json:
+          format: "application-json"
+          description: "One JSON object, or with `batch` a JSON array of objects, as JSON text in bytes."
+          mediaType: application/json
     out:
       headers:
         CamelSqlUpdateCount:
