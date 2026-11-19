@@ -174,7 +174,7 @@ spec:
               type: string
             CamelCloudEventSource:
               title: CloudEvent Source
-              description: The event source. By default, the DDB Stream Event source receipt handle with prefix "aws.ddbstream.".
+              description: The event source. By default, the event source of the stream record with the prefix `aws.ddbstream.`, which is `aws.ddbstream.aws:dynamodb`.
               type: string
             CamelCloudEventSubject:
               title: CloudEvent Subject
