@@ -37,9 +37,9 @@ spec:
 
       Input: a JSON object, as JSON text or as parsed JSON (a Map or a Jackson `JsonNode`). The field must be at the top level of the object. A JSON array, or a body that is not JSON, fails.
 
-      Output: the body is the value of the field. When the `Content-Type` header is `application/json`, it is JSON text, so a text value keeps its quotes (`"Ann"`) unless `trimField` is true; otherwise it is the value itself, such as the text `Ann`. When `headerOutput` is true, the value goes into the header `CamelKameletsExtractFieldName`, or the header named by `headerOutputName`, and the body is left as it was.
+      Output: the body is the value of the field. A text, a number or a boolean is the plain value as text, such as `Ann` or `42`, with `Content-Type: text/plain`. An object or an array is JSON text, such as `{"name":"Ann"}`, with `Content-Type: application/json`. When `headerOutput` is true, the value goes into the header `CamelKameletsExtractFieldName`, or the header named by `headerOutputName`, as it is in the JSON: a text, a number, a boolean, or a Java `Map` or `List` for an object or an array. The body and its `Content-Type` are then left as they were.
 
-      Good to know: when the object does not have the field, the body or the header is empty (the JSON text `null` when the `Content-Type` header is `application/json`); the message does not fail.
+      Good to know: when the object does not have the field, or the field is `null`, the body is empty and the `Content-Type` header is removed, or with `headerOutput` the header is empty; the message does not fail. The `Content-Type` of the incoming message does not change how the body is read.
     required:
       - field
     properties:
@@ -66,19 +66,18 @@ spec:
         default: false
       trimField:
         title: Trim Field
-        description: If true, the body is the plain value, such as `Ann`, instead of JSON text such as `"Ann"`. It changes something only when the `Content-Type` header is `application/json`, and that header is then left as it is.
+        description: Deprecated and ignored. A text value now always comes out as the plain value, such as `Ann`, and an object or an array as JSON text. Kept so that a configuration that sets it still starts.
         type: boolean
         default: false
+        deprecated: true
     type: object
   dataTypes:
-    in:
+    out:
       headers:
         Content-Type:
           title: Content Type
-          description: When it is `application/json`, the body is read as JSON text and the value is written as JSON text, unless `trimField` is true.
+          description: '`text/plain` when the value is a text, a number or a boolean, and `application/json` when it is an object or an array. Removed when the field is missing or `null`. Left as it was when `headerOutput` is true.'
           type: string
-    out:
-      headers:
         CamelKameletsExtractFieldName:
           title: Extracted Field
           description: The value of the field, when `headerOutput` is true and `headerOutputName` is not set.
@@ -100,39 +99,86 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        # does the value replace the body, or go into a header
+        - setProperty:
+            name: extractFieldToBody
+            expression:
+              constant:
+                expression: "true"
         - choice:
             when:
               - expression:
                   simple:
-                    expression: "${header[Content-Type]} == 'application/json'"
+                    expression: "'{{headerOutput}}' == 'true'"
                 steps:
                   - setProperty:
-                      name: deserialized
+                      name: extractFieldToBody
                       expression:
                         constant:
-                          expression: "true"
-                  - unmarshal:
-                      json:
-                        unmarshalType: tools.jackson.databind.JsonNode
-        - process:
-            ref: "{{extractField}}"
-        - choice:
-            when:
-              - expression:
-                  simple:
-                    expression: "${exchangeProperty[trimField]} == 'false'"
-                steps:
+                          expression: "false"
                   - choice:
                       when:
                         - expression:
                             simple:
-                              expression: "${exchangeProperty[deserialized]} == 'true'"
+                              expression: "'{{strictHeaderCheck}}' == 'true' && '{{headerOutputName}}' == 'none' && ${header.CamelKameletsExtractFieldName} != null"
+                          steps:
+                            - setProperty:
+                                name: extractFieldToBody
+                                expression:
+                                  constant:
+                                    expression: "true"
+                        - expression:
+                            simple:
+                              expression: "'{{strictHeaderCheck}}' == 'true' && '{{headerOutputName}}' != 'none' && ${header[{{headerOutputName}}]} != null"
+                          steps:
+                            - setProperty:
+                                name: extractFieldToBody
+                                expression:
+                                  constant:
+                                    expression: "true"
+        - process:
+            ref: "{{extractField}}"
+        - removeProperty:
+            name: trimField
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${exchangeProperty.extractFieldToBody} == 'true'"
+                steps:
+                  - choice:
+                      when:
+                        # the field is missing, or null
+                        - expression:
+                            simple:
+                              expression: "${body} == null"
+                          steps:
+                            - removeHeader:
+                                name: Content-Type
+                        # an object or an array stays JSON
+                        - expression:
+                            simple:
+                              expression: "${body} is 'java.util.Map' || ${body} is 'java.util.List'"
                           steps:
                             - marshal:
                                 json:
                                   unmarshalType: tools.jackson.databind.JsonNode
+                            - convertBodyTo:
+                                type: String
                             - setHeader:
                                 name: Content-Type
                                 expression:
                                   constant:
                                     expression: application/json
+                      # a text, a number or a boolean is the plain value
+                      otherwise:
+                        steps:
+                          - convertBodyTo:
+                              type: String
+                          - setHeader:
+                              name: Content-Type
+                              expression:
+                                constant:
+                                  expression: text/plain
+        - removeProperty:
+            name: extractFieldToBody

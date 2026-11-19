@@ -49,9 +49,11 @@ actions:
       receiveRequest:
         POST:
           path: "/result"
+          headers:
+            - name: Content-Type
+              value: "@startsWith('text/plain')@"
           body:
-            data: |
-              "${field.value}"
+            data: "${field.value}"
 
   - http:
       server: "httpServer"
