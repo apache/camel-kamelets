@@ -66,9 +66,9 @@ actions:
           type: "plaintext"
           headers:
             - name: "X-Body-Type"
-              value: 'java.lang.String'
+              value: '[B'
             - name: "X-Content-Type"
-              value: 'ct='
+              value: 'ct=application/octet-stream'
             - name: "X-Record-Id"
               value: '@notEmpty()@'
           body:

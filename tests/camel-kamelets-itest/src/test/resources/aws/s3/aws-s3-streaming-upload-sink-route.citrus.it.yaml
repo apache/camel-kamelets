@@ -54,9 +54,9 @@ actions:
           type: "plaintext"
           headers:
             - name: "X-Body-Type"
-              value: 'java.lang.String'
+              value: '[B'
             - name: "X-Content-Type"
-              value: 'ct='
+              value: 'ct=application/octet-stream'
             - name: "X-ETag"
               value: 'etag='
           body:
@@ -80,9 +80,9 @@ actions:
           type: "plaintext"
           headers:
             - name: "X-Body-Type"
-              value: 'java.lang.String'
+              value: '[B'
             - name: "X-Content-Type"
-              value: 'ct='
+              value: 'ct=application/octet-stream'
             - name: "X-ETag"
               value: '@matches(''etag=.+'')@'
           body:

@@ -38,7 +38,7 @@ spec:
 
       Input: the body is the question, as text. The optional `CamelAwsBedrockAgentRuntimeSessionId` header continues an earlier conversation, with `retrieveAndGenerate` and `invokeAgent`: set it to the session ID of an earlier answer.
 
-      Output: when it is used inside a route, the body afterwards depends on `operation`. With `retrieveAndGenerate`, the default, and with `invokeAgent`, it is the answer, as text. The `CamelAwsBedrockAgentRuntimeSessionId` header holds the ID of the session, and the `CamelAwsBedrockAgentRuntimeCitations` header the passages of the documents the answer is based on, as objects of the AWS SDK for Java. With `retrieve`, the body is a List of the passages found, each an object of the AWS SDK for Java with the text of the passage (`content.text`), its `score` and the `location` of its document. The `CamelAwsBedrockAgentRuntimeRetrievedResults` header holds the same List.
+      Output: when it is used inside a route, the body afterwards depends on `operation`. With `retrieveAndGenerate`, the default, and with `invokeAgent`, it is the answer, as text, and the `Content-Type` header is `text/plain`. The `CamelAwsBedrockAgentRuntimeSessionId` header holds the ID of the session, and the `CamelAwsBedrockAgentRuntimeCitations` header the passages of the documents the answer is based on, as objects of the AWS SDK for Java. With `retrieve`, the body is a List of the passages found, each an object of the AWS SDK for Java with the text of the passage (`content.text`), its `score` and the `location` of its document. The `CamelAwsBedrockAgentRuntimeRetrievedResults` header holds the same List.
 
       Good to know: `retrieveAndGenerate` needs `modelId` and `knowledgeBaseId`, `retrieve` needs `knowledgeBaseId`, and `invokeAgent` needs `agentId` and `agentAliasId`; without them, `retrieve` and `invokeAgent` fail before they call Bedrock. The passages from `retrieve` are not JSON, and turned into JSON as they are, each is an empty object: take the parts you need in the next step, such as `$\{body[0].content.text}` in a Simple expression. With `invokeAgent` and no session ID, each message starts a new session. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsBedrock`, except `CamelAwsBedrockAgentRuntimeSessionId`, are removed from the message first, so they cannot change what the Kamelet does.
     required:
@@ -158,6 +158,12 @@ spec:
         example: HTTP
   dataTypes:
     in:
+      default: text
+      types:
+        text:
+          format: "text-plain"
+          description: "The question, as text."
+          mediaType: text/plain
       headers:
         CamelAwsBedrockAgentRuntimeSessionId:
           title: Session ID

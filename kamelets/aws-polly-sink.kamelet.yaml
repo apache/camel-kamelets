@@ -38,7 +38,7 @@ spec:
 
       Input: the body is the text to speak, as plain text, or as SSML when `textType` is `SSML`. The voice comes from `voiceId`, or when that is not set from the `CamelAwsPollyVoiceId` header; one of them is required.
 
-      Output: when it is used inside a route, the body afterwards is the audio, as a stream in the format of `outputFormat`, and the `CamelAwsPollyContentType` header holds its content type, such as `audio/mpeg`.
+      Output: when it is used inside a route, the body afterwards is the audio, as a stream in the format of `outputFormat`, and the `CamelAwsPollyContentType` header holds its content type, such as `audio/mpeg`. The `Content-Type` header stays `text/plain`, from the text: it is not the type of the audio.
 
       Good to know: the stream can be read only once, so write it to a file or a bucket right away. A voice that is not available with the chosen `engine` fails the message. To change how words are pronounced, such as an abbreviation or a product name, store a pronunciation lexicon in Polly and name it in `lexiconNames`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsPolly`, except `CamelAwsPollyVoiceId`, are removed from the message first, so they cannot change what the Kamelet does.
     required:
@@ -158,6 +158,12 @@ spec:
         example: w3c
   dataTypes:
     in:
+      default: text
+      types:
+        text:
+          format: "text-plain"
+          description: "The text to speak, as plain text or SSML."
+          mediaType: text/plain
       headers:
         CamelAwsPollyVoiceId:
           title: Voice ID
