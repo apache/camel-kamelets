@@ -1,0 +1,87 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: ftps-source-route-test
+description: 'ftps-source reads the file in the directory on the FTPS server, as a stream, with its name in the file, ce-file and CamelFileName headers (the server and the integration speak explicit TLS)'
+variables:
+  - name: "ftp.tls"
+    value: "true"
+actions:
+  # Start the FTPS server, with a file for the source to read, whose name has a space
+  - groovy:
+      script:
+        file: "ftp/ftpServer.groovy"
+  - groovy:
+      script:
+        file: "ftp/putFile.groovy"
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "ftp/ftps-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${file.http.server.port}"
+                - name: "ftp.port"
+                  value: "${ftp.server.port}"
+                - name: "javax.net.ssl.trustStore"
+                  value: "${ftp.truststore}"
+                - name: "javax.net.ssl.trustStorePassword"
+                  value: "changeit"
+                - name: "javax.net.ssl.trustStoreType"
+                  value: "PKCS12"
+
+  # The source gives the content of the file as a stream, with its name and size
+  - http:
+      server: "fileHttpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'org.apache.camel.converter.stream.ByteArrayInputStreamCache'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "file"
+              value: 'order 1.csv'
+            - name: "ce-file"
+              value: 'order 1.csv'
+            - name: "X-File-Name"
+              value: 'order 1.csv'
+            - name: "X-File-Length"
+              value: '15'
+          body:
+            data: |
+              id,item
+              1,book
+  - http:
+      server: "fileHttpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+finally:
+  - groovy:
+      script:
+        file: "ftp/ftpServerStop.groovy"

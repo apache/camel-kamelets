@@ -1,0 +1,77 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: file-watch-source-route-test
+description: 'file-watch-source sends the file that is created in the watched directory, with the kind of change and its name and path, and only the files that antInclude matches'
+actions:
+  # The directory to watch
+  - groovy:
+      script:
+        file: "filewatch/watchDir.groovy"
+
+  # Create Camel JBang integration, and wait until it watches the directory
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "filewatch/file-watch-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${file.http.server.port}"
+                - name: "watch.dir"
+                  value: "${watch.dir}"
+
+  # Another program writes a text file and a CSV file, whose name has a space
+  - groovy:
+      script:
+        file: "filewatch/writeFiles.groovy"
+
+  # Only the CSV file is sent: the body is the file, which reads as its content
+  - http:
+      server: "fileHttpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.io.File'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-File-Event-Type"
+              value: 'CREATE'
+            - name: "X-File-Name"
+              value: 'order 1.csv'
+            - name: "X-File-Absolute-Path"
+              value: '${watch.dir}/order 1.csv'
+          body:
+            data: |
+              id,item
+              1,book
+  - http:
+      server: "fileHttpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+finally:
+  - groovy:
+      script:
+        file: "filewatch/deleteWatchDir.groovy"

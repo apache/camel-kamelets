@@ -1,0 +1,96 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: ceph-sink-route-test
+description: 'ceph-sink uploads the body as a file to the bucket, under the key in the file header, ignores a header that names another bucket, and the message goes on unchanged'
+variables:
+  - name: "s3.client"
+    value: "s3CephSinkClient"
+  - name: "s3.bucket"
+    value: "ceph-sink-bucket"
+  - name: "s3.key"
+    value: "reports/day 1+x=2.csv"
+  - name: "s3.content"
+    value: "id,item"
+actions:
+  # Create the S3 storage (Floci container), with the bucket
+  - testcontainers:
+      start:
+        localstack:
+          services:
+            - "S3"
+          options:
+            buckets: 'ceph-sink-bucket'
+            s3ClientName: "s3CephSinkClient"
+  - waitFor:
+      http:
+        url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "ceph/ceph-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${cloud.http.server.port}"
+                - name: "s3.url"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+                - name: "s3.accessKey"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
+                - name: "s3.secretKey"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
+                - name: "s3.region"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
+
+  # The message goes on unchanged
+  - http:
+      server: "cloudHttpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-S3-Key"
+              value: 'reports/day 1+x=2.csv'
+            - name: "X-S3-ETag"
+              value: '@notEmpty()@'
+          body:
+            data: 'id,item'
+  - http:
+      server: "cloudHttpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The bucket has the file, under its key, with the body as its content
+  - repeatOnError:
+      until: "i = 10"
+      autoSleep: 1000
+      actions:
+        - groovy:
+            script:
+              file: "ceph/verifyObject.groovy"
