@@ -1,0 +1,91 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: smpp-source-route-test
+description: 'smpp-source receives an SMS that a phone sent, through the SMPPSim SMS center, with the numbers of the sender and the recipient'
+actions:
+  # Start the SMPPSim SMS center (SMPP on port 2775, its web form to inject SMS on port 89)
+  - testcontainers:
+      start:
+        container:
+          name: "smppsim"
+          image: "jookies/smppsim:latest"
+          autoRemove: true
+          startUpTimeout: 180
+          exposedPorts:
+            - 2775
+            - 89
+          waitFor:
+            logMessage: '.*StandardConnectionHandler waiting for connection.*'
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "smpp/smpp-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${http.server.port}"
+                - name: "smpp.host"
+                  value: "${CITRUS_TESTCONTAINERS_SMPPSIM_HOST}"
+                - name: "smpp.port"
+                  value: "${CITRUS_TESTCONTAINERS_SMPPSIM_PORT}"
+
+  # Wait until the source has logged in to the SMS center: SMPPSim holds back an SMS that comes before
+  - camel:
+      cli:
+        verify:
+          integration: "smpp-source-route"
+          logMessage: 'Connected to: smpp://smppclient1@'
+          maxAttempts: 60
+          delayBetweenAttempts: 1000
+
+  # A phone (4511111111) sends an SMS to 1616
+  - groovy:
+      script:
+        file: "smpp/smppsim-inject-mo.groovy"
+
+  # The source gives the text of the SMS, the numbers, and the message type
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-Smpp-Source-Addr"
+              value: '4511111111'
+            - name: "X-Smpp-Dest-Addr"
+              value: '1616'
+            - name: "X-Smpp-Message-Type"
+              value: 'DeliverSm'
+          body:
+            data: 'YES please'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

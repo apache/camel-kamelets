@@ -1,0 +1,79 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: jms-apache-artemis-sink-route-test
+description: 'jms-apache-artemis-sink sends a text message, with its headers as JMS properties, to a queue in Artemis'
+actions:
+  # Start Artemis
+  - testcontainers:
+      start:
+        container:
+          name: "artemis"
+          image: "apache/activemq-artemis:2.44.0"
+          autoRemove: true
+          startUpTimeout: 180
+          exposedPorts:
+            - 61616
+          waitFor:
+            logMessage: '.*AMQ221007: Server is now active.*'
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "jms/jms-apache-artemis-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${http.server.port}"
+                - name: "artemis.broker.url"
+                  value: "tcp://${CITRUS_TESTCONTAINERS_ARTEMIS_HOST}:${CITRUS_TESTCONTAINERS_ARTEMIS_PORT}"
+
+  # The message goes on unchanged after the Kamelet
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "origin"
+              value: 'citrus'
+          body:
+            data: 'Hello Artemis'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The message is on the queue: persistent (delivery mode 2), with priority 4 and the header as a JMS property
+  - camel:
+      cli:
+        verify:
+          integration: "jms-apache-artemis-sink-route"
+          logMessage: 'Received from the queue: Hello Artemis (origin=citrus, JMSPriority=4, JMSDeliveryMode=2)'
+          maxAttempts: 30
+          delayBetweenAttempts: 1000

@@ -1,0 +1,86 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: smpp-sink-route-test
+description: 'smpp-sink sends the body as an SMS to the number in destAddr, through the SMPPSim SMS center, and gives the ID of the SMS'
+actions:
+  # Start the SMPPSim SMS center (SMPP on port 2775, its web form to inject SMS on port 89)
+  - testcontainers:
+      start:
+        container:
+          name: "smppsim"
+          image: "jookies/smppsim:latest"
+          autoRemove: true
+          startUpTimeout: 180
+          exposedPorts:
+            - 2775
+            - 89
+          waitFor:
+            logMessage: '.*StandardConnectionHandler waiting for connection.*'
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "smpp/smpp-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${http.server.port}"
+                - name: "smpp.host"
+                  value: "${CITRUS_TESTCONTAINERS_SMPPSIM_HOST}"
+                - name: "smpp.port"
+                  value: "${CITRUS_TESTCONTAINERS_SMPPSIM_PORT}"
+
+  # The message goes on unchanged after the Kamelet, with the ID the SMS center gave the SMS, and the number of SMS sent
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-Smpp-Id"
+              value: '@matches([0-9A-Za-z]+)@'
+            - name: "X-Smpp-Id-Type"
+              value: 'java.util.ArrayList'
+            - name: "X-Smpp-Sent-Message-Count"
+              value: '1'
+          body:
+            data: 'Your code is 1234'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The SMS center got the SMS, from 1616 to 4598765432, with the text
+  - repeatOnError:
+      until: "i = 10"
+      autoSleep: 1000
+      actions:
+      - groovy:
+          script:
+            file: "smpp/smppsim-verify-submit.groovy"
