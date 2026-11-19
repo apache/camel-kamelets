@@ -1,0 +1,101 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: couchbase-sink-route-test
+actions:
+  # Create Couchbase infrastructure.
+  #
+  # Citrus has no built-in Couchbase container type, so this uses the generic
+  # one. The ports are bound one-to-one on purpose: the Couchbase SDK bootstraps
+  # from the management port and then reconnects using the addresses the cluster
+  # advertises, so a remapped host port makes the client unable to reach the
+  # data service.
+  - testcontainers:
+      start:
+        container:
+          name: "couchbase"
+          image: "couchbase/server:community-7.6.2"
+          startUpTimeout: 300
+          portBindings:
+            - "8091:8091"
+            - "8093:8093"
+            - "11210:11210"
+          waitFor:
+            logMessage: ".*Starting Couchbase Server.*"
+
+  # Initialise the cluster, create the bucket (and seed one document, not used here)
+  - groovy:
+      script:
+        file: "couchbase/initCluster.groovy"
+
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "couchbase/couchbase-sink-route.yaml"
+            systemProperties:
+              file: "couchbase/application.properties"
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${couchbase.server.port}"
+
+  # the body afterwards is true
+  - http:
+      server: "couchbaseServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.Boolean'
+            - name: "X-Content-Type"
+              value: 'ct='
+          body:
+            data: 'true'
+  - http:
+      server: "couchbaseServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # the document is stored as a JSON document, under the id of the CamelCouchbaseId header
+  - http:
+      client: "http://localhost:8093"
+      sendRequest:
+        POST:
+          path: "/query/service"
+          contentType: "application/json"
+          headers:
+            - name: "Authorization"
+              value: "Basic citrus:encodeBase64('Administrator:password')"
+          body:
+            data: '{"statement":"SELECT RAW k FROM `kamelets` k USE KEYS ''order-1''"}'
+  - http:
+      client: "http://localhost:8093"
+      receiveResponse:
+        response:
+          status: 200
+        validate:
+          - jsonPath:
+              - expression: "$.results[0].order"
+                value: "ORD-1"
+              - expression: "$.results[0].status"
+                value: "shipped"

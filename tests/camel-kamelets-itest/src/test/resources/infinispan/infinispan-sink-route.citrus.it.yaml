@@ -1,0 +1,74 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: infinispan-sink-route-test
+actions:
+  # Infinispan server with the user admin
+  - testcontainers:
+      start:
+        container:
+          name: "infinispan"
+          image: "quay.io/infinispan/server:16.3"
+          startUpTimeout: 180
+          exposedPorts:
+            - 11222
+          env:
+            - name: "USER"
+              value: "admin"
+            - name: "PASS"
+              value: "password"
+          waitFor:
+            url: "http://localhost:11222/rest/v2/container/health/status"
+
+  - groovy:
+      script:
+        file: "infinispan/createCache.groovy"
+
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "infinispan/infinispan-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "infinispan.hosts"
+                  value: "${CITRUS_TESTCONTAINERS_INFINISPAN_HOST}:${CITRUS_TESTCONTAINERS_INFINISPAN_PORT}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${infinispan.server.port}"
+
+  # the Kamelet leaves no body; the value read back from the cache is the body that was sent
+  - http:
+      server: "infinispanServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'null'
+            - name: "X-Content-Type"
+              value: 'ct='
+          body:
+            data: 'ORD-1 shipped'
+  - http:
+      server: "infinispanServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

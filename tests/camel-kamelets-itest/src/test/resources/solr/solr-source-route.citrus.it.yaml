@@ -1,0 +1,85 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: solr-source-route-test
+actions:
+  # Solr in standalone mode, with the core "kamelets" created at start
+  - testcontainers:
+      start:
+        container:
+          name: "solr"
+          image: "solr:9.10.1-slim"
+          command: "solr-precreate kamelets"
+          startUpTimeout: 180
+          exposedPorts:
+            - 8983
+          waitFor:
+            url: "http://localhost:8983/solr/kamelets/admin/ping"
+
+  # one document that the query matches, and one that it does not
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_SOLR_HOST}:${CITRUS_TESTCONTAINERS_SOLR_PORT}"
+      sendRequest:
+        POST:
+          path: "/solr/kamelets/update"
+          contentType: "application/json"
+          parameters:
+            - name: "commit"
+              value: "true"
+          body:
+            data: '[{"id":"order-1","status_s":"new"},{"id":"order-2","status_s":"shipped"}]'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_SOLR_HOST}:${CITRUS_TESTCONTAINERS_SOLR_PORT}"
+      receiveResponse:
+        response:
+          status: 200
+
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "solr/solr-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "solr.host"
+                  value: "${CITRUS_TESTCONTAINERS_SOLR_HOST}"
+                - name: "solr.port"
+                  value: "${CITRUS_TESTCONTAINERS_SOLR_PORT}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${search.server.port}"
+
+  # the answer of Solr as JSON: the documents found are the list under response
+  - http:
+      server: "searchServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: 'org.apache.camel.converter.stream.InputStreamCache'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+          body:
+            data: '{"responseHeader":{"status":0,"QTime":"@ignore@","params":{"q":"status_s:new","wt":"@ignore@"}},"response":[{"id":"order-1","status_s":"new","_version_":"@ignore@","_root_":"order-1"}]}'
+  - http:
+      server: "searchServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
