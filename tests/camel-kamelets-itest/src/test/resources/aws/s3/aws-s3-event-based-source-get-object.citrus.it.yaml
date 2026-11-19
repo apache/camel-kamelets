@@ -1,0 +1,105 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: aws-s3-event-based-source-get-object-test
+variables:
+  - name: "aws.s3.bucketNameOrArn"
+    value: "bucket-events"
+  - name: "aws.sqs.queueName"
+    value: "queue-s3-events"
+actions:
+  # Create AWS infrastructure (Floci container)
+  - testcontainers:
+      start:
+        localstack:
+          services:
+            - "S3"
+            - "SQS"
+          options:
+            buckets: '${aws.s3.bucketNameOrArn}'
+            queues: '${aws.sqs.queueName}'
+            s3ClientName: "s3EventsClient"
+            sqsClientName: "sqsEventsClient"
+  - waitFor:
+      http:
+        url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+
+  # Files whose names have characters that an endpoint address gives a meaning to
+  - send:
+      endpoint: camel:aws2-s3://${aws.s3.bucketNameOrArn}?amazonS3Client=#s3EventsClient
+      message:
+        headers:
+          - name: CamelAwsS3Key
+            value: "dir/my file+x=1.txt"
+        body:
+          data: "Content of the first file"
+  - send:
+      endpoint: camel:aws2-s3://${aws.s3.bucketNameOrArn}?amazonS3Client=#s3EventsClient
+      message:
+        headers:
+          - name: CamelAwsS3Key
+            value: "reports/a&b=c.txt"
+        body:
+          data: "Content of the second file"
+
+  # Create Camel JBang integration. The file is read without uriEndpointOverride, so the S3 client finds the
+  # container through the environment.
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "aws/s3/aws-s3-event-based-source-get-object.yaml"
+            environment:
+              variables:
+                - name: "AWS_ENDPOINT_URL_S3"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+            systemProperties:
+              properties:
+                - name: "aws.sqs.queueName"
+                  value: "${aws.sqs.queueName}"
+                - name: "aws.uriEndpointOverride"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+                - name: "aws.secretKey"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
+                - name: "aws.accessKey"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
+                - name: "aws.region"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
+
+  # The events that EventBridge sends to the queue for the two uploads
+  - send:
+      endpoint: camel:aws2-sqs://${aws.sqs.queueName}?amazonSQSClient=#sqsEventsClient
+      message:
+        body:
+          data: '{"version":"0","source":"aws.s3","detail-type":"Object Created","detail":{"bucket":{"name":"${aws.s3.bucketNameOrArn}"},"object":{"key":"dir/my file+x=1.txt"},"reason":"PutObject"}}'
+  - send:
+      endpoint: camel:aws2-sqs://${aws.sqs.queueName}?amazonSQSClient=#sqsEventsClient
+      message:
+        body:
+          data: '{"version":"0","source":"aws.s3","detail-type":"Object Created","detail":{"bucket":{"name":"${aws.s3.bucketNameOrArn}"},"object":{"key":"reports/a&b=c.txt"},"reason":"PutObject"}}'
+
+  # Each file is read with its whole name
+  - camel:
+      cli:
+        verify:
+          integration: "aws-s3-event-based-source-get-object"
+          logMessage: "Read dir/my file+x=1.txt: Content of the first file"
+  - camel:
+      cli:
+        verify:
+          integration: "aws-s3-event-based-source-get-object"
+          logMessage: "Read reports/a&b=c.txt: Content of the second file"
