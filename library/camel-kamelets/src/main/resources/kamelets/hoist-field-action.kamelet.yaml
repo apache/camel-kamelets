@@ -37,7 +37,7 @@ spec:
 
       Input: any body. JSON is nested as a JSON object or array when it is parsed JSON (a Map or a Jackson `JsonNode`), or JSON text with the `Content-Type` header `application/json`. Any other text, including JSON text with another `Content-Type`, becomes a text value: `hello` gives `{"order":"hello"}`.
 
-      Output: the body is the new JSON object, as JSON text, and the `Content-Type` header is set to `application/json`.
+      Output: the body is the new JSON object, as JSON text in bytes, and the `Content-Type` header is set to `application/json`.
     required:
       - field
     properties:
@@ -55,11 +55,17 @@ spec:
           description: When it is `application/json`, JSON text in the body is nested as JSON. Otherwise text is nested as a text value.
           type: string
     out:
+      default: json
       headers:
         Content-Type:
           title: Content Type
           description: Always `application/json`.
           type: string
+      types:
+        json:
+          format: "application-json"
+          description: "The new JSON object, as JSON text in bytes."
+          mediaType: application/json
   dependencies:
   - "camel:jackson3"
   - "camel:kamelet"

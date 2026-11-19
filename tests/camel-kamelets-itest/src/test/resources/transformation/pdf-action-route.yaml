@@ -32,6 +32,9 @@ Line two'
             name: X-Body-Type
             simple: "${body.getClass().getName()}"
         - setHeader:
+            name: X-Pdf-Signature
+            simple: "${bodyAs(String).substring(0,5)}"
+        - setHeader:
             name: X-Content-Type
             simple: "ct=${header.Content-Type}"
         - to:

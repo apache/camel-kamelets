@@ -37,7 +37,7 @@ spec:
 
       Input: the body is the text to write, as text. Each line of the text starts a new line in the PDF, and a new page starts when a page is full.
 
-      Output: the body is the PDF document, as bytes. The headers are kept as they are; a `Content-Type` header set before is not changed to PDF.
+      Output: the body is the PDF document, as bytes, and the `Content-Type` header is set to `application/octet-stream`. The other headers are kept.
 
       Good to know: long lines are not wrapped; they run past the right edge of the page. Set `font` to one of the names its description lists, such as `HELVETICA`, the default. Headers that start with `CamelPdf` are removed from the message first, so they cannot change what the Kamelet does.
     required:
@@ -63,6 +63,21 @@ spec:
         type: string
         default: A4
         enum: ["LETTER", "LEGAL", "A0", "A1", "A2", "A3", "A4", "A5", "A6"]
+  dataTypes:
+    in:
+      default: text
+      types:
+        text:
+          format: "text-plain"
+          description: "The text to write."
+          mediaType: text/plain
+    out:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The PDF document, as bytes."
+          mediaType: application/octet-stream
   dependencies:
   - "camel:pdf"
   - "camel:kamelet"

@@ -47,6 +47,14 @@ spec:
         description: "The Protobuf schema the data was written with, in the `.proto` language: a `message` with its fields, each with a type, a name and a number. When it is not set, the schema found by an earlier `resolve-pojo-schema-action` is used."
         type: string
         example: 'message Person { required string first = 1; required string last = 2; }'
+  dataTypes:
+    in:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The Protobuf binary data, as bytes."
+          mediaType: application/octet-stream
   dependencies:
   - "camel:kamelet"
   - "camel:jackson3-protobuf"
