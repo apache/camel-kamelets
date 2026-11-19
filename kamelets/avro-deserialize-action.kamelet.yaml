@@ -53,6 +53,14 @@ spec:
         description: Meant to turn the check of the content against the schema on or off. It has no effect.
         type: boolean
         default: true
+  dataTypes:
+    in:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The Avro binary data, as bytes."
+          mediaType: application/octet-stream
   dependencies:
   - "camel:kamelet"
   - "camel:jackson3-avro"

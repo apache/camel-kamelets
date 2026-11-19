@@ -34,5 +34,11 @@
             parameters:
               algorithm: '{{crypto.algorithm}}'
               key: '{{crypto.key}}'
+        # the encrypted data is application/octet-stream, which decrypting keeps: the text is text again
+        - to:
+            uri: "kamelet:insert-header-action"
+            parameters:
+              name: Content-Type
+              value: text/plain
         - to:
             uri: "{{http.sink.url}}/result"

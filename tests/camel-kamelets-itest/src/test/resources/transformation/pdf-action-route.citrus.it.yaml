@@ -33,14 +33,13 @@ actions:
       receiveRequest:
         POST:
           path: "/result"
-          type: "plaintext"
           headers:
             - name: "X-Body-Type"
-              value: 'java.io.ByteArrayOutputStream'
+              value: '[B'
+            - name: "X-Pdf-Signature"
+              value: '%PDF-'
             - name: "X-Content-Type"
-              value: 'ct='
-          body:
-            data: '@startsWith(''%PDF-'')@'
+              value: 'ct=application/octet-stream'
   - http:
       server: "httpServer"
       sendResponse:
