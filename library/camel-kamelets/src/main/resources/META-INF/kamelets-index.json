@@ -1300,46 +1300,6 @@
     "namespace" : "JSON",
     "provider" : "Apache Software Foundation"
   }, {
-    "name" : "kafka-apicurio-registry-not-secured-sink",
-    "type" : "sink",
-    "supportLevel" : "Deprecated",
-    "title" : "Kafka Not Secured with Apicurio Registry Sink",
-    "summary" : "Deprecated, to be removed in a later release: sends each message as an Avro record to a topic in Apache Kafka, with the schema kept in an Apicurio Registry, and no login or TLS to either.",
-    "description" : "Deprecated, to be removed in a later release: sends each message as an Avro record to a topic in Apache Kafka, with the schema kept in an Apicurio Registry, and no login or TLS to either.\n\nUse it to publish records that other applications read with the schema of the registry, on a Kafka and a registry that need no login, such as in development. When the registry is secured with Keycloak use `kafka-not-secured-apicurio-registry-sink`; for records without a schema use `kafka-sink`. This Kamelet is deprecated and will be removed in a later release, as the Kafka Kamelets are reduced to a few.\n\nInput: the body must be an Avro object, such as an Avro `GenericRecord` or an object of a class generated from the schema; it is written as Avro binary. A body of text is written as an Avro string, and so fails unless the schema is a string. The optional `key` header (or `ce-key`) becomes the key of the record, and the optional `partition-key` header (or `ce-partitionkey`) is the number of the partition to write to. The other headers of the message, except the Camel ones, are sent as record headers.\n\nOutput: the message is unchanged.\n\nGood to know: The schema must already be in the registry, as the artifact `<topic>-value` (such as `orders-value`) in the default group: the Kamelet does not register it, and a message whose schema is not found fails with `ArtifactNotFoundException`. Neither Kafka nor the registry is secured: there is no login and no TLS. Headers that start with `CamelKafka`, except `CamelKafkaKey` and `CamelKafkaOverrideTopic`, are removed from the message first, so they cannot change what the Kamelet does.",
-    "group" : "Kafka",
-    "namespace" : "Kafka",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "kafka-apicurio-registry-not-secured-source",
-    "type" : "source",
-    "supportLevel" : "Deprecated",
-    "title" : "Kafka Not Secured with Apicurio Registry Source",
-    "summary" : "Deprecated, to be removed in a later release: receives each record written with a JSON Schema from topics in Apache Kafka, with the schema kept in an Apicurio Registry, and no login or TLS to either.",
-    "description" : "Deprecated, to be removed in a later release: receives each record written with a JSON Schema from topics in Apache Kafka, with the schema kept in an Apicurio Registry, and no login or TLS to either.\n\nUse it to read JSON records that other applications write with a JSON Schema of the registry, on a Kafka and a registry that need no login, such as in development. For Avro records use `kafka-batch-apicurio-registry-not-secured-source`; when the registry is secured with Keycloak use `kafka-not-secured-apicurio-registry-json-source`; for records without a schema use `kafka-source`. This Kamelet is deprecated and will be removed in a later release, as the Kafka Kamelets are reduced to a few.\n\nOutput: the body is the value of the record as parsed JSON. The `kafka-topic`, `kafka-key`, `kafka-partition`, `kafka-offset` and `kafka-timestamp` (in milliseconds since 1970) headers say where the record came from. They are also set as `ce-kafkatopic`, `ce-kafkakey` and so on, and as the `CamelKafka*` headers that the Kafka actions read. The record headers become message headers, as text unless `deserializeHeaders` is false.\n\nGood to know: it reads JSON Schema records only, not Avro: the sink of the same name writes Avro. Neither Kafka nor the registry is secured: there is no login and no TLS. A new consumer group starts at the newest records, unless `autoOffsetReset` is `earliest`. Without `consumerGroup`, every start uses a new group, so the records sent while the integration was stopped are skipped.",
-    "group" : "Kafka",
-    "namespace" : "Kafka",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "kafka-batch-apicurio-registry-not-secured-source",
-    "type" : "source",
-    "supportLevel" : "Deprecated",
-    "title" : "Kafka Batch Not Secured with Apicurio Registry Source",
-    "summary" : "Deprecated, to be removed in a later release: receives Avro records from topics in Apache Kafka in batches, with the schema kept in an Apicurio Registry, and no login or TLS to either.",
-    "description" : "Deprecated, to be removed in a later release: receives Avro records from topics in Apache Kafka in batches, with the schema kept in an Apicurio Registry, and no login or TLS to either.\n\nUse it to read many Avro records at once, as written by `kafka-apicurio-registry-not-secured-sink`, on a Kafka and a registry that need no login, such as in development. When the registry is secured with Keycloak use `kafka-batch-apicurio-registry-source`. This Kamelet is deprecated and will be removed in a later release, as the Kafka Kamelets are reduced to a few.\n\nOutput: the body is a List with one entry per record, up to `batchSize`. Each entry is a message of its own, with the value of the record as its body (an Avro `GenericRecord`, whose text form is JSON), and the key, offset and timestamp of the record in its `CamelKafkaKey`, `CamelKafkaOffset` and `CamelKafkaTimestamp` headers. The record headers are in the entries too, as bytes. The message itself has the `CamelKafkaTopic` and `CamelKafkaPartition` headers. The `kafka-topic`, `kafka-key` and other headers of `kafka-source` are not set.\n\nGood to know: neither Kafka nor the registry is secured: there is no login and no TLS. To save the position in Kafka only once a batch was handled, set `allowManualCommit` to true and `autoCommitEnable` to false, and end the flow with `kafka-batch-manual-commit-action`.",
-    "group" : "Kafka",
-    "namespace" : "Kafka",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "kafka-batch-apicurio-registry-source",
-    "type" : "source",
-    "supportLevel" : "Deprecated",
-    "title" : "Kafka Batch with Apicurio Registry secured with Keycloak Source",
-    "summary" : "Deprecated, to be removed in a later release: receives Avro records from topics in Apache Kafka in batches, with the schema kept in an Apicurio Registry secured with Keycloak.",
-    "description" : "Deprecated, to be removed in a later release: receives Avro records from topics in Apache Kafka in batches, with the schema kept in an Apicurio Registry secured with Keycloak.\n\nUse it to read many Avro records at once, when the registry needs a Keycloak login and Kafka needs none. For one record at a time use `kafka-not-secured-apicurio-registry-source`; when the registry needs no login use `kafka-batch-apicurio-registry-not-secured-source`. This Kamelet is deprecated and will be removed in a later release, as the Kafka Kamelets are reduced to a few.\n\nOutput: the body is a List with one entry per record, up to `batchSize`. Each entry is a message of its own, with the value of the record as its body (an Avro `GenericRecord`, whose text form is JSON), and the key, offset and timestamp of the record in its `CamelKafkaKey`, `CamelKafkaOffset` and `CamelKafkaTimestamp` headers. The record headers are in the entries too, as bytes. The message itself has the `CamelKafkaTopic` and `CamelKafkaPartition` headers. The `kafka-topic`, `kafka-key` and other headers of `kafka-source` are not set.\n\nGood to know: Kafka is not secured: it connects to the brokers with no login and no TLS. To save the position in Kafka only once a batch was handled, set `allowManualCommit` to true and `autoCommitEnable` to false, and end the flow with `kafka-batch-manual-commit-action`.",
-    "group" : "Kafka",
-    "namespace" : "Kafka",
-    "provider" : "Apache Software Foundation"
-  }, {
     "name" : "kafka-batch-manual-commit-action",
     "type" : "action",
     "supportLevel" : "Stable",
@@ -1367,36 +1327,6 @@
     "summary" : "Saves in Kafka the position (offset) of the record that `kafka-source` received, so that the record is not received again after a restart.",
     "description" : "Saves in Kafka the position (offset) of the record that `kafka-source` received, so that the record is not received again after a restart.\n\nUse it to count a record as read only once it was handled, for example once it was written to a database: put it at the end of a flow that starts with `kafka-source`. The records after the last saved position are read again after a restart. For `kafka-batch-source` use `kafka-batch-manual-commit-action`.\n\nInput: any message from `kafka-source` with `allowManualCommit` set to true and `autoCommitEnable` set to false. It uses the `CamelKafkaManualCommit` header that the source then sets.\n\nOutput: the message is unchanged.\n\nGood to know: without the `CamelKafkaManualCommit` header, for example when `allowManualCommit` is false, it does nothing and does not fail. Saving the position of a record also counts the earlier records of its partition as read.",
     "group" : "Actions",
-    "namespace" : "Kafka",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "kafka-not-secured-apicurio-registry-json-source",
-    "type" : "source",
-    "supportLevel" : "Deprecated",
-    "title" : "Kafka not secured with Apicurio Registry secured with Keycloak for JSON schema support Source",
-    "summary" : "Deprecated, to be removed in a later release: receives each record written with a JSON Schema from topics in Apache Kafka, with the schema kept in an Apicurio Registry secured with Keycloak.",
-    "description" : "Deprecated, to be removed in a later release: receives each record written with a JSON Schema from topics in Apache Kafka, with the schema kept in an Apicurio Registry secured with Keycloak.\n\nUse it to read JSON records that other applications write with a JSON Schema of the registry, when the registry needs a Keycloak login and Kafka needs none. For Avro records use `kafka-not-secured-apicurio-registry-source`; when the registry needs no login use `kafka-apicurio-registry-not-secured-source`. This Kamelet is deprecated and will be removed in a later release, as the Kafka Kamelets are reduced to a few.\n\nOutput: the body is the value of the record as parsed JSON. The `kafka-topic`, `kafka-key`, `kafka-partition`, `kafka-offset` and `kafka-timestamp` (in milliseconds since 1970) headers say where the record came from. They are also set as `ce-kafkatopic`, `ce-kafkakey` and so on, and as the `CamelKafka*` headers that the Kafka actions read. The record headers become message headers, as text unless `deserializeHeaders` is false.\n\nGood to know: Kafka is not secured: it connects to the brokers with no login and no TLS. A new consumer group starts at the newest records, unless `autoOffsetReset` is `earliest`. Without `consumerGroup`, every start uses a new group, so the records sent while the integration was stopped are skipped.",
-    "group" : "Kafka",
-    "namespace" : "Kafka",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "kafka-not-secured-apicurio-registry-sink",
-    "type" : "sink",
-    "supportLevel" : "Deprecated",
-    "title" : "Kafka Not Secured with Apicurio Registry secured with Keycloak Sink",
-    "summary" : "Deprecated, to be removed in a later release: sends each message as an Avro record to a topic in Apache Kafka, with the schema kept in an Apicurio Registry secured with Keycloak.",
-    "description" : "Deprecated, to be removed in a later release: sends each message as an Avro record to a topic in Apache Kafka, with the schema kept in an Apicurio Registry secured with Keycloak.\n\nUse it to publish records that other applications read with the schema of the registry, when the registry needs a Keycloak login and Kafka needs none. When the registry needs no login use `kafka-apicurio-registry-not-secured-sink`; for records without a schema use `kafka-sink`. This Kamelet is deprecated and will be removed in a later release, as the Kafka Kamelets are reduced to a few.\n\nInput: the body must be an Avro object, such as an Avro `GenericRecord` or an object of a class generated from the schema; it is written as Avro binary. A body of text is written as an Avro string, and so fails unless the schema is a string. The optional `key` header (or `ce-key`) becomes the key of the record, and the optional `partition-key` header (or `ce-partitionkey`) is the number of the partition to write to. The other headers of the message, except the Camel ones, are sent as record headers.\n\nOutput: the message is unchanged.\n\nGood to know: The schema must already be in the registry, as the artifact `<topic>-value` (such as `orders-value`) in the default group: the Kamelet does not register it, and a message whose schema is not found fails with `ArtifactNotFoundException`. Kafka is not secured: it connects to the brokers with no login and no TLS. Headers that start with `CamelKafka`, except `CamelKafkaKey` and `CamelKafkaOverrideTopic`, are removed from the message first, so they cannot change what the Kamelet does.",
-    "group" : "Kafka",
-    "namespace" : "Kafka",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "kafka-not-secured-apicurio-registry-source",
-    "type" : "source",
-    "supportLevel" : "Deprecated",
-    "title" : "Kafka not secured with Apicurio Registry secured with Keycloak Source",
-    "summary" : "Deprecated, to be removed in a later release: receives each Avro record from topics in Apache Kafka, with the schema kept in an Apicurio Registry secured with Keycloak.",
-    "description" : "Deprecated, to be removed in a later release: receives each Avro record from topics in Apache Kafka, with the schema kept in an Apicurio Registry secured with Keycloak.\n\nUse it to read Avro records, as written by `kafka-not-secured-apicurio-registry-sink`, when the registry needs a Keycloak login and Kafka needs none. For JSON Schema records use `kafka-not-secured-apicurio-registry-json-source`; for batches use `kafka-batch-apicurio-registry-source`. This Kamelet is deprecated and will be removed in a later release, as the Kafka Kamelets are reduced to a few.\n\nOutput: the body is the value of the record as an Avro `GenericRecord`, whose text form is JSON. The `kafka-topic`, `kafka-key`, `kafka-partition`, `kafka-offset` and `kafka-timestamp` (in milliseconds since 1970) headers say where the record came from. They are also set as `ce-kafkatopic`, `ce-kafkakey` and so on, and as the `CamelKafka*` headers that the Kafka actions read. The record headers become message headers, as text unless `deserializeHeaders` is false.\n\nGood to know: Kafka is not secured: it connects to the brokers with no login and no TLS. A new consumer group starts at the newest records, unless `autoOffsetReset` is `earliest`. Without `consumerGroup`, every start uses a new group, so the records sent while the integration was stopped are skipped.",
-    "group" : "Kafka",
     "namespace" : "Kafka",
     "provider" : "Apache Software Foundation"
   }, {
