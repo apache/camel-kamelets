@@ -33,7 +33,7 @@ spec:
     description: |-
       Receives each message published to a topic on an MQTT broker, such as Eclipse Mosquitto or HiveMQ, with MQTT 5.
 
-      Use it to collect readings and events from IoT devices and other MQTT clients, when the broker or the clients use MQTT 5. A topic with wildcards, such as `sensors/#`, receives from many topics at once. For a broker that only speaks MQTT 3.1.1, use `mqtt-source`.
+      Use it to collect readings and events from IoT devices and other MQTT clients, when the broker or the clients use MQTT 5. A topic with wildcards, such as `sensors/#`, receives from many topics at once. The broker must support MQTT 5.
 
       Output: the body is the payload, as bytes. The `CamelMqttTopic` header is the topic the message was published to, `CamelMqttQoS` its quality of service, and `CamelPahoMqtt5MsgProperties` holds the MQTT 5 properties of the message, such as its user properties.
 

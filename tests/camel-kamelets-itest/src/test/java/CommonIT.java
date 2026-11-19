@@ -151,4 +151,29 @@ public class CommonIT {
     public Stream<DynamicTest> kafkaRouter() {
         return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("kafkarouter");
     }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> pqc() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("pqc");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> exec() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("exec");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> graphql() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("graphql");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> splunk() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("splunk");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> geo() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("geo");
+    }
 }
