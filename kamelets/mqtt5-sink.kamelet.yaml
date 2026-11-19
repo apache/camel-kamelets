@@ -33,7 +33,7 @@ spec:
     description: |-
       Publishes each message to a topic on an MQTT broker, such as Eclipse Mosquitto or HiveMQ, with MQTT 5.
 
-      Use it to send commands or data to IoT devices, or to publish readings and events, when the broker or the clients use MQTT 5. For a broker that only speaks MQTT 3.1.1, use `mqtt-sink`.
+      Use it to send commands or data to IoT devices, or to publish readings and events, when the broker or the clients use MQTT 5. The broker must support MQTT 5.
 
       Input: the body is the payload, as text or bytes, and is sent as it is. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The headers of the message are not sent, not even as MQTT 5 user properties.
 
