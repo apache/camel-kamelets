@@ -46,22 +46,21 @@ actions:
                 - name: "pulsar.service.url"
                   value: "pulsar://${CITRUS_TESTCONTAINERS_PULSAR_HOST}:${CITRUS_TESTCONTAINERS_PULSAR_PORT}"
 
-  # The message goes on unchanged after the Kamelet
+  # After the Kamelet the body is the payload as bytes, with Content-Type application/octet-stream
   - http:
       server: "httpServer"
       receiveRequest:
         POST:
           path: "/result"
-          type: "plaintext"
           headers:
             - name: "X-Body-Type"
-              value: 'java.lang.String'
+              value: '[B'
+            - name: "X-Body"
+              value: 'Hello Pulsar'
             - name: "X-Content-Type"
-              value: 'ct='
+              value: 'ct=application/octet-stream'
             - name: "key"
               value: 'order-1'
-          body:
-            data: 'Hello Pulsar'
   - http:
       server: "httpServer"
       sendResponse:
