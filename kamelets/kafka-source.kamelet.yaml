@@ -37,7 +37,7 @@ spec:
 
       Output: the body is the value of the record, as text. With `schemaRegistryVendor`, the value is read with its schema from the registry and the body is JSON text, such as `{"id": 7, "item": "camel"}` for an Avro record. A record without a value (a tombstone) gives a message with no body. The `kafka-topic`, `kafka-key`, `kafka-partition`, `kafka-offset` and `kafka-timestamp` (in milliseconds since 1970) headers say where the record came from. They are also set as `ce-kafkatopic`, `ce-kafkakey` and so on, and as the `CamelKafka*` headers that the Kafka actions read. The record headers become message headers, as text unless `deserializeHeaders` is false.
 
-      Good to know: `saslAuthType` has no default and must be set; `NONE` connects with no login and no TLS. A new consumer group starts at the newest records, unless `autoOffsetReset` is `earliest`. Without `consumerGroup`, every start uses a new group, so the records sent while the integration was stopped are skipped. With `schemaRegistryVendor`, the integration needs the serde jars of the vendor, which Camel JBang downloads by itself; for `confluent` add the Confluent Maven repository, as in `camel run --repos=confluent`. With `aws-glue` and `azure`, the serde logs in with the credentials of the environment the integration runs in: the AWS default credentials chain, or the Azure `DefaultAzureCredential` (such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` variables). A `confluent` or `apicurio` registry that requires a login is not supported yet.
+      Good to know: `saslAuthType` has no default and must be set; `NONE` connects with no login and no TLS. A new consumer group starts at the newest records, unless `autoOffsetReset` is `earliest`. Without `consumerGroup`, every start uses a new group, so the records sent while the integration was stopped are skipped. With `schemaRegistryVendor`, the integration needs the serde jars of the vendor, which Camel JBang downloads by itself; for `confluent` add the Confluent Maven repository, as in `camel run --repos=confluent`. With `aws-glue` and `azure`, the serde logs in with the credentials of the environment the integration runs in: the AWS default credentials chain, or the Azure `DefaultAzureCredential` (such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` variables). To log in to a `confluent` or `apicurio` registry, set `schemaRegistryUsername` and `schemaRegistryPassword` (for Confluent Cloud, the API key and secret of the Schema Registry), or the OAuth2 client credentials `schemaRegistryOauthClientId`, `schemaRegistryOauthClientSecret` and `schemaRegistryOauthTokenEndpoint`, such as of a Keycloak client; these options are not used with `aws-glue` and `azure`, and setting one fails at startup. Kafka only calls an OAuth2 token endpoint that is listed in the JVM system property `org.apache.kafka.sasl.oauthbearer.allowed.urls`, such as with `camel run --jvm-args=-Dorg.apache.kafka.sasl.oauthbearer.allowed.urls=https://idp.example.com/oauth2/token`; without it, the integration fails to start with `The URL cannot be accessed due to restrictions`. This applies to `schemaRegistryOauthTokenEndpoint` and to the `oauthTokenEndpointUri` of `saslAuthType` `OAUTH`.
     required:
       - topic
       - bootstrapServers
@@ -85,7 +85,7 @@ spec:
           - urn:camel:group:credentials
       oauthTokenEndpointUri:
         title: OAuth Token URL
-        description: "The URL of the OAuth 2.0 provider where the Kamelet gets its access token. Required when `saslAuthType` is `OAUTH`."
+        description: "The URL of the OAuth 2.0 provider where the Kamelet gets its access token. Required when `saslAuthType` is `OAUTH`. The URL must also be listed in the JVM system property `org.apache.kafka.sasl.oauthbearer.allowed.urls`, or the integration fails to start."
         type: string
         example: "https://auth.example.com/oauth2/token"
       oauthScope:
@@ -185,6 +185,41 @@ spec:
         type: string
         enum: ["avro", "json"]
         default: avro
+      schemaRegistryUsername:
+        title: Schema Registry Username
+        description: "The username to log in to a `confluent` or `apicurio` schema registry, with `schemaRegistryPassword`. For Confluent Cloud, the API key of the Schema Registry."
+        type: string
+        x-descriptors:
+          - urn:camel:group:credentials
+      schemaRegistryPassword:
+        title: Schema Registry Password
+        description: "The password of `schemaRegistryUsername`. For Confluent Cloud, the API secret of the Schema Registry."
+        type: string
+        format: password
+        x-descriptors:
+          - urn:camel:group:credentials
+      schemaRegistryOauthTokenEndpoint:
+        title: Schema Registry OAuth Token Endpoint
+        description: "The token endpoint of the OAuth2 server, to log in to a `confluent` or `apicurio` schema registry with client credentials, such as the token endpoint of a Keycloak realm. The URL must also be listed in the JVM system property `org.apache.kafka.sasl.oauthbearer.allowed.urls`, or the integration fails to start."
+        type: string
+        example: "http://keycloak:8080/realms/registry/protocol/openid-connect/token"
+      schemaRegistryOauthClientId:
+        title: Schema Registry OAuth Client ID
+        description: "The OAuth2 client id, to log in to a `confluent` or `apicurio` schema registry with client credentials."
+        type: string
+        x-descriptors:
+          - urn:camel:group:credentials
+      schemaRegistryOauthClientSecret:
+        title: Schema Registry OAuth Client Secret
+        description: "The OAuth2 client secret of `schemaRegistryOauthClientId`."
+        type: string
+        format: password
+        x-descriptors:
+          - urn:camel:group:credentials
+      schemaRegistryOauthScope:
+        title: Schema Registry OAuth Scope
+        description: "The OAuth2 scope to ask for when logging in to the schema registry with client credentials (optional)."
+        type: string
   dataTypes:
     out:
       headers:
@@ -260,6 +295,12 @@ spec:
         schemaFormat: "{{schemaFormat}}"
         schemaRegistryURL: "{{?schemaRegistryUrl}}"
         schemaRegistryVendor: "{{?schemaRegistryVendor}}"
+        schemaRegistryUsername: "{{?schemaRegistryUsername}}"
+        schemaRegistryPassword: "RAW({{?schemaRegistryPassword}})"
+        schemaRegistryOauthTokenEndpoint: "{{?schemaRegistryOauthTokenEndpoint}}"
+        schemaRegistryOauthClientId: "{{?schemaRegistryOauthClientId}}"
+        schemaRegistryOauthClientSecret: "RAW({{?schemaRegistryOauthClientSecret}})"
+        schemaRegistryOauthScope: "{{?schemaRegistryOauthScope}}"
         sslKeyPassword: "RAW({{?sslKeyPassword}})"
         sslKeystoreLocation: "{{?sslKeystoreLocation}}"
         sslKeystorePassword: "RAW({{?sslKeystorePassword}})"
