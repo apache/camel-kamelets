@@ -1,0 +1,1 @@
+CREATE TABLE accounts (id INT PRIMARY KEY, username VARCHAR(100), city VARCHAR(100));
