@@ -34,3 +34,5 @@
             username: "{{postgresql.username}}"
             password: "{{postgresql.password}}"
             query: "INSERT INTO test_data (id, name, value) VALUES (:#id, :#name, :#value)"
+      # what the Kamelet leaves on the message: the Java type of the body, the Content-Type and the update count
+      - log: "after-sink body-type=${body.getClass().getName()} ct=${header.Content-Type} count=${header.CamelSqlUpdateCount}"
