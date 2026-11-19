@@ -200,7 +200,19 @@ spec:
                             - setProperty:
                                 name: aws-s3-bucket
                                 jsonpath: $.detail.bucket.name
-                            - toD: >-
-                                aws2-s3:${exchangeProperty.aws-s3-bucket}?accessKey={{accessKey}}&secretKey={{secretKey}}&region={{region}}&operation=getObject&keyName=${exchangeProperty.aws-s3-name}
+                            - choice:
+                                when:
+                                  - simple: "${exchangeProperty.aws-s3-bucket} regex '[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]'"
+                                    steps:
+                                      # the S3 call takes the bucket and the key of the event, and no other header
+                                      - removeHeaders:
+                                          pattern: 'CamelAwsS3*'
+                                      - setHeader:
+                                          name: CamelAwsS3Key
+                                          simple: '${exchangeProperty.aws-s3-name}'
+                                      - toD: >-
+                                          aws2-s3:${exchangeProperty.aws-s3-bucket}?accessKey={{accessKey}}&secretKey={{secretKey}}&region={{region}}&operation=getObject
+                                      - removeHeader:
+                                          name: CamelAwsS3Key
         - to: 'kamelet:sink'
 
