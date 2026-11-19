@@ -250,7 +250,7 @@ spec:
               type: string
             CamelCloudEventSource:
               title: CloudEvent Source
-              description: The event source. By default, the SQS Received message receipt handle with prefix "aws.sqs.queue.".
+              description: The event source. By default, the name of the SQS queue with the prefix `aws.sqs.queue.`, such as `aws.sqs.queue.orders`.
               type: string
             CamelCloudEventSubject:
               title: CloudEvent Subject
