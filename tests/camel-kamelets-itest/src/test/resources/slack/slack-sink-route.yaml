@@ -27,7 +27,7 @@
             uri: "kamelet:log-action"
             parameters:
               showHeaders: true
-        # the text as bytes: the Kamelet reads it as text
+        # the text as bytes: the Slack component reads it as text, and the body is left as it is
         - convertBodyTo:
             type: "byte[]"
         - to:
