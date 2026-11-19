@@ -1,0 +1,101 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: aws-sqs-fifo-sink-route-test
+# The message goes to a FIFO queue, in the group of the group header
+variables:
+  - name: "aws.sqs.queueName"
+    value: 'orders.fifo'
+actions:
+  # Create AWS infrastructure (Floci container)
+  - testcontainers:
+      start:
+        localstack:
+          services:
+            - "SQS"
+          options:
+            sqsClientName: "sqsFifoClient"
+  - waitFor:
+      http:
+        url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+
+  - groovy:
+      script:
+        file: "aws/sqs/createFifoQueue.groovy"
+
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "aws/sqs/aws-sqs-fifo-sink-route.yaml"
+            systemProperties:
+              file: "aws/floci.properties"
+              properties:
+                - name: "aws.sqs.queueName"
+                  value: "${aws.sqs.queueName}"
+
+  # The message is unchanged, with the ID of the SQS message
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-Message-Id"
+              value: '@notEmpty()@'
+          body:
+            data: 'order ORD-1'
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          body:
+            data: "OK"
+
+  # The queue holds the message, in the group of the header
+  - http:
+      client: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+      sendRequest:
+        POST:
+          path: "/"
+          contentType: "application/x-amz-json-1.0"
+          headers:
+            - name: "X-Amz-Target"
+              value: "AmazonSQS.ReceiveMessage"
+          body:
+            data: '{"QueueUrl":"${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}/000000000000/${aws.sqs.queueName}","MaxNumberOfMessages":10,"WaitTimeSeconds":5,"MessageSystemAttributeNames":["All"]}'
+  - http:
+      client: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+      receiveResponse:
+        response:
+          status: 200
+        validate:
+          - jsonPath:
+              - expression: '$.Messages.length()'
+                value: '1'
+              - expression: '$.Messages[0].Body'
+                value: 'order ORD-1'
+              - expression: '$.Messages[0].Attributes.MessageGroupId'
+                value: 'customer-1'

@@ -89,4 +89,59 @@ public class AwsIT {
         return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.sns");
     }
 
+    @CitrusTestFactory
+    public Stream<DynamicTest> awsCloudWatch() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.cloudwatch");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> awsEc2() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.ec2");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> awsFirehose() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.firehose");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> awsSecretsManager() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.secretsmanager");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> awsSes() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.ses");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> awsComprehend() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.comprehend");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> awsLambda() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.lambda");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> awsPolly() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.polly");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> awsTimestream() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.timestream");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> awsBedrock() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.bedrock");
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> awsCloudTrail() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.cloudtrail");
+    }
+
 }

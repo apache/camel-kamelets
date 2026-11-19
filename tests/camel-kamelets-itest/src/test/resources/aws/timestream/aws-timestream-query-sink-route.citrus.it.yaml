@@ -1,0 +1,83 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: aws-timestream-query-sink-route-test
+# The query in the query header is run, and the answer becomes the body. Floci does not emulate Timestream queries:
+# the Citrus HTTP server stands in for it.
+actions:
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "aws/timestream/aws-timestream-query-sink-route.yaml"
+            systemProperties:
+              file: "aws/aws-stand-in.properties"
+
+  # The query of the header is run
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/"
+          headers:
+            - name: "X-Amz-Target"
+              value: 'Timestream_20181101.Query'
+        validate:
+          - jsonPath:
+              - expression: '$.QueryString'
+                value: 'SELECT sensor, temperature FROM sensors.readings'
+
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          headers:
+            - name: "Content-Type"
+              value: 'application/x-amz-json-1.0'
+          body:
+            data: '{"QueryId":"query-1","Rows":[{"Data":[{"ScalarValue":"sensor-1"},{"ScalarValue":"21.5"}]}],"ColumnInfo":[{"Name":"sensor","Type":{"ScalarType":"VARCHAR"}},{"Name":"temperature","Type":{"ScalarType":"DOUBLE"}}]}'
+
+  # The body is the QueryResponse
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'software.amazon.awssdk.services.timestreamquery.model.QueryResponse'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-Rows"
+              value: '1'
+            - name: "X-Column"
+              value: 'temperature'
+          body:
+            data: '21.5'
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          body:
+            data: "OK"
