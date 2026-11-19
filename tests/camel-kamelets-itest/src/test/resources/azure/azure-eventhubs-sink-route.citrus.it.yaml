@@ -1,0 +1,78 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: azure-eventhubs-sink-route-test
+description: 'azure-eventhubs-sink sends the body as an event, with the headers as properties of the event'
+actions:
+  # Start the Event Hubs emulator, with the event hub orders, and the Azurite storage emulator that it needs
+  - groovy:
+      script:
+        file: "azure/eventhubs-emulator-start.groovy"
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "azure/azure-eventhubs-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${azure.server.port}"
+                - name: "eventhubs.connectionString"
+                  value: "${eventhubs.connectionString}"
+          resources:
+            - "AzureEventHubsCheckpointStore.java"
+
+  # The message goes on unchanged after the Kamelet
+  - http:
+      server: "azureServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "origin"
+              value: 'citrus'
+          body:
+            data: 'Hello Event Hubs'
+  - http:
+      server: "azureServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The event hub has the event, with the header origin as a property
+  - camel:
+      cli:
+        verify:
+          integration: "azure-eventhubs-sink-route"
+          logMessage: 'Received from the event hub: Hello Event Hubs (origin=citrus)'
+          maxAttempts: 30
+          delayBetweenAttempts: 1000
+
+finally:
+  - groovy:
+      script:
+        file: "azure/eventhubs-emulator-stop.groovy"
