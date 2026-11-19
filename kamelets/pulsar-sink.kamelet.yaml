@@ -57,7 +57,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: it connects with no TLS and no login, unless `serviceUrl` starts with `pulsar+ssl://` and `authenticationClass` is set. Over TLS, the certificate of Pulsar must be signed by an authority that the Java trust store of the integration trusts; for a private one, point `javax.net.ssl.trustStore` at a trust store with it, as the Kamelet has no trust store option. It connects when the integration starts, and the integration fails to start when Pulsar cannot be reached, unless `lazyStart` is true. Headers that start with `CamelPulsar`, except `CamelPulsarProducerMessageKey` and `CamelPulsarProducerMessageProperties`, are removed from the message first, so they cannot change what the Kamelet does.
+      Good to know: it connects with no TLS and no login, unless `serviceUrl` starts with `pulsar+ssl://` and `authenticationClass` is set. Over TLS, the certificate of Pulsar must be signed by an authority that the Java trust store of the integration trusts, or by one in the PEM file of `tlsTrustCertsFilePath`, such as a private one, and it must be issued for the host name in `serviceUrl`. It connects when the integration starts, and the integration fails to start when Pulsar cannot be reached, unless `lazyStart` is true. Headers that start with `CamelPulsar`, except `CamelPulsarProducerMessageKey` and `CamelPulsarProducerMessageProperties`, are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - topicType
       - topic
@@ -90,6 +90,11 @@ spec:
         description: "The address of the Pulsar broker, as `pulsar://host:port` (the usual port is 6650), or `pulsar+ssl://host:port` for TLS (usually 6651)."
         example: "pulsar://localhost:6650"
         type: string        
+      tlsTrustCertsFilePath:
+        title: "TLS Trust Certificates File"
+        description: "The path of a PEM file with the certificates of the authorities to trust for a `pulsar+ssl://` broker, such as a private one, instead of the Java trust store. Only used with `pulsar+ssl://`."
+        type: string
+        example: "/etc/pulsar/ca.pem"
       authenticationClass:
         title: "Authentication Class"
         description: "The Java class of the Pulsar authentication plugin to log in with, such as `org.apache.pulsar.client.impl.auth.AuthenticationToken` for a token. Leave it empty for a Pulsar without login."
@@ -175,4 +180,4 @@ spec:
                         simple:
                           expression: "${header[key]}"
         - to:
-            uri: "pulsar:{{topicType}}/{{tenant}}/{{namespaceName}}/{{topic}}?authenticationClass={{?authenticationClass}}&authenticationParams={{?authenticationParams}}&batchingEnabled={{?batchingEnabled}}&batchingMaxMessages={{?batchingMaxMessages}}&batchingMaxPublishDelayMicros={{?batchingMaxPublishDelayMicros}}&blockIfQueueFull={{?blockIfQueueFull}}&compressionType={{?compressionType}}&initialSequenceId={{?initialSequenceId}}&lazyStartProducer={{?lazyStart}}&maxPendingMessages={{?maxPendingMessages}}&messageRoutingMode={{?messageRoutingMode}}&producerName={{?producerName}}&sendTimeoutMs={{?sendTimeoutMs}}&serviceUrl=RAW({{serviceUrl}})"
+            uri: "pulsar:{{topicType}}/{{tenant}}/{{namespaceName}}/{{topic}}?authenticationClass={{?authenticationClass}}&authenticationParams={{?authenticationParams}}&batchingEnabled={{?batchingEnabled}}&batchingMaxMessages={{?batchingMaxMessages}}&batchingMaxPublishDelayMicros={{?batchingMaxPublishDelayMicros}}&blockIfQueueFull={{?blockIfQueueFull}}&compressionType={{?compressionType}}&initialSequenceId={{?initialSequenceId}}&lazyStartProducer={{?lazyStart}}&maxPendingMessages={{?maxPendingMessages}}&messageRoutingMode={{?messageRoutingMode}}&producerName={{?producerName}}&sendTimeoutMs={{?sendTimeoutMs}}&serviceUrl=RAW({{serviceUrl}})&tlsTrustCertsFilePath={{?tlsTrustCertsFilePath}}"
