@@ -63,7 +63,7 @@ spec:
 
       Output: the body is the payload, as bytes. The headers give the topic (`topic_name`), the key (`key`), the Pulsar properties as a Map (`properties`), the `message_id`, the `publish_time` and the `producer_name`.
 
-      Good to know: the subscription (`subscriptionName`, `subs` by default) remembers what was read, so messages sent while the source is stopped are read when it starts again. A new subscription starts at the newest message, unless `subscriptionInitialPosition` is `EARLIEST`. A message whose processing fails is delivered again after one minute, again and again, unless `maxRedeliverCount` is set with a `SHARED` or `KEY_SHARED` subscription. A message whose processing takes longer than `ackTimeoutMillis` (10 seconds when not set) is delivered again, and so processed twice. It connects with no TLS and no login, unless `serviceUrl` starts with `pulsar+ssl://` and `authenticationClass` is set. Over TLS, the certificate of Pulsar must be signed by an authority that the Java trust store of the integration trusts; for a private one, point `javax.net.ssl.trustStore` at a trust store with it, as the Kamelet has no trust store option.
+      Good to know: the subscription (`subscriptionName`, `subs` by default) remembers what was read, so messages sent while the source is stopped are read when it starts again. A new subscription starts at the newest message, unless `subscriptionInitialPosition` is `EARLIEST`. A message whose processing fails is delivered again after one minute, again and again, unless `maxRedeliverCount` is set with a `SHARED` or `KEY_SHARED` subscription. A message whose processing takes longer than `ackTimeoutMillis` (10 seconds when not set) is delivered again, and so processed twice. It connects with no TLS and no login, unless `serviceUrl` starts with `pulsar+ssl://` and `authenticationClass` is set. Over TLS, the certificate of Pulsar must be signed by an authority that the Java trust store of the integration trusts, or by one in the PEM file of `tlsTrustCertsFilePath`, such as a private one, and it must be issued for the host name in `serviceUrl`.
     required:
       - topicType
       - topic
@@ -96,6 +96,11 @@ spec:
         description: "The address of the Pulsar broker, as `pulsar://host:port` (the usual port is 6650), or `pulsar+ssl://host:port` for TLS (usually 6651)."
         example: "pulsar://localhost:6650"
         type: string        
+      tlsTrustCertsFilePath:
+        title: "TLS Trust Certificates File"
+        description: "The path of a PEM file with the certificates of the authorities to trust for a `pulsar+ssl://` broker, such as a private one, instead of the Java trust store. Only used with `pulsar+ssl://`."
+        type: string
+        example: "/etc/pulsar/ca.pem"
       ackTimeoutMillis:
         title: "Acknowledgement Timeout"
         description: "How long the processing of a message may take, in milliseconds. A message that is not done by then is delivered again, and so processed twice. When it is not set, 10000 (10 seconds). 0 turns this off; a value from 1 to 999 makes the integration fail to start."
@@ -183,7 +188,7 @@ spec:
     type: object
   template:
     from:
-      uri: "pulsar:{{topicType}}/{{tenant}}/{{namespaceName}}/{{topic}}?ackTimeoutMillis={{?ackTimeoutMillis}}&authenticationClass={{?authenticationClass}}&authenticationParams={{?authenticationParams}}&consumerNamePrefix={{?consumerNamePrefix}}&consumerQueueSize={{?consumerQueueSize}}&deadLetterTopic={{?deadLetterTopic}}&maxRedeliverCount={{?maxRedeliverCount}}&messageListener={{?messageListener}}&negativeAckRedeliveryDelayMicros={{?negativeAckRedeliveryDelayMicros}}&numberOfConsumerThreads={{?numberOfConsumerThreads}}&numberOfConsumers={{?numberOfConsumers}}&readCompacted={{?readCompacted}}&serviceUrl=RAW({{serviceUrl}})&subscriptionInitialPosition={{?subscriptionInitialPosition}}&subscriptionName={{?subscriptionName}}&subscriptionTopicsMode={{?subscriptionTopicsMode}}&subscriptionType={{?subscriptionType}}&topicsPattern={{?topicsPattern}}"
+      uri: "pulsar:{{topicType}}/{{tenant}}/{{namespaceName}}/{{topic}}?ackTimeoutMillis={{?ackTimeoutMillis}}&authenticationClass={{?authenticationClass}}&authenticationParams={{?authenticationParams}}&consumerNamePrefix={{?consumerNamePrefix}}&consumerQueueSize={{?consumerQueueSize}}&deadLetterTopic={{?deadLetterTopic}}&maxRedeliverCount={{?maxRedeliverCount}}&messageListener={{?messageListener}}&negativeAckRedeliveryDelayMicros={{?negativeAckRedeliveryDelayMicros}}&numberOfConsumerThreads={{?numberOfConsumerThreads}}&numberOfConsumers={{?numberOfConsumers}}&readCompacted={{?readCompacted}}&serviceUrl=RAW({{serviceUrl}})&subscriptionInitialPosition={{?subscriptionInitialPosition}}&subscriptionName={{?subscriptionName}}&subscriptionTopicsMode={{?subscriptionTopicsMode}}&subscriptionType={{?subscriptionType}}&topicsPattern={{?topicsPattern}}&tlsTrustCertsFilePath={{?tlsTrustCertsFilePath}}"
       steps:
         - to:
             uri: kamelet:sink
