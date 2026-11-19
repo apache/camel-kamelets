@@ -166,6 +166,11 @@ spec:
         description: "How long Pulsar may take to confirm a message before the message fails, in milliseconds. For example, 30000 is 30 seconds."
         type: integer
         default: 30000
+      batcherBuilder:
+        title: Batcher
+        description: "How the messages are put in batches, when `batchingEnabled` is true: `DEFAULT` batches the messages together whatever their key; `KEY_BASED` batches the messages of each key separately, so that a `Key_Shared` subscription spreads the keys over its consumers. When not set, `DEFAULT`."
+        type: string
+        enum: ["DEFAULT", "KEY_BASED"]
     type: object
   template:
     from:
@@ -186,4 +191,4 @@ spec:
                         simple:
                           expression: "${header[key]}"
         - to:
-            uri: "pulsar:{{topicType}}/{{tenant}}/{{namespaceName}}/{{topic}}?authenticationClass={{?authenticationClass}}&authenticationParams={{?authenticationParams}}&batchingEnabled={{?batchingEnabled}}&batchingMaxMessages={{?batchingMaxMessages}}&batchingMaxPublishDelayMicros={{?batchingMaxPublishDelayMicros}}&blockIfQueueFull={{?blockIfQueueFull}}&compressionType={{?compressionType}}&initialSequenceId={{?initialSequenceId}}&lazyStartProducer={{?lazyStart}}&maxPendingMessages={{?maxPendingMessages}}&messageRoutingMode={{?messageRoutingMode}}&producerName={{?producerName}}&sendTimeoutMs={{?sendTimeoutMs}}&serviceUrl=RAW({{serviceUrl}})&tlsTrustCertsFilePath={{?tlsTrustCertsFilePath}}"
+            uri: "pulsar:{{topicType}}/{{tenant}}/{{namespaceName}}/{{topic}}?authenticationClass={{?authenticationClass}}&authenticationParams={{?authenticationParams}}&batcherBuilder={{?batcherBuilder}}&batchingEnabled={{?batchingEnabled}}&batchingMaxMessages={{?batchingMaxMessages}}&batchingMaxPublishDelayMicros={{?batchingMaxPublishDelayMicros}}&blockIfQueueFull={{?blockIfQueueFull}}&compressionType={{?compressionType}}&initialSequenceId={{?initialSequenceId}}&lazyStartProducer={{?lazyStart}}&maxPendingMessages={{?maxPendingMessages}}&messageRoutingMode={{?messageRoutingMode}}&producerName={{?producerName}}&sendTimeoutMs={{?sendTimeoutMs}}&serviceUrl=RAW({{serviceUrl}})&tlsTrustCertsFilePath={{?tlsTrustCertsFilePath}}"
