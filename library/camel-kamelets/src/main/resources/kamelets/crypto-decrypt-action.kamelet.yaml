@@ -39,7 +39,7 @@ spec:
 
       Output: the body is the original data, as bytes (a stream). The headers are kept.
 
-      Good to know: the `Content-Type` header is kept as it comes, which after `crypto-encrypt-action` is `application/octet-stream`: set it again to the type of the original data when the next step needs it, for example with `insert-header-action`. data that was changed, or a different `algorithm`, `mode` or `key` than when encrypting, fails the message with "Message authentication failed". The key is a secret; keep it in a vault or a secret, not in plain configuration.
+      Good to know: the `Content-Type` header is kept as it comes, which after `crypto-encrypt-action` is `application/octet-stream`: set it again to the type of the original data when the next step needs it, for example with `insert-header-action`. Data that was changed, or a different `algorithm`, `mode` or `key` than when encrypting, fails the message with "Message authentication failed". The key is a secret; keep it in a vault or a secret, not in plain configuration.
     required:
       - algorithm
       - key
