@@ -83,7 +83,6 @@ public enum KameletPrefixSchemeEnum {
     minio("minio", "minio"),
     mongodb_changes_stream("mongodb-changes-stream", "mongodb"),
     mongodb("mongodb", "mongodb"),
-    mqtt("mqtt", "paho"),
     mqtt5("mqtt5", "paho-mqtt5"),
     ms_exchange("ms-exchange", "imaps"),
     mysql("mysql", "sql"),

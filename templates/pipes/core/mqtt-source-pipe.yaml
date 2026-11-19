@@ -1,9 +1,0 @@
-- route:
-    from:
-      uri: "kamelet:mqtt-source"
-      parameters:
-        brokerUrl: "tcp://mosquitto:1883"
-        topic: "mytopic"
-      steps:
-        - to:
-            uri: "log:info"
