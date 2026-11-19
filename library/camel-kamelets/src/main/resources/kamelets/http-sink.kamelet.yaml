@@ -35,11 +35,11 @@ spec:
 
       Use it to push data to any service that accepts HTTP calls, such as a webhook, a REST API or a serverless function.
 
-      Input: the body is sent as the request body, as text, bytes or a stream. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The `Content-Type` header is sent as the content type of the request, and the other headers of the message, except the Camel ones, are sent as HTTP headers.
+      Input: the body is sent as the request body, as text, bytes or a stream. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The `Content-Type` header is sent as the content type of the request, and the other headers of the message, except the Camel ones and `Authorization` and `Proxy-Authorization`, are sent as HTTP headers.
 
       Output: when it is used inside a route, the body afterwards is the response of the service.
 
-      Good to know: a response with a status code outside `okStatusCodeRange`, which is `200-299` when it is not set, fails the message. The address, the method and the proxy come only from the options; headers on the message cannot change where it is sent. Log in either with `authUsername` and `authPassword`, with a static token in `authBearerToken`, or with `oauth2ClientId`, `oauth2ClientSecret` and `oauth2TokenEndpoint`: the Kamelet then gets a token from that URL and sends it as a Bearer token. Without `authenticationPreemptive`, the user and password, or the static token, are sent only after the service asks for them with a 401 response. To go through an HTTP proxy, set `proxyHost` and `proxyPort`, and `proxyUser` and `proxyPassword` when the proxy asks for a login; an `https://` address goes through the proxy too. The certificate of an `https://` service is checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.https.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every `https://` call of the application.
+      Good to know: a response with a status code outside `okStatusCodeRange`, which is `200-299` when it is not set, fails the message. The address, the method and the proxy come only from the options; headers on the message cannot change where it is sent. The login comes only from the options too: an `Authorization` or `Proxy-Authorization` header on the message is removed, so a credential that came with the message, such as the one of the caller of `webhook-source`, is not sent on. For a token that differs for each message, use the `http` component instead. Log in either with `authUsername` and `authPassword`, with a static token in `authBearerToken`, or with `oauth2ClientId`, `oauth2ClientSecret` and `oauth2TokenEndpoint`: the Kamelet then gets a token from that URL and sends it as a Bearer token. Without `authenticationPreemptive`, the user and password, or the static token, are sent only after the service asks for them with a 401 response. To go through an HTTP proxy, set `proxyHost` and `proxyPort`, and `proxyUser` and `proxyPassword` when the proxy asks for a login; an `https://` address goes through the proxy too. The certificate of an `https://` service is checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.https.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every `https://` call of the application.
     required:
     - url
     type: object
@@ -167,6 +167,10 @@ spec:
             name: CamelRestHttpUri
         - removeHeader:
             name: CamelRestHttpQuery
+        - removeHeader:
+            name: Authorization
+        - removeHeader:
+            name: Proxy-Authorization
         - setHeader:
             name: CamelHttpMethod
             expression:
