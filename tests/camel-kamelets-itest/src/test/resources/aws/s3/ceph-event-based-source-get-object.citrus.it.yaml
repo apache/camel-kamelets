@@ -1,0 +1,108 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: ceph-event-based-source-get-object-test
+variables:
+  - name: "aws.s3.bucketNameOrArn"
+    value: "bucket-ceph-events"
+  - name: "kafka.topic"
+    value: "ceph-events"
+actions:
+  # Create the S3 storage (Floci container) and Kafka
+  - testcontainers:
+      start:
+        localstack:
+          services:
+            - "S3"
+          options:
+            buckets: '${aws.s3.bucketNameOrArn}'
+            s3ClientName: "s3CephClient"
+  - testcontainers:
+      start:
+        redpanda: {}
+  - waitFor:
+      http:
+        url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+
+  # Files whose names have characters that an endpoint address gives a meaning to
+  - send:
+      endpoint: camel:aws2-s3://${aws.s3.bucketNameOrArn}?amazonS3Client=#s3CephClient
+      message:
+        headers:
+          - name: CamelAwsS3Key
+            value: "dir/my file+x=1.txt"
+        body:
+          data: "Content of the first file"
+  - send:
+      endpoint: camel:aws2-s3://${aws.s3.bucketNameOrArn}?amazonS3Client=#s3CephClient
+      message:
+        headers:
+          - name: CamelAwsS3Key
+            value: "reports/a&b=c.txt"
+        body:
+          data: "Content of the second file"
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "aws/s3/ceph-event-based-source-get-object.yaml"
+            systemProperties:
+              properties:
+                - name: "kafka.topic"
+                  value: "${kafka.topic}"
+                - name: "kafka.bootstrapServers"
+                  value: "${CITRUS_TESTCONTAINERS_REDPANDA_BOOTSTRAP_SERVERS}"
+                - name: "ceph.url"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+                - name: "ceph.secretKey"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
+                - name: "ceph.accessKey"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
+                - name: "ceph.zoneGroup"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
+
+  # The notifications that Ceph sends to Kafka for the two uploads
+  - createEndpoint:
+      name: cephEventsProducer
+      type: "kafka"
+      properties:
+        topic: "${kafka.topic}"
+        server: "${CITRUS_TESTCONTAINERS_REDPANDA_BOOTSTRAP_SERVERS}"
+  - send:
+      endpoint: cephEventsProducer
+      message:
+        body:
+          data: '{"Records":[{"eventId":"1","opaqueData":"","eventName":"ObjectCreated:Put","s3":{"bucket":{"name":"${aws.s3.bucketNameOrArn}"},"object":{"key":"dir/my file+x=1.txt","metadata":[],"tags":[]}}}]}'
+  - send:
+      endpoint: cephEventsProducer
+      message:
+        body:
+          data: '{"Records":[{"eventId":"2","opaqueData":"","eventName":"ObjectCreated:Put","s3":{"bucket":{"name":"${aws.s3.bucketNameOrArn}"},"object":{"key":"reports/a&b=c.txt","metadata":[],"tags":[]}}}]}'
+
+  # Each file is read with its whole name
+  - camel:
+      cli:
+        verify:
+          integration: "ceph-event-based-source-get-object"
+          logMessage: "Read dir/my file+x=1.txt: Content of the first file"
+  - camel:
+      cli:
+        verify:
+          integration: "ceph-event-based-source-get-object"
+          logMessage: "Read reports/a&b=c.txt: Content of the second file"

@@ -165,12 +165,20 @@ spec:
                             simple:
                               expression: "${exchangeProperty.google-storage-event-type} == \"OBJECT_FINALIZE\" && ${exchangeProperty.google-storage-bucket-id} == \"{{bucketNameOrArn}}\""
                           steps:
-                            - toD:
-                                uri: google-storage
+                            # the Cloud Storage call takes the name of the object of the event, and no other header
+                            - removeHeaders:
+                                pattern: "CamelGoogleCloudStorage*"
+                            - setHeader:
+                                name: CamelGoogleCloudStorageObjectName
+                                expression:
+                                  simple:
+                                    expression: "${exchangeProperty.google-storage-object-id}"
+                            - to:
+                                uri: "google-storage:{{bucketNameOrArn}}"
                                 parameters:
-                                  bucketName: "{{bucketNameOrArn}}"
-                                  objectName: "${exchangeProperty.google-storage-object-id}"
                                   operation: getObject
                                   serviceAccountKey: "RAW(base64:{{serviceAccountKey}})"
+                            - removeHeader:
+                                name: CamelGoogleCloudStorageObjectName
         - to:
             uri: kamelet:sink

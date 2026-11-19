@@ -228,7 +228,23 @@ spec:
                                 expression:
                                   jsonpath:
                                     expression: "$.Records[0].s3.bucket.name"
-                            - toD:
-                                uri: "aws2-s3:${exchangeProperty.ceph-bucket-name}?accessKey=RAW({{accessKey}})&secretKey=RAW({{secretKey}})&region={{zoneGroup}}&operation=getObject&keyName=${exchangeProperty.ceph-object-key}&uriEndpointOverride={{cephUrl}}&overrideEndpoint=true"
+                            - choice:
+                                when:
+                                  - expression:
+                                      simple:
+                                        expression: "${exchangeProperty.ceph-bucket-name} regex '[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]'"
+                                    steps:
+                                      # the S3 call takes the bucket and the key of the event, and no other header
+                                      - removeHeaders:
+                                          pattern: "CamelAwsS3*"
+                                      - setHeader:
+                                          name: CamelAwsS3Key
+                                          expression:
+                                            simple:
+                                              expression: "${exchangeProperty.ceph-object-key}"
+                                      - toD:
+                                          uri: "aws2-s3:${exchangeProperty.ceph-bucket-name}?accessKey=RAW({{accessKey}})&secretKey=RAW({{secretKey}})&region={{zoneGroup}}&operation=getObject&uriEndpointOverride={{cephUrl}}&overrideEndpoint=true"
+                                      - removeHeader:
+                                          name: CamelAwsS3Key
         - to:
             uri: kamelet:sink
