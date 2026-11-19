@@ -43,3 +43,10 @@ actions:
         verify:
           integration: "postgresql-sink-route"
           logMessage: "from-sink"
+
+  # The INSERT ran: the body is the JSON object as a Map, and Content-Type is the application/json of the input
+  - camel:
+      cli:
+        verify:
+          integration: "postgresql-sink-route"
+          logMessage: "after-sink body-type=java.util.LinkedHashMap ct=application/json count=1"

@@ -18,13 +18,50 @@
 import java.util.stream.Stream;
 
 import org.citrusframework.api.common.TestLoader;
+import org.citrusframework.container.SequenceAfterTest;
+import org.citrusframework.container.SequenceBeforeTest;
+import org.citrusframework.http.server.HttpServer;
 import org.citrusframework.junit.jupiter.CitrusSupport;
 import org.citrusframework.junit.jupiter.CitrusTestFactory;
 import org.citrusframework.junit.jupiter.CitrusTestFactorySupport;
+import org.citrusframework.spi.BindToRegistry;
+import org.citrusframework.util.SocketUtils;
 import org.junit.jupiter.api.DynamicTest;
+
+import static org.citrusframework.actions.CreateVariablesAction.Builder.createVariables;
+import static org.citrusframework.actions.PurgeEndpointAction.Builder.purgeEndpoints;
+import static org.citrusframework.http.endpoint.builder.HttpEndpoints.http;
 
 @CitrusSupport
 public class MailIT {
+
+    private static final String SOURCE_TESTS = "mail-imap-.*";
+
+    private final int mailHttpServerPort = SocketUtils.findAvailableTcpPort();
+
+    // the source tests send what they receive to this server; a mail server container and a first Camel JBang
+    // run that downloads the libraries take a while
+    @BindToRegistry
+    HttpServer mailHttpServer = http()
+                .server()
+                .port(mailHttpServerPort)
+                .timeout(120000L)
+                .autoStart(true)
+                .build();
+
+    @BindToRegistry
+    public SequenceBeforeTest beforeMail() {
+        return new SequenceBeforeTest.Builder().onTests(SOURCE_TESTS).actions(
+                createVariables().variable("mail.http.server.port", String.valueOf(mailHttpServerPort))
+        ).build();
+    }
+
+    @BindToRegistry
+    public SequenceAfterTest afterMail() {
+        return new SequenceAfterTest.Builder().onTests(SOURCE_TESTS).actions(
+                purgeEndpoints().endpoint(mailHttpServer)
+        ).build();
+    }
 
     @CitrusTestFactory
     public Stream<DynamicTest> mail() {

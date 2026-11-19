@@ -1,0 +1,98 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: azure-storage-queue-sink-route-test
+description: 'azure-storage-queue-sink creates the queue with createQueue and sends the body as a queue message'
+actions:
+  # Start the Floci Azure emulator, which serves Blob, Queue and Data Lake storage on one port. It does not check the
+  # account key.
+  - testcontainers:
+      start:
+        container:
+          name: "azure"
+          image: "floci/floci-az:0.16.0"
+          autoRemove: true
+          startUpTimeout: 120
+          exposedPorts:
+            - 4577
+          waitFor:
+            logMessage: '.*floci-az is ready.*'
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "azure/azure-storage-queue-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${azure.server.port}"
+                - name: "azure.url"
+                  value: "http://${CITRUS_TESTCONTAINERS_AZURE_HOST}:${CITRUS_TESTCONTAINERS_AZURE_PORT}"
+                - name: "azure.accountName"
+                  value: "devstoreaccount1"
+                - name: "azure.accessKey"
+                  value: "a2FtZWxldHM="
+          resources:
+            - "AzureQueueClient.java"
+
+  # Afterwards the body is true, and the CamelAzureStorageQueueMessageId header gives the ID of the message
+  - http:
+      server: "azureServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.Boolean'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-Message-Id"
+              value: '@matches([0-9a-f-]{36})@'
+          body:
+            data: 'true'
+  - http:
+      server: "azureServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The message is in the queue, not received yet, with the body as its text
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_AZURE_HOST}:${CITRUS_TESTCONTAINERS_AZURE_PORT}"
+      sendRequest:
+        GET:
+          path: "/devstoreaccount1-queue/orders/messages"
+          parameters:
+            - name: "peekonly"
+              value: 'true'
+          headers:
+            - name: "x-ms-version"
+              value: '2025-11-05'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_AZURE_HOST}:${CITRUS_TESTCONTAINERS_AZURE_PORT}"
+      receiveResponse:
+        response:
+          status: 200
+          type: "plaintext"
+          body:
+            data: '@contains(''<DequeueCount>0</DequeueCount><MessageText>Hello Azure Queue</MessageText></QueueMessage></QueueMessagesList>'')@'

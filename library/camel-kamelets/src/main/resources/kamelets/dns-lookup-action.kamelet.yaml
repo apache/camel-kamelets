@@ -37,7 +37,7 @@ spec:
 
       Input: the name to look up, taken from the `domain-name` header, else from the `ce-domainname` header, else from the body as text.
 
-      Output: the body is a JSON array with one entry per record found. Each entry has the type, the class and the time to live of the record.
+      Output: the body is a JSON array, as bytes, with one entry per record found, and the `Content-Type` header is set to `application/json`. Each entry has the type, the class and the time to live of the record.
 
       Good to know: a name the DNS does not know fails the message with "host not found". The Kamelet has no options; it asks the DNS servers of the machine it runs on. Headers that start with `CamelDns` are removed from the message first, so they cannot change what the Kamelet does.
     type: object
@@ -55,6 +55,13 @@ spec:
           title: Domain Name (CloudEvents)
           description: The host name to look up, when the message is a CloudEvent. Used only when `domain-name` is not set.
           type: string
+    out:
+      default: json
+      types:
+        json:
+          format: "application-json"
+          description: "The records found, as a JSON array in bytes."
+          mediaType: application/json
   dependencies:
     - "camel:jackson3"
     - "camel:dns"
