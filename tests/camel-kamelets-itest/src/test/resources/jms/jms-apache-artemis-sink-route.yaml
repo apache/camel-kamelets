@@ -1,0 +1,57 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+- route:
+    from:
+      uri: "timer:send"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: 'Hello Artemis'
+        - setHeader:
+            name: origin
+            constant: 'citrus'
+        - to:
+            uri: "kamelet:jms-apache-artemis-sink"
+            parameters:
+              brokerURL: '{{artemis.broker.url}}'
+              destinationName: 'orders'
+              username: 'artemis'
+              password: 'artemis'
+        # what the Kamelet gives: the Java type of the body and the Content-Type
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
+        - to:
+            uri: "{{http.sink.url}}/result"
+
+# reads the message back from the queue, to show that it arrived
+- route:
+    from:
+      uri: "kamelet:jms-apache-artemis-source"
+      parameters:
+        brokerURL: '{{artemis.broker.url}}'
+        destinationName: 'orders'
+        username: 'artemis'
+        password: 'artemis'
+      steps:
+        - log:
+            message: 'Received from the queue: ${body} (origin=${header.origin}, JMSPriority=${header.JMSPriority}, JMSDeliveryMode=${header.JMSDeliveryMode})'

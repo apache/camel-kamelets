@@ -1,0 +1,83 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: spring-rabbitmq-source-route-test
+description: 'spring-rabbitmq-source creates and binds a queue, and receives a text message with its headers from it'
+actions:
+  # Start RabbitMQ
+  - testcontainers:
+      start:
+        container:
+          name: "rabbitmq"
+          image: "rabbitmq:4.3.6"
+          autoRemove: true
+          startUpTimeout: 180
+          env:
+            - name: "RABBITMQ_DEFAULT_USER"
+              value: "citrus"
+            - name: "RABBITMQ_DEFAULT_PASS"
+              value: "citrus"
+          exposedPorts:
+            - 5672
+          waitFor:
+            logMessage: '.*Server startup complete.*'
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "rabbitmq/spring-rabbitmq-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${http.server.port}"
+                - name: "rabbitmq.host"
+                  value: "${CITRUS_TESTCONTAINERS_RABBITMQ_HOST}"
+                - name: "rabbitmq.port"
+                  value: "${CITRUS_TESTCONTAINERS_RABBITMQ_PORT}"
+
+  # The source gives the text, the header of the RabbitMQ message, and the exchange, routing key and content type
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "origin"
+              value: 'citrus'
+            - name: "X-Exchange-Name"
+              value: 'orders'
+            - name: "X-Routing-Key"
+              value: 'new-order'
+            - name: "X-Rabbitmq-Content-Type"
+              value: 'text/plain'
+          body:
+            data: 'Hello RabbitMQ'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
