@@ -36,7 +36,7 @@ actions:
                 - name: "http.sink.url"
                   value: "http://localhost:${mongo.server.port}"
 
-  # insert: the body afterwards is the document that was stored
+  # insert: the body afterwards is the document that was stored; the Kamelet sets no Content-Type
   - http:
       server: "mongoServer"
       receiveRequest:
@@ -46,7 +46,7 @@ actions:
             - name: "X-Body-Type"
               value: 'org.bson.Document'
             - name: "X-Content-Type"
-              value: 'ct=application/json'
+              value: 'ct='
             - name: "X-Oid"
               value: 'order-1'
           body:
@@ -76,7 +76,7 @@ actions:
             - name: "X-Body-Type"
               value: "@startsWith('com.mongodb.client.result.UpdateResult')@"
             - name: "X-Content-Type"
-              value: 'ct=application/json'
+              value: 'ct='
             - name: "X-Oid"
               value: 'order-1'
   - createVariables:
@@ -104,7 +104,7 @@ actions:
             - name: "X-Body-Type"
               value: "@startsWith('com.mongodb.client.result.UpdateResult')@"
             - name: "X-Content-Type"
-              value: 'ct=application/json'
+              value: 'ct='
             - name: "X-Matched"
               value: '1'
             - name: "X-Affected"

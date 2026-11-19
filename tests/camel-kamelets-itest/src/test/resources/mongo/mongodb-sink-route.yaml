@@ -51,6 +51,9 @@
           uri: "{{http.sink.url}}/insert"
 
       # save: replaces the whole document that has the same _id
+      # start without the headers of the previous step and its HTTP answer
+      - removeHeaders:
+          pattern: "*"
       - setBody:
           constant: '{"_id":"order-1","item":"book","qty":5}'
       - to:
@@ -78,6 +81,9 @@
           uri: "{{http.sink.url}}/save"
 
       # update: the filter and the changes, as a JSON array
+      # start without the headers of the previous step and its HTTP answer
+      - removeHeaders:
+          pattern: "*"
       - setBody:
           constant: '[{"_id":"order-1"},{"$set":{"status":"shipped"}}]'
       - to:
