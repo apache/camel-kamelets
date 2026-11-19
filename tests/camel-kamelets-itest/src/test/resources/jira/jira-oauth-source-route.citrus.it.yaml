@@ -1,0 +1,192 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: jira-oauth-source-route-test
+description: 'jira-oauth-source signs each request to Jira with OAuth 1.0a and gives each new issue as JSON text'
+variables:
+  - name: "jira.project.id"
+    value: "10001"
+  - name: "jira.issue.id"
+    value: "10002"
+  - name: "jira.issue.key"
+    value: "CAMEL-2"
+  - name: "jira.issue.summary"
+    value: "New bug, citrus:randomString(10)"
+  - name: "jira.access.token"
+    value: "citrus:randomString(32)"
+  - name: "jira.verification.code"
+    value: "citrus:randomString(6)"
+  - name: "jira.consumer.key"
+    value: "kamelets-it"
+  - name: "jira.jql"
+    value: "project=CAMEL"
+actions:
+  - createVariables:
+      variables:
+        - name: "jira.url"
+          value: "http://localhost:${jira.server.port}"
+  # an RSA private key for the OAuth signature, generated for the test
+  - groovy:
+      script:
+        file: "jira/oauth-key.groovy"
+
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "jira/jira-oauth-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "jira.url"
+                  value: "${jira.url}"
+                - name: "jira.access.token"
+                  value: "${jira.access.token}"
+                - name: "jira.verification.code"
+                  value: "${jira.verification.code}"
+                - name: "jira.consumer.key"
+                  value: "${jira.consumer.key}"
+                - name: "jira.private.key"
+                  value: "${jira.private.key}"
+                - name: "jira.jql"
+                  value: "${jira.jql}"
+
+  # the Jira client first reads the user it logs in as, with the request signed with OAuth 1.0a (RSA-SHA1)
+  - http:
+      server: "jiraServer"
+      receiveRequest:
+        GET:
+          path: "/rest/api/latest/myself"
+          headers:
+            - name: Authorization
+              value: "@matches('OAuth .*')@"
+  - http:
+      server: "jiraServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: '{"name":"citrus","emailAddress":"citrus@example.com","displayName":"Citrus User","timeZone":"UTC","avatarUrls":{"48x48":"${jira.url}/secure/useravatar?avatarId=10342"}}'
+
+  # the first poll asks for the latest issue, to send only the issues created after the start; there is none yet
+  - http:
+      server: "jiraServer"
+      receiveRequest:
+        GET:
+          path: "/rest/api/latest/search"
+          headers:
+            - name: Authorization
+              value: "@matches('OAuth .*')@"
+  - http:
+      server: "jiraServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: '{"expand":"","startAt":0,"maxResults":1,"total":0,"issues":[]}'
+
+  # the next poll finds one new issue
+  - http:
+      server: "jiraServer"
+      receiveRequest:
+        GET:
+          path: "/rest/api/latest/search"
+          parameters:
+            - name: jql
+              value: "citrus:urlEncode(${jira.jql})"
+          headers:
+            - name: Authorization
+              value: "@matches('OAuth .*')@"
+  - http:
+      server: "jiraServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              {
+                "expand": "schema,names",
+                "startAt": 0,
+                "maxResults": 50,
+                "total": 1,
+                "names": {},
+                "schema": {},
+                "issues": [
+                  {
+                    "expand": "",
+                    "id": "${jira.issue.id}",
+                    "key": "${jira.issue.key}",
+                    "self": "${jira.url}/rest/api/latest/issue/${jira.issue.id}",
+                    "fields": {
+                      "project": {
+                        "self": "${jira.url}/rest/api/latest/project/${jira.project.id}",
+                        "id": "${jira.project.id}",
+                        "key": "CAMEL",
+                        "name": "Camel"
+                      },
+                      "summary": "${jira.issue.summary}",
+                      "issuetype": {
+                        "self": "${jira.url}/rest/api/latest/issuetype/1",
+                        "id": "1",
+                        "description": "A problem with the software.",
+                        "iconUrl": "${jira.url}/images/icons/bug.gif",
+                        "name": "Bug",
+                        "subtask": false
+                      },
+                      "created": "2026-11-19T10:15:30.000+0000",
+                      "updated": "2026-11-19T10:15:30.000+0000",
+                      "status": {
+                        "self": "${jira.url}/rest/api/latest/status/1",
+                        "id": 1,
+                        "description": "Open task.",
+                        "iconUrl": "${jira.url}/images/icons/status_1.gif",
+                        "name": "Open"
+                      }
+                    }
+                  }
+                ]
+              }
+
+  # the issue as JSON text (in a stream), as the Jira client reads it
+  - http:
+      server: "jiraServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: 'org.apache.camel.converter.stream.InputStreamCache'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+          body:
+            data: '{"affectedVersions":null,"assignee":null,"attachments":null,"attachmentsUri":"${jira.url}/rest/api/latest/issue/${jira.issue.id}/attachments","changelog":null,"comments":[],"commentsUri":"${jira.url}/rest/api/latest/issue/${jira.issue.id}/comment","components":null,"creationDate":"2026-11-19T10:15:30.000Z","description":null,"dueDate":null,"expandos":[""],"fields":[],"fixVersions":null,"id":${jira.issue.id},"issueLinks":null,"issueType":{"description":"A problem with the software.","iconUri":"${jira.url}/images/icons/bug.gif","id":1,"name":"Bug","self":"${jira.url}/rest/api/latest/issuetype/1","subtask":false},"key":"${jira.issue.key}","labels":[],"operations":null,"parentTask":null,"priority":null,"project":{"id":${jira.project.id},"key":"CAMEL","name":"Camel","self":"${jira.url}/rest/api/latest/project/${jira.project.id}"},"reporter":null,"resolution":null,"self":"${jira.url}/rest/api/latest/issue/${jira.issue.id}","status":{"description":"Open task.","iconUrl":"${jira.url}/images/icons/status_1.gif","id":1,"name":"Open","self":"${jira.url}/rest/api/latest/status/1","statusCategory":null},"subtasks":null,"summary":"${jira.issue.summary}","timeTracking":null,"transitionsUri":"${jira.url}/rest/api/latest/issue/${jira.issue.id}/transitions?expand=transitions.fields","updateDate":"2026-11-19T10:15:30.000Z","votes":null,"votesUri":"${jira.url}/rest/api/latest/issue/${jira.issue.id}/votes","watchers":null,"worklogUri":"${jira.url}/rest/api/latest/issue/${jira.issue.id}/worklog","worklogs":[]}'
+  - http:
+      server: "jiraServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

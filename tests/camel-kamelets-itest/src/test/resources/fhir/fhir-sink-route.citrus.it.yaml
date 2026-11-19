@@ -1,0 +1,94 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: fhir-sink-route-test
+variables:
+  - name: "fhir.family"
+    value: "citrus:randomString(10, UPPERCASE)"
+actions:
+  # HAPI FHIR server, R4, with its API under /fhir
+  - testcontainers:
+      start:
+        container:
+          name: "fhir"
+          image: "hapiproject/hapi:v8.12.0-2"
+          startUpTimeout: 300
+          exposedPorts:
+            - 8080
+          env:
+            - name: "hapi.fhir.fhir_version"
+              value: "R4"
+          waitFor:
+            url: "http://localhost:8080/fhir/metadata"
+
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "fhir/fhir-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "fhir.url"
+                  value: "http://${CITRUS_TESTCONTAINERS_FHIR_HOST}:${CITRUS_TESTCONTAINERS_FHIR_PORT}/fhir"
+                - name: "fhir.family"
+                  value: "${fhir.family}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${services.server.port}"
+
+  # the body afterwards is the outcome of the operation, a MethodOutcome of HAPI FHIR, with the id of the new Patient
+  - http:
+      server: "servicesServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'ca.uhn.fhir.rest.api.MethodOutcome'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-Created"
+              value: 'true'
+            - name: "X-Resource-Type"
+              value: 'Patient'
+          body:
+            data: '@variable(fhir.id)@'
+  - http:
+      server: "servicesServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # the Patient is stored in the FHIR server under that id
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_FHIR_HOST}:${CITRUS_TESTCONTAINERS_FHIR_PORT}"
+      sendRequest:
+        GET:
+          path: "/fhir/Patient/${fhir.id}"
+          headers:
+            - name: "Accept"
+              value: "application/fhir+json"
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_FHIR_HOST}:${CITRUS_TESTCONTAINERS_FHIR_PORT}"
+      receiveResponse:
+        response:
+          status: 200
+          body:
+            data: '{"resourceType":"Patient","id":"${fhir.id}","meta":"@ignore@","name":[{"family":"${fhir.family}","given":["Grace"]}],"gender":"female"}'
