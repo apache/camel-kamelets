@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -98,18 +98,8 @@ public class HttpKameletsTargetTest {
     }
 
     @Test
-    void azureFunctionsSinkCallsTheConfiguredFunction() throws Exception {
-        send("kamelet:azure-functions-sink?url=" + url(configuredServer) + "/api/hello&key=" + KEY, "hello");
-
-        assertEquals("POST /api/hello query=code=" + KEY + " key=null", configured.poll());
-        assertTrue(other.isEmpty(), "no request goes to the other server");
-    }
-
-    @Test
     void azureFunctionsSinkCallsTheConfiguredFunctionWithTheKeyInAHeader() throws Exception {
-        Exchange result = send("kamelet:azure-functions-sink?url=" + url(configuredServer) + "/api/hello&key=" + KEY
-                               + "&keyInHeader=true",
-                "hello");
+        Exchange result = send("kamelet:azure-functions-sink?url=" + url(configuredServer) + "/api/hello&key=" + KEY, "hello");
 
         assertEquals("POST /api/hello query=null key=" + KEY, configured.poll());
         assertTrue(other.isEmpty(), "no request goes to the other server");
@@ -117,17 +107,26 @@ public class HttpKameletsTargetTest {
     }
 
     @Test
-    void azureFunctionsSinkKeepsTheKeyOutOfTheError() {
+    void azureFunctionsSinkCallsAnAnonymousFunctionWithoutAKey() throws Exception {
+        send("kamelet:azure-functions-sink?url=" + url(configuredServer) + "/api/hello", "hello");
+
+        assertEquals("POST /api/hello query=null key=null", configured.poll());
+        assertTrue(other.isEmpty(), "no request goes to the other server");
+    }
+
+    @Test
+    void azureFunctionsSinkKeepsTheKeyOutOfAFailedMessage() {
         status = 404;
 
         ProducerTemplate template = context.createProducerTemplate();
-        CamelExecutionException e = assertThrows(CamelExecutionException.class,
-                () -> template.requestBody("kamelet:azure-functions-sink?url=" + url(configuredServer)
-                                           + "/api/missing&key=" + KEY + "&keyInHeader=true",
-                        "hello"));
+        Exchange result = template.request("kamelet:azure-functions-sink?url=" + url(configuredServer)
+                                           + "/api/missing&key=" + KEY,
+                exchange -> exchange.getMessage().setBody("hello"));
 
         assertEquals("POST /api/missing query=null key=" + KEY, configured.poll());
-        assertFalse(e.getCause().getMessage().contains(KEY), e.getCause().getMessage());
+        assertNotNull(result.getException(), "a 404 fails the message");
+        assertFalse(result.getException().getMessage().contains(KEY), result.getException().getMessage());
+        assertFalse(result.getMessage().getHeaders().containsKey("x-functions-key"), "the key does not go on");
     }
 
     /**

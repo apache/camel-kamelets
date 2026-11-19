@@ -4,7 +4,7 @@
 
 In this Kamelet you should access the function on Azure through a key token in the key parameter.
 
-By default the key is sent as the `code` query parameter of the request. With `keyInHeader` set to true, it is sent in the `x-functions-key` header instead, so the address of the request, which error messages show, does not hold the key:
+The key is sent in the `x-functions-key` header, so the address of the request, which error messages and access logs show, does not hold it. The header is removed from the message after the call, also when the call fails:
 
 [source,yaml,subs='+attributes,macros']
 ----
@@ -19,5 +19,4 @@ By default the key is sent as the `code` query parameter of the request. With `k
             parameters:
               url: "https://azure-function-demo-12234.azurewebsites.net/api/httpexample"
               key: "{{function.key}}"
-              keyInHeader: true
 ----
