@@ -39,7 +39,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards describes the uploaded file (its bucket, name, size and generation), not its content, and the `CamelGoogleCloudStorageObjectName` header holds the name of the file.
 
-      Good to know: a file with the same name is overwritten. With `objectName`, every message overwrites the same file. The bucket must exist, unless `autoCreateBucket` is true; a bucket it creates is in `storageLocation`, `US-EAST1` when that is not set. Without `serviceAccountKey`, it logs in with the Application Default Credentials of the environment where it runs, or with Workload Identity Federation when `useWorkloadIdentityFederation` is true.
+      Good to know: a file with the same name is overwritten. With `objectName`, every message overwrites the same file. The bucket must exist, unless `autoCreateBucket` is true; a bucket it creates is in `storageLocation`, `US-EAST1` when that is not set. Without `serviceAccountKey`, it logs in with the Application Default Credentials of the environment where it runs, or with Workload Identity Federation when `useWorkloadIdentityFederation` is true. Headers that start with `CamelGoogleCloudStorage` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - bucketNameOrArn
     type: object
@@ -114,6 +114,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelGoogleCloudStorage*
         - choice:
             when:
               - expression:

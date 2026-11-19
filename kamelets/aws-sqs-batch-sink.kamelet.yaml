@@ -40,7 +40,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the response of SQS, and the `CamelAwsSqsSuccessfulMessageCount` and `CamelAwsSqsFailedMessageCount` headers say how many parts were sent and how many failed.
 
-      Good to know: unless `queueURL`, `queueOwnerAWSAccountId` or an ARN in `queueNameOrArn` gives the address of the queue, the queue is looked up by listing the queues, which needs the `sqs:ListQueues` permission besides `sqs:SendMessage`. `delaySeconds` keeps each message hidden for a while after it is sent. `serverSideEncryptionEnabled` with `kmsMasterKeyId` changes the queue itself when the integration starts, so that SQS encrypts its messages with that KMS key. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: unless `queueURL`, `queueOwnerAWSAccountId` or an ARN in `queueNameOrArn` gives the address of the queue, the queue is looked up by listing the queues, which needs the `sqs:ListQueues` permission besides `sqs:SendMessage`. `delaySeconds` keeps each message hidden for a while after it is sent. `serverSideEncryptionEnabled` with `kmsMasterKeyId` changes the queue itself when the integration starts, so that SQS encrypts its messages with that KMS key. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsSqs` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - queueNameOrArn
       - region
@@ -200,6 +200,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelAwsSqs*
         - to:
             uri: aws2-sqs
             parameters:

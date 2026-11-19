@@ -40,7 +40,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: a message without a metric name, when `metricName` is not set either, fails, and so does a value that is not a number or a unit that CloudWatch does not know. Set the options to send the same metric for every message, for example `metricName` `OrdersProcessed` to count the messages. The time in `metric-timestamp` must be a Java `Instant` or `Date`: text is ignored, and then the data point gets the time it is sent. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: a message without a metric name, when `metricName` is not set either, fails, and so does a value that is not a number or a unit that CloudWatch does not know. Set the options to send the same metric for every message, for example `metricName` `OrdersProcessed` to count the messages. The time in `metric-timestamp` must be a Java `Instant` or `Date`: text is ignored, and then the data point gets the time it is sent. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsCw` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - cwNamespace
       - region
@@ -176,6 +176,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelAwsCw*
         - choice:
             when:
               - expression:

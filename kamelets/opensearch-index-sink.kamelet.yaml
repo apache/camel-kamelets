@@ -39,7 +39,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the id of the document, as text.
 
-      Good to know: a body that is not JSON fails the message, and so does a message with no index, from the option or the header. It connects with TLS by default (`enableSSL`). For a cluster whose certificate is self-signed, or signed by a private certificate authority (CA), give the certificate of that CA in `certificate`; without it, the message fails with `PKIX path building failed`. When OpenSearch does not answer, the message fails after 30 seconds; `connectionTimeout` and `socketTimeout` change that.
+      Good to know: a body that is not JSON fails the message, and so does a message with no index, from the option or the header. It connects with TLS by default (`enableSSL`). For a cluster whose certificate is self-signed, or signed by a private certificate authority (CA), give the certificate of that CA in `certificate`; without it, the message fails with `PKIX path building failed`. When OpenSearch does not answer, the message fails after 30 seconds; `connectionTimeout` and `socketTimeout` change that. Headers that start with `CamelOpensearch` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - clusterName
       - hostAddresses
@@ -137,6 +137,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelOpensearch*
         - choice:
             when:
               - expression:

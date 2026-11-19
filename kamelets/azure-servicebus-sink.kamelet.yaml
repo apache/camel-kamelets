@@ -40,7 +40,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: the shared access policy of the connection string needs the Send right.
+      Good to know: the shared access policy of the connection string needs the Send right. Headers that start with `CamelAzureServiceBus`, except `CamelAzureServiceBusApplicationProperties`, are removed from the message first, so they cannot change what the Kamelet does.
 
       A queue created with sessions enabled accepts only messages with a session ID: without one, the send fails. A topic accepts them, but each of its subscriptions with sessions enabled moves them to its dead-letter queue. Set `sessionId` to send every message with that session ID; a reader of the queue or subscription then receives the messages of the session in the order they were sent. The session ID is fixed for the Kamelet: the `CamelAzureServiceBusSessionId` header is not read, so messages that must go to different sessions need one sink for each session ID.
 
@@ -108,6 +108,9 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelAzureServiceBus*
+            excludePattern: CamelAzureServiceBusApplicationProperties
         - choice:
             when:
               - expression:

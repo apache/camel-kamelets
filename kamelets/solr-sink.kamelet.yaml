@@ -39,7 +39,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the answer of Solr, as a Map-like object with its `responseHeader`.
 
-      Good to know: a body that is not JSON fails the message. With `autocommit` false, the default, the documents become searchable only when Solr commits them, as set in the configuration of the collection. It connects with plain HTTP by default; set `enableSSL` to true for a Solr that is reached with HTTPS, and give the certificate in `certificate` when Solr uses a self-signed certificate. The documents go to the `/update` handler of the collection, or to the one in `requestHandler`. When Solr does not answer, a message fails only after 10 minutes, and the first one over plain HTTP after twice as long; set `requestTimeout` to fail sooner.
+      Good to know: a body that is not JSON fails the message. With `autocommit` false, the default, the documents become searchable only when Solr commits them, as set in the configuration of the collection. It connects with plain HTTP by default; set `enableSSL` to true for a Solr that is reached with HTTPS, and give the certificate in `certificate` when Solr uses a self-signed certificate. Headers that start with `CamelSolr` are removed from the message first, so they cannot change what the Kamelet does. The documents go to the `/update` handler of the collection, or to the one in `requestHandler`. When Solr does not answer, a message fails only after 10 minutes, and the first one over plain HTTP after twice as long; set `requestTimeout` to fail sooner.
     required:
       - servers
       - collection
@@ -109,6 +109,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelSolr*
         - setHeader:
             name: CamelSolrOperation
             expression:

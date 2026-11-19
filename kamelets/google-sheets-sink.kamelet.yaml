@@ -39,7 +39,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the response of Google Sheets, which says which cells were written.
 
-      Good to know: without `range`, only column `A` is written. With the default `operation` of `append`, the rows are added after the last row of the table found in `range`; with `update`, they overwrite the cells of `range`. It logs in to Google either with OAuth (an OAuth client of a Google Cloud project, and an access token and a refresh token of the Google account that owns or may edit the spreadsheet), or with the key of a service account in `serviceAccountKey` together with `scopes`; share the spreadsheet with the email address of the service account as an editor, or set `delegate`.
+      Good to know: without `range`, only column `A` is written. With the default `operation` of `append`, the rows are added after the last row of the table found in `range`; with `update`, they overwrite the cells of `range`. It logs in to Google either with OAuth (an OAuth client of a Google Cloud project, and an access token and a refresh token of the Google account that owns or may edit the spreadsheet), or with the key of a service account in `serviceAccountKey` together with `scopes`; share the spreadsheet with the email address of the service account as an editor, or set `delegate`. Headers that start with `CamelGoogleSheets` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - spreadsheetId
     type: object
@@ -176,6 +176,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelGoogleSheets*
         - setHeader:
             name: CamelGoogleSheets.spreadsheetId
             expression:

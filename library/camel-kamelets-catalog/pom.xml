@@ -117,6 +117,31 @@
             <scope>test</scope>
             <version>${junit-jupiter-version}</version>
         </dependency>
+        <!-- HttpKameletsTargetTest: runs the HTTP Kamelets against a local server (with camel-http below) -->
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-vertx-http</artifactId>
+            <version>${camel.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-rest-openapi</artifactId>
+            <version>${camel.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-jsonpath</artifactId>
+            <version>${camel.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-jackson3</artifactId>
+            <version>${camel.version}</version>
+            <scope>test</scope>
+        </dependency>
         <!-- KameletsCanonicalTest: loads every Kamelet with the YAML DSL to find the compact notation -->
         <dependency>
             <groupId>org.apache.camel</groupId>

@@ -39,7 +39,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: when `index`, `source` and `sourceType` are not set, the events go to the index `camel` with the source and source type `camel`, so set them for your Splunk. The `host` field of the event is the IP address of the machine that runs the integration, unless `hostPayload` is set. It connects with HTTPS and checks the certificate of the server, unless `https` or `skipTlsVerify` say otherwise. It sends to the event endpoint `/services/collector/event`; with `splunkEndpoint` set to `/services/collector/raw`, Splunk stores the whole JSON object as raw text instead, and `index`, `source` and `sourceType` no longer apply. A response other than 200, such as a wrong path, fails the message.
+      Good to know: when `index`, `source` and `sourceType` are not set, the events go to the index `camel` with the source and source type `camel`, so set them for your Splunk. The `host` field of the event is the IP address of the machine that runs the integration, unless `hostPayload` is set. It connects with HTTPS and checks the certificate of the server, unless `https` or `skipTlsVerify` say otherwise. Headers that start with `CamelSplunkHEC` are removed from the message first, so they cannot change what the Kamelet does. It sends to the event endpoint `/services/collector/event`; with `splunkEndpoint` set to `/services/collector/raw`, Splunk stores the whole JSON object as raw text instead, and `index`, `source` and `sourceType` no longer apply. A response other than 200, such as a wrong path, fails the message.
     required:
       - splunkUrl
       - token
@@ -118,6 +118,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelSplunkHEC*
         - to:
             uri: splunk-hec
             parameters:

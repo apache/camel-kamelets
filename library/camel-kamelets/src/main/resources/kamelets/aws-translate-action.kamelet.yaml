@@ -40,7 +40,7 @@ spec:
 
       Output: the body is the translated text.
 
-      Good to know: the target language is fixed by `targetLanguage`. The source language is fixed by `sourceLanguage`, or, with `autodetectSourceLanguage`, Amazon Translate detects it in each message. Only the listed language codes can be chosen, although Amazon Translate knows more languages. With `terminologyNames`, your own translations of terms, such as product and brand names, are applied. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: the target language is fixed by `targetLanguage`. The source language is fixed by `sourceLanguage`, or, with `autodetectSourceLanguage`, Amazon Translate detects it in each message. Only the listed language codes can be chosen, although Amazon Translate knows more languages. With `terminologyNames`, your own translations of terms, such as product and brand names, are applied. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsTranslate` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - region
       - targetLanguage
@@ -68,7 +68,7 @@ spec:
         enum: ["ap-south-1", "eu-south-1", "us-gov-east-1", "me-central-1", "ca-central-1", "eu-central-1", "us-iso-west-1", "us-west-1", "us-west-2", "af-south-1", "eu-north-1", "eu-west-3", "eu-west-2", "eu-west-1", "ap-northeast-3", "ap-northeast-2", "ap-northeast-1", "me-south-1", "sa-east-1", "ap-east-1", "cn-north-1", "us-gov-west-1", "ap-southeast-1", "ap-southeast-2", "us-iso-east-1", "ap-southeast-3", "us-east-1", "us-east-2", "cn-northwest-1", "us-isob-east-1", "aws-global", "aws-cn-global", "aws-us-gov-global", "aws-iso-global", "aws-iso-b-global"]
       sourceLanguage:
         title: Source Language
-        description: The language of the text, as a language code, such as `it` for Italian or `en` for English. Required, unless `autodetectSourceLanguage` is true; without either, a message fails unless it carries the `CamelAwsTranslateSourceLanguage` header.
+        description: The language of the text, as a language code, such as `it` for Italian or `en` for English. Required, unless `autodetectSourceLanguage` is true; without either, a message fails.
         type: string
         example: it
         enum: ["ar", "zh", "zh-TW", "cs", "da", "nl", "en", "fi", "fr", "de", "he", "hi", "id", "it", "ja", "ko", "ms", "no", "fa", "pl", "pt", "ru", "es", "sv", "tr"]
@@ -139,6 +139,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelAwsTranslate*
         - choice:
             when:
               - expression:

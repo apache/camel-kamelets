@@ -41,7 +41,7 @@ spec:
 
       Output: the message is unchanged. The `CamelAwsS3Key` and `CamelAwsS3ETag` headers give the key and the ETag of the uploaded file.
 
-      Good to know: a file with the same key is replaced without warning, unless `conditionalWritesEnabled` is true: then the upload of a key that exists already fails. When `keyName` is set, the `file` header is ignored and every message replaces the same file. To copy files from `aws-s3-source` under their own names, set the `file` header from its `CamelAwsS3Key` header first. It also works with S3-compatible storage, such as MinIO, through `overrideEndpoint`, `uriEndpointOverride` and `forcePathStyle`. To encrypt the files with a key of AWS KMS, as a bucket policy may require, set `useAwsKMS` and `awsKMSKeyId`; `storageClass` sets their storage class. One upload takes at most 5 GB; for larger files, set `multiPartUpload` to true, and each file of `partSize` or more is uploaded in parts. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: a file with the same key is replaced without warning, unless `conditionalWritesEnabled` is true: then the upload of a key that exists already fails. When `keyName` is set, the `file` header is ignored and every message replaces the same file. To copy files from `aws-s3-source` under their own names, set the `file` header from its `CamelAwsS3Key` header first. It also works with S3-compatible storage, such as MinIO, through `overrideEndpoint`, `uriEndpointOverride` and `forcePathStyle`. To encrypt the files with a key of AWS KMS, as a bucket policy may require, set `useAwsKMS` and `awsKMSKeyId`; `storageClass` sets their storage class. One upload takes at most 5 GB; for larger files, set `multiPartUpload` to true, and each file of `partSize` or more is uploaded in parts. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsS3`, except `CamelAwsS3ContentType` and `CamelAwsS3StorageClass`, are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - bucketNameOrArn
       - region
@@ -192,6 +192,9 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelAwsS3*
+            excludePattern: "CamelAwsS3(ContentType|StorageClass)"
         - choice:
             precondition: true
             when:

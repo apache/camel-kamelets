@@ -41,7 +41,7 @@ spec:
 
       Output: the message is unchanged. The `CamelAwsSnsMessageId` header gives the ID of the published message.
 
-      Good to know: with `messageStructure` set to `json`, the body is a JSON object with a text for each kind of subscriber. `serverSideEncryptionEnabled` and `kmsMasterKeyId` apply only to a topic that `autoCreateTopic` creates. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: with `messageStructure` set to `json`, the body is a JSON object with a text for each kind of subscriber. `serverSideEncryptionEnabled` and `kmsMasterKeyId` apply only to a topic that `autoCreateTopic` creates. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsSns` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - topicNameOrArn
       - region
@@ -166,6 +166,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelAwsSns*
         - choice:
             when:
               - expression:

@@ -40,7 +40,7 @@ spec:
 
       Output: the body afterwards is `true`, and headers such as `CamelAzureStorageBlobETag` and `CamelAzureStorageBlobLastModified` describe the uploaded blob.
 
-      Good to know: a blob with the same name is replaced. The container must exist: a missing container fails the message. The name comes only from `file` or `ce-file`: to copy blobs from `azure-storage-blob-source` and keep their names, set `file` from its `CamelAzureStorageBlobBlobName` header first.
+      Good to know: a blob with the same name is replaced. The container must exist: a missing container fails the message. The name comes only from `file` or `ce-file`: to copy blobs from `azure-storage-blob-source` and keep their names, set `file` from its `CamelAzureStorageBlobBlobName` header first. Headers that start with `CamelAzureStorageBlob` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - accountName
       - containerName
@@ -118,6 +118,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelAzureStorageBlob*
         - choice:
             when:
               - expression:

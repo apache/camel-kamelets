@@ -40,7 +40,7 @@ spec:
 
       Output: the body afterwards is `true`.
 
-      Good to know: the file is written at the top of the file system, or in `directoryName`. By default it logs in as an app registration, with `clientId`, `clientSecret` and `tenantId`, so that app needs a role on the account that allows writing, such as Storage Blob Data Contributor. It can log in with an account key (`accountKey`) or a SAS token (`sasSignature`) instead.
+      Good to know: the file is written at the top of the file system, or in `directoryName`. By default it logs in as an app registration, with `clientId`, `clientSecret` and `tenantId`, so that app needs a role on the account that allows writing, such as Storage Blob Data Contributor. Headers that start with `CamelAzureStorageDataLake` are removed from the message first, so they cannot change what the Kamelet does. It can log in with an account key (`accountKey`) or a SAS token (`sasSignature`) instead.
     required:
       - accountName
       - fileSystemName
@@ -125,6 +125,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelAzureStorageDataLake*
         - choice:
             when:
               - expression:

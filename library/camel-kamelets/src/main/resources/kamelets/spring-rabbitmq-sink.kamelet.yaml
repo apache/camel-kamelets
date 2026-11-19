@@ -39,7 +39,7 @@ spec:
 
       Output: the message is unchanged.
 
-      Good to know: it does not create the exchange, unless `autoDeclareProducer` is true. A message sent to an exchange that does not exist is lost without an error, unless publisher confirms are on (`publisherConfirmType` and `confirm`), and RabbitMQ drops a message that no queue is bound to take. It connects with no TLS unless `protocol` is `amqps`. With `amqps`, the certificate of the broker must be trusted by Java, or by the trust store in `sslTruststoreLocation`, and must name the host in `host`; otherwise it cannot connect. It does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does.
+      Good to know: it does not create the exchange, unless `autoDeclareProducer` is true. A message sent to an exchange that does not exist is lost without an error, unless publisher confirms are on (`publisherConfirmType` and `confirm`), and RabbitMQ drops a message that no queue is bound to take. It connects with no TLS unless `protocol` is `amqps`. With `amqps`, the certificate of the broker must be trusted by Java, or by the trust store in `sslTruststoreLocation`, and must name the host in `host`; otherwise it cannot connect. It does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does. Headers that start with `CamelSpringRabbitmq` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - host
       - port
@@ -165,6 +165,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelSpringRabbitmq*
         - choice:
             when:
               - expression:

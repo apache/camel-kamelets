@@ -39,7 +39,7 @@ spec:
 
       Output: the body afterwards is `true`. After a delete, it is the result of Couchbase as text, such as `MutationResult{cas=0x18e92f09b4bf0000, ...}`.
 
-      Good to know: a document that already has the ID is replaced. The count starts again at `startingId` each time the integration starts, so with `autoStartId` true a restart overwrites the documents stored before. Set `autoStartId` to false and give each message its own ID to avoid that. The documents go to the default collection of the bucket unless `collection` is set, in `scope`; a collection that does not exist makes each message wait and fail with `AmbiguousTimeoutException` (10 seconds by default, see `retryAttempts`). The connection is not encrypted, also with `protocol` set to `https`.
+      Good to know: a document that already has the ID is replaced. The count starts again at `startingId` each time the integration starts, so with `autoStartId` true a restart overwrites the documents stored before. Set `autoStartId` to false and give each message its own ID to avoid that. The documents go to the default collection of the bucket unless `collection` is set, in `scope`; a collection that does not exist makes each message wait and fail with `AmbiguousTimeoutException` (10 seconds by default, see `retryAttempts`). The connection is not encrypted, also with `protocol` set to `https`. Headers that start with `CamelCouchbase`, except `CamelCouchbaseId`, are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - protocol
       - couchbaseHostname
@@ -162,6 +162,9 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelCouchbase*
+            excludePattern: CamelCouchbaseId
         - to:
             uri: couchbase
             parameters:

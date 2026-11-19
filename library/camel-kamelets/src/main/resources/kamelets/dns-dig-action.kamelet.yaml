@@ -39,7 +39,7 @@ spec:
 
       Output: the body is the whole answer as text, as the `dig` command shows it: the question, the records found, and the status, such as `NOERROR`.
 
-      Good to know: a name the DNS does not know does not fail the message: the answer has the status `NXDOMAIN` and no records. The Kamelet has no options; it asks the DNS servers of the machine it runs on.
+      Good to know: a name the DNS does not know does not fail the message: the answer has the status `NXDOMAIN` and no records. The Kamelet has no options; it asks the DNS servers of the machine it runs on. Headers that start with `CamelDns` are removed from the message first, so they cannot change what the Kamelet does.
     type: object
   dataTypes:
     in:
@@ -67,6 +67,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelDns*
         - choice:
             when:
               - expression:

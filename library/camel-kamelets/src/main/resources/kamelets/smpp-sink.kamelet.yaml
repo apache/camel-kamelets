@@ -39,7 +39,7 @@ spec:
 
       Output: the message is unchanged, with the IDs that the SMSC gave the SMS in the `CamelSmppId` header (a List), and how many SMS were sent in `CamelSmppSentMessageCount`.
 
-      Good to know: the defaults of `sourceAddr` (1616) and `destAddr` (1717) are test numbers: set them, or set `CamelSmppDestAddr` on each message. It asks the SMSC for a delivery receipt of each SMS, which `smpp-source` receives: set `registeredDelivery` to `0` to not ask for them. The text is encoded with `encoding`, so characters it cannot hold, such as Cyrillic or emoji in ISO-8859-1, are sent as `?`: for text in any language, set `alphabet` and `dataCoding` to `8`. It logs in to the SMSC when the integration starts, and the integration fails to start when the SMSC cannot be reached. It connects with no TLS unless `usingSSL` is true.
+      Good to know: the defaults of `sourceAddr` (1616) and `destAddr` (1717) are test numbers: set them, or set `CamelSmppDestAddr` on each message. It asks the SMSC for a delivery receipt of each SMS, which `smpp-source` receives: set `registeredDelivery` to `0` to not ask for them. The text is encoded with `encoding`, so characters it cannot hold, such as Cyrillic or emoji in ISO-8859-1, are sent as `?`: for text in any language, set `alphabet` and `dataCoding` to `8`. It logs in to the SMSC when the integration starts, and the integration fails to start when the SMSC cannot be reached. It connects with no TLS unless `usingSSL` is true. Headers that start with `CamelSmpp`, except `CamelSmppDestAddr`, are removed from the message first, so they cannot change what the Kamelet does.
     required:
     - host
     type: object
@@ -164,6 +164,9 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelSmpp*
+            excludePattern: CamelSmppDestAddr
         - to:
             uri: smpp
             parameters:

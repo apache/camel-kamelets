@@ -40,7 +40,7 @@ spec:
 
       Output: the body afterwards is `true`, and headers such as `CamelAzureStorageBlobAppendOffset` and `CamelAzureStorageBlobCommittedBlockCount` describe the append.
 
-      Good to know: the container must exist: a missing container fails the message. A name that is already used by a block blob, such as one written by `azure-storage-blob-sink`, fails the message too.
+      Good to know: the container must exist: a missing container fails the message. A name that is already used by a block blob, such as one written by `azure-storage-blob-sink`, fails the message too. Headers that start with `CamelAzureStorageBlob` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - accountName
       - containerName
@@ -118,6 +118,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelAzureStorageBlob*
         - choice:
             when:
               - expression:

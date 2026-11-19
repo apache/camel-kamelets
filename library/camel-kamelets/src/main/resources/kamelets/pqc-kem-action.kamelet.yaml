@@ -39,7 +39,7 @@ spec:
 
       Output: `generateSecretKeyEncapsulation` and `extractSecretKeyEncapsulation` give a Java object that holds the secret key and its encapsulation. `extractSecretKeyFromEncapsulation` gives the secret key, as a Java object. None of them is text or bytes, so the next step must be one that works with Java key objects.
 
-      Good to know: unless the key pair of the post-quantum algorithm comes from `keyStore` or `keyPair`, it is created when the application starts, so an encapsulation can be opened only by the same running application. With a key pair from a key store, it can be opened after a restart, and by any application that has the key store. When the application has exactly one Java `KeyStore`, or one `KeyPair`, it is used even when `keyStore` or `keyPair` is not set; `keyPairAlias` and `keyStorePassword` are then needed for the key store, else the messages fail.
+      Good to know: unless the key pair of the post-quantum algorithm comes from `keyStore` or `keyPair`, it is created when the application starts, so an encapsulation can be opened only by the same running application. Headers that start with `CamelPQC` are removed from the message first, so they cannot change what the Kamelet does. With a key pair from a key store, it can be opened after a restart, and by any application that has the key store. When the application has exactly one Java `KeyStore`, or one `KeyPair`, it is used even when `keyStore` or `keyPair` is not set; `keyPairAlias` and `keyStorePassword` are then needed for the key store, else the messages fail.
     required:
     - keyEncapsulationAlgorithm
     - operation
@@ -95,6 +95,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelPQC*
         - to:
             uri: pqc
             parameters:

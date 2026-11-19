@@ -39,7 +39,7 @@ spec:
 
       Output: the body is a JSON array with one entry per record found. Each entry has the type, the class and the time to live of the record.
 
-      Good to know: a name the DNS does not know fails the message with "host not found". The Kamelet has no options; it asks the DNS servers of the machine it runs on.
+      Good to know: a name the DNS does not know fails the message with "host not found". The Kamelet has no options; it asks the DNS servers of the machine it runs on. Headers that start with `CamelDns` are removed from the message first, so they cannot change what the Kamelet does.
     type: object
   types:
     out:
@@ -63,6 +63,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelDns*
         - choice:
             when:
               - expression:

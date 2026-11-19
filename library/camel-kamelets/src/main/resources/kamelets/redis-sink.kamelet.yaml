@@ -39,7 +39,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is what Redis answered, such as the value for `GET` or the new length of the list for `RPUSH`; for `SET` the body is unchanged.
 
-      Good to know: the default `command` is `GET`, which reads and stores nothing, so set it to the command you need. A body that is not text, such as a Map, fails the message; turn it into JSON text first, for example with `json-serialize-action`. By default it connects with no password and no TLS, to database 0: set `password` (and `username` for an ACL user) for a Redis server that asks for a login, and `ssl` for one that needs TLS.
+      Good to know: the default `command` is `GET`, which reads and stores nothing, so set it to the command you need. A body that is not text, such as a Map, fails the message; turn it into JSON text first, for example with `json-serialize-action`. By default it connects with no password and no TLS, to database 0: set `password` (and `username` for an ACL user) for a Redis server that asks for a login, and `ssl` for one that needs TLS. Headers that start with `CamelRedis` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - redisHost
       - redisPort
@@ -134,6 +134,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelRedis*
         - choice:
             when:
               - expression:

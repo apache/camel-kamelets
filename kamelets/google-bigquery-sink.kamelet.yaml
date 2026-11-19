@@ -39,7 +39,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the parsed JSON: a Map for one row, or a List of Maps.
 
-      Good to know: the table must exist with its columns. A message with a field that is not a column of the table, or with a body that is not JSON, fails, and none of its rows are inserted. A message that is sent again, for example after a failure, adds its rows again, unless `useAsInsertId` names a field that identifies each row.
+      Good to know: the table must exist with its columns. A message with a field that is not a column of the table, or with a body that is not JSON, fails, and none of its rows are inserted. Headers that start with `CamelGoogleBigQuery` are removed from the message first, so they cannot change what the Kamelet does. A message that is sent again, for example after a failure, adds its rows again, unless `useAsInsertId` names a field that identifies each row.
     required:
       - projectId
       - dataset
@@ -86,6 +86,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: CamelGoogleBigQuery*
         - unmarshal:
             json: {}
         - to:
