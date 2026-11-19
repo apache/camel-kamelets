@@ -37,6 +37,8 @@
         <enable.integration.tests>*IT</enable.integration.tests>
         <!-- The Kamelets under test: this working tree, not a released artifact. See #2984. -->
         <kamelets.local.dir>${project.basedir}/../../kamelets</kamelets.local.dir>
+        <!-- the FTP server of the FTP and FTPS Kamelet tests, the version the Camel FTP tests use -->
+        <ftpserver.version>1.2.1</ftpserver.version>
     </properties>
 
     <dependencyManagement>
@@ -215,6 +217,14 @@
         <dependency>
             <groupId>org.citrusframework</groupId>
             <artifactId>citrus-validation-json</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Apache FtpServer, the FTP server of the FTP and FTPS Kamelet tests -->
+        <dependency>
+            <groupId>org.apache.ftpserver</groupId>
+            <artifactId>ftpserver-core</artifactId>
+            <version>${ftpserver.version}</version>
             <scope>test</scope>
         </dependency>
 

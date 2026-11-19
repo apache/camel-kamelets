@@ -1,0 +1,91 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: mail-imap-source-route-test
+description: 'mail-imap-source reads the unread email in the INBOX over IMAPS, skips the email that is already read, and gives the text of the email with its subject and addresses in the ce- headers'
+actions:
+  # Start GreenMail with IMAPS (port 3993) and the user citrus, whose password has characters that have a
+  # meaning in an endpoint address
+  - testcontainers:
+      start:
+        container:
+          name: "greenmail"
+          image: "greenmail/standalone:2.1.8"
+          autoRemove: true
+          startUpTimeout: 120
+          env:
+            - name: "GREENMAIL_OPTS"
+              value: "-Dgreenmail.setup.test.imaps -Dgreenmail.hostname=0.0.0.0 -Dgreenmail.users=citrus:s3cr&t+pw@example.org"
+          exposedPorts:
+            - 3993
+          waitFor:
+            logMessage: '.*Starting GreenMail API server.*'
+
+  # An email that is already read, and one that is not
+  - groovy:
+      script:
+        file: "mail/appendMails.groovy"
+
+  # Create Camel JBang integration; it trusts the self-signed certificate of GreenMail
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "mail/mail-imap-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${mail.http.server.port}"
+                - name: "mail.imap.host"
+                  value: "${CITRUS_TESTCONTAINERS_GREENMAIL_HOST}"
+                - name: "mail.imap.port"
+                  value: "${CITRUS_TESTCONTAINERS_GREENMAIL_PORT}"
+                - name: "mail.imaps.ssl.trust"
+                  value: "*"
+                - name: "mail.imaps.ssl.checkserveridentity"
+                  value: "false"
+
+  # Only the unread email is read: the body is its text, with its subject and addresses
+  - http:
+      server: "mailHttpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct=text/plain; charset=us-ascii'
+            - name: "ce-subject"
+              value: 'Order 42'
+            - name: "ce-from"
+              value: 'jane@example.org'
+            - name: "ce-to"
+              value: 'citrus@example.org'
+            - name: "ce-cc"
+              value: 'team@example.org'
+          body:
+            data: 'Please ship order 42.'
+  - http:
+      server: "mailHttpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

@@ -1,0 +1,87 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: ftps-sink-route-test
+description: 'ftps-sink uploads the body as a file to the directory on the FTPS server, under the name in the file header without its directory, and the message goes on unchanged (the server and the integration speak explicit TLS)'
+variables:
+  - name: "ftp.tls"
+    value: "true"
+actions:
+  # Start the FTPS server
+  - groovy:
+      script:
+        file: "ftp/ftpServer.groovy"
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "ftp/ftps-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${file.http.server.port}"
+                - name: "ftp.port"
+                  value: "${ftp.server.port}"
+                - name: "javax.net.ssl.trustStore"
+                  value: "${ftp.truststore}"
+                - name: "javax.net.ssl.trustStorePassword"
+                  value: "changeit"
+                - name: "javax.net.ssl.trustStoreType"
+                  value: "PKCS12"
+
+  # The message goes on unchanged, with the path of the file on the server
+  - http:
+      server: "fileHttpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-File-Name-Produced"
+              value: 'upload/day 1.csv'
+          body:
+            data: |-
+              id,item
+              1,book
+  - http:
+      server: "fileHttpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The server has the file, with the body as its content
+  - repeatOnError:
+      until: "i = 10"
+      autoSleep: 1000
+      actions:
+        - groovy:
+            script:
+              file: "ftp/verifyUpload.groovy"
+
+finally:
+  - groovy:
+      script:
+        file: "ftp/ftpServerStop.groovy"
