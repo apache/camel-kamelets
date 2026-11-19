@@ -1,0 +1,49 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+- route:
+    from:
+      uri: "timer:tick"
+      parameters:
+        period: "1000"
+        repeatCount: 1
+      steps:
+        # With converse, the body is the bare prompt
+        - setBody:
+            constant: 'Summarize: the order ORD-1 has shipped'
+        - to:
+            uri: "kamelet:aws-bedrock-text-sink"
+            parameters:
+              modelId: "amazon.titan-text-express-v1"
+              operation: "converse"
+              guardrailIdentifier: "gr-orders"
+              guardrailVersion: "1"
+              guardrailTrace: "true"
+              accessKey: "{{aws.accessKey}}"
+              secretKey: "{{aws.secretKey}}"
+              region: "{{aws.region}}"
+              overrideEndpoint: "true"
+              uriEndpointOverride: "{{aws.uriEndpointOverride}}"
+        # What the Kamelet leaves on the message
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Stop-Reason
+            simple: "${header.CamelAwsBedrockConverseStopReason}"
+        - to:
+            uri: "{{http.sink.url}}/result"

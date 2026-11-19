@@ -67,6 +67,12 @@ spec:
         type: string
         example: status/latest.json
         pattern: "^[^\\r\\n]+$"
+      storageClass:
+        title: Storage Class
+        description: "The storage class of the uploaded files, which sets what storing and reading them costs: `STANDARD`, `NEARLINE` (for files read about once a month), `COLDLINE` (once a quarter) or `ARCHIVE` (once a year). When it is not set, a file gets the default storage class of the bucket."
+        type: string
+        enum: ["STANDARD", "NEARLINE", "COLDLINE", "ARCHIVE"]
+        example: NEARLINE
       storageLocation:
         title: Storage Location
         description: The location of the bucket that `autoCreateBucket` creates, such as a region (`europe-west1`) or a multi-region (`EU`). Only used when the bucket is created. When it is not set, it is `US-EAST1`.
@@ -144,4 +150,4 @@ spec:
                       simple:
                         expression: "${exchangeId}"
         - to:
-            uri: "google-storage://{{bucketNameOrArn}}?autoCreateBucket={{autoCreateBucket}}&impersonatedServiceAccount={{?impersonatedServiceAccount}}&objectName=RAW({{?objectName}})&serviceAccountKey=RAW(base64:{{?serviceAccountKey}})&storageLocation={{?storageLocation}}&useWorkloadIdentityFederation={{?useWorkloadIdentityFederation}}&workloadIdentityConfig={{?workloadIdentityConfig}}"
+            uri: "google-storage://{{bucketNameOrArn}}?autoCreateBucket={{autoCreateBucket}}&impersonatedServiceAccount={{?impersonatedServiceAccount}}&objectName=RAW({{?objectName}})&objectStorageClass={{?storageClass}}&serviceAccountKey=RAW(base64:{{?serviceAccountKey}})&storageLocation={{?storageLocation}}&useWorkloadIdentityFederation={{?useWorkloadIdentityFederation}}&workloadIdentityConfig={{?workloadIdentityConfig}}"
