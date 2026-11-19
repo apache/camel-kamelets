@@ -20,15 +20,28 @@
       uri: "kamelet:timer-source"
       parameters:
         period: '{{timer.source.period}}'
+        repeatCount: 1
         message: '{{slack.message}}'
       steps:
         - to:
             uri: "kamelet:log-action"
             parameters:
               showHeaders: true
+        # the text as bytes: the Kamelet reads it as text
+        - convertBodyTo:
+            type: "byte[]"
         - to:
             uri: "kamelet:slack-sink"
             parameters:
               webhookUrl: '{{slack.server.url}}'
               channel: '{{slack.channel}}'
               token: '{{slack.token}}'
+        # what the Kamelet leaves: the Java type of the body and the Content-Type
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
+        - to:
+            uri: "{{slack.server.url}}/result"

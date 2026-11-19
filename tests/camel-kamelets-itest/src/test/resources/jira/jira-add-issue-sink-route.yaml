@@ -47,9 +47,24 @@
             uri: "kamelet:log-action"
             parameters:
               showHeaders: true
+        # the text as bytes: the Kamelet reads it as text
+        - convertBodyTo:
+            type: "byte[]"
         - to:
             uri: "kamelet:jira-add-issue-sink"
             parameters:
               jiraUrl: '{{jira.url}}'
               username: '{{jira.username}}'
               password: '{{jira.password}}'
+        # what the Kamelet leaves: the Java type of the body and the Content-Type
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
+        # the key of the created issue
+        - setBody:
+            simple: "${body.key}"
+        - to:
+            uri: "{{jira.url}}/result"

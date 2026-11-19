@@ -72,6 +72,29 @@ actions:
           reasonPhrase: "OK"
           version: "HTTP/1.1"
 
+  # the bytes of the body were read as text: the body afterwards is that text, with the Content-Type text/plain
+  - http:
+      server: "slackSinkServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct=text/plain'
+          body:
+            data: '${slack.message}'
+
+  - http:
+      server: "slackSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
   # Verify Slack sink
   - camel:
       cli:

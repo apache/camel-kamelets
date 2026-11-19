@@ -37,7 +37,7 @@ spec:
 
       Input: the body is the text of the Slack message, as text; another kind of body is turned into text first. JSON text is posted as it is, as the text of the message, not as a Slack message structure. The text can use Slack's own formatting, such as `*bold*`. Headers are not read.
 
-      Output: the message is unchanged.
+      Output: the body afterwards is the text of the message, as text, and the `Content-Type` header is `text/plain`.
 
       Good to know: the webhook decides where the message goes. The webhook of a Slack app posts only to the channel chosen when the webhook was created, whatever `channel` says. When Slack does not answer with a success status, the message fails.
     required:
@@ -60,6 +60,14 @@ spec:
   types:
     out:
       mediaType: application/json
+  dataTypes:
+    in:
+      default: text
+      types:
+        text:
+          format: "text-plain"
+          description: "The text of the Slack message."
+          mediaType: text/plain
   dependencies:
   - "camel:jackson3"
   - "camel:slack"

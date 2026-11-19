@@ -1,0 +1,116 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: salesforce-delete-sink-route-test
+description: 'salesforce-delete-sink logs in, then deletes the record of the sObjectName and sObjectId fields of the JSON body'
+variables:
+  - name: "salesforce.client.id"
+    value: "citrus:randomString(20)"
+  - name: "salesforce.client.secret"
+    value: "citrus:randomString(20)"
+  - name: "salesforce.username"
+    value: "citrus@example.com"
+  - name: "salesforce.password"
+    value: "secr3t"
+  - name: "salesforce.token"
+    value: "00Dcitrus:randomString(20)"
+actions:
+  - createVariables:
+      variables:
+        - name: "salesforce.url"
+          value: "http://localhost:${services.server.port}"
+  # the Citrus HTTP server stands in for Salesforce, both for the login (loginUrl) and for the org (instance_url)
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          # camel-salesforce gets protobuf-java 3.x through grpc-protobuf, but its Pub/Sub classes need 4.x,
+          # without which the component does not start in Camel JBang
+          args:
+            - "--dep=com.google.protobuf:protobuf-java:4.35.1"
+          integration:
+            file: "salesforce/salesforce-delete-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "salesforce.url"
+                  value: "${salesforce.url}"
+                - name: "salesforce.client.id"
+                  value: "${salesforce.client.id}"
+                - name: "salesforce.client.secret"
+                  value: "${salesforce.client.secret}"
+                - name: "salesforce.username"
+                  value: "${salesforce.username}"
+                - name: "salesforce.password"
+                  value: "${salesforce.password}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${services.server.port}"
+
+  # the OAuth login with the username and password flow
+  - http:
+      server: "servicesServer"
+      receiveRequest:
+        POST:
+          path: "/services/oauth2/token"
+          type: "plaintext"
+          body:
+            data: 'password=${salesforce.password}&grant_type=password&format=json&client_secret=${salesforce.client.secret}&client_id=${salesforce.client.id}&username=citrus%40example.com'
+  - http:
+      server: "servicesServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: '{"access_token":"${salesforce.token}","instance_url":"${salesforce.url}","id":"${salesforce.url}/id/00D000000000001AAA/005000000000001AAA","token_type":"Bearer","issued_at":"1763550000000","signature":"c2lnbmF0dXJl"}'
+
+  # the record of sObjectName and sObjectId
+  - http:
+      server: "servicesServer"
+      receiveRequest:
+        DELETE:
+          path: "/services/data/v56.0/sobjects/Contact/003000000000001AAA"
+          headers:
+            - name: Authorization
+              value: "Bearer ${salesforce.token}"
+  - http:
+      server: "servicesServer"
+      sendResponse:
+        response:
+          status: 204
+          reasonPhrase: "No Content"
+          version: "HTTP/1.1"
+
+  # the body afterwards is empty (so the HTTP call is a GET)
+  - http:
+      server: "servicesServer"
+      receiveRequest:
+        GET:
+          path: "/result"
+          headers:
+            - name: "X-Body"
+              value: 'body='
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+  - http:
+      server: "servicesServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
