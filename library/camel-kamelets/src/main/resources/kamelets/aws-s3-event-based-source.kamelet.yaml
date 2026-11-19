@@ -299,8 +299,24 @@ spec:
                                 expression:
                                   jsonpath:
                                     expression: "$.detail.bucket.name"
-                            - toD:
-                                uri: "aws2-s3:${exchangeProperty.aws-s3-bucket}?accessKey=RAW({{?accessKey}})&secretKey=RAW({{?secretKey}})&region={{region}}&operation=getObject&keyName=${exchangeProperty.aws-s3-name}&useDefaultCredentialsProvider={{?useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{?useProfileCredentialsProvider}}&profileCredentialsName={{?profileCredentialsName}}&useSessionCredentials={{?useSessionCredentials}}&sessionToken=RAW({{?sessionToken}})&proxyHost={{?proxyHost}}&proxyPort={{?proxyPort}}&proxyProtocol={{?proxyProtocol}}"
+                            - choice:
+                                when:
+                                  - expression:
+                                      simple:
+                                        expression: "${exchangeProperty.aws-s3-bucket} regex '[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]'"
+                                    steps:
+                                      # the S3 call takes the bucket and the key of the event, and no other header
+                                      - removeHeaders:
+                                          pattern: "CamelAwsS3*"
+                                      - setHeader:
+                                          name: CamelAwsS3Key
+                                          expression:
+                                            simple:
+                                              expression: "${exchangeProperty.aws-s3-name}"
+                                      - toD:
+                                          uri: "aws2-s3:${exchangeProperty.aws-s3-bucket}?accessKey=RAW({{?accessKey}})&secretKey=RAW({{?secretKey}})&region={{region}}&operation=getObject&useDefaultCredentialsProvider={{?useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{?useProfileCredentialsProvider}}&profileCredentialsName={{?profileCredentialsName}}&useSessionCredentials={{?useSessionCredentials}}&sessionToken=RAW({{?sessionToken}})&proxyHost={{?proxyHost}}&proxyPort={{?proxyPort}}&proxyProtocol={{?proxyProtocol}}"
+                                      - removeHeader:
+                                          name: CamelAwsS3Key
         - to:
             uri: kamelet:sink
 
