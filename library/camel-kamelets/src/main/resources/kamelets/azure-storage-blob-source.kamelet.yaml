@@ -208,7 +208,7 @@ spec:
         accessKey: "RAW({{?accessKey}})"
         azureClientId: "RAW({{?clientId}})"
         azureClientSecret: "RAW({{?clientSecret}})"
-        azureTenantId: "{{?tenantId}}"
+        azureTenantId: "RAW({{?tenantId}})"
         credentialType: "{{credentialType}}"
         sasToken: "RAW({{?sasToken}})"
         delay: "{{delay}}"
@@ -234,7 +234,7 @@ spec:
                         accessKey: "RAW({{?accessKey}})"
                         azureClientId: "RAW({{?clientId}})"
                         azureClientSecret: "RAW({{?clientSecret}})"
-                        azureTenantId: "{{?tenantId}}"
+                        azureTenantId: "RAW({{?tenantId}})"
                         credentialType: "{{credentialType}}"
                         sasToken: "RAW({{?sasToken}})"
                         operation: deleteBlob

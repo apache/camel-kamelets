@@ -146,4 +146,4 @@ spec:
                       simple:
                         expression: "${exchangeId}"
         - to:
-            uri: "azure-storage-blob://{{accountName}}/{{containerName}}?accessKey=RAW({{?accessKey}})&azureClientId=RAW({{?clientId}})&azureClientSecret=RAW({{?clientSecret}})&azureTenantId={{?tenantId}}&credentialType={{credentialType}}&operation=uploadBlockBlob&sasToken=RAW({{?sasToken}})"
+            uri: "azure-storage-blob://{{accountName}}/{{containerName}}?accessKey=RAW({{?accessKey}})&azureClientId=RAW({{?clientId}})&azureClientSecret=RAW({{?clientSecret}})&azureTenantId=RAW({{?tenantId}})&credentialType={{credentialType}}&operation=uploadBlockBlob&sasToken=RAW({{?sasToken}})"

@@ -229,6 +229,6 @@ spec:
                                   jsonpath:
                                     expression: "$.Records[0].s3.bucket.name"
                             - toD:
-                                uri: "aws2-s3:${exchangeProperty.ceph-bucket-name}?accessKey={{accessKey}}&secretKey={{secretKey}}&region={{zoneGroup}}&operation=getObject&keyName=${exchangeProperty.ceph-object-key}&uriEndpointOverride={{cephUrl}}&overrideEndpoint=true"
+                                uri: "aws2-s3:${exchangeProperty.ceph-bucket-name}?accessKey=RAW({{accessKey}})&secretKey=RAW({{secretKey}})&region={{zoneGroup}}&operation=getObject&keyName=${exchangeProperty.ceph-object-key}&uriEndpointOverride={{cephUrl}}&overrideEndpoint=true"
         - to:
             uri: kamelet:sink

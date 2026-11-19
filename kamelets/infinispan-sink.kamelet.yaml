@@ -238,4 +238,4 @@ spec:
                         simple:
                           expression: "{{maxIdleTimeUnit}}"
         - to:
-            uri: "{{local-infinispan}}:{{cacheName}}?hosts={{hosts}}&secure={{secure}}&username={{username}}&password={{password}}&saslMechanism={{saslMechanism}}&securityRealm={{securityRealm}}&securityServerName={{securityServerName}}&operation={{?operation}}&configurationProperties[trust_store_file_name]={{?sslTruststoreLocation}}&configurationProperties[trust_store_password]=RAW({{?sslTruststorePassword}})&configurationProperties[sni_host_name]={{?sslSniHostName}}"
+            uri: "{{local-infinispan}}:{{cacheName}}?hosts={{hosts}}&secure={{secure}}&username={{username}}&password=RAW({{password}})&saslMechanism={{saslMechanism}}&securityRealm={{securityRealm}}&securityServerName={{securityServerName}}&operation={{?operation}}&configurationProperties[trust_store_file_name]={{?sslTruststoreLocation}}&configurationProperties[trust_store_password]=RAW({{?sslTruststorePassword}})&configurationProperties[sni_host_name]={{?sslSniHostName}}"

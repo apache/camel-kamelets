@@ -94,4 +94,4 @@ spec:
       uri: kamelet:source
       steps:
         - to:
-            uri: "google-pubsub://{{projectId}}:{{destinationName}}?messageOrderingEnabled={{?messageOrderingEnabled}}&pubsubEndpoint={{?pubsubEndpoint}}&serviceAccountKey=base64:{{?serviceAccountKey}}"
+            uri: "google-pubsub://{{projectId}}:{{destinationName}}?messageOrderingEnabled={{?messageOrderingEnabled}}&pubsubEndpoint={{?pubsubEndpoint}}&serviceAccountKey=RAW(base64:{{?serviceAccountKey}})"

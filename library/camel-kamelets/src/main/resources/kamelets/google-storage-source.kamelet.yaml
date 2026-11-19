@@ -170,7 +170,7 @@ spec:
     - "camel:jackson3"
   template:
     from:
-      uri: "google-storage://{{bucketNameOrArn}}?autoCreateBucket={{autoCreateBucket}}&delay={{?delay}}&deleteAfterRead={{deleteAfterRead}}&destinationBucket={{?destinationBucket}}&filter={{?filter}}&impersonatedServiceAccount={{?impersonatedServiceAccount}}&includeBody={{?includeBody}}&includeFolders={{?includeFolders}}&moveAfterRead={{?moveAfterRead}}&prefix={{?prefix}}&serviceAccountKey=base64:{{?serviceAccountKey}}&useWorkloadIdentityFederation={{?useWorkloadIdentityFederation}}&workloadIdentityConfig={{?workloadIdentityConfig}}"
+      uri: "google-storage://{{bucketNameOrArn}}?autoCreateBucket={{autoCreateBucket}}&delay={{?delay}}&deleteAfterRead={{deleteAfterRead}}&destinationBucket={{?destinationBucket}}&filter={{?filter}}&impersonatedServiceAccount={{?impersonatedServiceAccount}}&includeBody={{?includeBody}}&includeFolders={{?includeFolders}}&moveAfterRead={{?moveAfterRead}}&prefix={{?prefix}}&serviceAccountKey=RAW(base64:{{?serviceAccountKey}})&useWorkloadIdentityFederation={{?useWorkloadIdentityFederation}}&workloadIdentityConfig={{?workloadIdentityConfig}}"
       steps:
         - choice:
             precondition: true

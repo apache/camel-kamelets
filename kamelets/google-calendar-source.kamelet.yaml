@@ -183,7 +183,7 @@ spec:
   - "camel:kamelet"
   template:
     from:
-      uri: "google-calendar-stream://{{index}}?accessToken=RAW({{?accessToken}})&applicationName={{applicationName}}&calendarId={{calendarId}}&clientId={{?clientId}}&clientSecret=RAW({{?clientSecret}})&considerLastUpdate={{?considerLastUpdate}}&consumeFromNow={{consumeFromNow}}&delay={{delay}}&delegate=RAW({{?delegate}})&maxResults={{?maxResults}}&query=RAW({{?query}})&refreshToken=RAW({{?refreshToken}})&scopes={{?scopes}}&serviceAccountKey=RAW({{?serviceAccountKey}})&syncFlow={{syncFlow}}"
+      uri: "google-calendar-stream://{{index}}?accessToken=RAW({{?accessToken}})&applicationName={{applicationName}}&calendarId={{calendarId}}&clientId=RAW({{?clientId}})&clientSecret=RAW({{?clientSecret}})&considerLastUpdate={{?considerLastUpdate}}&consumeFromNow={{consumeFromNow}}&delay={{delay}}&delegate=RAW({{?delegate}})&maxResults={{?maxResults}}&query=RAW({{?query}})&refreshToken=RAW({{?refreshToken}})&scopes={{?scopes}}&serviceAccountKey=RAW({{?serviceAccountKey}})&syncFlow={{syncFlow}}"
       steps:
         - marshal:
             json: {}
