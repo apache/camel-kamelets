@@ -39,7 +39,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the response of the API, as bytes, with the headers of the response and its status code in `CamelHttpResponseCode`.
 
-      Good to know: a missing path parameter is not an error; the request is sent with `\{petId}` in the path, unless `clientRequestValidation` is true. The address of the API is taken from the `servers` of the specification, unless `host` or `basePath` is set. The Kamelet has no login options. The Kamelet does not start when the specification has no operation with the ID in `operation`. Headers that start with `CamelHttp` or `CamelRestHttp` are removed from the message first, so they cannot change what the Kamelet does.
+      Good to know: a missing path parameter is not an error; the request is sent with `\{petId}` in the path, unless `clientRequestValidation` is true. The address of the API is taken from the `servers` of the specification, unless `host` or `basePath` is set. The login comes only from the options: an `Authorization` or `Proxy-Authorization` header on the message is removed, so a credential that came with the message is not sent on. Log in either with `authUsername` and `authPassword`, sent with Basic login after the service answers 401, or with a static token in `authBearerToken`, sent as a Bearer token on every request. The Kamelet does not start when the specification has no operation with the ID in `operation`. Headers that start with `CamelHttp` or `CamelRestHttp` are removed from the message first, so they cannot change what the Kamelet does.
     required:
     - specification
     - operation
@@ -83,6 +83,26 @@ spec:
         type: string
         example: "application/merge-patch+json"
         pattern: "^[A-Za-z0-9*][A-Za-z0-9!$^_.+*/=;,-]*$"
+      authUsername:
+        title: Authentication Username
+        description: The user to log in as with Basic login, together with `authPassword`. They are sent only after the service answers 401 and asks for them, which takes a second request.
+        type: string
+        x-descriptors:
+        - urn:camel:group:credentials
+      authPassword:
+        title: Authentication Password
+        description: The password of `authUsername`.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      authBearerToken:
+        title: Bearer Token
+        description: A static token, such as an API key, sent on every request in the `Authorization` header as `Bearer` followed by the token. The header is removed from the message after the call.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
   dependencies:
   - "camel:rest-openapi"
   - "camel:http"
@@ -93,13 +113,51 @@ spec:
       steps:
         - removeHeaders:
             pattern: "Camel(Rest)?Http.*"
-        - to:
-            uri: rest-openapi
-            parameters:
-              specificationUri: "{{specification}}"
-              operationId: "{{operation}}"
-              basePath: "{{?basePath}}"
-              requestValidationEnabled: "{{clientRequestValidation}}"
-              host: "{{?host}}"
-              consumes: "RAW({{?consumes}})"
-              produces: "RAW({{?produces}})"
+        - removeHeader:
+            name: Authorization
+        - removeHeader:
+            name: Proxy-Authorization
+        - choice:
+            precondition: true
+            when:
+              - expression:
+                  simple:
+                    expression: "${propertiesExist:authBearerToken}"
+                steps:
+                  - setHeader:
+                      name: Authorization
+                      expression:
+                        constant:
+                          expression: "Bearer {{authBearerToken}}"
+                  - doTry:
+                      steps:
+                        - to:
+                            uri: rest-openapi
+                            parameters:
+                              specificationUri: "{{specification}}"
+                              operationId: "{{operation}}"
+                              basePath: "{{?basePath}}"
+                              requestValidationEnabled: "{{clientRequestValidation}}"
+                              host: "{{?host}}"
+                              consumes: "RAW({{?consumes}})"
+                              produces: "RAW({{?produces}})"
+                              authUsername: "{{?authUsername}}"
+                              authPassword: "RAW({{?authPassword}})"
+                      doFinally:
+                        steps:
+                          - removeHeader:
+                              name: Authorization
+            otherwise:
+              steps:
+                - to:
+                    uri: rest-openapi
+                    parameters:
+                      specificationUri: "{{specification}}"
+                      operationId: "{{operation}}"
+                      basePath: "{{?basePath}}"
+                      requestValidationEnabled: "{{clientRequestValidation}}"
+                      host: "{{?host}}"
+                      consumes: "RAW({{?consumes}})"
+                      produces: "RAW({{?produces}})"
+                      authUsername: "{{?authUsername}}"
+                      authPassword: "RAW({{?authPassword}})"

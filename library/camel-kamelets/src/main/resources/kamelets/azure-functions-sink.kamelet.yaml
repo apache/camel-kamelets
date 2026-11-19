@@ -39,7 +39,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is the response of the function, and the `CamelHttpResponseCode` header its status code.
 
-      Good to know: a response with a status code outside 200 to 299 fails the message. The `key` is sent in the `x-functions-key` header, not in the address of the request, so error messages and access logs do not show it. The header is removed from the message after the call, also when the call fails. Headers that start with `CamelHttp` or `CamelRestHttp` are removed from the message first, so they cannot change what the Kamelet does.
+      Good to know: a response with a status code outside 200 to 299 fails the message. The `key` is sent in the `x-functions-key` header, not in the address of the request, so error messages and access logs do not show it. The header is removed from the message after the call, also when the call fails. An `x-functions-key`, `Authorization` or `Proxy-Authorization` header on the incoming message is removed first, so a credential that came with the message is not sent on. Headers that start with `CamelHttp` or `CamelRestHttp` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - url
     type: object
@@ -72,6 +72,12 @@ spec:
       steps:
         - removeHeaders:
             pattern: "Camel(Rest)?Http.*"
+        - removeHeader:
+            name: Authorization
+        - removeHeader:
+            name: Proxy-Authorization
+        - removeHeader:
+            name: x-functions-key
         - setHeader:
             name: CamelHttpMethod
             expression:
