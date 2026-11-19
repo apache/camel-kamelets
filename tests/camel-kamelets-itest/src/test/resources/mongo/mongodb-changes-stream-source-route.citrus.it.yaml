@@ -1,0 +1,148 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: mongodb-changes-stream-source-route-test
+actions:
+  # MongoDB as a replica set with one member, as change streams need one
+  - testcontainers:
+      start:
+        mongodb: {}
+
+  # the collection must exist when the Kamelet starts
+  - createVariables:
+      variables:
+        - name: "mongodb.change"
+          value: "create"
+  - groovy:
+      script:
+        file: "mongo/changeOrder.groovy"
+
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "mongo/mongodb-changes-stream-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "mongodb.hosts"
+                  value: "${CITRUS_TESTCONTAINERS_MONGODB_HOST}:${CITRUS_TESTCONTAINERS_MONGODB_PORT}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${mongo.server.port}"
+
+  # only the changes made after the Kamelet started are sent
+  - camel:
+      cli:
+        verify:
+          integration: "mongodb-changes-stream-source-route"
+          logMessage: "started in"
+
+  # an insert gives the whole new document
+  - createVariables:
+      variables:
+        - name: "mongodb.change"
+          value: "insert"
+  - groovy:
+      script:
+        file: "mongo/changeOrder.groovy"
+  - http:
+      server: "mongoServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: 'org.apache.camel.converter.stream.InputStreamCache'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+            - name: "X-Operation-Type"
+              value: 'insert'
+            - name: "X-Id"
+              value: 'order-1'
+          body:
+            data: '{"_id":"order-1","status":"new"}'
+  - http:
+      server: "mongoServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # an update gives the whole document, read again from the collection
+  - createVariables:
+      variables:
+        - name: "mongodb.change"
+          value: "update"
+  - groovy:
+      script:
+        file: "mongo/changeOrder.groovy"
+  - http:
+      server: "mongoServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: 'org.apache.camel.converter.stream.InputStreamCache'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+            - name: "X-Operation-Type"
+              value: 'update'
+            - name: "X-Id"
+              value: 'order-1'
+          body:
+            data: '{"_id":"order-1","status":"shipped"}'
+  - http:
+      server: "mongoServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # a delete gives only the _id of the document
+  - createVariables:
+      variables:
+        - name: "mongodb.change"
+          value: "delete"
+  - groovy:
+      script:
+        file: "mongo/changeOrder.groovy"
+  - http:
+      server: "mongoServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: 'org.apache.camel.converter.stream.InputStreamCache'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+            - name: "X-Operation-Type"
+              value: 'delete'
+            - name: "X-Id"
+              value: 'order-1'
+          body:
+            data: '{"_id":"order-1"}'
+  - http:
+      server: "mongoServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

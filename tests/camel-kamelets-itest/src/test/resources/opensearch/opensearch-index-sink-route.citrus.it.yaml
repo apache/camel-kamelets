@@ -1,0 +1,92 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: opensearch-index-sink-route-test
+actions:
+  # OpenSearch with one node and the security plugin off, so it is reached with plain HTTP
+  - testcontainers:
+      start:
+        container:
+          name: "opensearch"
+          image: "opensearchproject/opensearch:3.9.0"
+          startUpTimeout: 180
+          exposedPorts:
+            - 9200
+          env:
+            - name: "discovery.type"
+              value: "single-node"
+            - name: "DISABLE_SECURITY_PLUGIN"
+              value: "true"
+            - name: "DISABLE_INSTALL_DEMO_CONFIG"
+              value: "true"
+            - name: "cluster.routing.allocation.disk.threshold_enabled"
+              value: "false"
+            - name: "OPENSEARCH_JAVA_OPTS"
+              value: "-Xms512m -Xmx512m"
+          waitFor:
+            url: "http://localhost:9200/"
+
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "opensearch/opensearch-index-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "opensearch.host"
+                  value: "${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}"
+                - name: "opensearch.port"
+                  value: "${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${search.server.port}"
+
+  # the body afterwards is the id of the document
+  - http:
+      server: "searchServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+          body:
+            data: 'order-1'
+  - http:
+      server: "searchServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # the document is stored under its id, in the index of the header
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      sendRequest:
+        GET:
+          path: "/orders/_doc/order-1"
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      receiveResponse:
+        response:
+          status: 200
+          body:
+            data: '{"_index":"orders","_id":"order-1","_version":1,"_seq_no":"@ignore@","_primary_term":"@ignore@","found":true,"_source":{"order":"ORD-1","status":"shipped"}}'

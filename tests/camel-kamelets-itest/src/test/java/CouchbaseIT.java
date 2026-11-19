@@ -18,13 +18,48 @@
 import java.util.stream.Stream;
 
 import org.citrusframework.api.common.TestLoader;
+import org.citrusframework.container.SequenceAfterTest;
+import org.citrusframework.container.SequenceBeforeTest;
+import org.citrusframework.http.server.HttpServer;
 import org.citrusframework.junit.jupiter.CitrusSupport;
 import org.citrusframework.junit.jupiter.CitrusTestFactory;
 import org.citrusframework.junit.jupiter.CitrusTestFactorySupport;
+import org.citrusframework.spi.BindToRegistry;
+import org.citrusframework.util.SocketUtils;
 import org.junit.jupiter.api.DynamicTest;
+
+import static org.citrusframework.actions.CreateVariablesAction.Builder.createVariables;
+import static org.citrusframework.actions.PurgeEndpointAction.Builder.purgeEndpoints;
+import static org.citrusframework.http.endpoint.builder.HttpEndpoints.http;
 
 @CitrusSupport
 public class CouchbaseIT {
+
+    private static final String TESTS = "couchbase-.*";
+
+    private final int couchbaseServerPort = SocketUtils.findAvailableTcpPort();
+
+    @BindToRegistry
+    HttpServer couchbaseServer = http()
+                .server()
+                .port(couchbaseServerPort)
+                .timeout(60000L)
+                .autoStart(true)
+                .build();
+
+    @BindToRegistry
+    public SequenceBeforeTest beforeCouchbase() {
+        return new SequenceBeforeTest.Builder().onTests(TESTS).actions(
+                createVariables().variable("couchbase.server.port", String.valueOf(couchbaseServerPort))
+        ).build();
+    }
+
+    @BindToRegistry
+    public SequenceAfterTest afterCouchbase() {
+        return new SequenceAfterTest.Builder().onTests(TESTS).actions(
+                purgeEndpoints().endpoint(couchbaseServer)
+        ).build();
+    }
 
     @CitrusTestFactory
     public Stream<DynamicTest> couchbase() {
