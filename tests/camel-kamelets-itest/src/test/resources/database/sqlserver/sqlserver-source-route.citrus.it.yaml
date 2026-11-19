@@ -1,0 +1,112 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: sqlserver-source-route-test
+actions:
+  # Start SQL Server with a table of one row
+  - testcontainers:
+      start:
+        container:
+          name: "sqlserver"
+          image: "mcr.microsoft.com/mssql/server:2022-latest"
+          autoRemove: true
+          startUpTimeout: 180
+          exposedPorts:
+            - 1433
+          env:
+            - name: "ACCEPT_EULA"
+              value: "Y"
+            - name: "MSSQL_SA_PASSWORD"
+              value: "Citrus-Test-1"
+          waitFor:
+            logMessage: '.*SQL Server is now ready for client connections.*'
+
+  # Create the table with one row
+  - createVariables:
+      variables:
+        - name: "db.container"
+          value: "sqlserver"
+        - name: "db.sql"
+          value: |-
+            CREATE DATABASE testdb
+            GO
+            USE testdb
+            CREATE TABLE accounts (id INT PRIMARY KEY, username VARCHAR(100), city VARCHAR(100));
+            INSERT INTO accounts (id, username, city) VALUES (1, 'oscerd', 'Rome');
+  - repeatOnError:
+      until: "i > 30"
+      autoSleep: 1000
+      actions:
+        - groovy:
+            script:
+              file: "database/sql.groovy"
+
+  # Run the integration with the Kamelet
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "database/sqlserver/sqlserver-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "db.serverName"
+                  value: "${CITRUS_TESTCONTAINERS_SQLSERVER_HOST}"
+                - name: "db.serverPort"
+                  value: "${CITRUS_TESTCONTAINERS_SQLSERVER_PORT}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${http.server.port}"
+
+  # The row comes out of the Kamelet as a JSON object
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: 'org.apache.camel.converter.stream.InputStreamCache'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+          body:
+            data: '{"id":1,"username":"oscerd","city":"Rome"}'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # consumedQuery deletes the row once it has been sent on
+  - createVariables:
+      variables:
+        - name: "db.container"
+          value: "sqlserver"
+        - name: "db.sql"
+          value: |-
+            USE testdb
+            SELECT COUNT(*) FROM accounts;
+        - name: "db.expected"
+          value: '0'
+  - repeatOnError:
+      until: "i > 30"
+      autoSleep: 1000
+      actions:
+        - groovy:
+            script:
+              file: "database/sql.groovy"

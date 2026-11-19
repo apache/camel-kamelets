@@ -1,0 +1,104 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: oracle-database-sink-route-test
+actions:
+  # Start Oracle Database with an empty table
+  - testcontainers:
+      start:
+        container:
+          name: "oracle"
+          image: "gvenzl/oracle-free:23-slim"
+          autoRemove: true
+          startUpTimeout: 300
+          exposedPorts:
+            - 1521
+          env:
+            - name: "ORACLE_PASSWORD"
+              value: "oracle"
+            - name: "APP_USER"
+              value: "test"
+            - name: "APP_USER_PASSWORD"
+              value: "test"
+          waitFor:
+            logMessage: '.*DATABASE IS READY TO USE.*'
+
+  # Create the table
+  - createVariables:
+      variables:
+        - name: "db.container"
+          value: "oracle"
+        - name: "db.sql"
+          value: |-
+            CREATE TABLE accounts (id NUMBER PRIMARY KEY, username VARCHAR2(100), city VARCHAR2(100));
+            COMMIT;
+  - groovy:
+      script:
+        file: "database/sql.groovy"
+
+  # Run the integration with the Kamelet
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "database/oracle/oracle-database-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "db.serverName"
+                  value: "${CITRUS_TESTCONTAINERS_ORACLE_HOST}"
+                - name: "db.serverPort"
+                  value: "${CITRUS_TESTCONTAINERS_ORACLE_PORT}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${http.server.port}"
+
+  # The sink has run the INSERT: the body is the JSON object as a Map, and the update count is 1
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.util.LinkedHashMap'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-Update-Count"
+              value: '1'
+          body:
+            data: '{"id":99,"username":"sink-test","city":"Oslo"}'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The row is in the table
+  - createVariables:
+      variables:
+        - name: "db.container"
+          value: "oracle"
+        - name: "db.sql"
+          value: |-
+            SELECT username || '|' || city FROM accounts WHERE id = 99;
+        - name: "db.expected"
+          value: 'sink-test|Oslo'
+  - groovy:
+      script:
+        file: "database/sql.groovy"
