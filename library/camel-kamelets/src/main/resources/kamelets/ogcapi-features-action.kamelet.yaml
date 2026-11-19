@@ -146,6 +146,14 @@ spec:
         example: orders.write
         x-descriptors:
         - urn:camel:group:credentials
+  dataTypes:
+    in:
+      default: text
+      types:
+        text:
+          format: "text-plain"
+          description: "More query parameters, such as `name=Lake Baikal`, or an empty body."
+          mediaType: text/plain
   types:
     in:
       mediaType: text/plain

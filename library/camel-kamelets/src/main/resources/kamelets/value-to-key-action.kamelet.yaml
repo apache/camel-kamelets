@@ -35,7 +35,7 @@ spec:
 
       Use it to take the key of the record from the data, before `kafka-sink`, for example the customer of an order, so that all the records of one customer go to the same partition and stay in order. To take the key from a header instead use `set-kafka-key-action`.
 
-      Input: a JSON object as JSON text, with the `Content-Type` header set to `application/json`.
+      Input: a JSON object, as JSON text, as bytes, as a Map or as parsed JSON (a Jackson `JsonNode`). The `Content-Type` header is not needed.
 
       Output: the same JSON object, as JSON text in bytes, with `Content-Type` set to `application/json`. The `CamelKafkaKey` header, which `kafka-sink` uses as the key of the record, is set to a Map of the fields named in `fields` and their values.
 
@@ -51,11 +51,12 @@ spec:
     type: object
   dataTypes:
     in:
-      headers:
-        Content-Type:
-          title: Content Type
-          description: "Must be `application/json`."
-          type: string
+      default: json
+      types:
+        json:
+          format: "application-json"
+          description: "The JSON object, as JSON text in bytes."
+          mediaType: application/json
     out:
       default: json
       types:

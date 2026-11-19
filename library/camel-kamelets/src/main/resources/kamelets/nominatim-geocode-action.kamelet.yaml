@@ -50,6 +50,13 @@ spec:
         example: "https://nominatim.openstreetmap.org"
         type: string
   dataTypes:
+    in:
+      default: text
+      types:
+        text:
+          format: "text-plain"
+          description: "The place name or address to look up."
+          mediaType: text/plain
     out:
       default: json
       headers:

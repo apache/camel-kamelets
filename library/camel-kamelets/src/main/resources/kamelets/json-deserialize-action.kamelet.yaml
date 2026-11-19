@@ -41,6 +41,14 @@ spec:
 
       Good to know: a body that is not valid JSON fails the message.
     type: object
+  dataTypes:
+    in:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The JSON text, as bytes or a stream."
+          mediaType: application/octet-stream
   dependencies:
   - "camel:kamelet"
   - "camel:jackson3"
