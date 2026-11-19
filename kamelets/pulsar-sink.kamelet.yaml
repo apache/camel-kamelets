@@ -30,6 +30,12 @@ metadata:
 spec:
   dataTypes:
     in:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The payload to send, as bytes."
+          mediaType: application/octet-stream
       headers:
         key:
           title: "Message Key"
@@ -53,9 +59,9 @@ spec:
 
       Use it to publish events or data for other applications to read from Pulsar, such as orders or sensor readings. Use `pulsar-source` to read them.
 
-      Input: the body is the payload, as text or bytes. A Map fails: turn it into JSON text first, for example with `json-serialize-action`. The headers of the message are not sent as Pulsar properties; to set properties, put a Map in the `CamelPulsarProducerMessageProperties` header. The optional `key` header becomes the key of the message, as the `key` header that `pulsar-source` sets; the `CamelPulsarProducerMessageKey` header takes precedence over it.
+      Input: the body is the payload, as text or bytes. It is turned into bytes, and the `Content-Type` header is set to `application/octet-stream`, before it is sent. A Map fails: turn it into JSON text first, for example with `json-serialize-action`. The headers of the message are not sent as Pulsar properties; to set properties, put a Map in the `CamelPulsarProducerMessageProperties` header. The optional `key` header becomes the key of the message, as the `key` header that `pulsar-source` sets; the `CamelPulsarProducerMessageKey` header takes precedence over it.
 
-      Output: the message is unchanged.
+      Output: the body is the payload, as bytes, and the `Content-Type` header is `application/octet-stream`. The other headers are kept.
 
       Good to know: it connects with no TLS and no login, unless `serviceUrl` starts with `pulsar+ssl://` and `authenticationClass` is set. Over TLS, the certificate of Pulsar must be signed by an authority that the Java trust store of the integration trusts, or by one in the PEM file of `tlsTrustCertsFilePath`, such as a private one, and it must be issued for the host name in `serviceUrl`. It connects when the integration starts, and the integration fails to start when Pulsar cannot be reached, unless `lazyStart` is true. Headers that start with `CamelPulsar`, except `CamelPulsarProducerMessageKey` and `CamelPulsarProducerMessageProperties`, are removed from the message first, so they cannot change what the Kamelet does.
     required:
