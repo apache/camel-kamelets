@@ -35,7 +35,7 @@ spec:
 
       Use it to process files that another system drops into a MinIO bucket, such as uploaded documents, exported reports or log files. For Amazon S3 use `aws-s3-source`, and for the S3 gateway of Ceph use `ceph-source`.
 
-      Output: the body is the content of the file, as bytes. The headers give the bucket name, the name of the file (`CamelMinioObjectName`), and its content type, size, ETag and last modified date.
+      Output: the body is the content of the file, as bytes, and the `Content-Type` header is set to `application/octet-stream`. The headers give the bucket name, the name of the file (`CamelMinioObjectName`), and the content type the file was stored with (`CamelMinioContentType`), its size, ETag and last modified date.
 
       Good to know: files are deleted from the bucket after they are read, unless `deleteAfterRead` is set to false; then the same files are read again on every poll, about twice a second. Only the files at the top of the bucket are read: a file in a folder, such as `reports/january.csv`, is not.
     required:
@@ -81,6 +81,7 @@ spec:
         default: false
   dataTypes:
     out:
+      default: binary
       headers:
         CamelMinioBucketName:
           title: Bucket Name
@@ -102,6 +103,11 @@ spec:
           title: ETag
           description: The ETag of the file, which changes when its content changes.
           type: string
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The content of the file, as bytes."
+          mediaType: application/octet-stream
   dependencies:
   - "camel:minio"
   - "camel:kamelet"
