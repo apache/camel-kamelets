@@ -1,0 +1,86 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: azure-functions-sink-route-test
+description: 'azure-functions-sink calls the function with the body, the Content-Type and the other headers, and the key in x-functions-key'
+actions:
+  # Create Camel JBang integration. The Citrus HTTP server takes the place of the function.
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "azure/azure-functions-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${azure.server.port}"
+                - name: "azure.server.port"
+                  value: "${azure.server.port}"
+
+  # The function gets the body, the Content-Type, the header origin and the key, and answers with JSON
+  - http:
+      server: "azureServer"
+      receiveRequest:
+        POST:
+          path: "/api/orders"
+          headers:
+            - name: "Content-Type"
+              value: '@startsWith(application/json)@'
+            - name: "x-functions-key"
+              value: 'my-function-key'
+            - name: "origin"
+              value: 'citrus'
+          body:
+            data: '{"orderId":"ORD-1"}'
+  - http:
+      server: "azureServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          headers:
+            - name: "Content-Type"
+              value: "application/json"
+          body:
+            data: '{"status":"accepted"}'
+
+  # Afterwards the body is the answer of the function, CamelHttpResponseCode its status code, and the key header is gone
+  - http:
+      server: "azureServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: '[B'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+            - name: "X-Response-Code"
+              value: '200'
+            - name: "X-Key-Header"
+              value: 'key='
+          body:
+            data: '{"status":"accepted"}'
+  - http:
+      server: "azureServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

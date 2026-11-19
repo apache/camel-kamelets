@@ -1,0 +1,76 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: azure-servicebus-sink-route-test
+description: 'azure-servicebus-sink sends the body to the queue, with the custom properties of the CamelAzureServiceBusApplicationProperties header'
+actions:
+  # Start the Service Bus emulator, with the queues orders and blob-events, and the SQL Server that it needs
+  - groovy:
+      script:
+        file: "azure/servicebus-emulator-start.groovy"
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "azure/azure-servicebus-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${azure.server.port}"
+                - name: "servicebus.connectionString"
+                  value: "${servicebus.connectionString}"
+
+  # The message goes on unchanged after the Kamelet
+  - http:
+      server: "azureServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-Properties"
+              value: '{origin=citrus}'
+          body:
+            data: 'Hello Service Bus'
+  - http:
+      server: "azureServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The queue has the message, with the custom property origin
+  - camel:
+      cli:
+        verify:
+          integration: "azure-servicebus-sink-route"
+          logMessage: 'Received from the queue: Hello Service Bus (origin=citrus)'
+          maxAttempts: 30
+          delayBetweenAttempts: 1000
+
+finally:
+  - groovy:
+      script:
+        file: "azure/servicebus-emulator-stop.groovy"

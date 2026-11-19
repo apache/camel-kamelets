@@ -1,0 +1,118 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: google-bigquery-sink-route-test
+description: 'google-bigquery-sink inserts the rows of a JSON array into the table'
+actions:
+  # Start the Floci GCP emulator, which serves Pub/Sub, Cloud Storage and BigQuery on one port, without logging in
+  - testcontainers:
+      start:
+        container:
+          name: "gcp"
+          image: "floci/floci-gcp:0.12.0"
+          autoRemove: true
+          startUpTimeout: 120
+          exposedPorts:
+            - 4588
+          waitFor:
+            logMessage: '.*Listening on.*'
+
+  # The table shop.orders, with the columns id and item
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_GCP_HOST}:${CITRUS_TESTCONTAINERS_GCP_PORT}"
+      sendRequest:
+        POST:
+          path: "/bigquery/v2/projects/kamelets/datasets"
+          contentType: "application/json"
+          body:
+            data: '{"datasetReference":{"projectId":"kamelets","datasetId":"shop"}}'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_GCP_HOST}:${CITRUS_TESTCONTAINERS_GCP_PORT}"
+      receiveResponse:
+        response:
+          status: 200
+
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_GCP_HOST}:${CITRUS_TESTCONTAINERS_GCP_PORT}"
+      sendRequest:
+        POST:
+          path: "/bigquery/v2/projects/kamelets/datasets/shop/tables"
+          contentType: "application/json"
+          body:
+            data: '{"tableReference":{"projectId":"kamelets","datasetId":"shop","tableId":"orders"},"schema":{"fields":[{"name":"id","type":"INTEGER"},{"name":"item","type":"STRING"}]}}'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_GCP_HOST}:${CITRUS_TESTCONTAINERS_GCP_PORT}"
+      receiveResponse:
+        response:
+          status: 200
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "google/google-bigquery-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${gcp.server.port}"
+                - name: "gcp.url"
+                  value: "http://${CITRUS_TESTCONTAINERS_GCP_HOST}:${CITRUS_TESTCONTAINERS_GCP_PORT}"
+                - name: "gcp.projectId"
+                  value: "kamelets"
+                - name: "gcp.serviceAccountKey"
+                  value: "e30="
+          resources:
+            - "GoogleBigQueryClient.java"
+
+  # Afterwards the body is the parsed JSON, a List of Maps
+  - http:
+      server: "gcpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.util.ArrayList'
+            - name: "X-Content-Type"
+              value: 'ct='
+          body:
+            data: '[{id=1, item=book}, {id=2, item=pen}]'
+  - http:
+      server: "gcpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The table has both rows
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_GCP_HOST}:${CITRUS_TESTCONTAINERS_GCP_PORT}"
+      sendRequest:
+        GET:
+          path: "/bigquery/v2/projects/kamelets/datasets/shop/tables/orders/data"
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_GCP_HOST}:${CITRUS_TESTCONTAINERS_GCP_PORT}"
+      receiveResponse:
+        response:
+          status: 200
+          type: "json"
+          body:
+            data: '{"kind":"bigquery#tableDataList","totalRows":"2","rows":[{"f":[{"v":"1"},{"v":"book"}]},{"f":[{"v":"2"},{"v":"pen"}]}]}'

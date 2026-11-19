@@ -1,0 +1,106 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: azure-storage-blob-sink-route-test
+description: 'azure-storage-blob-sink uploads the body as a block blob, named by the file header'
+actions:
+  # Start the Floci Azure emulator, which serves Blob, Queue and Data Lake storage on one port. It does not check the
+  # account key.
+  - testcontainers:
+      start:
+        container:
+          name: "azure"
+          image: "floci/floci-az:0.16.0"
+          autoRemove: true
+          startUpTimeout: 120
+          exposedPorts:
+            - 4577
+          waitFor:
+            logMessage: '.*floci-az is ready.*'
+
+  # The container orders
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_AZURE_HOST}:${CITRUS_TESTCONTAINERS_AZURE_PORT}"
+      sendRequest:
+        PUT:
+          path: "/devstoreaccount1/orders"
+          parameters:
+            - name: "restype"
+              value: 'container'
+          headers:
+            - name: "x-ms-version"
+              value: '2025-11-05'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_AZURE_HOST}:${CITRUS_TESTCONTAINERS_AZURE_PORT}"
+      receiveResponse:
+        response:
+          status: 201
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "azure/azure-storage-blob-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${azure.server.port}"
+                - name: "azure.url"
+                  value: "http://${CITRUS_TESTCONTAINERS_AZURE_HOST}:${CITRUS_TESTCONTAINERS_AZURE_PORT}"
+                - name: "azure.accountName"
+                  value: "devstoreaccount1"
+                - name: "azure.accessKey"
+                  value: "a2FtZWxldHM="
+          resources:
+            - "AzureBlobClient.java"
+
+  # Afterwards the body is true, and the headers name the blob and give its ETag
+  - http:
+      server: "azureServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.Boolean'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-Blob-Name"
+              value: 'orders/order-1.txt'
+            - name: "X-ETag"
+              value: '@matches(0x[0-9A-F]+)@'
+          body:
+            data: 'true'
+  - http:
+      server: "azureServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The blob holds the body
+  - camel:
+      cli:
+        verify:
+          integration: "azure-storage-blob-sink-route"
+          logMessage: 'Read back orders/order-1.txt: Hello Azure Blob'
+          maxAttempts: 30
+          delayBetweenAttempts: 1000
