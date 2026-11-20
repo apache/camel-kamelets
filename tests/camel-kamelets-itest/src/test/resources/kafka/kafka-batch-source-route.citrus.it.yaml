@@ -27,6 +27,7 @@ actions:
   - createEndpoint:
       name: kafka-batch-source-route-producer
       type: "kafka"
+      autoClose: true
       properties:
         topic: "${kafka.topic}"
         server: "${CITRUS_TESTCONTAINERS_REDPANDA_BOOTSTRAP_SERVERS}"

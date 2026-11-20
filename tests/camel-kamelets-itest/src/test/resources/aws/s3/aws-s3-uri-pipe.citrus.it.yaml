@@ -76,3 +76,9 @@ actions:
         verify:
           integration: "aws-s3-source-route"
           logMessage: "${aws.s3.message}"
+  # What the Kamelet gives, before the consuming route
+  - camel:
+      cli:
+        verify:
+          integration: "aws-s3-source-route"
+          logMessage: "Kamelet result: X-Body-Type=[B, X-Content-Type=ct=application/octet-stream;"

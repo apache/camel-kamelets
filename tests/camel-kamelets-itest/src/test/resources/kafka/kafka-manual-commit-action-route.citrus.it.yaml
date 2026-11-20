@@ -47,6 +47,7 @@ actions:
   - createEndpoint:
       name: kafka-manual-commit-action-route-producer
       type: "kafka"
+      autoClose: true
       properties:
         topic: "${kafka.topic}"
         server: "${CITRUS_TESTCONTAINERS_REDPANDA_BOOTSTRAP_SERVERS}"
