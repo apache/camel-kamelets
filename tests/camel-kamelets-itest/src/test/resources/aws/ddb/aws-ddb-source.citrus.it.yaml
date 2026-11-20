@@ -65,3 +65,9 @@ actions:
           integration: "aws-ddb-source-route"
           logMessage: |
             "Star Wars IV"
+  # What the Kamelet gives, before the consuming route
+  - camel:
+      cli:
+        verify:
+          integration: "aws-ddb-source-route"
+          logMessage: "Kamelet result: X-Body-Type=[B, X-Content-Type=ct=application/json;"

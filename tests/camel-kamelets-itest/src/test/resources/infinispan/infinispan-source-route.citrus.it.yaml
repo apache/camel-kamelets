@@ -63,6 +63,16 @@ actions:
               value: 'null'
             - name: "X-Content-Type"
               value: 'ct='
+            - name: "X-Raw-Event-Type"
+              value: 'CLIENT_CACHE_ENTRY_CREATED'
+            - name: "X-Raw-Key"
+              value: 'order-1'
+            - name: "X-Raw-Cache-Name"
+              value: 'kamelets'
+            - name: "X-Raw-Entry-Version"
+              value: '@isNumber()@'
+            - name: "X-Raw-Command-Retried"
+              value: 'false'
             - name: "infinispan-event-type"
               value: 'CLIENT_CACHE_ENTRY_CREATED'
             - name: "infinispan-key"
