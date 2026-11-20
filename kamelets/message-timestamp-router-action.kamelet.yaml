@@ -20,6 +20,7 @@ metadata:
   name: message-timestamp-router-action
   labels:
     camel.apache.org/kamelet.type: "action"
+    camel.apache.org/kamelet.verified: "true"
   annotations:
     camel.apache.org/kamelet.support.level: "Stable"
     camel.apache.org/catalog.version: "4.24.0-SNAPSHOT"
@@ -35,7 +36,7 @@ spec:
 
       Use it to spread the records over one topic per day or per month by a date in the data, such as the date of an order, in a flow from `kafka-source` to `kafka-sink`. To use the time the record was written to Kafka instead use `timestamp-router-action`.
 
-      Input: a JSON object as JSON text, with the `Content-Type` header set to `application/json`. The name of the topic is read from the `CamelKafkaTopic` header, which `kafka-source` sets.
+      Input: a JSON object, as JSON text, as bytes, as a Map or as parsed JSON (a Jackson `JsonNode`). The `Content-Type` header is not needed. The name of the topic is read from the `CamelKafkaTopic` header, which `kafka-source` sets.
 
       Output: the same JSON object, as JSON text in bytes, with `Content-Type` set to `application/json`. When one of the `timestampKeys` fields is found, the `CamelKafkaOverrideTopic` header is set to the new name, and `kafka-sink` writes the record to that topic instead of its own `topic`.
 
@@ -69,14 +70,16 @@ spec:
     type: object
   dataTypes:
     in:
+      default: json
+      types:
+        json:
+          format: "application-json"
+          description: "The JSON object, as JSON text in bytes."
+          mediaType: application/json
       headers:
         CamelKafkaTopic:
           title: Kafka Topic
           description: "The topic the record was read from, as `kafka-source` sets it."
-          type: string
-        Content-Type:
-          title: Content Type
-          description: "Must be `application/json`."
           type: string
     out:
       default: json

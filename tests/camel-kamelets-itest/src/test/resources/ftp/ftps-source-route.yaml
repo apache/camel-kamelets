@@ -25,6 +25,10 @@
         # a password with characters that have a meaning in an endpoint address
         password: 's3cr&t+pw'
         directoryName: 'orders'
+        # the Kamelet trusts the certificate of the test server with its own trust store, not the one of the JVM
+        trustStoreFile: '{{ftp.truststore}}'
+        trustStorePassword: 'changeit'
+        trustStoreType: 'PKCS12'
       steps:
         # a line for the test to wait for, so that a failure shows the log of the integration
         - log:

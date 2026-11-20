@@ -27,6 +27,7 @@ metadata:
     camel.apache.org/kamelet.namespace: "Transformation"
   labels:
     camel.apache.org/kamelet.type: "action"
+    camel.apache.org/kamelet.verified: "true"
 spec:
   definition:
     title: "Crypto Encrypt Action"
@@ -63,6 +64,13 @@ spec:
         x-descriptors:
           - urn:camel:group:credentials
   dataTypes:
+    in:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The data to encrypt, as bytes or a stream."
+          mediaType: application/octet-stream
     out:
       default: binary
       types:

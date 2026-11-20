@@ -42,12 +42,8 @@ actions:
                   value: "http://localhost:${file.http.server.port}"
                 - name: "ftp.port"
                   value: "${ftp.server.port}"
-                - name: "javax.net.ssl.trustStore"
+                - name: "ftp.truststore"
                   value: "${ftp.truststore}"
-                - name: "javax.net.ssl.trustStorePassword"
-                  value: "changeit"
-                - name: "javax.net.ssl.trustStoreType"
-                  value: "PKCS12"
 
   # Wait until the source has read the file: when it does not, this step fails and shows the log of the
   # integration, such as an error of the FTPS connection

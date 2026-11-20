@@ -27,6 +27,7 @@ metadata:
     camel.apache.org/kamelet.namespace: "Transformation"
   labels:
     camel.apache.org/kamelet.type: "action"
+    camel.apache.org/kamelet.verified: "true"
 spec:
   definition:
     title: "JSLT Action"
@@ -35,11 +36,11 @@ spec:
 
       Use it to map the JSON of one system to the JSON another system expects, for example to keep only some fields, rename them or count the items of an order. To build text rather than JSON, use `mustache-template-action`; `jolt-transformation-action` reshapes JSON with Jolt specifications instead.
 
-      Input: JSON text, bytes or a stream. The transformation sees the body as `.` and a header as `$headers.name`, for example `{"customer": .name, "items": size(.items), "source": $headers.origin}`.
+      Input: JSON text, as text, bytes or a stream, or parsed JSON as a Jackson `JsonNode`, such as the output of `json-deserialize-action`. The transformation sees the body as `.` and a header as `$headers.name`, for example `{"customer": .name, "items": size(.items), "source": $headers.origin}`.
 
       Output: the body is the result as JSON text in bytes, and the `Content-Type` header is set to `application/json`. The other headers are kept.
 
-      Good to know: parsed JSON (a Map or a JsonNode, such as the output of `json-deserialize-action`) fails the message: give the JSON as text. A field whose value is missing, such as a header that is not set, is left out of the result. The transformation is loaded from a file, the classpath or a URL given by the `template` option; it cannot come from the message. Headers that start with `CamelJslt` are removed from the message first, so they cannot change what the Kamelet does.
+      Good to know: a Map fails the message: give the JSON as text. A field whose value is missing, such as a header that is not set, is left out of the result. The transformation is loaded from a file, the classpath or a URL given by the `template` option; it cannot come from the message. Headers that start with `CamelJslt` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - template
     type: object
@@ -51,6 +52,13 @@ spec:
         example: "file:///opt/templates/order.jslt"
         pattern: "^(http|https|file|classpath|ref|bean)://.*"
   dataTypes:
+    in:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The JSON text, as bytes or a stream."
+          mediaType: application/octet-stream
     out:
       default: json
       types:
