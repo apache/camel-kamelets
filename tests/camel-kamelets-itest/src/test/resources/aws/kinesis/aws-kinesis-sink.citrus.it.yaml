@@ -74,3 +74,9 @@ actions:
           integration: "aws-kinesis-event-listener"
           logMessage: |
             { "message": "${aws.kinesis.message}" }
+  # What the Kamelet leaves on the message
+  - camel:
+      cli:
+        verify:
+          integration: "aws-kinesis-sink-route"
+          logMessage: "Kamelet result: X-Body-Type=[B, X-Content-Type=ct=application/octet-stream;"

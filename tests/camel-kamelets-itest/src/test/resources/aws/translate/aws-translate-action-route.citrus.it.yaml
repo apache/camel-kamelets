@@ -58,7 +58,7 @@ actions:
           body:
             data: "\xA3nTranslatedTextkHello worldrSourceLanguageCodebitrTargetLanguageCodeben"
 
-  # The body is the translated text
+  # The body is the translated text, as text/plain
   - http:
       server: "awsSinkServer"
       receiveRequest:
@@ -68,6 +68,8 @@ actions:
           headers:
             - name: "X-Body-Type"
               value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct=text/plain'
           body:
             data: 'Hello world'
   - http:

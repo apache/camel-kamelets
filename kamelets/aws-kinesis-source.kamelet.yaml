@@ -37,9 +37,9 @@ spec:
 
       Use it to process a stream of events that other applications write to Kinesis, such as clicks, logs or readings from devices, for example with `aws-kinesis-sink`.
 
-      Output: the body is the data of the record, as bytes. The headers give the partition key, the sequence number, the shard ID and the arrival time of the record.
+      Output: the body is the data of the record, as bytes, and the `Content-Type` header is `application/octet-stream`. The headers give the partition key, the sequence number, the shard ID and the arrival time of the record.
 
-      Good to know: by default it reads the stream from its oldest record, and again from the oldest record each time the integration starts: it does not remember where it stopped, so records are read again after a restart. Set `iteratorType` to `LATEST` to read only the records written after it started; the records written while it was stopped are then not read. `iteratorType` can also start at a sequence number or at a time, again on each start. Records are not removed: Kinesis keeps them for the retention period of the stream. It reads all the shards of the stream, up to 1000 records from each in one poll: set `shardId` to read one shard only, and `maxResultsPerRequest` to read fewer records in one poll. When the stream is resharded, it goes on with the new shards; with `shardClosed` set to `fail`, every poll also fails with an error in the log, but the records are still read. With `useKclConsumers` it reads through the Kinesis Client Library instead, which keeps where it stopped in a DynamoDB table named after `applicationName`, or after the stream, and does not use `iteratorType`, `shardId`, `maxResultsPerRequest` or `shardClosed`; the body is then a `ByteBuffer` rather than bytes. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. With `useKclConsumers`, the calls of the KCL to DynamoDB and CloudWatch go straight to AWS, without the proxy and without `uriEndpointOverride`.
+      Good to know: by default it reads the stream from its oldest record, and again from the oldest record each time the integration starts: it does not remember where it stopped, so records are read again after a restart. Set `iteratorType` to `LATEST` to read only the records written after it started; the records written while it was stopped are then not read. `iteratorType` can also start at a sequence number or at a time, again on each start. Records are not removed: Kinesis keeps them for the retention period of the stream. It reads all the shards of the stream, up to 1000 records from each in one poll: set `shardId` to read one shard only, and `maxResultsPerRequest` to read fewer records in one poll. When the stream is resharded, it goes on with the new shards; with `shardClosed` set to `fail`, every poll also fails with an error in the log, but the records are still read. With `useKclConsumers` it reads through the Kinesis Client Library instead, which keeps where it stopped in a DynamoDB table named after `applicationName`, or after the stream, and does not use `iteratorType`, `shardId`, `maxResultsPerRequest` or `shardClosed`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. With `useKclConsumers`, the calls of the KCL to DynamoDB and CloudWatch go straight to AWS, without the proxy and without `uriEndpointOverride`.
     required:
       - stream
       - region
@@ -188,6 +188,12 @@ spec:
       mediaType: application/octet-stream
   dataTypes:
     out:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The data of the record, as bytes."
+          mediaType: application/octet-stream
       headers:
         CamelAwsKinesisPartitionKey:
           title: Partition Key
