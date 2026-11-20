@@ -1,0 +1,142 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: jira-update-issue-sink-route-test
+description: 'jira-update-issue-sink sets the fields of the ce-issue headers on the issue of ce-issueKey, with the body as the description, and logs in with a personal access token'
+variables:
+  - name: "jira.issue.key"
+    value: "CAMEL-4"
+  - name: "jira.issue.summary"
+    value: "The build fails on Java 25"
+  - name: "jira.issue.description"
+    value: "The build fails with an error in the compiler plugin."
+  - name: "jira.personal.token"
+    value: "citrus:randomString(24)"
+actions:
+  - createVariables:
+      variables:
+        - name: "jira.url"
+          value: "http://localhost:${jira.server.port}"
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "jira/jira-update-issue-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "jira.url"
+                  value: "${jira.url}"
+                - name: "jira.issue.key"
+                  value: "${jira.issue.key}"
+                - name: "jira.issue.summary"
+                  value: "${jira.issue.summary}"
+                - name: "jira.issue.description"
+                  value: "${jira.issue.description}"
+                - name: "jira.personal.token"
+                  value: "${jira.personal.token}"
+
+  # the issue type is looked up by its name
+  - http:
+      server: "jiraServer"
+      receiveRequest:
+        GET:
+          path: "/rest/api/latest/issuetype"
+          headers:
+            - name: Authorization
+              value: "Bearer ${jira.personal.token}"
+  - http:
+      server: "jiraServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              [
+                {"self": "${jira.url}/rest/api/latest/issuetype/1", "id": "1", "description": "A problem.", "iconUrl": "${jira.url}/images/icons/bug.png", "name": "Bug", "subtask": false},
+                {"self": "${jira.url}/rest/api/latest/issuetype/3", "id": "3", "description": "A task.", "iconUrl": "${jira.url}/images/icons/task.png", "name": "Task", "subtask": false}
+              ]
+
+  # and so is the priority
+  - http:
+      server: "jiraServer"
+      receiveRequest:
+        GET:
+          path: "/rest/api/latest/priority"
+          headers:
+            - name: Authorization
+              value: "Bearer ${jira.personal.token}"
+  - http:
+      server: "jiraServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              [
+                {"self": "${jira.url}/rest/api/latest/priority/2", "id": "2", "statusColor": "#ff0000", "description": "Serious.", "iconUrl": "${jira.url}/images/icons/high.png", "name": "High"},
+                {"self": "${jira.url}/rest/api/latest/priority/3", "id": "3", "statusColor": "#ffff00", "description": "Normal.", "iconUrl": "${jira.url}/images/icons/medium.png", "name": "Medium"}
+              ]
+
+  # the update of the issue, with the body as the description
+  - http:
+      server: "jiraServer"
+      receiveRequest:
+        PUT:
+          path: "/rest/api/latest/issue/${jira.issue.key}"
+          headers:
+            - name: Authorization
+              value: "Bearer ${jira.personal.token}"
+          body:
+            data: '{"fields":{"issuetype":{"id":"1"},"summary":"${jira.issue.summary}","description":"${jira.issue.description}","components":[{"name":"core"},{"name":"yaml-dsl"}],"priority":{"id":"2"},"assignee":{"name":"superman"}},"properties":[]}'
+  - http:
+      server: "jiraServer"
+      sendResponse:
+        response:
+          status: 204
+          reasonPhrase: "No Content"
+          version: "HTTP/1.1"
+
+  # the message is unchanged
+  - http:
+      server: "jiraServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "ce-issueKey"
+              value: '${jira.issue.key}'
+          body:
+            data: '${jira.issue.description}'
+  - http:
+      server: "jiraServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

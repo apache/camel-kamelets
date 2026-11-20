@@ -74,6 +74,12 @@ actions:
               value: 'org.apache.camel.converter.stream.InputStreamCache'
             - name: "X-Content-Type"
               value: 'ct=application/json'
+            - name: "X-Solr-Operation"
+              value: 'SEARCH'
+            - name: "X-Solr-Query"
+              value: 'status_s:new'
+            - name: "X-Solr-Collection"
+              value: 'kamelets'
           body:
             data: '{"responseHeader":{"status":0,"QTime":"@ignore@","params":{"q":"status_s:new","wt":"@ignore@"}},"response":[{"id":"order-1","status_s":"new","_version_":"@ignore@","_root_":"order-1"}]}'
   - http:
