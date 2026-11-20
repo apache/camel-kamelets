@@ -37,7 +37,7 @@ spec:
 
       Use it to react when data changes in a table, for example to copy new orders to another system, keep a search index or a cache up to date, or record an audit trail. To write items into a table, use `aws-ddb-sink`.
 
-      Output: the body is a JSON object, as JSON text, that describes one change: `eventName` is `INSERT`, `MODIFY` or `REMOVE`, and `dynamodb` holds the key of the item (`keys`) and, depending on the view type of the stream, the item before (`oldImage`) and after (`newImage`) the change, with the type of each attribute. The headers give the ID and the name of the event.
+      Output: the body is a JSON object, as JSON text in bytes with the `Content-Type` header `application/json`, that describes one change: `eventName` is `INSERT`, `MODIFY` or `REMOVE`, and `dynamodb` holds the key of the item (`keys`) and, depending on the view type of the stream, the item before (`oldImage`) and after (`newImage`) the change, with the type of each attribute. The headers give the ID and the name of the event.
 
       Good to know: DynamoDB Streams must be enabled on the table, with the view type that holds the images you need, such as new and old images. By default it reads only the changes made after it starts, up to 100 in one poll; set `maxResultsPerRequest` to read fewer at a time. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:

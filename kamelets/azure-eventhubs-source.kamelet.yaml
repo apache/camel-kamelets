@@ -37,7 +37,7 @@ spec:
 
       Use it to process event streams, such as telemetry or changes, that other applications send to Event Hubs. To send events, use `azure-eventhubs-sink`.
 
-      Output: the body is the body of the event, as bytes. The headers give its partition (`CamelAzureEventHubsPartitionId`), offset, sequence number and the time it was enqueued, and `CamelAzureEventHubsMetadata` holds the custom properties of the event.
+      Output: the body is the body of the event, as bytes, and the `Content-Type` header is `application/octet-stream`. The headers give its partition (`CamelAzureEventHubsPartitionId`), offset, sequence number and the time it was enqueued, and `CamelAzureEventHubsMetadata` holds the custom properties of the event.
 
       Good to know: log in with `sharedAccessName` and `sharedAccessKey`, with `connectionString`, or with `credentialType` `AZURE_IDENTITY`. Set `namespaceName` and `eventhubName` unless `connectionString` is set. When no position has been saved yet, it starts with the events that arrive after it starts, not the older ones. It reads as the `$Default` consumer group, or as the one in `consumerGroupName`, and each consumer group has its own saved position. For each partition, it saves its position (a checkpoint) in `blobContainerName` after `checkpointBatchSize` events (500 when not set), or `checkpointBatchTimeout` milliseconds (5000 when not set) after the first event since the last checkpoint, whichever comes first. The events read after the last checkpoint are read again after a restart.
     required:

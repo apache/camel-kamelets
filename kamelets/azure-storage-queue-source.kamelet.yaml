@@ -37,7 +37,7 @@ spec:
 
       Use it to process work that other applications put in a storage queue, such as orders or jobs. For Service Bus queues and topics, use `azure-servicebus-source`.
 
-      Output: the body is the text of the queue message (as a stream). The headers give its ID (`CamelAzureStorageQueueMessageId`), the times it was inserted and expires, its pop receipt, and how many times it has been received (`CamelAzureStorageQueueDequeueCount`).
+      Output: the body is the text of the queue message, as text, and the `Content-Type` header is `text/plain`. The headers give its ID (`CamelAzureStorageQueueMessageId`), the times it was inserted and expires, its pop receipt, and how many times it has been received (`CamelAzureStorageQueueDequeueCount`).
 
       Good to know: a received message is hidden from other readers while it is processed. When the processing fails, it stays in the queue and is received again once that time is over, 30 seconds by default (`visibilityTimeout`), with a higher dequeue count. The queue is checked for new messages every 500 milliseconds, unless `delay` says otherwise.
     required:
