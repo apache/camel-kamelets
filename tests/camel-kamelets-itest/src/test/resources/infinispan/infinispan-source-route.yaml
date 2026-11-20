@@ -33,6 +33,21 @@
         - setHeader:
             name: X-Content-Type
             simple: "ct=${header.Content-Type}"
+        - setHeader:
+            name: X-Raw-Event-Type
+            simple: "${header.CamelInfinispanEventType}"
+        - setHeader:
+            name: X-Raw-Key
+            simple: "${header.CamelInfinispanKey}"
+        - setHeader:
+            name: X-Raw-Cache-Name
+            simple: "${header.CamelInfinispanCacheName}"
+        - setHeader:
+            name: X-Raw-Entry-Version
+            simple: "${header.CamelInfinispanEntryVersion}"
+        - setHeader:
+            name: X-Raw-Command-Retried
+            simple: "${header.CamelInfinispanCommandRetried}"
         # without a body, the HTTP component would send a GET
         - setHeader:
             name: CamelHttpMethod
