@@ -26,6 +26,9 @@
         password: 's3cr&t+pw'
         directoryName: 'orders'
       steps:
+        # a line for the test to wait for, so that a failure shows the log of the integration
+        - log:
+            message: "ftps-source read ${header.CamelFileName}"
         # what the Kamelet gives: the Java type of the body and the Content-Type
         - setHeader:
             name: X-Body-Type
