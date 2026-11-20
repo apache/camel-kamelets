@@ -35,7 +35,7 @@ spec:
 
       Use it to pick up the rows that another application adds to a table, such as new orders or events, and pass them on to another system. To write rows, use `snowflake-sink`.
 
-      Output: the body is one row as JSON text, an object with the column names as keys, such as `{"id":1,"username":"oscerd","city":"Rome"}`. The `Content-Type` header is `application/json`.
+      Output: the body is one row as JSON text in bytes, an object with the column names as keys, such as `{"id":1,"username":"oscerd","city":"Rome"}`. The `Content-Type` header is `application/json`.
 
       Good to know: the query runs again `delay` milliseconds after the previous run, so the same rows are sent again and again, unless `consumedQuery` marks or deletes each row once it is sent and `query` leaves such rows out: for example `SELECT * FROM accounts WHERE processed = false` with `UPDATE accounts SET processed = true WHERE id = :#id`. When the next step fails for a row, `consumedQuery` is not run for it, and the row is read again. A query that finds no rows sends nothing. `query` cannot contain `?`. The format of date and time columns in the JSON depends on the Camel version. Log in with `password`, or with a key pair in `privateKey` or `privateKeyFile`: a Snowflake user of type SERVICE, meant for applications, cannot log in with a password. When a key is set, the password is not used. `warehouse`, `schema` and `role` choose what the session uses; when they are not set, the defaults of the user apply, and a user with no default warehouse cannot run a query that needs one. Each poll logs in to Snowflake anew, as the Kamelet keeps no connection open between polls.
     required:
@@ -121,11 +121,17 @@ spec:
       mediaType: application/json
   dataTypes:
     out:
+      default: json
       headers:
         Content-Type:
           title: Content Type
           description: Always `application/json`, as the body is a JSON object.
           type: string
+      types:
+        json:
+          format: "application-json"
+          description: "One row as a JSON object, as JSON text in bytes."
+          mediaType: application/json
   dependencies:
   - "camel:jackson3"
   - "camel:kamelet"

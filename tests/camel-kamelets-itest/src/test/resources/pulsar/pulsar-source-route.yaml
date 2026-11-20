@@ -37,9 +37,12 @@
         - setHeader:
             name: X-Origin
             simple: "${header.properties[origin]}"
-        # the body is bytes: give the HTTP server text
+        # the body is bytes: give the HTTP server text (Citrus reads an application/octet-stream body as bytes)
         - convertBodyTo:
             type: "java.lang.String"
+        - setHeader:
+            name: Content-Type
+            constant: "text/plain"
         - to:
             uri: "{{http.sink.url}}/result"
 

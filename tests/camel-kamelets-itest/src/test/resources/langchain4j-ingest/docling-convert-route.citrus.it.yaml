@@ -77,6 +77,11 @@ actions:
         POST:
           path: "/result/docling"
           type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: "java.lang.String"
+            - name: "X-Content-Type"
+              value: "ct=text/plain"
           body:
             data: "@contains('documentId=scan.pdf, segmentsWritten=1, outcome=INGESTED')@"
 

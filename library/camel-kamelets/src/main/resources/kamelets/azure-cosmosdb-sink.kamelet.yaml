@@ -37,9 +37,9 @@ spec:
 
       Use it to store orders, events or profiles as JSON documents in Cosmos DB. To receive the changes made to a container, use `azure-cosmosdb-source`.
 
-      Input: the body is one item as JSON text: a JSON object with an `id` field, such as `{"id": "1001", "region": "EU"}`. A Map fails: turn it into JSON text first, for example with `json-serialize-action`. The partition key value of the item comes from the `itemPartitionKey` option or, when the option is not set, from the `itemPartitionKey` header (or `ce-itemPartitionKey`) of each message.
+      Input: the body is one item: a JSON object with an `id` field, such as `{"id": "1001", "region": "EU"}`, as JSON text, or as a Map, which is written as JSON. Text that is not a JSON object, and a List, fail. The partition key value of the item comes from the `itemPartitionKey` option or, when the option is not set, from the `itemPartitionKey` header (or `ce-itemPartitionKey`) of each message.
 
-      Output: the body afterwards is the item as it was created, as a Map, with the fields that Cosmos DB adds.
+      Output: the body afterwards is the item as it was created, as a Map, with the fields that Cosmos DB adds, and the `Content-Type` header is `application/json`.
 
       Good to know: a message without a partition key value fails. With `operation` `createItem`, the default, an item whose `id` already exists in the same partition fails; with `upsertItem`, it replaces the existing item. The database and the container must exist, unless `createDatabaseIfNotExists` and `createContainerIfNotExists` are true; a new container needs `containerPartitionKeyPath`. Headers that start with `CamelAzureCosmosDb` are removed from the message first, so they cannot change what the Kamelet does.
     required:
@@ -106,6 +106,12 @@ spec:
       mediaType: application/json
   dataTypes:
     in:
+      default: json
+      types:
+        json:
+          format: "application-json"
+          description: "The item, a JSON object, as JSON text in bytes."
+          mediaType: application/json
       headers:
         itemPartitionKey:
           title: Item Partition Key

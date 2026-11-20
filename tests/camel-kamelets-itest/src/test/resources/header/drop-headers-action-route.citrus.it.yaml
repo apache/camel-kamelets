@@ -35,6 +35,10 @@ actions:
           path: "/result"
           type: "plaintext"
           headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
             - name: "X-Remaining"
               value: 'x-tmp-one= x-tmp-keep=b x-other=c'
           body:

@@ -44,5 +44,12 @@
             parameters:
               headerName: 'kind'
               regex: 'order-[0-9]+'
+        # What the Kamelet leaves on the message
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
         - to:
             uri: "{{http.sink.url}}/result"

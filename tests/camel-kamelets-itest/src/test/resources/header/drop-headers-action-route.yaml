@@ -38,6 +38,13 @@
             parameters:
               pattern: 'x-tmp-*'
               excludePattern: 'x-tmp-keep'
+        # What the Kamelet leaves on the message
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
         - setHeader:
             name: X-Remaining
             simple: "x-tmp-one=${header.x-tmp-one} x-tmp-keep=${header.x-tmp-keep} x-other=${header.x-other}"

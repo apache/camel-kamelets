@@ -39,7 +39,7 @@ spec:
 
       Input: the body is the text of the email, as plain text. The `to` header (or `ce-to`) gives one or more recipient addresses, separated by commas; it is required unless the `to` option is set. The optional `subject` header (or `ce-subject`) is the subject; without it and without the `subject` option, the subject is a generated ID. The optional `reply-to-addresses` header (or `ce-reply-to-addresses`) is a comma-separated list of addresses that replies go to. Each of these headers takes precedence over the option of the same purpose.
 
-      Output: the message is unchanged. The `CamelAwsSesMessageId` header gives the ID that SES gave the email.
+      Output: the body afterwards is the text of the email, as text, and the `Content-Type` header is `text/plain`. The `CamelAwsSesMessageId` header gives the ID that SES gave the email.
 
       Good to know: a message without a `to` header fails, unless the `to` option is set. The `cc`, `bcc`, `returnPath` and `configurationSet` options apply to every email. The `from` address, and `returnPath` when it is set, must be verified in SES, and while the SES account is in the sandbox, the recipients must be verified too. A `configurationSet` that does not exist in SES makes every email fail. To reach a local stand-in of AWS, use `overrideEndpoint` and `uriEndpointOverride`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsSes` are removed from the message first, so they cannot change what the Kamelet does.
     required:
@@ -168,6 +168,12 @@ spec:
         type: string
   dataTypes:
     in:
+      default: text
+      types:
+        text:
+          format: "text-plain"
+          description: "The text of the email."
+          mediaType: text/plain
       headers:
         to:
           title: To

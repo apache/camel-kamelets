@@ -145,7 +145,17 @@ spec:
         type: string
         enum: ["HTTP", "HTTPS"]
         example: HTTP
+  dataTypes:
+    # No 'default: json' here on purpose: with operation converse the body is the prompt as
+    # plain text, which the json data type would turn into a quoted JSON string.
+    in:
+      types:
+        json:
+          format: "application-json"
+          description: "The request of the model for `invokeTextModel`, as JSON text in the format of the chosen model."
+          mediaType: application/json
   dependencies:
+    - "camel:jackson3"
     - "camel:aws-bedrock"
     - "camel:kamelet"
   template:

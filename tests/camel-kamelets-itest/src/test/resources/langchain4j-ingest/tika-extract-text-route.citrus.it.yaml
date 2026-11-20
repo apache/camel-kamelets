@@ -50,6 +50,11 @@ actions:
         POST:
           path: "/result/tika"
           type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: "java.lang.String"
+            - name: "X-Content-Type"
+              value: "ct=text/plain"
           body:
             data: "@contains('documentId=notice.html, segmentsWritten=1, outcome=INGESTED')@"
 

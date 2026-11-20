@@ -56,6 +56,19 @@ spec:
         description: "The name of the header whose value is matched, such as `type`. It must be set: the Kamelet does not start without it."
         type: string
         example: "type"
+  dataTypes:
+    in:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "Any body. It is not read."
+    out:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The body as it came in, of the same type."
   dependencies:
   - "camel:kamelet"
   template:

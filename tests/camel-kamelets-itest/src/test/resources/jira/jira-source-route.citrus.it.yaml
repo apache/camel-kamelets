@@ -204,6 +204,31 @@ actions:
                 ]
               }
 
+  # the issue as JSON text in bytes, with the Content-Type application/json
+  - http:
+      server: "jiraServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: '[B'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+        validate:
+          - jsonPath:
+              - expression: '$.key'
+                value: '${jira.issue.key}'
+              - expression: '$.summary'
+                value: '${jira.issue.summary}'
+  - http:
+      server: "jiraServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
   # Verify JIRA source
   - camel:
       cli:

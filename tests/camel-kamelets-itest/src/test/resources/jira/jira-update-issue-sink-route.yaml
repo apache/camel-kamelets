@@ -24,6 +24,9 @@
       steps:
         - setBody:
             constant: '{{jira.issue.description}}'
+        # the text as bytes: the Kamelet reads it as text
+        - convertBodyTo:
+            type: "byte[]"
         - setHeader:
             name: ce-issueKey
             constant: '{{jira.issue.key}}'

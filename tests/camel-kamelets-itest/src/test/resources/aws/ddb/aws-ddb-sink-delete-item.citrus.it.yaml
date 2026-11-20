@@ -108,3 +108,9 @@ actions:
         - groovy:
             script:
               file: "aws/ddb/verifyItems.groovy"
+  # What the Kamelet leaves on the message
+  - camel:
+      cli:
+        verify:
+          integration: "aws-ddb-sink-route"
+          logMessage: "Kamelet result: X-Body-Type=java.lang.String, X-Content-Type=ct=;"

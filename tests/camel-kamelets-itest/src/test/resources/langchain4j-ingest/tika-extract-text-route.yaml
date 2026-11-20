@@ -53,8 +53,21 @@
             name: "CamelLangChain4jIngestDocumentId"
             constant: "notice.html"
         - to: "kamelet:tika-extract-text-action"
+        # the class and Content-Type of the body that the action gives, reported below
+        - setVariable:
+            name: bodyType
+            simple: "${body.getClass().getName()}"
+        - setVariable:
+            name: contentType
+            simple: "ct=${header.Content-Type}"
         - to: "kamelet:langchain4j-ingest-sink?embeddingStore=#bean:store&embeddingModel=#bean:model"
         - log: "INGEST ${body}"
         - convertBodyTo:
             type: "java.lang.String"
+        - setHeader:
+            name: "X-Body-Type"
+            simple: "${variable.bodyType}"
+        - setHeader:
+            name: "X-Content-Type"
+            simple: "${variable.contentType}"
         - to: "{{report.url}}"

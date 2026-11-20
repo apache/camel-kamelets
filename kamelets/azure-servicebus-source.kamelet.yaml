@@ -37,7 +37,7 @@ spec:
 
       Use it to process work or events that other applications send through Service Bus, one at a time or several at once, including a queue with sessions, or to read the messages that Service Bus has dead-lettered. To read new blobs from Event Grid events that arrive in a Service Bus queue, use `azure-storage-blob-event-based-source`.
 
-      Output: the body is the body of the Service Bus message, as bytes. The headers give its ID (`CamelAzureServiceBusMessageId`), its custom properties (`CamelAzureServiceBusApplicationProperties`, a Map), its content type, correlation ID, subject, enqueued time and delivery count, its session ID (`CamelAzureServiceBusSessionId`) when it was sent with one, and, for a dead-lettered message, why it was dead-lettered (`CamelAzureServiceBusDeadLetterReason` and `CamelAzureServiceBusDeadLetterErrorDescription`).
+      Output: the body is the body of the Service Bus message, as bytes, and the `Content-Type` header is `application/octet-stream`. The headers give its ID (`CamelAzureServiceBusMessageId`), its custom properties (`CamelAzureServiceBusApplicationProperties`, a Map), the content type that the sender set (`CamelAzureServiceBusContentType`), its correlation ID, subject, enqueued time and delivery count, its session ID (`CamelAzureServiceBusSessionId`) when it was sent with one, and, for a dead-lettered message, why it was dead-lettered (`CamelAzureServiceBusDeadLetterReason` and `CamelAzureServiceBusDeadLetterErrorDescription`).
 
       Good to know: with the default `serviceBusReceiveMode` of `PEEK_LOCK`, a message is removed only once it has been processed; a message whose processing fails is given back and received again, until Service Bus moves it to the dead-letter queue after the maximum delivery count (10 by default). With `enableDeadLettering` set to `true`, it is moved to the dead-letter queue straight away instead, with the exception as the reason, such as `java.lang.IllegalStateException: Invalid order`. With `RECEIVE_AND_DELETE`, a message is removed as soon as it is received, so a failure loses it. For a topic, set `serviceBusType` to `topic` and `subscriptionName`.
 
@@ -123,6 +123,12 @@ spec:
       mediaType: application/octet-stream
   dataTypes:
     out:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The body of the Service Bus message, as bytes."
+          mediaType: application/octet-stream
       headers:
         CamelAzureServiceBusMessageId:
           title: Message ID

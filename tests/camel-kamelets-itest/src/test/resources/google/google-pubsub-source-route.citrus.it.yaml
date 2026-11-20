@@ -31,7 +31,7 @@ actions:
           waitFor:
             logMessage: '.*Listening on.*'
 
-  # The topic orders, with the subscription orders-sub, and a message with an attribute
+  # The topic orders, with the subscription orders-sub, and a message with two attributes, one of them Content-Type
   - http:
       client: "http://${CITRUS_TESTCONTAINERS_GCP_HOST}:${CITRUS_TESTCONTAINERS_GCP_PORT}"
       sendRequest:
@@ -67,7 +67,7 @@ actions:
           path: "/v1/projects/kamelets/topics/orders:publish"
           contentType: "application/json"
           body:
-            data: '{"messages":[{"data":"SGVsbG8gUHViL1N1Yg==","attributes":{"origin":"citrus"}}]}'
+            data: '{"messages":[{"data":"SGVsbG8gUHViL1N1Yg==","attributes":{"origin":"citrus","Content-Type":"text/plain"}}]}'
   - http:
       client: "http://${CITRUS_TESTCONTAINERS_GCP_HOST}:${CITRUS_TESTCONTAINERS_GCP_PORT}"
       receiveResponse:
@@ -96,7 +96,9 @@ actions:
                 - name: "camel.component.google-pubsub.authenticate"
                   value: "false"
 
-  # The data of the message, as bytes, with the attribute in CamelGooglePubsubAttributes and as the header origin
+  # The data of the message, as bytes with the Content-Type application/octet-stream, with the attributes in
+  # CamelGooglePubsubAttributes and origin as a header. The Content-Type attribute is only in CamelGooglePubsubAttributes:
+  # the Content-Type header is the one of the bytes.
   - http:
       server: "gcpServer"
       receiveRequest:
@@ -107,11 +109,11 @@ actions:
             - name: "X-Body-Type"
               value: '[B'
             - name: "X-Content-Type"
-              value: 'ct='
+              value: 'ct=application/octet-stream'
             - name: "X-Message-Id"
               value: '@matches([0-9]+)@'
             - name: "X-Attributes"
-              value: '{origin=citrus}'
+              value: '@matches(\{.*Content-Type=text/plain.*\})@'
             - name: "origin"
               value: 'citrus'
           body:

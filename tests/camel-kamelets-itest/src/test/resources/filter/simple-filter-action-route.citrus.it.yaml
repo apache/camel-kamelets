@@ -36,6 +36,11 @@ actions:
       receiveRequest:
         POST:
           path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
           body:
             data: "${test.message}"
   - http:

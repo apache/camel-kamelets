@@ -28,3 +28,8 @@ actions:
         verify:
           integration: "cron-source-route"
           logMessage: "cron-test-12345"
+  - camel:
+      cli:
+        verify:
+          integration: "cron-source-route"
+          logMessage: "cron-source X-Body-Type=java.lang.String X-Content-Type=ct=text/plain"

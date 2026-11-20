@@ -39,5 +39,8 @@
         - setHeader:
             name: X-Body-Type
             simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
         - to:
             uri: "{{http.sink.url}}/result"

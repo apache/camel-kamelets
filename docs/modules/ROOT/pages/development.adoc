@@ -489,6 +489,10 @@ spec:
 <1> A `headers` block with no `types` and no `default`. Nothing is transformed; this only
 describes what the Kamelet emits.
 
+A sink or an action that leaves the body as it is also declares the data type
+`application-x-unchanged` as its `default`, next to its headers, so the YAML validator knows that
+the body after it is the body before it. See xref:documenting.adoc#documenting-unchanged[Documenting a Kamelet].
+
 A source declares the headers it emits under `out`; a sink or action declares the ones it
 consumes under `in`.
 

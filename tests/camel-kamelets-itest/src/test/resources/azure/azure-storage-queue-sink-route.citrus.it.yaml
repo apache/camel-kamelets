@@ -52,7 +52,7 @@ actions:
           resources:
             - "AzureQueueClient.java"
 
-  # Afterwards the body is true, and the CamelAzureStorageQueueMessageId header gives the ID of the message
+  # Afterwards the body is true, the Content-Type is text/plain, and the CamelAzureStorageQueueMessageId header gives the ID of the message
   - http:
       server: "azureServer"
       receiveRequest:
@@ -63,7 +63,7 @@ actions:
             - name: "X-Body-Type"
               value: 'java.lang.Boolean'
             - name: "X-Content-Type"
-              value: 'ct='
+              value: 'ct=text/plain'
             - name: "X-Message-Id"
               value: '@matches([0-9a-f-]{36})@'
           body:

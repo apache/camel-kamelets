@@ -48,6 +48,19 @@ spec:
         description: "How long to hold each message, in milliseconds. For example, 1000 is one second."
         type: integer
         example: 1000
+  dataTypes:
+    in:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "Any body. It is not read."
+    out:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The body as it came in, of the same type."
   dependencies:
   - "camel:kamelet"
   template:

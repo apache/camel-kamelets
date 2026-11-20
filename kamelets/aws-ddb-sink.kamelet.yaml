@@ -133,12 +133,12 @@ spec:
         enum: ["HTTP", "HTTPS"]
         example: HTTP
   dataTypes:
-    # No 'default:' here on purpose. Declaring a default input type makes Camel
-    # apply the aws2-ddb:application-json transformation at the kamelet:source
-    # boundary, before any step below runs -- so the operation set by this
-    # template was never visible to it and every message was transformed as
-    # PutItem. The transformDataType step below applies the same type after the
-    # operation is set. See #2941.
+    # No 'default:' here on purpose. Camel runs a default input type at the
+    # kamelet:source boundary, before any step below, when the operation of
+    # the template is not known yet: a body with an `operation` field then
+    # fails, even one that names the configured operation. The
+    # transformDataType step below applies the type after the operation is
+    # set. See #2941 and #3117.
     in:
       headers:
         CamelAwsDdbOperation:

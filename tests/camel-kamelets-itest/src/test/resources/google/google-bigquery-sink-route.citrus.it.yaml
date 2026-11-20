@@ -80,7 +80,7 @@ actions:
           resources:
             - "GoogleBigQueryClient.java"
 
-  # Afterwards the body is the parsed JSON, a List of Maps
+  # Afterwards the body is the parsed JSON, a List of Maps, and the Content-Type is application/json
   - http:
       server: "gcpServer"
       receiveRequest:
@@ -91,7 +91,7 @@ actions:
             - name: "X-Body-Type"
               value: 'java.util.ArrayList'
             - name: "X-Content-Type"
-              value: 'ct='
+              value: 'ct=application/json'
           body:
             data: '[{id=1, item=book}, {id=2, item=pen}]'
   - http:

@@ -39,7 +39,7 @@ spec:
 
       Input: the document, as bytes, a stream, a file or text. The header named in `documentIdHeader` (by default `CamelLangChain4jIngestDocumentId`) is the id of the document, if any; it is kept for `langchain4j-ingest-sink` further on.
 
-      Output: the body is the document as Markdown, as text, or as HTML or plain text with `operation`. The headers of the message are kept.
+      Output: the body is the document as Markdown, as text, or as HTML or plain text with `operation`. The `Content-Type` header is set to `text/plain`, also for HTML. The other headers of the message are kept.
 
       Good to know: to use a Docling Serve server, which is the usual setup, set both `useDoclingServe` to true and `doclingServeUrl`; otherwise it runs the `docling` command-line program, which must be installed on the machine of the integration. A server started with an API key needs `authenticationScheme` set to `API_KEY` and the key in `authenticationToken`. A conversion that takes longer than `processTimeout`, 30 seconds when it is not set, fails the message; the first conversion after a Docling Serve server starts, and a large PDF on a server without a GPU, can take longer than that. The text in images, such as scanned pages, is read with OCR unless `enableOcr` is false. With `maxDocumentSize`, a larger document fails the message without being sent.
     type: object
@@ -119,6 +119,13 @@ spec:
           title: Document ID
           description: The id of the document, such as its file name, kept for `langchain4j-ingest-sink`. Read from this header unless `documentIdHeader` names another one.
           type: string
+    out:
+      default: text
+      types:
+        text:
+          format: "text-plain"
+          description: "The document as Markdown, HTML or plain text, as `operation` says."
+          mediaType: text/plain
   dependencies:
     - "camel:docling"
     - "camel:kamelet"
