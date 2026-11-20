@@ -47,5 +47,8 @@
         - setHeader:
             name: X-ETag
             simple: 'etag=${header.CamelAwsS3ETag}'
+        - setHeader:
+            name: X-Response-Code
+            simple: 'code=${header.CamelHttpResponseCode}'
         - to:
             uri: "{{http.sink.url}}/result"
