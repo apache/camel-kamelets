@@ -38,7 +38,7 @@ spec:
 
       Output: the body is the issue as JSON text (a stream), with fields such as `key`, `summary`, `description`, `status`, `issueType`, `project`, `reporter`, `assignee` and `priority`.
 
-      Good to know: only the issues created after the Kamelet starts are sent; the issues that already exist are not, and neither are changes to an issue. It checks every 6 seconds. The four OAuth values come from the OAuth 1.0a authorization of the application link, see each option.
+      Good to know: only the issues created after the Kamelet starts are sent; the issues that already exist are not, and neither are changes to an issue. It checks every 6 seconds. The four OAuth values come from the OAuth 1.0a authorization of the application link, see each option. Atlassian has deprecated OAuth 1.0a for the REST API of Jira Cloud; for Jira Cloud, use `jira-source` with an API token instead.
     required:
       - jiraUrl
       - accessToken
