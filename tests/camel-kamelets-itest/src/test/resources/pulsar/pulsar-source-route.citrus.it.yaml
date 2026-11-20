@@ -16,7 +16,7 @@
 # ---------------------------------------------------------------------------
 
 name: pulsar-source-route-test
-description: 'pulsar-source receives a message from a topic in Pulsar, as bytes, with the topic, key, properties and message ID as headers'
+description: 'pulsar-source receives a message from a topic in Pulsar, as bytes with the Content-Type application/octet-stream, and with the topic, key, properties and message ID as headers'
 actions:
   # Start Pulsar
   - testcontainers:
@@ -46,7 +46,7 @@ actions:
                 - name: "pulsar.service.url"
                   value: "pulsar://${CITRUS_TESTCONTAINERS_PULSAR_HOST}:${CITRUS_TESTCONTAINERS_PULSAR_PORT}"
 
-  # The source gives the payload as bytes, with the topic, key, properties, message ID, publish time and producer name
+  # The source gives the payload as bytes with the Content-Type application/octet-stream, and with the topic, key, properties, message ID, publish time and producer name
   - http:
       server: "httpServer"
       receiveRequest:
@@ -57,7 +57,7 @@ actions:
             - name: "X-Body-Type"
               value: '[B'
             - name: "X-Content-Type"
-              value: 'ct='
+              value: 'ct=application/octet-stream'
             - name: "topic_name"
               value: 'persistent://public/default/orders'
             - name: "key"
