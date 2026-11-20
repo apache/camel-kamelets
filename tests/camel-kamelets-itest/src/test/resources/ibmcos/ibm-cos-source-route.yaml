@@ -48,5 +48,10 @@
         - setHeader:
             name: X-ETag
             simple: "${header.CamelIBMCOSETag}"
+        # the body as text, for the HTTP call: Citrus reads an application/octet-stream body as a byte array
+        - removeHeader:
+            name: Content-Type
+        - convertBodyTo:
+            type: "java.lang.String"
         - to:
             uri: "{{http.sink.url}}/result"

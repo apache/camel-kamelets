@@ -37,7 +37,7 @@ spec:
 
       Use it to process files that another system drops into a bucket, such as uploaded documents, exported reports or log files. To react to new files through S3 event notifications instead of reading the bucket over and over, use `aws-s3-event-based-source`.
 
-      Output: the body is the content of the file, as bytes. The headers give the bucket name, the key (the path of the file in the bucket), the content type and the ETag of the file.
+      Output: the body is the content of the file, as bytes, and the `Content-Type` header is `application/octet-stream`. The headers give the bucket name, the key (the path of the file in the bucket), the content type and the ETag of the file.
 
       Good to know: files are deleted from the bucket after they are read, unless `deleteAfterRead` is set to false; then the same files are read again on every poll. `moveAfterRead` moves them to another bucket instead. It also works with S3-compatible storage, such as MinIO, through `overrideEndpoint` and `uriEndpointOverride`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
