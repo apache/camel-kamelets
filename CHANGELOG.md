@@ -4,16 +4,43 @@
 
 [Full Changelog](https://github.com/apache/camel-kamelets/compare/v4.22.2...HEAD)
 
+**Implemented enhancements:**
+
+- crypto-encrypt-action and crypto-decrypt-action: allow the CBC mode with a random initialization vector [\#3246](https://github.com/apache/camel-kamelets/issues/3246)
+- extract-field-action: by default a string field comes out as a quoted JSON value, and trimField: true keeps Content-Type application/json [\#3088](https://github.com/apache/camel-kamelets/issues/3088)
+- Audit follow-up: mqtt-source and mqtt-sink use the deprecated camel-paho \(MQTT v3\) [\#2890](https://github.com/apache/camel-kamelets/issues/2890)
+
 **Fixed bugs:**
 
+- http-sink: do not send the Authorization header of the incoming message, the login comes from the options [\#3244](https://github.com/apache/camel-kamelets/issues/3244)
+- Kamelets: wrap credential options in RAW\(\) where they go into an endpoint address [\#3242](https://github.com/apache/camel-kamelets/issues/3242)
+- Sink and action Kamelets: remove the component headers of the incoming message first, so the options decide what the Kamelet does [\#3240](https://github.com/apache/camel-kamelets/issues/3240)
 - spring-rabbitmq-source/sink - check broker certificate and host name with amqps [\#3210](https://github.com/apache/camel-kamelets/issues/3210)
+- AWS S3 event sources - preserve object names as literal data [\#3189](https://github.com/apache/camel-kamelets/issues/3189)
 
 **Closed issues:**
 
+- rest-openapi-sink, ogcapi-features-action and azure-functions-sink: do not send the Authorization header of the incoming message, and take login options [\#3257](https://github.com/apache/camel-kamelets/issues/3257)
+- Remove the deprecated Apicurio Registry Kafka Kamelets [\#3254](https://github.com/apache/camel-kamelets/issues/3254)
+- azure-functions-sink: always send the function key in the x-functions-key header [\#3248](https://github.com/apache/camel-kamelets/issues/3248)
+- Kafka Kamelets: a schema registry vendor option that configures the registry for the user [\#3183](https://github.com/apache/camel-kamelets/issues/3183)
 - Schema registry Kamelets: deprecate the Apicurio ones, and support the Confluent Schema Registry? [\#3182](https://github.com/apache/camel-kamelets/issues/3182)
 - Remove the deprecated http-secured-\* and jms-pooled-apache-artemis-\* Kamelets [\#3180](https://github.com/apache/camel-kamelets/issues/3180)
+- Component options the Kamelets do not expose [\#3170](https://github.com/apache/camel-kamelets/issues/3170)
+- aws-sqs-source and aws-ddb-streams-source: the CloudEvent source is not a receipt handle [\#3163](https://github.com/apache/camel-kamelets/issues/3163)
 - Proposal: Kamelets to deprecate, merge or remove [\#3162](https://github.com/apache/camel-kamelets/issues/3162)
+- Consolidate the kafka kamelets [\#3144](https://github.com/apache/camel-kamelets/issues/3144)
 - KameletsCatalog: load the Kamelets on demand, without a class path scan \(camel catalog kamelet takes 720 ms\) [\#3133](https://github.com/apache/camel-kamelets/issues/3133)
+- Release Camel Kamelets 4.22.2 [\#3115](https://github.com/apache/camel-kamelets/issues/3115)
+- Create more log kamelets [\#2504](https://github.com/apache/camel-kamelets/issues/2504)
+- a Kamelet to create embeddings with Camel Langchain4j Embedding component, relying on OpenAI Embedding Model [\#2324](https://github.com/apache/camel-kamelets/issues/2324)
+- a Kamelet to create embeddings with Camel Langchain4j Embedding component, relying on HugginFace Embedding Model [\#2323](https://github.com/apache/camel-kamelets/issues/2323)
+- Create Langchain4j Kamelets specific to certain Models [\#2247](https://github.com/apache/camel-kamelets/issues/2247)
+- Http/Https Kamelet: Expose cookieManagementDisabled parameter [\#2042](https://github.com/apache/camel-kamelets/issues/2042)
+- Make Kamelet Catalog examples to use Camel JBang [\#1431](https://github.com/apache/camel-kamelets/issues/1431)
+- Add Knative Functions Sink Kamelet [\#815](https://github.com/apache/camel-kamelets/issues/815)
+- Action Kamelets in catalog documentation are missing examples of input and output payloads [\#464](https://github.com/apache/camel-kamelets/issues/464)
+- Kamelet Catalog Website - Add some more information [\#328](https://github.com/apache/camel-kamelets/issues/328)
 
 ## [v4.22.2](https://github.com/apache/camel-kamelets/tree/v4.22.2) (2026-11-05)
 

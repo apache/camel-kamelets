@@ -80,8 +80,45 @@ actions:
               value: '1616'
             - name: "X-Smpp-Message-Type"
               value: 'DeliverSm'
+            - name: "X-Smpp-Data-Coding"
+              value: '0'
           body:
             data: 'YES please'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # An SMS sent as binary data (data coding 4)
+  - createVariables:
+      variables:
+        - name: "smpp.text"
+          value: "binary data"
+        - name: "smpp.dataCoding"
+          value: "4"
+  - groovy:
+      script:
+        file: "smpp/smppsim-inject-mo.groovy"
+
+  # The source gives its content as bytes
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: '[B'
+            - name: "X-Smpp-Message-Type"
+              value: 'DeliverSm'
+            - name: "X-Smpp-Data-Coding"
+              value: '4'
+          body:
+            data: 'binary data'
   - http:
       server: "httpServer"
       sendResponse:

@@ -23,5 +23,7 @@
         channel: '{{slack.channel}}'
         token: '{{slack.token}}'
       steps:
+        # What the Kamelet gives
+        - log: "Kamelet result: X-Body-Type=${body.getClass().getName()}, X-Content-Type=ct=${header.Content-Type};"
         - to:
             uri: "kamelet:log-sink"
