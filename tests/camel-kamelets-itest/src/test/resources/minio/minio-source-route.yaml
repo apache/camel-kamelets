@@ -31,6 +31,9 @@
         - setHeader:
             name: X-Content-Type
             simple: "ct=${header.Content-Type}"
+        # the HTTP server reads an application/octet-stream body as bytes: send the content as text
+        - removeHeader:
+            name: Content-Type
         # Camel headers are not sent over HTTP: copy them
         - setHeader:
             name: X-Minio-Bucket-Name
