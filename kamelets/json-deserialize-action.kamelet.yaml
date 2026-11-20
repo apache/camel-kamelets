@@ -49,6 +49,13 @@ spec:
           format: "application-octet-stream"
           description: "The JSON text, as bytes or a stream."
           mediaType: application/octet-stream
+    out:
+      default: struct
+      types:
+        struct:
+          format: "application-x-struct"
+          description: "The parsed JSON, a Jackson `JsonNode`."
+          mediaType: application/x-struct
   dependencies:
   - "camel:kamelet"
   - "camel:jackson3"

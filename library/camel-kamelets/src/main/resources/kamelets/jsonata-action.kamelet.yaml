@@ -50,7 +50,18 @@ spec:
         type: string
         example: "file:///etc/camel/order.jsonata"
         pattern: "^(http|https|file|classpath|ref|bean)://.*"
+  # No input default: application-x-java-object fails on JSON text, bytes, a stream and plain text,
+  # which jsonata-action reads (#3117).
+  dataTypes:
+    out:
+      default: struct
+      types:
+        struct:
+          format: "application-x-struct"
+          description: "The parsed JSON, a Jackson `JsonNode`."
+          mediaType: application/x-struct
   dependencies:
+  - "camel:jackson3"
   - "camel:jsonata"
   - "camel:kamelet"
   template:

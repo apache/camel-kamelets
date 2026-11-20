@@ -41,6 +41,8 @@ spec:
 
       Good to know: a body that is already text becomes one JSON string, in quotes: `hello` becomes `"hello"`, and JSON text is quoted the same way. Do not use it on a body that is already JSON text.
     type: object
+  # No input default: application-x-java-object fails on text, bytes, a stream and a number,
+  # which json-serialize-action writes as JSON (#3117).
   dataTypes:
     out:
       default: json

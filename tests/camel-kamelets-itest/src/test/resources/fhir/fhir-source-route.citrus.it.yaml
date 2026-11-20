@@ -67,7 +67,7 @@ actions:
                 - name: "http.sink.url"
                   value: "http://localhost:${services.server.port}"
 
-  # the search result: a Bundle of type searchset as JSON text (in a stream), with the Patient under entry
+  # the search result: a Bundle of type searchset as JSON text in bytes, with the Patient under entry
   - http:
       server: "servicesServer"
       receiveRequest:
@@ -75,7 +75,7 @@ actions:
           path: "/result"
           headers:
             - name: "X-Body-Type"
-              value: 'org.apache.camel.converter.stream.InputStreamCache'
+              value: '[B'
             - name: "X-Content-Type"
               value: 'ct=application/fhir+json'
           body:
