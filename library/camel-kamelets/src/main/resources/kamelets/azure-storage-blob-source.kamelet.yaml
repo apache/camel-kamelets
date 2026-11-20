@@ -36,7 +36,7 @@ spec:
 
       Use it to process files that another system drops into a container, such as uploaded documents, exported reports or log files. To react to new blobs through Event Grid events instead of reading the container over and over, use `azure-storage-blob-event-based-source`.
 
-      Output: the body is the content of the blob, as a stream of bytes. The headers give the name of the blob (`CamelAzureStorageBlobBlobName`, with its folder path), its type, content type, size, ETag and last-modified time.
+      Output: the body is the content of the blob, as a stream of bytes, and the `Content-Type` header is `application/octet-stream`. The headers give the name of the blob (`CamelAzureStorageBlobBlobName`, with its folder path), its type, content type, size, ETag and last-modified time.
 
       Good to know: blobs are kept after they are read, so the same blobs are read again on every poll, every 500 milliseconds by default; set `deleteAfterRead` to true to delete each blob once it has been processed, or `moveAfterRead` to move it to another container. A poll gets all its blobs before it sends the first one; to read a large container in smaller polls, set `maxMessagesPerPoll`. It reads all the blobs of the container, those in virtual folders too, unless `prefix` or `regex` narrows them down. With `deleteAfterRead`, the blob deleted is the one named in the `CamelAzureStorageBlobBlobName` header when processing ends, so do not change that header.
     required:
