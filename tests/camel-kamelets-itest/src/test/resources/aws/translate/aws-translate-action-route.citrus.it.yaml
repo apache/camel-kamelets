@@ -1,0 +1,83 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+
+name: aws-translate-action-route-test
+# The Citrus HTTP server stands in for Amazon Translate, reached through uriEndpointOverride
+actions:
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "aws/translate/aws-translate-action-route.yaml"
+            systemProperties:
+              file: "aws/aws-stand-in.properties"
+
+  # The request arrives at the address in uriEndpointOverride. The AWS SDK talks to Amazon Translate in the
+  # Smithy RPC v2 CBOR protocol: the operation is in the path, and the body is binary CBOR, so it is not checked.
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/service/AWSShineFrontendService_20170701/operation/TranslateText"
+          type: "plaintext"
+          headers:
+            - name: "smithy-protocol"
+              value: 'rpc-v2-cbor'
+          body:
+            data: '@ignore@'
+
+  # The answer is the CBOR map {"TranslatedText":"Hello world","SourceLanguageCode":"it","TargetLanguageCode":"en"}.
+  # Its only byte above 0x7F is the map header 0xA3, which ISO-8859-1 writes as that one byte.
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          headers:
+            - name: "Content-Type"
+              value: 'application/cbor;charset=ISO-8859-1'
+            - name: "smithy-protocol"
+              value: 'rpc-v2-cbor'
+          body:
+            data: "\xA3nTranslatedTextkHello worldrSourceLanguageCodebitrTargetLanguageCodeben"
+
+  # The body is the translated text, as text/plain
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct=text/plain'
+          body:
+            data: 'Hello world'
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          body:
+            data: "OK"

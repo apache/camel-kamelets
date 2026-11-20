@@ -50,6 +50,9 @@
         - setHeader:
             name: X-Blob-Content-Type
             simple: "${header.CamelAzureStorageBlobContentType}"
+        - setHeader:
+            name: X-Blob-Name
+            simple: "name=${header.CamelAzureStorageBlobBlobName}"
         # the body as text, for the HTTP call
         - convertBodyTo:
             type: "java.lang.String"

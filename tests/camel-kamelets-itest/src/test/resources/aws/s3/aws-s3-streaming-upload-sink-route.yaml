@@ -47,6 +47,9 @@
         - setHeader:
             name: X-ETag
             simple: 'etag=${header.CamelAwsS3ETag}'
+        - setHeader:
+            name: X-Response-Code
+            simple: 'code=${header.CamelHttpResponseCode}'
         # Citrus reads an application/octet-stream body as a byte array: send the body as text
         - removeHeader:
             name: Content-Type

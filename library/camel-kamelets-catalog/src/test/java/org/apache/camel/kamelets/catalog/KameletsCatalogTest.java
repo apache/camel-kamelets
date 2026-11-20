@@ -278,7 +278,7 @@ public class KameletsCatalogTest {
         verifyHeaders("pulsar-sink", 3);
         verifyHeaders("pulsar-source", 5);
         verifyHeaders("redis-sink", 4);
-        verifyHeaders("redis-source", 1);
+        verifyHeaders("redis-source", 2);
         verifyHeaders("rest-openapi-sink", 0);
         verifyHeaders("salesforce-create-sink", 1);
         verifyHeaders("salesforce-delete-sink", 1);

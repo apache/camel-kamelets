@@ -32,6 +32,8 @@
               accessKey: "{{aws.accessKey}}"
               secretKey: "{{aws.secretKey}}"
               region: "{{aws.region}}"
+              overrideEndpoint: "true"
+              uriEndpointOverride: "{{aws.uriEndpointOverride}}"
         # What the Kamelet leaves on the message
         - setHeader:
             name: X-Body-Type
