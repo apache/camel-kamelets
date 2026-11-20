@@ -36,7 +36,7 @@ spec:
 
       Use it to process files that land in a data lake, such as exports or reports. For plain blob containers, use `azure-storage-blob-source`, which can also delete what it reads.
 
-      Output: the body is the content of the file, as a stream of bytes. The `CamelAzureStorageDataLakeFileName` header is the name of the file, and other headers give its size, content type, ETag and last-modified time.
+      Output: the body is the content of the file, as a stream of bytes, and the `Content-Type` header is `application/octet-stream`. The `CamelAzureStorageDataLakeFileName` header is the name of the file, and other headers give its size, content type, ETag and last-modified time.
 
       Good to know: it neither deletes nor moves the files, so it reads all of them again on every poll, every 500 milliseconds by default. It reads the files at the top of the file system, or of `directoryName`; the files in directories below are read only when `recursive` is true. `regex` keeps only the files whose path matches, and `fileName` reads one file. Log in as an app registration with `clientId`, `clientSecret` and `tenantId` (the default), or with an account key (`accountKey`) or a SAS token (`sasSignature`).
     required:
