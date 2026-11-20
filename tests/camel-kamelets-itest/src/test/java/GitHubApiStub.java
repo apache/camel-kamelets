@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.citrusframework.base.endpoint.adapter.StaticEndpointAdapter;
@@ -33,8 +35,11 @@ import org.springframework.http.HttpStatus;
  * Stands in for the GitHub API in the tests of the GitHub sources: answers a request with the canned JSON in the
  * resource {@code github/api/<path>.json}, where the path is the path of the request without its query, such as
  * {@code repos/citrus/demo/commits}. The addresses of the GitHub API in the answers, which the GitHub client
- * follows to read more of an object, are changed to the address of the stand-in. Other requests get 404, as from
- * GitHub, and are listed in {@link #unknown()}.
+ * follows to read more of an object, are changed to the address of the stand-in. When the resource
+ * {@code github/api/<path>.first.json} exists, it is the answer to the first request for that path after
+ * {@link #reset()} instead, so a source that remembers what exists when it starts can be shown something new
+ * afterwards. Other requests get 404, as from GitHub, and are listed in {@link #unknown()}. Every request is
+ * listed in {@link #requests()}, so a test can check that a source asked for nothing more than it should.
  */
 public class GitHubApiStub extends StaticEndpointAdapter {
 
@@ -46,16 +51,26 @@ public class GitHubApiStub extends StaticEndpointAdapter {
 
     private final List<String> unknown = new CopyOnWriteArrayList<>();
 
+    private final List<String> requests = new CopyOnWriteArrayList<>();
+
+    private final Set<String> answered = ConcurrentHashMap.newKeySet();
+
     public GitHubApiStub(int port) {
         this.apiUrl = "http://localhost:" + port;
     }
 
     public void reset() {
         unknown.clear();
+        requests.clear();
+        answered.clear();
     }
 
     public List<String> unknown() {
         return unknown;
+    }
+
+    public List<String> requests() {
+        return requests;
     }
 
     @Override
@@ -66,8 +81,16 @@ public class GitHubApiStub extends StaticEndpointAdapter {
             path = path.substring(0, query);
         }
         path = path.replaceAll("^/+|/+$", "");
+        LOG.info("GitHub API request {}", path);
+        requests.add(path);
 
-        String json = load("github/api/" + path + ".json");
+        String json = null;
+        if (answered.add(path)) {
+            json = load("github/api/" + path + ".first.json");
+        }
+        if (json == null) {
+            json = load("github/api/" + path + ".json");
+        }
         if (json != null) {
             return new HttpMessage(json.replace(GITHUB_API, apiUrl))
                     .status(HttpStatus.OK).contentType("application/json; charset=utf-8");

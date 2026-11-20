@@ -1,0 +1,81 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: github-tag-source-route-test
+description: 'github-tag-source sends a tag created after the start as JSON text with its name and commit SHA, and asks the GitHub API for nothing more than its polls'
+variables:
+  # the repository of the canned answers of this test, and the only requests the source may make for it
+  - name: "github.api.repo"
+    value: "citrus/tag-demo"
+  - name: "github.api.expected"
+    value: "user,repos/citrus/tag-demo,repos/citrus/tag-demo/tags"
+actions:
+  # The stand-in of the GitHub API answers with canned JSON for the repository citrus/tag-demo: no tag when the source starts, then v1.0.0
+  - groovy:
+      script:
+        file: "github/resetApi.groovy"
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "github/github-tag-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${cloud.http.server.port}"
+                # the GitHub API is the stand-in of the test
+                - name: "camel.component.github2.apiUrl"
+                  value: "http://localhost:${github.api.port}"
+
+  # The new tag
+  - http:
+      server: "cloudHttpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "json"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+          body:
+            data: |
+              {
+                "name": "v1.0.0",
+                "commit": { "sha": "4444444444444444444444444444444444444444" }
+              }
+  - http:
+      server: "cloudHttpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The source asked the GitHub API for nothing per message: no user, commit or pull request details
+  - groovy:
+      script:
+        file: "github/onlyPolls.groovy"
+
+  # and only for what it has canned answers for
+  - groovy:
+      script:
+        file: "github/noUnknownRequests.groovy"
