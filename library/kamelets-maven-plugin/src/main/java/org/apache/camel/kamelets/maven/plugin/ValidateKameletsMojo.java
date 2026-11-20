@@ -132,7 +132,7 @@ public class ValidateKameletsMojo extends AbstractMojo {
                         StringBuilder availableParams = new StringBuilder();
                         ceInternal.forEach(_param -> availableParams.append(_param).append(" "));
                         for (Map.Entry<String, Object> entry : p.entrySet()) {
-                            if (!entry.getKey().equals("period") && (!name.equals("set-kafka-key-action") && !name.equals("sftp-source") && !name.equals("timer-source") && !name.equals("cron-source") && !name.equals("fhir-source") && !name.equals("beer-source") && !name.equals("cassandra-sink") && !name.equals("aws-kinesis-source"))) {
+                            if (!entry.getKey().equals("period") && (!name.equals("set-kafka-key-action") && !name.equals("sftp-source") && !name.equals("timer-source") && !name.equals("cron-source") && !name.equals("fhir-source") && !name.equals("cassandra-sink") && !name.equals("aws-kinesis-source"))) {
                                 // a multi value option takes its entries by prefix: mail.imaps.auth.mechanisms on imaps
                                 boolean prefixed = ce.stream().anyMatch(o -> o.isMultiValue() && o.getPrefix() != null
                                         && !o.getPrefix().isEmpty() && entry.getKey().startsWith(o.getPrefix()));

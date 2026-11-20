@@ -1,0 +1,101 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: telegram-source-route-test
+description: 'telegram-source asks the Bot API for updates and gives each message as JSON text, with the chat in the chat-id and ce-chatid headers'
+variables:
+  - name: "telegram.token"
+    value: "123456789:citrus:randomString(35)"
+actions:
+  # the Citrus HTTP server stands in for the Telegram Bot API, through the baseUri option of the component
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "telegram/telegram-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "telegram.token"
+                  value: "${telegram.token}"
+                - name: "camel.component.telegram.baseUri"
+                  value: "http://localhost:${services.server.port}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${services.server.port}"
+
+  # the first poll, with no offset yet, gets one message from a private chat
+  - http:
+      server: "servicesServer"
+      receiveRequest:
+        GET:
+          path: "/bot${telegram.token}/getUpdates"
+  - http:
+      server: "servicesServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: '{"ok":true,"result":[{"update_id":100,"message":{"message_id":7,"from":{"id":4711,"is_bot":false,"first_name":"Ada","username":"ada"},"chat":{"id":4711,"first_name":"Ada","type":"private"},"date":1763550000,"text":"Hello bot"}}]}'
+
+  # the message as JSON text, as the Telegram component reads it (with all its fields, also the empty ones),
+  # with the chat in the headers
+  - http:
+      server: "servicesServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: 'org.apache.camel.converter.stream.InputStreamCache'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+            - name: "chat-id"
+              value: '4711'
+            - name: "ce-chatid"
+              value: '4711'
+          body:
+            data: '{"audio":null,"caption":null,"caption_entities":null,"chat":{"all_members_are_administrators":false,"id":"4711","title":null,"type":"private"},"date":1763550000,"document":null,"entities":null,"from":{"added_to_attachment_menu":null,"bot":false,"can_connect_to_business":null,"can_join_groups":null,"can_read_all_group_messages":null,"first_name":"Ada","has_main_web_app":null,"has_topics_enabled":null,"id":4711,"is_bot":false,"is_premium":null,"language_code":null,"last_name":null,"supports_inline_queries":null,"username":"ada"},"game":null,"location":null,"message_id":7,"photo":null,"refunded_payment":null,"reply_markup":null,"sticker":null,"successful_payment":null,"text":"Hello bot","video":null,"voice":null}'
+  - http:
+      server: "servicesServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # the next poll asks only for the updates after that one, so each message is received once
+  - http:
+      server: "servicesServer"
+      receiveRequest:
+        GET:
+          path: "/bot${telegram.token}/getUpdates"
+          parameters:
+            - name: "offset"
+              value: "101"
+  - http:
+      server: "servicesServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: '{"ok":true,"result":[]}'

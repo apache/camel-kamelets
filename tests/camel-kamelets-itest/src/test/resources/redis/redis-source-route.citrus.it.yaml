@@ -65,6 +65,10 @@ actions:
               value: 'ct='
             - name: "X-Channel"
               value: 'orders'
+            - name: "X-Pattern-Type"
+              value: '[B'
+            - name: "X-Pattern"
+              value: 'orders'
           body:
             data: 'ORD-1 shipped'
   - http:
