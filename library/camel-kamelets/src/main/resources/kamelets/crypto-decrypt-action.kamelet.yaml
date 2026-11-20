@@ -38,9 +38,9 @@ spec:
 
       Input: the encrypted data exactly as `crypto-encrypt-action` produced it, as bytes or a stream. If it was encoded on the way, for example in Base64, decode it first.
 
-      Output: the body is the original data, as bytes (a stream). The headers are kept.
+      Output: the body is the original data, as bytes (a stream), and the `Content-Type` header is `application/octet-stream`. The other headers are kept.
 
-      Good to know: the `Content-Type` header is kept as it comes, which after `crypto-encrypt-action` is `application/octet-stream`: set it again to the type of the original data when the next step needs it, for example with `insert-header-action`. Data that was changed, or a different `algorithm`, `mode` or `key` than when encrypting, fails the message with "Message authentication failed". The key is a secret; keep it in a vault or a secret, not in plain configuration.
+      Good to know: set the `Content-Type` header again to the type of the original data when the next step needs it, for example with `insert-header-action`. Data that was changed, or a different `algorithm`, `mode` or `key` than when encrypting, fails the message with "Message authentication failed". The key is a secret; keep it in a vault or a secret, not in plain configuration.
     required:
       - algorithm
       - key
@@ -63,6 +63,14 @@ spec:
         format: password
         x-descriptors:
           - urn:camel:group:credentials
+  dataTypes:
+    in:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The encrypted data, as bytes or a stream."
+          mediaType: application/octet-stream
   dependencies:
     - "camel:kamelet"
     - "camel:crypto"
