@@ -34,5 +34,11 @@
         - setHeader:
             name: X-Channel
             simple: "${header[CamelRedis.Channel]}"
+        - setHeader:
+            name: X-Pattern-Type
+            simple: "${header[CamelRedis.Pattern].getClass().getName()}"
+        - setHeader:
+            name: X-Pattern
+            simple: "${headerAs(CamelRedis.Pattern,String)}"
         - to:
             uri: "{{http.sink.url}}/result"

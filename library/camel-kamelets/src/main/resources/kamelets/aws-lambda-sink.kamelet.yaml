@@ -97,6 +97,16 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      uriEndpointOverride:
+        title: Overwrite Endpoint URI
+        description: The address to connect to instead of AWS, as a URL such as `http://localhost:4566` for LocalStack. Only used when `overrideEndpoint` is true.
+        example: http://localhost:4566
+        type: string
+      overrideEndpoint:
+        title: Endpoint Overwrite
+        description: If true, it connects to the address in `uriEndpointOverride` instead of to AWS. Use it for a local stand-in of AWS such as LocalStack.
+        type: boolean
+        default: false
       proxyHost:
         title: Proxy Host
         description: The host name or IP address of an HTTP proxy to send the calls to AWS through, such as the proxy of a company network. Used only together with `proxyPort`. When it is not set, the calls go straight to AWS.
@@ -149,6 +159,8 @@ spec:
               region: "{{region}}"
               secretKey: "RAW({{?secretKey}})"
               sessionToken: "RAW({{?sessionToken}})"
+              overrideEndpoint: "{{overrideEndpoint}}"
+              uriEndpointOverride: "{{?uriEndpointOverride}}"
               useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
               useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
               useSessionCredentials: "{{useSessionCredentials}}"

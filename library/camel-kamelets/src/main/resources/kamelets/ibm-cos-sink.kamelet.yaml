@@ -36,7 +36,7 @@ spec:
 
       Use it to store data for later use or for other systems, such as exported reports, archived events or files received from another system. To read the files of a bucket, use `ibm-cos-source`.
 
-      Input: the body is the content of the file, as text, bytes, a stream or a file. Text is turned into bytes before the upload, and the `Content-Type` header is set to `application/octet-stream`. A file is passed on as it is, and so is a stream, unless stream caching is turned off. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The name of the file (its key) is `keyName` when it is set; otherwise the optional `file` header (or `ce-file`), with its folders, such as `reports/2024-06-01.csv`; otherwise a generated unique name.
+      Input: the body is the content of the file, as text, bytes, a stream or a file. Text is turned into bytes before the upload, and the `Content-Type` header is set to `application/octet-stream`. A file is passed on as it is, and so is a stream, unless stream caching is turned off. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The name of the file (its key) is `keyName` when it is set, or then a `CamelIBMCOSKey` header; otherwise the optional `file` header (or `ce-file`), with its folders, such as `reports/2024-06-01.csv`; otherwise a generated unique name.
 
       Output: the body is the content of the file, as bytes when it was text, and the `Content-Type` header is `application/octet-stream`. The `CamelIBMCOSETag` header holds the ETag of the uploaded file.
 
@@ -84,7 +84,7 @@ spec:
         default: false
       keyName:
         title: Key Name
-        description: The name of the file in the bucket, the same for every message, so each message overwrites the previous file. When it is not set, the name comes from the `file` or `ce-file` header, or is generated. A `CamelIBMCOSKey` header on the message, as `ibm-cos-source` sets, is used instead of it.
+        description: The name of the file in the bucket, the same for every message, so each message overwrites the previous file. When it is set, a `CamelIBMCOSKey` header on the message, as `ibm-cos-source` sets, is used instead of it. When it is not set, the name comes from the `file` or `ce-file` header, or is generated, and a `CamelIBMCOSKey` header is ignored.
         type: string
         example: reports/latest.csv
       deleteAfterWrite:

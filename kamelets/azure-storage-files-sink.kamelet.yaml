@@ -38,7 +38,7 @@ spec:
 
       Input: the body is the content of the file: text, bytes or a stream. Text is turned into bytes before the upload, and the `Content-Type` header is set to `application/octet-stream`. A file is passed on as it is, and so is a stream, unless stream caching is turned off. A Map fails: turn it into JSON text first, for example with `json-serialize-action`. The optional `file` header (or `ce-file`) is the name of the file; only its last part is used, so `reports/2026/data.csv` is written as `data.csv` in `directoryName`. Without it, the file gets a generated unique name.
 
-      Output: the body is the content of the file, as bytes when it was text, and the `Content-Type` header is `application/octet-stream`.
+      Output: the body is the content of the file, as bytes when it was text, and the `Content-Type` header is `application/octet-stream`. The `CamelFileNameProduced` header is set to the path of the file in the share.
 
       Good to know: a file with the same name is replaced, unless `fileExist` says otherwise. Missing directories are created. Headers that start with `CamelFile` or `CamelOverruleFile` are removed from the message first, so they cannot change what the Kamelet does.
     required:
