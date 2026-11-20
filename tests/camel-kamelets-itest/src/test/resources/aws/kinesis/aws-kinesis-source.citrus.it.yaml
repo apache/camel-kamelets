@@ -61,3 +61,9 @@ actions:
         verify:
           integration: "aws-kinesis-source-route"
           logMessage: "${aws.kinesis.streamData}"
+  # What the Kamelet leaves on the message
+  - camel:
+      cli:
+        verify:
+          integration: "aws-kinesis-source-route"
+          logMessage: "Kamelet result: X-Body-Type=[B, X-Content-Type=ct=application/octet-stream;"

@@ -36,10 +36,27 @@ actions:
             file: "postgres/postgresql-source-route.yaml"
             systemProperties:
               file: "postgres/application.properties"
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${postgres.server.port}"
 
-  # Verify PostgreSQL source
-  - camel:
-      cli:
-        verify:
-          integration: "postgresql-source-route"
-          logMessage: "hello-postgres"
+  # The row comes out of the Kamelet as a JSON object, as JSON text in bytes (the json output data type)
+  - http:
+      server: "postgresServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: '[B'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+          body:
+            data: '{"id":1,"name":"test-entry","value":"hello-postgres"}'
+  - http:
+      server: "postgresServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

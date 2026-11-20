@@ -114,7 +114,7 @@ actions:
             - name: "X-Result-Type"
               value: 'org.apache.camel.component.salesforce.api.dto.UpsertSObjectResult'
             - name: "X-Content-Type"
-              value: 'ct='
+              value: 'ct=application/json'
           body:
             data: '[{"id":"003000000000001AAA","errors":[],"success":true,"created":true}, {"id":null,"errors":[{"errorCode":"REQUIRED_FIELD_MISSING","message":"Required fields are missing: [LastName]","fields":["LastName"]}],"success":false,"created":false}]'
   - http:

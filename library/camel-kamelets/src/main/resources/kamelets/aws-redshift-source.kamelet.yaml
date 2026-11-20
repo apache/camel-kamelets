@@ -35,7 +35,7 @@ spec:
 
       Use it to pick up records from a Redshift data warehouse, such as new orders or daily figures, and pass them on to another system. To write to Redshift, use `aws-redshift-sink`.
 
-      Output: one message per row. The body is the row as a JSON object, in JSON text, with the column names as field names, such as `{"id":1,"username":"alice","city":"Rome"}`. The `Content-Type` header is `application/json`.
+      Output: one message per row. The body is the row as a JSON object, as JSON text in bytes, with the column names as field names, such as `{"id":1,"username":"alice","city":"Rome"}`. The `Content-Type` header is `application/json`.
 
       Good to know: the query runs again every `delay` milliseconds, and returns the same rows each time unless they change; set `consumedQuery` to mark or delete each row once it has been sent. It logs in with a database user and password, not with AWS keys, and connects with the Amazon Redshift JDBC driver, which uses TLS by default. Other settings of the driver go in `connectionProperties`.
     required:
@@ -112,6 +112,14 @@ spec:
   types:
     out:
       mediaType: application/json
+  dataTypes:
+    out:
+      default: json
+      types:
+        json:
+          format: "application-json"
+          description: "One row as a JSON object, as JSON text in bytes."
+          mediaType: application/json
   dependencies:
   - "camel:jackson3"
   - "camel:kamelet"

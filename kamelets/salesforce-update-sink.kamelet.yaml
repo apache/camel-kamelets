@@ -109,6 +109,14 @@ spec:
   types:
     in:
       mediaType: application/json
+  dataTypes:
+    in:
+      default: json
+      types:
+        json:
+          format: "application-json"
+          description: "A JSON object with sObjectName, sObjectId and payload, as JSON text in bytes."
+          mediaType: application/json
   dependencies:
   - "camel:jsonpath"
   - "camel:jackson3"
