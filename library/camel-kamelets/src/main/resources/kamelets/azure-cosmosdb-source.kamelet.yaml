@@ -36,7 +36,7 @@ spec:
 
       Use it to react to new or updated documents, for example to copy them to a search index, a cache or Kafka. To create items, use `azure-cosmosdb-sink`.
 
-      Output: the body is a JSON array of the items of one batch, as JSON text (a stream), each item with the fields that Cosmos DB adds, such as `_etag`. The `Content-Type` header is `application/json`.
+      Output: the body is a JSON array of the items of one batch, as JSON text in bytes, each item with the fields that Cosmos DB adds, such as `_etag`. The `Content-Type` header is `application/json`.
 
       Good to know: it reads only the changes made after it first starts, unless `startFromBeginning` is true, and it does not see deleted items. It keeps its position in a lease container, `camel-lease` in the database `databaseName` unless set otherwise, which must exist unless `createLeaseContainerIfNotExists` is true. Two integrations that read the same container with the same lease container share one position, and each change goes to only one of them, unless each has its own `leasePrefix`. It checks for new changes every 5 seconds unless `feedPollDelay` is set. Set `hostName` so that after a crash, the integration continues at once instead of after up to a minute.
     required:

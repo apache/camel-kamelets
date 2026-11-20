@@ -27,6 +27,8 @@
         secretKey: "{{aws.s3.secretKey}}"
         region: "{{aws.s3.region}}"
       steps:
+      # What the Kamelet gives
+      - log: "Kamelet result: X-Body-Type=${body.getClass().getName()}, X-Content-Type=ct=${header.Content-Type};"
       - to:
           uri: "kamelet:log-sink"
           parameters:
