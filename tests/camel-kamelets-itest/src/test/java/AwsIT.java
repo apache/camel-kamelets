@@ -125,6 +125,11 @@ public class AwsIT {
     }
 
     @CitrusTestFactory
+    public Stream<DynamicTest> awsTranslate() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.translate");
+    }
+
+    @CitrusTestFactory
     public Stream<DynamicTest> awsPolly() {
         return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("aws.polly");
     }
