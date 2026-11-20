@@ -93,9 +93,9 @@ actions:
           type: "plaintext"
           headers:
             - name: "X-Body-Type"
-              value: 'org.apache.camel.converter.stream.ByteArrayInputStreamCache'
+              value: 'java.lang.String'
             - name: "X-Content-Type"
-              value: 'ct='
+              value: 'ct=text/plain'
             - name: "X-Message-Id"
               value: '@matches([0-9a-f-]{36})@'
             - name: "X-Dequeue-Count"

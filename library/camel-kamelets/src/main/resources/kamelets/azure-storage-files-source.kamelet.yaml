@@ -36,7 +36,7 @@ spec:
 
       Use it to process files that people or applications put on a share, such as scanned documents or exports. For blob containers, use `azure-storage-blob-source`.
 
-      Output: the body is the content of the file, which converts to text, bytes or a stream. The `CamelFileName` header is the path of the file from `directoryName`, `CamelFileNameOnly` its name, and `CamelFileLength` and `CamelFileLastModified` its size and last-modified time.
+      Output: the body is the file, which converts to text, bytes or a stream, and the `Content-Type` header is `application/octet-stream`. The `CamelFileName` header is the path of the file from `directoryName`, `CamelFileNameOnly` its name, and `CamelFileLength` and `CamelFileLastModified` its size and last-modified time.
 
       Good to know: files are kept after they are read, so the same files are read again on every poll, every 500 milliseconds by default. To read each file only once, set `deleteAfterRead` to true to delete it, set `move` to a directory such as `.done` to move it, or set `noop` to true to leave it in place and remember the files read, in memory or, with `idempotentRepository`, across restarts. Subdirectories are read only when `recursive` is true. `include` and `antInclude` read only the files whose names match.
     required:
