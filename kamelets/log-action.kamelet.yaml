@@ -110,6 +110,19 @@ spec:
         description: "If true, a body that is a stream cached by Camel, which can be read again, is logged. Camel caches stream bodies by default, so this is the usual case."
         type: boolean
         default: true
+  dataTypes:
+    in:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "Any body. It is logged, not changed."
+    out:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The body as it came in, of the same type."
   dependencies:
   - "camel:kamelet"
   - "camel:log"

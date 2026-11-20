@@ -31,5 +31,12 @@
             uri: "kamelet:has-header-filter-action"
             parameters:
               name: '{{header.name}}'
+        # What the Kamelet leaves on the message
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
         - to:
             uri: "{{http.sink.url}}/result"

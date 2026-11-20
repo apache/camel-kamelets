@@ -68,6 +68,7 @@ spec:
     type: object
   dataTypes:
     in:
+      default: unchanged
       headers:
         CamelKafkaTopic:
           title: Kafka Topic
@@ -77,12 +78,21 @@ spec:
           title: Kafka Timestamp
           description: "The time of the record, in milliseconds since 1970, as `kafka-source` sets it. Without it, nothing changes."
           type: integer
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "Any body. It is not read."
     out:
+      default: unchanged
       headers:
         CamelKafkaOverrideTopic:
           title: Kafka Override Topic
           description: "The new topic, which `kafka-sink` writes the record to instead of its own `topic`."
           type: string
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The body as it came in, of the same type."
   dependencies:
   - "camel:kamelet"
   - "camel:kafka"

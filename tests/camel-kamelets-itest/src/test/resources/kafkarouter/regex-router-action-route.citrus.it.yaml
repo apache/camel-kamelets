@@ -23,8 +23,36 @@ actions:
           waitForRunningState: false
           integration:
             file: "kafkarouter/regex-router-action-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${http.server.port}"
   - camel:
       cli:
         verify:
           integration: "regex-router-action-route"
           logMessage: "prefix-my-topic"
+
+  # The body is unchanged
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-Override-Topic"
+              value: 'prefix-my-topic'
+          body:
+            data: 'test-data'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

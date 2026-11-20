@@ -31,6 +31,8 @@ actions:
               properties:
                 - name: "message"
                   value: "${log.message}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${http.server.port}"
 
   # Verify the log output contains the message
   - camel:
@@ -38,3 +40,25 @@ actions:
         verify:
           integration: "log-sink-route"
           logMessage: "${log.message}"
+
+  # The message after the sink is unchanged
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct=text/plain'
+          body:
+            data: '${log.message}'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
