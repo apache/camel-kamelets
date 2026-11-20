@@ -23,6 +23,8 @@
         start: 777777
         numbers: 1
       steps:
+        # the class and Content-Type of the body that the source hands on
+        - log: "counter-source X-Body-Type=${body.getClass().getName()} X-Content-Type=ct=${header.Content-Type}"
         - to:
             uri: "kamelet:log-sink"
             parameters:

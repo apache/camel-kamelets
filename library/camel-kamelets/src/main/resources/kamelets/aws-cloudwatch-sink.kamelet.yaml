@@ -145,6 +145,7 @@ spec:
         example: HTTP
   dataTypes:
     in:
+      default: unchanged
       headers:
         metric-name:
           title: Metric Name
@@ -170,6 +171,10 @@ spec:
           title: Metric Timestamp
           description: The time of the data point, as a Java `Instant` or `Date`; text is ignored. `ce-metrictimestamp` works too. When it is not set, the time it is sent is used.
           type: object
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "Any body. It is not changed."
   dependencies:
     - "camel:aws2-cw"
     - "camel:kamelet"

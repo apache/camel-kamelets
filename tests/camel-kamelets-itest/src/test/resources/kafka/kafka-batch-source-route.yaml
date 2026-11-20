@@ -41,6 +41,13 @@
             simple: "${body.size()}"
         - to:
             uri: "kamelet:kafka-batch-manual-commit-action"
+        # what the commit action leaves: the same batch
+        - setHeader:
+            name: X-Commit-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Commit-Content-Type
+            simple: "ct=${header.Content-Type}"
         - setBody:
             simple: "${body[0].getMessage().getBody()}|${body[1].getMessage().getBody()}|${body[2].getMessage().getBody()}"
         - to:

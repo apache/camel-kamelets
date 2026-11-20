@@ -34,7 +34,14 @@
             parameters:
               algorithm: '{{crypto.algorithm}}'
               key: '{{crypto.key}}'
-        # the encrypted data is application/octet-stream, which decrypting keeps: the text is text again
+        # what the Kamelet gives: the Java type of the body and the Content-Type
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
+        # the decrypted data is application/octet-stream: the text is text again
         - to:
             uri: "kamelet:insert-header-action"
             parameters:

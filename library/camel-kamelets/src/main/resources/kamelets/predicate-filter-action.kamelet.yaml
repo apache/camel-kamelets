@@ -50,6 +50,19 @@ spec:
         type: string
         example: '@.foo =~ /.*John/'
     type: object
+  dataTypes:
+    in:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "A JSON object, as JSON text or as parsed JSON. It is read, not changed."
+    out:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The body as it came in, of the same type."
   dependencies:
   - "camel:kamelet"
   - "camel:jsonpath"

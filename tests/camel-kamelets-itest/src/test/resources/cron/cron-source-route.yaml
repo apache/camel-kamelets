@@ -22,6 +22,8 @@
         schedule: "0/1 * * * * ?"
         message: "cron-test-12345"
       steps:
+      # the class and Content-Type of the body that the source hands on
+      - log: "cron-source X-Body-Type=${body.getClass().getName()} X-Content-Type=ct=${header.Content-Type}"
       - to:
           uri: "kamelet:log-sink"
           parameters:

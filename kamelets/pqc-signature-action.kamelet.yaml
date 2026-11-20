@@ -80,13 +80,19 @@ spec:
         example: "#bean:pqcKeyPair"
   dataTypes:
     in:
+      default: unchanged
       headers:
         CamelPQCSignature:
           title: Signature
           description: The signature to check, as bytes, as set by `sign`. Required for `verify`.
           type: string
           format: binary
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The data to sign or to check, as text, bytes or a stream. It is read, not changed."
     out:
+      default: unchanged
       headers:
         CamelPQCSignature:
           title: Signature
@@ -97,6 +103,10 @@ spec:
           title: Verification Result
           description: True when the signature matches the body, false when it does not. Set by `verify`.
           type: boolean
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The body as it came in, of the same type."
   dependencies:
   - "camel:pqc"
   - "camel:kamelet"

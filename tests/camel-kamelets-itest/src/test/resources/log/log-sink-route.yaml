@@ -20,6 +20,7 @@
       uri: "kamelet:timer-source"
       parameters:
         period: 10000
+        repeatCount: 1
         message: '{{message}}'
       steps:
         - to:
@@ -27,3 +28,12 @@
             parameters:
               loggerName: test-log-sink
               showHeaders: false
+        # What the Kamelet leaves on the message
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
+        - to:
+            uri: "{{http.sink.url}}/result"

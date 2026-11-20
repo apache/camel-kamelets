@@ -38,7 +38,7 @@ spec:
 
       Output: the body is the content of the file, as a stream. The `file` and `ce-file` headers hold the name of the file, with its path below `directoryName` when `recursive` is true, such as `2026/orders.csv`. `CamelFileName` holds the same name, and `CamelFileLength` the size of the file in bytes.
 
-      Good to know: files are not deleted or moved after they are read, unless `delete` is true or `move` is set. A file is read only once while the integration runs (`idempotent`), but the files left on the server are all read again after a restart; to read each file only once, also across restarts, set `move` to a directory such as `.done`, set `delete` to true, or keep the list of the files read in a file with `idempotentRepository`. To read only some of the files, set `include`, `exclude` or `antInclude`. To leave a file alone while another program is still writing it, set `readLock`. By default it uses explicit TLS: it connects to the normal FTP port, usually 21, and then switches to TLS. For a server that uses implicit TLS, usually on port 990, set `implicit` to true. Files are transferred in ASCII (text) mode unless `binary` is true.
+      Good to know: files are not deleted or moved after they are read, unless `delete` is true or `move` is set. A file is read only once while the integration runs (`idempotent`), but the files left on the server are all read again after a restart; to read each file only once, also across restarts, set `move` to a directory such as `.done`, set `delete` to true, or keep the list of the files read in a file with `idempotentRepository`. To read only some of the files, set `include`, `exclude` or `antInclude`. To leave a file alone while another program is still writing it, set `readLock`. By default it uses explicit TLS: it connects to the normal FTP port, usually 21, and then switches to TLS. For a server that uses implicit TLS, usually on port 990, set `implicit` to true. The certificate of the server must be signed by a certificate authority (CA) that Java trusts. For a server with a self-signed certificate, or one signed by a private CA, set `trustStoreFile` and `trustStorePassword`: the Kamelet then trusts the certificates in that trust store, for this connection only. Do not use the `javax.net.ssl.trustStore` system property for this: it replaces the trust of the whole integration, so its other HTTPS connections, such as the downloads of its dependencies, then fail when the trust store does not hold their CAs too. Files are transferred in ASCII (text) mode unless `binary` is true.
     required:
       - connectionHost
       - connectionPort
@@ -193,6 +193,23 @@ spec:
         title: Implicit TLS
         description: 'If true, the connection uses implicit TLS: it is encrypted from the start, usually on port 990. If false, it uses explicit TLS: it connects to the normal FTP port, usually 21, and then switches to TLS. Use the mode the server expects; the other one fails to connect. When it is not set, false.'
         type: boolean
+      trustStoreFile:
+        title: Trust Store File
+        description: The path of a trust store file that holds the certificate of the FTPS server, or of the certificate authority (CA) that signed it, such as a PKCS12 or JKS file made with `keytool`. Set it for a server with a self-signed certificate, or one signed by a private CA. Set `trustStorePassword` with it, or the integration fails to start. Only the certificates in this file are trusted for the server, not those that Java trusts, and only for this connection, so the rest of the integration keeps the trust of Java. When it is not set, the certificate of the server is checked against the certificate authorities that Java trusts.
+        type: string
+        example: /etc/ftps/truststore.p12
+      trustStorePassword:
+        title: Trust Store Password
+        description: The password of the trust store in `trustStoreFile`. It is needed with `trustStoreFile`; set without `trustStoreFile`, the integration fails to start.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      trustStoreType:
+        title: Trust Store Type
+        description: The type of the trust store in `trustStoreFile`, such as `PKCS12` or `JKS`. Current Java versions read both PKCS12 and JKS files with either of these types, so it is needed only for other types. Set without `trustStoreFile`, the integration fails to start. When it is not set, the default type of Java, `PKCS12` on current versions.
+        type: string
+        example: PKCS12
   dataTypes:
     out:
       headers:
@@ -229,6 +246,9 @@ spec:
         delay: "{{?delay}}"
         delete: "{{delete}}"
         exclude: "RAW({{?exclude}})"
+        ftpClient.trustStore.file: "{{?trustStoreFile}}"
+        ftpClient.trustStore.password: "RAW({{?trustStorePassword}})"
+        ftpClient.trustStore.type: "{{?trustStoreType}}"
         idempotent: "{{idempotent}}"
         idempotentRepository: "#bean:{{?idempotentRepository}}"
         implicit: "{{?implicit}}"

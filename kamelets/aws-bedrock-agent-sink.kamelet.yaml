@@ -138,11 +138,16 @@ spec:
         example: HTTP
   dataTypes:
     in:
+      default: unchanged
       headers:
         CamelAwsBedrockAgentIngestionJobId:
           title: Ingestion Job ID
           description: The ID of the job to look up with `getIngestionJob`, as given by `startIngestionJob`.
           type: string
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "Any body. It is not used."
     out:
       headers:
         CamelAwsBedrockAgentIngestionJobStatus:

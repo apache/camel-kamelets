@@ -24,9 +24,6 @@
       steps:
         - setBody:
             constant: '{"id":7,"customer":"acme","total":12}'
-        - setHeader:
-            name: Content-Type
-            constant: 'application/json'
         - to:
             uri: "kamelet:value-to-key-action"
             parameters:

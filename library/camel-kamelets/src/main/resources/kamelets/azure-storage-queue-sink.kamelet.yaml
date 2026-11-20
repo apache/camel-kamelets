@@ -37,9 +37,9 @@ spec:
 
       Use it to hand work to another application or worker that reads the queue, such as orders to process or jobs to run. For a message broker with topics and dead-letter queues, use `azure-servicebus-sink`.
 
-      Input: the body is the text of the queue message: text or bytes. A Map is sent as its text form, so turn it into JSON text first, for example with `json-serialize-action`. The optional `expiration` header (or `ce-expiration`) sets how long the message stays in the queue, as an ISO-8601 duration such as `PT1H` (one hour) or `P2D` (two days); without it, the message expires after 7 days.
+      Input: the body is the text of the queue message: text, or bytes or a stream, which are read as UTF-8 text. A Map is sent as its text form, so turn it into JSON text first, for example with `json-serialize-action`. The optional `expiration` header (or `ce-expiration`) sets how long the message stays in the queue, as an ISO-8601 duration such as `PT1H` (one hour) or `P2D` (two days); without it, the message expires after 7 days.
 
-      Output: the body afterwards is `true`, and headers such as `CamelAzureStorageQueueMessageId` and `CamelAzureStorageQueueExpirationTime` describe the message sent.
+      Output: the body afterwards is `true`, the `Content-Type` header is `text/plain`, and headers such as `CamelAzureStorageQueueMessageId` and `CamelAzureStorageQueueExpirationTime` describe the message sent.
 
       Good to know: the queue must exist, or a message fails, unless `createQueue` is true. A message can be held back for a while before readers see it, with `visibilityTimeout`. An `expiration` that is a plain number, such as `600`, fails the message. Headers that start with `CamelAzureStorageQueue` are removed from the message first, so they cannot change what the Kamelet does.
     required:
@@ -85,6 +85,12 @@ spec:
         pattern: "^P(\\d+D)?(T(\\d+H)?(\\d+M)?(\\d+(\\.\\d+)?S)?)?$"
   dataTypes:
     in:
+      default: text
+      types:
+        text:
+          format: "text-plain"
+          description: "The text of the queue message."
+          mediaType: text/plain
       headers:
         expiration:
           title: Expiration
