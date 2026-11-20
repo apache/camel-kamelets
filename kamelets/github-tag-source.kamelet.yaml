@@ -35,9 +35,9 @@ spec:
 
       Use it to react to a new version, for example to announce a release, update a changelog or start a deployment. To receive every commit instead, use `github-commit-source`.
 
-      Output: the body is the tag as JSON text.
+      Output: the body is the tag as JSON text, an object with its `name`, such as `v1.0.0`, and `commit.sha`, the SHA of the commit it points to.
 
-      Good to know: only the tags created after the start are sent; the tags that exist when it starts are skipped. It works with github.com, not with GitHub Enterprise Server. It asks GitHub for the tags once a minute by default (`delay`), and every request counts against the API rate limit of the token.
+      Good to know: only the tags created after the start are sent; the tags that exist when it starts are skipped. GitHub lists a tag without its date or the message of an annotated tag, so they are not in the body. It works with github.com, not with GitHub Enterprise Server. It asks GitHub for the tags once a minute by default (`delay`), and every request counts against the API rate limit of the token.
     required:
       - repoName
       - repoOwner
@@ -70,14 +70,32 @@ spec:
     out:
       mediaType: application/json
   dependencies:
-  - "camel:jackson3"
   - "camel:github2"
+  - "camel:jq"
   - "camel:kamelet"
   template:
+    beans:
+      # writes the object from its fields, as the GitHub library reads it: unlike its getters, this asks GitHub
+      # for nothing more
+      - name: gitHubJson
+        type: "#class:org.kohsuke.github.GitHub"
+        factoryMethod: getMappingObjectWriter
     from:
       uri: "github2://tag?oauthToken=RAW({{oauthToken}})&repoName={{repoName}}&repoOwner={{repoOwner}}&delay={{delay}}"
       steps:
-        - marshal:
-            json: {}
+        - bean:
+            ref: "{{gitHubJson}}"
+            method: writeValueAsString
+        # keep the fields the description lists
+        - transform:
+            expression:
+              jq:
+                resultType: java.lang.String
+                expression: "{name: .name, commit: {sha: .commit.sha}}"
+        - setHeader:
+            name: Content-Type
+            expression:
+              constant:
+                expression: application/json
         - to:
             uri: kamelet:sink

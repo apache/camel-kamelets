@@ -86,7 +86,10 @@ left out.
 The serde jars of the vendor are not part of the Kamelet. Camel JBang downloads them by itself; the Confluent jars are
 in the Confluent Maven repository, not in Maven Central, so run with `--repos=confluent`. In a Maven project, add the
 jar of the vendor and format, such as `io.confluent:kafka-avro-serializer`, and for Confluent the repository
-`https://packages.confluent.io/maven/`. A `confluent` or `apicurio` registry that requires a login is not supported yet.
+`https://packages.confluent.io/maven/`. To log in to a `confluent` or `apicurio` registry, set `schemaRegistryUsername`
+and `schemaRegistryPassword` (basic auth), or `schemaRegistryOauthTokenEndpoint`, `schemaRegistryOauthClientId`,
+`schemaRegistryOauthClientSecret` and, if needed, `schemaRegistryOauthScope` (OAuth2). `azure` and `aws-glue` log in with
+the credentials of the environment.
 
 [source,yaml,subs='+attributes,macros']
 ----
