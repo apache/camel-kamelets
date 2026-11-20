@@ -40,7 +40,7 @@ spec:
 
       Output: the body is JSON text, as bytes. The `Content-Type` header is set to `application/json`.
 
-      Good to know: a body that is already text becomes one JSON string, in quotes: `hello` becomes `"hello"`, and JSON text is quoted the same way. Do not use it on a body that is already JSON text.
+      Good to know: a body that is already JSON text is kept as it is, not quoted: text, bytes or a stream that start with `{` and end with `}`, or start with `[` and end with `]`, such as `{"id":1}`. It is not checked to be valid JSON. Any other text becomes one JSON string, in quotes: `hello` becomes `"hello"`, and the text `42` becomes `"42"`. Bytes or a stream that hold another JSON value, such as `42`, are kept as well; other bytes become one JSON string too.
     type: object
   dataTypes:
     out:

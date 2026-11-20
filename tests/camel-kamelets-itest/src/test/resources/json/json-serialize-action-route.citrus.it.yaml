@@ -47,3 +47,37 @@ actions:
           status: 200
           reasonPhrase: "OK"
           version: "HTTP/1.1"
+
+  # JSON text is kept as it is
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/json-text"
+          type: "plaintext"
+          body:
+            data: '{"id":1}'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # Other text becomes one JSON string, in quotes
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/text"
+          type: "plaintext"
+          body:
+            data: '"hello"'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
