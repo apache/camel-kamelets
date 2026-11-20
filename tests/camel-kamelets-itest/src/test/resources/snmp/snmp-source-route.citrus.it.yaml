@@ -58,7 +58,7 @@ actions:
             - name: "X-Body-Type"
               value: 'java.lang.String'
             - name: "X-Content-Type"
-              value: 'ct='
+              value: 'ct=text/plain'
           body:
             data: '<snmp><entry><oid>1.3.6.1.2.1.1.6.0</oid><value>Unknown (edit /etc/snmp/snmpd.conf)</value></entry><entry><oid>1.3.6.1.2.1.1.4.0</oid><value>Root &lt;root@localhost&gt; (configure /etc/snmp/snmp.local.conf)</value></entry></snmp>'
   - http:
