@@ -15,16 +15,17 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
+# insert, save and update the document "order-1" with the Kamelet, one after the other, and send what each
+# leaves on the message to the HTTP server of the test
 - route:
     from:
       uri: "timer:tick"
       parameters:
-        period: "10000"
         repeatCount: 1
       steps:
+      # insert: a new document, as JSON text
       - setBody:
-          constant: '{"name": "mongo-test", "value": "hello-mongodb"}'
-      - log: "${body}"
+          constant: '{"_id":"order-1","item":"book","qty":2}'
       - to:
           uri: "kamelet:mongodb-sink"
           parameters:
@@ -34,3 +35,80 @@
             ssl: "{{mongodb.ssl}}"
             sslValidationEnabled: "{{mongodb.sslValidationEnabled}}"
             createCollection: true
+      - setHeader:
+          name: X-Body-Type
+          simple: "${body.getClass().getName()}"
+      - setHeader:
+          name: X-Content-Type
+          simple: "ct=${header.Content-Type}"
+      # the HTTP component does not send the headers that start with Camel
+      - setHeader:
+          name: X-Oid
+          simple: "${header.CamelMongoOid}"
+      - to:
+          uri: "kamelet:json-serialize-action"
+      - to:
+          uri: "{{http.sink.url}}/insert"
+
+      # save: replaces the whole document that has the same _id
+      # start without the headers of the previous step and its HTTP answer
+      - removeHeaders:
+          pattern: "*"
+      - setBody:
+          constant: '{"_id":"order-1","item":"book","qty":5}'
+      - to:
+          uri: "kamelet:mongodb-sink"
+          parameters:
+            hosts: "{{mongodb.hosts}}"
+            collection: "{{mongodb.collection}}"
+            database: "{{mongodb.database}}"
+            ssl: "{{mongodb.ssl}}"
+            sslValidationEnabled: "{{mongodb.sslValidationEnabled}}"
+            createCollection: true
+            operation: save
+      - setHeader:
+          name: X-Body-Type
+          simple: "${body.getClass().getName()}"
+      - setHeader:
+          name: X-Content-Type
+          simple: "ct=${header.Content-Type}"
+      - setHeader:
+          name: X-Oid
+          simple: "${header.CamelMongoOid}"
+      - setBody:
+          constant: 'saved'
+      - to:
+          uri: "{{http.sink.url}}/save"
+
+      # update: the filter and the changes, as a JSON array
+      # start without the headers of the previous step and its HTTP answer
+      - removeHeaders:
+          pattern: "*"
+      - setBody:
+          constant: '[{"_id":"order-1"},{"$set":{"status":"shipped"}}]'
+      - to:
+          uri: "kamelet:mongodb-sink"
+          parameters:
+            hosts: "{{mongodb.hosts}}"
+            collection: "{{mongodb.collection}}"
+            database: "{{mongodb.database}}"
+            ssl: "{{mongodb.ssl}}"
+            sslValidationEnabled: "{{mongodb.sslValidationEnabled}}"
+            createCollection: true
+            operation: update
+      - setHeader:
+          name: X-Body-Type
+          simple: "${body.getClass().getName()}"
+      - setHeader:
+          name: X-Content-Type
+          simple: "ct=${header.Content-Type}"
+      - setHeader:
+          name: X-Matched
+          simple: "${header.CamelMongoDbRecordsMatched}"
+      - setHeader:
+          name: X-Affected
+          simple: "${header.CamelMongoDbRecordsAffected}"
+      - setBody:
+          constant: 'updated'
+      - to:
+          uri: "{{http.sink.url}}/update"

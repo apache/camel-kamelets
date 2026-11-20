@@ -31,6 +31,12 @@ metadata:
 spec:
   dataTypes:
     out:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The payload of the message, as bytes."
+          mediaType: application/octet-stream
       headers:
         topic_name:
           title: "Topic Name"
@@ -62,7 +68,7 @@ spec:
 
       Use it to process events or data that other applications publish to Pulsar. Several copies can share the work with a `SHARED` or `KEY_SHARED` subscription.
 
-      Output: the body is the payload, as bytes. The headers give the topic (`topic_name`), the key (`key`), the Pulsar properties as a Map (`properties`), the `message_id`, the `publish_time` and the `producer_name`.
+      Output: the body is the payload, as bytes, and the `Content-Type` header is `application/octet-stream`. The other headers give the topic (`topic_name`), the key (`key`), the Pulsar properties as a Map (`properties`), the `message_id`, the `publish_time` and the `producer_name`.
 
       Good to know: the subscription (`subscriptionName`, `subs` by default) remembers what was read, so messages sent while the source is stopped are read when it starts again. A new subscription starts at the newest message, unless `subscriptionInitialPosition` is `EARLIEST`. A message whose processing fails is delivered again after one minute, again and again, unless `maxRedeliverCount` is set with a `SHARED` or `KEY_SHARED` subscription. A message whose processing takes longer than `ackTimeoutMillis` (10 seconds when not set) is delivered again, and so processed twice. It connects with no TLS and no login, unless `serviceUrl` starts with `pulsar+ssl://` and `authenticationClass` is set. Over TLS, the certificate of Pulsar must be signed by an authority that the Java trust store of the integration trusts, or by one in the PEM file of `tlsTrustCertsFilePath`, such as a private one, and it must be issued for the host name in `serviceUrl`.
     required:

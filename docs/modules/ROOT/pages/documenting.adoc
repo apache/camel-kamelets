@@ -187,10 +187,10 @@ The description tells a person what goes in and what comes out. `spec.dataTypes`
 === Headers
 
 A Kamelet declares the headers it reads under `in` and the headers it sets under `out`, each with a `title`, a
-`description` and a `type`. A Kamelet that transforms nothing declares the `headers` block alone, without `types` and
-without `default`: it changes nothing at runtime, and the catalog API (`getKameletSupportedHeaders`) answers with it
-instead of with the headers of the Camel component. See the xref:development.adoc[Kamelets Developer Guide], section
-_Declaring headers without a transformation_.
+`description` and a `type`. A `headers` block alone, without `types` and without `default`, changes nothing at
+runtime, and the catalog API (`getKameletSupportedHeaders`) answers with it instead of with the headers of the Camel
+component. See the xref:development.adoc[Kamelets Developer Guide], section _Declaring headers without a
+transformation_. A Kamelet that leaves the body as it is also declares the <<documenting-unchanged,`application-x-unchanged` data type>>.
 
 [source,yaml]
 ----
@@ -216,6 +216,38 @@ WARNING: A `default` data type is not only documentation. Camel makes it the `in
 Kamelet route and runs its transformer on every message. For example, `log-sink` with an `in` default of
 `application-octet-stream` turns a `String` body into a `byte[]` and adds a `Content-Type` header. Adding a `default`
 to an existing Kamelet therefore changes what it does: test it, and add a note to the upgrade guide.
+
+[[documenting-unchanged]]
+A Kamelet that leaves the body as it is, or does not read it, such as a filter, an action that only sets headers, or
+`log-sink`, declares the data type `application-x-unchanged` as its `default`: `in` and `out` for an action, `in` for a
+sink. Its transformer leaves the body, its type and the headers as they are, and sets no `Content-Type`, so the YAML
+validator knows that the body after the Kamelet is the body before it. Keep the `headers` next to it:
+
+[source,yaml]
+----
+  dataTypes:
+    in:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "Any body. It is not read."
+    out:
+      default: unchanged
+      headers:
+        CamelKafkaKey:
+          title: Kafka Key
+          description: The value of the header named by `headerName`.
+          type: string
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The body as it came in, of the same type."
+----
+
+It has no media type. Camel still records it as the data type of the message, so the data type an earlier Kamelet set,
+such as `application-json`, is forgotten: a Kamelet after it with an `in` default runs its transformer again instead
+of skipping it.
 
 A data type in `types` without a `default` is not run. `camel_catalog_kamelet_doc` still shows it with its body, but
 the YAML validator does not follow it. Which of the two the catalog should use to describe the body of all its

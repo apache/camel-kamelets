@@ -116,6 +116,11 @@ spec:
     in:
       mediaType: application/json
   dataTypes:
+    # No 'default:' here on purpose. A default input type of json would run on
+    # every message and turn a Map or a MongoDB Document body into JSON first:
+    # an ObjectId would be stored as an object of its time and a date as text,
+    # a silent change of the stored data. It would give the body type validator
+    # nothing either, as only a binary input type does. See #3117.
     out:
       headers:
         CamelMongoOid:

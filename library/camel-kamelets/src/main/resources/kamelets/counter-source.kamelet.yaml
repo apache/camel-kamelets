@@ -37,7 +37,7 @@ spec:
 
       Use it to try out a sink or an action with messages that are each different and easy to follow, or to make ordered test data. For the same fixed message every time use `timer-source`, and for a calendar schedule such as "every weekday at 9:00" use `cron-source`.
 
-      Output: the body is the number, as an Integer (a whole number, not text). The `Content-Type` header is `text/plain`.
+      Output: the body is the number, as text, such as `42`. The `Content-Type` header is `text/plain`.
 
       Good to know: it keeps sending until the integration is stopped, unless `numbers` is set. The count starts again from `start` when the integration restarts.
     type: object
@@ -61,11 +61,17 @@ spec:
         example: 10
   dataTypes:
     out:
+      default: text
       headers:
         Content-Type:
           title: Content Type
           description: "Always `text/plain`."
           type: string
+      types:
+        text:
+          format: "text-plain"
+          description: "The number, as text, such as `42`."
+          mediaType: text/plain
   dependencies:
     - "camel:timer"
     - "camel:kamelet"

@@ -35,3 +35,5 @@
             accessKey: "{{aws.ddb.accessKey}}"
             secretKey: "{{aws.ddb.secretKey}}"
             region: "{{aws.ddb.region}}"
+      # What the Kamelet leaves on the message
+      - log: "Kamelet result: X-Body-Type=${body.getClass().getName()}, X-Content-Type=ct=${header.Content-Type};"

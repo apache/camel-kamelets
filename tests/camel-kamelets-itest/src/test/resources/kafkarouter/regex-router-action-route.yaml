@@ -32,7 +32,19 @@
           parameters:
             regex: "(.*)"
             replacement: "prefix-$1"
+      # What the Kamelet leaves on the message
+      - setHeader:
+          name: X-Body-Type
+          simple: "${body.getClass().getName()}"
+      - setHeader:
+          name: X-Content-Type
+          simple: "ct=${header.Content-Type}"
+      - setHeader:
+          name: X-Override-Topic
+          simple: "${header.CamelKafkaOverrideTopic}"
       - to:
           uri: "kamelet:log-sink"
           parameters:
             showHeaders: true
+      - to:
+          uri: "{{http.sink.url}}/result"

@@ -34,6 +34,13 @@
             uri: "kamelet:drop-header-action"
             parameters:
               name: 'X-DROP'
+        # What the Kamelet leaves on the message
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
         - setHeader:
             name: X-Remaining
             simple: "x-drop=${header.x-drop} x-keep=${header.x-keep}"

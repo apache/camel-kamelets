@@ -36,10 +36,27 @@ actions:
             file: "mongo/mongodb-source-route.yaml"
             systemProperties:
               file: "mongo/application.properties"
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${mongo.server.port}"
 
-  # Verify MongoDB source picked up the document
-  - camel:
-      cli:
-        verify:
-          integration: "mongodb-source-route"
-          logMessage: "hello-from-mongo"
+  # The document comes out of the Kamelet as JSON text in bytes; its ObjectId _id is an object of its time
+  - http:
+      server: "mongoServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: '[B'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+          body:
+            data: '{"_id":"@ignore@","name":"source-test","value":"hello-from-mongo"}'
+  - http:
+      server: "mongoServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

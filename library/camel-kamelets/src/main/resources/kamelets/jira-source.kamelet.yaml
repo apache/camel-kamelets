@@ -36,7 +36,7 @@ spec:
 
       Use it to react when a ticket is opened, for example to tell a team chat about a new bug or to copy new issues into another tracker. To log in with OAuth 1.0a instead of a password or a token, use `jira-oauth-source`.
 
-      Output: the body is the issue as JSON text (a stream), with fields such as `key`, `summary`, `description`, `status`, `issueType`, `project`, `reporter`, `assignee` and `priority`.
+      Output: the body is the issue as JSON text in bytes, with fields such as `key`, `summary`, `description`, `status`, `issueType`, `project`, `reporter`, `assignee` and `priority`. The `Content-Type` header is `application/json`.
 
       Good to know: only the issues created after the Kamelet starts are sent; the issues that already exist are not, and neither are changes to an issue. It checks every 6 seconds. `jql` must be set, or the Kamelet does not start. Log in either with `username` and `password`, or with `personal-token`.
 
@@ -79,6 +79,14 @@ spec:
   types:
     out:
       mediaType: application/json
+  dataTypes:
+    out:
+      default: json
+      types:
+        json:
+          format: "application-json"
+          description: "The issue, as JSON text in bytes."
+          mediaType: application/json
   dependencies:
   - "camel:jackson3"
   - "camel:jira"

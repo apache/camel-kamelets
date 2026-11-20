@@ -38,3 +38,5 @@
             eventSource: "{{aws.eventbridge.eventSource}}"
             eventSourcePrefix: "{{aws.eventbridge.eventSourcePrefix}}"
             detailType: "{{aws.eventbridge.detailType}}"
+      # What the Kamelet leaves on the message
+      - log: "Kamelet result: X-Body-Type=${body.getClass().getName()}, X-Content-Type=ct=${header.Content-Type};"

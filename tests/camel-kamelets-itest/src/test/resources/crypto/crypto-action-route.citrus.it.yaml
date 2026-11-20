@@ -52,6 +52,11 @@ actions:
       receiveRequest:
         POST:
           path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: 'org.apache.camel.converter.stream.InputStreamCache'
+            - name: "X-Content-Type"
+              value: 'ct=application/octet-stream'
           body:
             data: |
               ${plaintext}

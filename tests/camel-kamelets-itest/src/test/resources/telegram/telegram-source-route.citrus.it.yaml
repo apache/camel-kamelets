@@ -54,7 +54,7 @@ actions:
           body:
             data: '{"ok":true,"result":[{"update_id":100,"message":{"message_id":7,"from":{"id":4711,"is_bot":false,"first_name":"Ada","username":"ada"},"chat":{"id":4711,"first_name":"Ada","type":"private"},"date":1763550000,"text":"Hello bot"}}]}'
 
-  # the message as JSON text, as the Telegram component reads it (with all its fields, also the empty ones),
+  # the message as JSON text in bytes, as the Telegram component reads it (with all its fields, also the empty ones),
   # with the chat in the headers
   - http:
       server: "servicesServer"
@@ -63,7 +63,7 @@ actions:
           path: "/result"
           headers:
             - name: "X-Body-Type"
-              value: 'org.apache.camel.converter.stream.InputStreamCache'
+              value: '[B'
             - name: "X-Content-Type"
               value: 'ct=application/json'
             - name: "chat-id"

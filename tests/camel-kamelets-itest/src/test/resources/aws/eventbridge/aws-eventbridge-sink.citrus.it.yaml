@@ -87,3 +87,9 @@ actions:
           integration: "aws-sqs-event-listener-route"
           logMessage: |
             "detail":{"message":"Hello AWS EventBridge!"}
+  # What the Kamelet leaves on the message
+  - camel:
+      cli:
+        verify:
+          integration: "aws-eventbridge-sink-route"
+          logMessage: "Kamelet result: X-Body-Type=software.amazon.awssdk.services.eventbridge.model.PutEventsResponse, X-Content-Type=ct=application/json;"

@@ -52,11 +52,22 @@ spec:
     type: object
   dataTypes:
     in:
+      default: unchanged
       headers:
         CamelKafkaTopic:
           title: Kafka Topic
           description: "The topic the record was read from, as `kafka-source` sets it."
           type: string
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "Any body. It is not read."
+    out:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The body as it came in, of the same type."
   dependencies:
   - "camel:kamelet"
   template:

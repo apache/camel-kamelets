@@ -38,7 +38,7 @@ spec:
 
       Input: the body is the text of the comment, as text. The `ce-issueKey` header, the key of the issue such as `SHOP-42`, is required. Set it before this sink, for example with `insert-header-action`.
 
-      Output: the message is unchanged.
+      Output: the body afterwards is the text of the comment, as text, and the `Content-Type` header is `text/plain`.
 
       Good to know: a message without `ce-issueKey`, or for an issue that does not exist or that the user cannot see, fails. The comment is written in the name of the account the Kamelet logs in with. Log in either with `username` and `password`, or with `personal-token`. Headers that start with `CamelJira` are removed from the message first, so they cannot change what the Kamelet does.
 
@@ -76,11 +76,17 @@ spec:
       mediaType: application/json
   dataTypes:
     in:
+      default: text
       headers:
         ce-issueKey:
           title: Issue Key
           description: The key of the issue to comment on, such as `SHOP-42`. Required.
           type: string
+      types:
+        text:
+          format: "text-plain"
+          description: "The text of the comment."
+          mediaType: text/plain
   dependencies:
   - "camel:jackson3"
   - "camel:jira"

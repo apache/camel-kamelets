@@ -1,0 +1,170 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+
+name: aws-cloudwatch-sink-body-route-test
+# A MetricDatum body, or a List of them, is sent as it is; a List of anything else fails the message
+variables:
+  - name: "cw.start"
+    value: 'citrus:currentDate(''yyyy-MM-dd'', ''-1d'')'
+  - name: "cw.end"
+    value: 'citrus:currentDate(''yyyy-MM-dd'', ''+2d'')'
+actions:
+  # Create AWS infrastructure (Floci container)
+  - testcontainers:
+      start:
+        localstack:
+          services:
+            - "CLOUD_WATCH"
+  - waitFor:
+      http:
+        url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "aws/cloudwatch/aws-cloudwatch-sink-body-route.yaml"
+            systemProperties:
+              properties:
+                - name: "cw.endpoint"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+                - name: "cw.accessKey"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
+                - name: "cw.secretKey"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
+                - name: "cw.awsRegion"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${aws.sink.server.port}"
+
+  # The MetricDatum body was sent, and the message is unchanged
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/datum"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'software.amazon.awssdk.services.cloudwatch.model.MetricDatum'
+          body:
+            data: 'one'
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          body:
+            data: "OK"
+
+  # The List of MetricDatum was sent
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/datums"
+          type: "plaintext"
+          body:
+            data: 'list'
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          body:
+            data: "OK"
+
+  # The List of text failed the message
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/error"
+          type: "plaintext"
+          headers:
+            - name: "X-Error"
+              value: 'java.lang.IllegalArgumentException'
+          body:
+            data: 'failed'
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          body:
+            data: "OK"
+
+  # The data point of the MetricDatum is in CloudWatch, with its value and unit
+  - http:
+      client: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+      sendRequest:
+        POST:
+          path: "/"
+          contentType: "application/x-www-form-urlencoded"
+          body:
+            data: 'Action=GetMetricStatistics&Version=2010-08-01&Namespace=ShopBody&MetricName=FromBody&StartTime=${cw.start}&EndTime=${cw.end}&Period=259200&Statistics.member.1=Sum'
+  - http:
+      client: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+      receiveResponse:
+        response:
+          status: 200
+          type: "plaintext"
+          body:
+            data: '@matches(''(?s).*<Label>FromBody</Label>.*<Sum>7.0</Sum><Unit>Seconds</Unit>.*'')@'
+
+  # The metric headers were not used
+  - http:
+      client: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+      sendRequest:
+        POST:
+          path: "/"
+          contentType: "application/x-www-form-urlencoded"
+          body:
+            data: 'Action=GetMetricStatistics&Version=2010-08-01&Namespace=ShopBody&MetricName=FromHeader&StartTime=${cw.start}&EndTime=${cw.end}&Period=259200&Statistics.member.1=Sum'
+  - http:
+      client: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+      receiveResponse:
+        response:
+          status: 200
+          type: "plaintext"
+          body:
+            data: '@matches(''(?s).*<Datapoints(/>|>\s*</Datapoints>).*'')@'
+
+  # The second MetricDatum of the List is in CloudWatch
+  - http:
+      client: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+      sendRequest:
+        POST:
+          path: "/"
+          contentType: "application/x-www-form-urlencoded"
+          body:
+            data: 'Action=GetMetricStatistics&Version=2010-08-01&Namespace=ShopBody&MetricName=ListB&StartTime=${cw.start}&EndTime=${cw.end}&Period=259200&Statistics.member.1=Sum'
+  - http:
+      client: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+      receiveResponse:
+        response:
+          status: 200
+          type: "plaintext"
+          body:
+            data: '@matches(''(?s).*<Label>ListB</Label>.*<Sum>2.0</Sum>.*'')@'

@@ -50,6 +50,19 @@ spec:
         description: "The condition, in the Camel Simple language, that makes a message be dropped. `$\\{body}` is the body and `${header.name}` the value of a header. For example, `${header.type} == 'test'` drops the messages whose `type` header is `test`, and `${header.amount} > 100` those whose `amount` header is more than 100."
         type: string
         example: "${header.type} == 'test'"
+  dataTypes:
+    in:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "Any body. It is not changed, even when the condition reads it."
+    out:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The body as it came in, of the same type."
   dependencies:
   - "camel:kamelet"
   template:

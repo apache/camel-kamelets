@@ -1,0 +1,96 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+
+- route:
+    from:
+      uri: "timer:tick"
+      parameters:
+        period: "1000"
+        repeatCount: 1
+      steps:
+        # The metric headers are set, but a MetricDatum body is sent instead of them
+        - setHeader:
+            name: metric-name
+            constant: 'FromHeader'
+        - setHeader:
+            name: metric-value
+            constant: '3'
+        - setBody:
+            groovy: 'software.amazon.awssdk.services.cloudwatch.model.MetricDatum.builder().metricName("FromBody").value(7d).unit("Seconds").build()'
+        - to:
+            uri: "kamelet:aws-cloudwatch-sink"
+            parameters:
+              cwNamespace: "ShopBody"
+              accessKey: "{{cw.accessKey}}"
+              secretKey: "{{cw.secretKey}}"
+              region: "{{cw.awsRegion}}"
+              overrideEndpoint: "true"
+              uriEndpointOverride: "{{cw.endpoint}}"
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setBody:
+            constant: 'one'
+        - to:
+            uri: "{{http.sink.url}}/datum"
+
+        # A List of MetricDatum: each one is a data point
+        - setBody:
+            groovy: '[software.amazon.awssdk.services.cloudwatch.model.MetricDatum.builder().metricName("ListA").value(1d).build(), software.amazon.awssdk.services.cloudwatch.model.MetricDatum.builder().metricName("ListB").value(2d).build()]'
+        - to:
+            uri: "kamelet:aws-cloudwatch-sink"
+            parameters:
+              cwNamespace: "ShopBody"
+              accessKey: "{{cw.accessKey}}"
+              secretKey: "{{cw.secretKey}}"
+              region: "{{cw.awsRegion}}"
+              overrideEndpoint: "true"
+              uriEndpointOverride: "{{cw.endpoint}}"
+        - setBody:
+            constant: 'list'
+        - to:
+            uri: "{{http.sink.url}}/datums"
+
+        # A List of anything else fails the message
+        - setBody:
+            groovy: '["order ORD-1", "order ORD-2"]'
+        - doTry:
+            steps:
+              - to:
+                  uri: "kamelet:aws-cloudwatch-sink"
+                  parameters:
+                    cwNamespace: "ShopBody"
+                    accessKey: "{{cw.accessKey}}"
+                    secretKey: "{{cw.secretKey}}"
+                    region: "{{cw.awsRegion}}"
+                    overrideEndpoint: "true"
+                    uriEndpointOverride: "{{cw.endpoint}}"
+              - setHeader:
+                  name: X-Error
+                  constant: 'none'
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - setHeader:
+                      name: X-Error
+                      simple: "${exception.class.name}"
+        - setBody:
+            constant: 'failed'
+        - to:
+            uri: "{{http.sink.url}}/error"
