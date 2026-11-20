@@ -1,0 +1,89 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: fhir-source-route-test
+variables:
+  - name: "fhir.family"
+    value: "citrus:randomString(10, UPPERCASE)"
+actions:
+  # HAPI FHIR server, R4, with its API under /fhir
+  - testcontainers:
+      start:
+        container:
+          name: "fhir"
+          image: "hapiproject/hapi:v8.12.0-2"
+          startUpTimeout: 300
+          exposedPorts:
+            - 8080
+          env:
+            - name: "hapi.fhir.fhir_version"
+              value: "R4"
+          waitFor:
+            url: "http://localhost:8080/fhir/metadata"
+
+  # one Patient that the search finds
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_FHIR_HOST}:${CITRUS_TESTCONTAINERS_FHIR_PORT}"
+      sendRequest:
+        POST:
+          path: "/fhir/Patient"
+          contentType: "application/fhir+json"
+          body:
+            data: '{"resourceType":"Patient","name":[{"family":"${fhir.family}","given":["Ada"]}],"gender":"female"}'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_FHIR_HOST}:${CITRUS_TESTCONTAINERS_FHIR_PORT}"
+      receiveResponse:
+        response:
+          status: 201
+          body:
+            data: '{"resourceType":"Patient","id":"@variable(fhir.id)@","meta":"@ignore@","name":"@ignore@","gender":"female"}'
+
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "fhir/fhir-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "fhir.url"
+                  value: "http://${CITRUS_TESTCONTAINERS_FHIR_HOST}:${CITRUS_TESTCONTAINERS_FHIR_PORT}/fhir"
+                - name: "fhir.family"
+                  value: "${fhir.family}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${services.server.port}"
+
+  # the search result: a Bundle of type searchset as JSON text (in a stream), with the Patient under entry
+  - http:
+      server: "servicesServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: 'org.apache.camel.converter.stream.InputStreamCache'
+            - name: "X-Content-Type"
+              value: 'ct=application/fhir+json'
+          body:
+            data: '{"resourceType":"Bundle","id":"@ignore@","meta":{"lastUpdated":"@ignore@"},"type":"searchset","total":1,"link":[{"relation":"self","url":"@endsWith(''/fhir/Patient?_format=json&family=${fhir.family}'')@"}],"entry":[{"fullUrl":"@endsWith(''/fhir/Patient/${fhir.id}'')@","resource":{"resourceType":"Patient","id":"${fhir.id}","meta":{"versionId":"1","lastUpdated":"@ignore@"},"name":[{"family":"${fhir.family}","given":["Ada"]}],"gender":"female"},"search":{"mode":"match"}}]}'
+  - http:
+      server: "servicesServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

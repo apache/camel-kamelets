@@ -1,0 +1,120 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: telegram-sink-route-test
+description: 'telegram-sink sends the body as a text message, or as a photo by its Content-Type, to the chat of the chat-id header or the chatId option'
+variables:
+  - name: "telegram.token"
+    value: "123456789:citrus:randomString(35)"
+actions:
+  # the Citrus HTTP server stands in for the Telegram Bot API, through the baseUri option of the component
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "telegram/telegram-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "telegram.token"
+                  value: "${telegram.token}"
+                - name: "camel.component.telegram.baseUri"
+                  value: "http://localhost:${services.server.port}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${services.server.port}"
+
+  # the text message goes to the chat of the chatId option, not of the CamelTelegramChatId header
+  - http:
+      server: "servicesServer"
+      receiveRequest:
+        POST:
+          path: "/bot${telegram.token}/sendMessage"
+          body:
+            data: '{"chat_id":"-100123","text":"Order ORD-1 has shipped"}'
+  - http:
+      server: "servicesServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: '{"ok":true,"result":{"message_id":8,"from":{"id":333,"is_bot":true,"first_name":"Kamelets","username":"kamelets_bot"},"chat":{"id":-100123,"title":"Orders","type":"group"},"date":1763550000,"text":"Order ORD-1 has shipped"}}'
+
+  # the body afterwards is the answer of Telegram as JSON text, as the Telegram component reads it: the message
+  # sent, under message
+  - http:
+      server: "servicesServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: 'org.apache.camel.converter.stream.InputStreamCache'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+          body:
+            data: '{"description":null,"error_code":null,"message":{"audio":null,"caption":null,"caption_entities":null,"chat":{"all_members_are_administrators":false,"id":"-100123","title":"Orders","type":"group"},"date":1763550000,"document":null,"entities":null,"from":{"added_to_attachment_menu":null,"bot":true,"can_connect_to_business":null,"can_join_groups":null,"can_read_all_group_messages":null,"first_name":"Kamelets","has_main_web_app":null,"has_topics_enabled":null,"id":333,"is_bot":true,"is_premium":null,"language_code":null,"last_name":null,"supports_inline_queries":null,"username":"kamelets_bot"},"game":null,"location":null,"message_id":8,"photo":null,"refunded_payment":null,"reply_markup":null,"sticker":null,"successful_payment":null,"text":"Order ORD-1 has shipped","video":null,"voice":null},"ok":true,"result":false}'
+  - http:
+      server: "servicesServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # the photo goes to the chat of the chat-id header, as a multipart form with the caption
+  - http:
+      server: "servicesServer"
+      receiveRequest:
+        POST:
+          path: "/bot${telegram.token}/sendPhoto"
+          type: "plaintext"
+          body:
+            data: "@contains('PNG image bytes')@"
+  - http:
+      server: "servicesServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: '{"ok":true,"result":{"message_id":9,"from":{"id":333,"is_bot":true,"first_name":"Kamelets","username":"kamelets_bot"},"chat":{"id":4711,"first_name":"Ada","type":"private"},"date":1763550001,"photo":[{"file_id":"AgAD","file_unique_id":"AQAD","file_size":15,"width":1,"height":1}],"caption":"The parcel"}}'
+
+  # the answer of Telegram as JSON text; the Content-Type is now application/json, no longer image/png
+  - http:
+      server: "servicesServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: 'org.apache.camel.converter.stream.InputStreamCache'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+          body:
+            data: '{"description":null,"error_code":null,"message":{"audio":null,"caption":"The parcel","caption_entities":null,"chat":{"all_members_are_administrators":false,"id":"4711","title":null,"type":"private"},"date":1763550001,"document":null,"entities":null,"from":{"added_to_attachment_menu":null,"bot":true,"can_connect_to_business":null,"can_join_groups":null,"can_read_all_group_messages":null,"first_name":"Kamelets","has_main_web_app":null,"has_topics_enabled":null,"id":333,"is_bot":true,"is_premium":null,"language_code":null,"last_name":null,"supports_inline_queries":null,"username":"kamelets_bot"},"game":null,"location":null,"message_id":9,"photo":[{"file_id":"AgAD","file_size":15,"file_unique_id":"AQAD","height":1,"width":1}],"refunded_payment":null,"reply_markup":null,"sticker":null,"successful_payment":null,"text":null,"video":null,"voice":null},"ok":true,"result":false}'
+  - http:
+      server: "servicesServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

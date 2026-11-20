@@ -35,7 +35,7 @@ spec:
 
       Use it to pick up the rows that another application adds to a table, such as new orders or events, and pass them on to another system. To write rows, use `oracle-database-sink`.
 
-      Output: the body is one row as JSON text, an object with the column names as keys, such as `{"ID":1,"USERNAME":"oscerd","CITY":"Rome"}` (Oracle gives the names in upper case). When `useIterator` is false, the body is instead one JSON array with all the rows of a poll. The `Content-Type` header is `application/json`.
+      Output: the body is one row as JSON text (a stream), an object with the column names as keys, such as `{"ID":1,"USERNAME":"oscerd","CITY":"Rome"}` (Oracle gives the names in upper case). When `useIterator` is false, the body is instead one JSON array with all the rows of a poll. The `Content-Type` header is `application/json`.
 
       Good to know: the query runs again `delay` milliseconds after the previous run, so the same rows are sent again and again, unless `consumedQuery` marks or deletes each row once it is sent and `query` leaves such rows out: for example `SELECT * FROM accounts WHERE processed = false` with `UPDATE accounts SET processed = true WHERE id = :#id`. When the next step fails for a row, `consumedQuery` is not run for it, and the row is read again, unless `onConsumeFailed` marks it. A query that finds no rows sends nothing. `maxMessagesPerPoll` limits how many rows one poll sends. `query` cannot contain `?`. The format of date and time columns in the JSON depends on the Camel version. The JDBC driver of Oracle Database is not included: add `mvn:com.oracle.database.jdbc:ojdbc17` to the dependencies of the integration. Camel JBang (`camel run`) adds it by itself.
     required:

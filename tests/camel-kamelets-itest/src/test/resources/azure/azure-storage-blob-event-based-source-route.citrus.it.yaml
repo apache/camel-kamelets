@@ -112,6 +112,8 @@ actions:
               value: 'ct='
             - name: "X-Blob-Content-Type"
               value: 'text/plain'
+            - name: "X-Blob-Name"
+              value: 'name='
           body:
             data: 'Hello Azure Blob Event'
   - http:
