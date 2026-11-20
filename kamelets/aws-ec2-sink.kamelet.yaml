@@ -127,6 +127,7 @@ spec:
         enum: ["describeInstancesStatus", "describeInstances", "startInstances", "stopInstances", "rebootInstances"]
   dataTypes:
     in:
+      default: unchanged
       headers:
         instanceIds:
           title: Instance IDs
@@ -136,6 +137,10 @@ spec:
           title: Instance IDs (CloudEvents)
           description: The IDs of the instances, when the message is a CloudEvent. Used only when `instanceIds` is not set.
           type: string
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "Any body. It is not used."
     out:
       headers:
         CamelAwsEC2NextToken:

@@ -43,11 +43,22 @@ spec:
     type: object
   dataTypes:
     in:
+      default: unchanged
       headers:
         CamelKafkaManualCommit:
           title: Kafka Manual Commit
           description: "Set by the batch source when `allowManualCommit` is true. Without it, nothing is saved."
           type: object
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The batch, a List. When the message has no commit header, that of the last entry is used; the batch is not changed."
+    out:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The body as it came in, of the same type."
   dependencies:
   - "camel:kamelet"
   template:

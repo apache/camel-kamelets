@@ -54,6 +54,19 @@ spec:
         description: "The headers to keep even when they match `pattern`, written in the same way. When it is not set, every header that matches `pattern` is removed."
         type: string
         example: "CamelKafkaKey"
+  dataTypes:
+    in:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "Any body. It is not read."
+    out:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The body as it came in, of the same type."
   dependencies:
     - "camel:kamelet"
   template:

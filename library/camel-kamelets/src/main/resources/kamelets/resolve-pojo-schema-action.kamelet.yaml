@@ -64,6 +64,19 @@ spec:
         description: The kind of schema to find, as in `mimeType`, such as `avro/binary`. Only used when `mimeType` is `application/x-java-object`.
         type: string
         example: "avro/binary"
+  dataTypes:
+    in:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "Any body. It is not changed."
+    out:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The body as it came in, of the same type."
   dependencies:
     - "camel:kamelet"
     - "camel:jackson3-avro"

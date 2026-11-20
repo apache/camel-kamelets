@@ -55,12 +55,23 @@ spec:
         default: false
     type: object
   dataTypes:
+    in:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "Any body. It is not read."
     out:
+      default: unchanged
       headers:
         CamelKafkaKey:
           title: Kafka Key
           description: The value of the header named by `headerName`, which `kafka-sink` uses as the key of the record.
           type: string
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The body as it came in, of the same type."
   dependencies:
   - "camel:kamelet"
   template:

@@ -55,6 +55,19 @@ spec:
         description: "The value of the header: plain text, such as `orders-app`, or a Simple expression whose `${...}` parts are filled in from the message, such as `$\\{body}` or `${header.customerId}`."
         type: string
         example: "${header.customerId}"
+  dataTypes:
+    in:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "Any body. It is not read, unless `value` reads it."
+    out:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The body as it came in, of the same type."
   dependencies:
     - "camel:kamelet"
   template:

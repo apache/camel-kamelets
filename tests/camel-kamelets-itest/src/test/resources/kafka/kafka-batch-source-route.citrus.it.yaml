@@ -83,6 +83,10 @@ actions:
               value: "@startsWith('java.util.ImmutableCollections$List')@"
             - name: "X-Content-Type"
               value: "ct="
+            - name: "X-Commit-Body-Type"
+              value: "@startsWith('java.util.ImmutableCollections$List')@"
+            - name: "X-Commit-Content-Type"
+              value: "ct="
           body:
             data: "record-1|record-2|record-3"
   - http:

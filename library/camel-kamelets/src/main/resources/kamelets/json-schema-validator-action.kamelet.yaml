@@ -50,6 +50,19 @@ spec:
         type: string
         example: "file:///etc/camel/order-schema.json"
         pattern: "^(http|https|file|classpath|ref|bean)://.*"
+  dataTypes:
+    in:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "JSON text, as text, bytes or a stream, or parsed JSON. It is read, not changed. A Map fails."
+    out:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The body as it came in, of the same type."
   dependencies:
   - "camel:json-validator"
   - "camel:kamelet"

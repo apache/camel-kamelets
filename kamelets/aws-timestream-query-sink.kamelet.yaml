@@ -120,6 +120,7 @@ spec:
         example: HTTP
   dataTypes:
     in:
+      default: unchanged
       headers:
         query:
           title: Query
@@ -129,6 +130,10 @@ spec:
           title: Query (CloudEvents)
           description: The SQL query to run, when the message is a CloudEvent. Used only when `query` is not set.
           type: string
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "Any body. It is not used."
   dependencies:
     - "camel:aws2-timestream"
     - "camel:kamelet"

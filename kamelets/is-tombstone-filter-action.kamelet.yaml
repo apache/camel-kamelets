@@ -39,6 +39,19 @@ spec:
 
       Output: the same message, unchanged, when it has a body. A message with no body, or with empty text as its body, is dropped and nothing is sent on.
     type: object
+  dataTypes:
+    in:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "Any body. Only whether it is empty is checked."
+    out:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The body as it came in, of the same type."
   dependencies:
   - "camel:kamelet"
   template:

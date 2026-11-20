@@ -69,6 +69,8 @@ actions:
               value: "@startsWith('KafkaManualCommit[topic=commit-topic')@"
             - name: "X-Body-Type"
               value: "java.lang.String"
+            - name: "X-Content-Type"
+              value: "ct="
           body:
             data: "record-1"
   - http:
