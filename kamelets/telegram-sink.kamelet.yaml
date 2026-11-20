@@ -38,7 +38,7 @@ spec:
 
       Input: the body is the text of the message, as text; another kind of body is turned into text first, and the text is sent as it is, without Markdown or HTML formatting. When the `Content-Type` header is `image/png` or `image/jpeg`, the body is sent as a photo instead, as bytes, and the `text` or `ce-text` header is its caption. The `chat-id` or `ce-chatid` header chooses the chat, instead of the `chatId` option; `telegram-source` sets both, so a reply goes back to the chat a message came from.
 
-      Output: when it is used inside a route, the body afterwards is the answer of Telegram as JSON text, with the message that was sent.
+      Output: when it is used inside a route, the body afterwards is the result as JSON text (a stream), and the `Content-Type` header is `application/json`: `ok` is true, and `message` is the message that was sent, with its `message_id`. Its `result` field is false even when the message was sent.
 
       Good to know: a message fails when no chat is given, neither in a header nor in `chatId`, and when Telegram refuses it, for example because the bot is not a member of the group or the person never started a chat with the bot. Headers that start with `CamelTelegram` are removed from the message first, so they cannot change what the Kamelet does.
     required:

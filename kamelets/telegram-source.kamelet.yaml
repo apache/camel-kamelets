@@ -36,7 +36,7 @@ spec:
 
       Use it to build a chat bot, for example to answer questions, take orders or run commands sent on Telegram; send the answers with `telegram-sink`.
 
-      Output: the body is the Telegram message as JSON text, with fields such as `text` (what was written), `chat` (with the `id` of the chat), `from` (the sender) and `message_id`. A photo or a document comes without `text`. The `chat-id` and `ce-chatid` headers hold the ID of the chat, so that `telegram-sink` can answer in the same chat.
+      Output: the body is the Telegram message as JSON text (a stream), with fields such as `text` (what was written), `chat` (with the `id` of the chat), `from` (the sender) and `message_id`. A photo or a document comes without `text`. The `chat-id` and `ce-chatid` headers hold the ID of the chat, so that `telegram-sink` can answer in the same chat.
 
       Good to know: it asks Telegram for new messages all the time, and each message is received once. Telegram keeps the messages that arrive while the Kamelet is stopped for up to 24 hours. It does not work while a webhook is set for the bot, and only one application at a time can read the messages of a bot. In a group, Telegram gives a bot only the commands and the replies to the bot, unless its privacy mode is turned off with @BotFather.
     required:

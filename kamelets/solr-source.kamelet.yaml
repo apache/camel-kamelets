@@ -36,7 +36,7 @@ spec:
 
       Use it to watch a Solr collection on a schedule, for example to send the documents that match a query to another system. To add documents to Solr, use `solr-sink`.
 
-      Output: the body is JSON text, the answer of Solr: `responseHeader`, and under `response` the list of the documents found, each with its fields. The `Content-Type` header is `application/json`.
+      Output: the body is JSON text (a stream), the answer of Solr: `responseHeader`, and under `response` the list of the documents found, each with its fields. The `Content-Type` header is `application/json`, and the `CamelSolrOperation` (`SEARCH`), `CamelSolrQueryString` (the `query`) and `CamelSolrCollection` (the `collection`) headers are set.
 
       Good to know: every query returns all the matching documents again, not only the new ones; filter on a date in the query to get only new documents. Each query returns only the first documents found: as many as `size`, or 10 with the usual Solr settings when `size` is not set. It connects with plain HTTP by default; set `enableSSL` to true for a Solr that is reached with HTTPS, and give the certificate in `certificate` when Solr uses a self-signed certificate. The query runs on the `/select` handler of the collection, or on the one in `requestHandler`. When Solr does not answer, the query fails only after 10 minutes; set `requestTimeout` to fail sooner. A query that fails is logged, and the next one runs at the next period.
     required:

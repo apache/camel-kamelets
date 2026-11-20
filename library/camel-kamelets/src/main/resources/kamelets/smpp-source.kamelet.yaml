@@ -36,7 +36,7 @@ spec:
 
       Use it to process SMS replies from customers, such as a STOP or a YES, or to follow whether the SMS sent with `smpp-sink` reached the phone.
 
-      Output: the body is the text of the SMS. The `CamelSmppSourceAddr` header is the phone number of the sender, `CamelSmppDestAddr` the number it was sent to, and `CamelSmppMessageType` is `DeliverSm` for an SMS and `DeliveryReceipt` for a delivery receipt, whose body is the text of the receipt and whose fields are in other `CamelSmpp` headers.
+      Output: the body is the text of the SMS, or bytes when the SMS was sent as binary data (data coding 4, given in the `CamelSmppDataCoding` header). The `CamelSmppSourceAddr` header is the phone number of the sender, `CamelSmppDestAddr` the number it was sent to, and `CamelSmppMessageType` is `DeliverSm` for an SMS and `DeliveryReceipt` for a delivery receipt, whose body is the text of the receipt and whose fields are in other `CamelSmpp` headers. An alert notification of the SMSC, that a phone can be reached again, has no body and the `CamelSmppMessageType` `AlertNotification`.
 
       Good to know: it logs in to the SMSC as a receiver when the integration starts, and the integration fails to start when the SMSC cannot be reached. The SMSC sends a delivery receipt for each SMS that `smpp-sink` sent with `registeredDelivery` `1` (its default), or `2` when the SMS failed: the `CamelSmppId` header of the receipt is the ID that `smpp-sink` got for the SMS, and `CamelSmppStatus` its final state, such as `DELIVRD`. The SMSC decides which messages it gets, from `systemId` and `addressRange`. It connects with no TLS unless `usingSSL` is true.
     required:
@@ -106,7 +106,7 @@ spec:
           type: string
         CamelSmppMessageType:
           title: "Message Type"
-          description: "`DeliverSm` for an SMS, `DeliveryReceipt` for a delivery receipt."
+          description: "`DeliverSm` for an SMS, `DeliveryReceipt` for a delivery receipt, `AlertNotification` for an alert notification."
           type: string
   dependencies:
     - "camel:smpp"

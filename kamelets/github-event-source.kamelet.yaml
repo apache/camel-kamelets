@@ -36,7 +36,7 @@ spec:
 
       Use it to follow everything that happens in a repository in one flow, for example to log it or to count it. To receive only commits, pull requests, comments on pull requests or tags, use `github-commit-source`, `github-pullrequest-source`, `github-pullrequest-comment-source` or `github-tag-source`.
 
-      Output: the body is the type of the event as JSON text, that is a quoted JSON string such as `"PUSH"`, `"PULL_REQUEST"` or `"ISSUES"`. The details of the event are only in the `CamelGitHubEventPayload` header, as a Java object.
+      Output: the body is the type of the event as JSON text (a stream), that is a quoted JSON string such as `"PUSH"`, `"PULL_REQUEST"` or `"ISSUES"`. The details of the event are only in the `CamelGitHubEventPayload` header, as a Java object.
 
       Good to know: when it starts, it first sends the recent events that GitHub still lists for the repository, not only the new ones. It works with github.com, not with GitHub Enterprise Server. It asks GitHub for new events once a minute by default (`delay`), and every request counts against the API rate limit of the token.
     required:

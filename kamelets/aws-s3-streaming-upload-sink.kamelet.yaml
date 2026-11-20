@@ -39,7 +39,7 @@ spec:
 
       Input: the body is added to the end of the current file as it is, as text, bytes or a stream. Nothing is put between two messages: end each message with a line break if the file must have one record per line. The names of the files come from `keyName`, not from headers.
 
-      Output: the message is unchanged. The message that completes a file gets the `CamelAwsS3ETag` header of that file.
+      Output: the message is unchanged. The message that completes a file gets the `CamelAwsS3ETag` header of that file, and the `CamelHttpResponseCode` header with the HTTP status code of the upload, such as 200.
 
       Good to know: a file is uploaded when it has `batchMessageNumber` messages or `batchSize` bytes, or when `streamingUploadTimeout` has passed; until then it is not in the bucket. With the default `namingStrategy` of `progressive`, the first file is named `keyName`, such as `logs/app.log`, and the next ones `logs/app-1.log`, `logs/app-2.log` and so on. With `restartingPolicy` set to `override`, a new run starts again from `keyName` and replaces the files of the earlier run. To encrypt the files with a key of AWS KMS, as a bucket policy may require, set `useAwsKMS` and `awsKMSKeyId`; `storageClass` sets their storage class. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsS3`, except `CamelAwsS3StorageClass`, are removed from the message first, so they cannot change what the Kamelet does.
     required:

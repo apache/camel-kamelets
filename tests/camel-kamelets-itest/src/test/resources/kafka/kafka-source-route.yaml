@@ -22,6 +22,9 @@
         bootstrapServers: '{{kafka.bootstrapServers}}'
         topic: '{{kafka.topic}}'
         saslAuthType: 'NONE'
+        # the record is sent once the consumer has subscribed, which can be before the partition is
+        # assigned: read from the start, so the record is not skipped as with the default of latest
+        autoOffsetReset: 'earliest'
         deserializeHeaders: '{{kafka.deserializeHeaders}}'
       steps:
         - to:

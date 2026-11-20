@@ -19,7 +19,8 @@
 // has characters that have a meaning in an endpoint address, and whose home directory is a new temporary
 // directory (variable ftp.home). With the variable ftp.tls set to true, the server speaks FTPS (explicit
 // TLS, on the control and the data connections), with a certificate for localhost made for the test;
-// ftp.truststore is then a trust store with this certificate, for the integration.
+// ftp.truststore is then a trust store with this certificate and the certificates the JDK trusts, for the
+// integration.
 
 import java.nio.file.Files
 import java.security.KeyStore
@@ -51,11 +52,21 @@ if (context.getVariables().containsKey('ftp.tls') && Boolean.parseBoolean(contex
         throw new IllegalStateException('keytool failed with exit code ' + process.exitValue())
     }
 
-    // the trust store of the integration holds only the certificate of the server
+    // the trust store of the integration holds the certificate of the server AND the certificates the JDK trusts:
+    // javax.net.ssl.trustStore applies to the whole JVM of the integration, so camel run downloads its
+    // dependencies (such as a new camel-ftp SNAPSHOT from https://repository.apache.org) with it too, and a trust
+    // store with only the test certificate fails those downloads with "PKIX path building failed"
     def keys = KeyStore.getInstance('PKCS12')
     keyStore.toFile().withInputStream { keys.load(it, 'changeit'.toCharArray()) }
     def trusted = KeyStore.getInstance('PKCS12')
     trusted.load(null, null)
+    def jdkTrusted = KeyStore.getInstance(KeyStore.getDefaultType())
+    new File(System.getProperty('java.home'), 'lib/security/cacerts').withInputStream { jdkTrusted.load(it, null) }
+    for (alias in jdkTrusted.aliases().toList()) {
+        if (jdkTrusted.isCertificateEntry(alias)) {
+            trusted.setCertificateEntry(alias, jdkTrusted.getCertificate(alias))
+        }
+    }
     trusted.setCertificateEntry('ftps', keys.getCertificate('ftps'))
     trustStore.toFile().withOutputStream { trusted.store(it, 'changeit'.toCharArray()) }
     context.setVariable('ftp.truststore', trustStore.toString())

@@ -19,14 +19,18 @@
 // simulator (port 89 of the container) injects it, and SMPPSim delivers it to
 // the receivers logged in to it, such as the smpp-source Kamelet.
 //
+// The test variables smpp.text and smpp.dataCoding, when set, choose the text
+// and the data coding of the SMS.
+//
 // String concatenation rather than Groovy GStrings, because Citrus resolves
 // dollar-brace expressions in these scripts as its own test variables.
 
+def variable = { name, value -> context.getVariables().containsKey(name) ? context.getVariable(name) : value }
 def smppsim = context.getReferenceResolver().resolve('smppsim', org.testcontainers.containers.GenericContainer.class)
 def form = [
-    short_message: 'YES please', source_addr: '4511111111', destination_addr: '1616', submit: 'Submit Message',
+    short_message: variable('smpp.text', 'YES please'), source_addr: '4511111111', destination_addr: '1616', submit: 'Submit Message',
     service_type: '', source_addr_ton: '0', source_addr_npi: '0', dest_addr_ton: '0', dest_addr_npi: '0',
-    esm_class: '0', protocol_ID: '0', priority_flag: '0', registered_delivery_flag: '0', data_coding: '0'
+    esm_class: '0', protocol_ID: '0', priority_flag: '0', registered_delivery_flag: '0', data_coding: variable('smpp.dataCoding', '0')
 ]
 def query = form.collect { k, v -> k + '=' + URLEncoder.encode(v, 'UTF-8') }.join('&')
 def url = 'http://' + smppsim.getHost() + ':' + smppsim.getMappedPort(89) + '/inject_mo?' + query
