@@ -27,17 +27,18 @@ metadata:
     camel.apache.org/kamelet.namespace: "Kafka"
   labels:
     camel.apache.org/kamelet.type: "source"
+    camel.apache.org/kamelet.verified: "true"
 spec:
   definition:
     title: "Kafka Batch Source"
     description: |-
       Receives records from one or more topics in Apache Kafka in batches, as one message that holds a list of up to `batchSize` records.
 
-      Use it to handle many records at once, for example to write them to a database in one go, or to save the position in Kafka only once a whole batch was handled. To handle one record at a time use `kafka-source`.
+      Use it to handle many records at once, for example to write them to a database in one go, or to save the position in Kafka only once a whole batch was handled. To handle one record at a time use `kafka-source`. When the records are written with a schema kept in a schema registry, such as Confluent Schema Registry, Redpanda or Apicurio Registry, set `schemaRegistryVendor`.
 
-      Output: the body is a List with one entry per record, up to `batchSize`. Each entry is a Camel `Exchange` for one record, not a message: a step reads the value of the record, as text, with `getMessage().getBody()` on the entry, such as `${body[0].getMessage().getBody()}`. The message of the entry also has the key, offset and timestamp of the record in its `CamelKafkaKey`, `CamelKafkaOffset` and `CamelKafkaTimestamp` headers, and the record headers, as bytes. The message itself has the `CamelKafkaTopic` and `CamelKafkaPartition` headers. The `kafka-topic`, `kafka-key` and other headers of `kafka-source` are not set.
+      Output: the body is a List with one entry per record, up to `batchSize`. Each entry is a Camel `Exchange` for one record, not a message: a step reads the value of the record, as text, with `getMessage().getBody()` on the entry, such as `${body[0].getMessage().getBody()}`. With `schemaRegistryVendor`, each value is read with its schema from the registry and is JSON text, such as `{"id": 7, "item": "camel"}` for an Avro record; a record without a value (a tombstone) gives an entry with no body. The message of the entry also has the key, offset and timestamp of the record in its `CamelKafkaKey`, `CamelKafkaOffset` and `CamelKafkaTimestamp` headers, and the record headers, as bytes. The message itself has the `CamelKafkaTopic` and `CamelKafkaPartition` headers. The `kafka-topic`, `kafka-key` and other headers of `kafka-source` are not set.
 
-      Good to know: `saslAuthType` has no default and must be set; `NONE` connects with no login and no TLS. To save the position in Kafka only once a batch was handled, set `allowManualCommit` to true and `autoCommitEnable` to false, and end the flow with `kafka-batch-manual-commit-action`. A new consumer group starts at the newest records, unless `autoOffsetReset` is `earliest`. Without `consumerGroup`, every start uses a new group, so the records sent while the integration was stopped are skipped.
+      Good to know: `saslAuthType` has no default and must be set; `NONE` connects with no login and no TLS. To save the position in Kafka only once a batch was handled, set `allowManualCommit` to true and `autoCommitEnable` to false, and end the flow with `kafka-batch-manual-commit-action`. A new consumer group starts at the newest records, unless `autoOffsetReset` is `earliest`. Without `consumerGroup`, every start uses a new group, so the records sent while the integration was stopped are skipped. With `schemaRegistryVendor`, the integration needs the serde jars of the vendor, which Camel JBang downloads by itself; for `confluent` add the Confluent Maven repository, as in `camel run --repos=confluent`. With `aws-glue` and `azure`, the serde logs in with the credentials of the environment the integration runs in: the AWS default credentials chain, or the Azure `DefaultAzureCredential` (such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` variables). A `confluent` or `apicurio` registry that requires a login is not supported yet.
     required:
       - topic
       - bootstrapServers
@@ -181,6 +182,30 @@ spec:
         description: "If true, `topic` is a regular expression, such as `orders-.*`, and the Kamelet reads from every topic whose name matches it."
         type: boolean
         default: false
+      schemaRegistryVendor:
+        title: Schema Registry Vendor
+        description: "The schema registry that holds the schemas of the record values: `confluent`, also for registries with the Confluent API such as Redpanda and Karapace; `apicurio` (Apicurio Registry 3.x); `aws-glue` (AWS Glue Schema Registry); or `azure` (Azure Schema Registry of Event Hubs). It sets the value deserializer and the registry properties, and its jars must be added to the integration (see below). Leave it unset when the records do not use a schema registry."
+        type: string
+        enum: ["confluent", "apicurio", "aws-glue", "azure"]
+      schemaRegistryUrl:
+        title: Schema Registry URL
+        description: "The URL of the schema registry: for `confluent` such as `http://localhost:8081`; for `apicurio` the URL of the registry API, such as `http://localhost:8080/apis/registry/v3`; for `azure` the fully qualified name of the Event Hubs namespace, such as `my-namespace.servicebus.windows.net`. Required when `schemaRegistryVendor` is set, except for `aws-glue`, where it can override the endpoint of the Glue service."
+        type: string
+        pattern: "^(https?://)?[^\\s]+$"
+      schemaRegistryRegion:
+        title: Schema Registry Region
+        description: "The AWS region of the AWS Glue Schema Registry, such as `eu-west-1`. When not set, the region is taken from the environment, such as the `AWS_REGION` variable. Only used when `schemaRegistryVendor` is `aws-glue`."
+        type: string
+      schemaRegistryName:
+        title: Schema Registry Name
+        description: "The name of the registry in AWS Glue. When not set, it is `default-registry`. Only used when `schemaRegistryVendor` is `aws-glue`."
+        type: string
+      schemaFormat:
+        title: Schema Format
+        description: "The format of the record values in the schema registry: `avro` or `json` (JSON Schema). With `apicurio` and `azure`, use `avro`. Only used when `schemaRegistryVendor` is set."
+        type: string
+        enum: ["avro", "json"]
+        default: avro
   dataTypes:
     out:
       headers:
@@ -197,6 +222,7 @@ spec:
           description: "Set only when `allowManualCommit` is true: what `kafka-batch-manual-commit-action` uses to save the position reached."
           type: object
   dependencies:
+    - "camel:jackson3"
     - "camel:kafka"
     - "camel:kamelet"
   template:
@@ -211,6 +237,8 @@ spec:
       uri: kafka
       parameters:
         topic: "{{topic}}"
+        additionalProperties.region: "{{?schemaRegistryRegion}}"
+        additionalProperties.registry.name: "{{?schemaRegistryName}}"
         allowManualCommit: "{{allowManualCommit}}"
         autoCommitEnable: "{{autoCommitEnable}}"
         autoOffsetReset: "{{autoOffsetReset}}"
@@ -230,6 +258,9 @@ spec:
         saslAuthType: "{{saslAuthType}}"
         saslPassword: "RAW({{?saslPassword}})"
         saslUsername: "{{?saslUsername}}"
+        schemaFormat: "{{schemaFormat}}"
+        schemaRegistryURL: "{{?schemaRegistryUrl}}"
+        schemaRegistryVendor: "{{?schemaRegistryVendor}}"
         sslKeyPassword: "RAW({{?sslKeyPassword}})"
         sslKeystoreLocation: "{{?sslKeystoreLocation}}"
         sslKeystorePassword: "RAW({{?sslKeystorePassword}})"
@@ -239,5 +270,69 @@ spec:
       steps:
         - process:
             ref: "{{kafkaHeaderDeserializer}}"
+        # With a schema registry, the value of each record is read with its
+        # schema; turn it into JSON text in each entry of the batch, as
+        # kafka-source does for one record.
+        - choice:
+            precondition: true
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{?schemaRegistryVendor}}' != ''"
+                steps:
+                  - setProperty:
+                      name: kafkaBatch
+                      expression:
+                        simple:
+                          expression: "${body}"
+                  - loop:
+                      expression:
+                        simple:
+                          expression: "${exchangeProperty.kafkaBatch.size()}"
+                      steps:
+                        - setProperty:
+                            name: kafkaEntry
+                            expression:
+                              simple:
+                                expression: "${exchangeProperty.kafkaBatch[${exchangeProperty.CamelLoopIndex}]}"
+                        - setBody:
+                            expression:
+                              simple:
+                                expression: "${exchangeProperty.kafkaEntry.getMessage().getBody()}"
+                        - choice:
+                            when:
+                              - expression:
+                                  simple:
+                                    expression: "'{{schemaFormat}}' == 'json' && ${body} != null && ${body} !is 'java.lang.String'"
+                                steps:
+                                  - marshal:
+                                      json:
+                                        library: Jackson
+                                  - convertBodyTo:
+                                      type: java.lang.String
+                                  - script:
+                                      expression:
+                                        simple:
+                                          expression: "${exchangeProperty.kafkaEntry.getMessage().setBody(${body})}"
+                              - expression:
+                                  simple:
+                                    expression: "${body} != null && ${body} !is 'java.lang.String'"
+                                steps:
+                                  - setBody:
+                                      expression:
+                                        simple:
+                                          expression: "${body.toString()}"
+                                  - script:
+                                      expression:
+                                        simple:
+                                          expression: "${exchangeProperty.kafkaEntry.getMessage().setBody(${body})}"
+                  - setBody:
+                      expression:
+                        simple:
+                          expression: "${exchangeProperty.kafkaBatch}"
+                  - removeProperty:
+                      name: kafkaBatch
+                  - removeProperty:
+                      name: kafkaEntry
         - to:
             uri: kamelet:sink
