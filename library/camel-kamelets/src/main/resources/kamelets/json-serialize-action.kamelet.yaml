@@ -42,6 +42,8 @@ spec:
 
       Good to know: a body that is already JSON text is kept as it is, not quoted: text, bytes or a stream that start with `{` and end with `}`, or start with `[` and end with `]`, such as `{"id":1}`. It is not checked to be valid JSON. Any other text becomes one JSON string, in quotes: `hello` becomes `"hello"`, and the text `42` becomes `"42"`. Bytes or a stream that hold another JSON value, such as `42`, are kept as well; other bytes become one JSON string too.
     type: object
+  # No input default: application-x-java-object fails on text, bytes, a stream and a number,
+  # which json-serialize-action writes as JSON (#3117).
   dataTypes:
     out:
       default: json
