@@ -35,7 +35,7 @@ spec:
 
       Use it to react to what people write in a channel, for example to turn a message in `#support` into a ticket, to archive a channel, or to start a job when someone posts a command. To post to Slack instead, use `slack-sink`.
 
-      Output: the body is the Slack message as JSON text, with fields such as `text` (what was written), `user` (the ID of the author) and `ts` (the time stamp that identifies the message). The `Content-Type` header is `application/json`.
+      Output: the body is the Slack message as JSON text in bytes, with fields such as `text` (what was written), `user` (the ID of the author) and `ts` (the time stamp that identifies the message). The `Content-Type` header is `application/json`.
 
       Good to know: when it starts, it also sends the most recent message already in the channel, then only the messages posted after it. It does not remember where it stopped: after a restart it starts again from the most recent message. It reads public channels only, by their name, and needs a token of a Slack app, see `token`.
     required:

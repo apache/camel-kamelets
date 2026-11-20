@@ -35,7 +35,7 @@ spec:
 
       Use it to act on calendar entries, for example to send a reminder before a meeting, copy new appointments into another system, or notify a team when a booking is made.
 
-      Output: the body is the event as JSON text, with the fields of the Google Calendar API such as `id`, `summary`, `start` and `attendees`. The `CamelGoogleCalendarEventId` header gives the ID of the event.
+      Output: the body is the event as JSON text in bytes, with the `Content-Type` header `application/json`, and with the fields of the Google Calendar API such as `id`, `summary`, `start` and `attendees`. The `CamelGoogleCalendarEventId` header gives the ID of the event.
 
       Good to know: by default it only receives the events that have not ended yet at the time of the poll (`consumeFromNow`). Each poll asks for one page of up to `maxResults` events (10 by default), the events that changed least recently first, so the same events can come again on every poll. With `considerLastUpdate` set to true, each poll reads all the pages, and after the first poll only the events that changed since the last one received. With `syncFlow` set to true, each poll after the first asks only for the events that are new or changed since the previous one; do not combine it with `query` or `considerLastUpdate`. It logs in to Google either with OAuth (an OAuth client of a Google Cloud project, and an access token and a refresh token of a Google account that may read the calendar), or with the key of a service account in `serviceAccountKey`, which reads the calendars shared with it, or the calendar of the user in `delegate`.
     required:
