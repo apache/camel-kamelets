@@ -189,6 +189,10 @@ spec:
         type: integer
         example: 30000
   dataTypes:
+    # No 'default: binary' here on purpose: with stream caching turned off, it would read each
+    # file into memory (a byte[]) when it is handed on, also with streamDownload, which is meant
+    # for files too large for memory. The template hands on the content as a stream, not the
+    # file itself, which Camel would keep as it is (#3117).
     out:
       headers:
         file:

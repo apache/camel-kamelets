@@ -31,6 +31,10 @@
         - setHeader:
             name: CamelAwsS3OverrideBucketName
             constant: 'other-bucket'
+        # the Content-Type of the sender is not stored with the file
+        - setHeader:
+            name: Content-Type
+            constant: 'text/csv'
         - to:
             uri: "kamelet:ceph-sink"
             parameters:
@@ -48,6 +52,11 @@
         - setHeader:
             name: X-Content-Type
             simple: "ct=${header.Content-Type}"
+        # the HTTP server reads an application/octet-stream body as bytes: send the body as text
+        - removeHeader:
+            name: Content-Type
+        - convertBodyTo:
+            type: "java.lang.String"
         # Camel headers are not sent over HTTP: copy them
         - setHeader:
             name: X-S3-Key

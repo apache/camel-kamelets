@@ -16,7 +16,7 @@
 # ---------------------------------------------------------------------------
 
 name: scp-sink-route-test
-description: 'scp-sink copies the body as a file to the directory on the server, under the name in the CamelFileName header, checking the key of the server against the known_hosts file of knownHostsUri, and the message goes on unchanged'
+description: 'scp-sink copies the body as a file to the directory on the server, under the name in the CamelFileName header, checking the key of the server against the known_hosts file of knownHostsUri, and the message goes on with the body as bytes and Content-Type application/octet-stream'
 variables:
   - name: "ssh.chmod"
     value: "640"
@@ -67,7 +67,7 @@ actions:
                 - name: "ssh.known.hosts"
                   value: "${ssh.known.hosts}"
 
-  # The message goes on unchanged
+  # The message goes on with the body as bytes and Content-Type application/octet-stream
   - http:
       server: "fileHttpServer"
       receiveRequest:
@@ -76,9 +76,9 @@ actions:
           type: "plaintext"
           headers:
             - name: "X-Body-Type"
-              value: 'java.lang.String'
+              value: '[B'
             - name: "X-Content-Type"
-              value: 'ct='
+              value: 'ct=application/octet-stream'
             - name: "X-File-Name"
               value: 'day 1.csv'
           body:

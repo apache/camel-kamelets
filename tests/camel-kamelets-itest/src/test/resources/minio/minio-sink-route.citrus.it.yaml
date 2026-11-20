@@ -16,7 +16,7 @@
 # ---------------------------------------------------------------------------
 
 name: minio-sink-route-test
-description: 'minio-sink uploads the body as a file to the bucket, under the name in the file header, and the message goes on unchanged'
+description: 'minio-sink uploads the body as a file to the bucket, under the name in the file header, and the message goes on with the body as bytes and Content-Type application/octet-stream'
 variables:
   - name: "s3.client"
     value: "s3MinioSinkClient"
@@ -60,7 +60,7 @@ actions:
                 - name: "s3.region"
                   value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
 
-  # The message goes on unchanged, with the name the file was stored under
+  # The message goes on with the body as bytes and Content-Type application/octet-stream, with the name the file was stored under
   - http:
       server: "cloudHttpServer"
       receiveRequest:
@@ -69,9 +69,9 @@ actions:
           type: "plaintext"
           headers:
             - name: "X-Body-Type"
-              value: 'java.lang.String'
+              value: '[B'
             - name: "X-Content-Type"
-              value: 'ct='
+              value: 'ct=application/octet-stream'
             - name: "X-Minio-Object-Name"
               value: 'invoice 42+x=2.csv'
           body:

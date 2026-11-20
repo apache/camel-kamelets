@@ -152,6 +152,9 @@ spec:
         type: integer
         example: 30000
   dataTypes:
+    # No 'default: binary' here on purpose: with stream caching turned off, it would read a
+    # stream into memory (a byte[]) before the upload, such as a large file from ftp-source or
+    # sftp-source with streamDownload, while the client otherwise sends it as it reads it (#3117).
     in:
       headers:
         file:

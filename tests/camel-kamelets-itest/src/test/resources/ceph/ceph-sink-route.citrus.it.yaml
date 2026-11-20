@@ -16,7 +16,7 @@
 # ---------------------------------------------------------------------------
 
 name: ceph-sink-route-test
-description: 'ceph-sink uploads the body as a file to the bucket, under the key in the file header, ignores a header that names another bucket, and the message goes on unchanged'
+description: 'ceph-sink uploads the body as a file to the bucket, under the key in the file header, ignores a header that names another bucket, and the message goes on with the body as bytes and Content-Type application/octet-stream'
 variables:
   - name: "s3.client"
     value: "s3CephSinkClient"
@@ -26,6 +26,9 @@ variables:
     value: "reports/day 1+x=2.csv"
   - name: "s3.content"
     value: "id,item"
+  # the sender's Content-Type (text/csv) is not stored: the file has the default content type of the S3 client
+  - name: "s3.contentType"
+    value: "application/octet-stream"
 actions:
   # Create the S3 storage (Floci container), with the bucket
   - testcontainers:
@@ -60,7 +63,7 @@ actions:
                 - name: "s3.region"
                   value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
 
-  # The message goes on unchanged
+  # The message goes on with the body as bytes and Content-Type application/octet-stream
   - http:
       server: "cloudHttpServer"
       receiveRequest:
@@ -69,9 +72,9 @@ actions:
           type: "plaintext"
           headers:
             - name: "X-Body-Type"
-              value: 'java.lang.String'
+              value: '[B'
             - name: "X-Content-Type"
-              value: 'ct='
+              value: 'ct=application/octet-stream'
             - name: "X-S3-Key"
               value: 'reports/day 1+x=2.csv'
             - name: "X-S3-ETag"

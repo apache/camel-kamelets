@@ -33,6 +33,16 @@
     from:
       uri: "kamelet:langchain4j-ingest-file-source?directory={{ingest.dir}}&charset=UTF-8"
       steps:
+        # what the Kamelet gives: the Java type of the body and the Content-Type
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
+        # the HTTP server reads an application/octet-stream body as bytes: send the body as text
+        - removeHeader:
+            name: Content-Type
         - convertBodyTo:
             type: "java.lang.String"
         - log: "FILE-SOURCE ${body} id=${header.CamelLangChain4jIngestDocumentId}"

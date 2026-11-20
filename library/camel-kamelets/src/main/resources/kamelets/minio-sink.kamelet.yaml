@@ -35,9 +35,9 @@ spec:
 
       Use it to store data in MinIO, such as reports, exports, images or received messages to keep as an archive. For Amazon S3 use `aws-s3-sink`, and for the S3 gateway of Ceph use `ceph-sink`.
 
-      Input: the body is the content of the file, as text, bytes or a stream. When `keyName` is set, every message is stored under that name. Otherwise the name of the file comes from the optional `file` header, or the `ce-file` header, and is a generated unique name when neither is set.
+      Input: the body is the content of the file, as text, bytes or a stream. Text is turned into bytes before the upload, and the `Content-Type` header is set to `application/octet-stream`. A file is passed on as it is, and so is a stream, unless stream caching is turned off. When `keyName` is set, every message is stored under that name. Otherwise the name of the file comes from the optional `file` header, or the `ce-file` header, and is a generated unique name when neither is set.
 
-      Output: the body is unchanged. The `CamelMinioObjectName` header holds the name the file was stored under, unless `keyName` is set.
+      Output: the body is the content of the file, as bytes when it was text, and the `Content-Type` header is `application/octet-stream`. The `CamelMinioObjectName` header holds the name the file was stored under, unless `keyName` is set.
 
       Good to know: a file with the same name is overwritten, so with `keyName` set each message replaces the previous one. When `keyName` is set, the `file` and `ce-file` headers are ignored. Headers that start with `CamelMinio` are removed from the message first, so they cannot change what the Kamelet does.
     required:
@@ -83,6 +83,12 @@ spec:
         example: reports/latest.csv
   dataTypes:
     in:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The content of the file, as bytes. A file, and a stream while stream caching is on, are passed on as they are."
+          mediaType: application/octet-stream
       headers:
         file:
           title: File Name
