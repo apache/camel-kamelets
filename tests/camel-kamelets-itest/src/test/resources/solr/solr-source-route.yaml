@@ -31,5 +31,14 @@
         - setHeader:
             name: X-Content-Type
             simple: "ct=${header.Content-Type}"
+        - setHeader:
+            name: X-Solr-Operation
+            simple: "${header.CamelSolrOperation}"
+        - setHeader:
+            name: X-Solr-Query
+            simple: "${header.CamelSolrQueryString}"
+        - setHeader:
+            name: X-Solr-Collection
+            simple: "${header.CamelSolrCollection}"
         - to:
             uri: "{{http.sink.url}}/result"
