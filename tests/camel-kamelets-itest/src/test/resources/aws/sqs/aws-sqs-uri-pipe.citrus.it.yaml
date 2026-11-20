@@ -69,3 +69,9 @@ actions:
         verify:
           integration: "aws-sqs-source-route"
           logMessage: "${aws.sqs.message}"
+  # What the Kamelet gives, before the consuming route
+  - camel:
+      cli:
+        verify:
+          integration: "aws-sqs-source-route"
+          logMessage: "Kamelet result: X-Body-Type=java.lang.String, X-Content-Type=ct=text/plain;"
