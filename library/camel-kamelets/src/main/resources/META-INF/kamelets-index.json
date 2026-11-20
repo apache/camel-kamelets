@@ -525,7 +525,7 @@
     "supportLevel" : "Stable",
     "title" : "Ceph Sink",
     "summary" : "Uploads each message as a file (object) to a bucket of a Ceph Object Gateway, the S3-compatible storage of Ceph.",
-    "description" : "Uploads each message as a file (object) to a bucket of a Ceph Object Gateway, the S3-compatible storage of Ceph.\n\nUse it to store data in Ceph, such as reports, exports, images or received messages to keep as an archive. For MinIO use `minio-sink`, and for Amazon S3 use `aws-s3-sink`.\n\nInput: the body is the content of the file, as text, bytes or a stream. The key (the name of the file in the bucket) comes from the optional `file` header, or the `ce-file` header; when neither is set it is `keyName`, or a generated unique name when `keyName` is not set either.\n\nOutput: the body is unchanged. The `CamelAwsS3ETag` header gives the ETag of the uploaded file.\n\nGood to know: a file with the same key is overwritten, so with `keyName` set and no `file` header each message replaces the previous one. The bucket is addressed as part of the host name (such as `my-bucket.ceph.example.com`) unless `cephUrl` uses an IP address; set `forcePathStyle` to true when the DNS of the gateway has no wildcard name for its buckets. Headers that start with `CamelAwsS3` are removed from the message first, so they cannot change what the Kamelet does.",
+    "description" : "Uploads each message as a file (object) to a bucket of a Ceph Object Gateway, the S3-compatible storage of Ceph.\n\nUse it to store data in Ceph, such as reports, exports, images or received messages to keep as an archive. For Amazon S3, or another S3-compatible storage such as MinIO, use `aws-s3-sink` (with `overrideEndpoint`, `uriEndpointOverride` and `forcePathStyle` for a storage other than AWS).\n\nInput: the body is the content of the file, as text, bytes or a stream. The key (the name of the file in the bucket) comes from the optional `file` header, or the `ce-file` header; when neither is set it is `keyName`, or a generated unique name when `keyName` is not set either.\n\nOutput: the body is unchanged. The `CamelAwsS3ETag` header gives the ETag of the uploaded file.\n\nGood to know: a file with the same key is overwritten, so with `keyName` set and no `file` header each message replaces the previous one. The bucket is addressed as part of the host name (such as `my-bucket.ceph.example.com`) unless `cephUrl` uses an IP address; set `forcePathStyle` to true when the DNS of the gateway has no wildcard name for its buckets. Headers that start with `CamelAwsS3` are removed from the message first, so they cannot change what the Kamelet does.",
     "group" : "Ceph",
     "namespace" : "Cloud",
     "provider" : "Apache Software Foundation"
@@ -1060,16 +1060,6 @@
     "namespace" : "IBM",
     "provider" : "Apache Software Foundation"
   }, {
-    "name" : "ibm-watson-language-sink",
-    "type" : "sink",
-    "supportLevel" : "Preview",
-    "title" : "IBM Watson Natural Language Understanding Sink",
-    "summary" : "Analyzes the text of each message with IBM Watson Natural Language Understanding and replaces the body with the results, such as the sentiment, the entities and the keywords.",
-    "description" : "Analyzes the text of each message with IBM Watson Natural Language Understanding and replaces the body with the results, such as the sentiment, the entities and the keywords.\n\nUse it to find out what people write about and how they feel, for example to flag angry customer emails, tag support tickets with the products they mention, or measure the tone of reviews.\n\nInput: the body is the text to analyze, as text. With `operation` set to `analyzeUrl`, the body is instead the address of a web page for Watson to fetch and analyze. The optional `CamelIBMWatsonLanguageText` or `CamelIBMWatsonLanguageUrl` header gives the text or the address instead of the body. An empty body fails.\n\nOutput: when it is used inside a route, the body afterwards is the results as JSON text (bytes), with the `Content-Type` header set to `application/json`. The `CamelIBMWatsonLanguageSentimentLabel` and `CamelIBMWatsonLanguageSentimentScore` headers give the sentiment of the whole text, and `CamelIBMWatsonLanguageLanguage` its language.\n\nGood to know: it logs in with the API key of a Natural Language Understanding instance in IBM Cloud; set `serviceUrl` when the instance is not in the US South region. Headers that start with `CamelIBMWatsonLanguage`, except `CamelIBMWatsonLanguageText` and `CamelIBMWatsonLanguageUrl`, are removed from the message first, so they cannot change what the Kamelet does.",
-    "group" : "IBM Watson",
-    "namespace" : "IBM",
-    "provider" : "Apache Software Foundation"
-  }, {
     "name" : "infinispan-sink",
     "type" : "sink",
     "supportLevel" : "Stable",
@@ -1448,26 +1438,6 @@
     "description" : "Changes the topic that `kafka-sink` writes a record to, to a name made of the original topic name and a date read from a field of the JSON body.\n\nUse it to spread the records over one topic per day or per month by a date in the data, such as the date of an order, in a flow from `kafka-source` to `kafka-sink`. To use the time the record was written to Kafka instead use `timestamp-router-action`.\n\nInput: a JSON object, as JSON text, as bytes, as a Map or as parsed JSON (a Jackson `JsonNode`). The `Content-Type` header is not needed. The name of the topic is read from the `CamelKafkaTopic` header, which `kafka-source` sets.\n\nOutput: the same JSON object, as JSON text in bytes, with `Content-Type` set to `application/json`. When one of the `timestampKeys` fields is found, the `CamelKafkaOverrideTopic` header is set to the new name, and `kafka-sink` writes the record to that topic instead of its own `topic`.\n\nGood to know: a field value that cannot be read as a date with `timestampKeyFormat` makes the message fail. The default `topicFormat` of `topic-$[timestamp]` gives names such as `topic-20240703`, without the original name: set it to `$[topic]-$[timestamp]` to keep it. The date is in UTC.",
     "group" : "Actions",
     "namespace" : "Kafka",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "minio-sink",
-    "type" : "sink",
-    "supportLevel" : "Stable",
-    "title" : "Minio Sink",
-    "summary" : "Uploads each message as a file (object) to a bucket in MinIO, the S3-compatible object storage.",
-    "description" : "Uploads each message as a file (object) to a bucket in MinIO, the S3-compatible object storage.\n\nUse it to store data in MinIO, such as reports, exports, images or received messages to keep as an archive. For Amazon S3 use `aws-s3-sink`, and for the S3 gateway of Ceph use `ceph-sink`.\n\nInput: the body is the content of the file, as text, bytes or a stream. When `keyName` is set, every message is stored under that name. Otherwise the name of the file comes from the optional `file` header, or the `ce-file` header, and is a generated unique name when neither is set.\n\nOutput: the body is unchanged. The `CamelMinioObjectName` header holds the name the file was stored under, unless `keyName` is set.\n\nGood to know: a file with the same name is overwritten, so with `keyName` set each message replaces the previous one. When `keyName` is set, the `file` and `ce-file` headers are ignored. Headers that start with `CamelMinio` are removed from the message first, so they cannot change what the Kamelet does.",
-    "group" : "Minio",
-    "namespace" : "Cloud",
-    "provider" : "Apache Software Foundation"
-  }, {
-    "name" : "minio-source",
-    "type" : "source",
-    "supportLevel" : "Stable",
-    "title" : "Minio Source",
-    "summary" : "Reads the files (objects) in a MinIO bucket, one message per file, and by default deletes each file once it has been read.",
-    "description" : "Reads the files (objects) in a MinIO bucket, one message per file, and by default deletes each file once it has been read.\n\nUse it to process files that another system drops into a MinIO bucket, such as uploaded documents, exported reports or log files. For Amazon S3 use `aws-s3-source`, and for the S3 gateway of Ceph use `ceph-source`.\n\nOutput: the body is the content of the file, as bytes, and the `Content-Type` header is set to `application/octet-stream`. The headers give the bucket name, the name of the file (`CamelMinioObjectName`), and the content type the file was stored with (`CamelMinioContentType`), its size, ETag and last modified date.\n\nGood to know: files are deleted from the bucket after they are read, unless `deleteAfterRead` is set to false; then the same files are read again on every poll, about twice a second. Only the files at the top of the bucket are read: a file in a folder, such as `reports/january.csv`, is not.",
-    "group" : "Minio",
-    "namespace" : "Cloud",
     "provider" : "Apache Software Foundation"
   }, {
     "name" : "mongodb-changes-stream-source",
