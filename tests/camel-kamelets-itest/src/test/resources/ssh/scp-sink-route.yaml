@@ -49,5 +49,8 @@
         - setHeader:
             name: X-File-Name
             simple: "${header.CamelFileName}"
+        - setHeader:
+            name: X-File-Name-Produced
+            simple: "${header.CamelFileNameProduced}"
         - to:
             uri: "{{http.sink.url}}/result"
