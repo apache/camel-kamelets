@@ -44,6 +44,12 @@
         - setHeader:
             name: X-Object-Content-Type
             simple: "${header.CamelGoogleCloudStorageContentType}"
+        - setHeader:
+            name: X-Object-Name
+            simple: "name=${header.CamelGoogleCloudStorageObjectName}"
+        - setHeader:
+            name: X-Bucket-Name
+            simple: "bucket=${header.CamelGoogleCloudStorageBucketName}"
         # the body as text, for the HTTP call
         - convertBodyTo:
             type: "java.lang.String"

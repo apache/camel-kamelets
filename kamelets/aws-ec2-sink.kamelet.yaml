@@ -40,7 +40,7 @@ spec:
 
       Output: the body is the answer of AWS, an object of the AWS SDK for Java (not JSON text). By default, a `DescribeInstanceStatusResponse`, with for each instance its ID, availability zone, state (such as `running`) and the results of the instance and system status checks. When there are more results than fit, the `CamelAwsEC2NextToken` header holds the token of the next page. `describeInstances` gives a `DescribeInstancesResponse`, and `startInstances` and `stopInstances` a `StartInstancesResponse` or `StopInstancesResponse` with the previous and the new state of each instance, such as `stopped` and `pending`. `rebootInstances` leaves the body as it was.
 
-      Good to know: by default it only reads, and never starts, stops or changes an instance; `operation` chooses another action. It cannot create or terminate instances. With Camel 4.23, the `instanceIds` header is ignored: the status of all the instances is returned, and start, stop and reboot reach no instance. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: by default it only reads, and never starts, stops or changes an instance; `operation` chooses another action. It cannot create or terminate instances. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - region
     type: object

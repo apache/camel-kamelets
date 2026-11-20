@@ -19,16 +19,12 @@ name: aws-lambda-sink-route-test
 # The body is the event of the function, and what the function returns becomes the body. The Citrus HTTP server
 # stands in for AWS Lambda: Floci runs functions in Docker containers, which it cannot reach from its own container.
 actions:
-  # The Kamelet has no uriEndpointOverride: the AWS SDK takes the endpoint from the environment
+  # The calls reach the stand-in through uriEndpointOverride
   - camel:
       cli:
         run:
           integration:
             file: "aws/lambda/aws-lambda-sink-route.yaml"
-            environment:
-              variables:
-                - name: "AWS_ENDPOINT_URL_LAMBDA"
-                  value: "http://localhost:${aws.sink.server.port}"
             systemProperties:
               file: "aws/aws-stand-in.properties"
 

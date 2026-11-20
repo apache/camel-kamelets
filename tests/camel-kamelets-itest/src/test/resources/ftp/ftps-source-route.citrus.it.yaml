@@ -49,6 +49,15 @@ actions:
                 - name: "javax.net.ssl.trustStoreType"
                   value: "PKCS12"
 
+  # Wait until the source has read the file: when it does not, this step fails and shows the log of the
+  # integration, such as an error of the FTPS connection
+  - camel:
+      cli:
+        verify:
+          integration: "ftps-source-route"
+          logMessage: "ftps-source read order 1.csv"
+          maxAttempts: 60
+
   # The source gives the content of the file as a stream, with its name and size
   - http:
       server: "fileHttpServer"
