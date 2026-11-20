@@ -159,6 +159,83 @@ actions:
                 "self": "${jira.url}/rest/api/latest/issue/${jira.issue.id}"
               }
 
+  # the producer reads the created issue back
+  - http:
+      server: "jiraServer"
+      receiveRequest:
+        GET:
+          path: "/rest/api/latest/issue/${jira.issue.key}"
+          headers:
+            - name: Authorization
+              value: "Basic citrus:encodeBase64(${jira.username}:${jira.password})"
+
+  - http:
+      server: "jiraServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              {
+                "expand": "schema,names",
+                "id": "${jira.issue.id}",
+                "key": "${jira.issue.key}",
+                "self": "${jira.url}/rest/api/latest/issue/${jira.issue.key}",
+                "names": {},
+                "schema": {},
+                "fields": {
+                  "project": {
+                    "self": "${jira.url}/rest/api/latest/project/${jira.project.id}",
+                    "id": "${jira.project.id}",
+                    "key": "${jira.project.key}"
+                  },
+                  "summary": "${jira.issue.summary}",
+                  "description": "${jira.issue.description}",
+                  "issuetype": {
+                    "self": "${jira.url}/rest/api/latest/issuetype/1",
+                    "id": "1",
+                    "description": "A problem with the software.",
+                    "iconUrl": "${jira.url}/images/icons/bug.gif",
+                    "name": "${jira.issue.type}",
+                    "subtask": false
+                  },
+                  "created": "2026-11-19T10:15:30.000+0000",
+                  "updated": "2026-11-19T10:15:30.000+0000",
+                  "status": {
+                    "self": "${jira.url}/rest/api/latest/status/1",
+                    "id": 1,
+                    "description": "Open task.",
+                    "iconUrl": "${jira.url}/images/icons/status_1.gif",
+                    "name": "Open"
+                  }
+                }
+              }
+
+  # the body afterwards is the created issue (sent here as its key); the Content-Type is the text/plain of the body that went in
+  - http:
+      server: "jiraServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'com.atlassian.jira.rest.client.api.domain.Issue'
+            - name: "X-Content-Type"
+              value: 'ct=text/plain'
+          body:
+            data: '${jira.issue.key}'
+  - http:
+      server: "jiraServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
   # Verify JIRA source
   - camel:
       cli:

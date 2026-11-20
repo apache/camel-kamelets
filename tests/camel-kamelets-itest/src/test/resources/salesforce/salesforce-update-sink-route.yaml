@@ -17,38 +17,29 @@
 
 - route:
     from:
-      uri: "timer:send"
+      uri: "timer:tick"
       parameters:
+        period: "1000"
         repeatCount: 1
       steps:
         - setBody:
-            constant: 'id,amount'
-        # the name, with characters that have a meaning in an address
-        - setHeader:
-            name: file
-            constant: 'invoice 42+x=2.csv'
+            constant: '{"sObjectName":"Contact","sObjectId":"003000000000001AAA","payload":{"Phone":"+45 1234 5678"}}'
         - to:
-            uri: "kamelet:minio-sink"
+            uri: "kamelet:salesforce-update-sink"
             parameters:
-              endpoint: '{{s3.url}}'
-              accessKey: '{{s3.accessKey}}'
-              secretKey: '{{s3.secretKey}}'
-              bucketName: 'minio-sink-bucket'
-        # what the Kamelet gives: the Java type of the body and the Content-Type
+              loginUrl: '{{salesforce.url}}'
+              clientId: '{{salesforce.client.id}}'
+              clientSecret: '{{salesforce.client.secret}}'
+              userName: '{{salesforce.username}}'
+              password: '{{salesforce.password}}'
+        # what the Kamelet leaves: the Java type of the body and the Content-Type
         - setHeader:
             name: X-Body-Type
             simple: "${body.getClass().getName()}"
         - setHeader:
             name: X-Content-Type
             simple: "ct=${header.Content-Type}"
-        # the HTTP server reads an application/octet-stream body as bytes: send the body as text
-        - removeHeader:
-            name: Content-Type
-        - convertBodyTo:
-            type: "java.lang.String"
-        # Camel headers are not sent over HTTP: copy them
-        - setHeader:
-            name: X-Minio-Object-Name
-            simple: "${header.CamelMinioObjectName}"
+        - setBody:
+            simple: "${bodyAs(String)}"
         - to:
             uri: "{{http.sink.url}}/result"

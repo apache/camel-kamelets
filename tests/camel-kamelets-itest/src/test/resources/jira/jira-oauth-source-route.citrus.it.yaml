@@ -170,7 +170,7 @@ actions:
                 ]
               }
 
-  # the issue as JSON text (in a stream), as the Jira client reads it
+  # the issue as JSON text in bytes
   - http:
       server: "jiraServer"
       receiveRequest:
@@ -178,7 +178,7 @@ actions:
           path: "/result"
           headers:
             - name: "X-Body-Type"
-              value: 'org.apache.camel.converter.stream.InputStreamCache'
+              value: '[B'
             - name: "X-Content-Type"
               value: 'ct=application/json'
           body:

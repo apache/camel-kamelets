@@ -44,12 +44,24 @@ spec:
     type: object
   dataTypes:
     in:
+      default: unchanged
       headers:
         CamelKafkaManualCommit:
           title: Kafka Manual Commit
           description: "Set by `kafka-source` when `allowManualCommit` is true. Without it, nothing is saved."
           type: object
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "Any body. It is not read."
+    out:
+      default: unchanged
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The body as it came in, of the same type."
   dependencies:
+  - "camel:kafka"
   - "camel:kamelet"
   template:
     from:

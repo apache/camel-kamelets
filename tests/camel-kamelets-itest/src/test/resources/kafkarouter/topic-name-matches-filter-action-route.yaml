@@ -31,5 +31,14 @@
           uri: "kamelet:topic-name-matches-filter-action"
           parameters:
             regex: "orders.*"
+      # What the Kamelet leaves on the message
+      - setHeader:
+          name: X-Body-Type
+          simple: "${body.getClass().getName()}"
+      - setHeader:
+          name: X-Content-Type
+          simple: "ct=${header.Content-Type}"
       - to:
           uri: "kamelet:log-sink"
+      - to:
+          uri: "{{http.sink.url}}/result"

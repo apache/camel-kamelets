@@ -37,7 +37,7 @@ spec:
 
       Input: the body is a JSON object, as JSON text, such as `{"username":"alice","city":"Rome"}`. Each `:#name` in `query` takes the value of the field with that name, else of the header with that name. The statement runs once per message.
 
-      Output: when it is used inside a route, the body afterwards is the JSON object parsed as a Map, and the `CamelSqlUpdateCount` header holds the number of rows changed.
+      Output: when it is used inside a route, the body afterwards is the JSON object parsed as a Map, and the `CamelSqlUpdateCount` header holds the number of rows changed. The `Content-Type` header is set to `application/json`.
 
       Good to know: a body that is not a JSON object fails, and so does a body that lacks a field named in `query` when no header has that name either. It logs in with a database user and password, not with AWS keys, and connects with the Amazon Redshift JDBC driver, which uses TLS by default. Other settings of the driver go in `connectionProperties`.
     required:
@@ -105,6 +105,13 @@ spec:
     in:
       mediaType: application/json
   dataTypes:
+    in:
+      default: json
+      types:
+        json:
+          format: "application-json"
+          description: "One JSON object, as JSON text in bytes."
+          mediaType: application/json
     out:
       headers:
         CamelSqlUpdateCount:

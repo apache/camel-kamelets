@@ -72,6 +72,29 @@ actions:
           reasonPhrase: "OK"
           version: "HTTP/1.1"
 
+  # the message is unchanged: the bytes of the body, with the Content-Type text/plain of timer-source
+  - http:
+      server: "slackSinkServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: '[B'
+            - name: "X-Content-Type"
+              value: 'ct=text/plain'
+          body:
+            data: '${slack.message}'
+
+  - http:
+      server: "slackSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
   # Verify Slack sink
   - camel:
       cli:

@@ -28,6 +28,13 @@
           uri: "kamelet:delay-action"
           parameters:
             milliseconds: 100
+      # What the Kamelet leaves on the message
+      - setHeader:
+          name: X-Body-Type
+          simple: "${body.getClass().getName()}"
+      - setHeader:
+          name: X-Content-Type
+          simple: "ct=${header.Content-Type}"
       - to:
           uri: "kamelet:http-sink"
           parameters:

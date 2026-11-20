@@ -37,3 +37,23 @@
             simple: "ct=${header.Content-Type}"
         - to:
             uri: "{{http.sink.url}}/result"
+
+        # A body that is already JSON text is kept as it is, not quoted
+        - removeHeaders:
+            pattern: "*"
+        - setBody:
+            constant: '{"id":1}'
+        - to:
+            uri: "kamelet:json-serialize-action"
+        - to:
+            uri: "{{http.sink.url}}/json-text"
+
+        # Any other text becomes one JSON string, in quotes
+        - removeHeaders:
+            pattern: "*"
+        - setBody:
+            constant: 'hello'
+        - to:
+            uri: "kamelet:json-serialize-action"
+        - to:
+            uri: "{{http.sink.url}}/text"

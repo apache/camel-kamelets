@@ -28,6 +28,13 @@
           uri: "kamelet:simple-filter-action"
           parameters:
             expression: "${body} == 'DROP_ME'"
+      # What the Kamelet leaves on the message
+      - setHeader:
+          name: X-Body-Type
+          simple: "${body.getClass().getName()}"
+      - setHeader:
+          name: X-Content-Type
+          simple: "ct=${header.Content-Type}"
       - to:
           uri: "kamelet:http-sink"
           parameters:

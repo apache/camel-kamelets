@@ -58,6 +58,7 @@ spec:
     type: object
   dataTypes:
     in:
+      default: unchanged
       headers:
         CamelKafkaTopic:
           title: Kafka Topic
@@ -67,7 +68,12 @@ spec:
           title: CloudEvents Type
           description: "Optional. Replaced too when `regex` matches it."
           type: string
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "Any body. It is not read."
     out:
+      default: unchanged
       headers:
         CamelKafkaOverrideTopic:
           title: Kafka Override Topic
@@ -77,6 +83,10 @@ spec:
           title: CloudEvents Type
           description: "The `ce-type` header, with the match replaced, when `regex` matches it."
           type: string
+      types:
+        unchanged:
+          format: "application-x-unchanged"
+          description: "The body as it came in, of the same type."
   dependencies:
   - "camel:kamelet"
   - "camel:kafka"

@@ -36,6 +36,13 @@
                    optional string lastname=3;
                    optional int32 age=4;
                 }
+        # what the Kamelet gives: the Java type of the body and the Content-Type, sent on as headers
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
         - to:
             uri: "kamelet:log-action"
             parameters:

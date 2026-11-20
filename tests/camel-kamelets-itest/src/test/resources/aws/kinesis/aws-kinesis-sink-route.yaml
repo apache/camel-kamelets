@@ -37,3 +37,5 @@
             accessKey: "{{aws.kinesis.accessKey}}"
             secretKey: "{{aws.kinesis.secretKey}}"
             region: "{{aws.kinesis.region}}"
+      # What the Kamelet leaves on the message
+      - log: "Kamelet result: X-Body-Type=${body.getClass().getName()}, X-Content-Type=ct=${header.Content-Type};"
