@@ -1,0 +1,95 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: github-pullrequest-source-route-test
+description: 'github-pullrequest-source sends a pull request opened after the start as JSON text with the fields its description lists, with its number and head commit in headers, and asks the GitHub API for nothing more than its polls'
+variables:
+  # the repository of the canned answers of this test, and the only requests the source may make for it
+  - name: "github.api.repo"
+    value: "citrus/pr-demo"
+  - name: "github.api.expected"
+    value: "user,repos/citrus/pr-demo,repos/citrus/pr-demo/pulls"
+actions:
+  # The stand-in of the GitHub API answers with canned JSON for the repository citrus/pr-demo: no pull request when the source starts, then pull request #7
+  - groovy:
+      script:
+        file: "github/resetApi.groovy"
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "github/github-pullrequest-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${cloud.http.server.port}"
+                # the GitHub API is the stand-in of the test
+                - name: "camel.component.github2.apiUrl"
+                  value: "http://localhost:${github.api.port}"
+
+  # The new pull request
+  - http:
+      server: "cloudHttpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "json"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+            - name: "X-Pull-Request"
+              value: '7'
+            - name: "X-Head-Commit-Sha"
+              value: '3333333333333333333333333333333333333333'
+          body:
+            data: |
+              {
+                "number": 7,
+                "title": "Fix the login page",
+                "body": "The login page did not load.",
+                "state": "open",
+                "draft": false,
+                "html_url": "https://github.com/citrus/pr-demo/pull/7",
+                "user": { "login": "jane" },
+                "head": { "ref": "fix-login", "sha": "3333333333333333333333333333333333333333", "label": "jane:fix-login" },
+                "base": { "ref": "main", "sha": "1111111111111111111111111111111111111111", "label": "citrus:main" },
+                "labels": [ { "name": "bug" } ],
+                "created_at": "2026-11-03T10:00:00Z",
+                "updated_at": "2026-11-03T10:00:00Z"
+              }
+  - http:
+      server: "cloudHttpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The source asked the GitHub API for nothing per message: no user, commit or pull request details
+  - groovy:
+      script:
+        file: "github/onlyPolls.groovy"
+
+  # and only for what it has canned answers for
+  - groovy:
+      script:
+        file: "github/noUnknownRequests.groovy"

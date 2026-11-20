@@ -36,6 +36,10 @@
               # a password with characters that have a meaning in an endpoint address
               password: 's3cr&t+pw'
               directoryName: 'upload'
+              # the Kamelet trusts the certificate of the test server with its own trust store, not the one of the JVM
+              trustStoreFile: '{{ftp.truststore}}'
+              trustStorePassword: 'changeit'
+              trustStoreType: 'PKCS12'
               passiveMode: true
               # the file is uploaded under a temporary name, and renamed once it is complete
               tempPrefix: '.tmp-'
