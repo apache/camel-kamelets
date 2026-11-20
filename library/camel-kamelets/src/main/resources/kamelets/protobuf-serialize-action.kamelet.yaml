@@ -36,11 +36,11 @@ spec:
 
       Use it to send records in Protocol Buffers (Protobuf), a compact binary format described by a schema, to a system that expects it, such as a Kafka topic whose readers decode Protobuf. To turn Protobuf back into JSON, use `protobuf-deserialize-action`; for Avro, use `avro-serialize-action`.
 
-      Input: parsed JSON (a Map or a Jackson `JsonNode`) whose fields match the schema. Put `json-deserialize-action` before this action when the body is JSON text.
+      Input: parsed JSON (a Map or a Jackson `JsonNode`) whose fields match the schema. JSON text fails: put `json-deserialize-action` before this action to parse it.
 
-      Output: the body is the Protobuf binary data, as bytes, and the `Content-Type` header is set to `application/protobuf`.
+      Output: the body is the Protobuf binary data, as a stream, and the `Content-Type` header is set to `application/protobuf`.
 
-      Good to know: JSON text is not turned into Protobuf: it is passed on as it is, yet the `Content-Type` header is set to `application/protobuf`. A message fails when it has a field the schema does not know or a value of the wrong type; a field of the schema that the message lacks is left out, even when it is marked `required`. When `schema` is not set, the schema found by an earlier `resolve-pojo-schema-action` is used.
+      Good to know: a message fails when it has a field the schema does not know or a value of the wrong type; a field of the schema that the message lacks is left out, even when it is marked `required`. When `schema` is not set, the schema found by an earlier `resolve-pojo-schema-action` is used.
     type: object
     properties:
       schema:
@@ -48,13 +48,21 @@ spec:
         description: "The Protobuf schema of the records, in the `.proto` language: a `message` with its fields, each with a type, a name and a number. When it is not set, the schema found by an earlier `resolve-pojo-schema-action` is used."
         type: string
         example: 'message Person { required string first = 1; required string last = 2; }'
+  # No input default: application-x-java-object fails on a Map or a JsonNode once an earlier
+  # resolve-pojo-schema-action has set contentClass (the X-Content-Class property) (#3117).
   dataTypes:
     out:
+      default: protobuf-binary
       headers:
         Content-Type:
           title: Content Type
           description: Always `application/protobuf`.
           type: string
+      types:
+        protobuf-binary:
+          format: "protobuf-binary"
+          description: "The Protobuf binary data, as a stream."
+          mediaType: application/protobuf
   dependencies:
   - "camel:kamelet"
   - "camel:jackson3-protobuf"

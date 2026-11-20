@@ -30,3 +30,5 @@
             uri: "kamelet:log-action"
             parameters:
               showHeaders: true
+        # what the serializer gave (from its headers) and what the deserializer gives
+        - log: "Serialized as ${header.X-Body-Type} ${header.X-Content-Type}, deserialized as ${body.getClass().getName()} ct=${header.Content-Type}"

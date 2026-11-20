@@ -57,6 +57,9 @@ spec:
         type: string
         default: "Chainr"
         enum: ["Chainr", "Shiftr", "Defaultr", "Removr", "Sortr"]
+  # No default data types: application-x-java-object as input fails on JSON text, bytes and a
+  # stream, which the Jolt component parses, and as output on the null body that a specification
+  # matching nothing gives (#3117).
   dependencies:
   - "camel:jolt"
   - "camel:kamelet"

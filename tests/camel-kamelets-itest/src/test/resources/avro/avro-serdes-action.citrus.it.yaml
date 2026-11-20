@@ -54,3 +54,9 @@ actions:
           integration: "avro-deserialize-route"
           logMessage: |
             Body: {  "id" : "${uuid}",  "firstname" : "Sheldon",  "lastname" : "Cooper",  "age" : 28}
+  # the serializer gives the binary data as a stream with its Content-Type, the deserializer parsed JSON without one
+  - camel:
+      cli:
+        verify:
+          integration: "avro-deserialize-route"
+          logMessage: "Serialized as org.apache.camel.converter.stream.InputStreamCache ct=application/avro, deserialized as tools.jackson.databind.node.ObjectNode ct="

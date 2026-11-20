@@ -56,6 +56,13 @@ spec:
           format: "application-octet-stream"
           description: "The Protobuf binary data, as bytes."
           mediaType: application/octet-stream
+    out:
+      default: struct
+      types:
+        struct:
+          format: "application-x-struct"
+          description: "The parsed JSON, a Jackson `JsonNode`."
+          mediaType: application/x-struct
   dependencies:
   - "camel:kamelet"
   - "camel:jackson3-protobuf"
