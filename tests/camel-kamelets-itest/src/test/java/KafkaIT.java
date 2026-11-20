@@ -17,17 +17,13 @@
 
 import java.util.stream.Stream;
 
-import org.citrusframework.TestAction;
-import org.citrusframework.api.common.ShutdownPhase;
 import org.citrusframework.api.common.TestLoader;
 import org.citrusframework.container.SequenceAfterTest;
 import org.citrusframework.container.SequenceBeforeTest;
-import org.citrusframework.endpoint.Endpoint;
 import org.citrusframework.http.server.HttpServer;
 import org.citrusframework.junit.jupiter.CitrusSupport;
 import org.citrusframework.junit.jupiter.CitrusTestFactory;
 import org.citrusframework.junit.jupiter.CitrusTestFactorySupport;
-import org.citrusframework.kafka.endpoint.KafkaEndpoint;
 import org.citrusframework.spi.BindToRegistry;
 import org.citrusframework.util.SocketUtils;
 import org.junit.jupiter.api.DynamicTest;
@@ -62,41 +58,8 @@ public class KafkaIT {
     @BindToRegistry
     public SequenceAfterTest afterKafka() {
         return new SequenceAfterTest.Builder().onTests("kafka-*").actions(
-                purgeEndpoints().endpoint(kafkaSinkServer),
-                this::stopKafkaConsumers
+                purgeEndpoints().endpoint(kafkaSinkServer)
         ).build();
-    }
-
-    @BindToRegistry
-    public TestAction stopKafkaConsumers() {
-        return context -> {
-            try {
-                Endpoint endpoint = context.getEndpointFactory().create("kafkaRouterConsumer", context);
-                if (endpoint instanceof ShutdownPhase destroyable) {
-                    destroyable.destroy();
-                }
-            } catch (Exception e) {
-                // ignore
-            }
-
-            try {
-                Endpoint endpoint = context.getEndpointFactory().create("kafkaSinkConsumer", context);
-                if (endpoint instanceof ShutdownPhase destroyable) {
-                    destroyable.destroy();
-                }
-            } catch (Exception e) {
-                // ignore
-            }
-
-            try {
-                Endpoint endpoint = context.getEndpointFactory().create("kafkaProducer", context);
-                if (endpoint instanceof KafkaEndpoint kafkaEndpoint) {
-                    kafkaEndpoint.createProducer().getProducer().close();
-                }
-            } catch (Exception e) {
-                // ignore
-            }
-        };
     }
 
     @CitrusTestFactory

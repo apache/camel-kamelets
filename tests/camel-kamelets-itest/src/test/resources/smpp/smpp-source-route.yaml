@@ -40,5 +40,8 @@
         - setHeader:
             name: X-Smpp-Message-Type
             simple: "${header.CamelSmppMessageType}"
+        - setHeader:
+            name: X-Smpp-Data-Coding
+            simple: "${header.CamelSmppDataCoding}"
         - to:
             uri: "{{http.sink.url}}/result"

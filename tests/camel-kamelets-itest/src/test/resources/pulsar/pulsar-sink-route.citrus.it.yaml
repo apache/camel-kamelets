@@ -59,6 +59,8 @@ actions:
               value: 'Hello Pulsar'
             - name: "X-Content-Type"
               value: 'ct=application/octet-stream'
+            - name: "X-Message-Id"
+              value: '@notEmpty()@'
             - name: "key"
               value: 'order-1'
   - http:
