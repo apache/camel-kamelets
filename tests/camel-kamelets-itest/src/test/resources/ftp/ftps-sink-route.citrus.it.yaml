@@ -39,12 +39,8 @@ actions:
                   value: "http://localhost:${file.http.server.port}"
                 - name: "ftp.port"
                   value: "${ftp.server.port}"
-                - name: "javax.net.ssl.trustStore"
+                - name: "ftp.truststore"
                   value: "${ftp.truststore}"
-                - name: "javax.net.ssl.trustStorePassword"
-                  value: "changeit"
-                - name: "javax.net.ssl.trustStoreType"
-                  value: "PKCS12"
 
   # The message goes on unchanged, with the path of the file on the server
   - http:

@@ -1805,6 +1805,17 @@
       "value" : "runtime"
     } ]
   }, {
+    "bom-ref" : "pkg:maven/org.apache.camel/camel-jq@4.24.0-SNAPSHOT",
+    "type" : "library",
+    "group" : "org.apache.camel",
+    "name" : "camel-jq",
+    "version" : "4.24.0-SNAPSHOT",
+    "purl" : "pkg:maven/org.apache.camel/camel-jq@4.24.0-SNAPSHOT",
+    "properties" : [ {
+      "name" : "camel.apache.org/versioned-by",
+      "value" : "runtime"
+    } ]
+  }, {
     "bom-ref" : "pkg:maven/org.apache.camel/camel-jsch@4.24.0-SNAPSHOT",
     "type" : "library",
     "group" : "org.apache.camel",
@@ -2541,13 +2552,13 @@
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-github2@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-jackson3@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT" ]
   }, {
     "ref" : "kamelet:github-pullrequest-comment-source",
-    "dependsOn" : [ "pkg:maven/org.apache.camel/camel-github2@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-jackson3@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT" ]
+    "dependsOn" : [ "pkg:maven/org.apache.camel/camel-github2@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-jq@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT" ]
   }, {
     "ref" : "kamelet:github-pullrequest-source",
-    "dependsOn" : [ "pkg:maven/org.apache.camel/camel-github2@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-jackson3@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT" ]
+    "dependsOn" : [ "pkg:maven/org.apache.camel/camel-github2@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-jq@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT" ]
   }, {
     "ref" : "kamelet:github-tag-source",
-    "dependsOn" : [ "pkg:maven/org.apache.camel/camel-github2@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-jackson3@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT" ]
+    "dependsOn" : [ "pkg:maven/org.apache.camel/camel-github2@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-jq@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT" ]
   }, {
     "ref" : "kamelet:google-bigquery-sink",
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-google-bigquery@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-jackson3@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT" ]
@@ -2682,7 +2693,7 @@
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT" ]
   }, {
     "ref" : "kamelet:kafka-batch-source",
-    "dependsOn" : [ "pkg:maven/org.apache.camel/camel-kafka@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT" ]
+    "dependsOn" : [ "pkg:maven/org.apache.camel/camel-jackson3@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kafka@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT" ]
   }, {
     "ref" : "kamelet:kafka-manual-commit-action",
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT" ]
@@ -3141,6 +3152,9 @@
     "dependsOn" : [ ]
   }, {
     "ref" : "pkg:maven/org.apache.camel/camel-jolt@4.24.0-SNAPSHOT",
+    "dependsOn" : [ ]
+  }, {
+    "ref" : "pkg:maven/org.apache.camel/camel-jq@4.24.0-SNAPSHOT",
     "dependsOn" : [ ]
   }, {
     "ref" : "pkg:maven/org.apache.camel/camel-jsch@4.24.0-SNAPSHOT",
