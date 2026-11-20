@@ -31,3 +31,10 @@ actions:
         verify:
           integration: "counter-source-route"
           logMessage: "777777"
+
+  # The number arrives as text
+  - camel:
+      cli:
+        verify:
+          integration: "counter-source-route"
+          logMessage: "counter-source X-Body-Type=java.lang.String X-Content-Type=ct=text/plain"
