@@ -1,0 +1,125 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: google-pubsub-source-route-test
+description: 'google-pubsub-source receives a message of the subscription, with its attributes as a Map and as headers'
+actions:
+  # Start the Floci GCP emulator, which serves Pub/Sub, Cloud Storage and BigQuery on one port, without logging in
+  - testcontainers:
+      start:
+        container:
+          name: "gcp"
+          image: "floci/floci-gcp:0.12.0"
+          autoRemove: true
+          startUpTimeout: 120
+          exposedPorts:
+            - 4588
+          waitFor:
+            logMessage: '.*Listening on.*'
+
+  # The topic orders, with the subscription orders-sub, and a message with an attribute
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_GCP_HOST}:${CITRUS_TESTCONTAINERS_GCP_PORT}"
+      sendRequest:
+        PUT:
+          path: "/v1/projects/kamelets/topics/orders"
+          contentType: "application/json"
+          body:
+            data: '{}'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_GCP_HOST}:${CITRUS_TESTCONTAINERS_GCP_PORT}"
+      receiveResponse:
+        response:
+          status: 200
+
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_GCP_HOST}:${CITRUS_TESTCONTAINERS_GCP_PORT}"
+      sendRequest:
+        PUT:
+          path: "/v1/projects/kamelets/subscriptions/orders-sub"
+          contentType: "application/json"
+          body:
+            data: '{"topic":"projects/kamelets/topics/orders"}'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_GCP_HOST}:${CITRUS_TESTCONTAINERS_GCP_PORT}"
+      receiveResponse:
+        response:
+          status: 200
+
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_GCP_HOST}:${CITRUS_TESTCONTAINERS_GCP_PORT}"
+      sendRequest:
+        POST:
+          path: "/v1/projects/kamelets/topics/orders:publish"
+          contentType: "application/json"
+          body:
+            data: '{"messages":[{"data":"SGVsbG8gUHViL1N1Yg==","attributes":{"origin":"citrus"}}]}'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_GCP_HOST}:${CITRUS_TESTCONTAINERS_GCP_PORT}"
+      receiveResponse:
+        response:
+          status: 200
+
+  # Create Camel JBang integration. The Pub/Sub client goes to the emulator without logging in.
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "google/google-pubsub-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${gcp.server.port}"
+                - name: "gcp.url"
+                  value: "http://${CITRUS_TESTCONTAINERS_GCP_HOST}:${CITRUS_TESTCONTAINERS_GCP_PORT}"
+                - name: "gcp.projectId"
+                  value: "kamelets"
+                - name: "gcp.serviceAccountKey"
+                  value: "e30="
+                - name: "camel.component.google-pubsub.endpoint"
+                  value: "${CITRUS_TESTCONTAINERS_GCP_HOST}:${CITRUS_TESTCONTAINERS_GCP_PORT}"
+                - name: "camel.component.google-pubsub.authenticate"
+                  value: "false"
+
+  # The data of the message, as bytes, with the attribute in CamelGooglePubsubAttributes and as the header origin
+  - http:
+      server: "gcpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: '[B'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-Message-Id"
+              value: '@matches([0-9]+)@'
+            - name: "X-Attributes"
+              value: '{origin=citrus}'
+            - name: "origin"
+              value: 'citrus'
+          body:
+            data: 'Hello Pub/Sub'
+  - http:
+      server: "gcpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

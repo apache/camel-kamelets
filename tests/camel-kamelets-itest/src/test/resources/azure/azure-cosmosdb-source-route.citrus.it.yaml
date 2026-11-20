@@ -1,0 +1,75 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: azure-cosmosdb-source-route-test
+description: 'azure-cosmosdb-source reads the changes of the container from the beginning, as a JSON array of items'
+actions:
+  # Start the Cosmos DB emulator of Microsoft (the vNext one, on Linux). The Java SDK of Cosmos DB needs HTTPS: the
+  # emulator has a self-signed certificate, which the client in AzureCosmosClient.java does not check. It does not
+  # check the account key.
+  - testcontainers:
+      start:
+        container:
+          name: "cosmos"
+          image: "mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:vnext-EN20261019"
+          command: "--protocol https"
+          autoRemove: true
+          startUpTimeout: 180
+          exposedPorts:
+            - 8081
+          waitFor:
+            logMessage: '.*System is now fully ready to accept requests.*'
+
+  # Create Camel JBang integration. The source starts once the container exists, which the first route creates.
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "azure/azure-cosmosdb-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${azure.server.port}"
+                - name: "azure.cosmosUrl"
+                  value: "https://${CITRUS_TESTCONTAINERS_COSMOS_HOST}:${CITRUS_TESTCONTAINERS_COSMOS_PORT}"
+                - name: "azure.accessKey"
+                  value: "a2FtZWxldHM="
+          resources:
+            - "AzureCosmosClient.java"
+
+  # The changed item, in a JSON array, with the fields that Cosmos DB adds
+  - http:
+      server: "azureServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "json"
+          headers:
+            - name: "X-Body-Type"
+              value: 'org.apache.camel.converter.stream.InputStreamCache'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+          body:
+            data: '[{"id":"order-1","customer":"citrus","item":"book","_lsn":"@ignore@","_rid":"@ignore@","_etag":"@ignore@","_attachments":"@ignore@","_ts":"@ignore@"}]'
+  - http:
+      server: "azureServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

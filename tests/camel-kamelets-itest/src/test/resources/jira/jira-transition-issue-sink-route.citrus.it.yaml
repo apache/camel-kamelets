@@ -1,0 +1,209 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: jira-transition-issue-sink-route-test
+description: 'jira-transition-issue-sink runs the transition of the ce-issueTransitionId header on the issue of ce-issueKey, then adds the body as a comment'
+variables:
+  - name: "jira.project.id"
+    value: "10001"
+  - name: "jira.issue.id"
+    value: "10003"
+  - name: "jira.issue.key"
+    value: "CAMEL-3"
+  - name: "jira.issue.summary"
+    value: "Fix the build"
+  - name: "jira.issue.comment"
+    value: "Fixed in build 42"
+  - name: "jira.transition.id"
+    value: "31"
+  - name: "jira.username"
+    value: "citrus"
+  - name: "jira.password"
+    value: "secr3t"
+actions:
+  - createVariables:
+      variables:
+        - name: "jira.url"
+          value: "http://localhost:${jira.server.port}"
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "jira/jira-transition-issue-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "jira.url"
+                  value: "${jira.url}"
+                - name: "jira.issue.key"
+                  value: "${jira.issue.key}"
+                - name: "jira.issue.comment"
+                  value: "${jira.issue.comment}"
+                - name: "jira.transition.id"
+                  value: "${jira.transition.id}"
+                - name: "jira.username"
+                  value: "${jira.username}"
+                - name: "jira.password"
+                  value: "${jira.password}"
+
+  # the Jira client first reads the issue
+  - http:
+      server: "jiraServer"
+      receiveRequest:
+        GET:
+          path: "/rest/api/latest/issue/${jira.issue.key}"
+          headers:
+            - name: Authorization
+              value: "Basic citrus:encodeBase64(${jira.username}:${jira.password})"
+  - http:
+      server: "jiraServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              {
+                "expand": "schema,names",
+                "id": "${jira.issue.id}",
+                "key": "${jira.issue.key}",
+                "self": "${jira.url}/rest/api/latest/issue/${jira.issue.id}",
+                "names": {},
+                "schema": {},
+                "fields": {
+                  "project": {
+                    "self": "${jira.url}/rest/api/latest/project/${jira.project.id}",
+                    "id": "${jira.project.id}",
+                    "key": "CAMEL"
+                  },
+                  "summary": "${jira.issue.summary}",
+                  "issuetype": {
+                    "self": "${jira.url}/rest/api/latest/issuetype/3",
+                    "id": "3",
+                    "description": "A task that needs to be done.",
+                    "iconUrl": "${jira.url}/images/icons/task.gif",
+                    "name": "Task",
+                    "subtask": false
+                  },
+                  "created": "2026-11-19T10:15:30.000+0000",
+                  "updated": "2026-11-19T10:15:30.000+0000",
+                  "status": {
+                    "self": "${jira.url}/rest/api/latest/status/3",
+                    "id": 3,
+                    "description": "Work on it has begun.",
+                    "iconUrl": "${jira.url}/images/icons/status_3.gif",
+                    "name": "In Progress"
+                  }
+                }
+              }
+
+  # and the version of Jira
+  - http:
+      server: "jiraServer"
+      receiveRequest:
+        GET:
+          path: "/rest/api/latest/serverInfo"
+  - http:
+      server: "jiraServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: '{"baseUrl":"${jira.url}","version":"9.12.0","versionNumbers":[9,12,0],"buildNumber":9120000,"buildDate":"2026-01-01T00:00:00.000+0000","serverTime":"2026-11-19T10:15:30.000+0000","scmInfo":"abc","serverTitle":"Test Jira Server"}'
+
+  # the transition of the ce-issueTransitionId header, not of the CamelJiraIssueTransitionId header set before the Kamelet
+  - http:
+      server: "jiraServer"
+      receiveRequest:
+        POST:
+          path: "/rest/api/latest/issue/${jira.issue.id}/transitions"
+          headers:
+            - name: Authorization
+              value: "Basic citrus:encodeBase64(${jira.username}:${jira.password})"
+          body:
+            data: '{"transition":{"id":${jira.transition.id}}}'
+  - http:
+      server: "jiraServer"
+      sendResponse:
+        response:
+          status: 204
+          reasonPhrase: "No Content"
+          version: "HTTP/1.1"
+
+  # then the body as a comment
+  - http:
+      server: "jiraServer"
+      receiveRequest:
+        POST:
+          path: "/rest/api/latest/issue/${jira.issue.id}/comment"
+          headers:
+            - name: Authorization
+              value: "Basic citrus:encodeBase64(${jira.username}:${jira.password})"
+          body:
+            data: '{"body":"${jira.issue.comment}"}'
+  - http:
+      server: "jiraServer"
+      sendResponse:
+        response:
+          status: 201
+          reasonPhrase: "Created"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              {
+                "self": "${jira.url}/rest/api/latest/issue/${jira.issue.id}/comment/10100",
+                "id": "10100",
+                "author": {
+                  "self": "${jira.url}/rest/api/latest/user?username=citrus",
+                  "name": "citrus",
+                  "displayName": "Citrus User",
+                  "active": true
+                },
+                "body": "${jira.issue.comment}",
+                "created": "2026-11-19T10:15:31.000+0000",
+                "updated": "2026-11-19T10:15:31.000+0000"
+              }
+
+  # the message is unchanged
+  - http:
+      server: "jiraServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "ce-issueKey"
+              value: '${jira.issue.key}'
+          body:
+            data: '${jira.issue.comment}'
+  - http:
+      server: "jiraServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

@@ -1,0 +1,90 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: ibm-cos-sink-route-test
+description: 'ibm-cos-sink uploads the body as a file named by the file header, and leaves the ETag in the CamelIBMCOSETag header'
+variables:
+  - name: "s3.bucket"
+    value: "ibm-cos-sink"
+actions:
+  # an S3 API (Floci) in place of IBM Cloud Object Storage, with the bucket
+  - testcontainers:
+      start:
+        localstack:
+          services:
+            - "S3"
+          options:
+            buckets: '${s3.bucket}'
+            s3ClientName: "ibmCosSinkS3Client"
+  - waitFor:
+      http:
+        url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          args:
+            - "--dep=camel:groovy"
+            - "--dep=camel:ibm-cos"
+          resources:
+            - "cos-client.yaml"
+          integration:
+            file: "ibmcos/ibm-cos-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "s3.bucket"
+                  value: "${s3.bucket}"
+                - name: "s3.url"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+                - name: "s3.access.key"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
+                - name: "s3.secret.key"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
+                - name: "s3.region"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${services.server.port}"
+
+  # the message is unchanged, with the ETag of the uploaded file
+  - http:
+      server: "servicesServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-ETag"
+              value: '@notEmpty()@'
+          body:
+            data: 'ORD-1,42'
+  - http:
+      server: "servicesServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # the file is in the bucket under the name of the file header
+  - groovy:
+      script:
+        file: "ibmcos/getObject.groovy"

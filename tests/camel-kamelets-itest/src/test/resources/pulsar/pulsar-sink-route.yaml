@@ -42,8 +42,14 @@
             name: X-Body-Type
             simple: "${body.getClass().getName()}"
         - setHeader:
+            name: X-Body
+            simple: "${bodyAs(String)}"
+        - setHeader:
             name: X-Content-Type
             simple: "ct=${header.Content-Type}"
+        - setHeader:
+            name: X-Message-Id
+            simple: "${header.CamelPulsarProducerMessageId}"
         - to:
             uri: "{{http.sink.url}}/result"
 

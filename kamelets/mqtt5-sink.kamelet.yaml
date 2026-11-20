@@ -35,9 +35,9 @@ spec:
 
       Use it to send commands or data to IoT devices, or to publish readings and events, when the broker or the clients use MQTT 5. The broker must support MQTT 5.
 
-      Input: the body is the payload, as text or bytes, and is sent as it is. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The headers of the message are not sent, not even as MQTT 5 user properties.
+      Input: the body is the payload, as text or bytes. It is turned into bytes, and the `Content-Type` header is set to `application/octet-stream`, before it is sent. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The headers of the message are not sent, not even as MQTT 5 user properties.
 
-      Output: the message is unchanged.
+      Output: the body is the payload, as bytes, and the `Content-Type` header is `application/octet-stream`. The other headers are kept.
 
       Good to know: messages are published with quality of service 2 (exactly once) unless `qos` is set, and the broker does not keep them for clients that subscribe later unless `retained` is true. It connects with no TLS unless `brokerUrl` starts with `ssl://`. With TLS it checks the certificate and the host name of the broker, and trusts the certificate authorities that Java trusts by default, or instead the ones in `sslTruststoreLocation`. It connects when the integration starts, and the integration fails to start when the broker cannot be reached or fails these checks. Headers that start with `CamelPaho` are removed from the message first, so they cannot change what the Kamelet does.
     required:
@@ -90,6 +90,14 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+  dataTypes:
+    in:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The payload to publish, as bytes."
+          mediaType: application/octet-stream
   dependencies:
     - "camel:paho-mqtt5"
     - "camel:kamelet"
