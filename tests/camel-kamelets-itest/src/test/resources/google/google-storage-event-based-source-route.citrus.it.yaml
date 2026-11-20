@@ -155,6 +155,10 @@ actions:
               value: 'kamelets-orders'
             - name: "X-Object-Content-Type"
               value: 'text/plain'
+            - name: "X-Object-Name"
+              value: 'name='
+            - name: "X-Bucket-Name"
+              value: 'bucket='
           body:
             data: 'Hello Cloud Storage'
   - http:

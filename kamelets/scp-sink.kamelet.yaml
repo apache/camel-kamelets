@@ -38,7 +38,7 @@ spec:
 
       Input: the body is the content of the file, as text, bytes or a stream. The name of the file comes from the `CamelFileName` header, which may hold subdirectories, such as `reports/data.csv`; without it, a unique name is generated.
 
-      Output: the message is unchanged.
+      Output: the message is unchanged. The `CamelFileNameProduced` header is set to the path of the file on the server.
 
       Good to know: files are written in `directoryName`, or else in the home directory of `username`, with the rights of that user, and a file with the same name is replaced. `directoryName` must exist: when it does not, every file is written as a file with the name of the directory. A file name that points outside the directory fails the message. The key of the server is checked against the file in `knownHostsUri`, or else `~/.ssh/known_hosts` of the user that runs the integration, unless `strictHostKeyChecking` is `no`. Do not place it after messages from an untrusted source. Headers that start with `CamelFile` or `CamelOverruleFile`, except `CamelFileName`, are removed from the message first, so they cannot change what the Kamelet does.
     required:

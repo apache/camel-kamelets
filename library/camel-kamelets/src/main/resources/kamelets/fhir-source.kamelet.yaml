@@ -35,7 +35,7 @@ spec:
 
       Use it to copy healthcare records, such as patients or observations, from a FHIR server into another system, or to check a FHIR server on a schedule. To create or update resources on a FHIR server, use `fhir-sink`.
 
-      Output: the body is a FHIR Bundle of type `searchset`, as JSON text, with the number of resources found (`total`) and the resources themselves under `entry`. The `Content-Type` header is `application/fhir+json`.
+      Output: the body is a FHIR Bundle of type `searchset`, as JSON text (a stream), with the number of resources found (`total`) and the resources themselves under `entry`. The `Content-Type` header is `application/fhir+json`.
 
       Good to know: a new search starts about every half second unless `delay` is set, and every search returns all the matching resources again, not only the new ones; add a filter such as `_lastUpdated` to `url` to narrow it. Log in with `username` and `password`, or with `accessToken`, or leave them out for a server without login; when both kinds are set, both are sent.
     required:

@@ -35,7 +35,7 @@ spec:
 
       Use it to react to changes in a shared cache, for example to update a search index or notify another service when a value changes. To write to a cache, use `infinispan-sink`.
 
-      Output: the message has no body: the event is in headers. `infinispan-event-type` is the kind of event, such as `CLIENT_CACHE_ENTRY_CREATED`, `infinispan-key` the key of the entry, `infinispan-cache-name` the name of the cache and `infinispan-entry-version` the version of the entry. The same values are in `ce-infinispaneventtype`, `ce-infinispankey`, `ce-infinispancachename` and `ce-infinispanentryversion`. To read the value, look up the key in the cache.
+      Output: the message has no body: the event is in headers. `infinispan-event-type` is the kind of event, such as `CLIENT_CACHE_ENTRY_CREATED`, `infinispan-key` the key of the entry, `infinispan-cache-name` the name of the cache and `infinispan-entry-version` the version of the entry. The same values are in `ce-infinispaneventtype`, `ce-infinispankey`, `ce-infinispancachename` and `ce-infinispanentryversion`, and in the `CamelInfinispanEventType`, `CamelInfinispanKey`, `CamelInfinispanCacheName` and `CamelInfinispanEntryVersion` headers, with `CamelInfinispanCommandRetried`. To read the value, look up the key in the cache.
 
       Good to know: only the changes made while the integration runs are received. The cache must already exist on the server. Recent Infinispan servers do not accept the default `saslMechanism` of `DIGEST-MD5`: set it to `SCRAM-SHA-512`. The connection has TLS only when `sslTruststoreLocation` is set, together with `sslSniHostName`.
     required:

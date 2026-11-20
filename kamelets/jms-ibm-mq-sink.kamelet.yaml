@@ -38,7 +38,7 @@ spec:
 
       Input: text is sent as a JMS text message, and bytes as a JMS bytes message; `jmsMessageType` sends text or bytes as the other kind. The headers of the message, except the Camel ones, are sent along as JMS properties of the message.
 
-      Output: the message is unchanged.
+      Output: the message is unchanged, with the name of the queue or topic it was sent to in the `CamelJMSDestinationProduced` header.
 
       Good to know: the IBM MQ client library is not included, as its licence is not the Apache one: add `mvn:com.ibm.mq:com.ibm.mq.jakarta.client` with a version to the dependencies of the integration (Camel JBang adds it by itself). It connects as a client over the network, with no TLS unless `sslCipherSuite` is set; the trust store and the key store for TLS are those of the Java runtime (`javax.net.ssl.trustStore`, `javax.net.ssl.keyStore`). For a multi-instance queue manager, list its instances in `connectionNameList`. Messages go to a queue unless `destinationType` is `topic`, and a message sent to a topic reaches only the receivers subscribed at that moment. Messages are persistent, with priority 4, and never expire, unless `deliveryPersistent`, `priority` and `timeToLive` say otherwise. It does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does. Headers that start with `CamelJms` are removed from the message first, so they cannot change what the Kamelet does.
     required:
