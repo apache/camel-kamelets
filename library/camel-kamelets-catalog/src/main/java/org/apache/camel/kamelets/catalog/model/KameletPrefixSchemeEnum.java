@@ -76,7 +76,6 @@ public enum KameletPrefixSchemeEnum {
     log("log", "log"),
     mail("mail", "imaps"),
     mariadb("mariadb", "sql"),
-    minio("minio", "minio"),
     mongodb_changes_stream("mongodb-changes-stream", "mongodb"),
     mongodb("mongodb", "mongodb"),
     mqtt5("mqtt5", "paho-mqtt5"),

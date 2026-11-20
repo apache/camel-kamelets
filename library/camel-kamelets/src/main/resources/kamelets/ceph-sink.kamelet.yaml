@@ -34,7 +34,7 @@ spec:
     description: |-
       Uploads each message as a file (object) to a bucket of a Ceph Object Gateway, the S3-compatible storage of Ceph.
 
-      Use it to store data in Ceph, such as reports, exports, images or received messages to keep as an archive. For MinIO use `minio-sink`, and for Amazon S3 use `aws-s3-sink`.
+      Use it to store data in Ceph, such as reports, exports, images or received messages to keep as an archive. For Amazon S3, or another S3-compatible storage such as MinIO, use `aws-s3-sink` (with `overrideEndpoint`, `uriEndpointOverride` and `forcePathStyle` for a storage other than AWS).
 
       Input: the body is the content of the file, as text, bytes or a stream. The key (the name of the file in the bucket) comes from the optional `file` header, or the `ce-file` header; when neither is set it is `keyName`, or a generated unique name when `keyName` is not set either.
 
