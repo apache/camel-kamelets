@@ -49,6 +49,7 @@ spec:
           description: "Set by `kafka-source` when `allowManualCommit` is true. Without it, nothing is saved."
           type: object
   dependencies:
+  - "camel:kafka"
   - "camel:kamelet"
   template:
     from:

@@ -35,11 +35,11 @@ spec:
 
       Use it to map the JSON of one system to the JSON another system expects, for example to rename fields or move them into a nested object, when you already have Jolt specifications. `jslt-action` does the same with a query language, and is often easier to write.
 
-      Input: parsed JSON, a Map (or a List). Since Camel 4.24, JSON text, bytes and a stream work too. With older versions they do not fail but give an empty body, and so does the parsed JSON of `json-deserialize-action`.
+      Input: parsed JSON as a Map (or a List), or a JSON object or array as text, bytes or a stream. JSON text, bytes and a stream need Camel 4.24 or later; with older versions they do not fail but give an empty body.
 
       Output: the body is the result as parsed JSON, a Map (or a List), not JSON text. Add `json-serialize-action` after it to get JSON text. The headers are kept.
 
-      Good to know: the specification cannot read headers, only the body. It is loaded from a file, the classpath or a URL given by the `template` option; it cannot come from the message. Headers that start with `CamelJolt` are removed from the message first, so they cannot change what the Kamelet does.
+      Good to know: a Jackson `JsonNode`, such as the output of `json-deserialize-action`, is not read: the body becomes empty (null), with no error. Put `json-serialize-action` before it to give it JSON text. Text that is not a JSON object or array, such as `hello`, also gives an empty body. The specification cannot read headers, only the body. It is loaded from a file, the classpath or a URL given by the `template` option; it cannot come from the message. Headers that start with `CamelJolt` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - template
     type: object

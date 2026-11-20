@@ -51,7 +51,7 @@ spec:
         example: CamelFileName
       outputFormat:
         title: Output Format
-        description: What the body becomes. `text`, the default, is the plain text of the document. `html` is the document as an XHTML page, with its paragraphs, and for some formats its headings, lists and tables, as HTML elements, and with the metadata Tika found, such as the title, as `meta` elements in the `head`. `xml` is the same page with an XML declaration on top. With `html` and `xml`, a document whose metadata holds a character that XML does not allow, such as the NUL character that some PDF writers put in it, fails the message; `text` reads it.
+        description: What the body becomes. `text`, the default, is the plain text of the document. `html` is the document as an XHTML page, with its paragraphs, and for some formats its headings, lists and tables, as HTML elements, and with the metadata Tika found, such as the title, as `meta` elements in the `head`. `xml` is the same page with an XML declaration on top. With `html`, a document without a title, such as plain text, the text of an earlier extraction, or HTML without a `title` element or with an empty one, fails the message with a `TIKA-237` error about an invalid XML character, a Camel bug; `xml` reads them.
         type: string
         enum: ["text", "html", "xml"]
         default: text
