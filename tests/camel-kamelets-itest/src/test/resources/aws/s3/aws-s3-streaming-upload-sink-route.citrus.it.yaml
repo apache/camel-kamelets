@@ -59,6 +59,8 @@ actions:
               value: 'ct='
             - name: "X-ETag"
               value: 'etag='
+            - name: "X-Response-Code"
+              value: 'code='
           body:
             data: 'line 1;'
   - http:
@@ -85,6 +87,8 @@ actions:
               value: 'ct='
             - name: "X-ETag"
               value: '@matches(''etag=.+'')@'
+            - name: "X-Response-Code"
+              value: 'code=200'
           body:
             data: 'line 2;'
   - http:

@@ -15,7 +15,7 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: ceph-event-based-source-get-object-test
+name: aws-s3-ceph-event-based-source-get-object-test
 variables:
   - name: "aws.s3.bucketNameOrArn"
     value: "bucket-ceph-events"
@@ -61,7 +61,7 @@ actions:
       cli:
         run:
           integration:
-            file: "aws/s3/ceph-event-based-source-get-object.yaml"
+            file: "aws/s3/aws-s3-ceph-event-based-source-get-object.yaml"
             systemProperties:
               properties:
                 - name: "kafka.topic"
@@ -81,6 +81,7 @@ actions:
   - createEndpoint:
       name: cephEventsProducer
       type: "kafka"
+      autoClose: true
       properties:
         topic: "${kafka.topic}"
         server: "${CITRUS_TESTCONTAINERS_REDPANDA_BOOTSTRAP_SERVERS}"
@@ -99,10 +100,10 @@ actions:
   - camel:
       cli:
         verify:
-          integration: "ceph-event-based-source-get-object"
+          integration: "aws-s3-ceph-event-based-source-get-object"
           logMessage: "Read dir/my file+x=1.txt: Content of the first file"
   - camel:
       cli:
         verify:
-          integration: "ceph-event-based-source-get-object"
+          integration: "aws-s3-ceph-event-based-source-get-object"
           logMessage: "Read reports/a&b=c.txt: Content of the second file"
