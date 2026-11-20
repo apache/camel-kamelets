@@ -63,6 +63,7 @@ actions:
   - createEndpoint:
       name: kafkaRouterConsumer
       type: "kafka"
+      autoClose: true
       properties:
         topic: "${topic}"
         server: "${CITRUS_TESTCONTAINERS_REDPANDA_BOOTSTRAP_SERVERS}"
