@@ -41,7 +41,7 @@ spec:
 
       Output: when it is used inside a route, the body afterwards is what the function returned, as text (JSON text for most functions). The `CamelAwsLambdaStatusCode` header holds the status code of the call, and the `Content-Type` header is `application/json`.
 
-      Good to know: an error raised inside the function does not fail the message: the body is then the error that the function reported, and the `CamelAwsLambdaFunctionError` header is set, for example to `Unhandled`. A function that does not exist fails the message. Each call waits until the function ends; the function cannot be called asynchronously (invocation type `Event`). Set `operation` to read the settings, versions or aliases of the function instead of calling it, or to publish a new version; the body afterwards is then the answer of AWS, an object of the AWS SDK for Java, such as a `GetFunctionConfigurationResponse` (not JSON text). To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsLambda` are removed from the message first, so they cannot change what the Kamelet does.
+      Good to know: an error raised inside the function does not fail the message: the body is then the error that the function reported, and the `CamelAwsLambdaFunctionError` header is set, for example to `Unhandled`. A function that does not exist fails the message. Each call waits until the function ends, unless `invocationType` is `Event`: the function is then called asynchronously, and the call answers at once with status code 202 and an empty body. With `DryRun`, the function is not run; the call only checks that it can be (status code 204). With `logType` set to `Tail`, the `CamelAwsLambdaLogResult` header holds the last 4 KB of the log of the call, base64-encoded. Set `operation` to read the settings, versions or aliases of the function instead of calling it, or to publish a new version; the body afterwards is then the answer of AWS, an object of the AWS SDK for Java, such as a `GetFunctionConfigurationResponse` (not JSON text). To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsLambda` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - function
       - region
@@ -131,6 +131,16 @@ spec:
         type: string
         example: getFunctionConfiguration
         enum: ["invokeFunction", "getFunction", "getFunctionConfiguration", "listVersions", "listAliases", "publishVersion", "listFunctions"]
+      invocationType:
+        title: Invocation Type
+        description: "How the function is called: `RequestResponse` waits until the function ends and gives its result; `Event` calls it asynchronously and answers at once with status code 202 and an empty body; `DryRun` only checks that the function can be called (status code 204). When not set, `RequestResponse`."
+        type: string
+        enum: ["RequestResponse", "Event", "DryRun"]
+      logType:
+        title: Log Type
+        description: "Set to `Tail` to get the last 4 KB of the log of a `RequestResponse` call in the `CamelAwsLambdaLogResult` header, base64-encoded."
+        type: string
+        enum: ["None", "Tail"]
   dataTypes:
     in:
       default: json
@@ -177,3 +187,5 @@ spec:
               proxyPort: "{{?proxyPort}}"
               proxyProtocol: "{{?proxyProtocol}}"
               operation: "{{?operation}}"
+              invocationType: "{{?invocationType}}"
+              logType: "{{?logType}}"

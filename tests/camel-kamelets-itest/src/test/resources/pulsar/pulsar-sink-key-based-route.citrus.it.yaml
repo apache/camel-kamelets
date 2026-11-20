@@ -1,0 +1,79 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: pulsar-sink-key-based-route-test
+description: 'pulsar-sink sends a text message, with a key from the key header and properties from a Map, to a topic in Pulsar'
+actions:
+  # Start Pulsar
+  - testcontainers:
+      start:
+        container:
+          name: "pulsar"
+          image: "apachepulsar/pulsar:5.0.1"
+          command: "bin/pulsar standalone"
+          autoRemove: true
+          startUpTimeout: 300
+          exposedPorts:
+            - 6650
+          waitFor:
+            logMessage: '.*Created namespace .*namespace=public/default.*'
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "pulsar/pulsar-sink-key-based-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${http.server.port}"
+                - name: "pulsar.service.url"
+                  value: "pulsar://${CITRUS_TESTCONTAINERS_PULSAR_HOST}:${CITRUS_TESTCONTAINERS_PULSAR_PORT}"
+
+  # After the Kamelet the body is the payload as bytes, with Content-Type application/octet-stream
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: '[B'
+            - name: "X-Body"
+              value: 'Hello Pulsar'
+            - name: "X-Content-Type"
+              value: 'ct=application/octet-stream'
+            - name: "key"
+              value: 'order-1'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The message is on the topic, with its key and properties
+  - camel:
+      cli:
+        verify:
+          integration: "pulsar-sink-key-based-route"
+          logMessage: 'Received from the topic: Hello Pulsar (key=order-1, properties={origin=citrus})'
+          maxAttempts: 30
+          delayBetweenAttempts: 1000

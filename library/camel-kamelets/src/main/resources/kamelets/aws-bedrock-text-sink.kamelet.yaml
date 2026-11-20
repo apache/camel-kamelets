@@ -37,11 +37,11 @@ spec:
 
       Use it to summarize, classify, translate or write text with a large language model, for example to summarize support tickets or draft replies. To answer questions from your own documents in a Bedrock knowledge base, use `aws-bedrock-agent-runtime-sink`.
 
-      Input: the body is the request of the model, as JSON text in the format of the chosen model, not the bare prompt, or as a Map, which is written as JSON. For Amazon Titan, for example `{"inputText":"Summarize: ...","textGenerationConfig":{"maxTokenCount":500}}`. For Claude 3, the Messages format, for example `{"anthropic_version":"bedrock-2023-05-31","max_tokens":500,"messages":[{"role":"user","content":"Summarize: ..."}]}`.
+      Input: the body is the request of the model, as JSON text in the format of the chosen model, not the bare prompt. For Amazon Titan, for example `{"inputText":"Summarize: ...","textGenerationConfig":{"maxTokenCount":500}}`. For Claude 3, the Messages format, for example `{"anthropic_version":"bedrock-2023-05-31","max_tokens":500,"messages":[{"role":"user","content":"Summarize: ..."}]}`. With `operation` set to `converse`, the body is the prompt itself, as text, such as `Summarize: ...`, whatever the model.
 
-      Output: when it is used inside a route, the body afterwards is the answer, in a form that depends on the model: for Titan the response as JSON text, with the generated text in `results`; for Claude 3 the response as parsed JSON, with the generated text in `content`; for the older Claude models only the generated text, as text. The `Content-Type` header stays `application/json`, from the request.
+      Output: when it is used inside a route, the body afterwards is the answer, in a form that depends on the model: for Titan the response as JSON text, with the generated text in `results`; for Claude 3 the response as parsed JSON, with the generated text in `content`; for the older Claude models only the generated text, as text. With `converse`, the generated text, as text, and the `CamelAwsBedrockConverseStopReason` header says why the model stopped, such as `end_turn`, or `guardrail_intervened` when the guardrail blocked the prompt or the answer: the body is then the message that the guardrail is configured to give.
 
-      Good to know: the request and response formats are those of the model provider, described for each model in the Amazon Bedrock documentation; a body in another format fails. Each message is one call of the model. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsBedrock` are removed from the message first, so they cannot change what the Kamelet does.
+      Good to know: with `invokeTextModel`, the request and response formats are those of the model provider, described for each model in the Amazon Bedrock documentation; a body in another format fails. A guardrail (`guardrailIdentifier`) works only with `converse`. Each message is one call of the model. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsBedrock` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - modelId
       - region
@@ -52,6 +52,26 @@ spec:
         description: "The ID of the Bedrock text model to call. The body must be a request in the format of this model: Amazon Titan (`amazon.titan-text-*`), AI21 Labs Jurassic (`ai21.j2-*`) or Anthropic Claude (`anthropic.claude-*`)."
         type: string
         enum: ["amazon.titan-text-express-v1", "amazon.titan-text-lite-v1", "ai21.j2-ultra-v1", "ai21.j2-mid-v1", "anthropic.claude-instant-v1", "anthropic.claude-v2", "anthropic.claude-v2:1", "anthropic.claude-3-sonnet-20240229-v1:0"]
+      operation:
+        title: Operation
+        description: "How the model is called. `invokeTextModel` sends the body as the request of the model, in the format of its provider. `converse` sends the body as the prompt, as plain text, with the Converse API of Bedrock, which works the same way for every model, and gives the answer as text. When it is not set, it is `invokeTextModel`."
+        type: string
+        enum: ["invokeTextModel", "converse"]
+        default: invokeTextModel
+      guardrailIdentifier:
+        title: Guardrail Identifier
+        description: "The ID or ARN of an Amazon Bedrock guardrail that checks the prompt and the answer, for example to block a topic or to hide personal data. Only used when `operation` is `converse`."
+        type: string
+        example: gr-abc123xyz
+      guardrailVersion:
+        title: Guardrail Version
+        description: "The version of the guardrail in `guardrailIdentifier`, such as `1`. When it is not set, it is `DRAFT`, the working draft of the guardrail."
+        type: string
+        example: "1"
+      guardrailTrace:
+        title: Guardrail Trace
+        description: "If true, Bedrock reports what the guardrail found, in the `CamelAwsBedrockGuardrailTrace` header. When it is not set, it is false."
+        type: boolean
       accessKey:
         title: Access Key
         description: "The access key ID of an IAM user, which AWS gives when you create an access key for the user (in the AWS console: IAM, Users, Security credentials). Use it together with `secretKey`, or leave both empty and set `useDefaultCredentialsProvider` or `useProfileCredentialsProvider` instead."
@@ -126,12 +146,13 @@ spec:
         enum: ["HTTP", "HTTPS"]
         example: HTTP
   dataTypes:
+    # No 'default: json' here on purpose: with operation converse the body is the prompt as
+    # plain text, which the json data type would turn into a quoted JSON string.
     in:
-      default: json
       types:
         json:
           format: "application-json"
-          description: "The request of the model, as JSON text in bytes."
+          description: "The request of the model for `invokeTextModel`, as JSON text in the format of the chosen model."
           mediaType: application/json
   dependencies:
     - "camel:jackson3"
@@ -158,8 +179,11 @@ spec:
             parameters:
               label: bedrock-text
               accessKey: "RAW({{?accessKey}})"
+              guardrailIdentifier: "{{?guardrailIdentifier}}"
+              guardrailTrace: "{{?guardrailTrace}}"
+              guardrailVersion: "{{?guardrailVersion}}"
               modelId: "{{modelId}}"
-              operation: invokeTextModel
+              operation: "{{operation}}"
               overrideEndpoint: "{{overrideEndpoint}}"
               profileCredentialsName: "{{?profileCredentialsName}}"
               region: "{{region}}"

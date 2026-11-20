@@ -1,0 +1,101 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: aws-timestream-query-sink-all-pages-route-test
+# With queryAllPages, the Kamelet reads the next pages with the NextToken of each answer, and gives all the rows in
+# one answer. The Citrus HTTP server stands in for Timestream.
+actions:
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "aws/timestream/aws-timestream-query-sink-all-pages-route.yaml"
+            systemProperties:
+              file: "aws/aws-stand-in.properties"
+
+  # The first page, with the token of the next one
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/"
+          headers:
+            - name: "X-Amz-Target"
+              value: 'Timestream_20181101.Query'
+        validate:
+          - jsonPath:
+              - expression: '$.QueryString'
+                value: 'SELECT sensor, temperature FROM sensors.readings'
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          headers:
+            - name: "Content-Type"
+              value: 'application/x-amz-json-1.0'
+          body:
+            data: '{"QueryId":"query-1","NextToken":"page-2","Rows":[{"Data":[{"ScalarValue":"sensor-1"},{"ScalarValue":"21.5"}]}],"ColumnInfo":[{"Name":"sensor","Type":{"ScalarType":"VARCHAR"}},{"Name":"temperature","Type":{"ScalarType":"DOUBLE"}}]}'
+
+  # The second page is asked for with that token
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/"
+        validate:
+          - jsonPath:
+              - expression: '$.NextToken'
+                value: 'page-2'
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          headers:
+            - name: "Content-Type"
+              value: 'application/x-amz-json-1.0'
+          body:
+            data: '{"QueryId":"query-1","Rows":[{"Data":[{"ScalarValue":"sensor-2"},{"ScalarValue":"19.0"}]}],"ColumnInfo":[{"Name":"sensor","Type":{"ScalarType":"VARCHAR"}},{"Name":"temperature","Type":{"ScalarType":"DOUBLE"}}]}'
+
+  # One answer with the rows of both pages
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'software.amazon.awssdk.services.timestreamquery.model.QueryResponse'
+            - name: "X-Rows"
+              value: '2'
+          body:
+            data: 'sensor-1,sensor-2'
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          body:
+            data: "OK"
