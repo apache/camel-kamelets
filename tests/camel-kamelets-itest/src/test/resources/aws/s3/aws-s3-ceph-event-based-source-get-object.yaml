@@ -33,3 +33,5 @@
             type: String
         - log:
             message: "Read ${header.CamelAwsS3ProducedKey}: ${body}"
+        - log:
+            message: "Event ${header[ceph-event-id]}"

@@ -153,6 +153,8 @@ actions:
               value: 'in/order-1.txt'
             - name: "X-Bucket-Id"
               value: 'kamelets-orders'
+            - name: "X-Event-Id"
+              value: "@matches('OBJECT_FINALIZE/kamelets-orders/in/order-1.txt/[0-9]+/1')@"
             - name: "X-Object-Content-Type"
               value: 'text/plain'
             - name: "X-Object-Name"

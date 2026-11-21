@@ -38,9 +38,9 @@ spec:
 
       Use it to react to new files in a bucket as soon as they arrive, without listing the bucket again and again, for example to process uploaded documents or imported data files. To read the files of a bucket by polling it, use `aws-s3-source`.
 
-      Output: the body is the EventBridge event, as JSON text: `detail-type` says what happened (such as `Object Created` or `Object Deleted`), `detail.bucket.name` is the bucket and `detail.object.key` the key of the file. With `getObject` set to true, the event of a file uploaded with a simple upload (PutObject) carries the content of the file instead, as a stream, with the `CamelAwsS3ProducedBucketName` and `CamelAwsS3ProducedKey` headers; the other events then come as parsed JSON (a Jackson `JsonNode`).
+      Output: the body is the EventBridge event, as JSON text: `detail-type` says what happened (such as `Object Created` or `Object Deleted`), `detail.bucket.name` is the bucket and `detail.object.key` the key of the file. With `getObject` set to true, the event of a file uploaded with a simple upload (PutObject) carries the content of the file instead, as a stream, with the `CamelAwsS3ProducedBucketName` and `CamelAwsS3ProducedKey` headers; the other events then come as parsed JSON (a Jackson `JsonNode`). In both cases, the `aws-s3-event-id` header identifies the event.
 
-      Good to know: it needs a setup in AWS. In the properties of the bucket, turn on sending events to Amazon EventBridge; then create an EventBridge rule for the events of source `aws.s3` and that bucket, with the queue as its target. Each event is deleted from the queue once it has been processed, unless `deleteAfterRead` is false; an event that fails stays in the queue and is received again when its visibility timeout (`visibilityTimeout`) ends. The files stay in the bucket. `getObject` skips files created by a multipart upload or a copy, and never connects through `uriEndpointOverride`. It logs in to the queue and, with `getObject`, to the bucket with `accessKey` and `secretKey`, or without keys, through the IAM role or the AWS profile of the environment, with `useDefaultCredentialsProvider` or `useProfileCredentialsProvider`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+      Good to know: it needs a setup in AWS. In the properties of the bucket, turn on sending events to Amazon EventBridge; then create an EventBridge rule for the events of source `aws.s3` and that bucket, with the queue as its target. Each event is deleted from the queue once it has been processed, unless `deleteAfterRead` is false; an event that fails stays in the queue and is received again when its visibility timeout (`visibilityTimeout`) ends. S3 delivers its events at least once, so the same event can come twice, in two SQS messages with different IDs; `aws-s3-event-id` is the same in both. To process each event once, put the steps after the Kamelet in an `idempotentConsumer` step on `${header[aws-s3-event-id]}`. A `MemoryIdempotentRepository` remembers the events of one process, until it restarts; with more than one replica, use a shared repository, such as the ones of `camel-infinispan` or `camel-sql`. The files stay in the bucket. `getObject` skips files created by a multipart upload or a copy, and never connects through `uriEndpointOverride`. It logs in to the queue and, with `getObject`, to the bucket with `accessKey` and `secretKey`, or without keys, through the IAM role or the AWS profile of the environment, with `useDefaultCredentialsProvider` or `useProfileCredentialsProvider`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
     required:
       - queueNameOrArn
       - region
@@ -224,6 +224,10 @@ spec:
     # the content of the file. See #3117.
     out:
       headers:
+        aws-s3-event-id:
+          title: Event ID
+          description: "What identifies the event, the same in each copy of it, to skip the copies: the event type, the bucket, the key and the `sequencer` of the event, such as `Object Created/my-bucket/in/order.csv/0055AED6DCD90281E5`, or, for an event without a sequencer, the `id` of the EventBridge event."
+          type: string
         CamelAwsSqsMessageId:
           title: SQS Message ID
           description: The ID of the SQS message that carried the event.
@@ -271,6 +275,28 @@ spec:
         waitTimeSeconds: "{{?waitTimeSeconds}}"
         visibilityTimeout: "{{?visibilityTimeout}}"
       steps:
+        # What identifies the event, also in a copy of it: S3 delivers its events at least once, and the
+        # EventBridge `id` of a copy may differ. The sequencer orders the events of one key (PUT and DELETE).
+        - choice:
+            when:
+              - expression:
+                  jsonpath:
+                    expression: "$.detail.object.sequencer"
+                    suppressExceptions: true
+                steps:
+                  - setHeader:
+                      name: aws-s3-event-id
+                      expression:
+                        simple:
+                          expression: "${jsonpath($['detail-type'])}/${jsonpath($.detail.bucket.name)}/${jsonpath($.detail.object.key)}/${jsonpath($.detail.object.sequencer)}"
+            otherwise:
+              steps:
+                - setHeader:
+                    name: aws-s3-event-id
+                    expression:
+                      jsonpath:
+                        expression: "$.id"
+                        suppressExceptions: true
         - choice:
             precondition: true
             when:

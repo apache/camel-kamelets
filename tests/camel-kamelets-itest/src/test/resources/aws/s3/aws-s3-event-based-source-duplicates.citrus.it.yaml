@@ -1,0 +1,141 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: aws-s3-event-based-source-duplicates-test
+description: 'aws-s3-event-based-source gives the copies of an S3 event the same aws-s3-event-id, so an idempotentConsumer step after it processes each event once'
+variables:
+  - name: "aws.sqs.queueName"
+    value: "queue-s3-dup-events"
+actions:
+  # Create AWS infrastructure (Floci container)
+  - testcontainers:
+      start:
+        localstack:
+          services:
+            - "SQS"
+          options:
+            queues: '${aws.sqs.queueName}'
+            sqsClientName: "sqsDupEventsClient"
+  - waitFor:
+      http:
+        url: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "aws/s3/aws-s3-event-based-source-duplicates.yaml"
+            systemProperties:
+              properties:
+                - name: "aws.sqs.queueName"
+                  value: "${aws.sqs.queueName}"
+                - name: "aws.uriEndpointOverride"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL}"
+                - name: "aws.secretKey"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_SECRET_KEY}"
+                - name: "aws.accessKey"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_ACCESS_KEY}"
+                - name: "aws.region"
+                  value: "${CITRUS_TESTCONTAINERS_LOCALSTACK_REGION}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${aws.sink.server.port}"
+
+  # An event with a sequencer: its ID is made of the event type, the bucket, the key and the sequencer
+  - send:
+      endpoint: camel:aws2-sqs://${aws.sqs.queueName}?amazonSQSClient=#sqsDupEventsClient
+      message:
+        body:
+          data: '{"version":"0","id":"e-1","source":"aws.s3","detail-type":"Object Created","detail":{"bucket":{"name":"bucket-dup-events"},"object":{"key":"in/order 1.csv","sequencer":"0055AED6DCD90281E5"},"reason":"PutObject"}}'
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/event"
+          headers:
+            - name: "X-Event-Id"
+              value: 'Object Created/bucket-dup-events/in/order 1.csv/0055AED6DCD90281E5'
+          type: "plaintext"
+          body:
+            data: "@contains('\"id\":\"e-1\"')@"
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # A copy of it in another SQS message, with another EventBridge id, is skipped. An event without a
+  # sequencer has the EventBridge id as its ID, and a copy of it is skipped too.
+  - send:
+      endpoint: camel:aws2-sqs://${aws.sqs.queueName}?amazonSQSClient=#sqsDupEventsClient
+      message:
+        body:
+          data: '{"version":"0","id":"e-2","source":"aws.s3","detail-type":"Object Created","detail":{"bucket":{"name":"bucket-dup-events"},"object":{"key":"in/order 1.csv","sequencer":"0055AED6DCD90281E5"},"reason":"PutObject"}}'
+  - send:
+      endpoint: camel:aws2-sqs://${aws.sqs.queueName}?amazonSQSClient=#sqsDupEventsClient
+      message:
+        body:
+          data: '{"version":"0","id":"e-3","source":"aws.s3","detail-type":"Object Tags Added","detail":{"bucket":{"name":"bucket-dup-events"},"object":{"key":"in/order 1.csv"}}}'
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/event"
+          headers:
+            - name: "X-Event-Id"
+              value: 'e-3'
+          type: "plaintext"
+          body:
+            data: "@contains('\"id\":\"e-3\"')@"
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  - send:
+      endpoint: camel:aws2-sqs://${aws.sqs.queueName}?amazonSQSClient=#sqsDupEventsClient
+      message:
+        body:
+          data: '{"version":"0","id":"e-3","source":"aws.s3","detail-type":"Object Tags Added","detail":{"bucket":{"name":"bucket-dup-events"},"object":{"key":"in/order 1.csv"}}}'
+  - send:
+      endpoint: camel:aws2-sqs://${aws.sqs.queueName}?amazonSQSClient=#sqsDupEventsClient
+      message:
+        body:
+          data: '{"version":"0","id":"e-4","source":"aws.s3","detail-type":"Object Deleted","detail":{"bucket":{"name":"bucket-dup-events"},"object":{"key":"in/order 1.csv","sequencer":"0055AED6DCD90281F0"},"reason":"DeleteObject"}}'
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/event"
+          headers:
+            - name: "X-Event-Id"
+              value: 'Object Deleted/bucket-dup-events/in/order 1.csv/0055AED6DCD90281F0'
+          type: "plaintext"
+          body:
+            data: "@contains('\"id\":\"e-4\"')@"
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

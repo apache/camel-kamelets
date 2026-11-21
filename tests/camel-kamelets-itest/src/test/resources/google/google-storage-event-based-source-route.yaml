@@ -42,6 +42,9 @@
             name: X-Bucket-Id
             simple: "${header.bucketId}"
         - setHeader:
+            name: X-Event-Id
+            simple: "${header[google-storage-event-id]}"
+        - setHeader:
             name: X-Object-Content-Type
             simple: "${header.CamelGoogleCloudStorageContentType}"
         - setHeader:
