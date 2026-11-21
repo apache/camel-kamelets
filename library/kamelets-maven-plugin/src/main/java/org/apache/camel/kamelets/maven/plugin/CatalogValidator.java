@@ -233,6 +233,7 @@ public final class CatalogValidator {
         verifyTemplateConvention(kamelets, errors);
         verifyDependencies(kamelets, errors);
         verifyCatalogVersion(kamelets, errors);
+        verifyDataTypes(kamelets, errors);
         return errors;
     }
 
@@ -544,6 +545,31 @@ public final class CatalogValidator {
                 summary.add(q(e.getKey()) + " (" + e.getValue() + " kamelets)");
             }
             errors.add("inconsistent " + VERSION_ANNOTATION + " across the catalog: " + String.join(", ", summary));
+        }
+    }
+
+    /**
+     * Every Kamelet declares in {@code spec.dataTypes} what it takes and gives on its own side: {@code out} for a
+     * source, {@code in} for a sink, both for an action. A Kamelet with nothing to declare says so with an empty
+     * {@code headers: {}} block and a comment that gives the reason, so that leaving it out is a decision and not an
+     * accident. See #3250 and docs/modules/ROOT/pages/development.adoc.
+     */
+    static void verifyDataTypes(List<KameletInfo> kamelets, List<String> errors) {
+        for (KameletInfo k : kamelets) {
+            List<String> sides = switch (k.label(TYPE_LABEL)) {
+                case "source" -> List.of("out");
+                case "sink" -> List.of("in");
+                case "action" -> List.of("in", "out");
+                default -> List.of();
+            };
+            Map<String, Object> dataTypes = k.map(k.spec(), "dataTypes");
+            for (String side : sides) {
+                if (k.map(dataTypes, side) == null) {
+                    errors.add("kamelet " + q(k.name) + " does not declare spec.dataTypes." + side + ": declare what it "
+                            + ("in".equals(side) ? "takes" : "gives") + ", or an empty \"headers: {}\" with a comment"
+                            + " that says why it has no default");
+                }
+            }
         }
     }
 
