@@ -94,3 +94,34 @@
             constant: 'failed'
         - to:
             uri: "{{http.sink.url}}/error"
+
+        # An empty List fails the message too, and puts no data point
+        - removeHeaders:
+            pattern: "X-*"
+        - setBody:
+            groovy: '[]'
+        - doTry:
+            steps:
+              - to:
+                  uri: "kamelet:aws-cloudwatch-sink"
+                  parameters:
+                    cwNamespace: "ShopBody"
+                    accessKey: "{{cw.accessKey}}"
+                    secretKey: "{{cw.secretKey}}"
+                    region: "{{cw.awsRegion}}"
+                    overrideEndpoint: "true"
+                    uriEndpointOverride: "{{cw.endpoint}}"
+              - setHeader:
+                  name: X-Error
+                  constant: 'none'
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - setHeader:
+                      name: X-Error
+                      simple: "${exception.class.name}: ${exception.message}"
+        - setBody:
+            constant: 'empty'
+        - to:
+            uri: "{{http.sink.url}}/empty"
