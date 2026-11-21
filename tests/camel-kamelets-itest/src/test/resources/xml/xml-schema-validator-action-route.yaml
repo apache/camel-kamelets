@@ -1,0 +1,131 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+# A valid document passes unchanged: a String stays a String
+- route:
+    from:
+      uri: "timer:valid"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: '<order><customer>Ann</customer><item price="2.5"/></order>'
+        - to:
+            uri: "kamelet:xml-schema-validator-action"
+            parameters:
+              template: "classpath:order.xsd"
+        - log: "Valid ${body.getClass().getName()}: ${body}|"
+# and bytes stay bytes
+- route:
+    from:
+      uri: "timer:validbytes"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: '<order><customer>Bob</customer><item price="1"/><item price="3"/></order>'
+        - convertBodyTo:
+            type: "byte[]"
+        - to:
+            uri: "kamelet:xml-schema-validator-action"
+            parameters:
+              template: "classpath:order.xsd"
+        - log: "ValidBytes ${body.getClass().getName()}: ${bodyAs(String)}|"
+# An invalid document fails the message with the list of what is wrong
+- route:
+    from:
+      uri: "timer:invalid"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: '<order><item price="abc"/></order>'
+        - doTry:
+            steps:
+              - to:
+                  uri: "kamelet:xml-schema-validator-action"
+                  parameters:
+                    template: "classpath:order.xsd"
+              - log: "Accepted-invalid ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - log: "Rejected-invalid ${exception.getClass().getName()}: ${exception.message}"
+# An external entity of the message is not read: the message fails
+- route:
+    from:
+      uri: "timer:xxe"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: '<?xml version="1.0"?><!DOCTYPE order [<!ENTITY hosts SYSTEM "file:///etc/hosts">]><order><customer>&hosts;</customer><item price="1"/></order>'
+        - doTry:
+            steps:
+              - to:
+                  uri: "kamelet:xml-schema-validator-action"
+                  parameters:
+                    template: "classpath:order.xsd"
+              - log: "Accepted-xxe ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - log: "Rejected-xxe ${exception.getClass().getName()}: ${exception.message}"
+# Nested entities (a billion laughs) stop at the entity expansion limit of the JDK: the message fails
+- route:
+    from:
+      uri: "timer:bomb"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: '<?xml version="1.0"?><!DOCTYPE order [<!ENTITY a "aaaaaaaaaa"><!ENTITY b "&a;&a;&a;&a;&a;&a;&a;&a;&a;&a;"><!ENTITY c "&b;&b;&b;&b;&b;&b;&b;&b;&b;&b;"><!ENTITY d "&c;&c;&c;&c;&c;&c;&c;&c;&c;&c;"><!ENTITY e "&d;&d;&d;&d;&d;&d;&d;&d;&d;&d;"><!ENTITY f "&e;&e;&e;&e;&e;&e;&e;&e;&e;&e;"><!ENTITY g "&f;&f;&f;&f;&f;&f;&f;&f;&f;&f;"><!ENTITY h "&g;&g;&g;&g;&g;&g;&g;&g;&g;&g;"><!ENTITY i "&h;&h;&h;&h;&h;&h;&h;&h;&h;&h;">]><order><customer>&i;</customer><item price="1"/></order>'
+        - doTry:
+            steps:
+              - to:
+                  uri: "kamelet:xml-schema-validator-action"
+                  parameters:
+                    template: "classpath:order.xsd"
+              - log: "Accepted-bomb ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - log: "Rejected-bomb ${exception.getClass().getName()}: ${exception.message}"
+# A body that is not XML fails the message
+- route:
+    from:
+      uri: "timer:text"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: 'not xml'
+        - doTry:
+            steps:
+              - to:
+                  uri: "kamelet:xml-schema-validator-action"
+                  parameters:
+                    template: "classpath:order.xsd"
+              - log: "Accepted-text ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - log: "Rejected-text ${exception.getClass().getName()}: ${exception.message}"
