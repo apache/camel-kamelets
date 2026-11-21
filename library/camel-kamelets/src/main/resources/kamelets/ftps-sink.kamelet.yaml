@@ -40,7 +40,7 @@ spec:
 
       Output: the message is unchanged. The `CamelFileNameProduced` header is set to the path of the file on the server.
 
-      Good to know: a file with the same name is replaced, unless `fileExist` says otherwise. A file is uploaded under its real name from the start, so a reader that polls the directory can pick it up half-written. To prevent that, set `tempPrefix` to upload it under a temporary name and rename it once it is complete, or `doneFileName` to write an empty done file next to it once it is complete. By default it uses explicit TLS: it connects to the normal FTP port, usually 21, and then switches to TLS. For a server that uses implicit TLS, usually on port 990, set `implicit` to true. The certificate of the server must be signed by a certificate authority (CA) that Java trusts. For a server with a self-signed certificate, or one signed by a private CA, set `trustStoreFile` and `trustStorePassword`: the Kamelet then trusts the certificates in that trust store, for this connection only. Do not use the `javax.net.ssl.trustStore` system property for this: it replaces the trust of the whole integration, so its other HTTPS connections, such as the downloads of its dependencies, then fail when the trust store does not hold their CAs too. A file name that points outside `directoryName` fails the message. Files are sent in ASCII (text) mode unless `binary` is true. Headers that start with `CamelFile` or `CamelOverruleFile`, except `CamelFileName`, are removed from the message first, so they cannot change what the Kamelet does.
+      Good to know: a file with the same name is replaced, unless `fileExist` says otherwise. A file is uploaded under its real name from the start, so a reader that polls the directory can pick it up half-written. To prevent that, set `tempPrefix` to upload it under a temporary name and rename it once it is complete, or `doneFileName` to write an empty done file next to it once it is complete. By default it uses explicit TLS: it connects to the normal FTP port, usually 21, and then switches to TLS. For a server that uses implicit TLS, usually on port 990, set `implicit` to true. To keep the connection on TLS 1.2, set `securityProtocol` to `TLSv1.2`. The certificate of the server must be signed by a certificate authority (CA) that Java trusts. For a server with a self-signed certificate, or one signed by a private CA, set `trustStoreFile` and `trustStorePassword`: the Kamelet then trusts the certificates in that trust store, for this connection only. Do not use the `javax.net.ssl.trustStore` system property for this: it replaces the trust of the whole integration, so its other HTTPS connections, such as the downloads of its dependencies, then fail when the trust store does not hold their CAs too. A file name that points outside `directoryName` fails the message. Files are sent in ASCII (text) mode unless `binary` is true. Headers that start with `CamelFile` or `CamelOverruleFile`, except `CamelFileName`, are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - connectionHost
       - connectionPort
@@ -112,6 +112,11 @@ spec:
         title: Implicit TLS
         description: 'If true, the connection uses implicit TLS: it is encrypted from the start, usually on port 990. If false, it uses explicit TLS: it connects to the normal FTP port, usually 21, and then switches to TLS. Use the mode the server expects; the other one fails to connect. When it is not set, false.'
         type: boolean
+      securityProtocol:
+        title: TLS Version
+        description: The newest TLS version that the connection offers, such as `TLSv1.3` or `TLSv1.2`. With `TLSv1.3`, a server that speaks only TLS 1.2 is reached too. With `TLSv1.2`, the connection never uses TLS 1.3. Set it for a server whose TLS 1.3 connections fail or hang. A server that speaks only TLS 1.3 then refuses the connection, with `protocol_version` in the error. When it is not set, `TLSv1.3`.
+        type: string
+        example: TLSv1.2
       trustStoreFile:
         title: Trust Store File
         description: The path of a trust store file that holds the certificate of the FTPS server, or of the certificate authority (CA) that signed it, such as a PKCS12 or JKS file made with `keytool`. Set it for a server with a self-signed certificate, or one signed by a private CA. Set `trustStorePassword` with it, or every message fails. Only the certificates in this file are trusted for the server, not those that Java trusts, and only for this connection, so the rest of the integration keeps the trust of Java. When it is not set, the certificate of the server is checked against the certificate authorities that Java trusts.
@@ -209,4 +214,5 @@ spec:
               implicit: "{{?implicit}}"
               passiveMode: "{{passiveMode}}"
               password: "RAW({{password}})"
+              securityProtocol: "{{?securityProtocol}}"
               tempPrefix: "RAW({{?tempPrefix}})"
