@@ -186,6 +186,12 @@ spec:
         title: Schema Registry OAuth Scope
         description: "The OAuth2 scope to ask for when logging in to the schema registry with client credentials (optional)."
         type: string
+  dataTypes:
+    # No 'default:' here on purpose: the other headers are sent as record headers, so a text default
+    # would add a Content-Type: text/plain header to every record; with a schema registry and
+    # `schemaFormat` json, a Map is taken too. See #3117.
+    in:
+      headers: {}
   dependencies:
     - "camel:jackson3"
     - "camel:kafka"

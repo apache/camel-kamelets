@@ -160,6 +160,9 @@ spec:
         x-descriptors:
         - urn:camel:group:credentials
   dataTypes:
+    # No 'default:' here on purpose: the headers of the response are copied to the message, its
+    # Content-Type too, and a binary default would replace that with application/octet-stream. See
+    # #3117.
     out:
       headers:
         CamelHttpResponseCode:

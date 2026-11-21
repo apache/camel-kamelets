@@ -43,6 +43,9 @@ spec:
       Good to know: when a name has several addresses, only one of them is given. A name the DNS does not know fails the message with an unknown host error. The headers are `domain` and `ce-domain`, not `domain-name` as for `dns-lookup-action` and `dns-dig-action`. The Kamelet has no options; it uses the name resolution of the machine it runs on. Headers that start with `CamelDns` are removed from the message first, so they cannot change what the Kamelet does.
     type: object
   dataTypes:
+    # No 'default:' here on purpose: the name can come from a header, and then the body is not used at
+    # all; a text default would still convert it, and fail on a body that is not text, such as a Map.
+    # See #3117.
     in:
       headers:
         domain:

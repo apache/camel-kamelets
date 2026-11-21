@@ -72,6 +72,9 @@ spec:
         example: "0"
         pattern: "^-?[0-9]+(,-?[0-9]+)*$"
   dataTypes:
+    # No 'default:' here on purpose: text, bytes, a stream or a file is written to the standard input
+    # as it is, and any other body runs the program without input; a default would convert every body
+    # and change that. See #3117.
     out:
       headers:
         CamelExecExitValue:
@@ -82,6 +85,8 @@ spec:
           title: Standard Error
           description: What the program printed on its standard error, as a stream, or no value when it printed nothing.
           type: object
+    in:
+      headers: {}
   dependencies:
     - "camel:exec"
     - "camel:kamelet"

@@ -66,6 +66,8 @@ spec:
         type: boolean
         default: true
   dataTypes:
+    # No 'default:' here on purpose: the body is the file that changed, which can be deleted or a
+    # directory, so no data type describes it. See #3117.
     out:
       headers:
         CamelFileEventType:

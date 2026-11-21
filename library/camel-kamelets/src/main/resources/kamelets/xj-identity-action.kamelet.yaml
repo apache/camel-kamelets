@@ -50,6 +50,13 @@ spec:
         description: "Which way to convert: `XML2JSON` turns XML into JSON, and `JSON2XML` turns JSON into XML."
         type: string
         enum: ["XML2JSON", "JSON2XML"]
+  dataTypes:
+    # No 'default:' here on purpose: `direction` decides whether the input and the output are XML or
+    # JSON. See #3117.
+    in:
+      headers: {}
+    out:
+      headers: {}
   dependencies:
   - "camel:xj"
   - "camel:kamelet"

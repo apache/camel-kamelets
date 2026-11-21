@@ -61,6 +61,8 @@ spec:
           format: "application-x-struct"
           description: "The parsed JSON, a Jackson `JsonNode`."
           mediaType: application/x-struct
+    in:
+      headers: {}
   dependencies:
   - "camel:jackson3"
   - "camel:jsonata"

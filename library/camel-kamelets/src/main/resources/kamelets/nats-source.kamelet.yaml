@@ -107,6 +107,9 @@ spec:
     out:
       mediaType: application/octet-stream
   dataTypes:
+    # No 'default:' here on purpose: the NATS headers of the message become headers, a Content-Type
+    # the publisher set too, and a binary default would replace it with application/octet-stream. See
+    # #3117.
     out:
       headers:
         CamelNatsSubject:

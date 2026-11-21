@@ -74,6 +74,9 @@ spec:
         example: europe-west1-pubsub.googleapis.com:443
         pattern: "^[A-Za-z0-9.-]+:[0-9]+$"
   dataTypes:
+    # No 'default:' here on purpose: the body is sent as text or bytes as it is, and the other headers
+    # are sent as attributes of the Pub/Sub message, so a default would add a Content-Type attribute
+    # to every message. See #3117.
     in:
       headers:
         CamelGooglePubsubOrderingKey:

@@ -87,6 +87,8 @@ spec:
         type: string
         example: orders
   dataTypes:
+    # No 'default:' here on purpose: a List is sent as one event per element, and a default would turn
+    # the List into a single body first. See #3117.
     in:
       headers:
         partition-id:

@@ -71,6 +71,13 @@ spec:
           format: "application-octet-stream"
           description: "The encrypted data, as bytes or a stream."
           mediaType: application/octet-stream
+    out:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The original data, as bytes or a stream."
+          mediaType: application/octet-stream
   dependencies:
     - "camel:kamelet"
     - "camel:crypto"

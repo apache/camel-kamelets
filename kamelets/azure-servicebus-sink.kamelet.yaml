@@ -98,6 +98,11 @@ spec:
         type: integer
         minimum: 1
         example: 600
+  dataTypes:
+    # No 'default:' here on purpose: the `binary` option decides whether the body is sent as text or
+    # as bytes. See #3117.
+    in:
+      headers: {}
   types:
     in:
       mediaType: application/octet-stream

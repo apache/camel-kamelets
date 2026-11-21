@@ -220,6 +220,8 @@ spec:
         enum: ["HTTP", "HTTPS"]
         example: HTTP
   dataTypes:
+    # No 'default:' here on purpose: `getObject` decides whether the body is the event as JSON text or
+    # the content of the file. See #3117.
     out:
       headers:
         CamelAwsSqsMessageId:

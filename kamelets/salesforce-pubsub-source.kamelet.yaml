@@ -136,6 +136,7 @@ spec:
         type: integer
         default: 100
   dataTypes:
+    # No 'default:' here on purpose: `deserializeType` decides the kind of the body. See #3117.
     out:
       headers:
         CamelSalesforcePubSubReplayId:

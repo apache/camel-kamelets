@@ -147,6 +147,8 @@ spec:
         enum: ["none", "delete"]
         example: delete
   dataTypes:
+    # No 'default:' here on purpose: the row is JSON text as the Couchbase SDK gives it, and the json
+    # data type has not been tried with it yet. See #3117.
     out:
       headers:
         CamelCouchbaseId:

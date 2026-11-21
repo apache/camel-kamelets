@@ -64,6 +64,11 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+  dataTypes:
+    # No 'default:' here on purpose: the Content-Type header is sent as the content type of the
+    # request, and a default would replace it on every message. See #3117.
+    in:
+      headers: {}
   dependencies:
   - "camel:vertx-http"
   - "camel:kamelet"

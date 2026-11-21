@@ -57,6 +57,13 @@ spec:
         type: string
         example: "file:///opt/templates/order.xsl"
         pattern: "^(http|https|file|classpath|ref|bean)://.*"
+  dataTypes:
+    # No 'default:' here on purpose: `direction` decides whether the input and the output are XML or
+    # JSON. See #3117.
+    in:
+      headers: {}
+    out:
+      headers: {}
   dependencies:
   - "camel:xj"
   - "camel:kamelet"

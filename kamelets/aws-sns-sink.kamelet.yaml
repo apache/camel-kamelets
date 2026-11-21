@@ -153,6 +153,9 @@ spec:
         type: string
         pattern: "^[A-Za-z0-9:/_-]+$"
   dataTypes:
+    # No 'default:' here on purpose: the producer sends any text, bytes or stream as text already, and
+    # the other headers are sent as SNS message attributes, so a text default would add a Content-
+    # Type: text/plain attribute to every notification. See #3117.
     in:
       headers:
         subject:

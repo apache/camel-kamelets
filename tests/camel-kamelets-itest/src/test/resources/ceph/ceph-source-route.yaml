@@ -52,6 +52,9 @@
         - setHeader:
             name: X-S3-Content-Type
             simple: "${header.CamelAwsS3ContentType}"
+        # Citrus reads an application/octet-stream body as bytes: send text
+        - removeHeader:
+            name: Content-Type
         # the body is bytes: give the HTTP server text
         - convertBodyTo:
             type: "java.lang.String"

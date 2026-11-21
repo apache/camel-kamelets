@@ -222,6 +222,8 @@ spec:
         description: "The OAuth2 scope to ask for when logging in to the schema registry with client credentials (optional)."
         type: string
   dataTypes:
+    # No 'default:' here on purpose: the body is text, or JSON text with `schemaRegistryVendor`, or no
+    # body for a tombstone, and a text default would mark the JSON as text/plain too. See #3117.
     out:
       headers:
         kafka-topic:

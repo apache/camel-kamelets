@@ -35,7 +35,7 @@ spec:
 
       Use it to react to a new version, for example to announce a release, update a changelog or start a deployment. To receive every commit instead, use `github-commit-source`.
 
-      Output: the body is the tag as JSON text, an object with its `name`, such as `v1.0.0`, and `commit.sha`, the SHA of the commit it points to.
+      Output: the body is the tag as JSON text in bytes, an object with its `name`, such as `v1.0.0`, and `commit.sha`, the SHA of the commit it points to. The `Content-Type` header is `application/json`.
 
       Good to know: only the tags created after the start are sent; the tags that exist when it starts are skipped. GitHub lists a tag without its date or the message of an annotated tag, so they are not in the body. It works with github.com, not with GitHub Enterprise Server. It asks GitHub for the tags once a minute by default (`delay`), and every request counts against the API rate limit of the token.
     required:
@@ -66,6 +66,14 @@ spec:
         description: How long to wait between two polls of GitHub, in milliseconds. For example, 60000 is one minute.
         type: integer
         default: 60000
+  dataTypes:
+    out:
+      default: json
+      types:
+        json:
+          format: "application-json"
+          description: "The tag, as JSON text in bytes."
+          mediaType: application/json
   types:
     out:
       mediaType: application/json

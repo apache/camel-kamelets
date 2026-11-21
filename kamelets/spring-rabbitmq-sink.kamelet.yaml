@@ -140,6 +140,12 @@ spec:
         type: string
         example: "application/json"
         pattern: "^[A-Za-z0-9!#$&^_.+-]+/[A-Za-z0-9!#$&^_.+-]+( *; *[A-Za-z0-9!#$&^_.+-]+=[A-Za-z0-9!#$&^_.+-]+)*$"
+  dataTypes:
+    # No 'default:' here on purpose: the kind of the body picks the content type of the message
+    # (text/plain for text, application/octet-stream for bytes), and a default would send every
+    # message as one kind. See #3117.
+    in:
+      headers: {}
   dependencies:
     - "camel:spring-rabbitmq"
     - "camel:kamelet"

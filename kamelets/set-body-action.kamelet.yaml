@@ -50,6 +50,14 @@ spec:
         type: string
         example: "Order ${header.orderId} received"
     type: object
+  dataTypes:
+    # No 'default:' here on purpose: the text can use any body, which a default would convert first,
+    # and the action keeps the Content-Type header as it was on purpose (see the description), which a
+    # text output default would replace with text/plain. See #3117.
+    in:
+      headers: {}
+    out:
+      headers: {}
   dependencies:
   - "camel:kamelet"
   template:

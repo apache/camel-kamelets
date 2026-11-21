@@ -129,6 +129,9 @@ spec:
         type: string
         example: "#bean:ingestedIds"
   dataTypes:
+    # No 'default:' here on purpose: the document is taken as it is, as text, bytes, a stream or a
+    # file, which the component reads as text itself; a text default would read a file or a stream
+    # into memory first. See #3117.
     in:
       headers:
         CamelLangChain4jIngestDocumentId:

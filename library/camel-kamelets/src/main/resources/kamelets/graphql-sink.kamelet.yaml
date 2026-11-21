@@ -82,6 +82,11 @@ spec:
         type: string
         example: "proxy.example.com:3128"
         pattern: "^[A-Za-z0-9._-]+:[0-9]{1,5}$"
+  dataTypes:
+    # No 'default:' here on purpose: the body is the query as text, or with `queryFile` a Map of
+    # variables, which a text default would turn into text. See #3117.
+    in:
+      headers: {}
   dependencies:
   - "camel:graphql"
   - "camel:kamelet"

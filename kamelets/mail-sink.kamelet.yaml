@@ -118,6 +118,9 @@ spec:
         type: string
         pattern: "^[A-Za-z0-9.+-]+/[A-Za-z0-9.+-]+(\\s*;.*)?$"
   dataTypes:
+    # No 'default:' here on purpose: without `contentType`, the Content-Type header decides whether
+    # the email is plain text or HTML, and a text default would set it to text/plain, so an HTML email
+    # would be sent as plain text. See #3117.
     in:
       headers:
         ce-subject:

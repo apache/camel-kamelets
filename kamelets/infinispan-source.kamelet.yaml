@@ -117,6 +117,7 @@ spec:
         default: "CLIENT_CACHE_ENTRY_CREATED,CLIENT_CACHE_ENTRY_MODIFIED,CLIENT_CACHE_ENTRY_REMOVED,CLIENT_CACHE_ENTRY_EXPIRED,CLIENT_CACHE_FAILOVER"
         enum: ["CLIENT_CACHE_ENTRY_CREATED", "CLIENT_CACHE_ENTRY_MODIFIED", "CLIENT_CACHE_ENTRY_REMOVED", "CLIENT_CACHE_ENTRY_EXPIRED", "CLIENT_CACHE_FAILOVER"]
   dataTypes:
+    # No 'default:' here on purpose: the message has no body: the event is in the headers. See #3117.
     out:
       headers:
         infinispan-event-type:

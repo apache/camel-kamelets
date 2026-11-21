@@ -150,6 +150,8 @@ spec:
         type: integer
         example: 30000
   dataTypes:
+    # No 'default:' here on purpose: JSON text is stored as a JSON document and other text as a JSON
+    # string, and a json default would turn the other text into a quoted JSON string first. See #3117.
     in:
       headers:
         CamelCouchbaseId:

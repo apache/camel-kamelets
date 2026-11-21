@@ -242,6 +242,9 @@ spec:
         description: "The OAuth2 scope to ask for when logging in to the schema registry with client credentials (optional)."
         type: string
   dataTypes:
+    # No 'default:' here on purpose: the body is a List of Exchanges, one per record, and the json
+    # data type cannot write an Exchange: it fails the batch (Jackson reaches its nesting limit
+    # through the CamelContext of the Exchange). See #3117.
     out:
       headers:
         CamelKafkaTopic:

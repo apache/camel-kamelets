@@ -129,6 +129,11 @@ spec:
         description: "The kind of JMS message to send, whatever the body: `Text` sends a text message, and `Bytes` a bytes message, for a receiver that expects one kind. When it is not set, the kind follows the body: text is sent as a text message, and bytes as a bytes message."
         type: string
         enum: ["Text", "Bytes"]
+  dataTypes:
+    # No 'default:' here on purpose: the kind of the body picks the kind of JMS message (text or
+    # bytes), and a default would send every message as one kind. See #3117.
+    in:
+      headers: {}
   dependencies:
   - "camel:jms"
   - "camel:kamelet"

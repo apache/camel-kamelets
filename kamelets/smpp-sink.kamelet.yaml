@@ -152,6 +152,9 @@ spec:
         minimum: 1
         example: 30000
   dataTypes:
+    # No 'default:' here on purpose: the body is the text of the SMS as the producer converts it, and
+    # a text default would add a Content-Type: text/plain header that later steps would see. See
+    # #3117.
     in:
       headers:
         CamelSmppDestAddr:

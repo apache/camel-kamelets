@@ -69,6 +69,8 @@ spec:
           format: "avro-binary"
           description: "The Avro binary data, as a stream."
           mediaType: application/avro
+    in:
+      headers: {}
   dependencies:
   - "camel:kamelet"
   - "camel:jackson3-avro"

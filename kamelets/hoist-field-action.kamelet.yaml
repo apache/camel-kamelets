@@ -49,6 +49,9 @@ spec:
         example: order
     type: object
   dataTypes:
+    # No 'default:' here on purpose: the Content-Type header decides how a text body is nested (JSON
+    # text with application/json, a text value otherwise), and a default would set that header for
+    # every body. See #3117.
     in:
       headers:
         Content-Type:

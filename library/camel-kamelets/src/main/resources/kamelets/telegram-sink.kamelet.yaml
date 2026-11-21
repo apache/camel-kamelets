@@ -61,6 +61,9 @@ spec:
     out:
       mediaType: application/json
   dataTypes:
+    # No 'default:' here on purpose: a Content-Type header of image/png or image/jpeg sends the body
+    # as a photo, and a text default would set it to text/plain, so the photo would be sent as text.
+    # See #3117.
     in:
       headers:
         chat-id:
