@@ -36,7 +36,7 @@ spec:
 
       Use it to handle many records at once, for example to write them to a database in one go, or to save the position in Kafka only once a whole batch was handled. To handle one record at a time use `kafka-source`. When the records are written with a schema kept in a schema registry, such as Confluent Schema Registry, Redpanda or Apicurio Registry, set `schemaRegistryVendor`.
 
-      Output: the body is a List with one entry per record, up to `batchSize`. Each entry is a Camel `Exchange` for one record, not a message: a step reads the value of the record, as text, with `getMessage().getBody()` on the entry, such as `${body[0].getMessage().getBody()}`. With `schemaRegistryVendor`, each value is read with its schema from the registry and is JSON text, such as `{"id": 7, "item": "camel"}` for an Avro record; a record without a value (a tombstone) gives an entry with no body. The message of the entry also has the key, offset and timestamp of the record in its `CamelKafkaKey`, `CamelKafkaOffset` and `CamelKafkaTimestamp` headers, and the record headers, as bytes. The message itself has the `CamelKafkaTopic` and `CamelKafkaPartition` headers. The `kafka-topic`, `kafka-key` and other headers of `kafka-source` are not set.
+      Output: the body is a List with one entry per record, up to `batchSize`. Each entry is a Camel `Exchange` for one record, not a message: a step reads the value of the record, as text, with `getMessage().getBody()` on the entry, such as `${body[0].getMessage().getBody()}`. With `schemaRegistryVendor`, each value is read with its schema from the registry and is JSON text, such as `{"id": 7, "item": "camel"}` for an Avro record; a record without a value (a tombstone) gives an entry with no body. A Protobuf record is turned into JSON by the Protobuf JSON mapping, such as `{"id":7,"item":"camel"}`: the names of the fields are in lowerCamelCase (`orderNo` for `order_no`), 64-bit numbers are text, and the fields that have their default value, such as 0 or empty text, are left out. The message of the entry also has the key, offset and timestamp of the record in its `CamelKafkaKey`, `CamelKafkaOffset` and `CamelKafkaTimestamp` headers, and the record headers, as bytes. The message itself has the `CamelKafkaTopic` and `CamelKafkaPartition` headers. The `kafka-topic`, `kafka-key` and other headers of `kafka-source` are not set.
 
       Good to know: `saslAuthType` has no default and must be set; `NONE` connects with no login and no TLS. To save the position in Kafka only once a batch was handled, set `allowManualCommit` to true and `autoCommitEnable` to false, and end the flow with `kafka-batch-manual-commit-action`. A new consumer group starts at the newest records, unless `autoOffsetReset` is `earliest`. Without `consumerGroup`, every start uses a new group, so the records sent while the integration was stopped are skipped. With `schemaRegistryVendor`, the integration needs the serde jars of the vendor, which Camel JBang downloads by itself; for `confluent` add the Confluent Maven repository, as in `camel run --repos=confluent`. With `aws-glue` and `azure`, the serde logs in with the credentials of the environment the integration runs in: the AWS default credentials chain, or the Azure `DefaultAzureCredential` (such as the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` variables). To log in to a `confluent` or `apicurio` registry, set `schemaRegistryUsername` and `schemaRegistryPassword` (for Confluent Cloud, the API key and secret of the Schema Registry), or the OAuth2 client credentials `schemaRegistryOauthClientId`, `schemaRegistryOauthClientSecret` and `schemaRegistryOauthTokenEndpoint`, such as of a Keycloak client; these options are not used with `aws-glue` and `azure`, and setting one fails at startup. Kafka only calls an OAuth2 token endpoint that is listed in the JVM system property `org.apache.kafka.sasl.oauthbearer.allowed.urls`, such as with `camel run --jvm-args=-Dorg.apache.kafka.sasl.oauthbearer.allowed.urls=https://idp.example.com/oauth2/token`; without it, the integration fails to start with `The URL cannot be accessed due to restrictions`. This applies to `schemaRegistryOauthTokenEndpoint` and to the `oauthTokenEndpointUri` of `saslAuthType` `OAUTH`.
     required:
@@ -202,9 +202,9 @@ spec:
         type: string
       schemaFormat:
         title: Schema Format
-        description: "The format of the record values in the schema registry: `avro` or `json` (JSON Schema). With `apicurio` and `azure`, use `avro`. Only used when `schemaRegistryVendor` is set."
+        description: "The format of the record values in the schema registry: `avro`, `json` (JSON Schema) or `protobuf` (Protocol Buffers). With `apicurio`, use `avro` or `protobuf`; with `azure`, use `avro`. Only used when `schemaRegistryVendor` is set."
         type: string
-        enum: ["avro", "json"]
+        enum: ["avro", "json", "protobuf"]
         default: avro
       schemaRegistryUsername:
         title: Schema Registry Username
@@ -354,6 +354,19 @@ spec:
                                         library: Jackson
                                   - convertBodyTo:
                                       type: java.lang.String
+                                  - script:
+                                      expression:
+                                        simple:
+                                          expression: "${exchangeProperty.kafkaEntry.getMessage().setBody(${body})}"
+                              # A Protobuf message becomes the JSON of the Protobuf JSON mapping, as in kafka-source
+                              - expression:
+                                  simple:
+                                    expression: "'{{schemaFormat}}' == 'protobuf' && ${body} != null && ${body} !is 'java.lang.String'"
+                                steps:
+                                  - setBody:
+                                      expression:
+                                        simple:
+                                          expression: "${bean:type:com.google.protobuf.util.JsonFormat?method=printer().omittingInsignificantWhitespace().print(${body})}"
                                   - script:
                                       expression:
                                         simple:
