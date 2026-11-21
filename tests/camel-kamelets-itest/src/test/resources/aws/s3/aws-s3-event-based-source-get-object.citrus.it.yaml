@@ -85,7 +85,7 @@ actions:
       endpoint: camel:aws2-sqs://${aws.sqs.queueName}?amazonSQSClient=#sqsEventsClient
       message:
         body:
-          data: '{"version":"0","source":"aws.s3","detail-type":"Object Created","detail":{"bucket":{"name":"${aws.s3.bucketNameOrArn}"},"object":{"key":"dir/my file+x=1.txt"},"reason":"PutObject"}}'
+          data: '{"version":"0","id":"e-1","source":"aws.s3","detail-type":"Object Created","detail":{"bucket":{"name":"${aws.s3.bucketNameOrArn}"},"object":{"key":"dir/my file+x=1.txt","sequencer":"0055AED6DCD90281E5"},"reason":"PutObject"}}'
   - send:
       endpoint: camel:aws2-sqs://${aws.sqs.queueName}?amazonSQSClient=#sqsEventsClient
       message:
@@ -103,3 +103,9 @@ actions:
         verify:
           integration: "aws-s3-event-based-source-get-object"
           logMessage: "Read reports/a&b=c.txt: Content of the second file"
+  # The file comes with the aws-s3-event-id header of its event
+  - camel:
+      cli:
+        verify:
+          integration: "aws-s3-event-based-source-get-object"
+          logMessage: "Event Object Created/${aws.s3.bucketNameOrArn}/dir/my file+x=1.txt/0055AED6DCD90281E5"

@@ -114,6 +114,8 @@ actions:
               value: 'text/plain'
             - name: "X-Blob-Name"
               value: 'name='
+            - name: "X-Event-Id"
+              value: 'Microsoft.Storage.BlobCreated//blobServices/default/containers/orders/blobs/order-1.txt/00000000000000000000000000015508000000000005101c'
           body:
             data: 'Hello Azure Blob Event'
   - http:

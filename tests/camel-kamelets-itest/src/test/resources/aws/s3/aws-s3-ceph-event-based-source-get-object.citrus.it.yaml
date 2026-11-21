@@ -107,3 +107,9 @@ actions:
         verify:
           integration: "aws-s3-ceph-event-based-source-get-object"
           logMessage: "Read reports/a&b=c.txt: Content of the second file"
+  # The file comes with the ceph-event-id header of its event
+  - camel:
+      cli:
+        verify:
+          integration: "aws-s3-ceph-event-based-source-get-object"
+          logMessage: "Event 2"

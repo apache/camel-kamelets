@@ -23,7 +23,7 @@
       steps:
         # the event that Event Grid sends to the queue when the blob orders/order-1.txt is created
         - setBody:
-            constant: '{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kamelets/providers/Microsoft.Storage/storageAccounts/devstoreaccount1","subject":"/blobServices/default/containers/orders/blobs/order-1.txt","eventType":"Microsoft.Storage.BlobCreated","id":"831e1650-001e-001b-66ab-eeb76e069631","data":{"api":"PutBlob","contentType":"text/plain","contentLength":22,"blobType":"BlockBlob","url":"https://devstoreaccount1.blob.core.windows.net/orders/order-1.txt"},"dataVersion":"","metadataVersion":"1","eventTime":"2026-11-19T10:00:00Z"}'
+            constant: '{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kamelets/providers/Microsoft.Storage/storageAccounts/devstoreaccount1","subject":"/blobServices/default/containers/orders/blobs/order-1.txt","eventType":"Microsoft.Storage.BlobCreated","id":"831e1650-001e-001b-66ab-eeb76e069631","data":{"api":"PutBlob","contentType":"text/plain","contentLength":22,"blobType":"BlockBlob","url":"https://devstoreaccount1.blob.core.windows.net/orders/order-1.txt","sequencer":"00000000000000000000000000015508000000000005101c"},"dataVersion":"","metadataVersion":"1","eventTime":"2026-11-19T10:00:00Z"}'
         - to:
             uri: "azure-servicebus:blob-events"
             parameters:
@@ -53,6 +53,9 @@
         - setHeader:
             name: X-Blob-Name
             simple: "name=${header.CamelAzureStorageBlobBlobName}"
+        - setHeader:
+            name: X-Event-Id
+            simple: "${header[azure-storage-blob-event-id]}"
         # the body as text, for the HTTP call
         - convertBodyTo:
             type: "java.lang.String"
