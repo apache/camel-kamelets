@@ -50,32 +50,12 @@ actions:
           reasonPhrase: "OK"
           version: "HTTP/1.1"
 
-  # A JsonNode gives an empty body
+  # A JsonNode is transformed like the same JSON as text
   - http:
       server: "httpServer"
       receiveRequest:
         POST:
           path: "/json-node"
-          type: "plaintext"
-          headers:
-            - name: "X-Body-Null"
-              value: 'true'
-          body:
-            data: ''
-  - http:
-      server: "httpServer"
-      sendResponse:
-        response:
-          status: 200
-          reasonPhrase: "OK"
-          version: "HTTP/1.1"
-
-  # The same JsonNode, turned into JSON text first, is transformed
-  - http:
-      server: "httpServer"
-      receiveRequest:
-        POST:
-          path: "/json-node-serialized"
           headers:
             - name: "X-Body-Type"
               value: 'java.util.LinkedHashMap'
