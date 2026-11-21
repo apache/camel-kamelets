@@ -1440,6 +1440,26 @@
     "namespace" : "Kafka",
     "provider" : "Apache Software Foundation"
   }, {
+    "name" : "mllp-sink",
+    "type" : "sink",
+    "supportLevel" : "Stable",
+    "title" : "MLLP Sink",
+    "summary" : "Sends each message as an HL7 v2 message to a hospital system over MLLP, a plain TCP connection, and waits for its HL7 acknowledgement (ACK).",
+    "description" : "Sends each message as an HL7 v2 message to a hospital system over MLLP, a plain TCP connection, and waits for its HL7 acknowledgement (ACK).\n\nUse it to send admissions, orders or results to a hospital information system, a lab system or an interface engine that receives HL7 v2 over MLLP, or to forward the messages that `mllp-source` receives. To write FHIR resources instead, use `fhir-sink`.\n\nInput: the body is the HL7 message, as text with its segments separated by a carriage return (`\\r`), or as bytes, which are sent as they are. Text is sent in `charset`, which is ISO-8859-1 when it is not set: set it to the charset that the MSH-18 field of the messages names, such as `UTF-8` for `UNICODE UTF-8`, because it is not read from the message.\n\nOutput: when it is used inside a route, the body is unchanged afterwards. `CamelMllpAcknowledgementType` is the code of the acknowledgement, `AA` when the receiver accepted the message, `CamelMllpAcknowledgementString` the acknowledgement as text, and `CamelMllpAcknowledgement` the same as bytes.\n\nGood to know: an acknowledgement `AE` (error) or `AR` (rejected) fails the message, and `CamelMllpAcknowledgementType` and `CamelMllpAcknowledgementString` are still set, so that a step that handles the error can read the reason in the MSA-3 field. A receiver that cannot be reached, or that does not answer within `ackTimeout`, fails the message. It connects at the first message and keeps the connection open for the next ones. It connects with no TLS. For TLS, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.mllp.useGlobalSslContextParameters=true`: every MLLP source and sink of the application then uses TLS. Headers that start with `CamelMllpAcknowledgement`, and `CamelCharsetName`, are removed from the message first, so they cannot change what the Kamelet sends or reports.",
+    "group" : "MLLP",
+    "namespace" : "Messaging",
+    "provider" : "Apache Software Foundation"
+  }, {
+    "name" : "mllp-source",
+    "type" : "source",
+    "supportLevel" : "Stable",
+    "title" : "MLLP Source",
+    "summary" : "Receives HL7 v2 messages, such as admissions (ADT) or lab results (ORU), that hospital systems send over MLLP, a plain TCP connection, and acknowledges each one.",
+    "description" : "Receives HL7 v2 messages, such as admissions (ADT) or lab results (ORU), that hospital systems send over MLLP, a plain TCP connection, and acknowledges each one.\n\nUse it to receive the HL7 v2 feed of a hospital information system, a lab system or an interface engine, for example to store the messages, or to turn them into FHIR resources for `fhir-sink`. To send HL7 v2 messages, use `mllp-sink`.\n\nOutput: the body is the HL7 message, as text, with its segments separated by a carriage return (`\\r`). The text is read in the charset that the MSH-18 field of the message names, such as `UNICODE UTF-8`, or in `charset` when MSH-18 is empty. Headers give the fields of the MSH segment: `CamelMllpMessageType` (MSH-9, such as `ADT^A01`), split into `CamelMllpEventType` (`ADT`) and `CamelMllpTriggerEvent` (`A01`), `CamelMllpMessageControlId` (MSH-10), `CamelMllpSendingApplication` and `CamelMllpSendingFacility` (MSH-3 and MSH-4), `CamelMllpReceivingApplication` and `CamelMllpReceivingFacility` (MSH-5 and MSH-6), `CamelMllpTimestamp` (MSH-7), `CamelMllpProcessingId` (MSH-11) and `CamelMllpVersionId` (MSH-12). A header is not set when its field is empty. `CamelMllpRemoteAddress` is the address and port of the sender.\n\nGood to know: it answers each message with an HL7 acknowledgement (ACK) once the rest of the flow has processed it, and the sender waits for it: `AA` (accepted), or `AE` (error) when a step of the flow fails, with the name of the error in the MSA-3 field. A message without a complete MSH segment still reaches the flow, but gets no acknowledgement. It listens on all the network interfaces of the machine unless `host` says otherwise, with no login and no TLS, so anyone who can reach the port can send messages: protect the port with network rules, and treat the content as untrusted. HL7 messages hold patient data. For TLS, set the application properties `camel.ssl.enabled=true`, `camel.ssl.keyStore`, `camel.ssl.keystorePassword` and `camel.component.mllp.useGlobalSslContextParameters=true`: every MLLP source and sink of the application then uses TLS.",
+    "group" : "MLLP",
+    "namespace" : "Messaging",
+    "provider" : "Apache Software Foundation"
+  }, {
     "name" : "mongodb-changes-stream-source",
     "type" : "source",
     "supportLevel" : "Stable",
