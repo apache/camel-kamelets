@@ -33,22 +33,12 @@ actions:
                   value: "${azure.server.port}"
 
   # The function gets the body, the Content-Type, the header origin and the key of the Kamelet (not the one of
-  # the message), and answers with JSON. The Authorization and Proxy-Authorization headers of the message are not
-  # sent: a header validation cannot check that a header is missing, so a script checks the received request.
+  # the message), and answers with JSON
   - http:
       server: "azureServer"
       receiveRequest:
-        validate:
-          - script:
-              type: groovy
-              value: |
-                def sent = receivedMessage.getHeaders().keySet().findAll {
-                    it.equalsIgnoreCase('Authorization') || it.equalsIgnoreCase('Proxy-Authorization')
-                }
-                assert sent.isEmpty() : 'The function got the credential headers of the message: ' + sent
         POST:
           path: "/api/orders"
-          type: "plaintext"
           headers:
             - name: "Content-Type"
               value: '@startsWith(application/json)@'
@@ -58,6 +48,12 @@ actions:
               value: 'citrus'
           body:
             data: '{"orderId":"ORD-1"}'
+
+  # The Authorization and Proxy-Authorization headers of the message are not sent to the function. A header
+  # validation cannot check that a header is missing, so a script checks the request that was received.
+  - groovy:
+      script:
+        file: "azure/noCredentialHeaders.groovy"
   - http:
       server: "azureServer"
       sendResponse:
