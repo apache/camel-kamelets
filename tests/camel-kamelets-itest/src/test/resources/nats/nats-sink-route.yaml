@@ -15,16 +15,21 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
+# A plain NATS subject keeps nothing for a receiver that subscribes later, so the
+# message is published every second until the test has received one through the
+# source; the test then stops the integrations.
 - route:
     from:
       uri: "timer:tick"
       parameters:
-        period: "10000"
-        repeatCount: 1
+        period: "1000"
       steps:
       - setBody:
-          constant: "{{test.message}}"
-      - log: "${body}"
+          constant: "hello-nats"
+      # sent as a NATS header
+      - setHeader:
+          name: origin
+          constant: "citrus"
       - to:
           uri: "kamelet:nats-sink"
           parameters:

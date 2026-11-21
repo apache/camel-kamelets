@@ -36,7 +36,7 @@ spec:
 
       Use it to publish events or data for other applications to read, such as orders, sensor readings or changes from a database. To write the records with a schema kept in a schema registry, such as Confluent Schema Registry, Redpanda or Apicurio Registry, set `schemaRegistryVendor`.
 
-      Input: the body becomes the value of the record, as text. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. With `schemaRegistryVendor` and `schemaFormat` `json`, the body must be JSON text (or a Map), and the record is written with a JSON Schema; with `avro`, `confluent` and `apicurio` write a text body as an Avro string, while `aws-glue` needs an Avro record. With `azure`, set `schemaGroup`. The optional `key` header (or `kafka-key`, `ce-key`, `ce-kafkakey`) becomes the key of the record, and the optional `partition-key` header (or `ce-partitionkey`) is the number of the partition to write to. The other headers of the message, except the Camel ones, are sent as record headers.
+      Input: the body becomes the value of the record, as text. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. With `schemaRegistryVendor` and `schemaFormat` `json`, the body must be JSON text (or a Map), and the record is written with a JSON Schema; with `avro`, `confluent` and `apicurio` write a text body as an Avro string, while `aws-glue` needs an Avro record; with `protobuf`, the body must be a Protobuf message, such as an object of a class generated from the `.proto` file or a `DynamicMessage`, which a step before this sink must create in code, and JSON text fails. With `azure`, set `schemaGroup`. The optional `key` header (or `kafka-key`, `ce-key`, `ce-kafkakey`) becomes the key of the record, and the optional `partition-key` header (or `ce-partitionkey`) is the number of the partition to write to. The other headers of the message, except the Camel ones, are sent as record headers.
 
       Output: the message is unchanged.
 
@@ -147,9 +147,9 @@ spec:
         type: string
       schemaFormat:
         title: Schema Format
-        description: "The format of the record values in the schema registry: `avro` or `json` (JSON Schema). With `apicurio` and `azure`, use `avro`. Only used when `schemaRegistryVendor` is set."
+        description: "The format of the record values in the schema registry: `avro`, `json` (JSON Schema) or `protobuf` (Protocol Buffers). With `apicurio`, use `avro` or `protobuf`; with `azure`, use `avro`. Only used when `schemaRegistryVendor` is set."
         type: string
-        enum: ["avro", "json"]
+        enum: ["avro", "json", "protobuf"]
         default: avro
       schemaRegistryUsername:
         title: Schema Registry Username

@@ -19,14 +19,28 @@
     from:
       uri: "timer:tick"
       parameters:
-        period: "10000"
         repeatCount: 1
       steps:
       - setBody:
-          constant: "{{test.message}}"
-      - log: "${body}"
+          constant: "hello-mqtt5"
+      # retained, so that the source gets the message also when it subscribes after it is published
       - to:
           uri: "kamelet:mqtt5-sink"
           parameters:
             topic: "{{mqtt.topic}}"
             brokerUrl: "{{mqtt.brokerUrl}}"
+            retained: true
+      # what the Kamelet leaves: the Java type of the body and the Content-Type
+      - setHeader:
+          name: X-Body-Type
+          simple: "${body.getClass().getName()}"
+      - setHeader:
+          name: X-Content-Type
+          simple: "ct=${header.Content-Type}"
+      # Citrus reads a byte[] body as its Java text form (citrusframework/citrus#2081)
+      - removeHeader:
+          name: Content-Type
+      - convertBodyTo:
+          type: "java.lang.String"
+      - to:
+          uri: "{{http.sink.url}}/sink"

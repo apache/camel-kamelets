@@ -16,16 +16,17 @@
 # ---------------------------------------------------------------------------
 
 name: cassandra-sink-route-test
+description: 'cassandra-sink inserts a row from a JSON array of values, and the body afterwards is an empty List'
 actions:
   # Create Cassandra infrastructure
   - testcontainers:
       start:
         container:
           name: "cassandra"
-          image: "cassandra:4.1"
+          image: "cassandra:5.0.9"
           exposedPorts:
             - 9042
-          startUpTimeout: 120
+          startUpTimeout: 180
           env:
             - name: "CASSANDRA_SNITCH"
               value: "GossipingPropertyFileSnitch"
@@ -40,7 +41,7 @@ actions:
             - name: "CASSANDRA_DC"
               value: "datacenter1"
           waitFor:
-            logMessage: "Startup complete"
+            logMessage: ".*Startup complete.*"
 
   # Setup keyspace and table
   - groovy:
@@ -49,7 +50,7 @@ actions:
 
   # Create Camel JBang integration (sink)
   - camel:
-      jbang:
+      cli:
         run:
           waitForRunningState: false
           integration:
@@ -59,11 +60,31 @@ actions:
                 - name: "cassandra.host"
                   value: "${CITRUS_TESTCONTAINERS_CASSANDRA_HOST}"
                 - name: "cassandra.port"
-                  value: "${CITRUS_TESTCONTAINERS_CASSANDRA_SERVICE_PORT}"
+                  value: "${CITRUS_TESTCONTAINERS_CASSANDRA_PORT}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${cassandra.server.port}"
 
-  # Verify Cassandra sink executed
-  - camel:
-      jbang:
-        verify:
-          integration: "cassandra-sink-route"
-          logMessage: "from-cassandra-sink"
+  # For an INSERT, the body afterwards is an empty List
+  - http:
+      server: "cassandraServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: '@matches(java\.util\..*List)@'
+          body:
+            data: 'size=0'
+  - http:
+      server: "cassandraServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The row is in the table
+  - groovy:
+      script:
+        file: "cassandra/readBack.groovy"

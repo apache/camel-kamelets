@@ -22,5 +22,24 @@
         topic: "{{nats.topic}}"
         servers: "{{nats.servers}}"
       steps:
+      # what the Kamelet gives: the Java type of the body and the Content-Type
+      - setHeader:
+          name: X-Body-Type
+          simple: "${body.getClass().getName()}"
+      - setHeader:
+          name: X-Content-Type
+          simple: "ct=${header.Content-Type}"
+      # the HTTP component does not send the headers that start with Camel
+      - setHeader:
+          name: X-Subject
+          simple: "${header[CamelNatsSubject]}"
+      - setHeader:
+          name: X-Origin
+          simple: "${header[origin]}"
+      - removeHeader:
+          name: origin
+      # Citrus reads a byte[] body as its Java text form (citrusframework/citrus#2081)
+      - convertBodyTo:
+          type: "java.lang.String"
       - to:
-          uri: "kamelet:log-sink"
+          uri: "{{http.sink.url}}/result"

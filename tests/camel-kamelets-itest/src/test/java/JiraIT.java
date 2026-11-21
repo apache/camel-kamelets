@@ -25,7 +25,6 @@ import org.citrusframework.junit.jupiter.CitrusSupport;
 import org.citrusframework.junit.jupiter.CitrusTestFactory;
 import org.citrusframework.junit.jupiter.CitrusTestFactorySupport;
 import org.citrusframework.spi.BindToRegistry;
-import org.citrusframework.util.SocketUtils;
 import org.junit.jupiter.api.DynamicTest;
 
 import static org.citrusframework.actions.CreateVariablesAction.Builder.createVariables;
@@ -35,7 +34,7 @@ import static org.citrusframework.http.endpoint.builder.HttpEndpoints.http;
 @CitrusSupport
 public class JiraIT {
 
-    private final int jiraServerPort = SocketUtils.findAvailableTcpPort();
+    private final int jiraServerPort = ServerPorts.next();
 
     @BindToRegistry
     HttpServer jiraServer = http()

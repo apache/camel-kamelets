@@ -17,23 +17,18 @@
 
 name: couchbase-sink-route-test
 actions:
-  # Create Couchbase infrastructure.
-  #
-  # Citrus has no built-in Couchbase container type, so this uses the generic
-  # one. The ports are bound one-to-one on purpose: the Couchbase SDK bootstraps
-  # from the management port and then reconnects using the addresses the cluster
-  # advertises, so a remapped host port makes the client unable to reach the
-  # data service.
+  # Create Couchbase infrastructure, on random host ports: initCluster.groovy
+  # advertises them to the Couchbase SDK as the external addresses of the node
   - testcontainers:
       start:
         container:
           name: "couchbase"
           image: "couchbase/server:community-7.6.2"
           startUpTimeout: 300
-          portBindings:
-            - "8091:8091"
-            - "8093:8093"
-            - "11210:11210"
+          exposedPorts:
+            - 8091
+            - 8093
+            - 11210
           waitFor:
             logMessage: ".*Starting Couchbase Server.*"
 
@@ -51,6 +46,10 @@ actions:
             systemProperties:
               file: "couchbase/application.properties"
               properties:
+                - name: "couchbase.hostname"
+                  value: "${couchbase.host}"
+                - name: "couchbase.connection.string"
+                  value: "couchbase://${couchbase.host}:${couchbase.kv.port}"
                 - name: "http.sink.url"
                   value: "http://localhost:${couchbase.server.port}"
 
@@ -78,7 +77,7 @@ actions:
 
   # the document is stored as a JSON document, under the id of the CamelCouchbaseId header
   - http:
-      client: "http://localhost:8093"
+      client: "http://${couchbase.host}:${couchbase.query.port}"
       sendRequest:
         POST:
           path: "/query/service"
@@ -89,7 +88,7 @@ actions:
           body:
             data: '{"statement":"SELECT RAW k FROM `kamelets` k USE KEYS ''order-1''"}'
   - http:
-      client: "http://localhost:8093"
+      client: "http://${couchbase.host}:${couchbase.query.port}"
       receiveResponse:
         response:
           status: 200

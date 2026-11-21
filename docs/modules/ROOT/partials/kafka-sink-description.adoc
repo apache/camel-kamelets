@@ -22,15 +22,17 @@ To write the records with a schema kept in a schema registry, set `schemaRegistr
 `schemaFormat` (the default is `avro`). With `json`, the body must be JSON text (or a Map); the Kamelet turns it into
 an object, and the record is written with a JSON Schema made from it, which accepts any JSON object. With `avro`,
 `confluent` and `apicurio` write a text body as an Avro string, while `aws-glue` needs an Avro record, which a step must
-create in code. With `azure`, also set `schemaGroup`. The sink registers the
+create in code. With `protobuf`, the body must be a Protobuf message, such as an object of a class generated from the
+`.proto` file or a `DynamicMessage`, which a step must create in code; JSON text fails. With `azure`, also set
+`schemaGroup`. The sink registers the
 schema it makes, and does not check the message against a schema that is already registered for the topic.
 
 [width="100%",cols="1,1,3",options="header"]
 |===
 | `schemaRegistryVendor` | `schemaFormat` | Registry
-| `confluent` | `avro`, `json` | Confluent Schema Registry, and the registries with the same API, such as the one of Redpanda and Karapace. `schemaRegistryUrl` is the URL of the registry, such as `http://localhost:8081`.
-| `apicurio` | `avro` | Apicurio Registry 3.x. `schemaRegistryUrl` is the URL of the registry API, such as `http://localhost:8080/apis/registry/v3`.
-| `aws-glue` | `avro`, `json` | AWS Glue Schema Registry. Set `schemaRegistryRegion`, unless the environment has the region (such as `AWS_REGION`), and `schemaRegistryName`, unless the registry is `default-registry`. `schemaRegistryUrl` is not needed. The AWS credentials are taken from the AWS default credentials chain.
+| `confluent` | `avro`, `json`, `protobuf` | Confluent Schema Registry, and the registries with the same API, such as the one of Redpanda and Karapace. `schemaRegistryUrl` is the URL of the registry, such as `http://localhost:8081`.
+| `apicurio` | `avro`, `protobuf` | Apicurio Registry 3.x. `schemaRegistryUrl` is the URL of the registry API, such as `http://localhost:8080/apis/registry/v3`.
+| `aws-glue` | `avro`, `json`, `protobuf` | AWS Glue Schema Registry. Set `schemaRegistryRegion`, unless the environment has the region (such as `AWS_REGION`), and `schemaRegistryName`, unless the registry is `default-registry`. `schemaRegistryUrl` is not needed. The AWS credentials are taken from the AWS default credentials chain.
 | `azure` | `avro` | Azure Schema Registry of Event Hubs. `schemaRegistryUrl` is the fully qualified name of the namespace, such as `my-namespace.servicebus.windows.net`. The sink needs `schemaGroup`. The credentials are taken by the Azure `DefaultAzureCredential`, such as from the `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_CLIENT_SECRET` variables.
 |===
 

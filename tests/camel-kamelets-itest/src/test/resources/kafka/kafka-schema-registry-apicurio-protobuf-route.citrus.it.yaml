@@ -1,0 +1,90 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+
+name: kafka-schema-registry-apicurio-protobuf-route-test
+variables:
+  - name: "kafka.topic"
+    value: "apicurio-protobuf"
+actions:
+  # Redpanda for Kafka, and Apicurio Registry 3.x as the schema registry
+  - testcontainers:
+      start:
+        redpanda: {}
+  - testcontainers:
+      start:
+        container:
+          name: "apicurio"
+          image: "apicurio/apicurio-registry:3.3.4"
+          autoRemove: true
+          startUpTimeout: 120
+          exposedPorts:
+            - 8080
+          waitFor:
+            logMessage: '.*Listening on.*'
+
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "kafka/kafka-schema-registry-protobuf-route.yaml"
+            systemProperties:
+              properties:
+                - name: kafka.topic
+                  value: "${kafka.topic}"
+                - name: kafka.bootstrapServers
+                  value: "${CITRUS_TESTCONTAINERS_REDPANDA_BOOTSTRAP_SERVERS}"
+                - name: kafka.schemaRegistryVendor
+                  value: "apicurio"
+                - name: kafka.schemaRegistryUrl
+                  value: "http://${CITRUS_TESTCONTAINERS_APICURIO_HOST}:${CITRUS_TESTCONTAINERS_APICURIO_PORT}/apis/registry/v3"
+                - name: http.sink.url
+                  value: "http://localhost:${kafka.sink.server.port}/result"
+
+  # kafka-sink writes the Protobuf message, kafka-source reads it and gives it as JSON text
+  - http:
+      server: "kafkaSinkServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: "java.lang.String"
+          body:
+            data: '{"id":1,"item":"camel"}'
+  - http:
+      server: "kafkaSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The record was written with a Protobuf schema, registered in the default group of the registry
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_APICURIO_HOST}:${CITRUS_TESTCONTAINERS_APICURIO_PORT}/apis/registry/v3/groups/default/artifacts/${kafka.topic}-value"
+      sendRequest:
+        GET: {}
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_APICURIO_HOST}:${CITRUS_TESTCONTAINERS_APICURIO_PORT}/apis/registry/v3/groups/default/artifacts/${kafka.topic}-value"
+      receiveResponse:
+        response:
+          status: 200
+          body:
+            data: |
+              {"owner":"@ignore@","createdOn":"@ignore@","modifiedBy":"@ignore@","modifiedOn":"@ignore@","artifactType":"PROTOBUF","artifactId":"${kafka.topic}-value"}
