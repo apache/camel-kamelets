@@ -106,6 +106,49 @@ public class CatalogValidatorTest {
         assertEquals(List.of(), verifyReservedPropertyNames("region", "lazyStart", "connectTimeout", "locationId"));
     }
 
+    @Test
+    void aSourceWithoutDataTypes() {
+        assertEquals(List.of("kamelet \"a-source\" does not declare spec.dataTypes.out: declare what it gives, or an"
+                + " empty \"headers: {}\" with a comment that says why it has no default"),
+                verifyDataTypes("source", null));
+    }
+
+    @Test
+    void aSourceThatDeclaresOnlyEmptyHeaders() {
+        assertEquals(List.of(), verifyDataTypes("source", Map.of("out", Map.of("headers", Map.of()))));
+    }
+
+    @Test
+    void aSinkThatDeclaresOnlyItsOutput() {
+        List<String> errors = verifyDataTypes("sink", Map.of("out", Map.of("default", "json")));
+
+        assertEquals(1, errors.size());
+        assertTrue(errors.get(0).startsWith("kamelet \"a-sink\" does not declare spec.dataTypes.in: declare what it"
+                + " takes"), errors.get(0));
+    }
+
+    @Test
+    void aSinkWithADefault() {
+        assertEquals(List.of(), verifyDataTypes("sink", Map.of("in", Map.of("default", "binary"))));
+    }
+
+    @Test
+    void anActionNeedsBothSides() {
+        List<String> errors = verifyDataTypes("action", Map.of("in", Map.of("default", "json")));
+
+        assertEquals(1, errors.size());
+        assertTrue(errors.get(0).contains("spec.dataTypes.out"), errors.get(0));
+        assertEquals(2, verifyDataTypes("action", Map.of()).size());
+    }
+
+    @Test
+    void aSideWithoutAnyContentIsNotDeclared() {
+        Map<String, Object> dataTypes = new LinkedHashMap<>();
+        dataTypes.put("in", null);
+
+        assertEquals(1, verifyDataTypes("sink", dataTypes).size());
+    }
+
     private static List<String> verifyReservedPropertyNames(String... names) {
         Map<String, Object> properties = new LinkedHashMap<>();
         for (String name : names) {
@@ -135,6 +178,20 @@ public class CatalogValidatorTest {
         List<String> errors = new ArrayList<>();
         CatalogValidator.verifySummary(
                 List.of(new CatalogValidator.KameletInfo("a-sink", new File("a-sink.kamelet.yaml"), doc)), errors);
+        return errors;
+    }
+
+    private static List<String> verifyDataTypes(String type, Map<String, Object> dataTypes) {
+        String name = "a-" + type;
+        Map<String, Object> spec = new LinkedHashMap<>();
+        if (dataTypes != null) {
+            spec.put("dataTypes", dataTypes);
+        }
+        Map<String, Object> doc = Map.of("metadata", Map.of("labels", Map.of(CatalogValidator.TYPE_LABEL, type)),
+                "spec", spec);
+        List<String> errors = new ArrayList<>();
+        CatalogValidator.verifyDataTypes(
+                List.of(new CatalogValidator.KameletInfo(name, new File(name + ".kamelet.yaml"), doc)), errors);
         return errors;
     }
 }
