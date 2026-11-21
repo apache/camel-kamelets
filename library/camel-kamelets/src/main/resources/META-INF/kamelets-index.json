@@ -1190,6 +1190,26 @@
     "namespace" : "Messaging",
     "provider" : "Apache Software Foundation"
   }, {
+    "name" : "jms-apache-activemq-sink",
+    "type" : "sink",
+    "supportLevel" : "Stable",
+    "title" : "JMS - Apache ActiveMQ Classic Sink",
+    "summary" : "Sends each message to a queue or a topic in an Apache ActiveMQ Classic broker, through JMS over OpenWire.",
+    "description" : "Sends each message to a queue or a topic in an Apache ActiveMQ Classic broker, through JMS over OpenWire.\n\nUse it to hand work to another application through a queue, such as orders to process, or to publish events on a topic for every application that listens. For an Apache ActiveMQ Artemis broker, use `jms-apache-artemis-sink`; for another broker that speaks AMQP 1.0, use `jms-amqp-10-sink`.\n\nInput: text is sent as a JMS text message, bytes as a JMS bytes message, and a Map as a JMS map message; `jmsMessageType` sends text or bytes as the other kind. The headers of the message, except the Camel ones, are sent along as JMS properties of the message.\n\nOutput: the message is unchanged, with the name of the queue or topic it was sent to in the `CamelJMSDestinationProduced` header.\n\nGood to know: Messages go to a queue unless `destinationType` is `topic`, and a message sent to a topic reaches only the receivers subscribed at that moment. Messages are persistent, with priority 4, and never expire, unless `deliveryPersistent`, `priority` and `timeToLive` say otherwise. It connects with no TLS unless `brokerURL` starts with `ssl://`, and logs in with `username` and `password` when they are set; a message fails when the broker refuses the login, or cannot be reached and `brokerURL` does not use `failover:`. It keeps its connections to the broker in a pool and reuses them for the next messages. It does not wait for a reply, even when the incoming message expects one, as one from `webhook-source` does. Headers that start with `CamelJms` are removed from the message first, so they cannot change what the Kamelet does.",
+    "group" : "JMS",
+    "namespace" : "Messaging",
+    "provider" : "Apache Software Foundation"
+  }, {
+    "name" : "jms-apache-activemq-source",
+    "type" : "source",
+    "supportLevel" : "Stable",
+    "title" : "JMS - Apache ActiveMQ Classic Source",
+    "summary" : "Receives each message from a queue or a topic in an Apache ActiveMQ Classic broker, through JMS over OpenWire.",
+    "description" : "Receives each message from a queue or a topic in an Apache ActiveMQ Classic broker, through JMS over OpenWire.\n\nUse it to process work that other applications put on a queue, such as orders or jobs, or to react to events published on a topic. For an Apache ActiveMQ Artemis broker, use `jms-apache-artemis-source`; for another broker that speaks AMQP 1.0, use `jms-amqp-10-source`.\n\nOutput: the body is text for a JMS text message, bytes for a bytes message, and a Map for a map message. The JMS properties of the message become headers, along with the JMS headers such as `JMSMessageID`, `JMSDestination`, `JMSTimestamp`, `JMSPriority` and `JMSRedelivered`.\n\nGood to know: From a queue, each message is removed when it is received, even when the rest of the flow then fails, unless `transacted` is true or `acknowledgementModeName` is `CLIENT_ACKNOWLEDGE`: then a message whose flow failed is delivered again, up to 6 more times, and then moved to the dead letter queue `ActiveMQ.DLQ`. Several copies of this source share the messages of a queue, and `concurrentConsumers` processes several messages at the same time. From a topic (`destinationType` set to `topic`), it receives only the messages sent while it is connected, unless `subscriptionDurable` is true: then the broker keeps the messages sent while it is stopped, under `clientId` and `subscriptionName`. ActiveMQ Classic has no shared subscriptions (JMS 2.0), so each copy of the source on a topic receives every message. With `selector`, it receives only the messages whose properties and headers match the selector. It connects with no TLS unless `brokerURL` starts with `ssl://`, and logs in with `username` and `password` when they are set. When the broker cannot be reached, or refuses the login, it starts anyway and tries again every 5 seconds.",
+    "group" : "JMS",
+    "namespace" : "Messaging",
+    "provider" : "Apache Software Foundation"
+  }, {
     "name" : "jms-apache-artemis-sink",
     "type" : "sink",
     "supportLevel" : "Stable",

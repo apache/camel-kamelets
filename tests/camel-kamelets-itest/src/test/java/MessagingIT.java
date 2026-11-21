@@ -33,7 +33,7 @@ import static org.citrusframework.http.endpoint.builder.HttpEndpoints.http;
 
 /**
  * Tests of the messaging Kamelets, each against a broker in a container: Apache ActiveMQ Artemis (for the
- * Artemis and the AMQP 1.0 Kamelets), IBM MQ, RabbitMQ, Apache Pulsar and the SMPPSim SMS center.
+ * Artemis and the AMQP 1.0 Kamelets), Apache ActiveMQ Classic, IBM MQ, RabbitMQ, Apache Pulsar and the SMPPSim SMS center.
  */
 @CitrusSupport
 public class MessagingIT {
