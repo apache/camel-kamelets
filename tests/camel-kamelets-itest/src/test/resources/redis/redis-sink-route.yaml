@@ -19,7 +19,6 @@
     from:
       uri: "timer:tick"
       parameters:
-        period: "10000"
         repeatCount: 1
       steps:
       - setBody:
@@ -33,3 +32,21 @@
             redisHost: "{{redis.host}}"
             redisPort: "{{redis.port}}"
             command: "SET"
+      # for SET the body stays as it was
+      - setHeader:
+          name: X-After-Set
+          simple: "${body}"
+      # read the value back with the Kamelet: for GET the body is the value
+      - setBody:
+          constant: ""
+      - to:
+          uri: "kamelet:redis-sink"
+          parameters:
+            redisHost: "{{redis.host}}"
+            redisPort: "{{redis.port}}"
+            command: "GET"
+      - setHeader:
+          name: X-Body-Type
+          simple: "${body.getClass().getName()}"
+      - to:
+          uri: "{{http.sink.url}}/result"

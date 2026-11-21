@@ -17,20 +17,16 @@
 
 name: redis-sink-route-test
 actions:
-  # Create Redis infrastructure
   - testcontainers:
       start:
         container:
           name: "redis"
-          image: "redis:7"
+          image: "redis:7.4.12-alpine"
           exposedPorts:
             - 6379
-          waitFor:
-            logMessage: "Ready to accept connections"
 
-  # Create Camel JBang integration (sink)
   - camel:
-      jbang:
+      cli:
         run:
           waitForRunningState: false
           integration:
@@ -40,11 +36,33 @@ actions:
                 - name: "redis.host"
                   value: "${CITRUS_TESTCONTAINERS_REDIS_HOST}"
                 - name: "redis.port"
-                  value: "${CITRUS_TESTCONTAINERS_REDIS_SERVICE_PORT}"
+                  value: "${CITRUS_TESTCONTAINERS_REDIS_PORT}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${redis.server.port}"
 
-  # Verify Redis sink executed
-  - camel:
-      jbang:
-        verify:
-          integration: "redis-sink-route"
-          logMessage: "hello-redis"
+  # SET left the body as it was, and GET with the Kamelet gives the stored value
+  - http:
+      server: "redisServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-After-Set"
+              value: 'hello-redis'
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+          body:
+            data: 'hello-redis'
+  - http:
+      server: "redisServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # the value is in Redis, as text
+  - groovy:
+      script:
+        file: "redis/get.groovy"

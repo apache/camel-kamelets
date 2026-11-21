@@ -16,7 +16,7 @@
 # ---------------------------------------------------------------------------
 
 name: azure-functions-sink-route-test
-description: 'azure-functions-sink calls the function with the body, the Content-Type and the other headers, and the key in x-functions-key'
+description: 'azure-functions-sink calls the function with the body, the Content-Type and the other headers, and the key in x-functions-key, but not the credentials of the message'
 actions:
   # Create Camel JBang integration. The Citrus HTTP server takes the place of the function.
   - camel:
@@ -32,12 +32,23 @@ actions:
                 - name: "azure.server.port"
                   value: "${azure.server.port}"
 
-  # The function gets the body, the Content-Type, the header origin and the key, and answers with JSON
+  # The function gets the body, the Content-Type, the header origin and the key of the Kamelet (not the one of
+  # the message), and answers with JSON. The Authorization and Proxy-Authorization headers of the message are not
+  # sent: a header validation cannot check that a header is missing, so a script checks the received request.
   - http:
       server: "azureServer"
       receiveRequest:
+        validate:
+          - script:
+              type: groovy
+              value: |
+                def sent = receivedMessage.getHeaders().keySet().findAll {
+                    it.equalsIgnoreCase('Authorization') || it.equalsIgnoreCase('Proxy-Authorization')
+                }
+                assert sent.isEmpty() : 'The function got the credential headers of the message: ' + sent
         POST:
           path: "/api/orders"
+          type: "plaintext"
           headers:
             - name: "Content-Type"
               value: '@startsWith(application/json)@'

@@ -19,11 +19,11 @@
     from:
       uri: "timer:tick"
       parameters:
-        period: "10000"
         repeatCount: 1
       steps:
+      # one value for each ? of the query, in the same order
       - setBody:
-          constant: '[{"id": 42, "name": "sink-test", "value": "from-cassandra-sink"}]'
+          constant: '[42, "sink-test", "from-cassandra-sink"]'
       - to:
           uri: "kamelet:cassandra-sink"
           parameters:
@@ -32,3 +32,11 @@
             keyspace: "test_ks"
             query: "INSERT INTO test_data (id, name, value) VALUES (?, ?, ?)"
             consistencyLevel: "ONE"
+      # what the Kamelet gives: the Java type of the body
+      - setHeader:
+          name: X-Body-Type
+          simple: "${body.getClass().getName()}"
+      - setBody:
+          simple: "size=${body.size()}"
+      - to:
+          uri: "{{http.sink.url}}/result"

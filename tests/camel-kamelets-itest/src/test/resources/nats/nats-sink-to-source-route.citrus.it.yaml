@@ -16,31 +16,25 @@
 # ---------------------------------------------------------------------------
 
 name: nats-sink-to-source-route-test
+description: 'nats-sink publishes a text message with a header to a NATS subject, and nats-source receives it as bytes, with the header'
 variables:
-  - name: "test.message"
-    value: "hello-nats-test"
   - name: "nats.topic"
     value: "test-topic"
 actions:
-  # Start NATS container
   - testcontainers:
       start:
         container:
           name: "nats"
-          image: "nats:2"
+          image: "nats:2.15.3-alpine"
           exposedPorts:
             - 4222
           waitFor:
-            disabled: true
+            logMessage: '.*Server is ready.*'
 
-  # Wait for NATS to be ready
-  - sleep:
-      milliseconds: 5000
-
-  # Start source (subscriber) first
   - camel:
-      jbang:
+      cli:
         run:
+          waitForRunningState: false
           integration:
             file: "nats/nats-source-route.yaml"
             systemProperties:
@@ -49,26 +43,44 @@ actions:
                   value: "${nats.topic}"
                 - name: "nats.servers"
                   value: "nats://${CITRUS_TESTCONTAINERS_NATS_HOST}:${CITRUS_TESTCONTAINERS_NATS_PORT}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${nats.server.port}"
 
-  # Start sink (publisher)
   - camel:
-      jbang:
+      cli:
         run:
           waitForRunningState: false
           integration:
             file: "nats/nats-sink-route.yaml"
             systemProperties:
               properties:
-                - name: "test.message"
-                  value: "${test.message}"
                 - name: "nats.topic"
                   value: "${nats.topic}"
                 - name: "nats.servers"
                   value: "nats://${CITRUS_TESTCONTAINERS_NATS_HOST}:${CITRUS_TESTCONTAINERS_NATS_PORT}"
 
-  # Verify source received the message
-  - camel:
-      jbang:
-        verify:
-          integration: "nats-source-route"
-          logMessage: "${test.message}"
+  # The source gives the payload as bytes, with the subject and the NATS header of the sink
+  - http:
+      server: "natsServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: '[B'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-Subject"
+              value: 'test-topic'
+            - name: "X-Origin"
+              value: 'citrus'
+          body:
+            data: 'hello-nats'
+  - http:
+      server: "natsServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

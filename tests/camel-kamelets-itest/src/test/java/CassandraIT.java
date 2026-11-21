@@ -18,13 +18,47 @@
 import java.util.stream.Stream;
 
 import org.citrusframework.api.common.TestLoader;
+import org.citrusframework.container.SequenceAfterTest;
+import org.citrusframework.container.SequenceBeforeTest;
+import org.citrusframework.http.server.HttpServer;
 import org.citrusframework.junit.jupiter.CitrusSupport;
 import org.citrusframework.junit.jupiter.CitrusTestFactory;
 import org.citrusframework.junit.jupiter.CitrusTestFactorySupport;
+import org.citrusframework.spi.BindToRegistry;
 import org.junit.jupiter.api.DynamicTest;
+
+import static org.citrusframework.actions.CreateVariablesAction.Builder.createVariables;
+import static org.citrusframework.actions.PurgeEndpointAction.Builder.purgeEndpoints;
+import static org.citrusframework.http.endpoint.builder.HttpEndpoints.http;
 
 @CitrusSupport
 public class CassandraIT {
+
+    private static final String TESTS = "cassandra-.*";
+
+    private final int cassandraServerPort = ServerPorts.next();
+
+    @BindToRegistry
+    HttpServer cassandraServer = http()
+                .server()
+                .port(cassandraServerPort)
+                .timeout(60000L)
+                .autoStart(true)
+                .build();
+
+    @BindToRegistry
+    public SequenceBeforeTest beforeCassandra() {
+        return new SequenceBeforeTest.Builder().onTests(TESTS).actions(
+                createVariables().variable("cassandra.server.port", String.valueOf(cassandraServerPort))
+        ).build();
+    }
+
+    @BindToRegistry
+    public SequenceAfterTest afterCassandra() {
+        return new SequenceAfterTest.Builder().onTests(TESTS).actions(
+                purgeEndpoints().endpoint(cassandraServer)
+        ).build();
+    }
 
     @CitrusTestFactory
     public Stream<DynamicTest> cassandra() {

@@ -38,10 +38,6 @@ actions:
       cli:
         run:
           waitForRunningState: false
-          # camel-salesforce gets protobuf-java 3.x through grpc-protobuf, but its Pub/Sub classes need 4.x,
-          # without which the component does not start in Camel JBang
-          args:
-            - "--dep=com.google.protobuf:protobuf-java:4.35.1"
           integration:
             file: "salesforce/salesforce-composite-upsert-sink-route.yaml"
             systemProperties:

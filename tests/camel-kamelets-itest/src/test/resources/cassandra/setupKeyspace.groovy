@@ -18,7 +18,7 @@
 import com.datastax.oss.driver.api.core.CqlSession
 
 def session = CqlSession.builder()
-        .addContactPoint(new InetSocketAddress('${CITRUS_TESTCONTAINERS_CASSANDRA_HOST}', Integer.parseInt('${CITRUS_TESTCONTAINERS_CASSANDRA_SERVICE_PORT}')))
+        .addContactPoint(new InetSocketAddress('${CITRUS_TESTCONTAINERS_CASSANDRA_HOST}', Integer.parseInt('${CITRUS_TESTCONTAINERS_CASSANDRA_PORT}')))
         .withLocalDatacenter('datacenter1')
         .build()
 
