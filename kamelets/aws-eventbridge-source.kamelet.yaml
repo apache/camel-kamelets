@@ -1,0 +1,212 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: aws-eventbridge-source
+  annotations:
+    camel.apache.org/kamelet.support.level: "Stable"
+    camel.apache.org/catalog.version: "4.24.0-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMWVtIiBoZWlnaHQ9IjFlbSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQgbWVldCIgdmlld0JveD0iMCAwIDI1NiAyNTYiIHN0eWxlPSItbXMtdHJhbnNmb3JtOiByb3RhdGUoMzYwZGVnKTsgLXdlYmtpdC10cmFuc2Zvcm06IHJvdGF0ZSgzNjBkZWcpOyB0cmFuc2Zvcm06IHJvdGF0ZSgzNjBkZWcpOyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJJY29uaWZ5SWQtMTgyM2Y2NTU1NjktYWYxZGQ1LTIwMzYiIHgxPSIwJSIgeDI9IjEwMCUiIHkxPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNCMDA4NEQiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGRjRGOEIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cGF0aCBmaWxsPSJ1cmwoI0ljb25pZnlJZC0xODIzZjY1NTU2OS1hZjFkZDUtMjAzNikiIGQ9Ik0wIDBoMjU2djI1NkgweiIvPjxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik0xNzEuNzAyIDIxMS4yYy02Ljg1OCAwLTEyLjQ0LTUuNjEtMTIuNDQtMTIuNTA5czUuNTgyLTEyLjUwOSAxMi40NC0xMi41MDljNi44NTcgMCAxMi40MzggNS42MSAxMi40MzggMTIuNTFjMCA2Ljg5OC01LjU4MSAxMi41MDgtMTIuNDM4IDEyLjUwOFptLTI3LjI3OC01NC40aC0zMy4wNzFMOTQuODE1IDEyOGwxNi41MzgtMjguOGgzMy4wNzFMMTYwLjk2IDEyOGwtMTYuNTM1IDI4LjhaTTg4LjM4NyA2OS44MThjLTYuODU3IDAtMTIuNDM4LTUuNjEtMTIuNDM4LTEyLjUxYzAtNi44OTggNS41ODEtMTIuNTA4IDEyLjQzOC0xMi41MDhjNi44NjEgMCAxMi40NDMgNS42MSAxMi40NDMgMTIuNTA5cy01LjU4MiAxMi41MDktMTIuNDQzIDEyLjUwOVptODMuMzE1IDEwOS45NjRjLTIuMzYyIDAtNC42MTQuNDU4LTYuNjk5IDEuMjYxbC0xMy41MTQtMjIuOTMxbC0uNzEzLjQyNkwxNjcuMzkgMTI5LjZhMy4yMjYgMy4yMjYgMCAwIDAgMC0zLjJsLTE4LjM3NC0zMmEzLjE3NyAzLjE3NyAwIDAgMC0yLjc1NS0xLjZoLTMzLjQzNWwuMTMtLjA3N2wtMTIuMzktMjEuMDNjNC4wNDctMy40NjkgNi42MjgtOC42MjcgNi42MjgtMTQuMzg0YzAtMTAuNDI2LTguNDM2LTE4LjkwOS0xOC44MDctMTguOTA5Yy0xMC4zNjcgMC0xOC44MDMgOC40ODMtMTguODAzIDE4LjkwOWMwIDEwLjQyNSA4LjQzNiAxOC45MDkgMTguODAzIDE4LjkwOWMyLjM2NSAwIDQuNjE4LS40NTggNi43MDItMS4yNjFsMTEuNTY3IDE5LjYyNUw4OC4zODQgMTI2LjRhMy4yMjYgMy4yMjYgMCAwIDAgMCAzLjJsMTguMzc3IDMyYy41Ny45OTIgMS42MiAxLjYgMi43NTYgMS42aDM2Ljc0NGMuMjY0IDAgLjUyMS0uMDQyLjc3LS4xMDJsMTIuNDk2IDIxLjIxYy00LjA1MSAzLjQ2OC02LjYyOSA4LjYyNi02LjYyOSAxNC4zODNjMCAxMC40MjYgOC40MzMgMTguOTA5IDE4LjgwNCAxOC45MDljMTAuMzcgMCAxOC44MDMtOC40ODMgMTguODAzLTE4LjkwOWMwLTEwLjQyNS04LjQzMy0xOC45MDktMTguODAzLTE4LjkwOVptMTguOTY4LTc3LjA1Yy02Ljg1NyAwLTEyLjQzNi01LjYwOS0xMi40MzYtMTIuNTA4YzAtNi45IDUuNTc5LTEyLjUwOSAxMi40MzYtMTIuNTA5YzYuODU4IDAgMTIuNDQgNS42MSAxMi40NCAxMi41MDljMCA2LjktNS41ODIgMTIuNTA5LTEyLjQ0IDEyLjUwOVptMjMuMzAzIDIzLjY2OGwtMTIuMDgtMjEuMDRjNC41OTItMy40NTMgNy41OC04Ljk0NCA3LjU4LTE1LjEzNmMwLTEwLjQyNi04LjQzMi0xOC45MDktMTguODAzLTE4LjkwOWMtMi42MzggMC01LjE1Mi41NTQtNy40MzMgMS41NDlsLTkuODQ5LTE3LjE1NWEzLjE4IDMuMTggMCAwIDAtMi43NTYtMS42aC0zOS40NDh2Ni40aDM3LjYxMmw5LjExIDE1Ljg3MmMtMy43MDMgMy40NTYtNi4wMzYgOC4zNzQtNi4wMzYgMTMuODQzYzAgMTAuNDI2IDguNDMzIDE4LjkwOSAxOC44IDE4LjkwOWMxLjkzMiAwIDMuOC0uMjk4IDUuNTU2LS44NDVMMjA3LjU0NSAxMjhsLTE1Ljg5MiAyNy42NzRsNS41MTIgMy4ybDE2LjgwOC0yOS4yNzRhMy4yMSAzLjIxIDAgMCAwIDAtMy4yWm0tMTQ2LjA0IDUwLjM5Yy02Ljg2IDAtMTIuNDQyLTUuNjEyLTEyLjQ0Mi0xMi41MDhjMC02LjkgNS41ODEtMTIuNTEgMTIuNDQyLTEyLjUxYzYuODU3IDAgMTIuNDM5IDUuNjEgMTIuNDM5IDEyLjUxYzAgNi44OTYtNS41ODIgMTIuNTA4LTEyLjQ0IDEyLjUwOFptMTAuMzkzIDMuMjM2YzUuMDYyLTMuMzkyIDguNDEtOS4xODEgOC40MS0xNS43NDRjMC0xMC40MjYtOC40MzYtMTguOTEtMTguODAzLTE4LjkxYy0zLjAwNCAwLTUuODMzLjczLTguMzUzIDEuOTk0TDQ4LjQ1OCAxMjhsMTguNDI4LTMyLjA5M2wtNS41MTUtMy4yTDQyLjAyNyAxMjYuNGEzLjIxIDMuMjEgMCAwIDAgMCAzLjJsMTIuMzg4IDIxLjU2OGMtMy4yNjggMy40MDUtNS4yODkgOC4wMjItNS4yODkgMTMuMTE0YzAgMTAuNDI1IDguNDM2IDE4LjkwOCAxOC44MDcgMTguOTA4YzEuNTYyIDAgMy4wNzQtLjIxNCA0LjUyOC0uNTc5bDEwLjE1IDE3LjY4Yy41Ny45ODkgMS42MiAxLjYgMi43NTcgMS42aDM5LjQ1MXYtNi40SDg3LjIwNGwtOC44NzgtMTUuNDY1WiIvPjwvc3ZnPg=="
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "AWS Eventbridge"
+    camel.apache.org/kamelet.namespace: "AWS"
+  labels:
+    camel.apache.org/kamelet.type: "source"
+    camel.apache.org/kamelet.verified: "true"
+spec:
+  definition:
+    title: "AWS Eventbridge Source"
+    description: |-
+      Receives the events that an Amazon EventBridge rule matches on an event bus, one message per event, through an SQS queue that it adds to the rule as a target.
+
+      Use it to react to the events of your applications or of AWS services, such as `Order Shipped` from a shop or a change of state of an EC2 instance, without setting up a queue yourself. To publish events, use `aws-eventbridge-sink`. For the events of an S3 bucket, `aws-s3-event-based-source` reads a queue that you made the target of a rule yourself, gives each event an ID that is the same in its copies, and can fetch the files.
+
+      Output: the body is the whole EventBridge event, as JSON text: `id` (the ID that EventBridge gave the event), `detail-type`, `source`, `account`, `time`, `region`, `resources` and `detail`, which holds what the sender of the event put in it, such as `{"orderId": "A-1"}`. The `CamelAwsEventbridgeMessageId` header is the ID of the SQS message that carried the event, and `CamelAwsEventbridgeReceiptHandle` its receipt handle.
+
+      Good to know: the rule must exist on the event bus before the Kamelet starts, or it fails to start; its event pattern decides which events arrive. Create it in the EventBridge console or with `aws events put-rule`. Without `queueURL`, it creates a queue named `camel-eventbridge-` followed by the rule name and a random part, and adds it to the rule; when it stops, it removes the queue from the rule and deletes it, so the events of the time it does not run are lost, and each replica gets its own queue and every event. With `queueURL`, it adds your queue to the rule and leaves it there, so the queue collects the events while the Kamelet does not run, and the replicas share the events. Each event is deleted from the queue once it has been processed; an event that fails stays in the queue and is received again each time `visibilityTimeout` ends, until it is processed. Stopping the Kamelet can take up to `waitTimeSeconds`, as it waits for the last request to SQS to end. It logs in to EventBridge and SQS with the same credentials, which need `events:PutTargets` and `events:RemoveTargets` on the rule, and `sqs:ReceiveMessage`, `sqs:DeleteMessage` and `sqs:GetQueueAttributes` on the queue, plus `sqs:CreateQueue`, `sqs:SetQueueAttributes` and `sqs:DeleteQueue` without `queueURL`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.
+    required:
+      - eventbusNameOrArn
+      - ruleName
+      - region
+    type: object
+    properties:
+      eventbusNameOrArn:
+        title: Event Bus Name
+        description: The name of the event bus of the rule, such as `default` or `orders`, or its ARN (Amazon Resource Name).
+        example: orders
+        type: string
+      ruleName:
+        title: Rule Name
+        description: The name of the EventBridge rule whose events to receive, such as `orders-shipped`. The rule must exist on the event bus; its event pattern decides which events arrive.
+        example: orders-shipped
+        type: string
+        pattern: "^[.\\-_A-Za-z0-9]+$"
+      queueURL:
+        title: Queue URL
+        description: The full address of an SQS queue of your own to receive the events through, as the SQS console shows it. Its access policy must let EventBridge (`events.amazonaws.com`) send messages to it. It stays a target of the rule when the Kamelet stops. When it is not set, a queue is created when the Kamelet starts and deleted when it stops.
+        example: https://sqs.eu-west-1.amazonaws.com/123456789012/orders-events
+        type: string
+      accessKey:
+        title: Access Key
+        description: The access key ID of an IAM user, which you create in the AWS console under IAM, Users, Security credentials. Use it together with `secretKey`. Leave both out when `useDefaultCredentialsProvider` or `useProfileCredentialsProvider` is true.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      secretKey:
+        title: Secret Key
+        description: The secret access key that belongs to `accessKey`. The AWS console shows it only once, when the access key is created.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      region:
+        title: AWS Region
+        description: The AWS region of the event bus and the queue, as a region code such as `eu-west-1` or `us-east-1`.
+        example: eu-west-1
+        type: string
+        enum: ["ap-south-1", "eu-south-1", "us-gov-east-1", "me-central-1", "ca-central-1", "eu-central-1", "us-iso-west-1", "us-west-1", "us-west-2", "af-south-1", "eu-north-1", "eu-west-3", "eu-west-2", "eu-west-1", "ap-northeast-3", "ap-northeast-2", "ap-northeast-1", "me-south-1", "sa-east-1", "ap-east-1", "cn-north-1", "us-gov-west-1", "ap-southeast-1", "ap-southeast-2", "us-iso-east-1", "ap-southeast-3", "us-east-1", "us-east-2", "cn-northwest-1", "us-isob-east-1", "aws-global", "aws-cn-global", "aws-us-gov-global", "aws-iso-global", "aws-iso-b-global"]
+      useDefaultCredentialsProvider:
+        title: Default Credentials Provider
+        description: "If true, the credentials are found in the environment instead of in `accessKey` and `secretKey`: the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables, the `~/.aws/credentials` file, or the IAM role of the EC2 instance, ECS task or Kubernetes pod the integration runs on."
+        type: boolean
+        default: false
+      useProfileCredentialsProvider:
+        title: Profile Credentials Provider
+        description: If true, the credentials are read from a named profile in the AWS credentials file (`~/.aws/credentials`), as the AWS CLI does. Name the profile in `profileCredentialsName`.
+        type: boolean
+        default: false
+      useSessionCredentials:
+        title: Session Credentials
+        description: "If true, it logs in with temporary credentials: `accessKey`, `secretKey` and `sessionToken`, such as the ones AWS STS gives when you assume an IAM role."
+        type: boolean
+        default: false
+      profileCredentialsName:
+        title: Profile Credentials Name
+        description: The name of the profile in the AWS credentials file. Only used when `useProfileCredentialsProvider` is true; when it is not set, the default profile is used.
+        example: production
+        type: string
+        pattern: "^[A-Za-z0-9_.@-]+$"
+      sessionToken:
+        title: Session Token
+        description: The session token of temporary credentials, which comes with their access key and secret key, for example from AWS STS when you assume an IAM role. Only used when `useSessionCredentials` is true.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      uriEndpointOverride:
+        title: Overwrite Endpoint URI
+        description: The address to connect to instead of AWS, for EventBridge and SQS, as a URL such as `http://localhost:4566` for LocalStack. Only used when `overrideEndpoint` is true.
+        example: http://localhost:4566
+        type: string
+      overrideEndpoint:
+        title: Endpoint Overwrite
+        description: If true, it connects to the address in `uriEndpointOverride` instead of to AWS. Use it for a local stand-in of AWS such as LocalStack.
+        type: boolean
+        default: false
+      delay:
+        title: Delay
+        description: How long to wait between two polls of the queue, in milliseconds.
+        type: integer
+        default: 500
+      greedy:
+        title: Greedy Scheduler
+        description: If true, it polls again right away when the last poll received events, instead of waiting for `delay`.
+        type: boolean
+        default: false
+      maxMessagesPerPoll:
+        title: Max Events Per Poll
+        description: The most events to receive in one request to SQS, from 1 to 10. SQS may return fewer.
+        type: integer
+        minimum: "1"
+        maximum: "10"
+        default: 10
+      waitTimeSeconds:
+        title: Wait Time
+        description: How long one request waits for an event to arrive when the queue is empty, in seconds, from 0 to 20 (long polling). It saves requests, and so cost, when events are rare.
+        type: integer
+        minimum: "0"
+        maximum: "20"
+        default: 20
+      visibilityTimeout:
+        title: Visibility Timeout
+        description: How long a received event stays hidden from other readers of the queue, in seconds. If it has not been processed by then, it is received again. Set it longer than processing one event takes.
+        type: integer
+        minimum: "0"
+        default: 30
+      proxyHost:
+        title: Proxy Host
+        description: The host name or IP address of an HTTP proxy to send the calls to AWS through, such as the proxy of a company network. Used only together with `proxyPort`. When it is not set, the calls go straight to AWS.
+        type: string
+        pattern: "^[A-Za-z0-9._-]+$"
+        example: proxy.example.com
+      proxyPort:
+        title: Proxy Port
+        description: The port of the proxy in `proxyHost`, such as `3128` for Squid. Used only together with `proxyHost`.
+        type: integer
+        example: 3128
+      proxyProtocol:
+        title: Proxy Protocol
+        description: "How to talk to the proxy itself: `HTTP` or `HTTPS`. It is not the protocol of the calls to AWS, which stay encrypted, as the proxy only passes them on. When it is not set, it is `HTTPS`, which needs a proxy that takes TLS connections. Most company proxies, such as Squid, take plain HTTP: set `HTTP` for them. With the wrong one, every call fails, for example with `Unsupported or unrecognized SSL message`."
+        type: string
+        enum: ["HTTP", "HTTPS"]
+        example: HTTP
+  dataTypes:
+    # No 'default:' here on purpose: the out default of a source runs after the steps that follow
+    # the Kamelet (see #3117). The body is the EventBridge event as JSON text.
+    out:
+      headers:
+        CamelAwsEventbridgeMessageId:
+          title: SQS Message ID
+          description: The ID of the SQS message that carried the event.
+          type: string
+        CamelAwsEventbridgeReceiptHandle:
+          title: Receipt Handle
+          description: The receipt handle of the SQS message, which SQS needs to delete the message from the queue.
+          type: string
+  dependencies:
+    - "camel:aws2-eventbridge"
+    - "camel:kamelet"
+  template:
+    from:
+      uri: "aws2-eventbridge:{{eventbusNameOrArn}}"
+      parameters:
+        ruleName: "{{ruleName}}"
+        queueUrl: "{{?queueURL}}"
+        accessKey: "RAW({{?accessKey}})"
+        secretKey: "RAW({{?secretKey}})"
+        region: "{{region}}"
+        useDefaultCredentialsProvider: "{{useDefaultCredentialsProvider}}"
+        useProfileCredentialsProvider: "{{useProfileCredentialsProvider}}"
+        profileCredentialsName: "{{?profileCredentialsName}}"
+        useSessionCredentials: "{{useSessionCredentials}}"
+        sessionToken: "RAW({{?sessionToken}})"
+        uriEndpointOverride: "{{?uriEndpointOverride}}"
+        overrideEndpoint: "{{overrideEndpoint}}"
+        delay: "{{delay}}"
+        greedy: "{{greedy}}"
+        maxMessagesPerPoll: "{{maxMessagesPerPoll}}"
+        waitTimeSeconds: "{{waitTimeSeconds}}"
+        visibilityTimeout: "{{visibilityTimeout}}"
+        proxyHost: "{{?proxyHost}}"
+        proxyPort: "{{?proxyPort}}"
+        proxyProtocol: "{{?proxyProtocol}}"
+      steps:
+        - to:
+            uri: kamelet:sink
