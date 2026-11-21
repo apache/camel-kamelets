@@ -40,36 +40,13 @@
         - to:
             uri: "{{http.sink.url}}/result"
 
-        # A Jackson JsonNode is not read: the body becomes empty (null), with no error
+        # A Jackson JsonNode, such as the output of json-deserialize-action, is transformed too
         - removeHeaders:
             pattern: "*"
         - setBody:
             constant: '{"name":"Ann","items":[{"price":2},{"price":3}]}'
         - to:
             uri: "kamelet:json-deserialize-action"
-        - to:
-            uri: "kamelet:jolt-transformation-action"
-            parameters:
-              template: 'classpath:order-jolt.json'
-        - setHeader:
-            name: X-Body-Null
-            groovy: "body == null"
-        # without a body the HTTP call would be a GET
-        - setHeader:
-            name: CamelHttpMethod
-            constant: POST
-        - to:
-            uri: "{{http.sink.url}}/json-node"
-
-        # With json-serialize-action before it, the JsonNode is read as JSON text
-        - removeHeaders:
-            pattern: "*"
-        - setBody:
-            constant: '{"name":"Ann","items":[{"price":2},{"price":3}]}'
-        - to:
-            uri: "kamelet:json-deserialize-action"
-        - to:
-            uri: "kamelet:json-serialize-action"
         - to:
             uri: "kamelet:jolt-transformation-action"
             parameters:
@@ -80,4 +57,4 @@
         - to:
             uri: "kamelet:json-serialize-action"
         - to:
-            uri: "{{http.sink.url}}/json-node-serialized"
+            uri: "{{http.sink.url}}/json-node"
