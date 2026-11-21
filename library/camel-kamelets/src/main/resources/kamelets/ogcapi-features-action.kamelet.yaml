@@ -40,7 +40,7 @@ spec:
 
       Output: the body is a GeoJSON feature collection, as JSON text in bytes, with at most `limit` features. The headers of the HTTP response, such as `Content-Type`, are set as headers.
 
-      Good to know: `split` gives each feature as a message of its own, as JSON text in bytes with the `Content-Type` `application/json`, only when the Kamelet is called with the `kamelet` EIP. Called with `to`, as in a Pipe, the next step still gets the whole collection, once per message, as text. An HTTP error from the server, such as an unknown collection, fails the message. Headers that start with `CamelHttp` or `CamelRestHttp` are removed from the message first, so they cannot change what the Kamelet does. The login comes only from the options: an `Authorization` or `Proxy-Authorization` header on the message is removed, so a credential that came with the message is not sent on. Log in either with `authUsername` and `authPassword`, with a static token in `authBearerToken`, or with `oauth2ClientId`, `oauth2ClientSecret` and `oauth2TokenEndpoint`: the Kamelet then gets a token from that URL and sends it as a Bearer token. Without `authenticationPreemptive`, the user and password, or the static token, are sent only after the service asks for them with a 401 response. A service that cannot be reached within `connectTimeout`, or does not answer within `responseTimeout`, fails the message; when they are not set, it waits up to 3 minutes.
+      Good to know: to handle each feature as a message of its own, add a `split` step after the Kamelet with the JSONPath `$.features[*]`. An HTTP error from the server, such as an unknown collection, fails the message. Headers that start with `CamelHttp` or `CamelRestHttp` are removed from the message first, so they cannot change what the Kamelet does. The login comes only from the options: an `Authorization` or `Proxy-Authorization` header on the message is removed, so a credential that came with the message is not sent on. Log in either with `authUsername` and `authPassword`, with a static token in `authBearerToken`, or with `oauth2ClientId`, `oauth2ClientSecret` and `oauth2TokenEndpoint`: the Kamelet then gets a token from that URL and sends it as a Bearer token. Without `authenticationPreemptive`, the user and password, or the static token, are sent only after the service asks for them with a 401 response. A service that cannot be reached within `connectTimeout`, or does not answer within `responseTimeout`, fails the message; when they are not set, it waits up to 3 minutes.
     required:
       - url
       - collection
@@ -68,11 +68,6 @@ spec:
         description: "The largest number of features to read for each message, between 1 and 10000."
         type: integer
         default: 10
-      split:
-        title: "Split by Feature"
-        description: "Gives each feature as a message of its own when the Kamelet is called with the `kamelet` EIP. Called with `to`, as in a Pipe, it does not change what the next step receives: the whole feature collection."
-        type: boolean
-        default: false
       query:
         title: "Query"
         description: "More query parameters for every request, in the form `name=value`, separated by `&`, such as filters on the properties of the features that the service supports."
@@ -170,7 +165,6 @@ spec:
   dependencies:
     - "camel:http"
     - "camel:kamelet"
-    - "camel:jsonpath"
     - "camel:jackson3"
   template:
     from:
@@ -215,25 +209,8 @@ spec:
             name: CamelHttpQuery
         - convertBodyTo:
             type: java.lang.String
-        - choice:
-            when:
-              - expression:
-                  simple:
-                    expression: "{{split}}"
-                steps:
-                  - split:
-                      expression:
-                        jsonpath:
-                          expression: "$.features[*]"
-                      steps:
-                        - marshal:
-                            json: {}
-                        - to:
-                            uri: kamelet:sink
-            otherwise:
-              steps:
-                - to:
-                    uri: kamelet:sink
+        - to:
+            uri: kamelet:sink
 
 
 
