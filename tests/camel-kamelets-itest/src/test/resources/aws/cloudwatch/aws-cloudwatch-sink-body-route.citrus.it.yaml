@@ -17,7 +17,7 @@
 
 
 name: aws-cloudwatch-sink-body-route-test
-# A MetricDatum body, or a List of them, is sent as it is; a List of anything else fails the message
+# A MetricDatum body, or a List of them, is sent as it is; a List of anything else, or an empty one, fails the message
 variables:
   - name: "cw.start"
     value: 'citrus:currentDate(''yyyy-MM-dd'', ''-1d'')'
@@ -105,6 +105,28 @@ actions:
               value: 'java.lang.IllegalArgumentException'
           body:
             data: 'failed'
+  - http:
+      server: "awsSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          body:
+            data: "OK"
+
+  # The empty List failed the message, before calling CloudWatch
+  - http:
+      server: "awsSinkServer"
+      receiveRequest:
+        POST:
+          path: "/empty"
+          type: "plaintext"
+          headers:
+            - name: "X-Error"
+              value: 'java.lang.IllegalArgumentException: The body is an empty collection: there is no MetricDatum to put'
+          body:
+            data: 'empty'
   - http:
       server: "awsSinkServer"
       sendResponse:
