@@ -1,0 +1,83 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: ftps-protocol-route-test
+description: 'securityProtocol of ftps-source and ftps-sink is the newest TLS version the connection offers: against a server that speaks only TLS 1.3, the default and TLSv1.3 connect, TLSv1.2 does not'
+variables:
+  - name: "ftp.tls.protocols"
+    value: "TLSv1.3"
+actions:
+  # Start an FTPS server that speaks only TLS 1.3, with a file for the source to read
+  - groovy:
+      script:
+        file: "ftp/ftpsServerProtocols.groovy"
+  - groovy:
+      script:
+        file: "ftp/putFile.groovy"
+
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "ftp/ftps-protocol-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${file.http.server.port}"
+                - name: "ftp.port"
+                  value: "${ftp.server.port}"
+                - name: "ftp.truststore"
+                  value: "${ftp.truststore}"
+
+  # The source without securityProtocol read the file, the sink with TLSv1.3 uploaded it, and the sink
+  # with TLSv1.2 failed the message
+  - http:
+      server: "fileHttpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-File-Name-Produced"
+              value: 'upload/order 1.csv'
+            - name: "X-Error"
+              value: '@contains(''Received fatal alert: protocol_version'')@'
+          body:
+            data: |
+              id,item
+              1,book
+  - http:
+      server: "fileHttpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The source with TLSv1.2 cannot connect: the server refuses the TLS handshake, and the source logs it
+  - camel:
+      cli:
+        verify:
+          integration: "ftps-protocol-route"
+          logMessage: "protocol_version"
+          maxAttempts: 30
+
+finally:
+  - groovy:
+      script:
+        file: "ftp/ftpServerStop.groovy"
