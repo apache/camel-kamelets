@@ -109,6 +109,11 @@ spec:
         description: The time of every event, as the number of seconds since 1 January 1970 (UTC). When it is not set, Splunk uses the time the event arrives.
         type: string
         example: "1700000000"
+  dataTypes:
+    # No 'default:' here on purpose: the event can be text or structured data, such as a Map, which is
+    # sent as a JSON object, and no data type keeps a Map. See #3117.
+    in:
+      headers: {}
   types:
     in:
       mediaType: application/json

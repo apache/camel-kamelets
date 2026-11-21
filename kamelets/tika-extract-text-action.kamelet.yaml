@@ -63,6 +63,9 @@ spec:
         default: 0
         example: 10485760
   dataTypes:
+    # No 'default:' here on purpose: the document is taken as it is, as bytes, a stream, a file or
+    # text; a binary default would turn text into bytes and replace the Content-Type header. See
+    # #3117.
     in:
       headers:
         CamelLangChain4jIngestDocumentId:

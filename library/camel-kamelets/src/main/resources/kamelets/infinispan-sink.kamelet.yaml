@@ -140,6 +140,9 @@ spec:
         example: "infinispan.example.com"
         pattern: "^[A-Za-z0-9.-]+$"
   dataTypes:
+    # No 'default:' here on purpose: the value can be any text, such as JSON; a text default would set
+    # the Content-Type header to text/plain on every message, also when the body is JSON or XML. See
+    # #3117.
     in:
       headers:
         key:

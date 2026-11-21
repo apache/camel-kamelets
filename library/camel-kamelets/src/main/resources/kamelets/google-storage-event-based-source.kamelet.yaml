@@ -99,6 +99,8 @@ spec:
         type: integer
         example: 5
   dataTypes:
+    # No 'default:' here on purpose: `getObject` decides whether the body is the notification as JSON
+    # text or the content of the file. See #3117.
     out:
       headers:
         eventType:

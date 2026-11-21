@@ -138,6 +138,9 @@ spec:
         example: refund
         pattern: "^[^\\r\\n]+$"
   dataTypes:
+    # No 'default:' here on purpose: the headers of the email are copied to the message, its Content-
+    # Type too (such as text/html or a multipart type), and a text default would replace it with
+    # text/plain. See #3117.
     out:
       headers:
         ce-subject:

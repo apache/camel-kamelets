@@ -184,6 +184,9 @@ spec:
         type: string
         pattern: "^[A-Za-z0-9:/_-]+$"
   dataTypes:
+    # No 'default:' here on purpose: the body can be any text that `batchSeparator` splits, such as
+    # JSON lines; a text default would set the Content-Type header to text/plain on every message,
+    # also when the body is JSON or XML. See #3117.
     out:
       headers:
         CamelAwsSqsSuccessfulMessageCount:
@@ -194,6 +197,8 @@ spec:
           title: Failed Message Count
           description: How many parts SQS did not accept.
           type: integer
+    in:
+      headers: {}
   dependencies:
     - "camel:aws2-sqs"
     - "camel:kamelet"

@@ -43,6 +43,9 @@ spec:
       Good to know: a name the DNS does not know does not fail the message: the answer has the status `NXDOMAIN` and no records. The Kamelet has no options; it asks the DNS servers of the machine it runs on. Headers that start with `CamelDns` are removed from the message first, so they cannot change what the Kamelet does.
     type: object
   dataTypes:
+    # No 'default:' here on purpose: the name can come from a header, and then the body is not used at
+    # all; a text default would still convert it, and fail on a body that is not text, such as a Map.
+    # See #3117.
     in:
       headers:
         domain-name:

@@ -35,7 +35,7 @@ spec:
 
       Use it to react to the discussion on pull requests, for example to answer a command written in a comment, such as `/retest`, or to forward the comments to a chat channel. To receive the pull requests themselves, use `github-pullrequest-source`.
 
-      Output: the body is the comment as JSON text, an object with the fields of the GitHub API that say what it is: `id`, `body` (the text of the comment), `html_url` (its web address), `user.login` (its author), `author_association` (the role of the author in the repository, such as `OWNER` or `CONTRIBUTOR`), `created_at` and `updated_at`. The `CamelGitHubPullRequest` header gives the number of the pull request it was written on.
+      Output: the body is the comment as JSON text in bytes, an object with the fields of the GitHub API that say what it is: `id`, `body` (the text of the comment), `html_url` (its web address), `user.login` (its author), `author_association` (the role of the author in the repository, such as `OWNER` or `CONTRIBUTOR`), `created_at` and `updated_at`. The `CamelGitHubPullRequest` header gives the number of the pull request it was written on. The `Content-Type` header is `application/json`.
 
       Good to know: only the comments written after the start are sent, and only on pull requests that are still open. These are the comments of the conversation of a pull request, not the review comments on lines of code. It works with github.com, not with GitHub Enterprise Server. Once a minute by default (`delay`), it asks GitHub for the open pull requests and for the comments of each of them, and every request counts against the API rate limit of the token.
     required:
@@ -68,6 +68,12 @@ spec:
         default: 60000
   dataTypes:
     out:
+      default: json
+      types:
+        json:
+          format: "application-json"
+          description: "The comment, as JSON text in bytes."
+          mediaType: application/json
       headers:
         CamelGitHubPullRequest:
           title: Pull Request Number

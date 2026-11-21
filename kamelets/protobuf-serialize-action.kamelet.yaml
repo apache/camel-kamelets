@@ -63,6 +63,8 @@ spec:
           format: "protobuf-binary"
           description: "The Protobuf binary data, as a stream."
           mediaType: application/protobuf
+    in:
+      headers: {}
   dependencies:
   - "camel:kamelet"
   - "camel:jackson3-protobuf"

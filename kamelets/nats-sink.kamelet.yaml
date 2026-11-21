@@ -83,6 +83,11 @@ spec:
         description: "How the sink waits for JetStream to confirm that it stored a message. Either way it waits before it sends the next message. When the server does not answer, sending fails after about 2 seconds when false, and after 2 to 8 seconds when true. Only used when `jetstreamEnabled` is true."
         type: boolean
         default: true
+  dataTypes:
+    # No 'default:' here on purpose: the body is sent as text or bytes as it is, and the headers are
+    # sent as NATS headers, so a default would add a Content-Type header to every message. See #3117.
+    in:
+      headers: {}
   dependencies:
   - "camel:nats"
   - "camel:kamelet"

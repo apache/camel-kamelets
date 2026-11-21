@@ -89,6 +89,13 @@ spec:
         description: A Java `KeyPair` of the algorithm, defined in the application, as `#bean:` followed by its name, to use instead of `keyStore`.
         type: string
         example: "#bean:pqcKeyPair"
+  dataTypes:
+    # No 'default:' here on purpose: what the input must be and what the output is depend on
+    # `operation`, and the keys are Java objects, not text or bytes. See #3117.
+    in:
+      headers: {}
+    out:
+      headers: {}
   dependencies:
   - "camel:pqc"
   - "camel:kamelet"

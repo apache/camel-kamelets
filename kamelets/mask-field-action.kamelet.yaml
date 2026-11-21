@@ -57,12 +57,18 @@ spec:
         example: "****"
     type: object
   dataTypes:
+    # No 'default:' here on purpose: the action takes JSON text or parsed JSON as it is, and gives
+    # JSON text or parsed JSON as the Content-Type header says. A json input default would set that
+    # header to application/json, so a parsed body would come out as JSON text; an output default
+    # would pick one of the two. See #3117.
     in:
       headers:
         Content-Type:
           title: Content Type
           description: When it is `application/json`, the body is read as JSON text and written back as JSON text. Otherwise the body comes out as parsed JSON.
           type: string
+    out:
+      headers: {}
   dependencies:
   - "camel:jackson3"
   - "camel:kamelet"

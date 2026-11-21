@@ -65,6 +65,9 @@ spec:
   # every message, and `text` would turn a Slack `Message` or `SlackMessage`
   # body, which the Slack component posts with its blocks and attachments,
   # into its toString(). See #3117.
+  dataTypes:
+    in:
+      headers: {}
   dependencies:
   - "camel:jackson3"
   - "camel:slack"

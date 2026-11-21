@@ -368,7 +368,12 @@ public class KameletsCatalogTest {
         assertTrue(dataTypes.size() == 1);
         assertNotNull(dataTypes.get("out").getTypes().get("binary"));
         assertNotNull(dataTypes.get("out").getTypes().get("cloudevents"));
+        // a Kamelet with nothing to transform still declares its own side, empty (#3250)
         dataTypes = catalog.getDataTypes("splunk-hec-sink");
-        assertNull(dataTypes);
+        assertEquals(1, dataTypes.size());
+        assertNull(dataTypes.get("in").get_default());
+        assertTrue(dataTypes.get("in").getHeaders().isEmpty());
+        assertNull(dataTypes.get("in").getTypes());
+        assertNull(catalog.getDataTypes("not-known"));
     }
 }

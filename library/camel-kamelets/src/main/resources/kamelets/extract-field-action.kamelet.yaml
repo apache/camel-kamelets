@@ -73,6 +73,9 @@ spec:
         deprecated: true
     type: object
   dataTypes:
+    # No 'default:' here on purpose: the action takes JSON text or parsed JSON as it is, and a json
+    # default would turn a parsed body into text only to parse it again. The output is text or JSON
+    # text, as the value is, and the action sets the Content-Type itself. See #3117.
     out:
       headers:
         Content-Type:
@@ -83,6 +86,8 @@ spec:
           title: Extracted Field
           description: The value of the field, when `headerOutput` is true and `headerOutputName` is not set.
           type: string
+    in:
+      headers: {}
   dependencies:
   - "camel:kamelet"
   - "camel:jackson3"

@@ -114,6 +114,8 @@ spec:
         type: string
         example: "zonegroup1"
   dataTypes:
+    # No 'default:' here on purpose: `getObject` decides whether the body is the notification as JSON
+    # text, the content of the file as a stream, or parsed JSON. See #3117.
     out:
       headers:
         ceph-event-id:

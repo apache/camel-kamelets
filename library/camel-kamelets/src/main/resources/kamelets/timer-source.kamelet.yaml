@@ -67,6 +67,8 @@ spec:
         type: integer
         example: 10
   dataTypes:
+    # No 'default:' here on purpose: the Content-Type header is the `contentType` option, and a text
+    # default would replace it with text/plain. See #3117.
     out:
       headers:
         Content-Type:

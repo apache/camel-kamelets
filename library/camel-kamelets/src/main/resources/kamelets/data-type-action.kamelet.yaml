@@ -56,12 +56,16 @@ spec:
         type: string
         example: application-json
   dataTypes:
+    # No 'default:' here on purpose: the `format` option picks the data type of the output, and the
+    # input it takes depends on it. See #3117.
     out:
       headers:
         Content-Type:
           title: Content Type
           description: The kind of body the data type gives, such as `text/plain`, `application/json` or `avro/binary`.
           type: string
+    in:
+      headers: {}
   dependencies:
     - "camel:kamelet"
   template:

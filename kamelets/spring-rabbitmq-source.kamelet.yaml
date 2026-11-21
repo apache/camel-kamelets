@@ -165,6 +165,8 @@ spec:
         type: string
         enum: ["direct", "fanout", "headers", "topic"]
   dataTypes:
+    # No 'default:' here on purpose: the content type of the message decides whether the body is text
+    # or bytes. See #3117.
     out:
       headers:
         CamelSpringRabbitmqExchangeName:

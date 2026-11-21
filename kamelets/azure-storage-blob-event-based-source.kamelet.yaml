@@ -131,6 +131,11 @@ spec:
         description: If true, the body of each event about a new blob in `containerName` is replaced by the content of that blob. If false, the body is the event.
         type: boolean
         default: false
+  dataTypes:
+    # No 'default:' here on purpose: `getBlob` decides whether the body is the Event Grid event or the
+    # content of the blob. See #3117.
+    out:
+      headers: {}
   types:
     out:
       mediaType: application/octet-stream

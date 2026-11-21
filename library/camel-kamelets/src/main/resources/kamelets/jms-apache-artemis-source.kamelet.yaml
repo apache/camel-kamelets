@@ -113,6 +113,8 @@ spec:
         type: string
         enum: ["AUTO_ACKNOWLEDGE", "CLIENT_ACKNOWLEDGE", "DUPS_OK_ACKNOWLEDGE"]
   dataTypes:
+    # No 'default:' here on purpose: the kind of JMS message decides whether the body is text, bytes
+    # or a Map. See #3117.
     out:
       headers:
         JMSMessageID:

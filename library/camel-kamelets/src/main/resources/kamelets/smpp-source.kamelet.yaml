@@ -94,6 +94,8 @@ spec:
         minimum: 1
         example: 30000
   dataTypes:
+    # No 'default:' here on purpose: the data coding of the SMS decides whether the body is text or
+    # bytes. See #3117.
     out:
       headers:
         CamelSmppSourceAddr:

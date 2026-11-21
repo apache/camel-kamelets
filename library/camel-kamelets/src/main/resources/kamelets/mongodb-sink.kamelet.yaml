@@ -135,6 +135,8 @@ spec:
           title: Documents Changed
           description: How many documents an `update` changed, 0 or 1. It is 0 when the document already had the values, and when `upsert` inserted a new one. Only set by `update`.
           type: integer
+    in:
+      headers: {}
   dependencies:
     - "camel:kamelet"
     - "camel:mongodb"

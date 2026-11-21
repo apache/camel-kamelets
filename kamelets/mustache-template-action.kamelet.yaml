@@ -51,6 +51,15 @@ spec:
         type: string
         example: "file:////template.mustache"
         pattern: "^(http|https|file|classpath|ref|bean)://.*"
+  dataTypes:
+    # No 'default:' here on purpose: the template can read any body, also the fields of a Map or a
+    # Java object, which a default would turn into text or bytes first. The output can be any text,
+    # such as JSON or XML, and a text default would set the Content-Type header to text/plain for all
+    # of them. See #3117.
+    in:
+      headers: {}
+    out:
+      headers: {}
   dependencies:
   - "camel:mustache"
   - "camel:kamelet"

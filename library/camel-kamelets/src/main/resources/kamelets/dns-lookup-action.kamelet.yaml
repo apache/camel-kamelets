@@ -46,6 +46,9 @@ spec:
     out:
       mediaType: application/json
   dataTypes:
+    # No 'default:' here on purpose: the name can come from a header, and then the body is not used at
+    # all; a text default would still convert it, and fail on a body that is not text, such as a Map.
+    # See #3117.
     in:
       headers:
         domain-name:

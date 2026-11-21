@@ -48,6 +48,8 @@ spec:
         default: "webhook"
         example: hooks/orders
   dataTypes:
+    # No 'default:' here on purpose: the headers of the request are copied to the message, its
+    # Content-Type too, and a default would replace it. See #3117.
     out:
       headers:
         CamelHttpMethod:
