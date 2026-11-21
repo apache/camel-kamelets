@@ -25,7 +25,6 @@ import org.citrusframework.junit.jupiter.CitrusSupport;
 import org.citrusframework.junit.jupiter.CitrusTestFactory;
 import org.citrusframework.junit.jupiter.CitrusTestFactorySupport;
 import org.citrusframework.spi.BindToRegistry;
-import org.citrusframework.util.SocketUtils;
 import org.junit.jupiter.api.DynamicTest;
 
 import static org.citrusframework.actions.CreateVariablesAction.Builder.createVariables;
@@ -42,11 +41,11 @@ public class FileIT {
 
     private static final String TESTS = "(file-watch|ftp|ftps|sftp|scp|ssh)-.*";
 
-    private final int fileHttpServerPort = SocketUtils.findAvailableTcpPort();
+    private final int fileHttpServerPort = ServerPorts.next();
 
     // the FTP server runs in the test, on a free port of this machine; FTP opens a second connection for each
     // transfer, which a server in a container cannot offer on a port that is mapped to a random one
-    private final int ftpServerPort = SocketUtils.findAvailableTcpPort();
+    private final int ftpServerPort = ServerPorts.next();
 
     // a container and a first Camel JBang run that downloads the libraries take a while
     @BindToRegistry

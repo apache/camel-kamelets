@@ -29,6 +29,16 @@
         - setHeader:
             name: origin
             constant: 'citrus'
+        # credentials that came with the message: the Kamelet must not send them on
+        - setHeader:
+            name: Authorization
+            constant: 'Bearer token-of-the-message'
+        - setHeader:
+            name: Proxy-Authorization
+            constant: 'Basic cHJveHk6c2VjcmV0'
+        - setHeader:
+            name: x-functions-key
+            constant: 'key-of-the-message'
         - to:
             uri: "kamelet:azure-functions-sink"
             parameters:

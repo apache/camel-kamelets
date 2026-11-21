@@ -18,13 +18,58 @@
 import java.util.stream.Stream;
 
 import org.citrusframework.api.common.TestLoader;
+import org.citrusframework.container.SequenceAfterTest;
+import org.citrusframework.container.SequenceBeforeTest;
+import org.citrusframework.http.server.HttpServer;
 import org.citrusframework.junit.jupiter.CitrusSupport;
 import org.citrusframework.junit.jupiter.CitrusTestFactory;
 import org.citrusframework.junit.jupiter.CitrusTestFactorySupport;
+import org.citrusframework.spi.BindToRegistry;
 import org.junit.jupiter.api.DynamicTest;
+
+import static org.citrusframework.actions.CreateVariablesAction.Builder.createVariables;
+import static org.citrusframework.actions.PurgeEndpointAction.Builder.purgeEndpoints;
+import static org.citrusframework.http.endpoint.builder.HttpEndpoints.http;
 
 @CitrusSupport
 public class Mqtt5IT {
+
+    private static final String TESTS = "mqtt5-.*";
+
+    private final int mqtt5SinkServerPort = ServerPorts.next();
+    private final int mqtt5SourceServerPort = ServerPorts.next();
+
+    @BindToRegistry
+    HttpServer mqtt5SinkServer = http()
+                .server()
+                .port(mqtt5SinkServerPort)
+                .timeout(60000L)
+                .autoStart(true)
+                .build();
+
+    @BindToRegistry
+    HttpServer mqtt5SourceServer = http()
+                .server()
+                .port(mqtt5SourceServerPort)
+                .timeout(60000L)
+                .autoStart(true)
+                .build();
+
+    @BindToRegistry
+    public SequenceBeforeTest beforeMqtt5() {
+        return new SequenceBeforeTest.Builder().onTests(TESTS).actions(
+                createVariables()
+                        .variable("mqtt5.sink.server.port", String.valueOf(mqtt5SinkServerPort))
+                        .variable("mqtt5.source.server.port", String.valueOf(mqtt5SourceServerPort))
+        ).build();
+    }
+
+    @BindToRegistry
+    public SequenceAfterTest afterMqtt5() {
+        return new SequenceAfterTest.Builder().onTests(TESTS).actions(
+                purgeEndpoints().endpoint(mqtt5SinkServer).endpoint(mqtt5SourceServer)
+        ).build();
+    }
 
     @CitrusTestFactory
     public Stream<DynamicTest> mqtt5() {

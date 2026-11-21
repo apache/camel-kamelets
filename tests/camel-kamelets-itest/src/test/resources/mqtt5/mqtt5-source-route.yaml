@@ -23,5 +23,24 @@
         brokerUrl: "{{mqtt.brokerUrl}}"
         clientId: "mqtt5-source-test"
       steps:
+      # what the Kamelet gives: the Java type of the body and the Content-Type
+      - setHeader:
+          name: X-Body-Type
+          simple: "${body.getClass().getName()}"
+      - setHeader:
+          name: X-Content-Type
+          simple: "ct=${header.Content-Type}"
+      # the HTTP component does not send the headers that start with Camel
+      - setHeader:
+          name: X-Topic
+          simple: "${header[CamelMqttTopic]}"
+      - setHeader:
+          name: X-QoS
+          simple: "${header[CamelMqttQoS]}"
+      # Citrus reads a byte[] body as its Java text form (citrusframework/citrus#2081)
+      - removeHeader:
+          name: Content-Type
+      - convertBodyTo:
+          type: "java.lang.String"
       - to:
-          uri: "kamelet:log-sink"
+          uri: "{{http.source.url}}/result"

@@ -25,7 +25,6 @@ import org.citrusframework.junit.jupiter.CitrusSupport;
 import org.citrusframework.junit.jupiter.CitrusTestFactory;
 import org.citrusframework.junit.jupiter.CitrusTestFactorySupport;
 import org.citrusframework.spi.BindToRegistry;
-import org.citrusframework.util.SocketUtils;
 import org.junit.jupiter.api.DynamicTest;
 
 import static org.citrusframework.actions.CreateVariablesAction.Builder.createVariables;
@@ -37,7 +36,7 @@ public class SearchIT {
 
     private static final String TESTS = "(elasticsearch|opensearch|solr)-.*";
 
-    private final int searchServerPort = SocketUtils.findAvailableTcpPort();
+    private final int searchServerPort = ServerPorts.next();
 
     @BindToRegistry
     HttpServer searchServer = http()

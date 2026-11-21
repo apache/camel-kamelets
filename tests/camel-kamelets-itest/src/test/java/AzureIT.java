@@ -25,7 +25,6 @@ import org.citrusframework.junit.jupiter.CitrusSupport;
 import org.citrusframework.junit.jupiter.CitrusTestFactory;
 import org.citrusframework.junit.jupiter.CitrusTestFactorySupport;
 import org.citrusframework.spi.BindToRegistry;
-import org.citrusframework.util.SocketUtils;
 import org.junit.jupiter.api.DynamicTest;
 
 import static org.citrusframework.actions.CreateVariablesAction.Builder.createVariables;
@@ -42,7 +41,7 @@ public class AzureIT {
 
     private static final String TESTS = "azure-.*";
 
-    private final int azureServerPort = SocketUtils.findAvailableTcpPort();
+    private final int azureServerPort = ServerPorts.next();
 
     // the emulator container and a first Camel JBang run that downloads the client libraries take a while
     @BindToRegistry

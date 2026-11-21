@@ -25,7 +25,6 @@ import org.citrusframework.junit.jupiter.CitrusSupport;
 import org.citrusframework.junit.jupiter.CitrusTestFactory;
 import org.citrusframework.junit.jupiter.CitrusTestFactorySupport;
 import org.citrusframework.spi.BindToRegistry;
-import org.citrusframework.util.SocketUtils;
 import org.junit.jupiter.api.DynamicTest;
 
 import static org.citrusframework.actions.CreateVariablesAction.Builder.createVariables;
@@ -41,7 +40,7 @@ public class CloudIT {
 
     private static final String TESTS = "(ceph|github)-.*";
 
-    private final int cloudHttpServerPort = SocketUtils.findAvailableTcpPort();
+    private final int cloudHttpServerPort = ServerPorts.next();
 
     // a container and a first Camel JBang run that downloads the libraries take a while
     @BindToRegistry
@@ -53,7 +52,7 @@ public class CloudIT {
                 .build();
 
     // stands in for the GitHub API, with canned answers
-    private final int gitHubApiPort = SocketUtils.findAvailableTcpPort();
+    private final int gitHubApiPort = ServerPorts.next();
 
     @BindToRegistry
     GitHubApiStub gitHubApi = new GitHubApiStub(gitHubApiPort);

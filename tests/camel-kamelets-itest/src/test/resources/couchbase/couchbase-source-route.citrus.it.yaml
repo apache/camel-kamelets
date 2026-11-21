@@ -17,23 +17,18 @@
 
 name: couchbase-source-route-test
 actions:
-  # Create Couchbase infrastructure.
-  #
-  # Citrus has no built-in Couchbase container type, so this uses the generic
-  # one. The ports are bound one-to-one on purpose: the Couchbase SDK bootstraps
-  # from the management port and then reconnects using the addresses the cluster
-  # advertises, so a remapped host port makes the client unable to reach the
-  # data service.
+  # Create Couchbase infrastructure, on random host ports: initCluster.groovy
+  # advertises them to the Couchbase SDK as the external addresses of the node
   - testcontainers:
       start:
         container:
           name: "couchbase"
           image: "couchbase/server:community-7.6.2"
           startUpTimeout: 300
-          portBindings:
-            - "8091:8091"
-            - "8093:8093"
-            - "11210:11210"
+          exposedPorts:
+            - 8091
+            - 8093
+            - 11210
           waitFor:
             logMessage: ".*Starting Couchbase Server.*"
 
@@ -51,10 +46,33 @@ actions:
             file: "couchbase/couchbase-source-route.yaml"
             systemProperties:
               file: "couchbase/application.properties"
+              properties:
+                - name: "couchbase.hostname"
+                  value: "${couchbase.host}"
+                - name: "couchbase.connection.string"
+                  value: "couchbase://${couchbase.host}:${couchbase.kv.port}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${couchbase.server.port}"
 
-  # Verify the Couchbase source picked up the seeded document
-  - camel:
-      cli:
-        verify:
-          integration: "couchbase-source-route"
-          logMessage: "hello-from-couchbase"
+  # The source gives each row of the query as JSON text, with the document ID
+  - http:
+      server: "couchbaseServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-Id"
+              value: 'doc1'
+          body:
+            data: '{"_default":{"message":"hello-from-couchbase"},"__id":"doc1"}'
+  - http:
+      server: "couchbaseServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

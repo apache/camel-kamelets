@@ -21,12 +21,23 @@
       parameters:
         protocol: "{{couchbase.protocol}}"
         couchbaseHostname: "{{couchbase.hostname}}"
-        couchbasePort: "{{couchbase.port}}"
+        connectionString: "{{couchbase.connection.string}}"
         bucket: "{{couchbase.bucket}}"
         username: "{{couchbase.username}}"
         password: "{{couchbase.password}}"
         statement: "{{couchbase.statement}}"
         delay: 2000
       steps:
+      # what the Kamelet gives: the Java type of the body and the Content-Type
+      - setHeader:
+          name: X-Body-Type
+          simple: "${body.getClass().getName()}"
+      - setHeader:
+          name: X-Content-Type
+          simple: "ct=${header.Content-Type}"
+      # the HTTP component does not send the headers that start with Camel
+      - setHeader:
+          name: X-Id
+          simple: "${header[CamelCouchbaseId]}"
       - to:
-          uri: "kamelet:log-sink"
+          uri: "{{http.sink.url}}/result"
