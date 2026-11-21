@@ -1,0 +1,66 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+# The SOAP front: serves orders.wsdl with soap-source, works with the request as JSON, and calls the legacy service
+# with soap-action. Its own getOrder answers with the status of the legacy service in lower case.
+- route:
+    id: "orders-front"
+    from:
+      uri: "kamelet:soap-source"
+      parameters:
+        address: "http://0.0.0.0:{{soap.front.port}}/orders"
+        wsdlURL: "classpath:orders.wsdl"
+        publishedEndpointUrl: "https://orders.example.com/orders"
+      steps:
+        - to:
+            uri: "kamelet:xj-identity-action"
+            parameters:
+              direction: "XML2JSON"
+        - log: "Front ${header.CamelCxfOperationName} as JSON: ${body}"
+        - setVariable:
+            name: "orderId"
+            jq: ".orderId"
+        - setBody:
+            simple: '<getOrder xmlns="http://example.com/orders"><orderId>${escape(xml, ${variable.orderId})}</orderId></getOrder>'
+        # headers that must not change what soap-action calls, or how
+        - setHeader:
+            name: "CamelDestinationOverrideUrl"
+            constant: "http://localhost:1/elsewhere"
+        - setHeader:
+            name: "CamelCxfOperationName"
+            constant: "placeOrder"
+        - setHeader:
+            name: "SOAPAction"
+            constant: "http://example.com/orders/placeOrder"
+        - setHeader:
+            name: "Authorization"
+            constant: "Basic dXNlcjpzZWNyZXQ="
+        - to:
+            uri: "kamelet:soap-action"
+            parameters:
+              address: "http://localhost:{{soap.backend.port}}/orders"
+              wsdlURL: "classpath:orders.wsdl"
+              operation: "getOrder"
+              faultAsBody: true
+              username: "front"
+              password: "s3cret"
+        - log: "Front got SoapFault=${header.SoapFault} SoapFaultCode=${header.SoapFaultCode}: ${body}"
+        - choice:
+            when:
+              - simple: "${header.SoapFault} == null"
+                steps:
+                  - setBody:
+                      simple: "${body.replace('<status>SHIPPED</status>', '<status>shipped</status>')}"
