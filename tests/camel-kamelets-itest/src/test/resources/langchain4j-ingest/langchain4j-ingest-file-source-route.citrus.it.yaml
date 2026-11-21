@@ -59,6 +59,11 @@ actions:
           headers:
             - name: "docId"
               value: "doc.txt"
+            # the file itself, not read into memory, marked as binary
+            - name: "X-Body-Type"
+              value: "org.apache.camel.component.file.GenericFile"
+            - name: "X-Content-Type"
+              value: "ct=application/octet-stream"
           type: "plaintext"
           body:
             data: "@contains('Sphinx of black quartz, judge my vow')@"

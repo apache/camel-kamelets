@@ -37,9 +37,9 @@ spec:
 
       Use it to collect log lines, audit records or CSV rows from many messages into one growing blob. To write each message as a blob of its own, use `azure-storage-blob-sink`.
 
-      Input: the body is the data to add: text, bytes or a stream. It is added as it is, so end each line with a line break yourself. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The `file` header (or `ce-file`) is the name of the blob, such as `logs/app.log`. Without it, each message goes to a new blob with a generated unique name.
+      Input: the body is the data to add: text, bytes or a stream. Text is turned into bytes before it is added, and the `Content-Type` header is set to `application/octet-stream`. A file is passed on as it is, and so is a stream, unless stream caching is turned off. It is added as it is, so end each line with a line break yourself. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The `file` header (or `ce-file`) is the name of the blob, such as `logs/app.log`. Without it, each message goes to a new blob with a generated unique name.
 
-      Output: the body afterwards is `true`, and headers such as `CamelAzureStorageBlobAppendOffset` and `CamelAzureStorageBlobCommittedBlockCount` describe the append.
+      Output: the body afterwards is `true`, the `Content-Type` header is `application/octet-stream`, and headers such as `CamelAzureStorageBlobAppendOffset` and `CamelAzureStorageBlobCommittedBlockCount` describe the append.
 
       Good to know: the container must exist: a missing container fails the message. A name that is already used by a block blob, such as one written by `azure-storage-blob-sink`, fails the message too. Headers that start with `CamelAzureStorageBlob` are removed from the message first, so they cannot change what the Kamelet does.
     required:
@@ -103,6 +103,12 @@ spec:
         enum: ["SHARED_ACCOUNT_KEY", "AZURE_SAS", "AZURE_IDENTITY", "CLIENT_SECRET"]
   dataTypes:
     in:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The content of the file, as bytes. A file, and a stream while stream caching is on, are passed on as they are."
+          mediaType: application/octet-stream
       headers:
         file:
           title: File Name

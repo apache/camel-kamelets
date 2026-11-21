@@ -36,7 +36,7 @@ spec:
 
       Use it to collect the files that a partner or a legacy system drops on an FTP server, such as orders, invoices or exports. For an encrypted connection use `ftps-source`, and for a server you reach with SSH use `sftp-source`.
 
-      Output: the body is the content of the file, as a stream. The `file` and `ce-file` headers hold the name of the file, with its path below `directoryName` when `recursive` is true, such as `2026/orders.csv`. `CamelFileName` holds the same name, and `CamelFileLength` the size of the file in bytes.
+      Output: the body is the content of the file, as a stream. `Content-Type` is `application/octet-stream`. The `file` and `ce-file` headers hold the name of the file, with its path below `directoryName` when `recursive` is true, such as `2026/orders.csv`. `CamelFileName` holds the same name, and `CamelFileLength` the size of the file in bytes.
 
       Good to know: files are not deleted or moved after they are read, unless `delete` is true or `move` is set. A file is read only once while the integration runs (`idempotent`), but the files left on the server are all read again after a restart; to read each file only once, also across restarts, set `move` to a directory such as `.done`, set `delete` to true, or keep the list of the files read in a file with `idempotentRepository`. To read only some of the files, set `include`, `exclude` or `antInclude`. To leave a file alone while another program is still writing it, set `readLock`. The connection and the login are not encrypted. Files are transferred in ASCII (text) mode unless `binary` is true.
     required:
@@ -191,6 +191,7 @@ spec:
         example: 30000
   dataTypes:
     out:
+      default: binary
       headers:
         file:
           title: File Name
@@ -208,6 +209,11 @@ spec:
           title: File Size
           description: The size of the file, in bytes.
           type: integer
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: The content of the file as it is, with `Content-Type` set to `application/octet-stream`. A stream stays a stream, so `streamDownload` still reads a large file without holding it in memory.
+          mediaType: application/octet-stream
   dependencies:
     - "camel:ftp"
     - "camel:kamelet"

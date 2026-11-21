@@ -58,6 +58,13 @@ actions:
           integration: "aws-s3-sink-route"
           logMessage: "${test.message}"
 
+  # The message goes on with the body as bytes and Content-Type application/octet-stream
+  - camel:
+      cli:
+        verify:
+          integration: "aws-s3-sink-route"
+          logMessage: "Kamelet result: body=[B ct=application/octet-stream"
+
   # Verify object exists in S3 by reading it back
   - groovy:
       script:

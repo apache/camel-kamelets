@@ -37,9 +37,9 @@ spec:
 
       Use it to store data in Ceph, such as reports, exports, images or received messages to keep as an archive. For Amazon S3, or another S3-compatible storage such as MinIO, use `aws-s3-sink` (with `overrideEndpoint`, `uriEndpointOverride` and `forcePathStyle` for a storage other than AWS).
 
-      Input: the body is the content of the file, as text, bytes or a stream. The key (the name of the file in the bucket) comes from the optional `file` header, or the `ce-file` header; when neither is set it is `keyName`, or a generated unique name when `keyName` is not set either.
+      Input: the body is the content of the file, as text, bytes or a stream. Text is turned into bytes before the upload, and the `Content-Type` header is set to `application/octet-stream`. A file is passed on as it is, and so is a stream, unless stream caching is turned off. The key (the name of the file in the bucket) comes from the optional `file` header, or the `ce-file` header; when neither is set it is `keyName`, or a generated unique name when `keyName` is not set either.
 
-      Output: the body is unchanged. The `CamelAwsS3ETag` header gives the ETag of the uploaded file.
+      Output: the body is the content of the file, as bytes when it was text, and the `Content-Type` header is `application/octet-stream`. The `CamelAwsS3ETag` header gives the ETag of the uploaded file.
 
       Good to know: a file with the same key is overwritten, so with `keyName` set and no `file` header each message replaces the previous one. The bucket is addressed as part of the host name (such as `my-bucket.ceph.example.com`) unless `cephUrl` uses an IP address; set `forcePathStyle` to true when the DNS of the gateway has no wildcard name for its buckets. Headers that start with `CamelAwsS3` are removed from the message first, so they cannot change what the Kamelet does.
     required:
@@ -96,6 +96,12 @@ spec:
         example: reports/latest.csv
   dataTypes:
     in:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The content of the file, as bytes. A file, and a stream while stream caching is on, are passed on as they are."
+          mediaType: application/octet-stream
       headers:
         file:
           title: File Name
