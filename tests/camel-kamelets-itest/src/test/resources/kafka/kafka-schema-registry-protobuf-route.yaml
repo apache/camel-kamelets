@@ -25,29 +25,11 @@
       steps:
         - setBody:
             constant: '{"id":1,"item":"camel"}'
-        # A Protobuf message of the schema Order (id, item), built from the JSON text. The schema is made in code,
-        # so that no Protobuf compiler or vendor class is needed
-        - setBody:
-            groovy: |
-              import com.google.protobuf.DescriptorProtos.DescriptorProto
-              import com.google.protobuf.DescriptorProtos.FieldDescriptorProto
-              import com.google.protobuf.DescriptorProtos.FileDescriptorProto
-              import com.google.protobuf.Descriptors.FileDescriptor
-              import com.google.protobuf.DynamicMessage
-              import com.google.protobuf.util.JsonFormat
-              def field = { String name, int number, FieldDescriptorProto.Type type ->
-                  FieldDescriptorProto.newBuilder().setName(name).setNumber(number).setType(type)
-                          .setLabel(FieldDescriptorProto.Label.LABEL_OPTIONAL).build()
-              }
-              def file = FileDescriptorProto.newBuilder().setName("order.proto").setSyntax("proto3")
-                      .addMessageType(DescriptorProto.newBuilder().setName("Order")
-                              .addField(field("id", 1, FieldDescriptorProto.Type.TYPE_INT32))
-                              .addField(field("item", 2, FieldDescriptorProto.Type.TYPE_STRING)))
-                      .build()
-              def order = DynamicMessage.newBuilder(
-                      FileDescriptor.buildFrom(file, new FileDescriptor[0]).findMessageTypeByName("Order"))
-              JsonFormat.parser().merge(body, order)
-              order.build()
+        # protobuf-message-action builds the Protobuf message of the schema Order from the JSON text
+        - to:
+            uri: "kamelet:protobuf-message-action"
+            parameters:
+              schema: 'syntax = "proto3"; message Order { int32 id = 1; string item = 2; }'
         - to:
             uri: "kamelet:kafka-sink"
             parameters:

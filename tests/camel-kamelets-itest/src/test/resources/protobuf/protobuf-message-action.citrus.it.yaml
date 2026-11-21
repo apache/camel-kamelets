@@ -1,0 +1,55 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+
+name: protobuf-message-action-test
+actions:
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "protobuf/protobuf-message-action-route.yaml"
+  # Every field of the schema is set, and the field that the schema does not have is left out
+  - camel:
+      cli:
+        verify:
+          integration: "protobuf-message-action-route"
+          logMessage: "Order com.google.protobuf.DynamicMessage: order_id: 12345678901234 item_count: 3 status: SHIPPED line {   qty: 2 } at {   seconds: 1795255200 } |"
+  - camel:
+      cli:
+        verify:
+          integration: "protobuf-message-action-route"
+          logMessage: "Line Order.Line: qty: 5 |"
+  - camel:
+      cli:
+        verify:
+          integration: "protobuf-message-action-route"
+          logMessage: 'Rejected com.google.protobuf.InvalidProtocolBufferException: Not an int32 value: "abc"'
+  # An unknown messageName fails when the Kamelet starts, so the integration stops by itself
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          autoRemove: false
+          integration:
+            file: "protobuf/protobuf-message-action-unknown-route.yaml"
+  - camel:
+      cli:
+        verify:
+          integration: "protobuf-message-action-unknown-route"
+          phase: "Stopped"
+          logMessage: "The protobuf schema has no message type Invoice"

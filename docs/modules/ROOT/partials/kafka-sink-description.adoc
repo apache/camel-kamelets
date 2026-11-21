@@ -23,8 +23,9 @@ To write the records with a schema kept in a schema registry, set `schemaRegistr
 an object, and the record is written with a JSON Schema made from it, which accepts any JSON object. With `avro`,
 `confluent` and `apicurio` write a text body as an Avro string, while `aws-glue` needs an Avro record, which a step must
 create in code. With `protobuf`, the body must be a Protobuf message, such as an object of a class generated from the
-`.proto` file or a `DynamicMessage`, which a step must create in code; JSON text fails. With `azure`, also set
-`schemaGroup`. The sink registers the
+`.proto` file or a `DynamicMessage`; JSON text fails. To send JSON text, put
+xref:protobuf-message-action.adoc[`protobuf-message-action`] before the sink: it turns JSON text into a Protobuf
+message of the `.proto` schema you give, with no generated classes. With `azure`, also set `schemaGroup`. The sink registers the
 schema it makes, and does not check the message against a schema that is already registered for the topic.
 
 [width="100%",cols="1,1,3",options="header"]
