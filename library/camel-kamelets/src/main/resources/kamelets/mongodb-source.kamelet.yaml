@@ -118,6 +118,12 @@ spec:
         type: string
         pattern: "^[A-Za-z0-9_.-]+$"
         example: trackers
+      readPreference:
+        title: Read Preference
+        description: "Which members of the replica set the Kamelet reads from: `PRIMARY` (the primary only), `PRIMARY_PREFERRED` (the primary, or a secondary while there is no primary), `SECONDARY` (a secondary only), `SECONDARY_PREFERRED` (a secondary, or the primary when there is no secondary) or `NEAREST` (the member with the lowest network latency). Reading from a secondary takes load off the primary, but a secondary can be a little behind it. With `SECONDARY` and no secondary available, the Kamelet cannot read. When it is not set, or set to `PRIMARY`, the read preference of `connectionString` is used, or the primary; another value overrides the `readPreference` of `connectionString`."
+        type: string
+        enum: ["PRIMARY", "PRIMARY_PREFERRED", "SECONDARY", "SECONDARY_PREFERRED", "NEAREST"]
+        example: SECONDARY_PREFERRED
   dataTypes:
     out:
       default: json
@@ -158,7 +164,7 @@ spec:
         properties:
           mongoConnection: "#{{mongo-client}}"
     from:
-      uri: "{{local-mongodb}}:test?collection={{collection}}&database={{database}}&persistentTailTracking={{persistentTailTracking}}&tailTrackIncreasingField={{?tailTrackIncreasingField}}&persistentId={{?persistentId}}&tailTrackDb={{?tailTrackDb}}&tailTrackCollection={{?tailTrackCollection}}&connectionUriString=RAW({{?connectionString}})"
+      uri: "{{local-mongodb}}:test?collection={{collection}}&database={{database}}&persistentTailTracking={{persistentTailTracking}}&tailTrackIncreasingField={{?tailTrackIncreasingField}}&persistentId={{?persistentId}}&tailTrackDb={{?tailTrackDb}}&tailTrackCollection={{?tailTrackCollection}}&readPreference={{?readPreference}}&connectionUriString=RAW({{?connectionString}})"
       steps:
         - marshal:
             json: {}
