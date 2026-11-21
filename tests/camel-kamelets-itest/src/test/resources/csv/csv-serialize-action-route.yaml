@@ -1,0 +1,133 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+# Rows in, CSV text out: the text is logged with <CR> and <LF> for the line ends, so a line break shows
+# Round trip: the CSV text read with csv-deserialize-action and written back is the same text
+- route:
+    from:
+      uri: "timer:roundtrip"
+      parameters:
+        repeatCount: 1
+      steps:
+        # trim: false keeps the line break at the end of the text
+        - setBody:
+            constant:
+              expression: "id,name,city\r\n1,Zoë,\"Oslo, Norway\"\r\n2,\"Bob \"\"B\"\"\",\"line1\nline2\"\r\n"
+              trim: false
+        - setVariable:
+            name: original
+            simple: "${body}"
+        - to: "kamelet:csv-deserialize-action"
+        - to: "kamelet:csv-serialize-action"
+        - choice:
+            when:
+              - simple: "${body} == ${variable.original}"
+                steps:
+                  - setVariable:
+                      name: same
+                      constant: "true"
+        - log: "Roundtrip ${body.getClass().getName()} ct=${header.Content-Type} same=${variable.same}: ${body.replace('\r', '<CR>').replace('\n', '<LF>')}"
+# A single Map is one row, with a header line of its keys
+- route:
+    from:
+      uri: "timer:map"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            simple: "${map(id,1,name,Ann)}"
+        - to: "kamelet:csv-serialize-action"
+        - log: "Map ${body.replace('\r', '<CR>').replace('\n', '<LF>')}"
+# Given columns: their order, a key that is not one of them is left out, a missing key is empty; no header line
+- route:
+    from:
+      uri: "timer:columns"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            simple: "${list(${map(id,1,name,Ann,city,Oslo)},${map(id,2,name,Bob)})}"
+        - to:
+            uri: "kamelet:csv-serialize-action"
+            parameters:
+              columns: "city,id"
+              header: false
+        - log: "Columns ${body.replace('\r', '<CR>').replace('\n', '<LF>')}"
+# Rows that are Lists, another delimiter and another quote character: no header line without columns
+- route:
+    from:
+      uri: "timer:lists"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            simple: "${list(${list(1,Ann;A)},${list(2,Bob)})}"
+        - to:
+            uri: "kamelet:csv-serialize-action"
+            parameters:
+              delimiter: ";"
+              quote: "'"
+        - log: "Lists ${body.replace('\r', '<CR>').replace('\n', '<LF>')}"
+# Parsed JSON: an array of objects, with a nested object, a null and a key that the first row does not have
+- route:
+    from:
+      uri: "timer:json"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: '[{"id":1,"name":"Ann","tags":{"a":1},"note":null},{"id":2,"name":"Bob","extra":true}]'
+        - to: "kamelet:json-deserialize-action"
+        - to: "kamelet:csv-serialize-action"
+        - log: "Json ${body.replace('\r', '<CR>').replace('\n', '<LF>')}"
+# An empty List gives empty text, or only the header line with columns
+- route:
+    from:
+      uri: "timer:empty"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            simple: "${list()}"
+        - to: "kamelet:csv-serialize-action"
+        - setVariable:
+            name: empty
+            simple: "[${body}]"
+        - setBody:
+            simple: "${list()}"
+        - to:
+            uri: "kamelet:csv-serialize-action"
+            parameters:
+              columns: "id,name"
+        - log: "Empty ${variable.empty}, with columns ${body.replace('\r', '<CR>').replace('\n', '<LF>')}"
+# A body of text fails the message
+- route:
+    from:
+      uri: "timer:text"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "hello"
+        - doTry:
+            steps:
+              - to: "kamelet:csv-serialize-action"
+              - log: "Accepted ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - log: "Rejected ${exception.getClass().getName()}: ${exception.message}"
