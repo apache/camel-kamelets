@@ -35,6 +35,9 @@ actions:
       receiveRequest:
         GET:
           path: "/search"
+          parameters:
+            - name: "accept-language"
+              value: "en"
 
   - http:
       server: "httpServer"

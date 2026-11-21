@@ -37,9 +37,9 @@ spec:
 
       Use it to store documents, exports or event payloads in Azure, for other applications or for archiving. To add each message at the end of one growing blob, such as a log, use `azure-storage-blob-append-sink`.
 
-      Input: the body is the content of the blob: text, bytes or a stream. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The optional `file` header (or `ce-file`) is the name of the blob, such as `reports/2026-05.csv`; a `/` in it puts the blob in a virtual folder. Without it, the blob gets a generated unique name.
+      Input: the body is the content of the blob: text, bytes or a stream. Text is turned into bytes before the upload, and the `Content-Type` header is set to `application/octet-stream`. A file is passed on as it is, and so is a stream, unless stream caching is turned off. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The optional `file` header (or `ce-file`) is the name of the blob, such as `reports/2026-05.csv`; a `/` in it puts the blob in a virtual folder. Without it, the blob gets a generated unique name.
 
-      Output: the body afterwards is `true`, and headers such as `CamelAzureStorageBlobETag` and `CamelAzureStorageBlobLastModified` describe the uploaded blob.
+      Output: the body afterwards is `true`, the `Content-Type` header is `application/octet-stream`, and headers such as `CamelAzureStorageBlobETag` and `CamelAzureStorageBlobLastModified` describe the uploaded blob.
 
       Good to know: a blob with the same name is replaced. The container must exist: a missing container fails the message. The name comes only from `file` or `ce-file`: to copy blobs from `azure-storage-blob-source` and keep their names, set `file` from its `CamelAzureStorageBlobBlobName` header first. Headers that start with `CamelAzureStorageBlob` are removed from the message first, so they cannot change what the Kamelet does.
     required:
@@ -103,6 +103,12 @@ spec:
         enum: ["SHARED_ACCOUNT_KEY", "AZURE_SAS", "AZURE_IDENTITY", "CLIENT_SECRET"]
   dataTypes:
     in:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The content of the file, as bytes. A file, and a stream while stream caching is on, are passed on as they are."
+          mediaType: application/octet-stream
       headers:
         file:
           title: File Name

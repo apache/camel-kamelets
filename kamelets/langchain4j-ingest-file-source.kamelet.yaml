@@ -37,7 +37,7 @@ spec:
 
       Use it to feed a knowledge base for an AI assistant: put it in front of `langchain4j-ingest-sink`, with `tika-extract-text-action` or `docling-convert-action` in between for PDF or office documents.
 
-      Output: the body is the file, read as bytes unless `charset` is set. The `CamelLangChain4jIngestDocumentId` header is the path of the file relative to `directory`, such as `manuals/pump.pdf`, which `langchain4j-ingest-sink` uses as the document id. The usual file headers, such as `CamelFileName`, are set too.
+      Output: the body is the file, read as bytes unless `charset` is set, and the `Content-Type` header is `application/octet-stream`. The `CamelLangChain4jIngestDocumentId` header is the path of the file relative to `directory`, such as `manuals/pump.pdf`, which `langchain4j-ingest-sink` uses as the document id. The usual file headers, such as `CamelFileName`, are set too.
 
       Good to know: the files are never deleted or moved. A file is read again when its modification time or size changes, and `langchain4j-ingest-sink` then adds the new version next to the old one, unless it has an `idempotentRepository`, which skips it. The files already read are remembered in memory only, by default the last 1000, so after a restart every file is read again; set `idempotentRepository` to keep them. A file that is still being copied in is read only once it stops changing; for a slow copy, which can pause for more than a second, set `readLockMinAge`.
     required:
@@ -97,6 +97,12 @@ spec:
         example: "#bean:readFiles"
   dataTypes:
     out:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The file, which is not read into memory here."
+          mediaType: application/octet-stream
       headers:
         CamelLangChain4jIngestDocumentId:
           title: Document ID

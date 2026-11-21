@@ -36,9 +36,9 @@ spec:
 
       Use it to store data for later use or for other systems, such as exported reports, archived events or files received from another system. To read the files of a bucket, use `google-storage-source`.
 
-      Input: the body is the content of the file, as text, bytes, a stream or a file. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The optional `file` header (or `ce-file`) is the name of the file in the bucket, with its folders, such as `reports/2024-06-01.csv`; without it, the file gets a generated unique name.
+      Input: the body is the content of the file, as text, bytes, a stream or a file. Text is turned into bytes before the upload, and the `Content-Type` header is set to `application/octet-stream`. A file is passed on as it is, and so is a stream, unless stream caching is turned off. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The optional `file` header (or `ce-file`) is the name of the file in the bucket, with its folders, such as `reports/2024-06-01.csv`; without it, the file gets a generated unique name.
 
-      Output: when it is used inside a route, the body afterwards describes the uploaded file (its bucket, name, size and generation), not its content, and the `CamelGoogleCloudStorageObjectName` header holds the name of the file.
+      Output: when it is used inside a route, the body afterwards describes the uploaded file (its bucket, name, size and generation), not its content, the `Content-Type` header is `application/octet-stream`, and the `CamelGoogleCloudStorageObjectName` header holds the name of the file.
 
       Good to know: a file with the same name is overwritten. With `objectName`, every message overwrites the same file. The bucket must exist, unless `autoCreateBucket` is true; a bucket it creates is in `storageLocation`, `US-EAST1` when that is not set. Without `serviceAccountKey`, it logs in with the Application Default Credentials of the environment where it runs, or with Workload Identity Federation when `useWorkloadIdentityFederation` is true. Headers that start with `CamelGoogleCloudStorage` are removed from the message first, so they cannot change what the Kamelet does.
     required:
@@ -68,6 +68,12 @@ spec:
         type: string
         example: status/latest.json
         pattern: "^[^\\r\\n]+$"
+      storageClass:
+        title: Storage Class
+        description: "The storage class of the uploaded files, which sets what storing and reading them costs: `STANDARD`, `NEARLINE` (for files read about once a month), `COLDLINE` (once a quarter) or `ARCHIVE` (once a year). When it is not set, a file gets the default storage class of the bucket."
+        type: string
+        enum: ["STANDARD", "NEARLINE", "COLDLINE", "ARCHIVE"]
+        example: NEARLINE
       storageLocation:
         title: Storage Location
         description: The location of the bucket that `autoCreateBucket` creates, such as a region (`europe-west1`) or a multi-region (`EU`). Only used when the bucket is created. When it is not set, it is `US-EAST1`.
@@ -92,6 +98,12 @@ spec:
         pattern: "^[^@\\s]+@[^@\\s]+$"
   dataTypes:
     in:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The content of the file, as bytes. A file, and a stream while stream caching is on, are passed on as they are."
+          mediaType: application/octet-stream
       headers:
         file:
           title: File Name
@@ -145,4 +157,4 @@ spec:
                       simple:
                         expression: "${exchangeId}"
         - to:
-            uri: "google-storage://{{bucketNameOrArn}}?autoCreateBucket={{autoCreateBucket}}&impersonatedServiceAccount={{?impersonatedServiceAccount}}&objectName=RAW({{?objectName}})&serviceAccountKey=RAW(base64:{{?serviceAccountKey}})&storageLocation={{?storageLocation}}&useWorkloadIdentityFederation={{?useWorkloadIdentityFederation}}&workloadIdentityConfig={{?workloadIdentityConfig}}"
+            uri: "google-storage://{{bucketNameOrArn}}?autoCreateBucket={{autoCreateBucket}}&impersonatedServiceAccount={{?impersonatedServiceAccount}}&objectName=RAW({{?objectName}})&objectStorageClass={{?storageClass}}&serviceAccountKey=RAW(base64:{{?serviceAccountKey}})&storageLocation={{?storageLocation}}&useWorkloadIdentityFederation={{?useWorkloadIdentityFederation}}&workloadIdentityConfig={{?workloadIdentityConfig}}"

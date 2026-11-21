@@ -16,7 +16,7 @@
  */
 
 // Checks that the bucket s3.bucket has the file s3.key, with the content s3.content, read with the S3 client
-// s3.client of the Floci container.
+// s3.client of the Floci container, and, when s3.contentType is set, with that content type.
 
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.GetObjectRequest
@@ -31,3 +31,9 @@ def response = s3.getObjectAsBytes(GetObjectRequest.builder()
 String content = response.asUtf8String()
 String expected = context.getVariable('s3.content')
 assert content == expected : "Expected '" + expected + "' but got '" + content + "'"
+
+if (context.getVariables().containsKey('s3.contentType')) {
+    String contentType = response.response().contentType()
+    String expectedType = context.getVariable('s3.contentType')
+    assert contentType == expectedType : "Expected content type '" + expectedType + "' but got '" + contentType + "'"
+}

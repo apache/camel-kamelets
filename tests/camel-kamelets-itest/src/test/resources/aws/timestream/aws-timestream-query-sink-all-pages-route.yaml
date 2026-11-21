@@ -1,0 +1,47 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+- route:
+    from:
+      uri: "timer:tick"
+      parameters:
+        period: "1000"
+        repeatCount: 1
+      steps:
+        - setHeader:
+            name: query
+            constant: 'SELECT sensor, temperature FROM sensors.readings'
+        - to:
+            uri: "kamelet:aws-timestream-query-sink"
+            parameters:
+              queryAllPages: "true"
+              accessKey: "{{aws.accessKey}}"
+              secretKey: "{{aws.secretKey}}"
+              region: "{{aws.region}}"
+              overrideEndpoint: "true"
+              uriEndpointOverride: "{{aws.uriEndpointOverride}}"
+        # all the rows of the two pages are in one answer
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Rows
+            simple: '${body.rows().size()}'
+        - setBody:
+            simple: '${body.rows()[0].data()[0].scalarValue()},${body.rows()[1].data()[0].scalarValue()}'
+        - to:
+            uri: "{{http.sink.url}}/result"

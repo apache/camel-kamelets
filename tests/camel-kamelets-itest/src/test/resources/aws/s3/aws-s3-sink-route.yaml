@@ -35,3 +35,5 @@
             uriEndpointOverride: "{{aws.s3.uriEndpointOverride}}"
             forcePathStyle: "{{aws.s3.forcePathStyle}}"
             keyName: "{{aws.s3.key}}"
+      # what the Kamelet gives: the Java type of the body and the Content-Type
+      - log: "Kamelet result: body=${body.getClass().getName()} ct=${header.Content-Type}"

@@ -65,4 +65,8 @@
         - log: "INGEST ${body}"
         - convertBodyTo:
             type: "java.lang.String"
+        # the source marks the file application/octet-stream, which the sink leaves in place, and
+        # the HTTP server reads an application/octet-stream body as bytes: send it as text
+        - removeHeader:
+            name: Content-Type
         - to: "{{report.url}}"

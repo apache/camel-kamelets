@@ -33,13 +33,13 @@ import static org.citrusframework.actions.PurgeEndpointAction.Builder.purgeEndpo
 import static org.citrusframework.http.endpoint.builder.HttpEndpoints.http;
 
 /**
- * Tests of the Kamelets of S3-compatible object storages, Ceph and MinIO, against the S3 API of Floci, and of
+ * Tests of the Kamelets of the S3-compatible object storage Ceph, against the S3 API of Floci, and of
  * the GitHub sources against canned answers of the GitHub API.
  */
 @CitrusSupport
 public class CloudIT {
 
-    private static final String TESTS = "(ceph|minio|github)-.*";
+    private static final String TESTS = "(ceph|github)-.*";
 
     private final int cloudHttpServerPort = SocketUtils.findAvailableTcpPort();
 
@@ -85,11 +85,6 @@ public class CloudIT {
     @CitrusTestFactory
     public Stream<DynamicTest> ceph() {
         return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("ceph");
-    }
-
-    @CitrusTestFactory
-    public Stream<DynamicTest> minio() {
-        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("minio");
     }
 
     @CitrusTestFactory

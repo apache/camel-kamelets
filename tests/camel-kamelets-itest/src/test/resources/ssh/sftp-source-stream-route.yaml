@@ -44,6 +44,9 @@
         - setHeader:
             name: X-File-Length
             simple: "${header.CamelFileLength}"
+        # Citrus reads an application/octet-stream body as bytes: send text
+        - removeHeader:
+            name: Content-Type
         # the body is a stream: give the HTTP server text
         - convertBodyTo:
             type: "java.lang.String"

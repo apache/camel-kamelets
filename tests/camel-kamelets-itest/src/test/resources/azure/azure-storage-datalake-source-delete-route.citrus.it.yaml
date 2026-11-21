@@ -1,0 +1,133 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: azure-storage-datalake-source-delete-route-test
+description: 'azure-storage-datalake-source with deleteAfterRead reads a file once, and deletes it'
+actions:
+  # Start the Floci Azure emulator, which serves Blob, Queue and Data Lake storage on one port. It does not check the
+  # account key.
+  - testcontainers:
+      start:
+        container:
+          name: "azure"
+          image: "floci/floci-az:0.16.0"
+          autoRemove: true
+          startUpTimeout: 120
+          exposedPorts:
+            - 4577
+          waitFor:
+            logMessage: '.*floci-az is ready.*'
+
+  # The file system lake, with a file in the directory in
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_AZURE_HOST}:${CITRUS_TESTCONTAINERS_AZURE_PORT}"
+      sendRequest:
+        PUT:
+          path: "/devstoreaccount1/lake"
+          parameters:
+            - name: "restype"
+              value: 'container'
+          headers:
+            - name: "x-ms-version"
+              value: '2025-11-05'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_AZURE_HOST}:${CITRUS_TESTCONTAINERS_AZURE_PORT}"
+      receiveResponse:
+        response:
+          status: 201
+
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_AZURE_HOST}:${CITRUS_TESTCONTAINERS_AZURE_PORT}"
+      sendRequest:
+        PUT:
+          path: "/devstoreaccount1/lake/in/order-1.txt"
+          contentType: "text/plain"
+          headers:
+            - name: "x-ms-version"
+              value: '2025-11-05'
+            - name: "x-ms-blob-type"
+              value: 'BlockBlob'
+          body:
+            data: 'Hello Azure Data Lake'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_AZURE_HOST}:${CITRUS_TESTCONTAINERS_AZURE_PORT}"
+      receiveResponse:
+        response:
+          status: 201
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "azure/azure-storage-datalake-source-delete-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${azure.server.port}"
+                - name: "azure.url"
+                  value: "http://${CITRUS_TESTCONTAINERS_AZURE_HOST}:${CITRUS_TESTCONTAINERS_AZURE_PORT}"
+                - name: "azure.accountName"
+                  value: "devstoreaccount1"
+                - name: "azure.accessKey"
+                  value: "a2FtZWxldHM="
+          resources:
+            - "AzureDataLakeClient.java"
+
+  # The content of the file, as a stream, with its path
+  - http:
+      server: "azureServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'org.apache.camel.converter.stream.InputStreamCache'
+            - name: "X-Content-Type"
+              value: 'ct=application/octet-stream'
+            - name: "X-File-Name"
+              value: 'in/order-1.txt'
+          body:
+            data: 'Hello Azure Data Lake'
+  - http:
+      server: "azureServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The file is deleted once its message was handled
+  - repeatOnError:
+      until: "i > 30"
+      autoSleep: 1000
+      actions:
+        - http:
+            client: "http://${CITRUS_TESTCONTAINERS_AZURE_HOST}:${CITRUS_TESTCONTAINERS_AZURE_PORT}"
+            sendRequest:
+              HEAD:
+                path: "/devstoreaccount1/lake/in/order-1.txt"
+                headers:
+                  - name: "x-ms-version"
+                    value: '2025-11-05'
+        - http:
+            client: "http://${CITRUS_TESTCONTAINERS_AZURE_HOST}:${CITRUS_TESTCONTAINERS_AZURE_PORT}"
+            receiveResponse:
+              response:
+                status: 404

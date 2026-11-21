@@ -1,0 +1,41 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+- route:
+    from:
+      uri: "kamelet:azure-storage-blob-source"
+      parameters:
+        accountName: '{{azure.accountName}}'
+        containerName: 'orders'
+        accessKey: '{{azure.accessKey}}'
+        deleteAfterRead: 'true'
+        maxMessagesPerPoll: 2
+        delay: 2000
+      steps:
+        # the blob, and how many blobs the poll that read it has
+        - setHeader:
+            name: X-Blob-Name
+            simple: "${header.CamelAzureStorageBlobBlobName}"
+        - setHeader:
+            name: X-Batch-Size
+            simple: "${exchangeProperty.CamelBatchSize}"
+        - removeHeader:
+            name: Content-Type
+        - convertBodyTo:
+            type: "java.lang.String"
+        - to:
+            uri: "{{http.sink.url}}/result"

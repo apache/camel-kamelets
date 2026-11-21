@@ -317,4 +317,8 @@
                 steps:
                   - setBody:
                       simple: "rejected: ${exception.message}"
+        # the source marks the file application/octet-stream, which the rejection leaves in place,
+        # and the HTTP server reads an application/octet-stream body as bytes: send it as text
+        - removeHeader:
+            name: Content-Type
         - to: "{{report.url}}"

@@ -1,0 +1,54 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+- route:
+    from:
+      uri: "kamelet:ftp-source"
+      parameters:
+        connectionHost: 'localhost'
+        connectionPort: '{{ftp.port}}'
+        username: 'citrus'
+        # a password with characters that have a meaning in an endpoint address
+        password: 's3cr&t+pw'
+        directoryName: 'orders'
+        # read the file while it is handed on, for files too large for memory
+        streamDownload: true
+        stepwise: false
+      steps:
+        # what the Kamelet gives: the Java type of the body and the Content-Type
+        # with stream caching off, binary keeps the stream of the FTP client: it is not read into a byte[]
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
+        # Camel headers are not sent over HTTP: copy them
+        - setHeader:
+            name: X-File-Name
+            simple: "${header.CamelFileName}"
+        - setHeader:
+            name: X-File-Length
+            simple: "${header.CamelFileLength}"
+        # Citrus reads an application/octet-stream body as bytes: send text
+        - removeHeader:
+            name: Content-Type
+        # the body is a stream: give the HTTP server text
+        - convertBodyTo:
+            type: "java.lang.String"
+        - to:
+            uri: "{{http.sink.url}}/result"

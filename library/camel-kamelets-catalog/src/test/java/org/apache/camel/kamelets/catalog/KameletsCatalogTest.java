@@ -260,8 +260,6 @@ public class KameletsCatalogTest {
         verifyHeaders("mail-sink", 6);
         verifyHeaders("mariadb-source", 1);
         verifyHeaders("mariadb-sink", 2);
-        verifyHeaders("minio-source", 5);
-        verifyHeaders("minio-sink", 2);
         verifyHeaders("mongodb-changes-stream-source", 3);
         verifyHeaders("mongodb-sink", 3);
         verifyHeaders("mongodb-source", 3);

@@ -37,9 +37,9 @@ spec:
 
       Use it to store data in S3 for other systems or for archiving, such as exported records, received documents or events. To collect many small messages into a few large files, use `aws-s3-streaming-upload-sink`.
 
-      Input: the body is the content of the file, as text, bytes, a stream or a file. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The optional `file` header (or `ce-file`) is the key, the path of the file in the bucket, such as `orders/order-1.json`. Without it, and without `keyName`, the key is a generated unique ID. The optional `CamelAwsS3ContentType` header sets the content type of the file; the `Content-Type` header is not used, and without it the file is stored as `application/octet-stream`.
+      Input: the body is the content of the file, as text, bytes, a stream or a file. Text is turned into bytes before the upload, and the `Content-Type` header is set to `application/octet-stream`. A file is passed on as it is, and so is a stream, unless stream caching is turned off. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The optional `file` header (or `ce-file`) is the key, the path of the file in the bucket, such as `orders/order-1.json`. Without it, and without `keyName`, the key is a generated unique ID. The optional `CamelAwsS3ContentType` header sets the content type of the file; the `Content-Type` header is not used, and without it the file is stored as `application/octet-stream`.
 
-      Output: the message is unchanged. The `CamelAwsS3Key` and `CamelAwsS3ETag` headers give the key and the ETag of the uploaded file.
+      Output: the body is the content of the file, as bytes when it was text, and the `Content-Type` header is `application/octet-stream`. The `CamelAwsS3Key` and `CamelAwsS3ETag` headers give the key and the ETag of the uploaded file.
 
       Good to know: a file with the same key is replaced without warning, unless `conditionalWritesEnabled` is true: then the upload of a key that exists already fails. When `keyName` is set, the `file` header is ignored and every message replaces the same file. To copy files from `aws-s3-source` under their own names, set the `file` header from its `CamelAwsS3Key` header first. It also works with S3-compatible storage, such as MinIO, through `overrideEndpoint`, `uriEndpointOverride` and `forcePathStyle`. To encrypt the files with a key of AWS KMS, as a bucket policy may require, set `useAwsKMS` and `awsKMSKeyId`; `storageClass` sets their storage class. One upload takes at most 5 GB; for larger files, set `multiPartUpload` to true, and each file of `partSize` or more is uploaded in parts. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsS3`, except `CamelAwsS3ContentType` and `CamelAwsS3StorageClass`, are removed from the message first, so they cannot change what the Kamelet does.
     required:
@@ -176,6 +176,12 @@ spec:
         type: boolean
   dataTypes:
     in:
+      default: binary
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The content of the file, as bytes. A file, and a stream while stream caching is on, are passed on as they are."
+          mediaType: application/octet-stream
       headers:
         file:
           title: File Name

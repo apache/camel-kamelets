@@ -39,9 +39,9 @@ spec:
 
       Input: the body is not used. The `query` header (or `ce-query`) is the SQL query to run, such as `SELECT * FROM "sensors"."readings" WHERE time > ago(1h)`; it is required.
 
-      Output: when it is used inside a route, the body afterwards is the answer of AWS, a `QueryResponse` object of the AWS SDK for Java (not JSON text), with the columns and the rows of the first page of the result.
+      Output: when it is used inside a route, the body afterwards is the answer of AWS, a `QueryResponse` object of the AWS SDK for Java (not JSON text), with the columns and the rows of the first page of the result, or of all of them with `queryAllPages`.
 
-      Good to know: the query is run as it is written in the header, so never build it from untrusted data. Only the first page of a large result is returned. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsTimestream` are removed from the message first, so they cannot change what the Kamelet does.
+      Good to know: the query is run as it is written in the header, so never build it from untrusted data. Only the first page of a large result is returned, unless `queryAllPages` is true, which reads all the pages into one answer; mind the memory for a very large result. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid. Headers that start with `CamelAwsTimestream` are removed from the message first, so they cannot change what the Kamelet does. Amazon Timestream for LiveAnalytics, the service it queries, is closed to new AWS customers since 20 June 2025: only accounts that used it before can still use it, and AWS suggests Amazon Timestream for InfluxDB instead.
     required:
       - region
     type: object
@@ -119,6 +119,10 @@ spec:
         type: string
         enum: ["HTTP", "HTTPS"]
         example: HTTP
+      queryAllPages:
+        title: Query All Pages
+        description: "If true, all the pages of the result are read, and the answer holds all the rows. When not set or false, only the first page is returned."
+        type: boolean
   dataTypes:
     in:
       default: unchanged
@@ -165,4 +169,4 @@ spec:
                         simple:
                           expression: "${header[ce-query]}"
         - to:
-            uri: "aws2-timestream:query?accessKey=RAW({{?accessKey}})&operation=query&overrideEndpoint={{overrideEndpoint}}&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&uriEndpointOverride={{?uriEndpointOverride}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}&proxyHost={{?proxyHost}}&proxyPort={{?proxyPort}}&proxyProtocol={{?proxyProtocol}}"
+            uri: "aws2-timestream:query?accessKey=RAW({{?accessKey}})&operation=query&queryAllPages={{?queryAllPages}}&overrideEndpoint={{overrideEndpoint}}&profileCredentialsName={{?profileCredentialsName}}&region={{region}}&secretKey=RAW({{?secretKey}})&sessionToken=RAW({{?sessionToken}})&uriEndpointOverride={{?uriEndpointOverride}}&useDefaultCredentialsProvider={{useDefaultCredentialsProvider}}&useProfileCredentialsProvider={{useProfileCredentialsProvider}}&useSessionCredentials={{useSessionCredentials}}&proxyHost={{?proxyHost}}&proxyPort={{?proxyPort}}&proxyProtocol={{?proxyProtocol}}"
