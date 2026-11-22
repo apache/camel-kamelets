@@ -45,8 +45,22 @@ permissions:  # added using https://github.com/step-security/secure-repo
 
 jobs:
   test:
+    name: test (${{ matrix.shard }})
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    # The Citrus tests take about 80 minutes in one job, close to the timeout, so they run in three jobs of about
+    # 26 minutes each. The first two take the IT classes listed, balanced by their time on main; the third takes all
+    # the other ones, so a new IT class runs there without being listed.
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - shard: 1
+            tests: "CommonIT,ServicesIT,DatabaseIT,CouchbaseIT,MllpIT,CloudIT,AvroIT,PostgresIT,MailIT,NatsIT"
+          - shard: 2
+            tests: "AwsIT,MessagingIT,GoogleCloudIT,JiraIT,MongoIT,InfinispanIT,CsvIT,CassandraIT,RedisIT,OpenApiIT"
+          - shard: 3
+            tests: "!CommonIT,!ServicesIT,!DatabaseIT,!CouchbaseIT,!MllpIT,!CloudIT,!AvroIT,!PostgresIT,!MailIT,!NatsIT,!AwsIT,!MessagingIT,!GoogleCloudIT,!JiraIT,!MongoIT,!InfinispanIT,!CsvIT,!CassandraIT,!RedisIT,!OpenApiIT"
     steps:
     - name: Checkout code
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -70,6 +84,7 @@ jobs:
       env:
         CITRUS_TESTCONTAINERS_REGISTRY_MIRROR: "mirror.gcr.io"
         CITRUS_TESTCONTAINERS_REGISTRY_MIRROR_ENABLED: "true"
+        IT_TESTS: ${{ matrix.tests }}
       run: |
         echo "Install JBang via SDKMAN"
 
@@ -88,9 +103,9 @@ jobs:
         
         echo "Running Citrus tests for Kamelets"
         
-        ./mvnw clean verify -pl :camel-kamelets-itest -Denable.integration.tests
+        ./mvnw clean verify -pl :camel-kamelets-itest -Denable.integration.tests "-Dit.test=$IT_TESTS"
     - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       if: failure()
       with:
-        name: dumps
+        name: dumps-${{ matrix.shard }}
         path: tests/camel-kamelets-itest/.citrus-jbang
