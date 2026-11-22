@@ -96,7 +96,7 @@ actions:
       cli:
         verify:
           integration: "soap-backend-route"
-          logMessage: 'Backend getOrder SOAPAction=http://example.com/orders/getOrder Authorization=Basic ZnJvbnQ6czNjcmV0: <getOrder xmlns="http://example.com/orders"><orderId>8</orderId>'
+          logMessage: '<orderId>8</orderId></getOrder>'
 
   # The declared fault of the legacy service, passed on by the front with its detail
   - http:

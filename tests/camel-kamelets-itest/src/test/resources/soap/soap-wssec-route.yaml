@@ -30,6 +30,21 @@
         - log: "Service ${header.CamelCxfOperationName} user=${header.CamelAuthentication}"
         - setBody:
             simple: '<getOrderResponse xmlns="http://example.com/orders"><order><orderId>${xpath(/*/*[local-name()=''orderId'']/text())}</orderId><customer>ACME</customer><status>NEW</status><item><sku>A-1</sku><quantity>1</quantity><price>1.00</price></item></order></getOrderResponse>'
+# the same service for alice, which requires a PasswordDigest
+- route:
+    id: "orders-wssec-digest"
+    from:
+      uri: "kamelet:soap-source"
+      parameters:
+        address: "http://0.0.0.0:{{soap.wssec.port}}/orders-digest"
+        wsdlURL: "classpath:orders.wsdl"
+        wsSecurityUsername: "alice"
+        wsSecurityPassword: "s3cr&t+pw"
+        wsSecurityPasswordType: "Digest"
+      steps:
+        - log: "Digest service ${header.CamelCxfOperationName} user=${header.CamelAuthentication}"
+        - setBody:
+            simple: '<getOrderResponse xmlns="http://example.com/orders"><order><orderId>${xpath(/*/*[local-name()=''orderId'']/text())}</orderId><customer>ACME</customer><status>NEW</status><item><sku>A-1</sku><quantity>1</quantity><price>1.00</price></item></order></getOrderResponse>'
 - route:
     from:
       uri: "timer:wssec"
@@ -53,13 +68,25 @@
         - to:
             uri: "kamelet:soap-action"
             parameters:
-              address: "http://localhost:{{soap.wssec.port}}/orders"
+              address: "http://localhost:{{soap.wssec.port}}/orders-digest"
               wsdlURL: "classpath:orders.wsdl"
               operation: "getOrder"
               wsSecurityUsername: "alice"
               wsSecurityPassword: "s3cr&t+pw"
               wsSecurityPasswordType: "Digest"
         - log: "Digest password: ${body}"
+        - setBody:
+            constant: '<getOrder xmlns="http://example.com/orders"><orderId>25</orderId></getOrder>'
+        - to:
+            uri: "kamelet:soap-action"
+            parameters:
+              address: "http://localhost:{{soap.wssec.port}}/orders-digest"
+              wsdlURL: "classpath:orders.wsdl"
+              operation: "getOrder"
+              wsSecurityUsername: "alice"
+              wsSecurityPassword: "s3cr&t+pw"
+              faultAsBody: true
+        - log: "Text to digest service: SoapFault=${header.SoapFault}"
         - setBody:
             constant: '<getOrder xmlns="http://example.com/orders"><orderId>23</orderId></getOrder>'
         - to:

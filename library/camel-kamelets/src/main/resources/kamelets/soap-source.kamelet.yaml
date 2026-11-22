@@ -96,7 +96,7 @@ spec:
         - urn:camel:group:credentials
       wsSecurityPasswordType:
         title: WS-Security Password Type
-        description: How the UsernameToken must carry the password. `Text` as it is, so only use it over HTTPS, or `Digest` as a SHA-1 digest of it, which is no replacement for HTTPS. When the WSDL has a WS-SecurityPolicy, the policy decides instead. When it is not set, `Text`.
+        description: How the UsernameToken must carry the password. `Text` as it is, so only use it over HTTPS, or `Digest` as a SHA-1 digest of it, which is no replacement for HTTPS. A UsernameToken with the other type is refused. When the WSDL has a WS-SecurityPolicy, the policy decides instead. When it is not set, `Text`.
         type: string
         enum: ["Text", "Digest"]
         example: Digest

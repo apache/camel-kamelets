@@ -16,7 +16,7 @@
 # ---------------------------------------------------------------------------
 
 name: soap-wssec-test
-description: 'soap-source requires a WS-Security UsernameToken of its user, and soap-action sends one: the right password as text and as a digest passes, a wrong password and a request without a token get a SOAP fault'
+description: 'soap-source requires a WS-Security UsernameToken of its user, and soap-action sends one: the right password as text and as a digest passes; a wrong password, the other password type and a request without a token get a SOAP fault'
 actions:
   # The options need the jar cxf-rt-ws-security of the CXF version of Camel
   - camel:
@@ -52,7 +52,13 @@ actions:
       cli:
         verify:
           integration: "soap-wssec-route"
-          logMessage: "Wrong password: SoapFault="
+          logMessage: "Wrong password: SoapFault=A security error was encountered when verifying the message SoapFaultCode="
+  # a service that requires a PasswordDigest refuses a PasswordText
+  - camel:
+      cli:
+        verify:
+          integration: "soap-wssec-route"
+          logMessage: "Text to digest service: SoapFault=A security error was encountered when verifying the message"
 
   # A request without a UsernameToken is refused before the route sees it
   - http:
