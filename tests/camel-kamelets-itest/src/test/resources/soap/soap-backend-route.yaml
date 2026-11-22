@@ -1,0 +1,53 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+# The legacy SOAP service of orders.wsdl, served by soap-source with the XML of the WSDL
+- route:
+    id: "legacy-orders"
+    from:
+      uri: "kamelet:soap-source"
+      parameters:
+        address: "http://0.0.0.0:{{soap.backend.port}}/orders"
+        wsdlURL: "classpath:orders.wsdl"
+      steps:
+        # what came with the call: the SOAPAction of the WSDL and no login, whatever the caller had in its headers
+        - log: "Backend ${header.CamelCxfOperationName} SOAPAction=${header.SOAPAction} Authorization=${header.Authorization}: ${body}"
+        - setVariable:
+            name: "orderId"
+            simple: "${xpath(/*/*[local-name()='orderId']/text())}"
+        - choice:
+            when:
+              # the declared fault of getOrder
+              - simple: "${variable.orderId} == '404'"
+                steps:
+                  - setHeader:
+                      name: "SoapFault"
+                      simple: "Order ${variable.orderId} not found"
+                  - setHeader:
+                      name: "SoapFaultCode"
+                      constant: "Client"
+                  - setBody:
+                      simple: '<orderNotFound xmlns="http://example.com/orders"><orderId>${variable.orderId}</orderId></orderNotFound>'
+              # a failure of the route: the client must not learn why
+              - simple: "${variable.orderId} == '500'"
+                steps:
+                  - throwException:
+                      exceptionType: "java.lang.IllegalStateException"
+                      message: "Database password s3cret rejected"
+            otherwise:
+              steps:
+                - setBody:
+                    simple: '<getOrderResponse xmlns="http://example.com/orders"><order><orderId>${variable.orderId}</orderId><customer>ACME</customer><status>SHIPPED</status><item><sku>A-1</sku><quantity>2</quantity><price>9.95</price></item></order></getOrderResponse>'

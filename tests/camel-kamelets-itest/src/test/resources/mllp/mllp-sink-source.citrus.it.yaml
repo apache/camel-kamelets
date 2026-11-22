@@ -1,0 +1,142 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: mllp-sink-source-test
+description: 'mllp-sink sends HL7 v2 messages to mllp-source, which gives each one to its flow and acknowledges it: AA, AE when the flow fails, AR when the flow rejects it'
+actions:
+  # The source listens on all the network interfaces
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "mllp/mllp-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "mllp.port"
+                  value: "${mllp.port}"
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-source-route"
+          logMessage: "ServerSocket[addr=/0.0.0.0,localport=${mllp.port}]"
+
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "mllp/mllp-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "mllp.port"
+                  value: "${mllp.port}"
+
+  # The source gives the message as text, with the fields of the MSH segment in headers
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-source-route"
+          logMessage: "|SENDER|HOSPITAL|RECEIVER|LAB|20260101120000||ADT^A01|MSG00001|P|2.5 / PID|1||12345||Doe^John|"
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-source-route"
+          logMessage: "Received MSG00001 java.lang.String: MSH|"
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-source-route"
+          logMessage: "Headers MSG00001 type=ADT^A01 event=ADT trigger=A01 from=SENDER/HOSPITAL to=RECEIVER/LAB time=20260101120000 processing=P version=2.5 remote=/127.0.0.1:"
+
+  # The sink leaves the body as it is, and gives the AA acknowledgement of the source
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-sink-route"
+          logMessage: "Sent MSG00001 java.lang.String: MSH|"
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-sink-route"
+          logMessage: "|SENDER|HOSPITAL|RECEIVER|LAB|20260101120000||ADT^A01|MSG00001|P|2.5 / PID|1||12345||Doe^John|"
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-sink-route"
+          logMessage: "Ack MSG00001 AA [B: MSH|"
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-sink-route"
+          logMessage: "|RECEIVER|LAB|SENDER|HOSPITAL|"
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-sink-route"
+          logMessage: "||ACK^A01|MSG00001A|P|2.5 / MSA|AA|MSG00001 / |"
+
+  # UTF-8 text, as MSH-18 says, whatever the CamelCharsetName header says; turned into bytes in UTF-8 afterwards
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-source-route"
+          logMessage: "Name MSG00002 true"
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-source-route"
+          logMessage: "Bytes MSG00002 126"
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-sink-route"
+          logMessage: "Ack MSG00002 AA"
+
+  # A body of bytes is sent as it is
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-source-route"
+          logMessage: "Headers MSG00003 type=ADT^A04"
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-sink-route"
+          logMessage: "Ack MSG00003 AA body=[B"
+
+  # The flow of the source fails: AE, with the name of the error in MSA-3, fails the message in the sink
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-sink-route"
+          logMessage: "Rejected MSG00004 org.apache.camel.component.mllp.MllpApplicationErrorAcknowledgementException AE: MSH|"
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-sink-route"
+          logMessage: "MSA|AE|MSG00004|java.lang.IllegalArgumentException / |"
+
+  # The flow of the source rejects the message: AR fails the message in the sink
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-sink-route"
+          logMessage: "Rejected MSG00005 org.apache.camel.component.mllp.MllpApplicationRejectAcknowledgementException AR: MSH|"
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-sink-route"
+          logMessage: "MSA|AR|MSG00005 / |"

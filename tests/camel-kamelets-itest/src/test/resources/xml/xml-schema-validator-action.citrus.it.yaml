@@ -1,0 +1,86 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: xml-schema-validator-action-test
+actions:
+  - camel:
+      cli:
+        run:
+          resources:
+            - "templates/order.xsd"
+          integration:
+            file: "xml/xml-schema-validator-action-route.yaml"
+  # A valid document passes unchanged, of the same type
+  - camel:
+      cli:
+        verify:
+          integration: "xml-schema-validator-action-route"
+          logMessage: 'Valid java.lang.String: <order><customer>Ann</customer><item price="2.5"/></order>|'
+  - camel:
+      cli:
+        verify:
+          integration: "xml-schema-validator-action-route"
+          logMessage: 'ValidBytes [B: <order><customer>Bob</customer><item price="1"/><item price="3"/></order>|'
+  # An invalid document fails with the list of what is wrong
+  - camel:
+      cli:
+        verify:
+          integration: "xml-schema-validator-action-route"
+          logMessage: 'Rejected-invalid org.apache.camel.support.processor.validation.SchemaValidationException: Validation failed for'
+  - camel:
+      cli:
+        verify:
+          integration: "xml-schema-validator-action-route"
+          logMessage: "cvc-complex-type.2.4.a: Invalid content was found starting with element 'item'. One of '{customer}' is expected."
+  - camel:
+      cli:
+        verify:
+          integration: "xml-schema-validator-action-route"
+          logMessage: "cvc-datatype-valid.1.2.1: 'abc' is not a valid value for 'decimal'."
+  # The external entity is not read: the message fails
+  - camel:
+      cli:
+        verify:
+          integration: "xml-schema-validator-action-route"
+          logMessage: 'Rejected-xxe org.apache.camel.support.processor.validation.SchemaValidationException'
+  - camel:
+      cli:
+        verify:
+          integration: "xml-schema-validator-action-route"
+          logMessage: "Failed to read external document 'hosts', because 'file' access is not allowed due to restriction set by the accessExternalDTD property."
+  # The nested entities stop at the entity expansion limit of the JDK (its number differs per JDK version)
+  - camel:
+      cli:
+        verify:
+          integration: "xml-schema-validator-action-route"
+          logMessage: 'Rejected-bomb org.apache.camel.support.processor.validation.SchemaValidationException'
+  - camel:
+      cli:
+        verify:
+          integration: "xml-schema-validator-action-route"
+          logMessage: 'entity expansions in this document; this is the limit imposed by'
+  # A body that is not XML fails
+  - camel:
+      cli:
+        verify:
+          integration: "xml-schema-validator-action-route"
+          logMessage: 'Rejected-text org.apache.camel.support.processor.validation.SchemaValidationException'
+  - camel:
+      cli:
+        verify:
+          integration: "xml-schema-validator-action-route"
+          logMessage: 'Content is not allowed in prolog.'
