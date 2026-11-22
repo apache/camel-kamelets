@@ -40,7 +40,7 @@ spec:
 
       Output: the body is the result as text (a String): XML, or plain text when the `xsl:output` of the stylesheet says `method="text"`. The `Content-Type` header is not set. The other headers are kept.
 
-      Good to know: a body that is not XML fails the message. The DOCTYPE of the message is not used: its entities are not expanded and an entity that points to a file or URL is not read, so `&name;` gives nothing. A message can set every parameter of the stylesheet with a header, so do not let a parameter choose which resource the stylesheet reads. The stylesheet is code you write and trust: XSLT functions such as `document()` can read other resources, such as XML from the classpath. The stylesheet is loaded from a file, the classpath or a URL given by the `template` option; it cannot come from the message. Headers that start with `CamelXslt` are removed from the message first, so they cannot change what the Kamelet does.
+      Good to know: a body that is not XML fails the message. The DOCTYPE of the message is not used: its entities are not expanded and an entity that points to a file or URL is not read, so an entity reference in the body gives nothing. A message can set every parameter of the stylesheet with a header, so do not let a parameter choose which resource the stylesheet reads. The stylesheet is code you write and trust: XSLT functions such as `document()` can read other resources, such as XML from the classpath. The stylesheet is loaded from a file, the classpath or a URL given by the `template` option; it cannot come from the message. Headers that start with `CamelXslt` are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - template
     type: object
