@@ -2411,6 +2411,17 @@
       "value" : "runtime"
     } ]
   }, {
+    "bom-ref" : "pkg:maven/org.apache.camel/camel-xsd-json@4.24.0-SNAPSHOT",
+    "type" : "library",
+    "group" : "org.apache.camel",
+    "name" : "camel-xsd-json",
+    "version" : "4.24.0-SNAPSHOT",
+    "purl" : "pkg:maven/org.apache.camel/camel-xsd-json@4.24.0-SNAPSHOT",
+    "properties" : [ {
+      "name" : "camel.apache.org/versioned-by",
+      "value" : "runtime"
+    } ]
+  }, {
     "bom-ref" : "pkg:maven/org.apache.camel/camel-xslt-saxon@4.24.0-SNAPSHOT",
     "type" : "library",
     "group" : "org.apache.camel",
@@ -3076,10 +3087,10 @@
     "dependsOn" : [ "pkg:maven/net.snowflake/snowflake-jdbc@4.3.4", "pkg:maven/org.apache.camel/camel-jackson3@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-sql@4.24.0-SNAPSHOT", "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0" ]
   }, {
     "ref" : "kamelet:soap-action",
-    "dependsOn" : [ "pkg:maven/org.apache.camel/camel-cxf-soap@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-xpath@4.24.0-SNAPSHOT" ]
+    "dependsOn" : [ "pkg:maven/org.apache.camel/camel-cxf-soap@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-xpath@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-xsd-json@4.24.0-SNAPSHOT" ]
   }, {
     "ref" : "kamelet:soap-source",
-    "dependsOn" : [ "pkg:maven/org.apache.camel/camel-cxf-soap@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT" ]
+    "dependsOn" : [ "pkg:maven/org.apache.camel/camel-cxf-soap@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-xsd-json@4.24.0-SNAPSHOT" ]
   }, {
     "ref" : "kamelet:solr-sink",
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-jackson3@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-solr@4.24.0-SNAPSHOT" ]
@@ -3493,6 +3504,9 @@
     "dependsOn" : [ ]
   }, {
     "ref" : "pkg:maven/org.apache.camel/camel-xpath@4.24.0-SNAPSHOT",
+    "dependsOn" : [ ]
+  }, {
+    "ref" : "pkg:maven/org.apache.camel/camel-xsd-json@4.24.0-SNAPSHOT",
     "dependsOn" : [ ]
   }, {
     "ref" : "pkg:maven/org.apache.camel/camel-xslt-saxon@4.24.0-SNAPSHOT",

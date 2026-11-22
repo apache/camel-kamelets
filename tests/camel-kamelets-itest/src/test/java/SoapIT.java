@@ -38,6 +38,8 @@ public class SoapIT {
     private final int frontPort = ServerPorts.next();
     private final int soap12Port = ServerPorts.next();
     private final int wssecPort = ServerPorts.next();
+    private final int jsonBackendPort = ServerPorts.next();
+    private final int jsonFrontPort = ServerPorts.next();
 
     @BindToRegistry
     public SequenceBeforeTest beforeSoap() {
@@ -47,6 +49,8 @@ public class SoapIT {
                         .variable("soap.front.port", String.valueOf(frontPort))
                         .variable("soap.soap12.port", String.valueOf(soap12Port))
                         .variable("soap.wssec.port", String.valueOf(wssecPort))
+                        .variable("soap.json.backend.port", String.valueOf(jsonBackendPort))
+                        .variable("soap.json.front.port", String.valueOf(jsonFrontPort))
         ).build();
     }
 

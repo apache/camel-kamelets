@@ -1,0 +1,114 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: soap-json-test
+description: 'soap-source and soap-action with bodyFormat json: a SOAP front that works with typed JSON and calls a SOAP service whose route works with JSON too; an element that repeats is an array with one item; a field the schema does not have is refused or left out; a fault keeps its XML detail'
+actions:
+  - camel:
+      cli:
+        run:
+          resources:
+            - "orders.wsdl"
+          integration:
+            file: "soap/soap-json-backend-route.yaml"
+            systemProperties:
+              properties:
+                - name: "soap.json.backend.port"
+                  value: "${soap.json.backend.port}"
+  - camel:
+      cli:
+        run:
+          resources:
+            - "orders.wsdl"
+          integration:
+            file: "soap/soap-json-front-route.yaml"
+            systemProperties:
+              properties:
+                - name: "soap.json.backend.port"
+                  value: "${soap.json.backend.port}"
+                - name: "soap.json.front.port"
+                  value: "${soap.json.front.port}"
+
+  # getOrder through the front: the client sends and gets SOAP XML, with the elements in the order and the
+  # namespace of the schema, whatever the order of the JSON fields of the backend
+  - http:
+      client: "http://localhost:${soap.json.front.port}"
+      sendRequest:
+        POST:
+          path: "/orders"
+          contentType: "text/xml"
+          body:
+            data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>7</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
+  - http:
+      client: "http://localhost:${soap.json.front.port}"
+      receiveResponse:
+        response:
+          status: 200
+          type: "plaintext"
+          body:
+            data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><tns:getOrderResponse xmlns:tns="http://example.com/orders"><tns:order><tns:orderId>7</tns:orderId><tns:customer>ACME</tns:customer><tns:status>SHIPPED</tns:status><tns:item><tns:sku>A-1</tns:sku><tns:quantity>2</tns:quantity><tns:price>9.95</tns:price><tns:gift>true</tns:gift></tns:item></tns:order></tns:getOrderResponse></soap:Body></soap:Envelope>'
+  # The routes in the middle had JSON: the request, and the response with typed values and an array of one item
+  - camel:
+      cli:
+        verify:
+          integration: "soap-json-front-route"
+          logMessage: 'JSON front request: {"orderId":"7"}'
+  - camel:
+      cli:
+        verify:
+          integration: "soap-json-backend-route"
+          logMessage: 'JSON backend getOrder: {"orderId":"7"}'
+  - camel:
+      cli:
+        verify:
+          integration: "soap-json-front-route"
+          logMessage: 'JSON front got SoapFault=: {"order":{"orderId":"7","customer":"ACME","status":"SHIPPED","item":[{"sku":"A-1","quantity":2,"price":9.95,"gift":true}]}}'
+
+  # A field that the schema does not have
+  - camel:
+      cli:
+        verify:
+          integration: "soap-json-front-route"
+          logMessage: "Unknown field refused: "
+  - camel:
+      cli:
+        verify:
+          integration: "soap-json-front-route"
+          logMessage: 'Unknown field ignored: {"order":{"orderId":"10",'
+
+  # The declared fault, passed on by the front with its XML detail
+  - http:
+      client: "http://localhost:${soap.json.front.port}"
+      sendRequest:
+        POST:
+          path: "/orders"
+          contentType: "text/xml"
+          body:
+            data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>404</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
+  - http:
+      client: "http://localhost:${soap.json.front.port}"
+      receiveResponse:
+        response:
+          status: 500
+          type: "plaintext"
+          body:
+            data: '@contains(''<faultcode>soap:Client</faultcode><faultstring>Order 404 not found</faultstring><detail><orderNotFound xmlns="http://example.com/orders"><orderId>404</orderId></orderNotFound></detail>'')@'
+  - camel:
+      cli:
+        verify:
+          integration: "soap-json-front-route"
+          logMessage: 'JSON front got SoapFault=Order 404 not found: <orderNotFound xmlns="http://example.com/orders"><orderId>404</orderId></orderNotFound>'
