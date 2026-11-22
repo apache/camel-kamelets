@@ -47,9 +47,6 @@ actions:
       variables:
         - name: "kafka.bootstrapServers"
           value: "${CITRUS_TESTCONTAINERS_KAFKA_BOOTSTRAP_SERVERS}"
-  - groovy:
-      script:
-        file: "kafka/share-group-earliest.groovy"
 
   - camel:
       cli:
