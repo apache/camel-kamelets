@@ -1,0 +1,156 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: jms-apache-activemq-source-reply-route-test
+description: 'jms-apache-activemq-source sends the answer only to the JMSReplyTo of the incoming message, in ActiveMQ Classic: headers set in the flow neither send it to another queue nor make one for a message without JMSReplyTo'
+actions:
+  # Start ActiveMQ Classic, with a login for the clients
+  - testcontainers:
+      start:
+        container:
+          name: "activemq"
+          image: "apache/activemq-classic:6.2.0"
+          autoRemove: true
+          startUpTimeout: 180
+          exposedPorts:
+            - 61616
+          env:
+            - name: "ACTIVEMQ_CONNECTION_USER"
+              value: "amq"
+            - name: "ACTIVEMQ_CONNECTION_PASSWORD"
+              value: "amqpass"
+          waitFor:
+            logMessage: '.*Apache ActiveMQ [0-9.]+ \(localhost, .*\) started.*'
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          args:
+            - "--dep=mvn:org.apache.activemq:activemq-client:6.3.2"
+          integration:
+            file: "jms/jms-apache-activemq-source-reply-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${http.server.port}"
+                - name: "classic.broker.url"
+                  value: "tcp://${CITRUS_TESTCONTAINERS_ACTIVEMQ_HOST}:${CITRUS_TESTCONTAINERS_ACTIVEMQ_PORT}"
+
+  # Request 1 names a queue to reply to; the flow sets JMSReplyTo and CamelJmsDestinationName to another queue
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/request"
+          type: "plaintext"
+          body:
+            data: 'request 1'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+  # The answer goes back to the JMSReplyTo of the request, with the JMSReplyTo of the request, not the one the flow set
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/reply"
+          type: "plaintext"
+          headers:
+            - name: "X-Reply-To"
+              value: '@contains(replies)@'
+          body:
+            data: 'answer to request 1'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+  # Request 2 has no JMSReplyTo; the flow sets the same headers
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/request"
+          type: "plaintext"
+          body:
+            data: 'request 2'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+  # Request 3 names a queue to reply to again, so request 2 is done
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/request"
+          type: "plaintext"
+          body:
+            data: 'request 3'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+  # The answer to request 3
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/reply"
+          type: "plaintext"
+          headers:
+            - name: "X-Reply-To"
+              value: '@contains(replies)@'
+          body:
+            data: 'answer to request 3'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+  # Nothing reached the queue named by the headers of the flow
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/elsewhere"
+          type: "plaintext"
+          body:
+            data: 'nothing'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
