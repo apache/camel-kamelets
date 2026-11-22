@@ -112,7 +112,7 @@ spec:
         default: false
       move:
         title: Move After Read
-        description: Where to move each file on the share once it has been read and handed on successfully, so that it is not read again, also after a restart. A directory name, such as `.done`, is relative to the directory of the file. A path that ends with the name of the file, such as `done/$\{date:now:yyyyMMdd}/$\{file:name}`, is relative to `directoryName`, where `$\{file:name}` is the name of the file, with its path below `directoryName`, and `$\{date:now:yyyyMMdd}` today's date. A directory whose name starts with a dot is never read, which matters when `recursive` is true. Missing directories are created, so `username` must be allowed to create directories and to rename files. When it is not set, files stay where they are. When `delete` is true too, the file is deleted and `move` is not used.
+        description: Where to move each file on the share once it has been read and handed on successfully, so that it is not read again, also after a restart. A directory name, such as `.done`, is relative to the directory of the file. A path that ends with the name of the file, such as `done/$\{date:now:yyyyMMdd}/$\{file:name}`, is relative to `directoryName`, where `$\{file:name}` is the name of the file, with its path below `directoryName`, and `$\{date:now:yyyyMMdd}` today's date. A directory whose name starts with a dot is never read, which matters when `recursive` is true. Missing directories are created, so `username` must be allowed to create directories and to rename files. When it is not set, files stay where they are. It cannot be combined with `delete`: the Kamelet then fails to start.
         type: string
         example: ".done"
       moveFailed:
@@ -163,10 +163,9 @@ spec:
         example: 100
       sortBy:
         title: Sort By
-        description: The order in which the files of a poll are read. `file:name` sorts them by name, `file:modified` by modification time and `file:length` by size, from the smallest. When it is not set, the files are read in the order the server lists them.
+        description: "The order in which the files of a poll are read. `file:name` sorts them by name, `file:modified` by modification time and `file:length` by size, from the smallest. Put `reverse:` in front for the reverse order, such as `reverse:file:modified` for the newest first, or `ignoreCase:` to sort names without case. Separate several orders with `;`, such as `file:modified;file:name`. When it is not set, the files are read in the order the server lists them."
         type: string
-        enum: ["file:name", "file:modified", "file:length"]
-        example: file:modified
+        example: "reverse:file:modified"
       streamDownload:
         title: Stream Download
         description: 'If true, each file is read from the share while it is handed on, instead of being read into memory first, and the body is a stream. Use it for files too large for memory. It saves memory only when the integration does not keep the stream in memory either: set `camel.main.streamCachingSpoolEnabled=true`, which writes large bodies to a temporary file, or turn stream caching off. When it is not set, false.'
