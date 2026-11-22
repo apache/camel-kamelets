@@ -30,6 +30,8 @@ actions:
             file: "soap/soap-wssec-route.yaml"
             systemProperties:
               properties:
+                - name: "camel.server.port"
+                  value: "${soap.wssec.port}"
                 - name: "soap.wssec.port"
                   value: "${soap.wssec.port}"
 
@@ -65,7 +67,7 @@ actions:
       client: "http://localhost:${soap.wssec.port}"
       sendRequest:
         POST:
-          path: "/orders"
+          path: "/services/orders"
           contentType: "text/xml"
           body:
             data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>24</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
