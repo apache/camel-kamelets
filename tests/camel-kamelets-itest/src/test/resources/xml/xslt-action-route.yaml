@@ -1,0 +1,121 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+# A transformation with a parameter set by a header, from a String
+- route:
+    from:
+      uri: "timer:param"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: '<order><customer>Ann</customer><item price="2.5"/><item price="4"/></order>'
+        - setHeader:
+            name: channel
+            constant: "shop"
+        - to:
+            uri: "kamelet:xslt-action"
+            parameters:
+              template: "classpath:order.xsl"
+        - log: "Param ${body.getClass().getName()} ct=${header.Content-Type} channel=${header.channel}: ${body}|"
+# The default of the parameter, from bytes; headers that start with CamelXslt cannot choose another stylesheet
+- route:
+    from:
+      uri: "timer:bytes"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: '<order><customer>Bob</customer><item price="1"/></order>'
+        - convertBodyTo:
+            type: "byte[]"
+        - setHeader:
+            name: CamelXsltResourceUri
+            constant: "classpath:lookup.xsl"
+        - setHeader:
+            name: CamelXsltStylesheet
+            constant: '<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"><xsl:template match="/">REPLACED</xsl:template></xsl:stylesheet>'
+        - to:
+            uri: "kamelet:xslt-action"
+            parameters:
+              template: "classpath:order.xsl"
+        - log: "Bytes ${body}|"
+# document() reads another XML document from the classpath
+- route:
+    from:
+      uri: "timer:lookup"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: '<order><customer>Cid</customer></order>'
+        - to:
+            uri: "kamelet:xslt-action"
+            parameters:
+              template: "classpath:lookup.xsl"
+        - log: "Lookup ${body}|"
+# An external entity of the message is not read, from a stream
+- route:
+    from:
+      uri: "timer:xxe"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: '<?xml version="1.0"?><!DOCTYPE order [<!ENTITY hosts SYSTEM "file:///etc/hosts">]><order><customer>&hosts;</customer></order>'
+        - convertBodyTo:
+            type: "java.io.InputStream"
+        - to:
+            uri: "kamelet:xslt-action"
+            parameters:
+              template: "classpath:order.xsl"
+        - log: "Xxe ${body}|"
+# Nested entities (a billion laughs) are not expanded
+- route:
+    from:
+      uri: "timer:bomb"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: '<?xml version="1.0"?><!DOCTYPE order [<!ENTITY a "aaaaaaaaaa"><!ENTITY b "&a;&a;&a;&a;&a;&a;&a;&a;&a;&a;"><!ENTITY c "&b;&b;&b;&b;&b;&b;&b;&b;&b;&b;"><!ENTITY d "&c;&c;&c;&c;&c;&c;&c;&c;&c;&c;"><!ENTITY e "&d;&d;&d;&d;&d;&d;&d;&d;&d;&d;"><!ENTITY f "&e;&e;&e;&e;&e;&e;&e;&e;&e;&e;"><!ENTITY g "&f;&f;&f;&f;&f;&f;&f;&f;&f;&f;"><!ENTITY h "&g;&g;&g;&g;&g;&g;&g;&g;&g;&g;"><!ENTITY i "&h;&h;&h;&h;&h;&h;&h;&h;&h;&h;">]><order><customer>&i;</customer></order>'
+        - to:
+            uri: "kamelet:xslt-action"
+            parameters:
+              template: "classpath:order.xsl"
+        - log: "Bomb ${body}|"
+# A body that is not XML fails the message
+- route:
+    from:
+      uri: "timer:text"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: 'not xml'
+        - doTry:
+            steps:
+              - to:
+                  uri: "kamelet:xslt-action"
+                  parameters:
+                    template: "classpath:order.xsl"
+              - log: "Accepted ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - log: "Rejected ${exception.getClass().getName()}: ${exception.message}"

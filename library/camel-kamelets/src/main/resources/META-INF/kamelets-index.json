@@ -2209,5 +2209,25 @@
     "group" : "Actions",
     "namespace" : "Transformation",
     "provider" : "Apache Software Foundation"
+  }, {
+    "name" : "xml-schema-validator-action",
+    "type" : "action",
+    "supportLevel" : "Stable",
+    "title" : "XML Schema Validator Action",
+    "summary" : "Checks that each XML message matches an XML Schema (XSD), and fails the messages that do not.",
+    "description" : "Checks that each XML message matches an XML Schema (XSD), and fails the messages that do not.\n\nUse it to stop bad data early, for example to reject the orders that miss a required element or carry a wrong value before they reach another system. For JSON, use `json-schema-validator-action`; to change the XML, use `xslt-action`.\n\nInput: XML as text, bytes or a stream.\n\nOutput: the same message, unchanged, when it matches the schema: text stays text and bytes stay bytes.\n\nGood to know: a message that does not match the schema, or that is not XML, fails with an error that lists what is wrong, such as `cvc-datatype-valid.1.2.1: 'abc' is not a valid value for 'decimal'.`; it is not dropped silently, so the error handling of the integration decides what happens to it. A message whose DOCTYPE has an entity that points to a file or URL fails, and so does one with entities nested so deep that they pass the entity expansion limit of Java. The schema is loaded from the `template` location; it cannot come from the message.",
+    "group" : "Actions",
+    "namespace" : "XML",
+    "provider" : "Apache Software Foundation"
+  }, {
+    "name" : "xslt-action",
+    "type" : "action",
+    "supportLevel" : "Stable",
+    "title" : "XSLT Action",
+    "summary" : "Transforms each XML message with an XSLT stylesheet, for example to map the XML of one system to the XML or text that another system expects.",
+    "description" : "Transforms each XML message with an XSLT stylesheet, for example to map the XML of one system to the XML or text that another system expects.\n\nUse it to rename, pick, reorder or compute the elements of XML documents, such as the totals of an order, with a stylesheet you write. The stylesheet can use XSLT 3.0, which Saxon runs. To convert between XML and JSON, use `xj-identity-action` or `xj-template-action`; to check XML against an XML Schema, use `xml-schema-validator-action`.\n\nInput: XML as text, bytes or a stream. A header whose name is a parameter of the stylesheet sets that parameter: with `<xsl:param name=\"channel\" select=\"'web'\"/>`, a `channel` header with the value `shop` makes `$channel` give `shop`; without the header it gives `web`.\n\nOutput: the body is the result as text (a String): XML, or plain text when the `xsl:output` of the stylesheet says `method=\"text\"`. The `Content-Type` header is not set. The other headers are kept.\n\nGood to know: a body that is not XML fails the message. The DOCTYPE of the message is not used: its entities are not expanded and an entity that points to a file or URL is not read, so `&name;` gives nothing. A message can set every parameter of the stylesheet with a header, so do not let a parameter choose which resource the stylesheet reads. The stylesheet is code you write and trust: XSLT functions such as `document()` can read other resources, such as XML from the classpath. The stylesheet is loaded from a file, the classpath or a URL given by the `template` option; it cannot come from the message. Headers that start with `CamelXslt` are removed from the message first, so they cannot change what the Kamelet does.",
+    "group" : "Actions",
+    "namespace" : "Transformation",
+    "provider" : "Apache Software Foundation"
   } ]
 }
