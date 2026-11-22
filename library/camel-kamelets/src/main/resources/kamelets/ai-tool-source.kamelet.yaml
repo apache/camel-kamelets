@@ -34,7 +34,7 @@ spec:
     description: |-
       Offers the steps that follow it as a tool that an AI agent can call, such as an MCP client like Claude Desktop or Cursor, with the arguments of each call as JSON.
 
-      Use it to let an AI assistant look up or change data through a flow you control, such as returning the status of an order. In a route (YAML), the steps after `from: kamelet:ai-tool-source` run for each call; they can also hand the call on with `to: kamelet:<name>`. To offer the tool over MCP, set `camel.server.enabled=true`, `camel.server.mcp-enabled=true` and `camel.server.mcp-tags` to its tag in `application.properties`: Camel JBang then adds `camel-mcp-server` by itself, other applications need it and `camel-platform-http-main` as dependencies. MCP clients connect with streamable HTTP to `http://<host>:<port>/mcp`, on the HTTP port of the application (`camel.server.port`, 8080 by default with Camel JBang). The `openai` and `langchain4j-agent` components can call the tools of a tag as well, with their `tags` option.
+      Use it to let an AI assistant look up or change data through a flow you control, such as returning the status of an order. In a route (YAML), the steps after `from: kamelet:ai-tool-source` run for each call; they can also hand the call on with `to: kamelet:<name>`. To offer the tool over MCP, set `camel.server.enabled=true`, `camel.server.mcp-enabled=true` and `camel.server.mcp-tags` to its tag in `application.properties`: Camel JBang then adds `camel-mcp-server` by itself, other applications need it and `camel-platform-http-main` as dependencies. MCP clients connect with streamable HTTP to `http://<host>:<port>/mcp`, on the HTTP port of the application (`camel.server.port`, 8080 by default with Camel JBang). The `openai` component can call the tools of a tag as well, with its `tags` option.
 
       Output: the body is the arguments of the call, as JSON text, such as `{"orderId":"42"}`, with only the arguments that `argSchema` declares (`{}` for a tool without arguments). Each of them is also a header of its own name, such as `orderId`. The body at the end of the flow, as text, is the result the caller gets back; the headers are not sent back. A flow that does not change the body gives the caller its own arguments back.
 
@@ -105,8 +105,8 @@ spec:
     out:
       headers: {}
   dependencies:
-    # camel-mcp-server is not a dependency on purpose: the tool can also be called by the openai or
-    # langchain4j-agent components, and Camel JBang adds camel-mcp-server when camel.server.mcp-enabled is set.
+    # camel-mcp-server is not a dependency on purpose: the tool can also be called by the openai component,
+    # and Camel JBang adds camel-mcp-server when camel.server.mcp-enabled is set.
     - "camel:ai-tool"
     - "camel:kamelet"
   template:
