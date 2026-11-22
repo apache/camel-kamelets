@@ -1,0 +1,73 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: soap-wssec-test
+description: 'soap-source requires a WS-Security UsernameToken of its user, and soap-action sends one: the right password as text and as a digest passes, a wrong password and a request without a token get a SOAP fault'
+actions:
+  # The options need the jar cxf-rt-ws-security of the CXF version of Camel
+  - camel:
+      cli:
+        run:
+          args:
+            - "--dep=mvn:org.apache.cxf:cxf-rt-ws-security:4.2.4"
+          resources:
+            - "orders.wsdl"
+          integration:
+            file: "soap/soap-wssec-route.yaml"
+            systemProperties:
+              properties:
+                - name: "soap.wssec.port"
+                  value: "${soap.wssec.port}"
+
+  - camel:
+      cli:
+        verify:
+          integration: "soap-wssec-route"
+          logMessage: "Text password: <getOrderResponse xmlns=\"http://example.com/orders\"><order><orderId>21</orderId>"
+  - camel:
+      cli:
+        verify:
+          integration: "soap-wssec-route"
+          logMessage: "Service getOrder user=Subject:"
+  - camel:
+      cli:
+        verify:
+          integration: "soap-wssec-route"
+          logMessage: "Digest password: <getOrderResponse xmlns=\"http://example.com/orders\"><order><orderId>22</orderId>"
+  - camel:
+      cli:
+        verify:
+          integration: "soap-wssec-route"
+          logMessage: "Wrong password: SoapFault="
+
+  # A request without a UsernameToken is refused before the route sees it
+  - http:
+      client: "http://localhost:${soap.wssec.port}"
+      sendRequest:
+        POST:
+          path: "/orders"
+          contentType: "text/xml"
+          body:
+            data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>24</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
+  - http:
+      client: "http://localhost:${soap.wssec.port}"
+      receiveResponse:
+        response:
+          status: 500
+          type: "plaintext"
+          body:
+            data: '@contains(''<soap:Fault>'')@'

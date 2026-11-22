@@ -37,6 +37,7 @@ public class SoapIT {
     private final int backendPort = ServerPorts.next();
     private final int frontPort = ServerPorts.next();
     private final int soap12Port = ServerPorts.next();
+    private final int wssecPort = ServerPorts.next();
 
     @BindToRegistry
     public SequenceBeforeTest beforeSoap() {
@@ -45,6 +46,7 @@ public class SoapIT {
                         .variable("soap.backend.port", String.valueOf(backendPort))
                         .variable("soap.front.port", String.valueOf(frontPort))
                         .variable("soap.soap12.port", String.valueOf(soap12Port))
+                        .variable("soap.wssec.port", String.valueOf(wssecPort))
         ).build();
     }
 
