@@ -16,7 +16,7 @@
 # ---------------------------------------------------------------------------
 
 name: soap-soap12-test
-description: 'soap-source serves a WSDL with a SOAP 1.2 binding: a reply and a declared fault, both in SOAP 1.2'
+description: 'soap-source serves a WSDL with a SOAP 1.2 binding: a reply, a declared fault and a fault the route builds as text, all in SOAP 1.2'
 actions:
   - camel:
       cli:
@@ -64,3 +64,21 @@ actions:
           type: "plaintext"
           body:
             data: '@contains(''env:Sender</soap:Value></soap:Code><soap:Reason><soap:Text xml:lang="en">Order 404 not found</soap:Text></soap:Reason><soap:Detail><orderNotFound xmlns="http://example.com/orders"><orderId>404</orderId></orderNotFound></soap:Detail>'')@'
+
+  # A SOAP 1.2 fault the route builds as XML text
+  - http:
+      client: "http://localhost:${soap.soap12.port}"
+      sendRequest:
+        POST:
+          path: "/orders"
+          contentType: "application/soap+xml"
+          body:
+            data: '<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"><env:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>409</o:orderId></o:getOrder></env:Body></env:Envelope>'
+  - http:
+      client: "http://localhost:${soap.soap12.port}"
+      receiveResponse:
+        response:
+          status: 500
+          type: "plaintext"
+          body:
+            data: '@contains(''env:Sender</soap:Value></soap:Code><soap:Reason><soap:Text xml:lang="en">Order 409 is locked</soap:Text></soap:Reason>'')@'

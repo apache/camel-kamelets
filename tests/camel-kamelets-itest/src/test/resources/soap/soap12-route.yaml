@@ -37,6 +37,11 @@
                       constant: "Client"
                   - setBody:
                       constant: '<orderNotFound xmlns="http://example.com/orders"><orderId>404</orderId></orderNotFound>'
+              # the route builds the SOAP 1.2 fault itself, as XML text
+              - simple: "${body} contains '>409<'"
+                steps:
+                  - setBody:
+                      constant: '<env:Fault xmlns:env="http://www.w3.org/2003/05/soap-envelope"><env:Code><env:Value>env:Sender</env:Value></env:Code><env:Reason><env:Text xml:lang="en">Order 409 is locked</env:Text></env:Reason></env:Fault>'
             otherwise:
               steps:
                 - setBody:

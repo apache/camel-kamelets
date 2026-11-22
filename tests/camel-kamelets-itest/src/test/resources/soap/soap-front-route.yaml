@@ -48,15 +48,30 @@
         - setHeader:
             name: "Authorization"
             constant: "Basic dXNlcjpzZWNyZXQ="
-        - to:
-            uri: "kamelet:soap-action"
-            parameters:
-              address: "http://localhost:{{soap.backend.port}}/orders"
-              wsdlURL: "classpath:orders.wsdl"
-              operation: "getOrder"
-              faultAsBody: true
-              username: "front"
-              password: "s3cret"
+        - choice:
+            when:
+              # no address: the address of the port in the WSDL, which the legacy service serves with its own address
+              - simple: "${variable.orderId} == '8'"
+                steps:
+                  - to:
+                      uri: "kamelet:soap-action"
+                      parameters:
+                        wsdlURL: "http://localhost:{{soap.backend.port}}/orders?wsdl"
+                        operation: "getOrder"
+                        faultAsBody: true
+                        username: "front"
+                        password: "s3cret"
+            otherwise:
+              steps:
+                - to:
+                    uri: "kamelet:soap-action"
+                    parameters:
+                      address: "http://localhost:{{soap.backend.port}}/orders"
+                      wsdlURL: "classpath:orders.wsdl"
+                      operation: "getOrder"
+                      faultAsBody: true
+                      username: "front"
+                      password: "s3cret"
         - log: "Front got SoapFault=${header.SoapFault} SoapFaultCode=${header.SoapFaultCode}: ${body}"
         - choice:
             when:

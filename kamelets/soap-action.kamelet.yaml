@@ -40,16 +40,15 @@ spec:
 
       Output: the body is the content of the SOAP Body of the response as XML text: the response element of the operation, such as `<getOrderResponse xmlns="http://example.com/orders">...</getOrderResponse>`.
 
-      Good to know: a SOAP fault from the service fails the message with an `org.apache.cxf.binding.soap.SoapFault` error, whose message is the text of the fault; with Camel JBang, a route that catches this error by its class name needs the dependency `camel:cxf-soap`. When `faultAsBody` is true, the message goes on instead: the body is the content of the `detail` element of the fault as XML text, such as the fault element the WSDL declares (no body when the fault has no detail), the header `SoapFault` is the text of the fault, and `SoapFaultCode` its code: `Client` or `Server` with SOAP 1.1, `Sender` or `Receiver` with SOAP 1.2. A request that the service refuses, for example because it does not match its XML schema, is a SOAP fault too. SOAP 1.1 or 1.2 is used as the WSDL says. Headers that start with `Camel`, and the `SOAPAction`, `Authorization` and `Proxy-Authorization` headers, are removed from the message first, so a message cannot change the address, the operation or the login.
+      Good to know: a SOAP fault from the service fails the message with an `org.apache.cxf.binding.soap.SoapFault` error, whose message is the text of the fault, so that a route can catch it by its class name. When `faultAsBody` is true, the message goes on instead: the body is the content of the `detail` element of the fault as XML text, such as the fault element the WSDL declares (no body when the fault has no detail), the header `SoapFault` is the text of the fault, and `SoapFaultCode` its code: `Client` or `Server` with SOAP 1.1, `Sender` or `Receiver` with SOAP 1.2. A request that the service refuses, for example because it does not match its XML schema, is a SOAP fault too. SOAP 1.1 or 1.2 is used as the WSDL says. To log in with a WS-Security UsernameToken, set `wsSecurityUsername` and `wsSecurityPassword`: the integration then needs the jar `org.apache.cxf:cxf-rt-ws-security` of the CXF version that Camel uses, such as `camel run --dep=mvn:org.apache.cxf:cxf-rt-ws-security:4.2.4` with Camel 4.24, or it fails to start with a message that says so. A service that refuses the UsernameToken, for example because of a wrong password, answers with a SOAP fault whose code is `SecurityError`. Headers that start with `Camel`, and the `SOAPAction`, `Authorization` and `Proxy-Authorization` headers, are removed from the message first, so a message cannot change the address, the operation or the login.
     required:
-      - address
       - wsdlURL
       - operation
     type: object
     properties:
       address:
         title: Address
-        description: The URL of the SOAP service.
+        description: The URL of the SOAP service. When it is not set, the address that the WSDL gives for the port is called, the `location` of its `soap:address`.
         type: string
         example: "https://legacy.example.com/orders"
         pattern: "^https?://.+"
@@ -99,6 +98,25 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      wsSecurityUsername:
+        title: WS-Security Username
+        description: The user name to send in a WS-Security UsernameToken, in the SOAP header of each request, for a service that requires one. It is not the same as `username`, which is for HTTP Basic authentication. Set `wsSecurityPassword` too.
+        type: string
+        x-descriptors:
+        - urn:camel:group:credentials
+      wsSecurityPassword:
+        title: WS-Security Password
+        description: The password of `wsSecurityUsername`, sent in the UsernameToken.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      wsSecurityPasswordType:
+        title: WS-Security Password Type
+        description: How the UsernameToken carries the password. `Text` sends it as it is, so only use it over HTTPS. `Digest` sends a SHA-1 digest of it, which is no replacement for HTTPS. It must be the type the service requires, or the service refuses the token. When the WSDL has a WS-SecurityPolicy, the policy decides instead. When it is not set, `Text`.
+        type: string
+        enum: ["Text", "Digest"]
+        example: Digest
   dataTypes:
     # No 'default:' on purpose: the body is the XML of the request and of the response, as it is. See #3117.
     in:
@@ -129,7 +147,7 @@ spec:
         - doTry:
             steps:
               - to:
-                  uri: "cxf://{{address}}?wsdlURL=RAW({{wsdlURL}})&serviceName={{?serviceName}}&portName={{?portName}}&dataFormat=PAYLOAD&defaultOperationName={{operation}}&defaultOperationNamespace={{?operationNamespace}}&username=RAW({{?username}})&password=RAW({{?password}})"
+                  uri: "cxf://{{?address}}?wsdlURL=RAW({{wsdlURL}})&serviceName={{?serviceName}}&portName={{?portName}}&dataFormat=PAYLOAD&defaultOperationName={{operation}}&defaultOperationNamespace={{?operationNamespace}}&username=RAW({{?username}})&password=RAW({{?password}})&wsSecurityUsername=RAW({{?wsSecurityUsername}})&wsSecurityPassword=RAW({{?wsSecurityPassword}})&wsSecurityPasswordType={{?wsSecurityPasswordType}}"
               - convertBodyTo:
                   type: java.lang.String
               - doCatch:

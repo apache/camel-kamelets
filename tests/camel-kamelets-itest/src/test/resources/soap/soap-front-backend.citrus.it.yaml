@@ -16,7 +16,7 @@
 # ---------------------------------------------------------------------------
 
 name: soap-front-backend-test
-description: 'soap-source serves a SOAP front that calls a legacy SOAP service with soap-action: a reply, a declared fault passed on, a muted route failure, a DOCTYPE refused'
+description: 'soap-source serves a SOAP front that calls a legacy SOAP service with soap-action: a reply, a call with no address to the address of the WSDL, a declared fault passed on, a fault the route builds as text, a muted route failure, a DOCTYPE refused'
 actions:
   # The legacy service, then the front that calls it
   - camel:
@@ -75,6 +75,29 @@ actions:
           integration: "soap-backend-route"
           logMessage: 'Backend getOrder SOAPAction=http://example.com/orders/getOrder Authorization=Basic ZnJvbnQ6czNjcmV0: <getOrder xmlns="http://example.com/orders"'
 
+  # soap-action with no address calls the address that the WSDL of the legacy service gives
+  - http:
+      client: "http://localhost:${soap.front.port}"
+      sendRequest:
+        POST:
+          path: "/orders"
+          contentType: "text/xml"
+          body:
+            data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>8</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
+  - http:
+      client: "http://localhost:${soap.front.port}"
+      receiveResponse:
+        response:
+          status: 200
+          type: "plaintext"
+          body:
+            data: '@contains(''<order><orderId>8</orderId><customer>ACME</customer><status>shipped</status>'')@'
+  - camel:
+      cli:
+        verify:
+          integration: "soap-backend-route"
+          logMessage: '<orderId>8</orderId></getOrder>'
+
   # The declared fault of the legacy service, passed on by the front with its detail
   - http:
       client: "http://localhost:${soap.front.port}"
@@ -115,6 +138,24 @@ actions:
           type: "plaintext"
           body:
             data: '@contains(''<soap:Fault><faultcode>soap:Server</faultcode><faultstring>Exchange processing failed</faultstring><detail/></soap:Fault>'')@'
+
+  # The legacy route replies with a SOAP fault it built as XML text: the client gets it as a fault
+  - http:
+      client: "http://localhost:${soap.backend.port}"
+      sendRequest:
+        POST:
+          path: "/orders"
+          contentType: "text/xml"
+          body:
+            data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>409</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
+  - http:
+      client: "http://localhost:${soap.backend.port}"
+      receiveResponse:
+        response:
+          status: 500
+          type: "plaintext"
+          body:
+            data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><soap:Fault><faultcode>soap:Client</faultcode><faultstring>Order 409 is locked</faultstring><detail><orderNotFound xmlns="http://example.com/orders"><orderId>409</orderId></orderNotFound></detail></soap:Fault></soap:Body></soap:Envelope>'
 
   # A failure of the legacy route: the fault does not say why
   - http:
