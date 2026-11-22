@@ -37,7 +37,7 @@ actions:
       cli:
         verify:
           integration: "soap-wssec-route"
-          logMessage: "Text password: <getOrderResponse xmlns=\"http://example.com/orders\"><order><orderId>21</orderId>"
+          logMessage: "<order><orderId>21</orderId><customer>ACME</customer>"
   - camel:
       cli:
         verify:
@@ -47,7 +47,7 @@ actions:
       cli:
         verify:
           integration: "soap-wssec-route"
-          logMessage: "Digest password: <getOrderResponse xmlns=\"http://example.com/orders\"><order><orderId>22</orderId>"
+          logMessage: "<order><orderId>22</orderId><customer>ACME</customer>"
   - camel:
       cli:
         verify:
