@@ -39,7 +39,7 @@ spec:
 
       Output: the body is text for a JMS text message, bytes for a bytes message, and a Map for a map message. The JMS properties of the message become headers, along with the JMS headers such as `JMSMessageID`, `JMSDestination`, `JMSTimestamp`, `JMSPriority` and `JMSRedelivered`.
 
-      Good to know: From a queue, each message is removed when it is received, even when the rest of the flow then fails, unless `transacted` is true or `acknowledgementModeName` is `CLIENT_ACKNOWLEDGE`: then a message whose flow failed is delivered again. Several copies of this source share the messages of a queue, and `concurrentConsumers` processes several messages at the same time. From a topic (`destinationType` set to `topic`), it receives only the messages sent while it is connected, unless `subscriptionDurable` is true: then the broker keeps the messages sent while it is stopped, under `subscriptionName`. A durable subscription needs `clientId` unless it is shared (`subscriptionShared`, JMS 2.0), and only one connection may use a client ID at a time. With `selector`, it receives only the messages whose properties and headers match the selector. It connects with no TLS unless `brokerURL` asks for it, and logs in with `username` and `password` when they are set. When the broker cannot be reached, it starts anyway and tries again every 5 seconds.
+      Good to know: From a queue, each message is removed when it is received, even when the rest of the flow then fails, unless `transacted` is true or `acknowledgementModeName` is `CLIENT_ACKNOWLEDGE`: then a message whose flow failed is delivered again. Several copies of this source share the messages of a queue, and `concurrentConsumers` processes several messages at the same time. From a topic (`destinationType` set to `topic`), it receives only the messages sent while it is connected, unless `subscriptionDurable` is true: then the broker keeps the messages sent while it is stopped, under `subscriptionName`. A durable subscription needs `clientId` unless it is shared (`subscriptionShared`, JMS 2.0), and only one connection may use a client ID at a time. With `selector`, it receives only the messages whose properties and headers match the selector. It connects with no TLS unless `brokerURL` asks for it, and logs in with `username` and `password` when they are set. When the broker cannot be reached, it starts anyway and tries again every 5 seconds. An answer is sent only when the incoming message has a `JMSReplyTo`, the queue on which its sender waits for one: the message at the end of the flow then goes back to that queue, as the reply. Headers set during the flow, such as `JMSReplyTo` or `CamelJmsDestinationName`, cannot send the answer to another queue, nor make one for a message without `JMSReplyTo`.
     required:
       - destinationName
       - brokerURL
@@ -160,5 +160,20 @@ spec:
         acknowledgementModeName: "{{?acknowledgementModeName}}"
         connectionFactory: "#bean:{{connectionFactoryBean}}"
       steps:
+        # camel-jms sends an answer only to the JMSReplyTo of the incoming message, chosen before the
+        # flow runs. The flow must not shape the answer either: the JMSReplyTo header goes back to the
+        # value it had, and no CamelJms* header set by the flow is left to steer how the answer is sent.
+        - setVariable:
+            name: kameletJmsReplyTo
+            expression:
+              simple:
+                expression: "${header.JMSReplyTo}"
         - to:
             uri: kamelet:sink
+        - setHeader:
+            name: JMSReplyTo
+            expression:
+              simple:
+                expression: "${variable.kameletJmsReplyTo}"
+        - removeHeaders:
+            pattern: CamelJms*
