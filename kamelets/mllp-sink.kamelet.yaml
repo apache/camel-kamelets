@@ -36,11 +36,11 @@ spec:
 
       Use it to send admissions, orders or results to a hospital information system, a lab system or an interface engine that receives HL7 v2 over MLLP, or to forward the messages that `mllp-source` receives. To write FHIR resources instead, use `fhir-sink`.
 
-      Input: the body is the HL7 message, as text with its segments separated by a carriage return (`\r`), or as bytes, which are sent as they are. Text is sent in `charset`, which is ISO-8859-1 when it is not set: set it to the charset that the MSH-18 field of the messages names, such as `UTF-8` for `UNICODE UTF-8`, because it is not read from the message.
+      Input: the body is the HL7 message, as text with its segments separated by a carriage return (`\r`), or as bytes, which are sent as they are. Text is sent in the charset that the MSH-18 field of the message names, such as `UNICODE UTF-8`, or in `charset` when MSH-18 is empty.
 
       Output: when it is used inside a route, the body is unchanged afterwards. `CamelMllpAcknowledgementType` is the code of the acknowledgement, `AA` when the receiver accepted the message, `CamelMllpAcknowledgementString` the acknowledgement as text, and `CamelMllpAcknowledgement` the same as bytes.
 
-      Good to know: an acknowledgement `AE` (error) or `AR` (rejected) fails the message, and `CamelMllpAcknowledgementType` and `CamelMllpAcknowledgementString` are still set, so that a step that handles the error can read the reason in the MSA-3 field. A receiver that cannot be reached, or that does not answer within `ackTimeout`, fails the message. It connects at the first message and keeps the connection open for the next ones. It connects with no TLS. For TLS, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.mllp.useGlobalSslContextParameters=true`: every MLLP source and sink of the application then uses TLS. Headers that start with `CamelMllpAcknowledgement`, and `CamelCharsetName`, are removed from the message first, so they cannot change what the Kamelet sends or reports.
+      Good to know: an acknowledgement `AE` (error) or `AR` (rejected) fails the message, and `CamelMllpAcknowledgementType` and `CamelMllpAcknowledgementString` are still set, so that a step that handles the error can read the reason in the MSA-3 field. A receiver that cannot be reached, or that does not answer within `ackTimeout`, fails the message. It connects at the first message and keeps the connection open for the next ones. It connects with no TLS. For TLS, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.mllp.useGlobalSslContextParameters=true`: every MLLP source and sink of the application then uses TLS. Headers that start with `CamelMllpAcknowledgement` are removed from the message first, so they cannot change what the Kamelet reports. A `CamelCharsetName` header does not change the charset the text is sent in.
     required:
     - host
     - port
@@ -59,7 +59,7 @@ spec:
         example: 2575
       charset:
         title: Charset
-        description: The charset to send text in, such as `UTF-8`. Set it to the charset that MSH-18 of the messages names; it is not read from the message. It is also used to read the acknowledgement when its MSH-18 is empty.
+        description: The charset to send text in when the MSH-18 field of the message is empty, such as `UTF-8`. A message whose MSH-18 names a charset, such as `UNICODE UTF-8` or `8859/1`, is sent in that charset. It is also used to read the acknowledgement when its MSH-18 is empty.
         type: string
         default: ISO-8859-1
         example: UTF-8
@@ -97,15 +97,6 @@ spec:
       steps:
         - removeHeaders:
             pattern: CamelMllpAcknowledgement*
-        # The charset of the text is `charset`: a CamelCharsetName header or exchange property, which
-        # the MLLP component reads first and which mllp-source and earlier MLLP sends set, would win.
-        - removeHeader:
-            name: CamelCharsetName
-        - setProperty:
-            name: CamelCharsetName
-            expression:
-              constant:
-                expression: "{{charset}}"
         - to:
             uri: mllp
             parameters:
