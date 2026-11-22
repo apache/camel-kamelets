@@ -38,7 +38,7 @@ spec:
 
       Output: the body is the content of the file, as bytes, or as a stream when `streamDownload` is true. `Content-Type` is `application/octet-stream`. The `file` and `ce-file` headers hold the name of the file, with its path below `directoryName` when `recursive` is true, such as `2026/orders.csv`. `CamelFileName` holds the same name, `CamelFileLength` the size of the file in bytes, `CamelFileLastModified` the time the file was last changed, in milliseconds since 1970, and `CamelSmbUncPath` the full Windows path of the file, such as `\\fileserver\exports\orders\orders.csv`.
 
-      Good to know: files are not deleted or moved after they are read, unless `delete` is true or `move` is set. A file is read only once while the integration runs (`idempotent`), but the files left on the share are all read again after a restart; to read each file only once, also across restarts, set `move` to a directory such as `.done`, set `delete` to true, or keep the list of the files read in a file with `idempotentRepository`. To read only some of the files, set `include`, `exclude` or `antInclude`. To leave a file alone while another program is still writing it, set `readLock`. Log in with `username` and `password`, or, on a share that allows guest access, with `username` set to `Guest` and no `password`. When the server cannot be reached or the login fails, the poll is skipped with a warning in the log, and tried again at the next poll. The content of the files is not encrypted on the network unless `encryptData` is true, and a share that requires encryption refuses the connection without it. When the application has a bean of the type `com.hierynomus.smbj.SmbConfig`, Camel uses it for the connection, and the Kamelet then fails to start when `encryptData` is true, or `connectTimeout` or `readTimeout` is set: set them on that bean instead.
+      Good to know: files are not deleted or moved after they are read, unless `delete` is true or `move` is set. A file is read only once while the integration runs (`idempotent`), but the files left on the share are all read again after a restart; to read each file only once, also across restarts, set `move` to a directory such as `.done`, set `delete` to true, or keep the list of the files read in a file with `idempotentRepository`. To read only some of the files, set `include`, `exclude` or `antInclude`. To leave a file alone while another program is still writing it, set `readLock`. Log in with `username` and `password`, or, on a share that allows guest access, with `username` set to `Guest` and no `password`. When the server cannot be reached or the login fails, the poll is skipped with a warning in the log, and tried again at the next poll. The content of the files is not encrypted on the network unless `encryptData` is true, and a share that requires encryption refuses the connection without it. When the application has a bean of the type `com.hierynomus.smbj.SmbConfig`, Camel uses it for the connection, and the Kamelet then fails to start when `encryptData` is true, or `connectTimeout`, `readTimeout` or `transactTimeout` is set: set them on that bean instead.
     required:
       - connectionHost
       - shareName
@@ -93,6 +93,11 @@ spec:
         description: How long to wait for the server to answer a read of the content of a file, in milliseconds. When it is not set, 60000 (1 minute).
         type: integer
         example: 120000
+      transactTimeout:
+        title: Request Timeout
+        description: How long to wait for the server to answer the other requests, such as listing a directory, or opening, renaming or deleting a file, in milliseconds. When it is not set, 60000 (1 minute).
+        type: integer
+        example: 30000
       domain:
         title: Domain
         description: The Windows domain of `username`, such as `CORP` for the account `CORP\jdoe`. Leave it unset for a user of the server itself.
@@ -249,6 +254,7 @@ spec:
         recursive: "{{recursive}}"
         sortBy: "RAW({{?sortBy}})"
         streamDownload: "{{?streamDownload}}"
+        transactTimeout: "{{?transactTimeout}}"
         username: "RAW({{?username}})"
       steps:
         - choice:
