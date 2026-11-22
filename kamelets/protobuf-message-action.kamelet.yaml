@@ -40,7 +40,7 @@ spec:
 
       Output: the body is a `com.google.protobuf.DynamicMessage` of the message type `messageName`. The headers are kept.
 
-      Good to know: a field of the JSON that the schema does not have is left out, and a value of the wrong type fails the message. The schema is read once, when the Kamelet starts, so a syntax error, an unknown `messageName` or an import other than the well-known types of Google (such as `google/protobuf/timestamp.proto`) fails at startup. This Kamelet brings the `.proto` parser `camel-protobuf-schema`, with Kotlin and Guava (about 6 MB).
+      Good to know: a field of the JSON that the schema does not have is left out, and a value of the wrong type fails the message. The schema is read once, when the Kamelet starts, so a syntax error or an unknown `messageName` fails at startup. The schema is one file: it can import only the well-known types of Google that the parser ships, which are `any.proto`, `descriptor.proto`, `duration.proto`, `empty.proto`, `struct.proto`, `timestamp.proto` and `wrappers.proto` under `google/protobuf/`, but not `field_mask.proto`. Any other import, such as `shop/common.proto`, fails at startup with a message that names it: put its types into the schema itself. This Kamelet brings the `.proto` parser `camel-protobuf-schema`, with Kotlin and Guava (about 6 MB).
     required:
       - schema
     type: object
