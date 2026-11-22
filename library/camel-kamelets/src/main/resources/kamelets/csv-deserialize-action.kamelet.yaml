@@ -1,0 +1,120 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: csv-deserialize-action
+  labels:
+    camel.apache.org/kamelet.type: "action"
+    camel.apache.org/kamelet.verified: "true"
+  annotations:
+    camel.apache.org/kamelet.support.level: "Stable"
+    camel.apache.org/catalog.version: "4.24.0-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIgogICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIgogICB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM6c29kaXBvZGk9Imh0dHA6Ly9zb2RpcG9kaS5zb3VyY2Vmb3JnZS5uZXQvRFREL3NvZGlwb2RpLTAuZHRkIgogICB4bWxuczppbmtzY2FwZT0iaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvbmFtZXNwYWNlcy9pbmtzY2FwZSIKICAgdmlld0JveD0iMCAtMjU2IDE3OTIgMTc5MiIKICAgaWQ9InN2ZzMwMjUiCiAgIHZlcnNpb249IjEuMSIKICAgaW5rc2NhcGU6dmVyc2lvbj0iMC40OC4zLjEgcjk4ODYiCiAgIHdpZHRoPSIxMDAlIgogICBoZWlnaHQ9IjEwMCUiCiAgIHNvZGlwb2RpOmRvY25hbWU9ImNvZ19mb250X2F3ZXNvbWUuc3ZnIj4KICA8bWV0YWRhdGEKICAgICBpZD0ibWV0YWRhdGEzMDM1Ij4KICAgIDxyZGY6UkRGPgogICAgICA8Y2M6V29yawogICAgICAgICByZGY6YWJvdXQ9IiI+CiAgICAgICAgPGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+CiAgICAgICAgPGRjOnR5cGUKICAgICAgICAgICByZGY6cmVzb3VyY2U9Imh0dHA6Ly9wdXJsLm9yZy9kYy9kY21pdHlwZS9TdGlsbEltYWdlIiAvPgogICAgICA8L2NjOldvcms+CiAgICA8L3JkZjpSREY+CiAgPC9tZXRhZGF0YT4KICA8ZGVmcwogICAgIGlkPSJkZWZzMzAzMyIgLz4KICA8c29kaXBvZGk6bmFtZWR2aWV3CiAgICAgcGFnZWNvbG9yPSIjZmZmZmZmIgogICAgIGJvcmRlcmNvbG9yPSIjNjY2NjY2IgogICAgIGJvcmRlcm9wYWNpdHk9IjEiCiAgICAgb2JqZWN0dG9sZXJhbmNlPSIxMCIKICAgICBncmlkdG9sZXJhbmNlPSIxMCIKICAgICBndWlkZXRvbGVyYW5jZT0iMTAiCiAgICAgaW5rc2NhcGU6cGFnZW9wYWNpdHk9IjAiCiAgICAgaW5rc2NhcGU6cGFnZXNoYWRvdz0iMiIKICAgICBpbmtzY2FwZTp3aW5kb3ctd2lkdGg9IjY0MCIKICAgICBpbmtzY2FwZTp3aW5kb3ctaGVpZ2h0PSI0ODAiCiAgICAgaWQ9Im5hbWVkdmlldzMwMzEiCiAgICAgc2hvd2dyaWQ9ImZhbHNlIgogICAgIGlua3NjYXBlOnpvb209IjAuMTMxNjk2NDMiCiAgICAgaW5rc2NhcGU6Y3g9Ijg5NiIKICAgICBpbmtzY2FwZTpjeT0iODk2IgogICAgIGlua3NjYXBlOndpbmRvdy14PSIwIgogICAgIGlua3NjYXBlOndpbmRvdy15PSIyNSIKICAgICBpbmtzY2FwZTp3aW5kb3ctbWF4aW1pemVkPSIwIgogICAgIGlua3NjYXBlOmN1cnJlbnQtbGF5ZXI9InN2ZzMwMjUiIC8+CiAgPGcKICAgICB0cmFuc2Zvcm09Im1hdHJpeCgxLDAsMCwtMSwxMjEuNDkxNTMsMTI4NS40MjM3KSIKICAgICBpZD0iZzMwMjciPgogICAgPHBhdGgKICAgICAgIGQ9Im0gMTAyNCw2NDAgcSAwLDEwNiAtNzUsMTgxIC03NSw3NSAtMTgxLDc1IC0xMDYsMCAtMTgxLC03NSAtNzUsLTc1IC03NSwtMTgxIDAsLTEwNiA3NSwtMTgxIDc1LC03NSAxODEsLTc1IDEwNiwwIDE4MSw3NSA3NSw3NSA3NSwxODEgeiBtIDUxMiwxMDkgViA1MjcgcSAwLC0xMiAtOCwtMjMgLTgsLTExIC0yMCwtMTMgbCAtMTg1LC0yOCBxIC0xOSwtNTQgLTM5LC05MSAzNSwtNTAgMTA3LC0xMzggMTAsLTEyIDEwLC0yNSAwLC0xMyAtOSwtMjMgLTI3LC0zNyAtOTksLTEwOCAtNzIsLTcxIC05NCwtNzEgLTEyLDAgLTI2LDkgbCAtMTM4LDEwOCBxIC00NCwtMjMgLTkxLC0zOCAtMTYsLTEzNiAtMjksLTE4NiAtNywtMjggLTM2LC0yOCBIIDY1NyBxIC0xNCwwIC0yNC41LDguNSBRIDYyMiwtMTExIDYyMSwtOTggTCA1OTMsODYgcSAtNDksMTYgLTkwLDM3IEwgMzYyLDE2IFEgMzUyLDcgMzM3LDcgMzIzLDcgMzEyLDE4IDE4NiwxMzIgMTQ3LDE4NiBxIC03LDEwIC03LDIzIDAsMTIgOCwyMyAxNSwyMSA1MSw2Ni41IDM2LDQ1LjUgNTQsNzAuNSAtMjcsNTAgLTQxLDk5IEwgMjksNDk1IFEgMTYsNDk3IDgsNTA3LjUgMCw1MTggMCw1MzEgdiAyMjIgcSAwLDEyIDgsMjMgOCwxMSAxOSwxMyBsIDE4NiwyOCBxIDE0LDQ2IDM5LDkyIC00MCw1NyAtMTA3LDEzOCAtMTAsMTIgLTEwLDI0IDAsMTAgOSwyMyAyNiwzNiA5OC41LDEwNy41IDcyLjUsNzEuNSA5NC41LDcxLjUgMTMsMCAyNiwtMTAgbCAxMzgsLTEwNyBxIDQ0LDIzIDkxLDM4IDE2LDEzNiAyOSwxODYgNywyOCAzNiwyOCBoIDIyMiBxIDE0LDAgMjQuNSwtOC41IFEgOTE0LDEzOTEgOTE1LDEzNzggbCAyOCwtMTg0IHEgNDksLTE2IDkwLC0zNyBsIDE0MiwxMDcgcSA5LDkgMjQsOSAxMywwIDI1LC0xMCAxMjksLTExOSAxNjUsLTE3MCA3LC04IDcsLTIyIDAsLTEyIC04LC0yMyAtMTUsLTIxIC01MSwtNjYuNSAtMzYsLTQ1LjUgLTU0LC03MC41IDI2LC01MCA0MSwtOTggbCAxODMsLTI4IHEgMTMsLTIgMjEsLTEyLjUgOCwtMTAuNSA4LC0yMy41IHoiCiAgICAgICBpZD0icGF0aDMwMjkiCiAgICAgICBpbmtzY2FwZTpjb25uZWN0b3ItY3VydmF0dXJlPSIwIgogICAgICAgc3R5bGU9ImZpbGw6Y3VycmVudENvbG9yIiAvPgogIDwvZz4KPC9zdmc+Cg=="
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "Actions"
+    camel.apache.org/kamelet.namespace: "Transformation"
+spec:
+  definition:
+    title: "CSV Deserialize Action"
+    description: |-
+      Turns CSV text, such as a file of comma-separated values, into a List of rows: each row is a Map from the column name to the value, or a List of the values.
+
+      Use it to work on the records of a CSV file that a source such as `ftp-source`, `sftp-source` or `aws-s3-source` reads, for example to filter them or to send them on as JSON with `json-serialize-action`. To write rows as CSV text, use `csv-serialize-action`.
+
+      Input: CSV text, as text, bytes or a stream; bytes and a stream are read as UTF-8. The values of a line are separated by `delimiter`. A value that holds the delimiter, a quote or a line break is put in quotes, with each quote in it doubled, as in `"Oslo, Norway"` or `"Bob ""B"""`. Lines end with a line feed, or a carriage return and a line feed.
+
+      Output: the body is a List with one row for each line. With `header` true (the default) or `columns` set, each row is a Map from the column name to the value, in the order of the columns, and the header line is not a row. Otherwise each row is a List of the values. All values are text. The `Content-Type` header is removed.
+
+      Good to know: a line with fewer values than columns gives a Map without the missing columns. Empty lines are skipped, unless `skipEmptyLines` is false: an empty line is then a row with one empty value. Empty text, or only a header line, gives an empty List. A message without a body, or with a quoted value that is not closed, fails. The whole text is read into memory. The delimiter and the quote are one character each. For tab-separated values, set `delimiter` to a tab in the application properties, such as `camel.kamelet.csv-deserialize-action.delimiter=\t`: a tab cannot be given as a parameter of the Kamelet in a route.
+    type: object
+    properties:
+      delimiter:
+        title: Delimiter
+        description: "The character that separates the values of a line, such as `,` or `;`. One character."
+        type: string
+        default: ","
+        example: ";"
+      header:
+        title: Header Line
+        description: "Whether the first line holds the column names. Each row is then a Map keyed by these names, or by `columns` when it is set. Set it to false for a file without a header line: each row is then a List of the values, unless `columns` is set."
+        type: boolean
+        default: true
+      columns:
+        title: Column Names
+        description: "The column names, separated by commas without spaces, such as `id,name,city`. Each row is then a Map keyed by these names. When `header` is true, the header line of the file is skipped and these names are used instead; when `header` is false, every line is a row. A name cannot hold a comma or a single quote (')."
+        type: string
+        example: "id,name,city"
+        pattern: "^[^']*$"
+      quote:
+        title: Quote Character
+        description: "The character that encloses a value that holds the delimiter, a quote or a line break. One character."
+        type: string
+        default: '"'
+      skipEmptyLines:
+        title: Skip Empty Lines
+        description: "Whether to skip empty lines. When false, an empty line is a row with one empty value."
+        type: boolean
+        default: true
+      trim:
+        title: Trim Values
+        description: "Whether to remove the spaces before and after each value and each column name."
+        type: boolean
+        default: false
+  dataTypes:
+    in:
+      default: text
+      types:
+        text:
+          format: "text-plain"
+          description: "The CSV text, as text, bytes or a stream; bytes and a stream are read as UTF-8."
+          mediaType: text/plain
+    # No 'default:' here on purpose: no transformer keeps a List of Maps or a List of Lists as it is. See #3117.
+    out:
+      headers: {}
+  dependencies:
+  - "camel:kamelet"
+  - "camel:csv"
+  template:
+    from:
+      uri: kamelet:source
+      steps:
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{header}}' == 'true' || '{{?columns}}' != ''"
+                steps:
+                  - unmarshal:
+                      csv:
+                        delimiter: "{{delimiter}}"
+                        header: "{{?columns}}"
+                        ignoreEmptyLines: "{{skipEmptyLines}}"
+                        quote: "{{quote}}"
+                        skipHeaderRecord: "{{header}}"
+                        trim: "{{trim}}"
+                        useOrderedMaps: true
+            otherwise:
+              steps:
+                - unmarshal:
+                    csv:
+                      delimiter: "{{delimiter}}"
+                      ignoreEmptyLines: "{{skipEmptyLines}}"
+                      quote: "{{quote}}"
+                      trim: "{{trim}}"
+        - removeHeader:
+            name: Content-Type

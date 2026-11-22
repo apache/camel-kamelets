@@ -1,0 +1,67 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: csv-deserialize-action-test
+actions:
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "csv/csv-deserialize-action-route.yaml"
+  # A header line: each row is a Map in the order of the columns, with the quoted values unquoted; the empty line
+  # is skipped, the short line has no city, the bytes are read as UTF-8, and the Content-Type header is removed
+  - camel:
+      cli:
+        verify:
+          integration: "csv-deserialize-action-route"
+          logMessage: 'Header java.util.ArrayList of java.util.LinkedHashMap, 3 rows, ct=: [{"id":"1","name":"Zoë","city":"Oslo, Norway"},{"id":"2","name":"Bob \"B\"","city":"line1\nline2"},{"id":"3","name":"Eve"}]'
+  # No header line: each row is a List of the values
+  - camel:
+      cli:
+        verify:
+          integration: "csv-deserialize-action-route"
+          logMessage: 'Headerless java.util.ArrayList of java.util.ArrayList: [[1, Ann, Oslo], [2, Bob, Bergen]]'
+  # The delimiter ;, given column names for a file without a header line, and trimmed values
+  - camel:
+      cli:
+        verify:
+          integration: "csv-deserialize-action-route"
+          logMessage: 'Columns [{id=1, name=Ann, city=Oslo}, {id=2, name=Bob, city=Bergen}]'
+  # Given column names replace the header line of the file
+  - camel:
+      cli:
+        verify:
+          integration: "csv-deserialize-action-route"
+          logMessage: 'Rename [{id=1, name=Ann}]'
+  # The quote character ', and an empty line kept as a row with one empty value
+  - camel:
+      cli:
+        verify:
+          integration: "csv-deserialize-action-route"
+          logMessage: 'Quote [{id=}, {id=1, name=Ann, A}]'
+  # Empty text, and only a header line, give an empty List
+  - camel:
+      cli:
+        verify:
+          integration: "csv-deserialize-action-route"
+          logMessage: 'Empty java.util.ArrayList [], header only []'
+  # A quoted value that is not closed fails the message
+  - camel:
+      cli:
+        verify:
+          integration: "csv-deserialize-action-route"
+          logMessage: 'Rejected java.io.UncheckedIOException: org.apache.commons.csv.CSVException: (startline 2) EOF reached before encapsulated token finished'

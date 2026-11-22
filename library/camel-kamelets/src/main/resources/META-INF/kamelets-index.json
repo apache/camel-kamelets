@@ -610,6 +610,26 @@
     "namespace" : "Transformation",
     "provider" : "Apache Software Foundation"
   }, {
+    "name" : "csv-deserialize-action",
+    "type" : "action",
+    "supportLevel" : "Stable",
+    "title" : "CSV Deserialize Action",
+    "summary" : "Turns CSV text, such as a file of comma-separated values, into a List of rows: each row is a Map from the column name to the value, or a List of the values.",
+    "description" : "Turns CSV text, such as a file of comma-separated values, into a List of rows: each row is a Map from the column name to the value, or a List of the values.\n\nUse it to work on the records of a CSV file that a source such as `ftp-source`, `sftp-source` or `aws-s3-source` reads, for example to filter them or to send them on as JSON with `json-serialize-action`. To write rows as CSV text, use `csv-serialize-action`.\n\nInput: CSV text, as text, bytes or a stream; bytes and a stream are read as UTF-8. The values of a line are separated by `delimiter`. A value that holds the delimiter, a quote or a line break is put in quotes, with each quote in it doubled, as in `\"Oslo, Norway\"` or `\"Bob \"\"B\"\"\"`. Lines end with a line feed, or a carriage return and a line feed.\n\nOutput: the body is a List with one row for each line. With `header` true (the default) or `columns` set, each row is a Map from the column name to the value, in the order of the columns, and the header line is not a row. Otherwise each row is a List of the values. All values are text. The `Content-Type` header is removed.\n\nGood to know: a line with fewer values than columns gives a Map without the missing columns. Empty lines are skipped, unless `skipEmptyLines` is false: an empty line is then a row with one empty value. Empty text, or only a header line, gives an empty List. A message without a body, or with a quoted value that is not closed, fails. The whole text is read into memory. The delimiter and the quote are one character each. For tab-separated values, set `delimiter` to a tab in the application properties, such as `camel.kamelet.csv-deserialize-action.delimiter=\\t`: a tab cannot be given as a parameter of the Kamelet in a route.",
+    "group" : "Actions",
+    "namespace" : "Transformation",
+    "provider" : "Apache Software Foundation"
+  }, {
+    "name" : "csv-serialize-action",
+    "type" : "action",
+    "supportLevel" : "Stable",
+    "title" : "CSV Serialize Action",
+    "summary" : "Turns a List of rows, each a Map from the column name to the value or a List of the values, into CSV text with a header line of the column names.",
+    "description" : "Turns a List of rows, each a Map from the column name to the value or a List of the values, into CSV text with a header line of the column names.\n\nUse it to write records as a CSV file with a sink such as `ftp-sink`, `sftp-sink` or `aws-s3-sink`, for example the rows that `csv-deserialize-action` gives, or the JSON that `json-deserialize-action` parses. To read CSV text, use `csv-deserialize-action`.\n\nInput: a List of rows, where a row is a Map from the column name to the value, or a List of the values; a single Map, which is one row; or parsed JSON (a Jackson `JsonNode`, as `json-deserialize-action` gives): an array of objects or of arrays, or one object.\n\nOutput: the body is the CSV text, as text, with one line for each row. Each line ends with a carriage return and a line feed. A value that holds the delimiter, a quote or a line break is put in quotes, with each quote in it doubled. When `header` is true (the default), the first line names the columns: the names in `columns`, or, when it is not set, the keys of the first row if that row is a Map. Rows that are Lists get no header line unless `columns` is set. The `Content-Type` header is set to `text/csv`.\n\nGood to know: with `columns`, each Map row gives the values of these keys in this order: other keys are left out, and a missing key gives an empty value. A List row is written as it is. Without `columns`, the columns follow the keys of the rows, and a key that the first row does not have gets a column without a name in the header line. A null value is an empty value. A value that is a Map or a List, such as a nested JSON object, is written as text such as `\\{a=1}` or `[1, 2]`, not as JSON. An empty List gives empty text, or only the header line when `columns` is set. A body of text fails the message. The delimiter and the quote are one character each. For tab-separated values, set `delimiter` to a tab in the application properties, such as `camel.kamelet.csv-serialize-action.delimiter=\\t`: a tab cannot be given as a parameter of the Kamelet in a route.",
+    "group" : "Actions",
+    "namespace" : "Transformation",
+    "provider" : "Apache Software Foundation"
+  }, {
     "name" : "data-type-action",
     "type" : "action",
     "supportLevel" : "Stable",
