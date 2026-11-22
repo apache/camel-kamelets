@@ -36,11 +36,11 @@ spec:
 
       Use it to keep existing SOAP clients working while the systems behind the service are replaced: the route gets each call and can call REST services or other systems to answer it. No Java code is generated from the WSDL. To call a SOAP service, use `soap-action`.
 
-      Output: the body is the content of the SOAP Body of the request as XML text: the request element of the operation, such as `<getOrder xmlns="http://example.com/orders"><orderId>7</orderId></getOrder>`. The header `CamelCxfOperationName` is the name of the operation, such as `getOrder`, and `CamelCxfOperationNamespace` its namespace. The HTTP headers of the request, such as `User-Agent`, are headers too.
+      Output: the body is the content of the SOAP Body of the request as XML text: the request element of the operation, such as `<getOrder xmlns="http://example.com/orders"><orderId>7</orderId></getOrder>`. The header `CamelCxfOperationName` is the name of the operation, such as `getOrder`, and `CamelCxfOperationNamespace` its namespace. The HTTP headers of the request, such as `User-Agent`, are headers too. With `bodyFormat` `json`, the body is JSON text instead, with the fields of the request element, such as `{"orderId": "7"}`: each value has the JSON type of its XML schema type, such as a number or `true`, and an element that can repeat is always an array, also with one item.
 
-      The reply of the route, as XML text, is the content of the SOAP Body of the response: the response element of the operation, such as `<getOrderResponse xmlns="http://example.com/orders">...</getOrderResponse>`. To answer with a SOAP fault, the route sets the header `SoapFault` to the text of the fault, and `SoapFaultCode` to `Client` when the request was wrong (`Sender` with SOAP 1.2; otherwise the code is `Server`, or `Receiver`); the body, if any, is the content of the detail of the fault as XML text, such as the fault element the WSDL declares. This is what `soap-action` gives with `faultAsBody`, so a fault of a called service can be passed on. The route can also reply with the SOAP fault itself, as XML text, such as `<soap:Fault xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><faultcode>soap:Client</faultcode><faultstring>No such order</faultstring></soap:Fault>`, or a `Fault` of SOAP 1.2: the client gets it as a SOAP fault, with its code, text and detail. When the route fails, the client gets a SOAP fault with the text `Exchange processing failed`, which does not say why. The headers of the reply are not sent back to the client.
+      The reply of the route, as XML text, is the content of the SOAP Body of the response: the response element of the operation, such as `<getOrderResponse xmlns="http://example.com/orders">...</getOrderResponse>`. To answer with a SOAP fault, the route sets the header `SoapFault` to the text of the fault, and `SoapFaultCode` to `Client` when the request was wrong (`Sender` with SOAP 1.2; otherwise the code is `Server`, or `Receiver`); the body, if any, is the content of the detail of the fault as XML text, such as the fault element the WSDL declares. This is what `soap-action` gives with `faultAsBody`, so a fault of a called service can be passed on. The route can also reply with the SOAP fault itself, as XML text, such as `<soap:Fault xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><faultcode>soap:Client</faultcode><faultstring>No such order</faultstring></soap:Fault>`, or a `Fault` of SOAP 1.2: the client gets it as a SOAP fault, with its code, text and detail. With `bodyFormat` `json`, the reply is JSON text with the fields of the response element of the operation, as the WSDL names it, such as `{"order": {"orderId": "7", "item": [{"sku": "A-1", "quantity": 2}]}}`: it is written in the order and with the namespaces of the schema, and a field that the schema does not have fails the call, unless `ignoreUnknownFields` is true. The detail of a fault is XML text also then. When the route fails, the client gets a SOAP fault with the text `Exchange processing failed`, which does not say why. The headers of the reply are not sent back to the client.
 
-      Good to know: the service is served at `address`, its WSDL at `address` followed by `?wsdl`, with SOAP 1.1 or 1.2 as the WSDL says. A request or a reply that does not match the XML schema of the WSDL is refused with a SOAP fault, unless `schemaValidation` is false, and so is a request for an operation the WSDL does not have, and a request with a DOCTYPE. There is no login unless `wsSecurityUsername` and `wsSecurityPassword` are set, which require a WS-Security UsernameToken in each request: the integration then needs the jar `org.apache.cxf:cxf-rt-ws-security` of the CXF version that Camel uses, such as `camel run --dep=mvn:org.apache.cxf:cxf-rt-ws-security:4.2.4` with Camel 4.24, or it fails to start with a message that says so. Protect the address with your network too. To work with JSON, turn the body into JSON with `xj-identity-action`, and build the reply as XML.
+      Good to know: the service is served at `address`, its WSDL at `address` followed by `?wsdl`, with SOAP 1.1 or 1.2 as the WSDL says. A request or a reply that does not match the XML schema of the WSDL is refused with a SOAP fault, unless `schemaValidation` is false, and so is a request for an operation the WSDL does not have, and a request with a DOCTYPE. There is no login unless `wsSecurityUsername` and `wsSecurityPassword` are set, which require a WS-Security UsernameToken in each request: the integration then needs the jar `org.apache.cxf:cxf-rt-ws-security` of the CXF version that Camel uses, such as `camel run --dep=mvn:org.apache.cxf:cxf-rt-ws-security:4.2.4` with Camel 4.24, or it fails to start with a message that says so. Protect the address with your network too. To work with JSON, set `bodyFormat` to `json`.
     required:
       - address
       - wsdlURL
@@ -100,6 +100,17 @@ spec:
         type: string
         enum: ["Text", "Digest"]
         example: Digest
+      bodyFormat:
+        title: Body Format
+        description: The format of the request that the route gets and of the reply it gives. `xml` is the XML of the SOAP Body as text. `json` is JSON text that the XML schema of the WSDL types, see the description of the Kamelet. The detail of a fault is XML text in both formats.
+        type: string
+        default: xml
+        enum: ["xml", "json"]
+      ignoreUnknownFields:
+        title: Ignore Unknown Fields
+        description: Only used when `bodyFormat` is `json`. If true, an XML element or attribute of the request, or a JSON field of the reply, that the XML schema of the WSDL does not have is left out. If false, it fails the call with a SOAP fault.
+        type: boolean
+        default: false
       loggingEnabled:
         title: Log Messages
         description: Whether to write each SOAP request and response to the log. Do not turn it on when the messages hold personal data or secrets.
@@ -120,6 +131,7 @@ spec:
   dependencies:
   - "camel:cxf-soap"
   - "camel:kamelet"
+  - "camel:xsd-json"
   template:
     from:
       uri: "cxf://{{address}}?wsdlURL=RAW({{wsdlURL}})&serviceName={{?serviceName}}&portName={{?portName}}&publishedEndpointUrl=RAW({{?publishedEndpointUrl}})&dataFormat=PAYLOAD&schemaValidationEnabled={{schemaValidation}}&loggingFeatureEnabled={{loggingEnabled}}&wsSecurityUsername=RAW({{?wsSecurityUsername}})&wsSecurityPassword=RAW({{?wsSecurityPassword}})&wsSecurityPasswordType={{?wsSecurityPasswordType}}"
@@ -136,6 +148,17 @@ spec:
                 expression: "${header.Content-Type}"
         - convertBodyTo:
             type: java.lang.String
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{bodyFormat}}' == 'json'"
+                steps:
+                  # the XML names its element, so no element is needed
+                  - unmarshal:
+                      xsdJson:
+                        schema: "{{wsdlURL}}"
+                        ignoreUnknown: "{{ignoreUnknownFields}}"
         - to:
             uri: kamelet:sink
         # The headers of the reply would be sent back as HTTP headers, including the ones that came with the request
@@ -152,6 +175,32 @@ spec:
                 expression: "${header.SoapFaultCode}"
         - removeHeaders:
             pattern: "*"
+        # In JSON mode, a reply that is not a fault is turned into the response element of the operation, as the
+        # WSDL message of its output names it. The detail of a fault stays XML text.
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{bodyFormat}}' == 'json' && ${variable.soapSourceFault} == null && ${body} != null"
+                steps:
+                  - setVariable:
+                      name: soapSourceOperation
+                      expression:
+                        simple:
+                          expression: "${exchangeProperty[org.apache.cxf.service.model.BindingOperationInfo]}"
+                  - setHeader:
+                      name: CamelXsdJsonElement
+                      expression:
+                        simple:
+                          expression: "${variable.soapSourceOperation.operationInfo.output.messageParts[0].elementQName}"
+                  - marshal:
+                      xsdJson:
+                        schema: "{{wsdlURL}}"
+                        ignoreUnknown: "{{ignoreUnknownFields}}"
+                  - removeHeader:
+                      name: CamelXsdJsonElement
+                  - convertBodyTo:
+                      type: java.lang.String
         - choice:
             when:
               - expression:
