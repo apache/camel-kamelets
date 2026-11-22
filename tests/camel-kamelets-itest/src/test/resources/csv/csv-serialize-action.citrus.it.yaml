@@ -1,0 +1,67 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: csv-serialize-action-test
+actions:
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "csv/csv-serialize-action-route.yaml"
+  # Round trip: the text, as a String, is the text that csv-deserialize-action read, and the Content-Type is text/csv
+  - camel:
+      cli:
+        verify:
+          integration: "csv-serialize-action-route"
+          logMessage: 'Roundtrip java.lang.String ct=text/csv same=true: id,name,city<CR><LF>1,Zoë,"Oslo, Norway"<CR><LF>2,"Bob ""B""","line1<LF>line2"<CR><LF>'
+  # A single Map: a header line of its keys and one row
+  - camel:
+      cli:
+        verify:
+          integration: "csv-serialize-action-route"
+          logMessage: 'Map id,name<CR><LF>1,Ann<CR><LF>'
+  # Given columns without a header line: their order, other keys left out, a missing key empty
+  - camel:
+      cli:
+        verify:
+          integration: "csv-serialize-action-route"
+          logMessage: 'Columns Oslo,1<CR><LF>,2<CR><LF>'
+  # List rows, the delimiter ; and the quote character ': no header line
+  - camel:
+      cli:
+        verify:
+          integration: "csv-serialize-action-route"
+          logMessage: "Lists 1;'Ann;A'<CR><LF>2;Bob<CR><LF>"
+  # Parsed JSON: the keys of the first row are the header line; a nested object is text, a null is empty,
+  # and the key that only the second row has gets a column without a name
+  - camel:
+      cli:
+        verify:
+          integration: "csv-serialize-action-route"
+          logMessage: 'Json id,name,tags,note<CR><LF>1,Ann,{a=1},<CR><LF>2,Bob,,,true<CR><LF>'
+  # An empty List: empty text, or only the header line with columns
+  - camel:
+      cli:
+        verify:
+          integration: "csv-serialize-action-route"
+          logMessage: 'Empty [], with columns id,name<CR><LF>'
+  # A body of text fails the message
+  - camel:
+      cli:
+        verify:
+          integration: "csv-serialize-action-route"
+          logMessage: 'Rejected org.apache.camel.NoTypeConversionAvailableException: No type converter available to convert from type: java.lang.String to the required type: java.util.List'

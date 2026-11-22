@@ -1,0 +1,30 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+# Tab-separated values: csv-tab.properties sets the delimiter of both Kamelets to a tab,
+# as a parameter of the Kamelet in a route cannot hold a tab
+- route:
+    from:
+      uri: "timer:tab"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "id\tname\n1\tAnn, A\n"
+        - to: "kamelet:csv-deserialize-action"
+        - log: "Tab rows ${body}"
+        - to: "kamelet:csv-serialize-action"
+        - log: "Tab text ${body.replace('\t', '<TAB>').replace('\r', '<CR>').replace('\n', '<LF>')}"

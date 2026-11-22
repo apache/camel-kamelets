@@ -106,6 +106,12 @@ spec:
         description: "A reference to a `StateRepository` bean that stores the resume token after each change, such as `#changeStreamTokens`, so that after a restart the Kamelet goes on from where it stopped. Declare the bean in the integration, for example an `org.apache.camel.support.processor.state.FileStateRepository` whose `fileStore` property is set to `#class:java.io.File('/data/change-stream-tokens.dat')`. Without it, the changes made while the Kamelet is stopped are not sent."
         type: string
         example: "#changeStreamTokens"
+      readPreference:
+        title: Read Preference
+        description: "Which members of the replica set the Kamelet reads from: `PRIMARY` (the primary only), `PRIMARY_PREFERRED` (the primary, or a secondary while there is no primary), `SECONDARY` (a secondary only), `SECONDARY_PREFERRED` (a secondary, or the primary when there is no secondary) or `NEAREST` (the member with the lowest network latency). Reading from a secondary takes load off the primary, but a secondary can be a little behind it. With `SECONDARY` and no secondary available, the Kamelet cannot read. When it is not set, the Kamelet reads from the primary. Not used with `connectionString`; put `readPreference` in the connection string instead, such as `?readPreference=secondaryPreferred`."
+        type: string
+        enum: ["PRIMARY", "PRIMARY_PREFERRED", "SECONDARY", "SECONDARY_PREFERRED", "NEAREST"]
+        example: SECONDARY_PREFERRED
   dataTypes:
     out:
       default: json
@@ -141,6 +147,7 @@ spec:
           hosts: "{{hosts:}}"
           ssl: "{{ssl}}"
           sslValidationEnabled: "{{sslValidationEnabled}}"
+          readPreference: "{{?readPreference}}"
       - name: local-mongodb
         type: "#class:org.apache.camel.component.mongodb.MongoDbComponent"
         properties:

@@ -60,3 +60,8 @@ actions:
           status: 200
           reasonPhrase: "OK"
           version: "HTTP/1.1"
+
+  # The tailable cursor stays open, and MongoDB shows that it reads with the readPreference of the Kamelet
+  - groovy:
+      script:
+        file: "mongo/readPreference.groovy"

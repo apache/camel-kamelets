@@ -1,0 +1,133 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: mllp-source
+  annotations:
+    camel.apache.org/kamelet.support.level: "Stable"
+    camel.apache.org/catalog.version: "4.24.0-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3QgeD0iNCIgeT0iNCIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iMTAiIGZpbGw9IiMyYTdhYjAiLz48cGF0aCBkPSJNMjYgMTRoMTJ2MTJoMTJ2MTJIMzh2MTJIMjZWMzhIMTRWMjZoMTJ6IiBmaWxsPSIjZmZmIi8+PC9zdmc+"
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "MLLP"
+    camel.apache.org/kamelet.namespace: "Messaging"
+  labels:
+    camel.apache.org/kamelet.type: "source"
+    camel.apache.org/kamelet.verified: "true"
+spec:
+  definition:
+    title: "MLLP Source"
+    description: |-
+      Receives HL7 v2 messages, such as admissions (ADT) or lab results (ORU), that hospital systems send over MLLP, a plain TCP connection, and acknowledges each one.
+
+      Use it to receive the HL7 v2 feed of a hospital information system, a lab system or an interface engine, for example to store the messages, or to turn them into FHIR resources for `fhir-sink`. To send HL7 v2 messages, use `mllp-sink`.
+
+      Output: the body is the HL7 message, as text, with its segments separated by a carriage return (`\r`). The text is read in the charset that the MSH-18 field of the message names, such as `UNICODE UTF-8`, or in `charset` when MSH-18 is empty. Headers give the fields of the MSH segment: `CamelMllpMessageType` (MSH-9, such as `ADT^A01`), split into `CamelMllpEventType` (`ADT`) and `CamelMllpTriggerEvent` (`A01`), `CamelMllpMessageControlId` (MSH-10), `CamelMllpSendingApplication` and `CamelMllpSendingFacility` (MSH-3 and MSH-4), `CamelMllpReceivingApplication` and `CamelMllpReceivingFacility` (MSH-5 and MSH-6), `CamelMllpTimestamp` (MSH-7), `CamelMllpProcessingId` (MSH-11) and `CamelMllpVersionId` (MSH-12). A header is not set when its field is empty. `CamelMllpRemoteAddress` is the address and port of the sender.
+
+      Good to know: it answers each message with an HL7 acknowledgement (ACK) once the rest of the flow has processed it, and the sender waits for it: `AA` (accepted), or `AE` (error) when a step of the flow fails, with the name of the error in the MSA-3 field. A message without a complete MSH segment still reaches the flow, but gets no acknowledgement. It listens on all the network interfaces of the machine unless `host` says otherwise, with no login and no TLS, so anyone who can reach the port can send messages: protect the port with network rules, and treat the content as untrusted. HL7 messages hold patient data. For TLS, set the application properties `camel.ssl.enabled=true`, `camel.ssl.keyStore`, `camel.ssl.keystorePassword` and `camel.component.mllp.useGlobalSslContextParameters=true`: every MLLP source and sink of the application then uses TLS.
+    required:
+    - port
+    type: object
+    properties:
+      port:
+        title: Port
+        description: The TCP port to listen on for the connections of the sending systems. 2575 is the port registered for HL7 over MLLP. A port below 1024 needs administrator rights on most systems.
+        type: integer
+        example: 2575
+      host:
+        title: Host
+        description: The local address to listen on. The default, `0.0.0.0`, accepts connections on all the network interfaces of the machine; `127.0.0.1` accepts only connections from the same machine.
+        type: string
+        default: "0.0.0.0"
+        example: "127.0.0.1"
+        pattern: "^[A-Za-z0-9._:-]+$"
+      charset:
+        title: Charset
+        description: The charset to read the text of a message in when its MSH-18 field is empty, such as `UTF-8`. When it is not set, it is ISO-8859-1. A message whose MSH-18 names a charset, such as `UNICODE UTF-8` or `8859/1`, is read in that charset.
+        type: string
+        example: UTF-8
+        pattern: "^[A-Za-z0-9._:-]+$"
+  dataTypes:
+    # No 'default:' here on purpose: a source output type is applied only after the flow has run (see
+    # #3117), and the body is already text.
+    out:
+      headers:
+        CamelMllpMessageType:
+          title: Message Type
+          description: The message type, from MSH-9, such as `ADT^A01`.
+          type: string
+        CamelMllpEventType:
+          title: Event Type
+          description: The first part of the message type, such as `ADT`.
+          type: string
+        CamelMllpTriggerEvent:
+          title: Trigger Event
+          description: The second part of the message type, the trigger event, such as `A01`.
+          type: string
+        CamelMllpMessageControlId:
+          title: Message Control ID
+          description: The ID the sender gave the message, from MSH-10. The acknowledgement repeats it.
+          type: string
+        CamelMllpSendingApplication:
+          title: Sending Application
+          description: The application that sent the message, from MSH-3.
+          type: string
+        CamelMllpSendingFacility:
+          title: Sending Facility
+          description: The facility that sent the message, from MSH-4.
+          type: string
+        CamelMllpReceivingApplication:
+          title: Receiving Application
+          description: The application the message is for, from MSH-5.
+          type: string
+        CamelMllpReceivingFacility:
+          title: Receiving Facility
+          description: The facility the message is for, from MSH-6.
+          type: string
+        CamelMllpTimestamp:
+          title: Timestamp
+          description: The time the message was created, from MSH-7, such as `20260101120000`.
+          type: string
+        CamelMllpProcessingId:
+          title: Processing ID
+          description: The processing ID, from MSH-11, such as `P` for production or `T` for test.
+          type: string
+        CamelMllpVersionId:
+          title: Version ID
+          description: The HL7 version of the message, from MSH-12, such as `2.5`.
+          type: string
+        CamelMllpRemoteAddress:
+          title: Remote Address
+          description: The address and port of the sender, such as `/10.0.0.5:51234`.
+          type: string
+  dependencies:
+    - "camel:mllp"
+    - "camel:kamelet"
+  template:
+    from:
+      uri: mllp
+      parameters:
+        hostname: "{{host}}"
+        port: "{{port}}"
+        charsetName: "{{?charset}}"
+      steps:
+        # The component marks the message with its charset (ISO-8859-1 by default), which would then
+        # turn the text into bytes in that charset in the later steps, whatever MSH-18 says.
+        - removeProperty:
+            name: CamelCharsetName
+        - to:
+            uri: kamelet:sink
