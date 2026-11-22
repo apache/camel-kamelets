@@ -1,0 +1,58 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+# kafka-sink writes a Protobuf message through the schema registry, with schemaFormat protobuf
+- route:
+    from:
+      uri: "timer:records"
+      parameters:
+        period: "1000"
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: '{"id":1,"item":"camel"}'
+        - to:
+            uri: "kamelet:protobuf-message-action"
+            parameters:
+              schema: 'syntax = "proto3"; message Order { int32 id = 1; string item = 2; }'
+        - to:
+            uri: "kamelet:kafka-sink"
+            parameters:
+              bootstrapServers: '{{kafka.bootstrapServers}}'
+              saslAuthType: NONE
+              topic: '{{kafka.topic}}'
+              schemaRegistryVendor: apicurio
+              schemaRegistryUrl: '{{kafka.schemaRegistryUrl}}'
+              schemaFormat: protobuf
+# kafka-share-source reads it with its schema from the registry
+- route:
+    from:
+      uri: "kamelet:kafka-share-source"
+      parameters:
+        bootstrapServers: '{{kafka.bootstrapServers}}'
+        saslAuthType: NONE
+        topic: '{{kafka.topic}}'
+        shareGroup: '{{kafka.share.group}}'
+        schemaRegistryVendor: apicurio
+        schemaRegistryUrl: '{{kafka.schemaRegistryUrl}}'
+        schemaFormat: protobuf
+      steps:
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - to:
+            uri: "{{http.sink.url}}"

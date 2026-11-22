@@ -1,0 +1,405 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: kafka-share-source
+  annotations:
+    camel.apache.org/kamelet.support.level: "Preview"
+    camel.apache.org/catalog.version: "4.24.0-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxOS4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCA1MDAgNTAwIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1MDAgNTAwOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+DQo8ZyBpZD0iWE1MSURfMV8iPg0KCTxwYXRoIGlkPSJYTUxJRF85XyIgZD0iTTMxNC44LDI2OS43Yy0xNC4yLDAtMjcsNi4zLTM1LjcsMTYuMkwyNTYuOCwyNzBjMi40LTYuNSwzLjctMTMuNiwzLjctMjAuOWMwLTcuMi0xLjMtMTQuMS0zLjYtMjAuNg0KCQlsMjIuMy0xNS43YzguNyw5LjksMjEuNCwxNi4xLDM1LjYsMTYuMWMyNi4yLDAsNDcuNi0yMS4zLDQ3LjYtNDcuNnMtMjEuMy00Ny42LTQ3LjYtNDcuNnMtNDcuNiwyMS4zLTQ3LjYsNDcuNg0KCQljMCw0LjcsMC43LDkuMiwyLDEzLjVsLTIyLjMsMTUuN2MtOS4zLTExLjYtMjIuOC0xOS42LTM4LjEtMjIuMXYtMjYuOWMyMS42LTQuNSwzNy44LTIzLjcsMzcuOC00Ni42YzAtMjYuMi0yMS4zLTQ3LjYtNDcuNi00Ny42DQoJCWMtMjYuMiwwLTQ3LjYsMjEuMy00Ny42LDQ3LjZjMCwyMi42LDE1LjgsNDEuNSwzNi45LDQ2LjN2MjcuM2MtMjguOCw1LjEtNTAuOCwzMC4yLTUwLjgsNjAuNWMwLDMwLjQsMjIuMiw1NS43LDUxLjIsNjAuNXYyOC44DQoJCWMtMjEuMyw0LjctMzcuNCwyMy43LTM3LjQsNDYuNGMwLDI2LjIsMjEuMyw0Ny42LDQ3LjYsNDcuNmMyNi4yLDAsNDcuNi0yMS4zLDQ3LjYtNDcuNmMwLTIyLjctMTYtNDEuOC0zNy40LTQ2LjR2LTI4LjgNCgkJYzE1LTIuNSwyOC4yLTEwLjQsMzcuNC0yMS44bDIyLjUsMTUuOWMtMS4yLDQuMy0xLjksOC43LTEuOSwxMy40YzAsMjYuMiwyMS4zLDQ3LjYsNDcuNiw0Ny42czQ3LjYtMjEuMyw0Ny42LTQ3LjYNCgkJQzM2Mi40LDI5MSwzNDEuMSwyNjkuNywzMTQuOCwyNjkuN3ogTTMxNC44LDE1OC40YzEyLjcsMCwyMy4xLDEwLjQsMjMuMSwyMy4xYzAsMTIuNy0xMC4zLDIzLjEtMjMuMSwyMy4xcy0yMy4xLTEwLjQtMjMuMS0yMy4xDQoJCUMyOTEuOCwxNjguOCwzMDIuMSwxNTguNCwzMTQuOCwxNTguNHogTTE3NiwxMTUuMWMwLTEyLjcsMTAuMy0yMy4xLDIzLjEtMjMuMWMxMi43LDAsMjMuMSwxMC40LDIzLjEsMjMuMQ0KCQljMCwxMi43LTEwLjMsMjMuMS0yMy4xLDIzLjFDMTg2LjMsMTM4LjIsMTc2LDEyNy44LDE3NiwxMTUuMXogTTIyMi4xLDM4NC45YzAsMTIuNy0xMC4zLDIzLjEtMjMuMSwyMy4xDQoJCWMtMTIuNywwLTIzLjEtMTAuNC0yMy4xLTIzLjFjMC0xMi43LDEwLjMtMjMuMSwyMy4xLTIzLjFDMjExLjgsMzYxLjgsMjIyLjEsMzcyLjIsMjIyLjEsMzg0Ljl6IE0xOTkuMSwyODEuMw0KCQljLTE3LjcsMC0zMi4yLTE0LjQtMzIuMi0zMi4yYzAtMTcuNywxNC40LTMyLjIsMzIuMi0zMi4yYzE3LjcsMCwzMi4yLDE0LjQsMzIuMiwzMi4yQzIzMS4yLDI2Ni45LDIxNi44LDI4MS4zLDE5OS4xLDI4MS4zeg0KCQkgTTMxNC44LDM0MC4zYy0xMi43LDAtMjMuMS0xMC40LTIzLjEtMjMuMWMwLTEyLjcsMTAuMy0yMy4xLDIzLjEtMjMuMXMyMy4xLDEwLjQsMjMuMSwyMy4xQzMzNy45LDMzMCwzMjcuNSwzNDAuMywzMTQuOCwzNDAuM3oiLz4NCjwvZz4NCjwvc3ZnPg0K"
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "Kafka"
+    camel.apache.org/kamelet.namespace: "Kafka"
+  labels:
+    camel.apache.org/kamelet.type: "source"
+    camel.apache.org/kamelet.verified: "true"
+spec:
+  definition:
+    title: "Kafka Share Source"
+    description: |-
+      Receives each record from one or more Apache Kafka topics through a share group, which hands out the records like a queue: each record goes to one of many consumers.
+
+      Use it to share the work of a topic between many integrations or threads, more of them than the topic has partitions, such as orders or tasks that each take a while to handle, when the order of the records does not matter. To read the records in order, or to read them again from a given position, use `kafka-source`. Share groups are on by default from Kafka 4.2.
+
+      Output: the body is the value of the record, as text. With `schemaRegistryVendor`, the value is read with its schema from the registry and the body is JSON text, such as `{"id": 7, "item": "camel"}` for an Avro record. A Protobuf record is turned into JSON by the Protobuf JSON mapping, such as `{"id":7,"item":"camel"}`: the names of the fields are in lowerCamelCase (`orderNo` for `order_no`), 64-bit numbers are text, and the fields that have their default value, such as 0 or empty text, are left out. A record without a value (a tombstone) gives a message with no body. The `kafka-topic`, `kafka-key`, `kafka-partition`, `kafka-offset` and `kafka-timestamp` (in milliseconds since 1970) headers say where the record came from, and `kafka-delivery-count` how many times it has been delivered, this time included. They are also set as `ce-kafkatopic`, `ce-kafkakey` and so on, and as the `CamelKafka*` headers. The record headers become message headers, as text unless `deserializeHeaders` is false.
+
+      Good to know: each record is acknowledged on its own once the integration has handled it, and a record that was handled is not delivered again. A record whose handling fails is released by default: Kafka delivers it again, to this or another consumer, up to `group.share.delivery.count.limit` times in all (5 by default, a broker setting), and then drops it. Set `onFailure` to `REJECT` to drop it at once, or to `ACCEPT` to count it as handled. To decide for one record, set the header `CamelKafkaShareAcknowledge` to `ACCEPT`, `RELEASE` or `REJECT` in the integration, such as `REJECT` when `kafka-delivery-count` is too high; a record header of that name is not used. A record that takes longer to handle than the lock of the broker (`group.share.record.lock.duration.ms`, 30 seconds by default) is delivered to another consumer as well. A new share group starts at the newest records: the records sent before it first reads a topic are skipped, unless the group setting `share.auto.offset.reset` is set to `earliest` beforehand, such as with `kafka-configs.sh --bootstrap-server localhost:9092 --entity-type groups --entity-name my-group --alter --add-config share.auto.offset.reset=earliest`. A Kafka of a single broker needs the broker settings `share.coordinator.state.topic.replication.factor=1` and `share.coordinator.state.topic.min.isr=1`, or the share group gets no records, with no error. `saslAuthType` has no default and must be set; `NONE` connects with no login and no TLS. With `schemaRegistryVendor`, the integration needs the serde jars of the vendor, which Camel JBang downloads by itself; for `confluent` add the Confluent Maven repository, as in `camel run --repos=confluent`. With `aws-glue` and `azure`, the serde logs in with the credentials of the environment the integration runs in: the AWS default credentials chain, or the Azure `DefaultAzureCredential`. To log in to a `confluent` or `apicurio` registry, set `schemaRegistryUsername` and `schemaRegistryPassword`, or the OAuth2 client credentials `schemaRegistryOauthClientId`, `schemaRegistryOauthClientSecret` and `schemaRegistryOauthTokenEndpoint`. Kafka only calls an OAuth2 token endpoint that is listed in the JVM system property `org.apache.kafka.sasl.oauthbearer.allowed.urls`; without it, the integration fails to start. This applies to `schemaRegistryOauthTokenEndpoint` and to the `oauthTokenEndpointUri` of `saslAuthType` `OAUTH`.
+    required:
+      - topic
+      - bootstrapServers
+      - saslAuthType
+      - shareGroup
+    type: object
+    properties:
+      topic:
+        title: Topic Names
+        description: "The topics to read from, separated by commas. A share group cannot read the topics whose names match a regular expression."
+        type: string
+        example: "orders"
+      bootstrapServers:
+        title: Bootstrap Servers
+        description: "The address of one or more Kafka brokers to connect to first, as `host:port`, separated by commas. The other brokers of the cluster are found from them."
+        type: string
+        example: "broker1:9092,broker2:9092"
+      shareGroup:
+        title: Share Group
+        description: "The name of the share group. All the consumers with the same share group, in this and in other integrations, share the records of the topics: each record goes to one of them. The group remembers which records were handled, so that a restarted integration goes on where it stopped."
+        type: string
+        example: "order-workers"
+      saslAuthType:
+        title: Authentication Type
+        description: "How to log in to Kafka. It has no default and must be set. `NONE` connects with no login and no TLS, as a local Kafka expects; `PLAIN`, `SCRAM_SHA_256` and `SCRAM_SHA_512` log in with `saslUsername` and `saslPassword`; `SSL` connects over TLS and logs in with the client certificate in `sslKeystoreLocation`, when set; `OAUTH` logs in with the `oauth` options; `AWS_MSK_IAM` (Amazon MSK) and `KERBEROS` take their credentials from the environment the integration runs in. All types except `NONE` connect over TLS."
+        type: string
+        enum: ["NONE", "PLAIN", "SCRAM_SHA_256", "SCRAM_SHA_512", "SSL", "OAUTH", "AWS_MSK_IAM", "KERBEROS"]
+      saslUsername:
+        title: Username
+        description: "The user name to log in to Kafka with. Required when `saslAuthType` is `PLAIN`, `SCRAM_SHA_256` or `SCRAM_SHA_512`."
+        type: string
+        x-descriptors:
+          - urn:camel:group:credentials
+      saslPassword:
+        title: Password
+        description: "The password of `saslUsername`. Required when `saslAuthType` is `PLAIN`, `SCRAM_SHA_256` or `SCRAM_SHA_512`."
+        type: string
+        format: password
+        x-descriptors:
+          - urn:camel:group:credentials
+      oauthClientId:
+        title: OAuth Client ID
+        description: "The ID of the client registered with the OAuth 2.0 provider. Required when `saslAuthType` is `OAUTH`."
+        type: string
+      oauthClientSecret:
+        title: OAuth Client Secret
+        description: "The secret of the OAuth client `oauthClientId`, from the OAuth 2.0 provider. Required when `saslAuthType` is `OAUTH`."
+        type: string
+        format: password
+        x-descriptors:
+          - urn:camel:group:credentials
+      oauthTokenEndpointUri:
+        title: OAuth Token URL
+        description: "The URL of the OAuth 2.0 provider where the Kamelet gets its access token. Required when `saslAuthType` is `OAUTH`. The URL must also be listed in the JVM system property `org.apache.kafka.sasl.oauthbearer.allowed.urls`, or the integration fails to start."
+        type: string
+        example: "https://auth.example.com/oauth2/token"
+      oauthScope:
+        title: OAuth Scope
+        description: "The scope to ask the OAuth 2.0 provider for, when it requires one. Only used when `saslAuthType` is `OAUTH`."
+        type: string
+        example: "kafka"
+      sslTruststoreLocation:
+        title: SSL Truststore Location
+        description: "The path of a trust store file, in JKS format, with the certificates to trust the brokers by. Needed only when the brokers use a certificate that Java does not trust by default, such as a self-signed one."
+        type: string
+        example: "/etc/kafka/truststore.jks"
+      sslTruststorePassword:
+        title: SSL Truststore Password
+        description: "The password of the trust store file in `sslTruststoreLocation`."
+        type: string
+        format: password
+        x-descriptors:
+          - urn:camel:group:credentials
+      sslKeystoreLocation:
+        title: SSL Keystore Location
+        description: "The path of a key store file, in JKS format, with the certificate and private key of the client. Needed only to log in with a client certificate (mutual TLS), usually with `saslAuthType` `SSL`."
+        type: string
+        example: "/etc/kafka/keystore.jks"
+      sslKeystorePassword:
+        title: SSL Keystore Password
+        description: "The password of the key store file in `sslKeystoreLocation`."
+        type: string
+        format: password
+        x-descriptors:
+          - urn:camel:group:credentials
+      sslKeyPassword:
+        title: SSL Key Password
+        description: "The password of the private key in the key store file in `sslKeystoreLocation`."
+        type: string
+        format: password
+        x-descriptors:
+          - urn:camel:group:credentials
+      consumersCount:
+        title: Consumers Count
+        description: "How many consumers of the share group this Kamelet runs, each on its own thread, so that this many records are handled at the same time. Unlike a consumer group, it is not limited by the number of partitions of the topics."
+        type: integer
+        default: 1
+      onFailure:
+        title: On Failure
+        description: "What to do with a record whose handling failed: `RELEASE` gives it back to Kafka, which delivers it again, to this or another consumer, until the delivery limit of the broker is reached; `REJECT` drops it, and it is not delivered again; `ACCEPT` counts it as handled, and it is not delivered again."
+        type: string
+        default: "RELEASE"
+        enum: ["ACCEPT", "RELEASE", "REJECT"]
+      pollOnError:
+        title: Poll On Error Behavior
+        description: "What to do when reading from Kafka fails: `ERROR_HANDLER` logs the error and reads again, `DISCARD` and `RETRY` read again, `RECONNECT` connects again, and `STOP` stops reading until the integration is restarted. A record whose handling fails is not a read error: see `onFailure`."
+        type: string
+        default: "ERROR_HANDLER"
+        enum: ["DISCARD", "ERROR_HANDLER", "RECONNECT", "RETRY", "STOP"]
+      deserializeHeaders:
+        title: Automatically Deserialize Headers
+        description: "If true, the values of the record headers are turned into text. If false, they stay bytes."
+        type: boolean
+        default: true
+      schemaRegistryVendor:
+        title: Schema Registry Vendor
+        description: "The schema registry that holds the schemas of the record values: `confluent`, also for registries with the Confluent API such as Redpanda and Karapace; `apicurio` (Apicurio Registry 3.x); `aws-glue` (AWS Glue Schema Registry); or `azure` (Azure Schema Registry of Event Hubs). It sets the value deserializer and the registry properties, and its jars must be added to the integration (see below). Leave it unset when the records do not use a schema registry."
+        type: string
+        enum: ["confluent", "apicurio", "aws-glue", "azure"]
+      schemaRegistryUrl:
+        title: Schema Registry URL
+        description: "The URL of the schema registry: for `confluent` such as `http://localhost:8081`; for `apicurio` the URL of the registry API, such as `http://localhost:8080/apis/registry/v3`; for `azure` the fully qualified name of the Event Hubs namespace, such as `my-namespace.servicebus.windows.net`. Required when `schemaRegistryVendor` is set, except for `aws-glue`, where it can override the endpoint of the Glue service."
+        type: string
+        pattern: "^(https?://)?[^\\s]+$"
+      schemaRegistryRegion:
+        title: Schema Registry Region
+        description: "The AWS region of the AWS Glue Schema Registry, such as `eu-west-1`. When not set, the region is taken from the environment, such as the `AWS_REGION` variable. Only used when `schemaRegistryVendor` is `aws-glue`."
+        type: string
+      schemaRegistryName:
+        title: Schema Registry Name
+        description: "The name of the registry in AWS Glue. When not set, it is `default-registry`. Only used when `schemaRegistryVendor` is `aws-glue`."
+        type: string
+      schemaFormat:
+        title: Schema Format
+        description: "The format of the record values in the schema registry: `avro`, `json` (JSON Schema) or `protobuf` (Protocol Buffers). With `apicurio`, use `avro` or `protobuf`; with `azure`, use `avro`. Only used when `schemaRegistryVendor` is set."
+        type: string
+        enum: ["avro", "json", "protobuf"]
+        default: avro
+      schemaRegistryUsername:
+        title: Schema Registry Username
+        description: "The username to log in to a `confluent` or `apicurio` schema registry, with `schemaRegistryPassword`. For Confluent Cloud, the API key of the Schema Registry."
+        type: string
+        x-descriptors:
+          - urn:camel:group:credentials
+      schemaRegistryPassword:
+        title: Schema Registry Password
+        description: "The password of `schemaRegistryUsername`. For Confluent Cloud, the API secret of the Schema Registry."
+        type: string
+        format: password
+        x-descriptors:
+          - urn:camel:group:credentials
+      schemaRegistryOauthTokenEndpoint:
+        title: Schema Registry OAuth Token Endpoint
+        description: "The token endpoint of the OAuth2 server, to log in to a `confluent` or `apicurio` schema registry with client credentials, such as the token endpoint of a Keycloak realm. The URL must also be listed in the JVM system property `org.apache.kafka.sasl.oauthbearer.allowed.urls`, or the integration fails to start."
+        type: string
+        example: "http://keycloak:8080/realms/registry/protocol/openid-connect/token"
+      schemaRegistryOauthClientId:
+        title: Schema Registry OAuth Client ID
+        description: "The OAuth2 client id, to log in to a `confluent` or `apicurio` schema registry with client credentials."
+        type: string
+        x-descriptors:
+          - urn:camel:group:credentials
+      schemaRegistryOauthClientSecret:
+        title: Schema Registry OAuth Client Secret
+        description: "The OAuth2 client secret of `schemaRegistryOauthClientId`."
+        type: string
+        format: password
+        x-descriptors:
+          - urn:camel:group:credentials
+      schemaRegistryOauthScope:
+        title: Schema Registry OAuth Scope
+        description: "The OAuth2 scope to ask for when logging in to the schema registry with client credentials (optional)."
+        type: string
+  dataTypes:
+    # No 'default:' here on purpose, as in kafka-source: the body is text, or JSON text with
+    # `schemaRegistryVendor`, or no body for a tombstone. See #3117.
+    out:
+      headers:
+        kafka-topic:
+          title: Kafka Topic
+          description: "The topic the record was read from."
+          type: string
+        kafka-key:
+          title: Kafka Key
+          description: "The key of the record. Not set when the record has no key."
+          type: string
+        kafka-partition:
+          title: Kafka Partition
+          description: "The number of the partition the record was read from."
+          type: integer
+        kafka-offset:
+          title: Kafka Offset
+          description: "The position of the record in its partition."
+          type: integer
+        kafka-timestamp:
+          title: Kafka Timestamp
+          description: "The time of the record, in milliseconds since 1970-01-01 UTC."
+          type: integer
+        kafka-delivery-count:
+          title: Kafka Delivery Count
+          description: "How many times the record has been delivered, this time included: 1 the first time, more when it was released and delivered again."
+          type: integer
+        ce-kafkatopic:
+          title: CloudEvents Kafka Topic
+          description: "The same as `kafka-topic`."
+          type: string
+        ce-kafkakey:
+          title: CloudEvents Kafka Key
+          description: "The same as `kafka-key`."
+          type: string
+        ce-kafkapartition:
+          title: CloudEvents Kafka Partition
+          description: "The same as `kafka-partition`."
+          type: integer
+        ce-kafkaoffset:
+          title: CloudEvents Kafka Offset
+          description: "The same as `kafka-offset`."
+          type: integer
+        ce-kafkatimestamp:
+          title: CloudEvents Kafka Timestamp
+          description: "The same as `kafka-timestamp`."
+          type: integer
+        ce-kafkadeliverycount:
+          title: CloudEvents Kafka Delivery Count
+          description: "The same as `kafka-delivery-count`."
+          type: integer
+  dependencies:
+    - "camel:jackson3"
+    - "camel:kafka"
+    - "camel:kafka-share"
+    - "camel:kamelet"
+  template:
+    beans:
+      # the header deserializer of kafka-source (camel-kafka), which also turns a header without a value into no value
+      - name: kafkaHeaderDeserializer
+        type: "#class:org.apache.camel.component.kafka.KafkaHeaderDeserializer"
+        properties:
+          enabled: "{{deserializeHeaders}}"
+    from:
+      uri: kafka-share
+      parameters:
+        topic: "{{topic}}"
+        additionalProperties.region: "{{?schemaRegistryRegion}}"
+        additionalProperties.registry.name: "{{?schemaRegistryName}}"
+        brokers: "{{bootstrapServers}}"
+        consumersCount: "{{consumersCount}}"
+        groupId: "{{shareGroup}}"
+        oauthClientId: "{{?oauthClientId}}"
+        oauthClientSecret: "RAW({{?oauthClientSecret}})"
+        oauthScope: "{{?oauthScope}}"
+        oauthTokenEndpointUri: "{{?oauthTokenEndpointUri}}"
+        onFailure: "{{onFailure}}"
+        pollOnError: "{{pollOnError}}"
+        saslAuthType: "{{saslAuthType}}"
+        saslPassword: "RAW({{?saslPassword}})"
+        saslUsername: "{{?saslUsername}}"
+        schemaFormat: "{{schemaFormat}}"
+        schemaRegistryURL: "{{?schemaRegistryUrl}}"
+        schemaRegistryVendor: "{{?schemaRegistryVendor}}"
+        schemaRegistryUsername: "{{?schemaRegistryUsername}}"
+        schemaRegistryPassword: "RAW({{?schemaRegistryPassword}})"
+        schemaRegistryOauthTokenEndpoint: "{{?schemaRegistryOauthTokenEndpoint}}"
+        schemaRegistryOauthClientId: "{{?schemaRegistryOauthClientId}}"
+        schemaRegistryOauthClientSecret: "RAW({{?schemaRegistryOauthClientSecret}})"
+        schemaRegistryOauthScope: "{{?schemaRegistryOauthScope}}"
+        sslKeyPassword: "RAW({{?sslKeyPassword}})"
+        sslKeystoreLocation: "{{?sslKeystoreLocation}}"
+        sslKeystorePassword: "RAW({{?sslKeystorePassword}})"
+        sslTruststoreLocation: "{{?sslTruststoreLocation}}"
+        sslTruststorePassword: "RAW({{?sslTruststorePassword}})"
+      steps:
+        - process:
+            ref: "{{kafkaHeaderDeserializer}}"
+        # Kafka record metadata under names that are not Camel internals, plain and CloudEvents, as kafka-source does
+        - setHeader:
+            name: kafka-topic
+            expression:
+              simple:
+                expression: "${header[CamelKafkaTopic]}"
+        - setHeader:
+            name: ce-kafkatopic
+            expression:
+              simple:
+                expression: "${header[CamelKafkaTopic]}"
+        - setHeader:
+            name: kafka-key
+            expression:
+              simple:
+                expression: "${header[CamelKafkaKey]}"
+        - setHeader:
+            name: ce-kafkakey
+            expression:
+              simple:
+                expression: "${header[CamelKafkaKey]}"
+        - setHeader:
+            name: kafka-partition
+            expression:
+              simple:
+                expression: "${header[CamelKafkaPartition]}"
+        - setHeader:
+            name: ce-kafkapartition
+            expression:
+              simple:
+                expression: "${header[CamelKafkaPartition]}"
+        - setHeader:
+            name: kafka-offset
+            expression:
+              simple:
+                expression: "${header[CamelKafkaOffset]}"
+        - setHeader:
+            name: ce-kafkaoffset
+            expression:
+              simple:
+                expression: "${header[CamelKafkaOffset]}"
+        - setHeader:
+            name: kafka-timestamp
+            expression:
+              simple:
+                expression: "${header[CamelKafkaTimestamp]}"
+        - setHeader:
+            name: ce-kafkatimestamp
+            expression:
+              simple:
+                expression: "${header[CamelKafkaTimestamp]}"
+        - setHeader:
+            name: kafka-delivery-count
+            expression:
+              simple:
+                expression: "${header[CamelKafkaShareDeliveryCount]}"
+        - setHeader:
+            name: ce-kafkadeliverycount
+            expression:
+              simple:
+                expression: "${header[CamelKafkaShareDeliveryCount]}"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "'{{?schemaRegistryVendor}}' != '' && '{{schemaFormat}}' == 'json' && ${body} != null && ${body} !is 'java.lang.String'"
+                steps:
+                  - marshal:
+                      json:
+                        library: Jackson
+                  - convertBodyTo:
+                      type: java.lang.String
+              # A Protobuf message becomes the JSON of the Protobuf JSON mapping, as in kafka-source
+              - expression:
+                  simple:
+                    expression: "'{{?schemaRegistryVendor}}' != '' && '{{schemaFormat}}' == 'protobuf' && ${body} != null && ${body} !is 'java.lang.String'"
+                steps:
+                  - setBody:
+                      expression:
+                        simple:
+                          expression: "${bean:type:com.google.protobuf.util.JsonFormat?method=printer().omittingInsignificantWhitespace().print(${body})}"
+              - expression:
+                  simple:
+                    expression: "'{{?schemaRegistryVendor}}' != '' && ${body} != null && ${body} !is 'java.lang.String'"
+                steps:
+                  - setBody:
+                      expression:
+                        simple:
+                          expression: "${body.toString()}"
+        - to:
+            uri: kamelet:sink
