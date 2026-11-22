@@ -1,0 +1,92 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+# Sends HL7 messages to mllp-source-route, and logs the body and the acknowledgement after each one
+- route:
+    from:
+      uri: "timer:hl7"
+      parameters:
+        repeatCount: 1
+      steps:
+        # An admission, as text
+        - setBody:
+            constant: "MSH|^~\\&|SENDER|HOSPITAL|RECEIVER|LAB|20260101120000||ADT^A01|MSG00001|P|2.5\rPID|1||12345||Doe^John"
+        - to:
+            uri: "kamelet:mllp-sink"
+            parameters:
+              host: "localhost"
+              port: "{{mllp.port}}"
+        - log: "Sent MSG00001 ${body.getClass().getName()}: ${body.replace('\r', ' / ')}|"
+        - log: "Ack MSG00001 ${header.CamelMllpAcknowledgementType} ${header.CamelMllpAcknowledgement.getClass().getName()}: ${header.CamelMllpAcknowledgementString.replace('\r', ' / ')}|"
+        # In UTF-8, as MSH-18 says; a CamelCharsetName header does not change it
+        - setBody:
+            constant: "MSH|^~\\&|SENDER|HOSPITAL|RECEIVER|LAB|20260101120000||ADT^A08|MSG00002|P|2.5||||||UNICODE UTF-8\rPID|1||12345||Sørensen^Łucja"
+        - setHeader:
+            name: "CamelCharsetName"
+            constant: "UTF-16"
+        - to:
+            uri: "kamelet:mllp-sink"
+            parameters:
+              host: "localhost"
+              port: "{{mllp.port}}"
+              charset: "UTF-8"
+        - log: "Ack MSG00002 ${header.CamelMllpAcknowledgementType}"
+        - removeHeader:
+            name: "CamelCharsetName"
+        # As bytes
+        - setBody:
+            constant: "MSH|^~\\&|SENDER|HOSPITAL|RECEIVER|LAB|20260101120000||ADT^A04|MSG00003|P|2.5\rPID|1||12345||Doe^John"
+        - convertBodyTo:
+            type: "byte[]"
+        - to:
+            uri: "kamelet:mllp-sink"
+            parameters:
+              host: "localhost"
+              port: "{{mllp.port}}"
+        - log: "Ack MSG00003 ${header.CamelMllpAcknowledgementType} body=${body.getClass().getName()}"
+        # The flow of the source fails: AE
+        - setBody:
+            constant: "MSH|^~\\&|SENDER|HOSPITAL|RECEIVER|LAB|20260101120000||ADT^A99|MSG00004|P|2.5\rPID|1||12345||Doe^John"
+        - doTry:
+            steps:
+              - to:
+                  uri: "kamelet:mllp-sink"
+                  parameters:
+                    host: "localhost"
+                    port: "{{mllp.port}}"
+              - log: "Accepted MSG00004 ${header.CamelMllpAcknowledgementType}"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - log: "Rejected MSG00004 ${exception.getClass().getName()} ${header.CamelMllpAcknowledgementType}: ${header.CamelMllpAcknowledgementString.replace('\r', ' / ')}|"
+        # The flow of the source rejects the message: AR
+        - setBody:
+            constant: "MSH|^~\\&|SENDER|HOSPITAL|RECEIVER|LAB|20260101120000||ADT^A98|MSG00005|P|2.5\rPID|1||12345||Doe^John"
+        - doTry:
+            steps:
+              - to:
+                  uri: "kamelet:mllp-sink"
+                  parameters:
+                    host: "localhost"
+                    port: "{{mllp.port}}"
+              - log: "Accepted MSG00005 ${header.CamelMllpAcknowledgementType}"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - log: "Rejected MSG00005 ${exception.getClass().getName()} ${header.CamelMllpAcknowledgementType}: ${header.CamelMllpAcknowledgementString.replace('\r', ' / ')}|"

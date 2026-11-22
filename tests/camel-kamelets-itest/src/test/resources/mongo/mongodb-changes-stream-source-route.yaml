@@ -23,6 +23,8 @@
         database: "testdb"
         collection: "orders"
         ssl: false
+        # a replica set with one member has no secondary, so the Kamelet reads from the primary;
+        readPreference: SECONDARY_PREFERRED
       steps:
         # what the Kamelet gives: the Java type of the body and the Content-Type
         - setHeader:
