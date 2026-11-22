@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "properties": {
+    "topic": { "type": "string", "enum": ["billing", "technical", "other"] },
+    "urgent": { "type": "boolean" }
+  },
+  "required": ["topic", "urgent"]
+}

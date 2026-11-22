@@ -1670,6 +1670,16 @@
     "namespace" : "Geo",
     "provider" : "Apache Software Foundation"
   }, {
+    "name" : "openai-chat-action",
+    "type" : "action",
+    "supportLevel" : "Stable",
+    "title" : "OpenAI Chat Action",
+    "summary" : "Sends each message as a question to a chat model of OpenAI, or of any server with the same API such as Ollama, vLLM or LM Studio, and gives back the answer.",
+    "description" : "Sends each message as a question to a chat model of OpenAI, or of any server with the same API such as Ollama, vLLM or LM Studio, and gives back the answer.\n\nUse it to summarize, classify, translate or answer questions about text as it flows, for example to sort support emails by topic or to pull the fields out of an order. Set `jsonSchema` to get the answer as JSON that has the fields you ask for. For a model in Amazon Bedrock or Google Vertex AI, use `aws-bedrock-text-sink` or `google-vertexai-sink`.\n\nInput: the body is the user message, as text; bytes and streams are read as text, whatever their Content-Type.\n\nOutput: the body is the answer of the model, as text. With `jsonSchema`, it is the JSON text of the answer. The `CamelOpenAIFinishReason` header says why the model stopped, such as `stop` or `length`, `CamelOpenAIResponseModel` and `CamelOpenAIResponseId` are the model and the id the server gives for the answer, and the token counts are in the `CamelOpenAIPromptTokens`, `CamelOpenAICompletionTokens` and `CamelOpenAITotalTokens` headers.\n\nGood to know: each message is one question on its own: the Kamelet keeps no history of the conversation, and the model cannot call tools, so the text of a message cannot make it act. Headers that start with `CamelOpenAI` are removed from the message first, so a message cannot change the model, the system message or the request. An error answer from the server fails the message with an error of the package `com.openai.errors`, such as `UnauthorizedException` for a wrong API key (status 401) or `InternalServerException` for a status 5xx. A request that gets the status 408, 409, 429 or 5xx is first sent again, `maxRetries` times.",
+    "group" : "OpenAI",
+    "namespace" : "AI",
+    "provider" : "Apache Software Foundation"
+  }, {
     "name" : "opensearch-index-sink",
     "type" : "sink",
     "supportLevel" : "Stable",

@@ -1,0 +1,54 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+- route:
+    from:
+      uri: "timer:chat"
+      parameters:
+        repeatCount: 2
+      steps:
+        - setBody:
+            constant: "I was charged twice for my order, please fix it today."
+        # the server of the test checks no API key, but one must be set: any text will do
+        - choice:
+            when:
+              - simple: "${exchangeProperty.CamelTimerCounter} == 1"
+                steps:
+                  # the schema as JSON text: in a route, two closing braces next to each other would be read as the
+                  # end of a placeholder, so they are written with a space in between
+                  - to:
+                      uri: "kamelet:openai-chat-action"
+                      parameters:
+                        baseUrl: '{{chat.server.url}}/v1'
+                        apiKey: 'none'
+                        model: '{{chat.model}}'
+                        jsonSchema: '{"type":"object","properties":{"topic":{"type":"string","enum":["billing","technical","other"]},"urgent":{"type":"boolean"} },"required":["topic","urgent"]}'
+            otherwise:
+              steps:
+                # the schema from a file
+                - to:
+                    uri: "kamelet:openai-chat-action"
+                    parameters:
+                      baseUrl: '{{chat.server.url}}/v1'
+                      apiKey: 'none'
+                      model: '{{chat.model}}'
+                      jsonSchema: 'resource:file:ticket-schema.json'
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - to:
+            uri: "{{chat.server.url}}/result"
