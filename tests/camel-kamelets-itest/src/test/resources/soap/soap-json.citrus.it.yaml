@@ -43,7 +43,8 @@ actions:
                 - name: "soap.json.front.port"
                   value: "${soap.json.front.port}"
 
-  # getOrder through the front: the client sends and gets SOAP XML
+  # getOrder through the front: the client sends and gets SOAP XML, with the elements in the order and the
+  # namespace of the schema, whatever the order of the JSON fields of the backend
   - http:
       client: "http://localhost:${soap.json.front.port}"
       sendRequest:
@@ -59,7 +60,7 @@ actions:
           status: 200
           type: "plaintext"
           body:
-            data: '@contains(''<orderId>7</orderId><customer>ACME</customer><status>SHIPPED</status><item><sku>A-1</sku><quantity>2</quantity><price>9.95</price><gift>true</gift></item>'')@'
+            data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><tns:getOrderResponse xmlns:tns="http://example.com/orders"><tns:order><tns:orderId>7</tns:orderId><tns:customer>ACME</tns:customer><tns:status>SHIPPED</tns:status><tns:item><tns:sku>A-1</tns:sku><tns:quantity>2</tns:quantity><tns:price>9.95</tns:price><tns:gift>true</tns:gift></tns:item></tns:order></tns:getOrderResponse></soap:Body></soap:Envelope>'
   # The routes in the middle had JSON: the request, and the response with typed values and an array of one item
   - camel:
       cli:
