@@ -23,6 +23,7 @@
         bootstrapServers: '{{kafka.bootstrapServers}}'
         topic: '{{kafka.topic}}'
         shareGroup: '{{kafka.share.group}}'
+        autoOffsetReset: earliest
         saslAuthType: 'NONE'
         consumersCount: 2
       steps:
