@@ -1,0 +1,129 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: ai-tool-source
+  annotations:
+    camel.apache.org/kamelet.support.level: "Preview"
+    camel.apache.org/catalog.version: "4.24.0-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiMxZjZmZWIiLz48cGF0aCBkPSJNNDEuNSAxNC41YTEwIDEwIDAgMCAwLTEyLjMgMTIuNkwxNS42IDQwLjdhNCA0IDAgMCAwIDUuNyA1LjdsMTMuNi0xMy42YTEwIDEwIDAgMCAwIDEyLjYtMTIuM2wtNiA2LTUuMi0xLjQtMS40LTUuMnoiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIxOC41IiBjeT0iNDMuNSIgcj0iMS42IiBmaWxsPSIjMWY2ZmViIi8+PC9zdmc+Cg=="
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "AI Tool"
+    camel.apache.org/kamelet.namespace: "AI"
+  labels:
+    camel.apache.org/kamelet.type: "source"
+    camel.apache.org/kamelet.verified: "true"
+spec:
+  definition:
+    title: "AI Tool Source"
+    description: |-
+      Offers the steps that follow it as a tool that an AI agent can call, such as an MCP client like Claude Desktop or Cursor, with the arguments of each call as JSON.
+
+      Use it to let an AI assistant look up or change data through a flow you control, such as returning the status of an order. In a route (YAML), the steps after `from: kamelet:ai-tool-source` run for each call; they can also hand the call on with `to: kamelet:<name>`. To offer the tool over MCP, set `camel.server.enabled=true`, `camel.server.mcp-enabled=true` and `camel.server.mcp-tags` to its tag in `application.properties`: Camel JBang then adds `camel-mcp-server` by itself, other applications need it and `camel-platform-http-main` as dependencies. MCP clients connect with streamable HTTP to `http://<host>:<port>/mcp`, on the HTTP port of the application (`camel.server.port`, 8080 by default with Camel JBang). The `openai` and `langchain4j-agent` components can call the tools of a tag as well, with their `tags` option.
+
+      Output: the body is the arguments of the call, as JSON text, such as `{"orderId":"42"}`, with only the arguments that `argSchema` declares (`{}` for a tool without arguments). Each of them is also a header of its own name, such as `orderId`. The body at the end of the flow, as text, is the result the caller gets back; the headers are not sent back. A flow that does not change the body gives the caller its own arguments back.
+
+      Good to know: an MCP client is an untrusted sender. Anyone who can reach the MCP endpoint can call every tool it offers, with any arguments, so check them before you use them. The MCP server offers only the tools whose tag is in `camel.server.mcp-tags`, never one with another tag. It listens on all network interfaces by default (`camel.server.host`) and has no login: protect it with OAuth (`camel.server.mcp-oauth-profile`) or network rules. A call from a web page of another host is refused, unless `camel.server.mcp-allowed-origins` allows it. A call that misses a required argument, or has one of the wrong type, is refused before the flow runs. An error in the flow reaches the caller only as `Tool execution failed`, and a call that takes longer than `camel.server.mcp-tool-timeout` (20 seconds by default) as `Tool execution timed out`, while the flow goes on. The hints are advice for the client, which Camel does not enforce. `allowedRoles` checks the roles of a caller logged in with OAuth, so without OAuth a tool with `allowedRoles` refuses every call.
+    required:
+      - toolName
+      - description
+      - tags
+    type: object
+    properties:
+      toolName:
+        title: Tool Name
+        description: The name of the tool, which the AI model sees and calls it by. Letters, digits, `_` and `-` only, at most 64 characters, such as `get_order_status`. It must be unique among the tools the application offers.
+        type: string
+        pattern: "^[A-Za-z0-9_-]{1,64}$"
+        example: get_order_status
+      description:
+        title: Description
+        description: What the tool does and when to use it, written for the AI model, which reads it to decide whether to call the tool, such as `Returns the status of an order by its id`.
+        type: string
+        example: Returns the status of an order by its id
+      tags:
+        title: Tags
+        description: One or more tags, separated by commas, that put the tool in groups, such as `orders`. An MCP server offers only the tools whose tag is in its `camel.server.mcp-tags` setting.
+        type: string
+        pattern: "^\\s*[^,\\s]+(\\s*,\\s*[^,\\s]+)*\\s*$"
+        example: orders
+      argSchema:
+        title: Arguments Schema
+        description: The JSON Schema of the arguments of the tool, an `object` with its `properties` and the `required` ones, such as `{"type":"object","properties":{"orderId":{"type":"string","description":"The order id"}},"required":["orderId"]}`. It can also be read from a file, with `file:` or `classpath:` in front of its location. Without it, the tool takes no arguments.
+        type: string
+        example: '{"type":"object","properties":{"orderId":{"type":"string","description":"The order id"}},"required":["orderId"]}'
+      title:
+        title: Title
+        description: A name of the tool for people, which an MCP client may show instead of the tool name, such as `Order status`.
+        type: string
+        example: Order status
+      readOnlyHint:
+        title: Read Only Hint
+        description: Tells an MCP client that the tool only reads data and changes nothing. A hint only, which Camel does not check.
+        type: boolean
+      destructiveHint:
+        title: Destructive Hint
+        description: Tells an MCP client that the tool may delete or overwrite data. A hint only, which Camel does not check.
+        type: boolean
+      idempotentHint:
+        title: Idempotent Hint
+        description: Tells an MCP client that calling the tool again with the same arguments changes nothing more. A hint only, which Camel does not check.
+        type: boolean
+      openWorldHint:
+        title: Open World Hint
+        description: Tells an MCP client that the tool works with systems outside the application, such as the internet. A hint only, which Camel does not check.
+        type: boolean
+      allowedRoles:
+        title: Allowed Roles
+        description: The roles, separated by commas, of which the caller needs one to call the tool, such as `finance`. The roles come from the login of the caller (MCP over HTTP with OAuth); a caller without a login is refused.
+        type: string
+        example: finance
+      allRolesRequired:
+        title: All Roles Required
+        description: Whether the caller needs all the roles of `allowedRoles` instead of one of them.
+        type: boolean
+        default: false
+  dataTypes:
+    # No headers listed and no 'default:' on purpose: over MCP the flow gets no header of its own,
+    # only one header per declared argument, named as the argument, and a default would run a
+    # transformer on every call. See #3117.
+    out:
+      headers: {}
+  dependencies:
+    # camel-mcp-server is not a dependency on purpose: the tool can also be called by the openai or
+    # langchain4j-agent components, and Camel JBang adds camel-mcp-server when camel.server.mcp-enabled is set.
+    - "camel:ai-tool"
+    - "camel:kamelet"
+  template:
+    from:
+      uri: "ai-tool:{{toolName}}"
+      parameters:
+        description: "{{description}}"
+        tags: "{{tags}}"
+        argSchema: "RAW({{?argSchema}})"
+        title: "{{?title}}"
+        readOnlyHint: "{{?readOnlyHint}}"
+        destructiveHint: "{{?destructiveHint}}"
+        idempotentHint: "{{?idempotentHint}}"
+        openWorldHint: "{{?openWorldHint}}"
+        allowedRoles: "{{?allowedRoles}}"
+        allRolesRequired: "{{allRolesRequired}}"
+        argumentsAsBody: true
+      steps:
+        - to:
+            uri: kamelet:sink
