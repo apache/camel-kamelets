@@ -1,0 +1,3 @@
+CREATE TABLE products (id INTEGER PRIMARY KEY, name VARCHAR(100), price NUMERIC(10,2), added DATE, note VARCHAR(100));
+INSERT INTO products VALUES (1, 'Tea', 4.50, '2026-01-01', 'not sent');
+CREATE TABLE notes (id INTEGER PRIMARY KEY, text VARCHAR(100));

@@ -1,0 +1,49 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+# The service of orders.wsdl, served by soap-source with JSON for the route
+- route:
+    id: "json-backend"
+    from:
+      uri: "kamelet:soap-source"
+      parameters:
+        address: "http://0.0.0.0:{{soap.json.backend.port}}/orders"
+        wsdlURL: "classpath:orders.wsdl"
+        bodyFormat: "json"
+      steps:
+        - log: "JSON backend ${header.CamelCxfOperationName}: ${body}"
+        - setVariable:
+            name: "orderId"
+            jq: ".orderId"
+        - choice:
+            when:
+              # the declared fault of getOrder: its detail is XML text also in JSON mode
+              - simple: "${variable.orderId} == '404'"
+                steps:
+                  - setHeader:
+                      name: "SoapFault"
+                      constant: "Order 404 not found"
+                  - setHeader:
+                      name: "SoapFaultCode"
+                      constant: "Client"
+                  - setBody:
+                      constant: '<orderNotFound xmlns="http://example.com/orders"><orderId>404</orderId></orderNotFound>'
+            otherwise:
+              steps:
+                # the fields in another order than the schema, which the XML gets; one item, typed values
+                - setBody:
+                    simple: '{"order": {"status": "SHIPPED", "item": [{"gift": true, "price": 9.95, "quantity": 2, "sku": "A-1"}], "customer": "ACME", "orderId": "${variable.orderId}"}}'
