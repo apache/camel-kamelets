@@ -1,0 +1,171 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: soap-front-backend-test
+description: 'soap-source serves a SOAP front that calls a legacy SOAP service with soap-action: a reply, a declared fault passed on, a muted route failure, a DOCTYPE refused'
+actions:
+  # The legacy service, then the front that calls it
+  - camel:
+      cli:
+        run:
+          resources:
+            - "orders.wsdl"
+          integration:
+            file: "soap/soap-backend-route.yaml"
+            systemProperties:
+              properties:
+                - name: "soap.backend.port"
+                  value: "${soap.backend.port}"
+  - camel:
+      cli:
+        run:
+          resources:
+            - "orders.wsdl"
+          integration:
+            file: "soap/soap-front-route.yaml"
+            systemProperties:
+              properties:
+                - name: "soap.backend.port"
+                  value: "${soap.backend.port}"
+                - name: "soap.front.port"
+                  value: "${soap.front.port}"
+
+  # getOrder through the front: the reply of the legacy service, with the status the front changed
+  - http:
+      client: "http://localhost:${soap.front.port}"
+      sendRequest:
+        POST:
+          path: "/orders"
+          contentType: "text/xml"
+          body:
+            data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>7</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
+  - http:
+      client: "http://localhost:${soap.front.port}"
+      receiveResponse:
+        response:
+          status: 200
+          type: "plaintext"
+          body:
+            data: '@contains(''<order><orderId>7</orderId><customer>ACME</customer><status>shipped</status><item><sku>A-1</sku><quantity>2</quantity><price>9.95</price></item></order></getOrderResponse></soap:Body></soap:Envelope>'')@'
+  # The front had the request as JSON
+  - camel:
+      cli:
+        verify:
+          integration: "soap-front-route"
+          logMessage: 'Front getOrder as JSON: {"orderId":"7"}'
+  # The legacy service got the SOAPAction of the WSDL and the login of the options (front:s3cret), not the headers
+  # the front had set
+  - camel:
+      cli:
+        verify:
+          integration: "soap-backend-route"
+          logMessage: 'Backend getOrder SOAPAction=http://example.com/orders/getOrder Authorization=Basic ZnJvbnQ6czNjcmV0: <getOrder xmlns="http://example.com/orders"'
+
+  # The declared fault of the legacy service, passed on by the front with its detail
+  - http:
+      client: "http://localhost:${soap.front.port}"
+      sendRequest:
+        POST:
+          path: "/orders"
+          contentType: "text/xml"
+          body:
+            data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>404</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
+  - http:
+      client: "http://localhost:${soap.front.port}"
+      receiveResponse:
+        response:
+          status: 500
+          type: "plaintext"
+          body:
+            data: '@contains(''<soap:Fault><faultcode>soap:Client</faultcode><faultstring>Order 404 not found</faultstring><detail><orderNotFound xmlns="http://example.com/orders"><orderId>404</orderId></orderNotFound></detail></soap:Fault>'')@'
+  - camel:
+      cli:
+        verify:
+          integration: "soap-front-route"
+          logMessage: 'Front got SoapFault=Order 404 not found SoapFaultCode=Client: <orderNotFound xmlns="http://example.com/orders"><orderId>404</orderId></orderNotFound>'
+
+  # A fault without detail, passed on by the front
+  - http:
+      client: "http://localhost:${soap.front.port}"
+      sendRequest:
+        POST:
+          path: "/orders"
+          contentType: "text/xml"
+          body:
+            data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>500</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
+  - http:
+      client: "http://localhost:${soap.front.port}"
+      receiveResponse:
+        response:
+          status: 500
+          type: "plaintext"
+          body:
+            data: '@contains(''<soap:Fault><faultcode>soap:Server</faultcode><faultstring>Exchange processing failed</faultstring><detail/></soap:Fault>'')@'
+
+  # A failure of the legacy route: the fault does not say why
+  - http:
+      client: "http://localhost:${soap.backend.port}"
+      sendRequest:
+        POST:
+          path: "/orders"
+          contentType: "text/xml"
+          body:
+            data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>500</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
+  - http:
+      client: "http://localhost:${soap.backend.port}"
+      receiveResponse:
+        response:
+          status: 500
+          type: "plaintext"
+          body:
+            data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><soap:Fault><faultcode>soap:Server</faultcode><faultstring>Exchange processing failed</faultstring></soap:Fault></soap:Body></soap:Envelope>'
+
+  # A request with a DOCTYPE is refused before the route sees it
+  - http:
+      client: "http://localhost:${soap.backend.port}"
+      sendRequest:
+        POST:
+          path: "/orders"
+          contentType: "text/xml"
+          body:
+            data: '<?xml version="1.0"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/hosts">]><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>&xxe;</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
+  - http:
+      client: "http://localhost:${soap.backend.port}"
+      receiveResponse:
+        response:
+          status: 500
+          type: "plaintext"
+          body:
+            data: '@contains(''<faultcode>soap:Client</faultcode><faultstring>Error reading XMLStreamReader: Received event DTD'')@'
+
+  # The WSDL of the front gives the published address
+  - http:
+      client: "http://localhost:${soap.front.port}"
+      sendRequest:
+        GET:
+          path: "/orders"
+          parameters:
+            - name: "wsdl"
+              value: ""
+  - http:
+      client: "http://localhost:${soap.front.port}"
+      receiveResponse:
+        response:
+          status: 200
+          type: "plaintext"
+          body:
+            data: '@contains(''<soap:address location="https://orders.example.com/orders"/>'')@'

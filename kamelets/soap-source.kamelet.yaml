@@ -1,0 +1,160 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: soap-source
+  annotations:
+    camel.apache.org/kamelet.support.level: "Preview"
+    camel.apache.org/catalog.version: "4.24.0-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MjAiCmhlaWdodD0iNDIwIiBzdHJva2U9IiMwMDAiIGZpbGw9Im5vbmUiPgo8cGF0aCBzdHJva2Utd2lkdGg9IjI2IgpkPSJNMjA5LDE1YTE5NSwxOTUgMCAxLDAgMiwweiIvPgo8cGF0aCBzdHJva2Utd2lkdGg9IjE4IgpkPSJtMjEwLDE1djM5MG0xOTUtMTk1SDE1TTU5LDkwYTI2MCwyNjAgMCAwLDAgMzAyLDAgbTAsMjQwIGEyNjAsMjYwIDAgMCwwLTMwMiwwTTE5NSwyMGEyNTAsMjUwIDAgMCwwIDAsMzgyIG0zMCwwIGEyNTAsMjUwIDAgMCwwIDAtMzgyIi8+Cjwvc3ZnPg=="
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "SOAP"
+    camel.apache.org/kamelet.namespace: "HTTP"
+  labels:
+    camel.apache.org/kamelet.type: "source"
+    camel.apache.org/kamelet.verified: "true"
+spec:
+  definition:
+    title: "SOAP Source"
+    description: |-
+      Serves a SOAP web service described by a WSDL file, and answers each call with the reply of the route.
+
+      Use it to keep existing SOAP clients working while the systems behind the service are replaced: the route gets each call and can call REST services or other systems to answer it. No Java code is generated from the WSDL. To call a SOAP service, use `soap-action`.
+
+      Output: the body is the content of the SOAP Body of the request as XML text: the request element of the operation, such as `<getOrder xmlns="http://example.com/orders"><orderId>7</orderId></getOrder>`. The header `CamelCxfOperationName` is the name of the operation, such as `getOrder`, and `CamelCxfOperationNamespace` its namespace. The HTTP headers of the request, such as `User-Agent`, are headers too.
+
+      The reply of the route, as XML text, is the content of the SOAP Body of the response: the response element of the operation, such as `<getOrderResponse xmlns="http://example.com/orders">...</getOrderResponse>`. To answer with a SOAP fault, the route sets the header `SoapFault` to the text of the fault, and `SoapFaultCode` to `Client` when the request was wrong (`Sender` with SOAP 1.2; otherwise the code is `Server`, or `Receiver`); the body, if any, is the content of the detail of the fault as XML text, such as the fault element the WSDL declares. This is what `soap-action` gives with `faultAsBody`, so a fault of a called service can be passed on. When the route fails, the client gets a SOAP fault with the text `Exchange processing failed`, which does not say why. The headers of the reply are not sent back to the client.
+
+      Good to know: the service is served at `address`, its WSDL at `address` followed by `?wsdl`, with SOAP 1.1 or 1.2 as the WSDL says. A request or a reply that does not match the XML schema of the WSDL is refused with a SOAP fault, unless `schemaValidation` is false, and so is a request for an operation the WSDL does not have, and a request with a DOCTYPE. There is no login: protect the address with your network. To work with JSON, turn the body into JSON with `xj-identity-action`, and build the reply as XML.
+    required:
+      - address
+      - wsdlURL
+    type: object
+    properties:
+      address:
+        title: Address
+        description: The URL to serve the SOAP service at. Use `0.0.0.0` as the host to accept calls on every network interface of the machine.
+        type: string
+        example: "http://0.0.0.0:8080/orders"
+        pattern: "^https?://.+"
+      wsdlURL:
+        title: WSDL Location
+        description: Where to read the WSDL file from, which describes the operations and their XML schema. `file:` followed by a path, `classpath:` followed by a resource in the application, or an `https://` URL (an `http://` URL works too, but the WSDL decides what is called, so it should not travel unprotected).
+        type: string
+        example: "classpath:orders.wsdl"
+        pattern: "^(file|classpath|https?):.+"
+      serviceName:
+        title: Service Name
+        description: The service of the WSDL to serve, as `\{namespace}name`. Only needed when the WSDL has more than one service; otherwise the first one is used.
+        type: string
+        example: "{http://example.com/orders}OrderService"
+        pattern: "^\\{[^}]*\\}[^{}]+$"
+      portName:
+        title: Port Name
+        description: The port of the service to serve, as `\{namespace}name`. Only needed when the service has more than one port; otherwise the first one is used.
+        type: string
+        example: "{http://example.com/orders}OrderPort"
+        pattern: "^\\{[^}]*\\}[^{}]+$"
+      publishedEndpointUrl:
+        title: Published URL
+        description: The URL that the WSDL served at `?wsdl` gives to the clients as the address of the service, such as the public URL of a load balancer. When it is not set, the WSDL gives the host that the client used in its request.
+        type: string
+        example: "https://orders.example.com/orders"
+        pattern: "^https?://.+"
+      schemaValidation:
+        title: Schema Validation
+        description: Whether to refuse a request, and a reply of the route, that does not match the XML schema of the WSDL.
+        type: boolean
+        default: true
+      loggingEnabled:
+        title: Log Messages
+        description: Whether to write each SOAP request and response to the log. Do not turn it on when the messages hold personal data or secrets.
+        type: boolean
+        default: false
+  dataTypes:
+    # No 'default:' on purpose: the body stays as the SOAP service gives it. See #3117.
+    out:
+      headers:
+        CamelCxfOperationName:
+          title: Operation Name
+          description: The name of the operation that was called, such as `getOrder`.
+          type: string
+        CamelCxfOperationNamespace:
+          title: Operation Namespace
+          description: The namespace of the operation, such as `http://example.com/orders`.
+          type: string
+  dependencies:
+  - "camel:cxf-soap"
+  - "camel:kamelet"
+  template:
+    from:
+      uri: "cxf://{{address}}?wsdlURL=RAW({{wsdlURL}})&serviceName={{?serviceName}}&portName={{?portName}}&publishedEndpointUrl=RAW({{?publishedEndpointUrl}})&dataFormat=PAYLOAD&schemaValidationEnabled={{schemaValidation}}&loggingFeatureEnabled={{loggingEnabled}}"
+      steps:
+        # The headers that make the reply a fault come from the route, never from the client. CamelHttp* would
+        # steer an HTTP call later in the route, and CamelCxfMessage is the whole internal CXF message.
+        - removeHeaders:
+            pattern: SoapFault.*|CamelHttp.*|CamelCxfMessage
+        # kept to answer a SOAP 1.2 request (content type application/soap+xml) with a SOAP 1.2 fault
+        - setVariable:
+            name: soapSourceContentType
+            expression:
+              simple:
+                expression: "${header.Content-Type}"
+        - convertBodyTo:
+            type: java.lang.String
+        - to:
+            uri: kamelet:sink
+        # The headers of the reply would be sent back as HTTP headers, including the ones that came with the request
+        # or from systems the route called. Only the fault is taken from them.
+        - setVariable:
+            name: soapSourceFault
+            expression:
+              simple:
+                expression: "${header.SoapFault}"
+        - setVariable:
+            name: soapSourceFaultCode
+            expression:
+              simple:
+                expression: "${header.SoapFaultCode}"
+        - removeHeaders:
+            pattern: "*"
+        - choice:
+            when:
+              - expression:
+                  simple:
+                    expression: "${variable.soapSourceFault} != null"
+                steps:
+                  - choice:
+                      when:
+                        - expression:
+                            simple:
+                              expression: "${variable.soapSourceContentType} startsWith 'application/soap+xml'"
+                          steps:
+                            - setBody:
+                                expression:
+                                  simple:
+                                    expression: "<env:Fault xmlns:env=\"http://www.w3.org/2003/05/soap-envelope\"><env:Code><env:Value>env:${variable.soapSourceFaultCode == 'Client' ? 'Sender' : 'Receiver'}</env:Value></env:Code><env:Reason><env:Text xml:lang=\"en\">${escape(xml, ${variable.soapSourceFault})}</env:Text></env:Reason><env:Detail>${body}</env:Detail></env:Fault>"
+                      otherwise:
+                        steps:
+                          - setBody:
+                              expression:
+                                simple:
+                                  expression: "<soap:Fault xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"><faultcode>soap:${variable.soapSourceFaultCode == 'Client' ? 'Client' : 'Server'}</faultcode><faultstring>${escape(xml, ${variable.soapSourceFault})}</faultstring><detail>${body}</detail></soap:Fault>"
+                  # As a CXF payload, the consumer returns it as a SOAP fault; as text it would be a normal reply.
+                  - convertBodyTo:
+                      type: org.apache.camel.component.cxf.common.CxfPayload
