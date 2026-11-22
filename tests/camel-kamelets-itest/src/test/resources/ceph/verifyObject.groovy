@@ -30,10 +30,14 @@ def response = s3.getObjectAsBytes(GetObjectRequest.builder()
 
 String content = response.asUtf8String()
 String expected = context.getVariable('s3.content')
-assert content == expected : "Expected '" + expected + "' but got '" + content + "'"
+if (!(content == expected)) {
+    throw new org.citrusframework.exceptions.CitrusRuntimeException("Expected '" + expected + "' but got '" + content + "'")
+}
 
 if (context.getVariables().containsKey('s3.contentType')) {
     String contentType = response.response().contentType()
     String expectedType = context.getVariable('s3.contentType')
-    assert contentType == expectedType : "Expected content type '" + expectedType + "' but got '" + contentType + "'"
+    if (!(contentType == expectedType)) {
+        throw new org.citrusframework.exceptions.CitrusRuntimeException("Expected content type '" + expectedType + "' but got '" + contentType + "'")
+    }
 }

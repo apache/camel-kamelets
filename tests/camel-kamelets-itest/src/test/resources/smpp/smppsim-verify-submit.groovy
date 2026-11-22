@@ -22,6 +22,6 @@ def smppsim = context.getReferenceResolver().resolve('smppsim', org.testcontaine
 def logs = smppsim.getLogs()
 ['source_addr=1616', 'dest_addr=4598765432', 'short_message=Your code is 1234'].each { expected ->
     if (!logs.contains(expected)) {
-        throw new AssertionError('SMPPSim did not log ' + expected + ' for a submit_sm')
+        throw new org.citrusframework.exceptions.CitrusRuntimeException('SMPPSim did not log ' + expected + ' for a submit_sm')
     }
 }

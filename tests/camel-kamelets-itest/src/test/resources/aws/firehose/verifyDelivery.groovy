@@ -28,4 +28,6 @@ if (objects.size() != 1) {
 
 String content = s3.getObjectAsBytes(b -> b.bucket('firehose-bucket').key(objects[0].key())).asUtf8String()
 // Floci ends each record that it writes with a line break; Amazon Data Firehose writes the record as it is
-assert content == 'order ORD-1\n' : "Unexpected file content '" + content + "'"
+if (!(content == 'order ORD-1\n')) {
+    throw new org.citrusframework.exceptions.CitrusRuntimeException("Unexpected file content '" + content + "'")
+}

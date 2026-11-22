@@ -23,9 +23,9 @@ import java.nio.file.Paths
 
 def file = Paths.get(context.getVariable('ftp.home'), 'upload', 'day 1.csv')
 if (!Files.exists(file)) {
-    throw new AssertionError('The FTP server has no file ' + file)
+    throw new org.citrusframework.exceptions.CitrusRuntimeException('The FTP server has no file ' + file)
 }
 def content = Files.readString(file)
 if (content != 'id,item\n1,book') {
-    throw new AssertionError('Unexpected content of ' + file + ': ' + content.inspect())
+    throw new org.citrusframework.exceptions.CitrusRuntimeException('Unexpected content of ' + file + ': ' + content.inspect())
 }
