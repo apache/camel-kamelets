@@ -41,6 +41,11 @@
                       constant: "Client"
                   - setBody:
                       simple: '<orderNotFound xmlns="http://example.com/orders"><orderId>${variable.orderId}</orderId></orderNotFound>'
+              # the route builds the SOAP fault itself, as XML text, with no SoapFault header
+              - simple: "${variable.orderId} == '409'"
+                steps:
+                  - setBody:
+                      simple: '<soap:Fault xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><faultcode>soap:Client</faultcode><faultstring>Order ${variable.orderId} is locked</faultstring><detail><orderNotFound xmlns="http://example.com/orders"><orderId>${variable.orderId}</orderId></orderNotFound></detail></soap:Fault>'
               # a failure of the route: the client must not learn why
               - simple: "${variable.orderId} == '500'"
                 steps:

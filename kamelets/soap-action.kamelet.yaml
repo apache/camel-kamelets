@@ -42,14 +42,13 @@ spec:
 
       Good to know: a SOAP fault from the service fails the message with an `org.apache.cxf.binding.soap.SoapFault` error, whose message is the text of the fault; with Camel JBang, a route that catches this error by its class name needs the dependency `camel:cxf-soap`. When `faultAsBody` is true, the message goes on instead: the body is the content of the `detail` element of the fault as XML text, such as the fault element the WSDL declares (no body when the fault has no detail), the header `SoapFault` is the text of the fault, and `SoapFaultCode` its code: `Client` or `Server` with SOAP 1.1, `Sender` or `Receiver` with SOAP 1.2. A request that the service refuses, for example because it does not match its XML schema, is a SOAP fault too. SOAP 1.1 or 1.2 is used as the WSDL says. Headers that start with `Camel`, and the `SOAPAction`, `Authorization` and `Proxy-Authorization` headers, are removed from the message first, so a message cannot change the address, the operation or the login.
     required:
-      - address
       - wsdlURL
       - operation
     type: object
     properties:
       address:
         title: Address
-        description: The URL of the SOAP service.
+        description: The URL of the SOAP service. When it is not set, the address that the WSDL gives for the port is called, the `location` of its `soap:address`.
         type: string
         example: "https://legacy.example.com/orders"
         pattern: "^https?://.+"
@@ -129,7 +128,7 @@ spec:
         - doTry:
             steps:
               - to:
-                  uri: "cxf://{{address}}?wsdlURL=RAW({{wsdlURL}})&serviceName={{?serviceName}}&portName={{?portName}}&dataFormat=PAYLOAD&defaultOperationName={{operation}}&defaultOperationNamespace={{?operationNamespace}}&username=RAW({{?username}})&password=RAW({{?password}})"
+                  uri: "cxf://{{?address}}?wsdlURL=RAW({{wsdlURL}})&serviceName={{?serviceName}}&portName={{?portName}}&dataFormat=PAYLOAD&defaultOperationName={{operation}}&defaultOperationNamespace={{?operationNamespace}}&username=RAW({{?username}})&password=RAW({{?password}})"
               - convertBodyTo:
                   type: java.lang.String
               - doCatch:
