@@ -16,7 +16,7 @@
 # ---------------------------------------------------------------------------
 
 name: mllp-sink-source-test
-description: 'mllp-sink sends HL7 v2 messages to mllp-source, which gives each one to its flow and acknowledges it: AA, AE when the flow fails, AR when the flow rejects it'
+description: 'mllp-sink sends HL7 v2 messages to mllp-source, which gives each one to its flow and acknowledges it: AA, AE when the flow fails, AR when the flow rejects it; text is sent and read in the charset of MSH-18'
 actions:
   # The source listens on all the network interfaces
   - camel:
@@ -60,6 +60,11 @@ actions:
         verify:
           integration: "mllp-source-route"
           logMessage: "Headers MSG00001 type=ADT^A01 event=ADT trigger=A01 from=SENDER/HOSPITAL to=RECEIVER/LAB time=20260101120000 processing=P version=2.5 remote=/127.0.0.1:"
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-source-route"
+          logMessage: "Charset MSG00001 msh18=|"
 
   # The sink leaves the body as it is, and gives the AA acknowledgement of the source
   - camel:
@@ -104,6 +109,29 @@ actions:
         verify:
           integration: "mllp-sink-route"
           logMessage: "Ack MSG00002 AA"
+
+  # The sink sends UTF-8 text as MSH-18 says also when charset is not set, whatever the CamelCharsetName
+  # header says, and the source gives MSH-18 in CamelMllpCharset
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-source-route"
+          logMessage: "Name MSG00006 true"
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-source-route"
+          logMessage: "Bytes MSG00006 126"
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-source-route"
+          logMessage: "Charset MSG00006 msh18=UNICODE UTF-8|"
+  - camel:
+      cli:
+        verify:
+          integration: "mllp-sink-route"
+          logMessage: "Ack MSG00006 AA"
 
   # A body of bytes is sent as it is
   - camel:
