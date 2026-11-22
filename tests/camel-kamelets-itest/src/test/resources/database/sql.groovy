@@ -41,6 +41,10 @@ switch (name) {
         container.copyFileToContainer(Transferable.of(sql), file)
         command = ['bash', '-c', name + ' -utest -ptest testdb --batch --skip-column-names < ' + file]
         break
+    case 'postgres':
+        container.copyFileToContainer(Transferable.of(sql), file)
+        command = ['psql', '-U', 'test', '-d', 'testdb', '-v', 'ON_ERROR_STOP=1', '-q', '-At', '-F', '|', '-f', file]
+        break
     case 'sqlserver':
         container.copyFileToContainer(Transferable.of('SET NOCOUNT ON\n' + sql), file)
         command = ['/opt/mssql-tools18/bin/sqlcmd', '-S', 'localhost', '-U', 'sa', '-P', 'Citrus-Test-1', '-C', '-b',

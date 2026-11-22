@@ -78,6 +78,11 @@ public class DatabaseIT {
     }
 
     @CitrusTestFactory
+    public Stream<DynamicTest> debezium() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("database.debezium");
+    }
+
+    @CitrusTestFactory
     public Stream<DynamicTest> oracle() {
         return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("database.oracle");
     }
