@@ -17,7 +17,8 @@
 
 name: aws-eventbridge-source-test
 # aws-eventbridge-source receives the event that the rule matches, as the whole EventBridge event in JSON text,
-# and not the event that the rule does not match, which was put on the bus first
+# and not the event that the rule does not match, which was put on the bus first; the queue it created only
+# accepts the events of the rule
 variables:
   - name: "aws.eventbridge.eventbusName"
     value: "orders"
@@ -94,3 +95,8 @@ actions:
           version: "HTTP/1.1"
           body:
             data: "OK"
+
+  # The queue that the Kamelet created only accepts the events of its rule
+  - groovy:
+      script:
+        file: "aws/eventbridge/verifyQueuePolicy.groovy"
