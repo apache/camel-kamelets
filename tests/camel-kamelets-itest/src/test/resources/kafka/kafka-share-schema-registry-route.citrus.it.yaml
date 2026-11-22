@@ -1,0 +1,96 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: kafka-share-schema-registry-route-test
+variables:
+  - name: "kafka.topic"
+    value: "share-protobuf"
+  - name: "kafka.share.group"
+    value: "share-protobuf-group"
+actions:
+  # Apache Kafka 4 with share groups, see kafka-share-source-route, and Apicurio Registry 3.x as the schema registry
+  - testcontainers:
+      start:
+        kafka:
+          implementation: "apache"
+          version: "4.4.0"
+          topics:
+            - "${kafka.topic}"
+          env:
+            - name: "KAFKA_SHARE_COORDINATOR_STATE_TOPIC_REPLICATION_FACTOR"
+              value: "1"
+            - name: "KAFKA_SHARE_COORDINATOR_STATE_TOPIC_MIN_ISR"
+              value: "1"
+  - testcontainers:
+      start:
+        container:
+          name: "apicurio"
+          image: "apicurio/apicurio-registry:3.3.4"
+          autoRemove: true
+          startUpTimeout: 120
+          exposedPorts:
+            - 8080
+          waitFor:
+            logMessage: '.*Listening on.*'
+
+  - createVariables:
+      variables:
+        - name: "kafka.bootstrapServers"
+          value: "${CITRUS_TESTCONTAINERS_KAFKA_BOOTSTRAP_SERVERS}"
+  - groovy:
+      script:
+        file: "kafka/share-group-earliest.groovy"
+
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "kafka/kafka-share-schema-registry-route.yaml"
+            systemProperties:
+              properties:
+                - name: kafka.topic
+                  value: "${kafka.topic}"
+                - name: kafka.share.group
+                  value: "${kafka.share.group}"
+                - name: kafka.bootstrapServers
+                  value: "${kafka.bootstrapServers}"
+                - name: kafka.schemaRegistryUrl
+                  value: "http://${CITRUS_TESTCONTAINERS_APICURIO_HOST}:${CITRUS_TESTCONTAINERS_APICURIO_PORT}/apis/registry/v3"
+                - name: http.sink.url
+                  value: "http://localhost:${kafka.sink.server.port}/result"
+
+  # kafka-sink writes the Protobuf message, kafka-share-source reads it and gives it as JSON text
+  - http:
+      server: "kafkaSinkServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: "java.lang.String"
+            - name: "kafka-topic"
+              value: "${kafka.topic}"
+          body:
+            data: '{"id":1,"item":"camel"}'
+  - http:
+      server: "kafkaSinkServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

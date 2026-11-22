@@ -1,0 +1,51 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+# Two consumers of one share group, on their own threads
+- route:
+    from:
+      uri: "kamelet:kafka-share-source"
+      parameters:
+        bootstrapServers: '{{kafka.bootstrapServers}}'
+        topic: '{{kafka.topic}}'
+        shareGroup: '{{kafka.share.group}}'
+        saslAuthType: 'NONE'
+        consumersCount: 2
+      steps:
+        - setHeader:
+            name: X-Consumer
+            simple: "${threadName}"
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - choice:
+            when:
+              # the record "fail" fails the first time it is delivered, so it is released and delivered again
+              - simple: "${body} == 'fail' && ${header.kafka-delivery-count} == 1"
+                steps:
+                  - throwException:
+                      exceptionType: "java.lang.IllegalStateException"
+                      message: "Failed on the first delivery"
+              # the record "release" is released by the header the first time it is delivered
+              - simple: "${body} == 'release' && ${header.kafka-delivery-count} == 1"
+                steps:
+                  - setHeader:
+                      name: CamelKafkaShareAcknowledge
+                      constant: RELEASE
+                  - stop: {}
+        - to:
+            uri: "{{http.sink.url}}"
