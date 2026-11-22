@@ -41,15 +41,18 @@ actions:
       script:
         file: "aws/eventbridge/setupEventBridgeRule.groovy"
 
-  # The first run creates the queue, then stops
+  # The first run creates the queue, then stops (the test stops it, so Citrus must not stop it at the end)
   - camel:
       cli:
         run:
+          autoRemove: false
           integration:
             name: "eventbridge-keep-first"
             file: "aws/eventbridge/aws-eventbridge-source-keep-route.yaml"
             systemProperties:
               properties:
+                - name: "run.name"
+                  value: "first"
                 - name: "aws.eventbridge.eventbusName"
                   value: "${aws.eventbridge.eventbusName}"
                 - name: "aws.eventbridge.ruleName"
@@ -64,11 +67,6 @@ actions:
       cli:
         stop:
           integration: "eventbridge-keep-first"
-  - camel:
-      cli:
-        verify:
-          integration: "eventbridge-keep-first"
-          logMessage: "shutdown in"
 
   # The queue is still there, and still a target of the rule: an event put on the bus now goes into it
   - createVariables:
@@ -88,6 +86,8 @@ actions:
             file: "aws/eventbridge/aws-eventbridge-source-keep-route.yaml"
             systemProperties:
               properties:
+                - name: "run.name"
+                  value: "second"
                 - name: "aws.eventbridge.eventbusName"
                   value: "${aws.eventbridge.eventbusName}"
                 - name: "aws.eventbridge.ruleName"
@@ -103,6 +103,10 @@ actions:
       receiveRequest:
         POST:
           path: "/kept"
+          # the second run got it, not the first one while it stopped
+          headers:
+            - name: "X-Run"
+              value: "second"
         validate:
           - jsonPath:
               - expression: '$[''detail-type'']'

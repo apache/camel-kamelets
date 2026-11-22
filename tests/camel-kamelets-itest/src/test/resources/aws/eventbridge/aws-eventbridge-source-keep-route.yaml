@@ -31,5 +31,8 @@
         region: "{{aws.region}}"
         waitTimeSeconds: 1
       steps:
+        - setHeader:
+            name: X-Run
+            constant: "{{run.name}}"
         - to:
             uri: "{{http.sink.url}}/kept"
