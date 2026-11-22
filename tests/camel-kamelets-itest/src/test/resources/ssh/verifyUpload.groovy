@@ -25,13 +25,13 @@ def file = '/config/upload/day 1.csv'
 
 def content = ssh.execInContainer('cat', file)
 if (content.getExitCode() != 0) {
-    throw new AssertionError('The server has no file ' + file + ': ' + content.getStderr())
+    throw new org.citrusframework.exceptions.CitrusRuntimeException('The server has no file ' + file + ': ' + content.getStderr())
 }
 if (content.getStdout() != 'id,item\n1,book') {
-    throw new AssertionError('Unexpected content of ' + file + ': ' + content.getStdout().inspect())
+    throw new org.citrusframework.exceptions.CitrusRuntimeException('Unexpected content of ' + file + ': ' + content.getStdout().inspect())
 }
 def stat = ssh.execInContainer('stat', '-c', '%a %U', file).getStdout().trim()
 def expected = context.getVariable('ssh.chmod') + ' citrus'
 if (stat != expected) {
-    throw new AssertionError('Expected the permissions and owner ' + expected + ' of ' + file + ' but got ' + stat)
+    throw new org.citrusframework.exceptions.CitrusRuntimeException('Expected the permissions and owner ' + expected + ' of ' + file + ' but got ' + stat)
 }
