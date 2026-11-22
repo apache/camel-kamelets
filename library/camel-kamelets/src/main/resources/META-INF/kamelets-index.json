@@ -120,6 +120,16 @@
     "namespace" : "AWS",
     "provider" : "Apache Software Foundation"
   }, {
+    "name" : "aws-eventbridge-source",
+    "type" : "source",
+    "supportLevel" : "Stable",
+    "title" : "AWS Eventbridge Source",
+    "summary" : "Receives the events that an Amazon EventBridge rule matches on an event bus, one message per event, through an SQS queue that it adds to the rule as a target.",
+    "description" : "Receives the events that an Amazon EventBridge rule matches on an event bus, one message per event, through an SQS queue that it adds to the rule as a target.\n\nUse it to react to the events of your applications or of AWS services, such as `Order Shipped` from a shop or a change of state of an EC2 instance, without setting up a queue yourself. To publish events, use `aws-eventbridge-sink`. For the events of an S3 bucket, `aws-s3-event-based-source` reads a queue that you made the target of a rule yourself, gives each event an ID that is the same in its copies, and can fetch the files.\n\nOutput: the body is the whole EventBridge event, as JSON text: `id` (the ID that EventBridge gave the event), `detail-type`, `source`, `account`, `time`, `region`, `resources` and `detail`, which holds what the sender of the event put in it, such as `{\"orderId\": \"A-1\"}`. The `CamelAwsEventbridgeMessageId` header is the ID of the SQS message that carried the event, and `CamelAwsEventbridgeReceiptHandle` its receipt handle.\n\nGood to know: the rule must exist on the event bus before the Kamelet starts, or it fails to start; its event pattern decides which events arrive. Create it in the EventBridge console or with `aws events put-rule`. Without `queueURL`, it creates a queue named `camel-eventbridge-` followed by the rule name and a random part, and adds it to the rule; when it stops, it removes the queue from the rule and deletes it, so the events of the time it does not run are lost, and each replica gets its own queue and every event. With `queueURL`, it adds your queue to the rule and leaves it there, so the queue collects the events while the Kamelet does not run, and the replicas share the events. Each event is deleted from the queue once it has been processed; an event that fails stays in the queue and is received again each time `visibilityTimeout` ends, until it is processed. Stopping the Kamelet can take up to `waitTimeSeconds`, as it waits for the last request to SQS to end. It logs in to EventBridge and SQS with the same credentials, which need `events:PutTargets` and `events:RemoveTargets` on the rule, and `sqs:ReceiveMessage`, `sqs:DeleteMessage` and `sqs:GetQueueAttributes` on the queue, plus `sqs:CreateQueue`, `sqs:SetQueueAttributes` and `sqs:DeleteQueue` without `queueURL`. To reach AWS through an HTTP proxy, set `proxyHost` and `proxyPort`, and set `proxyProtocol` to `HTTP` for a proxy that takes plain HTTP, such as Squid.",
+    "group" : "AWS Eventbridge",
+    "namespace" : "AWS",
+    "provider" : "Apache Software Foundation"
+  }, {
     "name" : "aws-kinesis-firehose-sink",
     "type" : "sink",
     "supportLevel" : "Stable",
