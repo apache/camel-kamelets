@@ -31,6 +31,7 @@
                     baseUrl: '{{chat.server.url}}/v1'
                     apiKey: '{{chat.api.token}}'
                     model: '{{chat.model}}'
+                    maxRetries: 1
               - setHeader:
                   name: X-Error-Type
                   constant: "none"

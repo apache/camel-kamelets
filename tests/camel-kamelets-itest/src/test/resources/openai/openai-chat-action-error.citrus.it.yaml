@@ -79,23 +79,7 @@ actions:
           reasonPhrase: "OK"
           version: "HTTP/1.1"
 
-  # the second message: a server that is not available is tried 3 times, then the message fails
-  - http:
-      server: "openAiServer"
-      receiveRequest:
-        POST:
-          path: "/v1/chat/completions"
-  - http:
-      server: "openAiServer"
-      sendResponse:
-        response:
-          status: 503
-          reasonPhrase: "Service Unavailable"
-          version: "HTTP/1.1"
-          contentType: "application/json"
-          body:
-            data: |
-              { "error": { "message": "The server is overloaded.", "type": "server_error", "param": null, "code": null } }
+  # the second message: a server that is not available is tried twice (maxRetries 1), then the message fails
   - http:
       server: "openAiServer"
       receiveRequest:
