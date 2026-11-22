@@ -46,13 +46,20 @@ actions:
         verify:
           integration: "csv-serialize-action-route"
           logMessage: "Lists 1;'Ann;A'<CR><LF>2;Bob<CR><LF>"
-  # Parsed JSON: the keys of the first row are the header line; a nested object is text, a null is empty,
-  # and the key that only the second row has gets a column without a name
+  # Parsed JSON: the keys of the first row are the header line and the columns of all the rows; a nested object
+  # is text, a null is empty, the keys the second row does not have are empty, and the key that only it has is
+  # left out
   - camel:
       cli:
         verify:
           integration: "csv-serialize-action-route"
-          logMessage: 'Json id,name,tags,note<CR><LF>1,Ann,{a=1},<CR><LF>2,Bob,,,true<CR><LF>'
+          logMessage: 'Json id,name,tags,note<CR><LF>1,Ann,{a=1},<CR><LF>2,Bob,,<CR><LF>'
+  # Spaces around the names of columns are left out, and a name can hold a single quote
+  - camel:
+      cli:
+        verify:
+          integration: "csv-serialize-action-route"
+          logMessage: "Spaces owner's name,id<CR><LF>Ann,1<CR><LF>"
   # An empty List: empty text, or only the header line with columns
   - camel:
       cli:
