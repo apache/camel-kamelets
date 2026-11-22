@@ -39,7 +39,7 @@ spec:
 
       Output: the body is text for a JMS text message, and bytes for a bytes message. The JMS properties of the message become headers, along with the JMS headers such as `JMSMessageID` and `JMSTimestamp`, and IBM MQ details such as `JMSXUserID`, `JMS_IBM_PutDate` and `JMS_IBM_Format`.
 
-      Good to know: the IBM MQ client library is not included, as its licence is not the Apache one: add `mvn:com.ibm.mq:com.ibm.mq.jakarta.client` with a version to the dependencies of the integration (Camel JBang adds it by itself). From a queue, each message is removed when it is received, even when the rest of the flow then fails, unless `transacted` is true or `acknowledgementModeName` is `CLIENT_ACKNOWLEDGE`: then a message whose flow failed is delivered again. Several copies of this source share the messages of a queue, and `concurrentConsumers` processes several messages at the same time. From a topic (`destinationType` set to `topic`), it receives only the messages sent while it is connected, unless `subscriptionDurable` is true: then the queue manager keeps the messages sent while it is stopped, under `subscriptionName`. A durable subscription needs `clientId` unless it is shared (`subscriptionShared`, JMS 2.0), and only one connection may use a client ID at a time. With `selector`, it receives only the messages whose properties and headers match the selector. It connects with no TLS unless `sslCipherSuite` is set; the trust store and the key store for TLS are those of the Java runtime (`javax.net.ssl.trustStore`, `javax.net.ssl.keyStore`). For a multi-instance queue manager, list its instances in `connectionNameList`. When the queue manager cannot be reached, it starts anyway and tries again every 5 seconds.
+      Good to know: the IBM MQ client library is not included, as its licence is not the Apache one: add `mvn:com.ibm.mq:com.ibm.mq.jakarta.client` with a version to the dependencies of the integration (Camel JBang adds it by itself). From a queue, each message is removed when it is received, even when the rest of the flow then fails, unless `transacted` is true or `acknowledgementModeName` is `CLIENT_ACKNOWLEDGE`: then a message whose flow failed is delivered again. Several copies of this source share the messages of a queue, and `concurrentConsumers` processes several messages at the same time. From a topic (`destinationType` set to `topic`), it receives only the messages sent while it is connected, unless `subscriptionDurable` is true: then the queue manager keeps the messages sent while it is stopped, under `subscriptionName`. A durable subscription needs `clientId` unless it is shared (`subscriptionShared`, JMS 2.0), and only one connection may use a client ID at a time. With `selector`, it receives only the messages whose properties and headers match the selector. It connects with no TLS unless `sslCipherSuite` is set; the trust store and the key store for TLS are those of the Java runtime (`javax.net.ssl.trustStore`, `javax.net.ssl.keyStore`). For a multi-instance queue manager, list its instances in `connectionNameList`. When the queue manager cannot be reached, it starts anyway and tries again every 5 seconds. An answer is sent only when the incoming message has a `JMSReplyTo`, the queue on which its sender waits for one: the message at the end of the flow then goes back to that queue, as the reply. Headers set during the flow, such as `JMSReplyTo` or `CamelJmsDestinationName`, cannot send the answer to another queue, nor make one for a message without `JMSReplyTo`.
     required:
       - serverName
       - serverPort
@@ -194,5 +194,20 @@ spec:
         acknowledgementModeName: "{{?acknowledgementModeName}}"
         connectionFactory: "#bean:{{wmqConnectionFactory}}"
       steps:
+        # camel-jms sends an answer only to the JMSReplyTo of the incoming message, chosen before the
+        # flow runs. The flow must not shape the answer either: the JMSReplyTo header goes back to the
+        # value it had, and no CamelJms* header set by the flow is left to steer how the answer is sent.
+        - setVariable:
+            name: kameletJmsReplyTo
+            expression:
+              simple:
+                expression: "${header.JMSReplyTo}"
         - to:
             uri: kamelet:sink
+        - setHeader:
+            name: JMSReplyTo
+            expression:
+              simple:
+                expression: "${variable.kameletJmsReplyTo}"
+        - removeHeaders:
+            pattern: CamelJms*

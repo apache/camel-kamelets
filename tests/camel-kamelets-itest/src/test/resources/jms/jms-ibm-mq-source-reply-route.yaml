@@ -1,0 +1,100 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+# an application that sends requests and waits for the replies
+- beans:
+    - name: requester
+      type: "com.ibm.mq.jakarta.jms.MQConnectionFactory"
+      properties:
+        XMSC_WMQ_HOST_NAME: '{{mq.host}}'
+        XMSC_WMQ_PORT: '{{mq.port}}'
+        XMSC_WMQ_CHANNEL: 'DEV.APP.SVRCONN'
+        XMSC_WMQ_QUEUE_MANAGER: 'QM1'
+        XMSC_WMQ_CONNECTION_MODE: '1'
+        XMSC_USERID: 'app'
+        XMSC_PASSWORD: 'passw0rd'
+
+- route:
+    from:
+      uri: "kamelet:jms-ibm-mq-source"
+      parameters:
+        serverName: '{{mq.host}}'
+        serverPort: '{{mq.port}}'
+        destinationName: 'DEV.QUEUE.1'
+        queueManager: 'QM1'
+        channel: 'DEV.APP.SVRCONN'
+        username: 'app'
+        password: 'passw0rd'
+      steps:
+        - setProperty:
+            name: request
+            simple: "${body}"
+        - to:
+            uri: "{{http.sink.url}}/request"
+        # headers that name another queue: they must not change where the answer goes, nor make one
+        - setHeader:
+            name: JMSReplyTo
+            constant: 'DEV.QUEUE.3'
+        - setHeader:
+            name: CamelJmsDestinationName
+            constant: 'DEV.QUEUE.3'
+        - setBody:
+            simple: 'answer to ${exchangeProperty.request}'
+
+# an application that sends requests: 1 and 3 wait for the answer on the queue DEV.QUEUE.2, 2 expects none
+- route:
+    from:
+      uri: "timer:send"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: 'request 1'
+        - to:
+            uri: "jms:queue:DEV.QUEUE.1?connectionFactory=#requester&exchangePattern=InOut&replyTo=DEV.QUEUE.2&requestTimeout=30000"
+        - setHeader:
+            name: X-Reply-To
+            simple: "rt=${header.JMSReplyTo}"
+        - to:
+            uri: "{{http.sink.url}}/reply"
+        - removeHeaders:
+            pattern: '*'
+        - setBody:
+            constant: 'request 2'
+        - to:
+            uri: "jms:queue:DEV.QUEUE.1?connectionFactory=#requester&exchangePattern=InOnly"
+        - setBody:
+            constant: 'request 3'
+        - to:
+            uri: "jms:queue:DEV.QUEUE.1?connectionFactory=#requester&exchangePattern=InOut&replyTo=DEV.QUEUE.2&requestTimeout=30000"
+        - setHeader:
+            name: X-Reply-To
+            simple: "rt=${header.JMSReplyTo}"
+        - to:
+            uri: "{{http.sink.url}}/reply"
+        # what reached the queue named by the headers of the flow
+        - removeHeaders:
+            pattern: '*'
+        - setBody:
+            constant: 'nothing'
+        - pollEnrich:
+            constant: "jms:queue:DEV.QUEUE.3?connectionFactory=#requester"
+            timeout: 3000
+        - setBody:
+            simple: "${body} ?: 'nothing'"
+        - to:
+            uri: "{{http.sink.url}}/elsewhere"
