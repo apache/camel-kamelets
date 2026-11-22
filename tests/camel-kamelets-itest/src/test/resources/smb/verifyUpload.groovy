@@ -16,7 +16,8 @@
  */
 
 // Checks that the share has the file upload/day 1.csv, with the body of the message as its content, the file
-// guest.csv at the top of the share, written as a guest, and no other file written.
+// guest.csv at the top of the share, written as a guest, the file secret.csv on the share secure, written with
+// encryption, and no other file written.
 
 import org.testcontainers.containers.GenericContainer
 
@@ -35,6 +36,11 @@ if (guest.getExitCode() != 0 || guest.getStdout() != 'id,item\n2,pen') {
     throw new IllegalStateException('Unexpected /shared/guest.csv: ' + guest.getStdout().inspect() + guest.getStderr())
 }
 def files = smb.execInContainer('find', '/shared', '-type', 'f').getStdout().readLines().sort()
-if (files != ['/shared/0.txt', '/shared/B.txt', '/shared/a.txt', '/shared/guest.csv', '/shared/orders/order 1.csv', file]) {
+def secret = smb.execInContainer('cat', '/shared/secure/secret.csv')
+if (secret.getExitCode() != 0 || secret.getStdout() != 'id,item\n3,key') {
+    throw new IllegalStateException('Unexpected /shared/secure/secret.csv: ' + secret.getStdout().inspect() + secret.getStderr())
+}
+if (files != ['/shared/0.txt', '/shared/B.txt', '/shared/a.txt', '/shared/guest.csv', '/shared/orders/order 1.csv',
+              '/shared/secure/secret.csv', file]) {
     throw new IllegalStateException('Unexpected files on the share: ' + files)
 }

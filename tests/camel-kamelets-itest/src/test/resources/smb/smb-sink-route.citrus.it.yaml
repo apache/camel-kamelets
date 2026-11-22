@@ -16,7 +16,7 @@
 # ---------------------------------------------------------------------------
 
 name: smb-sink-route-test
-description: 'smb-sink writes the body as a file to the directory on the share, under the name in the file header without its directory, ignores the CamelSmbFileExists and CamelOverruleFileName headers of the message, fails a message whose CamelFileName points outside the directory, and writes at the top of the share as a guest, with no password and no directoryName'
+description: 'smb-sink writes the body as a file to the directory on the share, under the name in the file header without its directory, ignores the CamelSmbFileExists and CamelOverruleFileName headers of the message, fails a message whose CamelFileName points outside the directory, writes at the top of the share as a guest, with no password and no directoryName, and writes to a share that requires encryption only with encryptData'
 actions:
   # Start the Samba server (port 445) with the share files and the user citrus, whose password has characters
   # that have a meaning in an endpoint address
@@ -116,6 +116,30 @@ actions:
             data: |-
               id,item
               2,pen
+  - http:
+      server: "smbHttpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The share that requires encryption refuses the connection without encryptData, and takes the file with it
+  - http:
+      server: "smbHttpServer"
+      receiveRequest:
+        POST:
+          path: "/secure"
+          type: "plaintext"
+          headers:
+            - name: "X-Error"
+              value: '@contains(''STATUS_ACCESS_DENIED'')@'
+            - name: "X-File-Name-Produced"
+              value: 'secret.csv'
+          body:
+            data: |-
+              id,item
+              3,key
   - http:
       server: "smbHttpServer"
       sendResponse:
