@@ -1,0 +1,148 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: openai-chat-action-error-test
+variables:
+  - name: "chat.api.token"
+    value: "sk-wrong-citrus:randomString(10)"
+  - name: "chat.model"
+    value: "gpt-4.1-mini"
+actions:
+  - createVariables:
+      variables:
+        - name: "chat.server.url"
+          value: "http://localhost:${openai.server.port}"
+
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "openai/openai-chat-action-error-route.yaml"
+            systemProperties:
+              properties:
+                - name: "chat.server.url"
+                  value: "${chat.server.url}"
+                - name: "chat.api.token"
+                  value: "${chat.api.token}"
+                - name: "chat.model"
+                  value: "${chat.model}"
+
+  # the first message: a wrong API key fails it at once, without a retry
+  - http:
+      server: "openAiServer"
+      receiveRequest:
+        POST:
+          path: "/v1/chat/completions"
+  - http:
+      server: "openAiServer"
+      sendResponse:
+        response:
+          status: 401
+          reasonPhrase: "Unauthorized"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              { "error": { "message": "Incorrect API key provided: sk-wrong.", "type": "invalid_request_error", "param": null, "code": "invalid_api_key" } }
+
+  - http:
+      server: "openAiServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Error-Type"
+              value: "com.openai.errors.UnauthorizedException"
+          body:
+            data: "@contains('Incorrect API key provided')@"
+  - http:
+      server: "openAiServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # the second message: a server that is not available is tried 3 times, then the message fails
+  - http:
+      server: "openAiServer"
+      receiveRequest:
+        POST:
+          path: "/v1/chat/completions"
+  - http:
+      server: "openAiServer"
+      sendResponse:
+        response:
+          status: 503
+          reasonPhrase: "Service Unavailable"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              { "error": { "message": "The server is overloaded.", "type": "server_error", "param": null, "code": null } }
+  - http:
+      server: "openAiServer"
+      receiveRequest:
+        POST:
+          path: "/v1/chat/completions"
+  - http:
+      server: "openAiServer"
+      sendResponse:
+        response:
+          status: 503
+          reasonPhrase: "Service Unavailable"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              { "error": { "message": "The server is overloaded.", "type": "server_error", "param": null, "code": null } }
+  - http:
+      server: "openAiServer"
+      receiveRequest:
+        POST:
+          path: "/v1/chat/completions"
+  - http:
+      server: "openAiServer"
+      sendResponse:
+        response:
+          status: 503
+          reasonPhrase: "Service Unavailable"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              { "error": { "message": "The server is overloaded.", "type": "server_error", "param": null, "code": null } }
+  - http:
+      server: "openAiServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Error-Type"
+              value: "com.openai.errors.InternalServerException"
+          body:
+            data: "@contains('The server is overloaded.')@"
+  - http:
+      server: "openAiServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

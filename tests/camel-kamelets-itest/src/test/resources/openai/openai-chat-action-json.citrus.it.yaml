@@ -1,0 +1,207 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: openai-chat-action-json-test
+variables:
+  - name: "chat.model"
+    value: "gpt-4.1-mini"
+actions:
+  - createVariables:
+      variables:
+        - name: "chat.server.url"
+          value: "http://localhost:${openai.server.port}"
+
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "openai/openai-chat-action-json-route.yaml"
+            systemProperties:
+              properties:
+                - name: "chat.server.url"
+                  value: "${chat.server.url}"
+                - name: "chat.model"
+                  value: "${chat.model}"
+
+  # message 1: the request asks for an answer that follows the JSON schema
+  - http:
+      server: "openAiServer"
+      receiveRequest:
+        POST:
+          path: "/v1/chat/completions"
+          headers:
+            - name: "Authorization"
+              value: "Bearer none"
+          body:
+            data: |
+              {
+                "messages": [
+                  { "role": "user", "content": "I was charged twice for my order, please fix it today." }
+                ],
+                "model": "${chat.model}",
+                "response_format": {
+                  "type": "json_schema",
+                  "json_schema": {
+                    "name": "camel_schema",
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "topic": { "type": "string", "enum": ["billing", "technical", "other"] },
+                        "urgent": { "type": "boolean" }
+                      },
+                      "required": ["topic", "urgent"]
+                    }
+                  }
+                }
+              }
+
+  - http:
+      server: "openAiServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              {
+                "id": "chatcmpl-citrus-2",
+                "object": "chat.completion",
+                "created": 1763800000,
+                "model": "gpt-4.1-mini-2025-04-14",
+                "choices": [
+                  {
+                    "index": 0,
+                    "message": {
+                      "role": "assistant",
+                      "content": "{\"topic\":\"billing\",\"urgent\":true}",
+                      "refusal": null,
+                      "annotations": []
+                    },
+                    "logprobs": null,
+                    "finish_reason": "stop"
+                  }
+                ],
+                "usage": { "prompt_tokens": 60, "completion_tokens": 9, "total_tokens": 69 }
+              }
+
+  # the body is the JSON text of the answer
+  - http:
+      server: "openAiServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: "java.lang.String"
+          body:
+            data: '{"topic":"billing","urgent":true}'
+
+  - http:
+      server: "openAiServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # message 2: the request asks for an answer that follows the JSON schema
+  - http:
+      server: "openAiServer"
+      receiveRequest:
+        POST:
+          path: "/v1/chat/completions"
+          headers:
+            - name: "Authorization"
+              value: "Bearer none"
+          body:
+            data: |
+              {
+                "messages": [
+                  { "role": "user", "content": "I was charged twice for my order, please fix it today." }
+                ],
+                "model": "${chat.model}",
+                "response_format": {
+                  "type": "json_schema",
+                  "json_schema": {
+                    "name": "camel_schema",
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "topic": { "type": "string", "enum": ["billing", "technical", "other"] },
+                        "urgent": { "type": "boolean" }
+                      },
+                      "required": ["topic", "urgent"]
+                    }
+                  }
+                }
+              }
+
+  - http:
+      server: "openAiServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              {
+                "id": "chatcmpl-citrus-3",
+                "object": "chat.completion",
+                "created": 1763800000,
+                "model": "gpt-4.1-mini-2025-04-14",
+                "choices": [
+                  {
+                    "index": 0,
+                    "message": {
+                      "role": "assistant",
+                      "content": "{\"topic\":\"billing\",\"urgent\":true}",
+                      "refusal": null,
+                      "annotations": []
+                    },
+                    "logprobs": null,
+                    "finish_reason": "stop"
+                  }
+                ],
+                "usage": { "prompt_tokens": 60, "completion_tokens": 9, "total_tokens": 69 }
+              }
+
+  # the body is the JSON text of the answer
+  - http:
+      server: "openAiServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: "java.lang.String"
+          body:
+            data: '{"topic":"billing","urgent":true}'
+
+  - http:
+      server: "openAiServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

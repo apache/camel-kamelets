@@ -1,0 +1,150 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: openai-chat-action
+  annotations:
+    camel.apache.org/kamelet.support.level: "Stable"
+    camel.apache.org/catalog.version: "4.24.0-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHBhdGggZmlsbD0iIzEwYTM3ZiIgZD0iTTEyIDZoNDBhOCA4IDAgMCAxIDggOHYyNGE4IDggMCAwIDEtOCA4SDI4TDE2IDU4VjQ2aC00YTggOCAwIDAgMS04LThWMTRhOCA4IDAgMCAxIDgtOHoiLz48Y2lyY2xlIGN4PSIyMCIgY3k9IjI2IiByPSI0IiBmaWxsPSIjZmZmIi8+PGNpcmNsZSBjeD0iMzIiIGN5PSIyNiIgcj0iNCIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjQ0IiBjeT0iMjYiIHI9IjQiIGZpbGw9IiNmZmYiLz48L3N2Zz4K"
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "OpenAI"
+    camel.apache.org/kamelet.namespace: "AI"
+  labels:
+    camel.apache.org/kamelet.type: "action"
+    camel.apache.org/kamelet.verified: "true"
+spec:
+  definition:
+    title: "OpenAI Chat Action"
+    description: |-
+      Sends each message as a question to a chat model of OpenAI, or of any server with the same API such as Ollama, vLLM or LM Studio, and gives back the answer.
+
+      Use it to summarize, classify, translate or answer questions about text as it flows, for example to sort support emails by topic or to pull the fields out of an order. Set `jsonSchema` to get the answer as JSON that has the fields you ask for. For a model in Amazon Bedrock or Google Vertex AI, use `aws-bedrock-text-sink` or `google-vertexai-sink`.
+
+      Input: the body is the user message, as text; bytes and streams are read as text, whatever their Content-Type.
+
+      Output: the body is the answer of the model, as text. With `jsonSchema`, it is the JSON text of the answer. The `CamelOpenAIFinishReason` header says why the model stopped, such as `stop` or `length`, `CamelOpenAIResponseModel` and `CamelOpenAIResponseId` are the model and the id the server gives for the answer, and the token counts are in the `CamelOpenAIPromptTokens`, `CamelOpenAICompletionTokens` and `CamelOpenAITotalTokens` headers.
+
+      Good to know: each message is one question on its own: the Kamelet keeps no history of the conversation, and the model cannot call tools, so the text of a message cannot make it act. Headers that start with `CamelOpenAI` are removed from the message first, so a message cannot change the model, the system message or the request. An error answer from the server fails the message with an error of the package `com.openai.errors`, such as `UnauthorizedException` for a wrong API key (status 401) or `InternalServerException` for a status 5xx. A request that gets the status 408, 409, 429 or 5xx is first sent 2 more times.
+    required:
+      - model
+    type: object
+    properties:
+      baseUrl:
+        title: Base URL
+        description: The URL of the API of the server, up to and without `/chat/completions`. For a local server, such as `http://localhost:11434/v1` for Ollama.
+        type: string
+        default: "https://api.openai.com/v1"
+        example: "http://localhost:11434/v1"
+        pattern: "^https?://.+"
+      apiKey:
+        title: API Key
+        description: The API key to send to the server, as a Bearer token. Create it in the OpenAI platform under API keys. When it is not set, the `OPENAI_API_KEY` environment variable is used, and with neither the Kamelet fails to start. A server that checks no key, such as a local one, still needs a value here, any text such as `none`.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      model:
+        title: Model
+        description: The name of the model to ask, as the server names it.
+        type: string
+        example: "gpt-4.1-mini"
+      systemMessage:
+        title: System Message
+        description: Instructions for the model, sent before each user message, such as the role it plays, the language or the length of the answer.
+        type: string
+        example: "You sort support emails. Answer with one word: billing, technical or other."
+      temperature:
+        title: Temperature
+        description: How random the answer is, from 0.0 to 2.0. Lower values give more focused and repeatable answers. When it is not set, the server chooses.
+        type: number
+        example: 0.2
+      maxTokens:
+        title: Max Tokens
+        description: The most tokens (pieces of words) the answer may have, sent as `max_completion_tokens`. An answer that is cut off has the finish reason `length`. When it is not set, the server chooses.
+        type: integer
+        example: 500
+      jsonSchema:
+        title: JSON Schema
+        description: "The JSON schema of the answer: JSON text, or `resource:file:` followed by the path of a file that holds it. The model is asked to answer with JSON that follows it (the `response_format` of the request), and the body afterwards is that JSON as text. The answer is not checked against the schema. The model and the server must support structured outputs. In a route, two closing braces next to each other are read as the end of a placeholder: write them with a space in between, as `} }`, or use a file."
+        type: string
+        example: "resource:file:/etc/camel/ticket-schema.json"
+      stripThinking:
+        title: Strip Thinking
+        description: Whether to remove the `<think>...</think>` block that reasoning models such as Qwen3 or DeepSeek-R1 put before their answer. The block is then in the `CamelOpenAIThinkingContent` header.
+        type: boolean
+        default: false
+  dataTypes:
+    # No 'default:' on purpose: the body is made text in the template. See #3117.
+    in:
+      headers: {}
+    out:
+      headers:
+        CamelOpenAIFinishReason:
+          title: Finish Reason
+          description: Why the model stopped answering, such as `stop` or `length`.
+          type: string
+        CamelOpenAIResponseModel:
+          title: Response Model
+          description: The model that answered, as the server names it.
+          type: string
+        CamelOpenAIResponseId:
+          title: Response ID
+          description: The id the server gives for the answer.
+          type: string
+        CamelOpenAIPromptTokens:
+          title: Prompt Tokens
+          description: The number of tokens of the system and user messages.
+          type: integer
+        CamelOpenAICompletionTokens:
+          title: Completion Tokens
+          description: The number of tokens of the answer.
+          type: integer
+        CamelOpenAITotalTokens:
+          title: Total Tokens
+          description: The number of tokens of the messages and the answer together.
+          type: integer
+        CamelOpenAIThinkingContent:
+          title: Thinking Content
+          description: The text of the `<think>` block of the answer. Only set when `stripThinking` is true and the answer has one.
+          type: string
+  dependencies:
+    - "camel:kamelet"
+    - "camel:openai"
+  template:
+    from:
+      uri: kamelet:source
+      steps:
+        # The producer reads the model, the messages, the sampling, the structured output and more from CamelOpenAI*
+        # headers, which take precedence over the options.
+        - removeHeaders:
+            pattern: CamelOpenAI*
+        # A byte[], stream or file body would be sent as an image, a PDF or audio when its Content-Type or file name says so.
+        - convertBodyTo:
+            type: java.lang.String
+        - to:
+            uri: openai:chat-completion
+            parameters:
+              baseUrl: "{{baseUrl}}"
+              apiKey: "RAW({{?apiKey}})"
+              model: "{{model}}"
+              systemMessage: "RAW({{?systemMessage}})"
+              temperature: "{{?temperature}}"
+              maxTokens: "{{?maxTokens}}"
+              jsonSchema: "RAW({{?jsonSchema}})"
+              stripThinking: "{{stripThinking}}"
