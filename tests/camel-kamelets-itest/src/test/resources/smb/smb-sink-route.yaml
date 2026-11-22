@@ -44,6 +44,9 @@
               username: 'citrus'
               # a password with characters that have a meaning in an endpoint address
               password: 's3cr&t+pw'
+              connectTimeout: 10000
+              writeTimeout: 30000
+              transactTimeout: 20000
         # what the Kamelet gives: the Java type of the body and the Content-Type
         - setHeader:
             name: X-Body-Type
@@ -89,3 +92,65 @@
             name: CamelFileName
         - to:
             uri: "{{http.sink.url}}/rejected"
+        # then as a guest, with no password, to the top of the share (no directoryName)
+        - removeHeaders:
+            pattern: "*"
+        - setBody:
+            constant: "id,item\n2,pen"
+        - setHeader:
+            name: file
+            constant: 'guest.csv'
+        - to:
+            uri: "kamelet:smb-sink"
+            parameters:
+              connectionHost: '{{smb.host}}'
+              connectionPort: '{{smb.port}}'
+              shareName: 'files'
+              username: 'Guest'
+        - setHeader:
+            name: X-File-Name-Produced
+            simple: "${header.CamelFileNameProduced}"
+        - to:
+            uri: "{{http.sink.url}}/guest"
+        # then to the share secure, which requires encryption: refused without encryptData, written with it
+        - removeHeaders:
+            pattern: "*"
+        - setBody:
+            constant: "id,item\n3,key"
+        - setHeader:
+            name: file
+            constant: 'secret.csv'
+        - doTry:
+            steps:
+              - to:
+                  uri: "kamelet:smb-sink"
+                  parameters:
+                    connectionHost: '{{smb.host}}'
+                    connectionPort: '{{smb.port}}'
+                    shareName: 'secure'
+                    username: 'citrus'
+                    password: 's3cr&t+pw'
+              - setHeader:
+                  name: X-Error
+                  constant: 'none'
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - setHeader:
+                      name: X-Error
+                      simple: "${exception.message}"
+        - to:
+            uri: "kamelet:smb-sink"
+            parameters:
+              connectionHost: '{{smb.host}}'
+              connectionPort: '{{smb.port}}'
+              shareName: 'secure'
+              username: 'citrus'
+              password: 's3cr&t+pw'
+              encryptData: true
+        - setHeader:
+            name: X-File-Name-Produced
+            simple: "${header.CamelFileNameProduced}"
+        - to:
+            uri: "{{http.sink.url}}/secure"

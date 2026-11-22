@@ -16,7 +16,7 @@
 # ---------------------------------------------------------------------------
 
 name: smb-source-route-test
-description: 'smb-source reads the file in the directory on the share, with its name in the file, ce-file and CamelFileName headers, its size and its UNC path, and moves it to the directory of move'
+description: 'smb-source reads the file in the directory on the share, with its name in the file, ce-file and CamelFileName headers, its size and its UNC path, and moves it to the directory of move, with encryptData on a share that does not require it'
 actions:
   # Start the Samba server (port 445) with the share files and the user citrus, whose password has characters
   # that have a meaning in an endpoint address

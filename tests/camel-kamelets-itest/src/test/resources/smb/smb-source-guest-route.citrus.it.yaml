@@ -1,0 +1,125 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: smb-source-guest-route-test
+description: 'smb-source logs in as a guest, with no password, reads the files at the top of the share when directoryName is not set, and reads them in the order of sortBy file:length;reverse:ignoreCase:file:name'
+actions:
+  # Start the Samba server (port 445) with the share files; smbServer.groovy turns on guest access
+  - testcontainers:
+      start:
+        container:
+          name: "smb"
+          image: "dockurr/samba:4.23.10"
+          autoRemove: true
+          startUpTimeout: 120
+          env:
+            - name: "NAME"
+              value: "files"
+            - name: "USER"
+              value: "citrus"
+            - name: "PASS"
+              value: "s3cr&t+pw"
+          exposedPorts:
+            - 445
+  - groovy:
+      script:
+        file: "smb/smbServer.groovy"
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "smb/smb-source-guest-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${smb.http.server.port}"
+                - name: "smb.host"
+                  value: "${CITRUS_TESTCONTAINERS_SMB_HOST}"
+                - name: "smb.port"
+                  value: "${CITRUS_TESTCONTAINERS_SMB_PORT}"
+
+  # The files at the top of the share, the smallest first, then by name in reverse order without case,
+  # with their names without a leading /
+  - http:
+      server: "smbHttpServer"
+      receiveRequest:
+        POST:
+          path: "/root"
+          type: "plaintext"
+          headers:
+            - name: "file"
+              value: '0.txt'
+            - name: "X-File-Name"
+              value: '0.txt'
+            - name: "X-Unc-Path"
+              value: '\\${CITRUS_TESTCONTAINERS_SMB_HOST}\files\0.txt'
+          body:
+            data: '0'
+  - http:
+      server: "smbHttpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+  - http:
+      server: "smbHttpServer"
+      receiveRequest:
+        POST:
+          path: "/root"
+          type: "plaintext"
+          headers:
+            - name: "file"
+              value: 'B.txt'
+            - name: "X-File-Name"
+              value: 'B.txt'
+            - name: "X-Unc-Path"
+              value: '\\${CITRUS_TESTCONTAINERS_SMB_HOST}\files\B.txt'
+          body:
+            data: 'BB'
+  - http:
+      server: "smbHttpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+  - http:
+      server: "smbHttpServer"
+      receiveRequest:
+        POST:
+          path: "/root"
+          type: "plaintext"
+          headers:
+            - name: "file"
+              value: 'a.txt'
+            - name: "X-File-Name"
+              value: 'a.txt'
+            - name: "X-Unc-Path"
+              value: '\\${CITRUS_TESTCONTAINERS_SMB_HOST}\files\a.txt'
+          body:
+            data: 'aa'
+  - http:
+      server: "smbHttpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
