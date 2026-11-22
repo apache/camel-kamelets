@@ -16,7 +16,8 @@
  */
 // Checks that the open cursor of the Kamelet on the collection "testcol" (the tailable cursor of
 // mongodb-source) was opened with the read preference secondaryPreferred, which the Kamelet's
-// readPreference option sets. $currentOp with idleCursors shows the command that opened it.
+// readPreference option sets. $currentOp with idleCursors shows the command that opened it, both
+// for an idle cursor and for a getMore that is waiting for data (an operation on the cursor).
 
 import com.mongodb.client.MongoClients
 import org.bson.Document
@@ -26,7 +27,7 @@ def client = MongoClients.create('mongodb://${CITRUS_TESTCONTAINERS_MONGODB_HOST
 try {
     def pipeline = [
             new Document('$currentOp', new Document('idleCursors', true).append('allUsers', true)),
-            new Document('$match', new Document('type', 'idleCursor').append('ns', 'testdb.testcol'))]
+            new Document('$match', new Document('ns', 'testdb.testcol').append('cursor', new Document('$exists', true)))]
     def cursors = client.getDatabase('admin').aggregate(pipeline).into([])
     def modes = cursors.collect { it.get('cursor', Document)?.get('originatingCommand', Document)?.get('$readPreference', Document)?.getString('mode') }
     if (!modes.contains('secondaryPreferred')) {
