@@ -61,7 +61,12 @@ actions:
           reasonPhrase: "OK"
           version: "HTTP/1.1"
 
-  # The tailable cursor stays open, and MongoDB shows that it reads with the readPreference of the Kamelet
-  - groovy:
-      script:
-        file: "mongo/readPreference.groovy"
+  # The tailable cursor stays open, and MongoDB shows that it reads with the readPreference of the Kamelet. The cursor is
+  # idle between two reads and in a running getMore while it waits for data, so the check is repeated until it sees it.
+  - repeatOnError:
+      until: "i > 10"
+      autoSleep: 1000
+      actions:
+        - groovy:
+            script:
+              file: "mongo/readPreference.groovy"
