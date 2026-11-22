@@ -1,0 +1,112 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: smb-sink-route-test
+description: 'smb-sink writes the body as a file to the directory on the share, under the name in the file header without its directory, ignores the CamelSmbFileExists and CamelOverruleFileName headers of the message, and fails a message whose CamelFileName points outside the directory'
+actions:
+  # Start the Samba server (port 445) with the share files and the user citrus, whose password has characters
+  # that have a meaning in an endpoint address
+  - testcontainers:
+      start:
+        container:
+          name: "smb"
+          image: "dockurr/samba:4.23.10"
+          autoRemove: true
+          startUpTimeout: 120
+          env:
+            - name: "NAME"
+              value: "files"
+            - name: "USER"
+              value: "citrus"
+            - name: "PASS"
+              value: "s3cr&t+pw"
+          exposedPorts:
+            - 445
+  - groovy:
+      script:
+        file: "smb/smbServer.groovy"
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "smb/smb-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${smb.http.server.port}"
+                - name: "smb.host"
+                  value: "${CITRUS_TESTCONTAINERS_SMB_HOST}"
+                - name: "smb.port"
+                  value: "${CITRUS_TESTCONTAINERS_SMB_PORT}"
+
+  # The message goes on unchanged, with the path of the file within the share
+  - http:
+      server: "smbHttpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct='
+            - name: "X-File-Name-Produced"
+              value: 'upload/day 1.csv'
+          body:
+            data: |-
+              id,item
+              1,book
+  - http:
+      server: "smbHttpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # A CamelFileName that points outside the directory fails the message
+  - http:
+      server: "smbHttpServer"
+      receiveRequest:
+        POST:
+          path: "/rejected"
+          type: "plaintext"
+          headers:
+            - name: "X-Error"
+              value: 'java.lang.IllegalArgumentException'
+          body:
+            data: '@contains(''jailed to the starting directory'')@'
+  - http:
+      server: "smbHttpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The share has the file, with the body as its content, and nothing outside the directory
+  - repeatOnError:
+      until: "i = 10"
+      autoSleep: 1000
+      actions:
+        - groovy:
+            script:
+              file: "smb/verifyUpload.groovy"

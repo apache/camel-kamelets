@@ -1,0 +1,45 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+# Receives the HL7 messages that mllp-sink-route sends, and logs the body and the headers of each one
+- route:
+    from:
+      uri: "kamelet:mllp-source"
+      parameters:
+        port: "{{mllp.port}}"
+      steps:
+        - log: "Received ${header.CamelMllpMessageControlId} ${body.getClass().getName()}: ${body.replace('\r', ' / ')}|"
+        - log: "Headers ${header.CamelMllpMessageControlId} type=${header.CamelMllpMessageType} event=${header.CamelMllpEventType} trigger=${header.CamelMllpTriggerEvent} from=${header.CamelMllpSendingApplication}/${header.CamelMllpSendingFacility} to=${header.CamelMllpReceivingApplication}/${header.CamelMllpReceivingFacility} time=${header.CamelMllpTimestamp} processing=${header.CamelMllpProcessingId} version=${header.CamelMllpVersionId} remote=${header.CamelMllpRemoteAddress}"
+        # Read in the charset of MSH-18, and turned into bytes in UTF-8 afterwards (Sørensen and Łucja are 2 bytes longer)
+        - log: "Name ${header.CamelMllpMessageControlId} ${body.contains('Sørensen^Łucja')}"
+        - convertBodyTo:
+            type: "byte[]"
+        - log: "Bytes ${header.CamelMllpMessageControlId} ${body.length}"
+        # A step that fails: the sender gets an AE acknowledgement
+        - filter:
+            simple: "${header.CamelMllpTriggerEvent} == 'A99'"
+            steps:
+              - throwException:
+                  exceptionType: "java.lang.IllegalArgumentException"
+                  message: "Unknown trigger event A99"
+        # The flow rejects the message: the sender gets an AR acknowledgement
+        - filter:
+            simple: "${header.CamelMllpTriggerEvent} == 'A98'"
+            steps:
+              - setProperty:
+                  name: "CamelMllpAcknowledgementType"
+                  constant: "AR"

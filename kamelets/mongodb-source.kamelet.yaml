@@ -38,7 +38,7 @@ spec:
 
       Output: the body is one document as JSON text in bytes, and the `Content-Type` header is `application/json`. An `_id` that is an ObjectId comes out as an object with only its time (`timestamp` and `date`), not as the ID text, and the format of dates depends on the Camel version. The `CamelMongoDbDatabase` and `CamelMongoDbCollection` headers name where the document comes from.
 
-      Good to know: the collection must be capped (created with a fixed size), or the Kamelet fails to start. Each time the integration starts, it reads the whole collection again from the start, unless `persistentTailTracking` is true. It stores its place only when the integration stops, so after a crash it reads again the documents since the last stop. Set either `hosts` or `connectionString`. With `hosts`, it connects with TLS by default; set `ssl` to false for a MongoDB without TLS, such as a local one. With `connectionString`, such as the `mongodb+srv://` string of MongoDB Atlas, it connects only as that string says, and `hosts`, `username`, `password`, `ssl` and `sslValidationEnabled` are not used. For a user defined in a database other than `admin`, use `connectionString` with `authSource`. To read from a secondary member of a replica set, use `connectionString` with `readPreference=secondaryPreferred`.
+      Good to know: the collection must be capped (created with a fixed size), or the Kamelet fails to start. Each time the integration starts, it reads the whole collection again from the start, unless `persistentTailTracking` is true. It stores its place only when the integration stops, so after a crash it reads again the documents since the last stop. Set either `hosts` or `connectionString`. With `hosts`, it connects with TLS by default; set `ssl` to false for a MongoDB without TLS, such as a local one. With `connectionString`, such as the `mongodb+srv://` string of MongoDB Atlas, it connects only as that string says, and `hosts`, `username`, `password`, `ssl` and `sslValidationEnabled` are not used. For a user defined in a database other than `admin`, use `connectionString` with `authSource`. To read from a secondary member of a replica set, set `readPreference`, or with `connectionString` add `readPreference=secondaryPreferred` to it.
     required:
       - collection
       - database
@@ -118,6 +118,12 @@ spec:
         type: string
         pattern: "^[A-Za-z0-9_.-]+$"
         example: trackers
+      readPreference:
+        title: Read Preference
+        description: "Which members of the replica set the Kamelet reads from: `PRIMARY` (the primary only), `PRIMARY_PREFERRED` (the primary, or a secondary while there is no primary), `SECONDARY` (a secondary only), `SECONDARY_PREFERRED` (a secondary, or the primary when there is no secondary) or `NEAREST` (the member with the lowest network latency). Reading from a secondary takes load off the primary, but a secondary can be a little behind it. With `SECONDARY` and no secondary available, the Kamelet cannot read. When it is not set, the Kamelet reads from the primary. Not used with `connectionString`; put `readPreference` in the connection string instead, such as `?readPreference=secondaryPreferred`."
+        type: string
+        enum: ["PRIMARY", "PRIMARY_PREFERRED", "SECONDARY", "SECONDARY_PREFERRED", "NEAREST"]
+        example: SECONDARY_PREFERRED
   dataTypes:
     out:
       default: json
@@ -153,6 +159,7 @@ spec:
           hosts: "{{hosts:}}"
           ssl: "{{ssl}}"
           sslValidationEnabled: "{{sslValidationEnabled}}"
+          readPreference: "{{?readPreference}}"
       - name: local-mongodb
         type: "#class:org.apache.camel.component.mongodb.MongoDbComponent"
         properties:

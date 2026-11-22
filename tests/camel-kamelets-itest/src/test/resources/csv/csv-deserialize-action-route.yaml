@@ -1,0 +1,133 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+# CSV text in, a List of rows out: the rows are logged as JSON text, so a line break in a value shows as \n
+- route:
+    from:
+      uri: "timer:header"
+      parameters:
+        repeatCount: 1
+      steps:
+        # a header line; a quoted value with the delimiter, with doubled quotes and with a line break;
+        # an empty line; a line with fewer values than columns; non-ASCII text, as bytes
+        - setBody:
+            constant: "id,name,city\r\n1,Zoë,\"Oslo, Norway\"\r\n\r\n2,\"Bob \"\"B\"\"\",\"line1\nline2\"\r\n3,Eve\r\n"
+        - convertBodyTo:
+            type: "byte[]"
+        - setHeader:
+            name: Content-Type
+            constant: text/csv
+        - to: "kamelet:csv-deserialize-action"
+        - setVariable:
+            name: rowType
+            simple: "${body.getClass().getName()} of ${body[0].getClass().getName()}, ${body.size()} rows, ct=${header.Content-Type}"
+        - to: "kamelet:json-serialize-action"
+        - log: "Header ${variable.rowType}: ${bodyAs(String)}"
+# No header line: each row is a List of the values
+- route:
+    from:
+      uri: "timer:headerless"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "1,Ann,Oslo\n2,Bob,Bergen\n"
+        - to:
+            uri: "kamelet:csv-deserialize-action"
+            parameters:
+              header: false
+        - log: "Headerless ${body.getClass().getName()} of ${body[0].getClass().getName()}: ${body}"
+# Another delimiter, the column names given for a file without a header line, and trimmed values
+- route:
+    from:
+      uri: "timer:columns"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "1; Ann ;Oslo\n2;Bob; Bergen\n"
+        - to:
+            uri: "kamelet:csv-deserialize-action"
+            parameters:
+              header: false
+              columns: "id,name,city"
+              delimiter: ";"
+              trim: true
+        - log: "Columns ${body}"
+# The column names given for a file with a header line: they replace it
+- route:
+    from:
+      uri: "timer:rename"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "a,b\n1,Ann\n"
+        - to:
+            uri: "kamelet:csv-deserialize-action"
+            parameters:
+              columns: "id,name"
+        - log: "Rename ${body}"
+# Another quote character, and empty lines kept
+- route:
+    from:
+      uri: "timer:quote"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "id,name\n\n1,'Ann, A'\n"
+        - to:
+            uri: "kamelet:csv-deserialize-action"
+            parameters:
+              quote: "'"
+              skipEmptyLines: false
+        - log: "Quote ${body}"
+# Empty text, and only a header line, give an empty List
+- route:
+    from:
+      uri: "timer:empty"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: ""
+        - to: "kamelet:csv-deserialize-action"
+        - setVariable:
+            name: empty
+            simple: "${body.getClass().getName()} ${body}"
+        - setBody:
+            constant: "id,name\n"
+        - to: "kamelet:csv-deserialize-action"
+        - log: "Empty ${variable.empty}, header only ${body}"
+# A quoted value that is not closed fails the message
+- route:
+    from:
+      uri: "timer:unclosed"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "id,name\n1,\"Ann\n"
+        - doTry:
+            steps:
+              - to: "kamelet:csv-deserialize-action"
+              - log: "Accepted ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - log: "Rejected ${exception.getClass().getName()}: ${exception.message}"
