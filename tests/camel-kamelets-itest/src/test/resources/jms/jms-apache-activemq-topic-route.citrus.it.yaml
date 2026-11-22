@@ -1,0 +1,74 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: jms-apache-activemq-topic-route-test
+description: 'jms-apache-activemq-sink publishes a text message on a topic in ActiveMQ Classic, and jms-apache-activemq-source subscribed to the topic receives it'
+actions:
+  # Start ActiveMQ Classic, with a login for the clients
+  - testcontainers:
+      start:
+        container:
+          name: "activemq"
+          image: "apache/activemq-classic:6.2.0"
+          autoRemove: true
+          startUpTimeout: 180
+          exposedPorts:
+            - 61616
+          env:
+            - name: "ACTIVEMQ_CONNECTION_USER"
+              value: "amq"
+            - name: "ACTIVEMQ_CONNECTION_PASSWORD"
+              value: "amqpass"
+          waitFor:
+            logMessage: '.*Apache ActiveMQ [0-9.]+ \(localhost, .*\) started.*'
+
+  # Create Camel JBang integration
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "jms/jms-apache-activemq-topic-route.yaml"
+            systemProperties:
+              properties:
+                - name: "http.sink.url"
+                  value: "http://localhost:${http.server.port}"
+                - name: "classic.broker.url"
+                  value: "tcp://${CITRUS_TESTCONTAINERS_ACTIVEMQ_HOST}:${CITRUS_TESTCONTAINERS_ACTIVEMQ_PORT}"
+
+  # The subscribed source gives the text, the header and the topic
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "origin"
+              value: 'citrus'
+            - name: "JMSDestination"
+              value: 'topic://prices'
+          body:
+            data: 'Hello Topic'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
