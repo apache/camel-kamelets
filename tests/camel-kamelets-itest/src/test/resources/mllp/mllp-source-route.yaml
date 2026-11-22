@@ -24,6 +24,7 @@
       steps:
         - log: "Received ${header.CamelMllpMessageControlId} ${body.getClass().getName()}: ${body.replace('\r', ' / ')}|"
         - log: "Headers ${header.CamelMllpMessageControlId} type=${header.CamelMllpMessageType} event=${header.CamelMllpEventType} trigger=${header.CamelMllpTriggerEvent} from=${header.CamelMllpSendingApplication}/${header.CamelMllpSendingFacility} to=${header.CamelMllpReceivingApplication}/${header.CamelMllpReceivingFacility} time=${header.CamelMllpTimestamp} processing=${header.CamelMllpProcessingId} version=${header.CamelMllpVersionId} remote=${header.CamelMllpRemoteAddress}"
+        - log: "Charset ${header.CamelMllpMessageControlId} msh18=${header.CamelMllpCharset}|"
         # Read in the charset of MSH-18, and turned into bytes in UTF-8 afterwards (Sørensen and Łucja are 2 bytes longer)
         - log: "Name ${header.CamelMllpMessageControlId} ${body.contains('Sørensen^Łucja')}"
         - convertBodyTo:

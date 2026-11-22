@@ -47,6 +47,7 @@
         saslAuthType: NONE
         topic: '{{kafka.topic}}'
         shareGroup: '{{kafka.share.group}}'
+        autoOffsetReset: earliest
         schemaRegistryVendor: apicurio
         schemaRegistryUrl: '{{kafka.schemaRegistryUrl}}'
         schemaFormat: protobuf

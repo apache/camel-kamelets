@@ -47,6 +47,21 @@
         - log: "Ack MSG00002 ${header.CamelMllpAcknowledgementType}"
         - removeHeader:
             name: "CamelCharsetName"
+        # In UTF-8, as MSH-18 says, with no charset set on the sink (ISO-8859-1 then applies only without MSH-18),
+        # and a CamelCharsetName header that does not change it
+        - setBody:
+            constant: "MSH|^~\\&|SENDER|HOSPITAL|RECEIVER|LAB|20260101120000||ADT^A08|MSG00006|P|2.5||||||UNICODE UTF-8\rPID|1||12345||Sørensen^Łucja"
+        - setHeader:
+            name: "CamelCharsetName"
+            constant: "ISO-8859-1"
+        - to:
+            uri: "kamelet:mllp-sink"
+            parameters:
+              host: "localhost"
+              port: "{{mllp.port}}"
+        - log: "Ack MSG00006 ${header.CamelMllpAcknowledgementType}"
+        - removeHeader:
+            name: "CamelCharsetName"
         # As bytes
         - setBody:
             constant: "MSH|^~\\&|SENDER|HOSPITAL|RECEIVER|LAB|20260101120000||ADT^A04|MSG00003|P|2.5\rPID|1||12345||Doe^John"

@@ -27,6 +27,11 @@
         # a password with characters that have a meaning in an endpoint address
         password: 's3cr&t+pw'
         move: '.done'
+        # encrypted, also on a share that does not require it
+        encryptData: true
+        connectTimeout: 10000
+        readTimeout: 30000
+        transactTimeout: 20000
         # one poll is enough: no poll runs while the test stops the server
         delay: 60000
       steps:

@@ -40,13 +40,11 @@ spec:
 
       Output: the message is unchanged. The `CamelFileNameProduced` header is set to the path of the file within the share.
 
-      Good to know: a file with the same name is replaced, unless `fileExist` says otherwise. A file is written under its real name from the start, so a reader that polls the directory can pick it up half-written. To prevent that, set `tempPrefix` to write it under a temporary name and rename it once it is complete, or `doneFileName` to write an empty done file next to it once it is complete. Log in with `username` and `password`. A message fails when the server cannot be reached or the login fails. The content of the files is not encrypted on the network, and a share that requires encryption refuses the connection. A file name that points outside `directoryName`, such as `../orders.csv`, fails the message. Headers that start with `CamelFile`, `CamelOverruleFile` or `CamelSmb`, except `CamelFileName`, are removed from the message first, so they cannot change what the Kamelet does.
+      Good to know: a file with the same name is replaced, unless `fileExist` says otherwise. A file is written under its real name from the start, so a reader that polls the directory can pick it up half-written. To prevent that, set `tempPrefix` to write it under a temporary name and rename it once it is complete, or `doneFileName` to write an empty done file next to it once it is complete. Log in with `username` and `password`, or, on a share that allows guest access, with `username` set to `Guest` and no `password`. A message fails when the server cannot be reached or the login fails. The content of the files is not encrypted on the network unless `encryptData` is true, and a share that requires encryption refuses the connection without it. When the application has a bean of the type `com.hierynomus.smbj.SmbConfig`, Camel uses it for the connection, and the Kamelet then fails to start when `encryptData` is true, or `connectTimeout`, `writeTimeout` or `transactTimeout` is set: set them on that bean instead. A file name that points outside `directoryName`, such as `../orders.csv`, fails the message. Headers that start with `CamelFile`, `CamelOverruleFile` or `CamelSmb`, except `CamelFileName`, are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - connectionHost
       - shareName
-      - directoryName
       - username
-      - password
     type: object
     properties:
       connectionHost:
@@ -66,7 +64,7 @@ spec:
         example: imports
       directoryName:
         title: Directory Name
-        description: The directory within the share to write the files to, with `/` between its parts, such as `incoming/orders`. Use `/` to write the files at the top of the share. It is created when it does not exist, unless `autoCreate` is false.
+        description: The directory within the share to write the files to, with `/` between its parts, such as `incoming/orders`. When it is not set, the files are written at the top of the share. It is created when it does not exist, unless `autoCreate` is false.
         type: string
         example: incoming/orders
       username:
@@ -77,11 +75,31 @@ spec:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password of `username`.
+        description: The password of `username`. When it is not set, the Kamelet logs in with an empty password, which with `username` set to `Guest` is a guest login, on a share that allows guest access.
         type: string
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      encryptData:
+        title: Encrypt Data
+        description: If true, everything sent to and from the server, the content of the files included, is encrypted (SMB 3 encryption), also on a share that does not require it. A share that requires encryption, such as one with `smb encrypt = required` on Samba, refuses the connection unless it is true. The server must support SMB 3.
+        type: boolean
+        default: false
+      connectTimeout:
+        title: Connect Timeout
+        description: How long to wait for the connection to the server, in milliseconds. When it is not set, 5000 (5 seconds).
+        type: integer
+        example: 10000
+      writeTimeout:
+        title: Write Timeout
+        description: How long to wait for the server to answer a write of the content of a file, in milliseconds. When it is not set, 60000 (1 minute).
+        type: integer
+        example: 120000
+      transactTimeout:
+        title: Request Timeout
+        description: How long to wait for the server to answer the other requests, such as listing a directory, or opening, renaming or deleting a file, in milliseconds. When it is not set, 60000 (1 minute).
+        type: integer
+        example: 30000
       domain:
         title: Domain
         description: The Windows domain of `username`, such as `CORP` for the account `CORP\jdoe`. Leave it unset for a user of the server itself.
@@ -178,11 +196,15 @@ spec:
               hostname: "{{connectionHost}}"
               port: "{{connectionPort}}"
               shareName: "{{shareName}}"
-              path: "{{directoryName}}"
+              path: "{{?directoryName}}"
               autoCreate: "{{autoCreate}}"
+              connectTimeout: "{{?connectTimeout}}"
               doneFileName: "RAW({{?doneFileName}})"
               domain: "RAW({{?domain}})"
+              encryptData: "{{encryptData}}"
               fileExist: "{{fileExist}}"
               password: "RAW({{?password}})"
               tempPrefix: "RAW({{?tempPrefix}})"
+              transactTimeout: "{{?transactTimeout}}"
               username: "RAW({{?username}})"
+              writeTimeout: "{{?writeTimeout}}"
