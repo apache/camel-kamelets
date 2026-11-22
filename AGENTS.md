@@ -8,8 +8,8 @@ The Apache Camel Kamelet Catalog is the default catalog of reusable Camel route
 templates ("Kamelets"), distributed as Kubernetes-style YAML and consumed by
 Camel, Camel K, Camel Quarkus and Camel Spring Boot.
 
-- Version: 4.20.0
-- Camel: 4.20.0
+- Version: 4.24.0-SNAPSHOT
+- Camel: 4.24.0-SNAPSHOT
 - Java: 21+
 - Build: Maven (`mvn verify`); Go is required for the `crds/` generator
 - Issue tracker: GitHub — https://github.com/apache/camel-kamelets/issues
@@ -290,7 +290,7 @@ When reviewing a PR that adds or changes a Kamelet template:
 
 ```
 camel-kamelets/
-├── kamelets/                    # ~250 *.kamelet.yaml route templates (the product)
+├── kamelets/                    # ~230 *.kamelet.yaml route templates (the product)
 ├── library/
 │   ├── camel-kamelets/          # resource bundle (jars the YAML)
 │   ├── camel-kamelets-bom/      # Maven BOM (pom only)
