@@ -40,13 +40,11 @@ spec:
 
       Output: the message is unchanged. The `CamelFileNameProduced` header is set to the path of the file within the share.
 
-      Good to know: a file with the same name is replaced, unless `fileExist` says otherwise. A file is written under its real name from the start, so a reader that polls the directory can pick it up half-written. To prevent that, set `tempPrefix` to write it under a temporary name and rename it once it is complete, or `doneFileName` to write an empty done file next to it once it is complete. Log in with `username` and `password`. A message fails when the server cannot be reached or the login fails. The content of the files is not encrypted on the network, and a share that requires encryption refuses the connection. A file name that points outside `directoryName`, such as `../orders.csv`, fails the message. Headers that start with `CamelFile`, `CamelOverruleFile` or `CamelSmb`, except `CamelFileName`, are removed from the message first, so they cannot change what the Kamelet does.
+      Good to know: a file with the same name is replaced, unless `fileExist` says otherwise. A file is written under its real name from the start, so a reader that polls the directory can pick it up half-written. To prevent that, set `tempPrefix` to write it under a temporary name and rename it once it is complete, or `doneFileName` to write an empty done file next to it once it is complete. Log in with `username` and `password`, or, on a share that allows guest access, with `username` set to `Guest` and no `password`. A message fails when the server cannot be reached or the login fails. The content of the files is not encrypted on the network, and a share that requires encryption refuses the connection. A file name that points outside `directoryName`, such as `../orders.csv`, fails the message. Headers that start with `CamelFile`, `CamelOverruleFile` or `CamelSmb`, except `CamelFileName`, are removed from the message first, so they cannot change what the Kamelet does.
     required:
       - connectionHost
       - shareName
-      - directoryName
       - username
-      - password
     type: object
     properties:
       connectionHost:
@@ -66,7 +64,7 @@ spec:
         example: imports
       directoryName:
         title: Directory Name
-        description: The directory within the share to write the files to, with `/` between its parts, such as `incoming/orders`. Use `/` to write the files at the top of the share. It is created when it does not exist, unless `autoCreate` is false.
+        description: The directory within the share to write the files to, with `/` between its parts, such as `incoming/orders`. When it is not set, the files are written at the top of the share. It is created when it does not exist, unless `autoCreate` is false.
         type: string
         example: incoming/orders
       username:
@@ -77,7 +75,7 @@ spec:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password of `username`.
+        description: The password of `username`. When it is not set, the Kamelet logs in with an empty password, which with `username` set to `Guest` is a guest login, on a share that allows guest access.
         type: string
         format: password
         x-descriptors:
@@ -178,7 +176,7 @@ spec:
               hostname: "{{connectionHost}}"
               port: "{{connectionPort}}"
               shareName: "{{shareName}}"
-              path: "{{directoryName}}"
+              path: "{{?directoryName}}"
               autoCreate: "{{autoCreate}}"
               doneFileName: "RAW({{?doneFileName}})"
               domain: "RAW({{?domain}})"

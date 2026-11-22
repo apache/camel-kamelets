@@ -89,3 +89,23 @@
             name: CamelFileName
         - to:
             uri: "{{http.sink.url}}/rejected"
+        # then as a guest, with no password, to the top of the share (no directoryName)
+        - removeHeaders:
+            pattern: "*"
+        - setBody:
+            constant: "id,item\n2,pen"
+        - setHeader:
+            name: file
+            constant: 'guest.csv'
+        - to:
+            uri: "kamelet:smb-sink"
+            parameters:
+              connectionHost: '{{smb.host}}'
+              connectionPort: '{{smb.port}}'
+              shareName: 'files'
+              username: 'Guest'
+        - setHeader:
+            name: X-File-Name-Produced
+            simple: "${header.CamelFileNameProduced}"
+        - to:
+            uri: "{{http.sink.url}}/guest"

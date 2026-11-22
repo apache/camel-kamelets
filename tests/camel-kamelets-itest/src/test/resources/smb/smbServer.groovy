@@ -16,15 +16,21 @@
  */
 
 // Prepares the share files of the Samba server in the container smb for a test: the directories orders and
-// upload, with the file orders/order 1.csv, whose name has a space, and the file upload/day 1.csv, which the
-// sink test replaces.
+// upload, with the file orders/order 1.csv, whose name has a space, the file upload/day 1.csv, which the
+// sink test replaces, and the files 0.txt (1 byte), a.txt and B.txt (2 bytes each) at the top of the share.
+// It also turns on guest access: the user Guest, with no password, logs in as a guest (map to guest = Bad User,
+// guest ok = yes on the share).
 
 import org.testcontainers.containers.GenericContainer
 
 def smb = context.getReferenceResolver().resolve('smb', GenericContainer.class)
 
 def command = "mkdir -p /shared/orders /shared/upload && printf 'id,item\\n1,book\\n' > '/shared/orders/order 1.csv'" +
-        " && printf 'old' > '/shared/upload/day 1.csv' && chown -R citrus /shared && chgrp -R smb /shared"
+        " && printf 'old' > '/shared/upload/day 1.csv'" +
+        " && printf '0' > /shared/0.txt && printf 'aa' > /shared/a.txt && printf 'BB' > /shared/B.txt" +
+        " && chown -R citrus /shared && chgrp -R smb /shared" +
+        " && sed -i 's/^\\[global\\]/[global]\\n    map to guest = Bad User/' /etc/samba/smb.tmp" +
+        " && printf '   guest ok = yes\\n' >> /etc/samba/smb.tmp && smbcontrol smbd reload-config"
 def result = smb.execInContainer('sh', '-c', command)
 if (result.getExitCode() != 0) {
     throw new IllegalStateException('Failed to prepare the share: ' + result.getStderr())

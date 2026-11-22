@@ -16,7 +16,7 @@
 # ---------------------------------------------------------------------------
 
 name: smb-sink-route-test
-description: 'smb-sink writes the body as a file to the directory on the share, under the name in the file header without its directory, ignores the CamelSmbFileExists and CamelOverruleFileName headers of the message, and fails a message whose CamelFileName points outside the directory'
+description: 'smb-sink writes the body as a file to the directory on the share, under the name in the file header without its directory, ignores the CamelSmbFileExists and CamelOverruleFileName headers of the message, fails a message whose CamelFileName points outside the directory, and writes at the top of the share as a guest, with no password and no directoryName'
 actions:
   # Start the Samba server (port 445) with the share files and the user citrus, whose password has characters
   # that have a meaning in an endpoint address
@@ -102,7 +102,29 @@ actions:
           reasonPhrase: "OK"
           version: "HTTP/1.1"
 
-  # The share has the file, with the body as its content, and nothing outside the directory
+  # A guest without a password and without directoryName writes the file at the top of the share
+  - http:
+      server: "smbHttpServer"
+      receiveRequest:
+        POST:
+          path: "/guest"
+          type: "plaintext"
+          headers:
+            - name: "X-File-Name-Produced"
+              value: 'guest.csv'
+          body:
+            data: |-
+              id,item
+              2,pen
+  - http:
+      server: "smbHttpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # The share has the files, with the bodies as their content, and nothing outside the directories
   - repeatOnError:
       until: "i = 10"
       autoSleep: 1000

@@ -38,13 +38,11 @@ spec:
 
       Output: the body is the content of the file, as bytes, or as a stream when `streamDownload` is true. `Content-Type` is `application/octet-stream`. The `file` and `ce-file` headers hold the name of the file, with its path below `directoryName` when `recursive` is true, such as `2026/orders.csv`. `CamelFileName` holds the same name, `CamelFileLength` the size of the file in bytes, `CamelFileLastModified` the time the file was last changed, in milliseconds since 1970, and `CamelSmbUncPath` the full Windows path of the file, such as `\\fileserver\exports\orders\orders.csv`.
 
-      Good to know: files are not deleted or moved after they are read, unless `delete` is true or `move` is set. A file is read only once while the integration runs (`idempotent`), but the files left on the share are all read again after a restart; to read each file only once, also across restarts, set `move` to a directory such as `.done`, set `delete` to true, or keep the list of the files read in a file with `idempotentRepository`. To read only some of the files, set `include`, `exclude` or `antInclude`. To leave a file alone while another program is still writing it, set `readLock`. Log in with `username` and `password`. When the server cannot be reached or the login fails, the poll is skipped with a warning in the log, and tried again at the next poll. The content of the files is not encrypted on the network, and a share that requires encryption refuses the connection.
+      Good to know: files are not deleted or moved after they are read, unless `delete` is true or `move` is set. A file is read only once while the integration runs (`idempotent`), but the files left on the share are all read again after a restart; to read each file only once, also across restarts, set `move` to a directory such as `.done`, set `delete` to true, or keep the list of the files read in a file with `idempotentRepository`. To read only some of the files, set `include`, `exclude` or `antInclude`. To leave a file alone while another program is still writing it, set `readLock`. Log in with `username` and `password`, or, on a share that allows guest access, with `username` set to `Guest` and no `password`. When the server cannot be reached or the login fails, the poll is skipped with a warning in the log, and tried again at the next poll. The content of the files is not encrypted on the network, and a share that requires encryption refuses the connection.
     required:
       - connectionHost
       - shareName
-      - directoryName
       - username
-      - password
     type: object
     properties:
       connectionHost:
@@ -64,7 +62,7 @@ spec:
         example: exports
       directoryName:
         title: Directory Name
-        description: The directory within the share to read the files from, with `/` between its parts, such as `outgoing/orders`. Use `/` to read the files at the top of the share; the names in the file headers then start with `/`, such as `/orders.csv`.
+        description: The directory within the share to read the files from, with `/` between its parts, such as `outgoing/orders`. When it is not set, the files at the top of the share are read. `/` reads them too, but the names in the file headers then start with `/`, such as `/orders.csv`.
         type: string
         example: outgoing/orders
       username:
@@ -75,7 +73,7 @@ spec:
         - urn:camel:group:credentials
       password:
         title: Password
-        description: The password of `username`.
+        description: The password of `username`. When it is not set, the Kamelet logs in with an empty password, which with `username` set to `Guest` is a guest login, on a share that allows guest access.
         type: string
         format: password
         x-descriptors:
@@ -112,7 +110,7 @@ spec:
         default: false
       move:
         title: Move After Read
-        description: Where to move each file on the share once it has been read and handed on successfully, so that it is not read again, also after a restart. A directory name, such as `.done`, is relative to the directory of the file. A path that ends with the name of the file, such as `done/$\{date:now:yyyyMMdd}/$\{file:name}`, is relative to `directoryName`, where `$\{file:name}` is the name of the file, with its path below `directoryName`, and `$\{date:now:yyyyMMdd}` today's date. A directory whose name starts with a dot is never read, which matters when `recursive` is true. Missing directories are created, so `username` must be allowed to create directories and to rename files. When it is not set, files stay where they are. It cannot be combined with `delete`: the Kamelet then fails to start.
+        description: Where to move each file on the share once it has been read and handed on successfully, so that it is not read again, also after a restart. A directory name, such as `.done`, is relative to the directory of the file. A path that ends with the name of the file, such as `done/$\{date:now:yyyyMMdd}/$\{file:name}`, is relative to `directoryName`, where `$\{file:name}` is the name of the file, with its path below `directoryName`, and `$\{date:now:yyyyMMdd}` today's date. A directory whose name starts with a dot is never read, which matters when `recursive` is true. Missing directories are created, so `username` must be allowed to create directories and to rename files. When it is not set, files stay where they are. When `delete` is true too, the Kamelet fails to start.
         type: string
         example: ".done"
       moveFailed:
@@ -213,7 +211,7 @@ spec:
         hostname: "{{connectionHost}}"
         port: "{{connectionPort}}"
         shareName: "{{shareName}}"
-        path: "{{directoryName}}"
+        path: "{{?directoryName}}"
         antInclude: "RAW({{?antInclude}})"
         autoCreate: "{{autoCreate}}"
         delay: "{{?delay}}"
