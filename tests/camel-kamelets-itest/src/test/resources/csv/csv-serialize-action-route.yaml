@@ -93,6 +93,21 @@
         - to: "kamelet:json-deserialize-action"
         - to: "kamelet:csv-serialize-action"
         - log: "Json ${body.replace('\r', '<CR>').replace('\n', '<LF>')}"
+# Columns with spaces after the commas, and a name with a single quote
+- route:
+    from:
+      uri: "timer:spaces"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: '[{"id":1,"owner''s name":"Ann","city":"Oslo"}]'
+        - to: "kamelet:json-deserialize-action"
+        - to:
+            uri: "kamelet:csv-serialize-action"
+            parameters:
+              columns: "owner's name, id"
+        - log: "Spaces ${body.replace('\r', '<CR>').replace('\n', '<LF>')}"
 # An empty List gives empty text, or only the header line with columns
 - route:
     from:
