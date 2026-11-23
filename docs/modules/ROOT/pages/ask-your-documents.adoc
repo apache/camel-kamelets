@@ -1,0 +1,206 @@
+= Ask questions about your own documents
+
+This page shows how to build, with Kamelets and a few steps of Camel, a flow that answers questions from your own documents: a question goes in, and the answer comes back, written by an AI model from the documents that match the question best. This is often called retrieval-augmented generation (RAG).
+
+It uses:
+
+* `elasticsearch-index-sink`, to store the documents in Elasticsearch, each with a vector that stands for its meaning;
+* `elasticsearch-search-action`, to find the documents whose meaning is closest to the question (a vector search);
+* `openai-chat-action`, to have an AI model answer the question from the documents found;
+* the `embeddings` operation of the Camel `openai` component, which turns a text into its vector.
+
+It works with OpenAI, and with any server that offers the same API, such as https://ollama.com/[Ollama] on your own machine. The same flow works with OpenSearch, with `opensearch-index-sink` and `opensearch-search-action`; only the vector search is written differently (see <<opensearch>>).
+
+== What a vector is
+
+An embedding model turns a text into a list of numbers, a vector, such as `[0.0123, -0.0456, ...]`. Texts that mean the same have vectors that are close to each other, even when they share no words: "my invoice is wrong" is close to "billing error on my account". So to find the documents about a question, the flow turns the question into a vector too, and asks Elasticsearch for the documents whose vector is closest.
+
+The documents and the questions must be turned into vectors by the same model, and the index must know how many numbers the vectors of that model have.
+
+== What you need
+
+* Elasticsearch; this page was tried with Elasticsearch 9.1. To try it on your machine, in a container without login:
++
+[source,shell]
+----
+docker run -d --name es -p 9200:9200 -e discovery.type=single-node -e xpack.security.enabled=false elasticsearch:9.1.0
+----
+* An embedding model and a chat model. With Ollama:
++
+[source,shell]
+----
+ollama pull embeddinggemma:300m
+ollama pull granite4:3b
+----
++
+`granite4:3b` is a small model that runs on a laptop and answers well from the documents it is given. With OpenAI instead, leave out the `baseUrl` parameters below, set the `OPENAI_API_KEY` environment variable, and use an embedding model and a chat model of OpenAI; the `dims` of the index is then the size of the vectors of that embedding model.
+
+== Create the index
+
+Create the index before storing documents, with a field of type `dense_vector` for the vectors. The `dims` is the number of numbers in a vector of the embedding model: 768 for `embeddinggemma:300m`.
+
+[source,shell]
+----
+curl -X PUT localhost:9200/docs -H 'Content-Type: application/json' -d '{
+  "mappings": {"properties": {
+    "title":     {"type": "text"},
+    "text":      {"type": "text"},
+    "embedding": {"type": "dense_vector", "dims": 768, "similarity": "cosine"}}}}'
+----
+
+Without this, Elasticsearch creates the index by itself when the first document comes, and stores the vector as a list of plain numbers, which a vector search cannot use.
+
+== The routes
+
+Save this as `ask-docs.camel.yaml`. It has two routes: `store` turns each text file dropped in the `docs` folder into a document with its vector, and `ask` answers the questions posted to `http://localhost:8080/ask`.
+
+[source,yaml]
+----
+- route:
+    id: store
+    from:
+      uri: "kamelet:file-watch-source"
+      parameters:
+        filePath: "docs"
+        events: "CREATE"
+      steps:
+        - convertBodyTo:
+            type: java.lang.String
+        # keep the text, as the next step replaces the body with its vector
+        - setVariable:
+            name: text
+            simple: "${body}"
+        - to:
+            uri: "openai:embeddings"
+            parameters:
+              baseUrl: "http://localhost:11434/v1"
+              embeddingModel: "embeddinggemma:300m"
+        # the body is now the vector, a List of numbers
+        - setBody:
+            simple: >-
+              {"title": "${header.CamelFileName}",
+               "text": "${escape(json,${variable.text})}",
+               "embedding": ${body}}
+        - to:
+            uri: "kamelet:elasticsearch-index-sink"
+            parameters:
+              clusterName: "docker-cluster"
+              hostAddresses: "localhost:9200"
+              enableSSL: false
+              indexName: "docs"
+
+- route:
+    id: ask
+    from:
+      uri: "platform-http:/ask"
+      steps:
+        - convertBodyTo:
+            type: java.lang.String
+        # keep the question, as the next steps replace the body
+        - setVariable:
+            name: question
+            simple: "${body}"
+        - to:
+            uri: "openai:embeddings"
+            parameters:
+              baseUrl: "http://localhost:11434/v1"
+              embeddingModel: "embeddinggemma:300m"
+        # a vector search: the 3 documents closest to the question, without their vectors
+        - setBody:
+            simple: >-
+              {"knn": {"field": "embedding", "query_vector": ${body}, "k": 3, "num_candidates": 50},
+               "_source": ["title", "text"]}
+        - to:
+            uri: "kamelet:elasticsearch-search-action"
+            parameters:
+              clusterName: "docker-cluster"
+              hostAddresses: "localhost:9200"
+              enableSSL: false
+              indexName: "docs"
+              size: 3
+        # the body is now a JSON array of the documents found
+        - setBody:
+            simple: |-
+              Documents:
+              ${body}
+
+              Question: ${variable.question}
+        - to:
+            uri: "kamelet:openai-chat-action"
+            parameters:
+              baseUrl: "http://localhost:11434/v1"
+              model: "granite4:3b"
+              systemMessage: >-
+                Answer the question only from the documents you are given, and name the title of
+                the document you used. If the documents do not hold the answer, say that you do not know.
+----
+
+== Try it
+
+Run the routes, and put a few text files in the `docs` folder once they run (`file-watch-source` sees only the files created after it starts):
+
+[source,shell]
+----
+camel run ask-docs.camel.yaml
+mkdir -p docs
+echo "Orders can be returned within 30 days, in their original packaging. The refund is paid within 5 working days." > docs/returns.txt
+echo "We ship to all countries in the EU. Shipping is free for orders over 50 euro." > docs/shipping.txt
+----
+
+Then ask:
+
+[source,shell]
+----
+curl -X POST localhost:8080/ask -H 'Content-Type: text/plain' -d 'How long do I have to send something back?'
+----
+
+The answer comes from `returns.txt`, although the question does not use the words of the document ("send something back", not "returned"):
+
+[source,text]
+----
+According to the information provided in the "returns.txt" document, orders can be returned within 30 days.
+----
+
+The exact words differ from one run to the next. A question that the documents do not answer, such as `What is the capital of France?`, gets `I do not know`.
+
+The `Content-Type: text/plain` matters: without it, `curl -d` sends the question as a form, which the HTTP endpoint reads as form fields instead of a body.
+
+== How it works
+
+* *The vector of a text.* The `embeddings` operation of the `openai` component sends the body to the embedding model, and gives back its vector as a `List` of numbers. Written in a Simple expression, such as `$\{body}`, the list is a JSON array.
+* *Storing.* The route builds the document as JSON, with the text, its title and its vector, and `elasticsearch-index-sink` stores it. `escape(json,...)` makes any text, with quotes or line breaks, safe inside the JSON.
+* *Searching.* The body of `elasticsearch-search-action` is a search in the Query DSL of Elasticsearch, here a `knn` search with the vector of the question. `"_source": ["title", "text"]` leaves the vectors out of the documents found, so that they do not fill the prompt. The action gives back the documents found as a JSON array, best match first, each with its id in `_id`.
+* *Answering.* The route puts the documents and the question in one text, and `openai-chat-action` sends it to the chat model, with instructions in `systemMessage` to answer only from the documents. Its body afterwards is the answer, which goes back to the caller of `/ask`.
+* *Variables.* Each step replaces the body, so the text and the question are kept in variables, to be used again later in the route.
+
+[#opensearch]
+== With OpenSearch
+
+The same routes work with OpenSearch, with `opensearch-index-sink` and `opensearch-search-action`. The index needs the setting `index.knn` and a field of type `knn_vector`:
+
+[source,shell]
+----
+curl -X PUT localhost:9200/docs -H 'Content-Type: application/json' -d '{
+  "settings": {"index.knn": true},
+  "mappings": {"properties": {
+    "title":     {"type": "text"},
+    "text":      {"type": "text"},
+    "embedding": {"type": "knn_vector", "dimension": 768, "space_type": "cosinesimil"}}}}'
+----
+
+and the vector search is a `knn` query:
+
+[source,yaml]
+----
+        - setBody:
+            simple: >-
+              {"query": {"knn": {"embedding": {"vector": ${body}, "k": 3}}},
+               "_source": ["title", "text"]}
+----
+
+== Good to know
+
+* *More documents than fit in a prompt.* The flow sends only the 3 closest documents to the chat model. A long document is better split in parts of a few paragraphs, each stored as its own document with its own vector, so that the search finds the part that answers the question.
+* *Keywords and vectors.* A vector search finds texts with the same meaning, but can miss an exact name or number, such as an order number. Elasticsearch can combine a `knn` search with a `query` for words in the same search.
+* *The question comes from outside.* In this flow the route writes the search itself, and the question is only a vector in it, so the caller cannot change the search. When the body of `elasticsearch-search-action` comes from a caller, such as an AI agent through `ai-tool-source`, set its `queryDsl` option to false, so that the body can only be words to search for.
+* *A model change.* Vectors made by different models cannot be compared. When the embedding model changes, store all the documents again, in an index with the `dims` of the new model.

@@ -36,11 +36,11 @@ spec:
 
       Use it to look something up in the middle of a flow, for example to find the customer of an order, or to enrich an event with the records that match it. To store documents in OpenSearch, use `opensearch-index-sink`; for Elasticsearch, use `elasticsearch-search-action`.
 
-      Input: the body is the search. Text that starts with `{` is a search in the Query DSL of OpenSearch, as JSON text: either a query alone, such as `{"match": {"city": "Oslo"}}`, or the body of a `_search` request with a `query`, such as `{"query": {"match_all": {}}, "sort": [{"age": "desc"}]}`. Any other text is searched for as words in all the fields of the documents: `Oslo Rome` finds the documents that contain Oslo or Rome. An empty body finds nothing. Bytes are read as text, and a Map (parsed JSON) is used as the Query DSL.
+      Input: the body is the search. Text that starts with `{` is a search in the Query DSL of OpenSearch, as JSON text: either a query alone, such as `{"match": {"city": "Oslo"}}`, or the body of a `_search` request with a `query`, such as `{"query": {"match_all": {}}, "sort": [{"age": "desc"}]}`. Any other text is searched for as words in all the fields of the documents: `Oslo Rome` finds the documents that contain Oslo or Rome. An empty body finds nothing. Bytes are read as text, and a Map (parsed JSON) is used as the Query DSL. With `queryDsl` set to false, every body is searched for as words, also one that starts with `{`. A vector search is a Query DSL search too: `{"query": {"knn": {"embedding": {"vector": [0.1, 0.2, 0.3], "k": 3}}}, "_source": ["name"]}` finds the documents whose vector in the `knn_vector` field `embedding` is closest, best first, and gives only their `name`; the index needs the setting `index.knn`, and `k` is counted for each part (segment) of the index, so more than `k` documents can match.
 
-      Output: the body is a JSON array, as text, with the documents found (their `_source`), best match first unless the search has a `sort`, such as `[{"name": "Alice Smith", "city": "Oslo"}]`; an empty array `[]` when nothing matches. The `CamelOpensearchTotalHits` header is the number of documents that match, which can be more than the documents in the body. The `Content-Type` header is `application/json`.
+      Output: the body is a JSON array, as text, with the documents found (their `_source`, with the id of the document added as `_id`), best match first unless the search has a `sort`, such as `[{"name": "Alice Smith", "city": "Oslo", "_id": "1"}]`; an empty array `[]` when nothing matches. The `CamelOpensearchTotalHits` header is the number of documents that match, which can be more than the documents in the body. The `Content-Type` header is `application/json`.
 
-      Good to know: the body holds at most `size` documents; a `size` in the search is ignored. OpenSearch stops counting the matches at 10000, so a larger number is given as 10000. A search with `"_source": false` gives an empty array. A search that is not valid JSON, an index that does not exist, or a query that OpenSearch rejects, fails the message. Headers that start with `CamelOpensearch` are removed from the message first, so they cannot change the index, the operation or the size. Whoever writes the body can read every document of the index, and the Query DSL can also look up values in other indices, such as a `terms` query that reads its terms from a document of another index: log in as a user that can read only the index to search. It connects with TLS by default (`enableSSL`); for a self-signed certificate, give the certificate of its certificate authority (CA) in `certificate`.
+      Good to know: the body holds at most `size` documents; a `size` in the search is ignored. OpenSearch stops counting the matches at 10000, so a larger number is given as 10000. A search with `"_source": false` gives an empty array. A search that is not valid JSON, an index that does not exist, or a query that OpenSearch rejects, fails the message. Headers that start with `CamelOpensearch` are removed from the message first, so they cannot change the index, the operation or the size. Whoever writes the body can read every document of the index, and the Query DSL can also look up values in other indices, such as a `terms` query that reads its terms from a document of another index: log in as a user that can read only the index to search. When the body comes from untrusted input or from an AI agent, such as through `ai-tool-source`, set `queryDsl` to false, so that the body can only be words to search for. It connects with TLS by default (`enableSSL`); for a self-signed certificate, give the certificate of its certificate authority (CA) in `certificate`, and for a client certificate (mutual TLS), a trust store or a TLS version, an `SSLContextParameters` object in `sslContextParameters`.
     required:
       - clusterName
       - hostAddresses
@@ -69,7 +69,7 @@ spec:
         title: Host Addresses
         description: The address of the OpenSearch HTTP API, as `host:port`, or several nodes separated by commas. The port is 9200 by default.
         type: string
-        example: quickstart-es-http:9200
+        example: opensearch-cluster-master:9200
       clusterName:
         title: OpenSearch Cluster Name
         description: The name of the OpenSearch cluster. Required, but not checked against the cluster.
@@ -85,6 +85,11 @@ spec:
         description: The largest number of documents to give back in the body, for each message. It takes precedence over a `size` in the search.
         type: integer
         default: 10
+      queryDsl:
+        title: Query DSL
+        description: Whether a body that starts with `{`, or a Map, is a search in the Query DSL. When it is false, every body is searched for as words in all the fields, so that whoever writes the body cannot run other queries; set it to false when the body comes from untrusted input or from an AI agent.
+        type: boolean
+        default: true
       sslContextParameters:
         title: SSL Context Parameters
         description: For TLS settings that `certificate` cannot give, such as a client certificate (mutual TLS), a trust store, or a TLS version, an `SSLContextParameters` object defined in the application, as `#bean:` followed by its name. It takes precedence over `certificate`; set one or the other.
@@ -132,6 +137,17 @@ spec:
             pattern: "CamelOpensearch*"
         - choice:
             when:
+              # queryDsl=false: every body is searched for as words, whatever it holds
+              - expression:
+                  simple:
+                    expression: "'{{queryDsl}}' == 'false'"
+                steps:
+                  - convertBodyTo:
+                      type: java.lang.String
+                  - setBody:
+                      expression:
+                        simple:
+                          expression: '{"query": {"multi_match": {"query": "${escape(json)}"} } }'
               - expression:
                   simple:
                     expression: "${body} !is 'java.util.Map'"
@@ -160,7 +176,7 @@ spec:
         - setBody:
             expression:
               simple:
-                expression: "${forEach(${body.hits},${body.source})}"
+                expression: "${forEach(${body.hits},${mapAdd(${body.source},_id,${body.id})})}"
         - marshal:
             json: {}
         - convertBodyTo:

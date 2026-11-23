@@ -92,3 +92,48 @@
             simple: "ct=${header.Content-Type}"
         - to:
             uri: "{{http.sink.url}}/none"
+        # queryDsl=false: the body is words to search for, also when it is Query DSL
+        - setBody:
+            constant: '{"match_all": {}}'
+        - to:
+            uri: "kamelet:elasticsearch-search-action"
+            parameters:
+              hostAddresses: '{{elasticsearch.host}}:{{elasticsearch.port}}'
+              clusterName: 'docker-cluster'
+              indexName: 'customers'
+              enableSSL: false
+              queryDsl: false
+        # what the Kamelet gives: the Java type of the body, the total and the Content-Type
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Total-Hits
+            simple: "${header.CamelElasticsearchTotalHits}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
+        - to:
+            uri: "{{http.sink.url}}/words"
+        # a vector search in the Query DSL
+        - setBody:
+            constant: '{"knn": {"field": "embedding", "query_vector": [0.9, 0.1, 0.0], "k": 1, "num_candidates": 10}, "_source": ["name"]}'
+        - to:
+            uri: "kamelet:elasticsearch-search-action"
+            parameters:
+              hostAddresses: '{{elasticsearch.host}}:{{elasticsearch.port}}'
+              clusterName: 'docker-cluster'
+              indexName: 'places'
+              enableSSL: false
+        # what the Kamelet gives: the Java type of the body, the total and the Content-Type
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Total-Hits
+            simple: "${header.CamelElasticsearchTotalHits}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
+        - to:
+            uri: "{{http.sink.url}}/knn"

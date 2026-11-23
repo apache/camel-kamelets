@@ -90,6 +90,53 @@ actions:
         response:
           status: 201
 
+  # an index of places with a vector of 3 numbers each, in a `knn_vector` field, in an index with `index.knn`, for a vector search
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      sendRequest:
+        PUT:
+          path: "/places"
+          contentType: "application/json"
+          body:
+            data: '{"settings": {"index.knn": true}, "mappings": {"properties": {"name": {"type": "keyword"}, "embedding": {"type": "knn_vector", "dimension": 3, "space_type": "cosinesimil"}}}}'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      receiveResponse:
+        response:
+          status: 200
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      sendRequest:
+        PUT:
+          path: "/places/_doc/n"
+          contentType: "application/json"
+          parameters:
+            - name: "refresh"
+              value: 'true'
+          body:
+            data: '{"name": "north", "embedding": [1.0, 0.0, 0.0]}'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      receiveResponse:
+        response:
+          status: 201
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      sendRequest:
+        PUT:
+          path: "/places/_doc/e"
+          contentType: "application/json"
+          parameters:
+            - name: "refresh"
+              value: 'true'
+          body:
+            data: '{"name": "east", "embedding": [0.0, 1.0, 0.0]}'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      receiveResponse:
+        response:
+          status: 201
+
   - camel:
       cli:
         run:
@@ -120,7 +167,7 @@ actions:
             - name: "X-Content-Type"
               value: 'ct=application/json'
           body:
-            data: '[{"name": "Alice Smith", "city": "Oslo"}]'
+            data: '[{"name": "Alice Smith", "city": "Oslo", "_id": "1"}]'
   - http:
       server: "searchServer"
       sendResponse:
@@ -144,7 +191,7 @@ actions:
             - name: "X-Content-Type"
               value: 'ct=application/json'
           body:
-            data: '[{"name": "Bob Jones", "city": "Rome"}]'
+            data: '[{"name": "Bob Jones", "city": "Rome", "_id": "2"}]'
   - http:
       server: "searchServer"
       sendResponse:
@@ -169,6 +216,55 @@ actions:
               value: 'ct=application/json'
           body:
             data: '[]'
+  - http:
+      server: "searchServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # queryDsl=false: a Query DSL text is searched for as words, so match_all finds nothing
+  - http:
+      server: "searchServer"
+      receiveRequest:
+        POST:
+          path: "/words"
+          type: "json"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Total-Hits"
+              value: '0'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+          body:
+            data: '[]'
+  - http:
+      server: "searchServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # a vector search: the place whose vector is closest, with only the fields of _source; the total is not
+  # checked, as OpenSearch gives k hits for each segment of the index, here 2
+  - http:
+      server: "searchServer"
+      receiveRequest:
+        POST:
+          path: "/knn"
+          type: "json"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Total-Hits"
+              value: '@ignore@'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+          body:
+            data: '[{"name": "north", "_id": "n"}]'
   - http:
       server: "searchServer"
       sendResponse:

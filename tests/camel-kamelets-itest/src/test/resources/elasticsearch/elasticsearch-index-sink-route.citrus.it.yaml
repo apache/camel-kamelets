@@ -17,12 +17,12 @@
 
 name: elasticsearch-index-sink-route-test
 actions:
-  # Elasticsearch with one node and security off, so it is reached with plain HTTP
+  # Elasticsearch with one node and security on: a login is needed (user elastic), over plain HTTP
   - testcontainers:
       start:
         container:
           name: "elasticsearch"
-          image: "docker.elastic.co/elasticsearch/elasticsearch:9.1.0"
+          image: "elasticsearch:9.1.0"
           startUpTimeout: 180
           exposedPorts:
             - 9200
@@ -30,13 +30,17 @@ actions:
             - name: "discovery.type"
               value: "single-node"
             - name: "xpack.security.enabled"
+              value: "true"
+            - name: "xpack.security.http.ssl.enabled"
               value: "false"
+            - name: "ELASTIC_PASSWORD"
+              value: "kamelets-Test-1"
             - name: "cluster.routing.allocation.disk.threshold_enabled"
               value: "false"
             - name: "ES_JAVA_OPTS"
               value: "-Xms512m -Xmx512m"
           waitFor:
-            url: "http://localhost:9200/"
+            logMessage: '.*"message":"started.*'
 
   - camel:
       cli:
@@ -81,6 +85,9 @@ actions:
       sendRequest:
         GET:
           path: "/orders/_doc/order-1"
+          headers:
+            - name: "Authorization"
+              value: "Basic citrus:encodeBase64('elastic:kamelets-Test-1')"
   - http:
       client: "http://${CITRUS_TESTCONTAINERS_ELASTICSEARCH_HOST}:${CITRUS_TESTCONTAINERS_ELASTICSEARCH_PORT}"
       receiveResponse:
