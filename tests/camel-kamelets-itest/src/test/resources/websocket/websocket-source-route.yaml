@@ -1,0 +1,70 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+# A WebSocket server that greets each client when it connects: with text the first time, with bytes after that
+- route:
+    id: websocket-server
+    from:
+      uri: "vertx-websocket:localhost:{{ws.server.port}}/feed"
+      parameters:
+        fireWebSocketConnectionEvents: true
+      steps:
+        - filter:
+            simple: "${header.CamelVertxWebsocket.event} == 'OPEN'"
+            steps:
+              - choice:
+                  when:
+                    - simple: "${variable.global:connected} == null"
+                      steps:
+                        - setVariable:
+                            name: "global:connected"
+                            constant: "true"
+                        - setBody:
+                            simple: "Welcome ${header.user}"
+                  otherwise:
+                    steps:
+                      - setBody:
+                          simple: "Welcome back ${header.user}"
+                      - convertBodyTo:
+                          type: "byte[]"
+              # to the client that connected, by the connection key the server set
+              - to: "vertx-websocket:localhost:{{ws.server.port}}/feed"
+
+- route:
+    from:
+      uri: "kamelet:websocket-source"
+      parameters:
+        url: "ws://localhost:{{ws.server.port}}/feed?user=Ann"
+        reconnectInterval: 200
+      steps:
+        - setHeader:
+            name: X-Header-Count
+            simple: "${headers.size()}"
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - convertBodyTo:
+            type: "String"
+        - setHeader:
+            name: Content-Type
+            constant: "text/plain"
+        - to: "{{result.server.url}}/result"
+        # the test answers the first message with X-Restart: the server stops, which closes the connection, and starts again
+        - filter:
+            simple: "${header.X-Restart} == 'true'"
+            steps:
+              - to: "controlbus:route?routeId=websocket-server&action=restart&async=true"

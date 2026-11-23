@@ -1,5 +1,15 @@
 {
   "kamelets" : [ {
+    "name" : "ai-tool-source",
+    "type" : "source",
+    "supportLevel" : "Preview",
+    "title" : "AI Tool Source",
+    "summary" : "Offers the steps that follow it as a tool that an AI agent can call, such as an MCP client like Claude Desktop or Cursor, with the arguments of each call as JSON.",
+    "description" : "Offers the steps that follow it as a tool that an AI agent can call, such as an MCP client like Claude Desktop or Cursor, with the arguments of each call as JSON.\n\nUse it to let an AI assistant look up or change data through a flow you control, such as returning the status of an order. In a route (YAML), the steps after `from: kamelet:ai-tool-source` run for each call; they can also hand the call on with `to: kamelet:<name>`. To offer the tool over MCP, set `camel.server.mcp-enabled=true` and `camel.server.mcp-tags` to its tag, in `application.properties` or with `--prop` or `-D`: Camel JBang then adds `camel-mcp-server` by itself, other applications need it and `camel-platform-http-main` as dependencies. MCP clients connect with streamable HTTP to `http://<host>:<port>/mcp`, on the HTTP port of the application (`camel.server.port`, 8080 by default with Camel JBang). The `openai` component can call the tools of a tag as well, with its `tags` option.\n\nOutput: the body is the arguments of the call, as JSON text, such as `{\"orderId\":\"42\"}`, with only the arguments that `argSchema` declares (`{}` for a tool without arguments). Each of them is also a header of its own name, such as `orderId`. The body at the end of the flow, as text, is the result the caller gets back; the headers are not sent back. A flow that does not change the body gives the caller its own arguments back.\n\nGood to know: an MCP client is an untrusted sender. Anyone who can reach the MCP endpoint can call every tool it offers, with any arguments, so check them before you use them. The MCP server offers only the tools whose tag is in `camel.server.mcp-tags`, never one with another tag. It listens on all network interfaces by default (`camel.server.host`) and has no login: protect it with OAuth (`camel.server.mcp-oauth-profile`) or network rules. A call from a web page of another host is refused, unless `camel.server.mcp-allowed-origins` allows it. A call that misses a required argument, has one of the wrong type, or has one that `argSchema` does not declare, is refused before the flow runs. An error in the flow reaches the caller only as `Tool execution failed`, and a call that takes longer than `camel.server.mcp-tool-timeout` (20 seconds by default) as `Tool execution timed out`, while the flow goes on. The hints are advice for the client, which Camel does not enforce. `allowedRoles` checks the roles of a caller logged in with OAuth, so without OAuth a tool with `allowedRoles` refuses every call.",
+    "group" : "AI Tool",
+    "namespace" : "AI",
+    "provider" : "Apache Software Foundation"
+  }, {
     "name" : "avro-deserialize-action",
     "type" : "action",
     "supportLevel" : "Stable",
@@ -2310,6 +2320,26 @@
     "namespace" : "Cloud",
     "provider" : "Apache Software Foundation"
   }, {
+    "name" : "websocket-sink",
+    "type" : "sink",
+    "supportLevel" : "Preview",
+    "title" : "WebSocket Sink",
+    "summary" : "Sends each message to a WebSocket server, as a text message or as a binary message.",
+    "description" : "Sends each message to a WebSocket server, as a text message or as a binary message.\n\nUse it to push events, commands or data to a service that takes them over WebSocket, such as a chat, a dashboard or a data intake. To receive the messages a WebSocket server pushes, use `websocket-source`.\n\nInput: a text body is sent as a text message, and a bytes body as a binary message. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The headers of the message are not sent.\n\nOutput: when it is used inside a route, the body is unchanged, and the headers that start with `CamelVertxWebsocket` are removed.\n\nGood to know: it connects when the first message is sent, and keeps the connection open for the next messages. After the connection is lost, for example because the server restarts, the next message connects again. A message fails when the server cannot be reached, or refuses the connection, for example with a 401 response when the login is wrong. A message is done once it is written to the connection: the server does not confirm it. The address comes only from `url`: the headers that start with `CamelVertxWebsocket` are removed first, so they cannot change where the message is sent. The login comes only from `authorization`, sent as the `Authorization` header when it connects. Query parameters in `url` are sent with it, but a value with an encoded `&` or `+` (`%26` or `%2B`) arrives changed. A `wss://` URL connects with TLS, and the certificate and the host name of the server are checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.vertx-websocket.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every WebSocket connection of the application. A `ws://` URL connects without TLS.",
+    "group" : "WebSocket",
+    "namespace" : "HTTP",
+    "provider" : "Apache Software Foundation"
+  }, {
+    "name" : "websocket-source",
+    "type" : "source",
+    "supportLevel" : "Preview",
+    "title" : "WebSocket Source",
+    "summary" : "Connects to a WebSocket server, such as a feed of prices, notifications or status updates, and sends on each message the server pushes.",
+    "description" : "Connects to a WebSocket server, such as a feed of prices, notifications or status updates, and sends on each message the server pushes.\n\nUse it to receive live data that a partner or a public service pushes over WebSocket. To send messages to a WebSocket server, use `websocket-sink`. For a service that calls a URL of yours for each event (a webhook), use `webhook-source`.\n\nOutput: the body is the message as the server sent it: text for a text message, bytes for a binary message. No headers are set.\n\nGood to know: it connects when the integration starts, and the integration fails to start when the server cannot be reached, refuses the connection or fails the TLS checks. When the connection is lost, for example because the server restarts, it connects again every `reconnectInterval` milliseconds, without end unless `maxReconnectAttempts` is set. Messages the server sends while it is not connected are lost. The messages are passed on in parallel, so they do not always go on in the order the server sent them. It only receives: it cannot send a subscribe request or any other message to the server, so it fits servers that push on their own, or that take what to send from `url` or from the login. The login comes only from `authorization`, sent as the `Authorization` header when it connects. Query parameters in `url` are sent with it, but a value with an encoded `&` or `+` (`%26` or `%2B`) arrives changed. A `wss://` URL connects with TLS, and the certificate and the host name of the server are checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.vertx-websocket.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every WebSocket connection of the application. A `ws://` URL connects without TLS.",
+    "group" : "WebSocket",
+    "namespace" : "HTTP",
+    "provider" : "Apache Software Foundation"
+  }, {
     "name" : "xj-identity-action",
     "type" : "action",
     "supportLevel" : "Stable",
@@ -2338,6 +2368,16 @@
     "description" : "Checks that each XML message matches an XML Schema (XSD), and fails the messages that do not.\n\nUse it to stop bad data early, for example to reject the orders that miss a required element or carry a wrong value before they reach another system. For JSON, use `json-schema-validator-action`; to change the XML, use `xslt-action`.\n\nInput: XML as text, bytes or a stream.\n\nOutput: the same message, unchanged, when it matches the schema: text stays text and bytes stay bytes.\n\nGood to know: a message that does not match the schema, or that is not XML, fails with an error that lists what is wrong, such as `cvc-datatype-valid.1.2.1: 'abc' is not a valid value for 'decimal'.`; it is not dropped silently, so the error handling of the integration decides what happens to it. A message whose DOCTYPE has an entity that points to a file or URL fails, and so does one with entities nested so deep that they pass the entity expansion limit of Java. The schema is loaded from the `template` location; it cannot come from the message.",
     "group" : "Actions",
     "namespace" : "XML",
+    "provider" : "Apache Software Foundation"
+  }, {
+    "name" : "xpath-filter-action",
+    "type" : "action",
+    "supportLevel" : "Preview",
+    "title" : "XPath Filter Action",
+    "summary" : "Keeps only the XML messages that match an XPath expression, and drops all others.",
+    "description" : "Keeps only the XML messages that match an XPath expression, and drops all others.\n\nUse it to pass on only the XML documents you care about, for example only the orders above a certain amount with `/order[amount > 100]`, or only the paid invoices of an XML feed. For JSON, use `predicate-filter-action`; to keep or drop messages by a header, use `header-matches-filter-action`; to check XML against an XML Schema, use `xml-schema-validator-action`.\n\nInput: XML as text, bytes or a stream.\n\nOutput: the same message, unchanged, when the expression matches: text stays text, bytes stay bytes, a stream can still be read, and the headers are kept. When it does not match, the message is dropped and nothing is sent on.\n\nGood to know: the expression matches when it selects at least one element, such as `/order[amount > 100]`, or when it is a condition that is true, such as `/order/customer = 'Ann'`. A message without a body is dropped. A body that is not XML fails with an error such as `Content is not allowed in prolog.`; it is not dropped silently, so the error handling of the integration decides what happens to it. A message with a DOCTYPE fails too, so its entities are never expanded and an entity that points to a file or URL is never read. An element in a namespace is matched with a prefix declared by `namespacePrefix` and `namespaceUri`; for more than one namespace, match with `local-name()` and `namespace-uri()`, such as `//*[local-name()='order' and namespace-uri()='urn:example:orders']`. The expression is set by you; it cannot come from the message.",
+    "group" : "Actions",
+    "namespace" : "EIP",
     "provider" : "Apache Software Foundation"
   }, {
     "name" : "xslt-action",

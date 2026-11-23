@@ -1,0 +1,61 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+# Three tools: two with the tag orders, which the MCP server offers, and one with the tag admin, which it does not
+- route:
+    id: "order-status"
+    from:
+      uri: "kamelet:ai-tool-source"
+      parameters:
+        toolName: "get_order_status"
+        description: "Returns the status of an order by its id"
+        tags: "orders"
+        title: "Order status"
+        readOnlyHint: true
+        argSchema: '{"type":"object","properties":{"orderId":{"type":"string","description":"The order id (digits)"},"note":{"type":"string"}},"required":["orderId"]}'
+      steps:
+        - log: "Order tool got ${body} with orderId=${header.orderId} note=${header.note} extra=${header.extra} CamelHttpUri=${header.CamelHttpUri}"
+        # a header of the flow does not go back to the caller, only the body
+        - setHeader:
+            name: "Internal"
+            constant: "not-for-the-caller"
+        - setBody:
+            simple: '{"orderId":"${header.orderId}","status":"shipped"}'
+- route:
+    id: "pay-invoice"
+    from:
+      uri: "kamelet:ai-tool-source"
+      parameters:
+        toolName: "pay_invoice"
+        description: "Pays an invoice"
+        tags: "orders"
+        allowedRoles: "finance"
+      steps:
+        - log: "Pay tool called"
+        - setBody:
+            constant: "paid"
+- route:
+    id: "delete-order"
+    from:
+      uri: "kamelet:ai-tool-source"
+      parameters:
+        toolName: "delete_order"
+        description: "Deletes an order"
+        tags: "admin"
+        destructiveHint: true
+      steps:
+        - setBody:
+            constant: "deleted"

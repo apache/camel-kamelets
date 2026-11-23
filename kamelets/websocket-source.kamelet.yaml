@@ -1,0 +1,94 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: websocket-source
+  annotations:
+    camel.apache.org/kamelet.support.level: "Preview"
+    camel.apache.org/catalog.version: "4.24.0-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MjAiCmhlaWdodD0iNDIwIiBzdHJva2U9IiMwMDAiIGZpbGw9Im5vbmUiPgo8cGF0aCBzdHJva2Utd2lkdGg9IjI2IgpkPSJNMjA5LDE1YTE5NSwxOTUgMCAxLDAgMiwweiIvPgo8cGF0aCBzdHJva2Utd2lkdGg9IjE4IgpkPSJtMjEwLDE1djM5MG0xOTUtMTk1SDE1TTU5LDkwYTI2MCwyNjAgMCAwLDAgMzAyLDAgbTAsMjQwIGEyNjAsMjYwIDAgMCwwLTMwMiwwTTE5NSwyMGEyNTAsMjUwIDAgMCwwIDAsMzgyIG0zMCwwIGEyNTAsMjUwIDAgMCwwIDAtMzgyIi8+Cjwvc3ZnPg=="
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "WebSocket"
+    camel.apache.org/kamelet.namespace: "HTTP"
+  labels:
+    camel.apache.org/kamelet.type: "source"
+    camel.apache.org/kamelet.verified: "true"
+spec:
+  definition:
+    title: "WebSocket Source"
+    description: |-
+      Connects to a WebSocket server, such as a feed of prices, notifications or status updates, and sends on each message the server pushes.
+
+      Use it to receive live data that a partner or a public service pushes over WebSocket. To send messages to a WebSocket server, use `websocket-sink`. For a service that calls a URL of yours for each event (a webhook), use `webhook-source`.
+
+      Output: the body is the message as the server sent it: text for a text message, bytes for a binary message. No headers are set.
+
+      Good to know: it connects when the integration starts, and the integration fails to start when the server cannot be reached, refuses the connection or fails the TLS checks. When the connection is lost, for example because the server restarts, it connects again every `reconnectInterval` milliseconds, without end unless `maxReconnectAttempts` is set. Messages the server sends while it is not connected are lost. The messages are passed on in parallel, so they do not always go on in the order the server sent them. It only receives: it cannot send a subscribe request or any other message to the server, so it fits servers that push on their own, or that take what to send from `url` or from the login. The login comes only from `authorization`, sent as the `Authorization` header when it connects. Query parameters in `url` are sent with it, but a value with an encoded `&` or `+` (`%26` or `%2B`) arrives changed. A `wss://` URL connects with TLS, and the certificate and the host name of the server are checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.vertx-websocket.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every WebSocket connection of the application. A `ws://` URL connects without TLS.
+    required:
+    - url
+    type: object
+    properties:
+      url:
+        title: URL
+        description: The address of the WebSocket server, with the path and any query parameters. It starts with `ws://`, or with `wss://` for TLS. Without a port, it is 80 for `ws://` and 443 for `wss://`.
+        type: string
+        example: "wss://stream.example.com/prices?symbols=ACME"
+        pattern: "^wss?://.+"
+      authorization:
+        title: Authorization
+        description: The value of the `Authorization` header to send when connecting, for a server that asks for a login, such as `Bearer` followed by a token. It is sent once, when the connection opens, not with each message.
+        type: string
+        example: "Bearer my-token"
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      subProtocols:
+        title: Subprotocols
+        description: The subprotocols to ask the server for, separated by commas, sent in the `Sec-WebSocket-Protocol` header when connecting. Set it only for a server that needs one, such as a GraphQL server.
+        type: string
+        example: "graphql-transport-ws"
+      reconnectInterval:
+        title: Reconnect Interval
+        description: How long to wait between two attempts to connect again after the connection was lost, in milliseconds. The first attempt is made at once.
+        type: integer
+        default: 1000
+      maxReconnectAttempts:
+        title: Max Reconnect Attempts
+        description: How many attempts to connect again it makes after the connection was lost, before it gives up. After it gives up, it receives nothing more until the integration is restarted. 0 means no limit.
+        type: integer
+        default: 0
+  dataTypes:
+    # No 'default:' here on purpose: the body is text or bytes, as the server sent the message, and
+    # a default would turn every message into one of the two. See #3117.
+    out:
+      headers: {}
+  dependencies:
+    - "camel:vertx-websocket"
+    - "camel:kamelet"
+  template:
+    from:
+      uri: "vertx-websocket:{{url}}"
+      parameters:
+        consumeAsClient: true
+        reconnectInterval: "{{reconnectInterval}}"
+        maxReconnectAttempts: "{{maxReconnectAttempts}}"
+        clientSubProtocols: "{{?subProtocols}}"
+        "handshake.Authorization": "RAW({{?authorization}})"
+      steps:
+        - to:
+            uri: kamelet:sink
