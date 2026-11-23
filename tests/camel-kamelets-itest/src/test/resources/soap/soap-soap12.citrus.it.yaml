@@ -27,6 +27,8 @@ actions:
             file: "soap/soap12-route.yaml"
             systemProperties:
               properties:
+                - name: "camel.server.port"
+                  value: "${soap.soap12.port}"
                 - name: "soap.soap12.port"
                   value: "${soap.soap12.port}"
 
@@ -34,7 +36,7 @@ actions:
       client: "http://localhost:${soap.soap12.port}"
       sendRequest:
         POST:
-          path: "/orders"
+          path: "/services/orders"
           contentType: "application/soap+xml"
           body:
             data: '<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"><env:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>12</o:orderId></o:getOrder></env:Body></env:Envelope>'
@@ -52,7 +54,7 @@ actions:
       client: "http://localhost:${soap.soap12.port}"
       sendRequest:
         POST:
-          path: "/orders"
+          path: "/services/orders"
           contentType: "application/soap+xml"
           body:
             data: '<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"><env:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>404</o:orderId></o:getOrder></env:Body></env:Envelope>'
@@ -70,7 +72,7 @@ actions:
       client: "http://localhost:${soap.soap12.port}"
       sendRequest:
         POST:
-          path: "/orders"
+          path: "/services/orders"
           contentType: "application/soap+xml"
           body:
             data: '<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"><env:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>409</o:orderId></o:getOrder></env:Body></env:Envelope>'
