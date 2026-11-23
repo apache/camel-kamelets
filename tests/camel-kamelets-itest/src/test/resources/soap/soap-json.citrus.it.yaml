@@ -27,6 +27,8 @@ actions:
             file: "soap/soap-json-backend-route.yaml"
             systemProperties:
               properties:
+                - name: "camel.server.port"
+                  value: "${soap.json.backend.port}"
                 - name: "soap.json.backend.port"
                   value: "${soap.json.backend.port}"
   - camel:
@@ -38,6 +40,8 @@ actions:
             file: "soap/soap-json-front-route.yaml"
             systemProperties:
               properties:
+                - name: "camel.server.port"
+                  value: "${soap.json.front.port}"
                 - name: "soap.json.backend.port"
                   value: "${soap.json.backend.port}"
                 - name: "soap.json.front.port"
@@ -49,7 +53,7 @@ actions:
       client: "http://localhost:${soap.json.front.port}"
       sendRequest:
         POST:
-          path: "/orders"
+          path: "/services/orders"
           contentType: "text/xml"
           body:
             data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>7</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
@@ -95,7 +99,7 @@ actions:
       client: "http://localhost:${soap.json.front.port}"
       sendRequest:
         POST:
-          path: "/orders"
+          path: "/services/orders"
           contentType: "text/xml"
           body:
             data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>404</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
