@@ -1201,19 +1201,19 @@
     "version" : "3.4.5",
     "purl" : "pkg:maven/com.databricks/databricks-jdbc@3.4.5"
   }, {
-    "bom-ref" : "pkg:maven/net.snowflake/snowflake-jdbc@4.3.4",
+    "bom-ref" : "pkg:maven/net.snowflake/snowflake-jdbc@4.4.1",
     "type" : "library",
     "group" : "net.snowflake",
     "name" : "snowflake-jdbc",
-    "version" : "4.3.4",
-    "purl" : "pkg:maven/net.snowflake/snowflake-jdbc@4.3.4"
+    "version" : "4.4.1",
+    "purl" : "pkg:maven/net.snowflake/snowflake-jdbc@4.4.1"
   }, {
-    "bom-ref" : "pkg:maven/org.apache.activemq/activemq-client@6.3.2",
+    "bom-ref" : "pkg:maven/org.apache.activemq/activemq-client@6.4.0",
     "type" : "library",
     "group" : "org.apache.activemq",
     "name" : "activemq-client",
-    "version" : "6.3.2",
-    "purl" : "pkg:maven/org.apache.activemq/activemq-client@6.3.2"
+    "version" : "6.4.0",
+    "purl" : "pkg:maven/org.apache.activemq/activemq-client@6.4.0"
   }, {
     "bom-ref" : "pkg:maven/org.apache.activemq/artemis-jakarta-client-all@2.57.0",
     "type" : "library",
@@ -2867,10 +2867,10 @@
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-amqp@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-jms@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT" ]
   }, {
     "ref" : "kamelet:jms-apache-activemq-sink",
-    "dependsOn" : [ "pkg:maven/org.apache.activemq/activemq-client@6.3.2", "pkg:maven/org.apache.camel/camel-jms@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT", "pkg:maven/org.messaginghub/pooled-jms@3.2.6" ]
+    "dependsOn" : [ "pkg:maven/org.apache.activemq/activemq-client@6.4.0", "pkg:maven/org.apache.camel/camel-jms@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT", "pkg:maven/org.messaginghub/pooled-jms@3.2.6" ]
   }, {
     "ref" : "kamelet:jms-apache-activemq-source",
-    "dependsOn" : [ "pkg:maven/org.apache.activemq/activemq-client@6.3.2", "pkg:maven/org.apache.camel/camel-jms@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT" ]
+    "dependsOn" : [ "pkg:maven/org.apache.activemq/activemq-client@6.4.0", "pkg:maven/org.apache.camel/camel-jms@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT" ]
   }, {
     "ref" : "kamelet:jms-apache-artemis-sink",
     "dependsOn" : [ "pkg:maven/org.apache.activemq/artemis-jakarta-client-all@2.57.0", "pkg:maven/org.apache.camel/camel-jms@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT", "pkg:maven/org.messaginghub/pooled-jms@3.2.6" ]
@@ -3119,10 +3119,10 @@
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-snmp@4.24.0-SNAPSHOT" ]
   }, {
     "ref" : "kamelet:snowflake-sink",
-    "dependsOn" : [ "pkg:maven/net.snowflake/snowflake-jdbc@4.3.4", "pkg:maven/org.apache.camel/camel-jackson3@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-sql@4.24.0-SNAPSHOT", "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0" ]
+    "dependsOn" : [ "pkg:maven/net.snowflake/snowflake-jdbc@4.4.1", "pkg:maven/org.apache.camel/camel-jackson3@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-sql@4.24.0-SNAPSHOT", "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0" ]
   }, {
     "ref" : "kamelet:snowflake-source",
-    "dependsOn" : [ "pkg:maven/net.snowflake/snowflake-jdbc@4.3.4", "pkg:maven/org.apache.camel/camel-jackson3@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-sql@4.24.0-SNAPSHOT", "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0" ]
+    "dependsOn" : [ "pkg:maven/net.snowflake/snowflake-jdbc@4.4.1", "pkg:maven/org.apache.camel/camel-jackson3@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-sql@4.24.0-SNAPSHOT", "pkg:maven/org.apache.commons/commons-dbcp2@2.14.0" ]
   }, {
     "ref" : "kamelet:soap-action",
     "dependsOn" : [ "pkg:maven/org.apache.camel/camel-cxf-soap@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-kamelet@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-xpath@4.24.0-SNAPSHOT", "pkg:maven/org.apache.camel/camel-xsd-json@4.24.0-SNAPSHOT" ]
@@ -3208,10 +3208,10 @@
     "ref" : "pkg:maven/com.databricks/databricks-jdbc@3.4.5",
     "dependsOn" : [ ]
   }, {
-    "ref" : "pkg:maven/net.snowflake/snowflake-jdbc@4.3.4",
+    "ref" : "pkg:maven/net.snowflake/snowflake-jdbc@4.4.1",
     "dependsOn" : [ ]
   }, {
-    "ref" : "pkg:maven/org.apache.activemq/activemq-client@6.3.2",
+    "ref" : "pkg:maven/org.apache.activemq/activemq-client@6.4.0",
     "dependsOn" : [ ]
   }, {
     "ref" : "pkg:maven/org.apache.activemq/artemis-jakarta-client-all@2.57.0",
