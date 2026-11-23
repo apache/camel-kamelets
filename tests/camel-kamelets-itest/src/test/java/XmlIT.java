@@ -24,8 +24,8 @@ import org.citrusframework.junit.jupiter.CitrusTestFactorySupport;
 import org.junit.jupiter.api.DynamicTest;
 
 /**
- * The XML Kamelets: xslt-action and xml-schema-validator-action. The tests check the Camel log, so they need no
- * server or container.
+ * The XML Kamelets: xslt-action, xml-schema-validator-action and xpath-filter-action. The tests check the Camel log,
+ * so they need no server or container.
  */
 @CitrusSupport
 public class XmlIT {
