@@ -1,0 +1,297 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+# The test keys and messages in this folder are for these tests only: their passphrases are public.
+
+# Round trip, armored: the message is encrypted for alice, whatever the CamelPGPDataFormat* headers of the
+# message say, and alice decrypts it back to the original text
+- route:
+    from:
+      uri: "timer:roundtrip"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "Order 42: 3 boxes of apples"
+        - setHeader:
+            name: X-Keep
+            constant: "kept"
+        - setHeader:
+            name: Content-Type
+            constant: "text/plain"
+        # a message that tries to choose the key: encrypt for bob, from bob's key ring
+        - setHeader:
+            name: CamelPGPDataFormatKeyUserid
+            constant: "bob@example.com"
+        - setHeader:
+            name: CamelPGPDataFormatKeyFileName
+            constant: "classpath:bob-public.asc"
+        - to:
+            uri: "kamelet:pgp-encrypt-action"
+            parameters:
+              publicKeyRing: "classpath:alice-public.asc"
+              keyUserId: "alice@example.com"
+              armored: true
+        - log: "Encrypted-armored ${body.getClass().getName()} ct=${header.Content-Type} keys=${header.CamelPGPDataFormatNumberOfEncryptionKeys} userid=${header.CamelPGPDataFormatKeyUserid}"
+        - convertBodyTo:
+            type: "java.lang.String"
+        - log: "Armored-text ${body.substring(0, 27)} plaintext-visible=${body.contains('apples')}"
+        - to:
+            uri: "kamelet:pgp-decrypt-action"
+            parameters:
+              secretKeyRing: "classpath:alice-secret.asc"
+              passphrase: "alice-test-passphrase"
+        - log: "Decrypted-armored ${body.getClass().getName()} ct=${header.Content-Type} keep=${header.X-Keep}: ${bodyAs(String)}|"
+
+# Signed by bob, binary, with alice's public key ring given as text (base64:): bob's signature is checked
+- route:
+    from:
+      uri: "timer:signed"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "Invoice 7: 120.50 EUR"
+        - to:
+            uri: "kamelet:pgp-encrypt-action"
+            parameters:
+              # alice-public.asc, exported binary and in Base64
+              publicKeyRing: "base64:mQENBGsED0gBCAC8X0+SnADjSSxBwT9HmOS/+CxCw5ciCWuA7aMrycq9CcIrskN8EQdLseLpmZq47eog5ryDWStYi9JVCb7e4yKYvgHrMlaTUuI32OsMyfBBfFHtkf64wzz+xaLR8S9nhWD2yL+1oR1kDAdDZ+us77fDaKbF1xhVM2DvuGg1y4Zs9ZH+d7Fedq4GXkaEdZBHcaB/yhKUncI9REk5BrzmzjwUsCHUj2c/KleZRqiYwNtWgSluhcsoBfqYZV/Pd0gU/U2K4uZxGrnMw0gFCaAxUR0C3FK7Kk0BmHA6B5bgwdavxujM7yvAZej9v2xfQCEgCUfRHYc15n+OP71JBB7+GN4rABEBAAG0LGFsaWNlIChLYW1lbGV0IHRlc3Qga2V5KSA8YWxpY2VAZXhhbXBsZS5jb20+iQFoBBMBCABSGxSAAAAAAAQADm1hbnUyLDIuNSsxLjEyLDAsMwIbAwIXgBYhBIT8/90lcJ3K9gJpv3Al63gUHXqwBQJrBBB/BAsJCAcEFQoJCAUWAgMBAAIeBQAKCRBwJet4FB16sPIvCACsXhX4KiltQ86ys3ueXF+D3zrIBcMfEIxJdbR2I2EOVBwp5YN3EW+jeR6iNRtcJ/gpkYd9q53UG9byV0hK5juXA9/lPhgQB3Ipm4oBqHOfus/K1v5epo6SJtllHyE/kZyBQrQJ2qCOm+xMGY1UcRAOUTmcwR3U3LVKVlGKWZi/FfZfr42yH9H0nyVDTs4VKSrdPsb8NpsdfiqXyC495Z13VvZO8rH6lJ3mlTAxV10y3XagCJFNdAX8HYrPy3N+78QrY5Z0qwo76k2OI83UyPzYCb8yfGXpBqWQzoXDIJQ9trIcFUvAE1pr5uXQ3rfJPRTIGKHqlpvrF2h85zJcbNTZuQENBGsED0kBCACsEkGs29ZqImbXJAaysXfjTfb83EEtubt7YCOL8XZUUv+hWNtGy/4EEcbnsrA1TZFDL26YeAMslUvV3mpMzkhSemWG0XmHjw9NeAIPw+lo/5twjg96bOlvQbxEBX2MIk0c0heZVfqvWygjAZS/htk6bWFvJE2lfyXdZhXRb78cuSrQAeXlIKc0jFtk8aEO7qOIr7deg7fjcXLPlVrMk/NeVVPzpzcFyfMDZEu+xwR0j4NwP7pVDqFIcH3EeTMhD4zBuFSZ469mgQmVBhEy1VBqEiSJRMjFEKbABrGyzs0IhzyHSYeAPfXSIuW+9gdb37iN0Cnz6CdBtpVvEBokmbn5ABEBAAGJAVIEGAEIADwWIQSE/P/dJXCdyvYCab9wJet4FB16sAUCawQPSRsUgAAAAAAEAA5tYW51MiwyLjUrMS4xMiwwLDMCGwwACgkQcCXreBQderBwcwgAou0i3twywyGzpiaZRZllQABFyBscSt5xyRjod7ZFevE3bM09FgcZMKq00AbZ/HC31OnsZHJJCO5/ZPWfkHTdo2/4ojET2GhAkdjQ5fN/gEJzvrPtqP/rmhReOVZyQMZoiGlGH2ZwniKgkuq01Xg6x73jIVw6mMSPPme8fs67DqCMS8OWGIIw7SK/rSCFxS1MaHtZ+AGL8BnnJDL3q6tnJ/ltzKtok/SgWc9aSzAJs2/z8GzF7AqOxXpjg25eyCYPhmv1cCtyI7MzFCamLNppdfrkOO75UtmX0aNLX1h43h8nPeKvkwyQfTPwoHHR1+xF6OeLMwTA7Zuet73hobqbXw=="
+              keyUserId: "alice@example.com"
+              signingKeyRing: "classpath:bob-secret.asc"
+              signingKeyUserId: "bob@example.com"
+              signingPassphrase: "bob-test-passphrase"
+        - log: "Encrypted-signed ${body.getClass().getName()} ct=${header.Content-Type} signers=${header.CamelPGPDataFormatNumberOfSigningKeys}"
+        - to:
+            uri: "kamelet:pgp-decrypt-action"
+            parameters:
+              secretKeyRing: "classpath:alice-secret.asc"
+              passphrase: "alice-test-passphrase"
+              verificationKeyRing: "classpath:bob-public.asc"
+        - log: "Verified-signed ${body.getClass().getName()} ct=${header.Content-Type}: ${bodyAs(String)}|"
+
+# A message made by gpg (signed by bob, encrypted for alice) is decrypted and its signature checked
+- route:
+    from:
+      uri: "timer:gpg"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "resource:classpath:invoice-from-gpg.asc"
+        - to:
+            uri: "kamelet:pgp-decrypt-action"
+            parameters:
+              secretKeyRing: "classpath:alice-secret.asc"
+              passphrase: "alice-test-passphrase"
+              verificationKeyRing: "classpath:bob-public.asc"
+        - log: "Verified-gpg ${bodyAs(String)}|"
+
+# The wrong key: a message for alice cannot be decrypted with bob's secret key
+- route:
+    from:
+      uri: "timer:wrongkey"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "for alice only"
+        - to:
+            uri: "kamelet:pgp-encrypt-action"
+            parameters:
+              publicKeyRing: "classpath:alice-public.asc"
+              keyUserId: "alice@example.com"
+        - doTry:
+            steps:
+              - to:
+                  uri: "kamelet:pgp-decrypt-action"
+                  parameters:
+                    secretKeyRing: "classpath:bob-secret.asc"
+                    passphrase: "bob-test-passphrase"
+              - log: "Accepted-wrongkey ${bodyAs(String)}"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - log: "Rejected-wrongkey ${exception.getClass().getName()}: ${exception.message}"
+
+# The wrong signer: a message signed by bob fails when only alice is trusted
+- route:
+    from:
+      uri: "timer:wrongsigner"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "signed by bob"
+        - to:
+            uri: "kamelet:pgp-encrypt-action"
+            parameters:
+              publicKeyRing: "classpath:alice-public.asc"
+              keyUserId: "alice@example.com"
+              signingKeyRing: "classpath:bob-secret.asc"
+              signingKeyUserId: "bob@example.com"
+              signingPassphrase: "bob-test-passphrase"
+        - doTry:
+            steps:
+              - to:
+                  uri: "kamelet:pgp-decrypt-action"
+                  parameters:
+                    secretKeyRing: "classpath:alice-secret.asc"
+                    passphrase: "alice-test-passphrase"
+                    verificationKeyRing: "classpath:alice-public.asc"
+              - log: "Accepted-wrongsigner ${bodyAs(String)}"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - log: "Rejected-wrongsigner ${exception.getClass().getName()}: ${exception.message}"
+
+# An unsigned message fails when a signature is required (the default), and passes when it is optional
+- route:
+    from:
+      uri: "timer:unsigned"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "not signed"
+        - to:
+            uri: "kamelet:pgp-encrypt-action"
+            parameters:
+              publicKeyRing: "classpath:alice-public.asc"
+              keyUserId: "alice@example.com"
+        - convertBodyTo:
+            type: "byte[]"
+        - setProperty:
+            name: encrypted
+            simple: "${body}"
+        - doTry:
+            steps:
+              - to:
+                  uri: "kamelet:pgp-decrypt-action"
+                  parameters:
+                    secretKeyRing: "classpath:alice-secret.asc"
+                    passphrase: "alice-test-passphrase"
+                    verificationKeyRing: "classpath:bob-public.asc"
+              - log: "Accepted-unsigned ${bodyAs(String)}"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - log: "Rejected-unsigned ${exception.getClass().getName()}: ${exception.message}"
+        - setBody:
+            exchangeProperty: encrypted
+        - to:
+            uri: "kamelet:pgp-decrypt-action"
+            parameters:
+              secretKeyRing: "classpath:alice-secret.asc"
+              passphrase: "alice-test-passphrase"
+              verificationKeyRing: "classpath:bob-public.asc"
+              signatureVerification: optional
+        - log: "Accepted-optional ${bodyAs(String)}|"
+
+# A changed message fails: the gpg message with one bit changed near its end
+- route:
+    from:
+      uri: "timer:tampered"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "resource:classpath:invoice-tampered.asc"
+        - doTry:
+            steps:
+              - to:
+                  uri: "kamelet:pgp-decrypt-action"
+                  parameters:
+                    secretKeyRing: "classpath:alice-secret.asc"
+                    passphrase: "alice-test-passphrase"
+              - log: "Accepted-tampered ${bodyAs(String)}"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - log: "Rejected-tampered ${exception.getClass().getName()}: ${exception.message}"
+
+# Without verificationKeyRing, the signature of the gpg message is not checked
+- route:
+    from:
+      uri: "timer:noverify"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "resource:classpath:invoice-from-gpg.asc"
+        - to:
+            uri: "kamelet:pgp-decrypt-action"
+            parameters:
+              secretKeyRing: "classpath:alice-secret.asc"
+              passphrase: "alice-test-passphrase"
+        - log: "Unverified-gpg ${bodyAs(String)}|"
+
+# A message without integrity protection (made here with the PGP data format itself) fails
+- route:
+    from:
+      uri: "timer:legacy"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "no integrity protection"
+        - marshal:
+            pgp:
+              keyFileName: "classpath:alice-public.asc"
+              keyUserid: "alice@example.com"
+              integrity: "false"
+        - doTry:
+            steps:
+              - to:
+                  uri: "kamelet:pgp-decrypt-action"
+                  parameters:
+                    secretKeyRing: "classpath:alice-secret.asc"
+                    passphrase: "alice-test-passphrase"
+              - log: "Accepted-legacy ${bodyAs(String)}"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - log: "Rejected-legacy ${exception.getClass().getName()}: ${exception.message}"
+
+# A message that gpg 2.4 or later wrote in the OCB format fails for now, as the pgp-decrypt-action
+# description says: when Camel accepts it, this test fails, and the description must change
+- route:
+    from:
+      uri: "timer:ocb"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "resource:classpath:invoice-ocb-from-gpg.asc"
+        - doTry:
+            steps:
+              - to:
+                  uri: "kamelet:pgp-decrypt-action"
+                  parameters:
+                    secretKeyRing: "classpath:alice-secret.asc"
+                    passphrase: "alice-test-passphrase"
+              - log: "Accepted-ocb ${bodyAs(String)}"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - log: "Rejected-ocb ${exception.getClass().getName()}: ${exception.message}"

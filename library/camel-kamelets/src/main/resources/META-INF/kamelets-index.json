@@ -1720,6 +1720,26 @@
     "namespace" : "Transformation",
     "provider" : "Apache Software Foundation"
   }, {
+    "name" : "pgp-decrypt-action",
+    "type" : "action",
+    "supportLevel" : "Preview",
+    "title" : "PGP Decrypt Action",
+    "summary" : "Decrypts the OpenPGP message in the body of each message with your secret key, and can check its signature against the public key of the sender.",
+    "description" : "Decrypts the OpenPGP message in the body of each message with your secret key, and can check its signature against the public key of the sender.\n\nUse it to decrypt a file that a partner encrypted for you with gpg or `pgp-encrypt-action`, for example after reading it with `sftp-source`, `ftp-source` or `aws-s3-source`, and to make sure that it comes from that partner.\n\nInput: an OpenPGP message, binary or ASCII armored (it starts with `-----BEGIN PGP MESSAGE-----`), as bytes, text, a stream or a file.\n\nOutput: the body is the decrypted data, as a stream, and the `Content-Type` header is set to `application/octet-stream`. The other headers are kept.\n\nGood to know: a message that was not encrypted for a key in `secretKeyRing`, a wrong passphrase (the error says \"checksum mismatch\"), or a message that was changed on the way fails. A message without integrity protection fails too. So does, for now, a message in the newer OCB format, which GnuPG 2.4 and later write for a key made with GnuPG 2.4 or later: the error says \"not integrity protected\". To avoid it, remove OCB from the preferences of your key (`gpg --edit-key`, then `setpref AES256 AES192 AES SHA512 SHA384 SHA256 ZLIB BZIP2 ZIP Uncompressed`) and give the partner your public key again. When `verificationKeyRing` is set, a message must be signed by a key in that key ring, or it fails; set `signatureVerification` to `optional` to accept unsigned messages too. When `verificationKeyRing` is not set, a signature is not checked. The keys and the passphrase come only from the options: the headers of the message, such as `CamelPGPDataFormatKeyFileName`, are removed first, so a message cannot choose another key.",
+    "group" : "Actions",
+    "namespace" : "Transformation",
+    "provider" : "Apache Software Foundation"
+  }, {
+    "name" : "pgp-encrypt-action",
+    "type" : "action",
+    "supportLevel" : "Preview",
+    "title" : "PGP Encrypt Action",
+    "summary" : "Encrypts the body of each message with OpenPGP for the public key of a recipient, and can also sign it, as GnuPG (gpg) does.",
+    "description" : "Encrypts the body of each message with OpenPGP for the public key of a recipient, and can also sign it, as GnuPG (gpg) does.\n\nUse it to encrypt a file before you send it to a partner, for example with `sftp-sink`, `ftp-sink` or `aws-s3-sink`, when the partner gave you their public key. The partner decrypts it with gpg, or with `pgp-decrypt-action`.\n\nInput: any body: text, bytes, a stream or a file.\n\nOutput: the body is the OpenPGP message, as a stream: binary, or ASCII text that starts with `-----BEGIN PGP MESSAGE-----` when `armored` is true. The `Content-Type` header is set to `application/pgp-encrypted`. The other headers are kept.\n\nGood to know: the data is compressed, encrypted with AES-256 and protected against changes. When `signingKeyRing` is set, the message is also signed with your secret key, with SHA-256, so the recipient can check that it comes from you. The keys and the passphrase come only from the options: the headers of the message, such as `CamelPGPDataFormatKeyUserid`, are removed first, so a message cannot choose another key. The file name in the `CamelFileName` header, which file sources set, is stored in the message. A key ring that cannot be read, or a `keyUserId` that matches no key, fails each message. When `signingKeyRing` is set without `signingKeyUserId` or `signingPassphrase`, the Kamelet does not start.",
+    "group" : "Actions",
+    "namespace" : "Transformation",
+    "provider" : "Apache Software Foundation"
+  }, {
     "name" : "postgresql-sink",
     "type" : "sink",
     "supportLevel" : "Stable",
