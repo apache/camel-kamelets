@@ -2320,6 +2320,26 @@
     "namespace" : "Cloud",
     "provider" : "Apache Software Foundation"
   }, {
+    "name" : "websocket-sink",
+    "type" : "sink",
+    "supportLevel" : "Preview",
+    "title" : "WebSocket Sink",
+    "summary" : "Sends each message to a WebSocket server, as a text message or as a binary message.",
+    "description" : "Sends each message to a WebSocket server, as a text message or as a binary message.\n\nUse it to push events, commands or data to a service that takes them over WebSocket, such as a chat, a dashboard or a data intake. To receive the messages a WebSocket server pushes, use `websocket-source`.\n\nInput: a text body is sent as a text message, and a bytes body as a binary message. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The headers of the message are not sent.\n\nOutput: when it is used inside a route, the body is unchanged, and the headers that start with `CamelVertxWebsocket` are removed.\n\nGood to know: it connects when the first message is sent, and keeps the connection open for the next messages. After the connection is lost, for example because the server restarts, the next message connects again. A message fails when the server cannot be reached, or refuses the connection, for example with a 401 response when the login is wrong. A message is done once it is written to the connection: the server does not confirm it. The address comes only from `url`: the headers that start with `CamelVertxWebsocket` are removed first, so they cannot change where the message is sent. The login comes only from `authorization`, sent as the `Authorization` header when it connects. Query parameters in `url` are sent with it, but a value with an encoded `&` or `+` (`%26` or `%2B`) arrives changed. A `wss://` URL connects with TLS, and the certificate and the host name of the server are checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.vertx-websocket.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every WebSocket connection of the application. A `ws://` URL connects without TLS.",
+    "group" : "WebSocket",
+    "namespace" : "HTTP",
+    "provider" : "Apache Software Foundation"
+  }, {
+    "name" : "websocket-source",
+    "type" : "source",
+    "supportLevel" : "Preview",
+    "title" : "WebSocket Source",
+    "summary" : "Connects to a WebSocket server, such as a feed of prices, notifications or status updates, and sends on each message the server pushes.",
+    "description" : "Connects to a WebSocket server, such as a feed of prices, notifications or status updates, and sends on each message the server pushes.\n\nUse it to receive live data that a partner or a public service pushes over WebSocket. To send messages to a WebSocket server, use `websocket-sink`. For a service that calls a URL of yours for each event (a webhook), use `webhook-source`.\n\nOutput: the body is the message as the server sent it: text for a text message, bytes for a binary message. No headers are set.\n\nGood to know: it connects when the integration starts, and the integration fails to start when the server cannot be reached, refuses the connection or fails the TLS checks. When the connection is lost, for example because the server restarts, it connects again every `reconnectInterval` milliseconds, without end unless `maxReconnectAttempts` is set. Messages the server sends while it is not connected are lost. The messages are passed on in parallel, so they do not always go on in the order the server sent them. It only receives: it cannot send a subscribe request or any other message to the server, so it fits servers that push on their own, or that take what to send from `url` or from the login. The login comes only from `authorization`, sent as the `Authorization` header when it connects. Query parameters in `url` are sent with it, but a value with an encoded `&` or `+` (`%26` or `%2B`) arrives changed. A `wss://` URL connects with TLS, and the certificate and the host name of the server are checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.vertx-websocket.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every WebSocket connection of the application. A `ws://` URL connects without TLS.",
+    "group" : "WebSocket",
+    "namespace" : "HTTP",
+    "provider" : "Apache Software Foundation"
+  }, {
     "name" : "xj-identity-action",
     "type" : "action",
     "supportLevel" : "Stable",

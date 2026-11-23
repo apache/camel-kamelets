@@ -1,0 +1,85 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: websocket-sink
+  annotations:
+    camel.apache.org/kamelet.support.level: "Preview"
+    camel.apache.org/catalog.version: "4.24.0-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MjAiCmhlaWdodD0iNDIwIiBzdHJva2U9IiMwMDAiIGZpbGw9Im5vbmUiPgo8cGF0aCBzdHJva2Utd2lkdGg9IjI2IgpkPSJNMjA5LDE1YTE5NSwxOTUgMCAxLDAgMiwweiIvPgo8cGF0aCBzdHJva2Utd2lkdGg9IjE4IgpkPSJtMjEwLDE1djM5MG0xOTUtMTk1SDE1TTU5LDkwYTI2MCwyNjAgMCAwLDAgMzAyLDAgbTAsMjQwIGEyNjAsMjYwIDAgMCwwLTMwMiwwTTE5NSwyMGEyNTAsMjUwIDAgMCwwIDAsMzgyIG0zMCwwIGEyNTAsMjUwIDAgMCwwIDAtMzgyIi8+Cjwvc3ZnPg=="
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "WebSocket"
+    camel.apache.org/kamelet.namespace: "HTTP"
+  labels:
+    camel.apache.org/kamelet.type: "sink"
+    camel.apache.org/kamelet.verified: "true"
+spec:
+  definition:
+    title: "WebSocket Sink"
+    description: |-
+      Sends each message to a WebSocket server, as a text message or as a binary message.
+
+      Use it to push events, commands or data to a service that takes them over WebSocket, such as a chat, a dashboard or a data intake. To receive the messages a WebSocket server pushes, use `websocket-source`.
+
+      Input: a text body is sent as a text message, and a bytes body as a binary message. Turn structured data such as a Map into JSON text first, for example with `json-serialize-action`. The headers of the message are not sent.
+
+      Output: when it is used inside a route, the body is unchanged, and the headers that start with `CamelVertxWebsocket` are removed.
+
+      Good to know: it connects when the first message is sent, and keeps the connection open for the next messages. After the connection is lost, for example because the server restarts, the next message connects again. A message fails when the server cannot be reached, or refuses the connection, for example with a 401 response when the login is wrong. A message is done once it is written to the connection: the server does not confirm it. The address comes only from `url`: the headers that start with `CamelVertxWebsocket` are removed first, so they cannot change where the message is sent. The login comes only from `authorization`, sent as the `Authorization` header when it connects. Query parameters in `url` are sent with it, but a value with an encoded `&` or `+` (`%26` or `%2B`) arrives changed. A `wss://` URL connects with TLS, and the certificate and the host name of the server are checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.vertx-websocket.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every WebSocket connection of the application. A `ws://` URL connects without TLS.
+    required:
+    - url
+    type: object
+    properties:
+      url:
+        title: URL
+        description: The address of the WebSocket server, with the path and any query parameters. It starts with `ws://`, or with `wss://` for TLS. Without a port, it is 80 for `ws://` and 443 for `wss://`.
+        type: string
+        example: "wss://events.example.com/ingest"
+        pattern: "^wss?://.+"
+      authorization:
+        title: Authorization
+        description: The value of the `Authorization` header to send when connecting, for a server that asks for a login, such as `Bearer` followed by a token. It is sent once, when the connection opens, not with each message.
+        type: string
+        example: "Bearer my-token"
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      subProtocols:
+        title: Subprotocols
+        description: The subprotocols to ask the server for, separated by commas, sent in the `Sec-WebSocket-Protocol` header when connecting. Set it only for a server that needs one, such as a GraphQL server.
+        type: string
+        example: "graphql-transport-ws"
+  dataTypes:
+    # No 'default:' here on purpose: the type of the body decides between a text and a binary
+    # message, and a default would turn every body into one of the two. See #3117.
+    in:
+      headers: {}
+  dependencies:
+    - "camel:vertx-websocket"
+    - "camel:kamelet"
+  template:
+    from:
+      uri: kamelet:source
+      steps:
+        - removeHeaders:
+            pattern: "CamelVertxWebsocket*"
+        - to:
+            uri: "vertx-websocket:{{url}}"
+            parameters:
+              clientSubProtocols: "{{?subProtocols}}"
+              "handshake.Authorization": "RAW({{?authorization}})"
