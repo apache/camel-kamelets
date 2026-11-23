@@ -1,0 +1,270 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: debezium-mysql-source
+  annotations:
+    camel.apache.org/kamelet.support.level: "Preview"
+    camel.apache.org/catalog.version: "4.24.0-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmVyc2lvbj0iMS4wIj4KIDxyZWN0IGZpbGw9IiMyNjU1N2MiIHdpZHRoPSIyOCIgaGVpZ2h0PSIyOCIgeD0iLTMwIiB5PSItMzAiIHJ4PSIxLjQiIHJ5PSIxLjQiIHRyYW5zZm9ybT0ibWF0cml4KDAsLTEsLTEsMCwwLDApIi8+CiA8cGF0aCBvcGFjaXR5PSIuMiIgZD0ibTguMDI1NCA4LjAwMDFjLTAuNzgyNS0wLjAxNjYtMS4xNDk0IDAuNTI0NC0wLjk4ODMgMS40NTcgMC4wNTIgMC4zMDA2IDAuMzE1MiAwLjcyOTkgMC44ODI4IDEuNDQxOSAwLjYzMTIyIDAuNzkwOSAwLjg4NTE0IDEuMjIyNyAxLjE2MDIgMS45NzA3IDAuNDMzNiAxLjE3OTMgMC42MzQwMyAxLjU3NDggMC45ODYzMyAxLjk0MzQgMC4yNzM2NiAwLjI4NjMgMC4yNzM2OSAwLjI4NzEyIDAuMDg5ODQgMC44NzEwOS0wLjI4NTA3IDAuOTA1NTYtMC4zNDQwNyAyLjcyMDctMC4xMTUyMyAzLjU3NDIgMC4zNDI0OCAxLjI3NzQgMC43NjQwMiAxLjg1NzQgMS4zNTE2IDEuODU3NCAwLjQxOTY4IDAgMC43NjM2NC0wLjM1MDkyIDAuODg2NzItMC45MDQzIDAuMDQyNjgtMC4xOTE4NiAwLjEyMjQ5LTAuNDY2MDcgMC4xNzc3My0wLjYwOTM4IDAuMDk1MzUtMC4yNDcyOCAwLjEyMDkzLTAuMjI4MTggMC40OTQxNCAwLjM4MDg2IDAuMjE2MjggMC4zNTI5NiAwLjYyODY2IDAuODc4NjEgMC45MTYwMiAxLjE2OCAwLjY2MzggMC42Njg0NSAxLjU3NDkgMS40MjE3IDEuNjQwNiAxLjM1NzQgMC4wMjc3NS0wLjAyNzEzLTAuMjM4LTAuNDIxNzctMC41ODk4NC0wLjg3ODkxcy0xLjAxNTEtMS41MTg5LTEuNDc0Ni0yLjM1OTRjLTAuNTM1OTMtMC45ODAyOS0wLjg5OTctMS41Mjg2LTEuMDEzNy0xLjUyOTMtMC4zNzA0NS0wLjAwMjUtMC43MTU4OCAwLjU4MDA0LTAuOTE2MDIgMS41NDY5LTAuMjMwNTYgMS4xMTM4LTAuNjM2NzUgMC45MjcwOC0wLjk2NjgtMC40NDUzMS0wLjE5MDE5LTAuNzkwODUtMC4wOTEwNi0xLjg1NiAwLjI2MzY3LTIuODUzNSAwLjE2MTM3LTAuNDUzNzYgMC4yOTI5Ny0wLjg3MzczIDAuMjkyOTctMC45MzE2NHMtMC4yNTczMS0wLjU0MzQ4LTAuNTcyMjctMS4wODAxYy0wLjMxNS0wLjUzNy0wLjY4NTEtMS4yOTctMC44MjItMS42OS0wLjMzMjYtMC45NTQtMC40OTA1LTEuMjMyLTEuMTU4Mi0yLjA0My0wLjY4NzktMC44MzQ2LTAuNzUzLTEuMjIwMy0wLjIwNTEtMS4yMTY2IDAuNDI1NTQgMC4wMDI4MSAxLjExMjMgMC4yODk0NCAxLjgwMjcgMC43NTM5MSAwLjQzNzEgMC4yOTQwNCAwLjU4NTIzIDAuMzMzOTggMS4yODcxIDAuMzMzOTggMC44ODE0MiAwIDEuMDcwOSAwLjA3MjIgMi4yOTMgMC44NzY5NSAxLjI0NDUgMC44MTk1OCAyLjE3MjIgMS41ODEzIDIuODE0NSAyLjMxMjUgMC41NzA0IDAuNjQ5MzcgMC44ODIwMSAxLjIxMzggMi41NjA1IDQuNjU2MiAwLjY0NDMzIDEuMzIxNCAxLjIxNTggMS45NTkzIDIuMDAzOSAyLjIzMjQgMS4yMTczIDAuNDIxODUgMS42MzE3IDAuNjEzMTQgMi4xNjggMC45OTgwNWwwLjU2NjQxIDAuNDA2MjUtMC4zODA4NiAwLjA3NDIyYy0wLjIxMDMgMC4wNDAzMy0wLjY2ODQ3IDAuMTA2MTYtMS4wMTc2IDAuMTQ2NDgtMC43Mjc0MSAwLjA4NC0xLjIwMzEgMC4zODU3My0xLjIwMzEgMC43NjM2NyAwIDAuNDI1OTIgMS40NTEzIDEuNjQ1MyAyLjkwNjIgMi40NDE0IDAuNjk5MDMgMC4zODI0NyAxLjM3MTYgMC43NTkyNyAxLjQ5NDEgMC44Mzc4OSAwLjMyNTk4IDAuMjA5MjIgMC40MTQyNCAwLjE4Mzg5IDAuMzMwMDgtMC4wOTE4LTAuMTc2MjQtMC41NzczOC0wLjc3Mjc5LTEuMTM5OC0yLjQyOTctMi4yOTQ5LTAuOTcxOTctMC42Nzc2LTAuOTgxOTktMC42NTI0NCAwLjMxNjQxLTAuNzgxMjUgMC45MjUtMC4wOTEgMS4zOTItMC4yNDkgMS4zOTItMC40NzIgMC0wLjEwMi0wLjQ3LTAuNjQ0LTEuMDQ1LTEuMjAzLTAuOS0wLjg3Ni0xLjIwNC0xLjA5NC0yLjE5NS0xLjU3Ny0xLjM1LTAuNjU2LTEuODQyLTEuMTc3LTIuMTUzLTIuMjgzLTAuNDY0LTEuNjQ5LTEuNzEyLTMuNTg3LTMuMzcxLTUuMjMtMS43MTItMS42OTYtMy4zNDctMi42MzQ0LTQuODQ1LTIuNzgxNC0wLjYwOS0wLjA1OTgtMC45MjQtMC4xNTIyLTEuMjM5LTAuMzY1My0wLjUzMzItMC4zNjExLTEuNzcxNy0wLjc2ODQtMi4zNzY2LTAuNzgxMnptMi45NjI5IDMuMDAyYy0wLjEyMjY2LTAuMDA3OS0wLjIyOTQ1IDAuMDA4NS0wLjMwMjczIDAuMDU4NTktMC4yNzM0MSAwLjE4Njk5LTAuMjQwOTkgMC40MTUwNCAwLjA4MDA4IDAuNTU2NjQgMC4xNTA5MiAwLjA2NjU2IDAuMzY1MDEgMC4zMDE0NyAwLjQ3NjU2IDAuNTIxNDggMC4zNzUxIDAuNzM5NzggMC45NDk4NSAwLjI0NDUgMC42OTMzNi0wLjU5NzY2LTAuMDgwODUtMC4yNjU0Ni0wLjU3OTMtMC41MTU0Ny0wLjk0NzI3LTAuNTM5MDZ6Ii8+CiA8cGF0aCBmaWxsPSIjZmZmIiBkPSJtOC4wMjU0IDdjLTAuNzgyNS0wLjAxNjYtMS4xNDk0IDAuNTI0NC0wLjk4ODMgMS40NTcgMC4wNTIgMC4zMDA2IDAuMzE1MiAwLjczMDIgMC44ODI4IDEuNDQxNCAwLjYzMTIgMC43OTA2IDAuODg1MiAxLjIyMjYgMS4xNjAyIDEuOTcwNiAwLjQzMzYgMS4xNzkgMC42MzQgMS41NzUgMC45ODU5IDEuOTQzIDAuMjc0IDAuMjg3IDAuMjc0IDAuMjg4IDAuMDkgMC44NzItMC4yODQ4IDAuOTA1LTAuMzQzOCAyLjcyLTAuMTE1IDMuNTc0IDAuMzQyIDEuMjc3IDAuNzY0IDEuODU3IDEuMzUyIDEuODU3IDAuNDE5IDAgMC43NjMtMC4zNTEgMC44ODYtMC45MDQgMC4wNDMtMC4xOTIgMC4xMjMtMC40NjYgMC4xNzgtMC42MDkgMC4wOTUtMC4yNDggMC4xMjEtMC4yMjkgMC40OTQgMC4zOCAwLjIxNiAwLjM1MyAwLjYyOSAwLjg3OSAwLjkxNiAxLjE2OCAwLjY2NCAwLjY2OSAxLjU3NSAxLjQyMiAxLjY0MSAxLjM1OCAwLjAyOC0wLjAyNy0wLjIzOC0wLjQyMi0wLjU5LTAuODc5cy0xLjAxNS0xLjUxOS0xLjQ3NS0yLjM1OWMtMC41MzYtMC45ODEtMC44OTktMS41MjktMS4wMTMtMS41My0wLjM3MS0wLjAwMi0wLjcxNiAwLjU4LTAuOTE2IDEuNTQ3LTAuMjMxIDEuMTE0LTAuNjM3IDAuOTI3LTAuOTY3LTAuNDQ1LTAuMTktMC43OTEtMC4wOTEtMS44NTYgMC4yNjQtMi44NTQgMC4xNjEtMC40NTMgMC4yOTMtMC44NzMgMC4yOTMtMC45MzFzLTAuMjU4LTAuNTQ0LTAuNTczLTEuMDhjLTAuMzE1LTAuNTM3LTAuNjg1MS0xLjI5Ny0wLjgyMi0xLjY5LTAuMzMyNi0wLjk1NC0wLjQ5MDUtMS4yMzItMS4xNTgyLTIuMDQyOS0wLjY4NzktMC44MzQ4LTAuNzUzLTEuMjIwNC0wLjIwNTEtMS4yMTY4IDAuNDI1NSAwLjAwMjkgMS4xMTIzIDAuMjg5NSAxLjgwMjMgMC43NTM5IDAuNDM4IDAuMjk0MSAwLjU4NiAwLjMzNCAxLjI4OCAwLjMzNCAwLjg4MSAwIDEuMDcgMC4wNzIyIDIuMjkzIDAuODc3IDEuMjQ0IDAuODE5OCAyLjE3MiAxLjU4MTggMi44MTQgMi4zMTI4IDAuNTcgMC42NDkgMC44ODIgMS4yMTQgMi41NjEgNC42NTYgMC42NDQgMS4zMjEgMS4yMTUgMS45NTkgMi4wMDMgMi4yMzIgMS4yMTggMC40MjIgMS42MzIgMC42MTMgMi4xNjggMC45OThsMC41NjcgMC40MDctMC4zODEgMC4wNzRjLTAuMjEgMC4wNC0wLjY2OSAwLjEwNi0xLjAxOCAwLjE0Ni0wLjcyNyAwLjA4NC0xLjIwMyAwLjM4Ni0xLjIwMyAwLjc2NCAwIDAuNDI2IDEuNDUxIDEuNjQ1IDIuOTA2IDIuNDQxIDAuNyAwLjM4MyAxLjM3MiAwLjc2IDEuNDk1IDAuODM4IDAuMzI2IDAuMjEgMC40MTQgMC4xODQgMC4zMy0wLjA5MS0wLjE3Ny0wLjU3OC0wLjc3My0xLjE0LTIuNDMtMi4yOTUtMC45NzItMC42NzgtMC45ODItMC42NTMgMC4zMTYtMC43ODIgMC45MjYtMC4wOTIgMS4zOTMtMC4yNSAxLjM5My0wLjQ3MiAwLTAuMTAyLTAuNDctMC42NDQtMS4wNDUtMS4yMDMtMC45LTAuODc3LTEuMjA0LTEuMDk0LTIuMTk1LTEuNTc3LTEuMzUtMC42NTYtMS44NDItMS4xNzctMi4xNTMtMi4yODMtMC40NjQtMS42NS0xLjcxMi0zLjU4Ny0zLjM3MS01LjIzLTEuNzEyLTEuNjk2NS0zLjM0Ny0yLjYzNDUtNC44NDUtMi43ODE1LTAuNjA5LTAuMDU5OC0wLjkyNC0wLjE1MjItMS4yMzktMC4zNjUzLTAuNTMzMi0wLjM2MTEtMS43NzE3LTAuNzY4NC0yLjM3NjYtMC43ODEyem0yLjk2MjYgMy4wMDJjLTAuMTIyLTAuMDA3OS0wLjIyOSAwLjAwOC0wLjMwMiAwLjA1OS0wLjI3NCAwLjE4Ny0wLjI0MSAwLjQxNSAwLjA4IDAuNTU2IDAuMTUxIDAuMDY3IDAuMzY1IDAuMzAyIDAuNDc2IDAuNTIyIDAuMzc1IDAuNzM5IDAuOTUgMC4yNDQgMC42OTQtMC41OTgtMC4wODEtMC4yNjUtMC41OC0wLjUxNS0wLjk0OC0wLjUzOXoiLz4KIDxwYXRoIGZpbGw9IiNmZmYiIG9wYWNpdHk9Ii4xIiBkPSJtMy40MDA0IDJjLTAuNzc1NiAwLTEuNDAwNCAwLjYyNDgtMS40MDA0IDEuNDAwNHYxYzAtMC43NzU2IDAuNjI0OC0xLjQwMDQgMS40MDA0LTEuNDAwNGgyNS4yYzAuNzc1IDAgMS40IDAuNjI0OCAxLjQgMS40MDA0di0xYzAtMC43NzU2LTAuNjI1LTEuNDAwNC0xLjQtMS40MDA0aC0yNS4yeiIvPgogPHBhdGggb3BhY2l0eT0iLjIiIGQ9Im0yIDI4LjZ2MWMwIDAuNzc1IDAuNjI0OCAxLjQgMS40MDA0IDEuNGgyNS4yYzAuNzc1IDAgMS40LTAuNjI1IDEuNC0xLjR2LTFjMCAwLjc3NS0wLjYyNSAxLjQtMS40IDEuNGgtMjUuMmMtMC43NzUyIDAtMS40LTAuNjI1LTEuNC0xLjR6Ii8+Cjwvc3ZnPgo="
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "Debezium"
+    camel.apache.org/kamelet.namespace: "Database"
+  labels:
+    camel.apache.org/kamelet.type: "source"
+    camel.apache.org/kamelet.verified: "true"
+spec:
+  definition:
+    title: "Debezium MySQL Source"
+    description: |-
+      Sends a message for each row inserted, updated or deleted in the tables of a MySQL database, as it happens (change data capture with Debezium).
+
+      Use it to pass the changes of a database on to another system as they happen, for example to keep a search index or a cache up to date, or to copy new orders to a queue, without polling the tables. To read rows with a query again and again, use `mysql-source`.
+
+      Output: the body is JSON text in bytes, an object with the column names as keys, such as `{"id":1,"name":"Tea","price":4.50}`: the row after the change, and for a delete the row before it. The columns are in the order of the table. A `DECIMAL` column is a JSON number with its decimals, such as `4.50`, and a `DATE` column the number of days since 1970-01-01, such as `20454` for 2026-01-01. The `debezium-operation` header says what happened: `c` (insert), `u` (update), `d` (delete) or `r` (a row read by the snapshot, see `snapshotMode`). `debezium-table` is the table, as `database.table` such as `shop.orders`, and `debezium-key` the primary key of the row as JSON text, such as `{"id":1}`. `Content-Type` is `application/json`.
+
+      Good to know: the server must write its binary log (binlog) in the `ROW` format with the whole row (`binlog_format=ROW` and `binlog_row_image=FULL`, the defaults of MySQL 8), and the user needs the `SELECT`, `RELOAD`, `SHOW DATABASES`, `REPLICATION SLAVE` and `REPLICATION CLIENT` privileges. The Kamelet reads the binlog as a replica of the server does, under the id `serverId`. On the first start, it by default sends every row of the tables first (`snapshotMode`). It saves how far it got in the file `offsetStorageFileName`, or in a Kafka topic, when it stops and once a minute while it runs, and after a restart it goes on from there, so after a crash the changes of the last minute can be sent again. It also keeps the structure of the tables, as the binlog changed it, in a schema history: the file `schemaHistoryFileName`, or a Kafka topic. Keep both files on a disk that outlives the integration, such as a volume in Kubernetes: when the position is lost, everything is sent again as on the first start, and when only the schema history is lost, the Kamelet logs `The db history topic is missing` and reads no changes, until it is started once with `snapshotMode` set to `recovery`. When the server is not set up as needed, such as with `binlog_format=STATEMENT`, the Kamelet logs why and reads no changes, while the integration keeps running. The JDBC driver of MySQL is not included, as its license is not the Apache license: add `mvn:com.mysql:mysql-connector-j` to the dependencies of the integration, such as `camel run --dep=mvn:com.mysql:mysql-connector-j:26.10.0`. Any other option of the Debezium MySQL connector can be set for all the Kamelets of the integration as the `camel.component.debezium-mysql.` property of that option, such as `camel.component.debezium-mysql.columnExcludeList=shop.customers.ssn`.
+    required:
+      - serverName
+      - username
+      - password
+      - serverId
+      - topicPrefix
+    type: object
+    properties:
+      serverName:
+        title: Server Name
+        description: The host name or IP address of the MySQL server, without the port.
+        type: string
+        example: db.example.com
+      serverPort:
+        title: Server Port
+        description: The port the MySQL server listens on. MySQL uses 3306 unless it was set up otherwise.
+        type: integer
+        default: 3306
+      username:
+        title: Username
+        description: The database user to log in as. It needs the `SELECT`, `RELOAD`, `SHOW DATABASES`, `REPLICATION SLAVE` and `REPLICATION CLIENT` privileges.
+        type: string
+        x-descriptors:
+        - urn:camel:group:credentials
+      password:
+        title: Password
+        description: The password of the database user `username`.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      serverId:
+        title: Server Id
+        description: The number the Kamelet uses as a replica of the MySQL server to read the binlog, such as `5400`. It must differ from the `server_id` of every MySQL server and of every other client that reads the binlog of the same servers, the other Kamelets included.
+        type: integer
+        example: 5400
+      topicPrefix:
+        title: Logical Name
+        description: A name for this source of changes, made of letters, digits, `.`, `_` and `-`. The saved position is stored under this name, so keep it the same across restarts, and give each Kamelet that reads another server its own name.
+        type: string
+        pattern: "^[a-zA-Z0-9._-]+$"
+        example: shop
+      tableIncludeList:
+        title: Tables
+        description: The tables whose changes to send, as regular expressions that match `database.table`, separated by commas, such as `shop.orders,shop.customers`. When it is not set, the changes of all tables of all databases are sent, except those of the system databases.
+        type: string
+        example: shop.orders,shop.customers
+      snapshotMode:
+        title: Snapshot Mode
+        description: "Whether to send the rows that are already in the tables before the changes. `initial` (the default): on the first start, every row of the tables is sent with the operation `r`, then the changes; after a restart with a saved position, only the changes since. `no_data`: only the changes made from the first start on. `always`: every row on each start, then the changes. `initial_only`: every row on the first start, and no changes. `when_needed`: as `initial`, and every row again when the saved position can no longer be found in the binlog. `recovery`: for one start after the schema history is lost, to write it again from the tables as they are now, then go on from the saved position; only when the structure of the tables has not changed since the Kamelet stopped."
+        type: string
+        enum: ["initial", "no_data", "always", "initial_only", "when_needed", "recovery"]
+        default: initial
+      sslMode:
+        title: TLS Mode
+        description: "Whether the connection to MySQL uses TLS. `preferred` (the default): TLS when the server offers it, without checking its certificate. `required`: always TLS, without checking the certificate of the server. `disabled`: no TLS."
+        type: string
+        enum: ["disabled", "preferred", "required"]
+        default: preferred
+      offsetStorageFileName:
+        title: Position File
+        description: The file where the Kamelet saves how far it got, such as `/data/offsets.dat`, read again after a restart. It is created when it does not exist, but its folder must exist and be writable, or the Kamelet fails to start. A relative name is in the folder the integration runs in. When it is lost, the changes are sent again as on the first start. Not used when `offsetStorage` is the Kafka store.
+        type: string
+        default: debezium-mysql-offsets.dat
+        example: /data/offsets.dat
+      offsetStorage:
+        title: Position Store
+        description: "Where the Kamelet saves how far it got. `org.apache.kafka.connect.storage.FileOffsetBackingStore` (the default): in the file `offsetStorageFileName`. `org.apache.kafka.connect.storage.KafkaOffsetBackingStore`: in the Kafka topic `offsetStorageTopic`, on the Kafka of `offsetStorageBootstrapServers`, for an integration that has no lasting disk. Use the same kind of store for `schemaHistory`."
+        type: string
+        enum: ["org.apache.kafka.connect.storage.FileOffsetBackingStore", "org.apache.kafka.connect.storage.KafkaOffsetBackingStore"]
+        default: org.apache.kafka.connect.storage.FileOffsetBackingStore
+      offsetStorageBootstrapServers:
+        title: Kafka Brokers
+        description: The Kafka brokers of the Kafka stores of `offsetStorage` and `schemaHistory`, as `host:port` separated by commas. Needed with a Kafka store. The connection is made without TLS and without a login.
+        type: string
+        example: my-cluster-kafka-bootstrap:9092
+      offsetStorageTopic:
+        title: Position Topic
+        description: The Kafka topic where the Kafka store saves how far the Kamelet got. It is created when it does not exist. Needed with the Kafka store.
+        type: string
+        example: shop-offsets
+      offsetStoragePartitions:
+        title: Position Topic Partitions
+        description: The number of partitions of the topic `offsetStorageTopic` when the Kamelet creates it. Needed with the Kafka store.
+        type: integer
+        example: 1
+      offsetStorageReplicationFactor:
+        title: Position Topic Replicas
+        description: The number of copies of the topic `offsetStorageTopic` on the Kafka brokers when the Kamelet creates it. Needed with the Kafka store.
+        type: integer
+        example: 3
+      schemaHistoryFileName:
+        title: Schema History File
+        description: The file where the Kamelet keeps the structure of the tables, such as `/data/schema-history.dat`, read again after a restart. It is created when it does not exist, with its folders. A relative name is in the folder the integration runs in. Not used when `schemaHistory` is the Kafka store.
+        type: string
+        default: debezium-mysql-schema-history.dat
+        example: /data/schema-history.dat
+      schemaHistory:
+        title: Schema History Store
+        description: "Where the Kamelet keeps the structure of the tables. `io.debezium.storage.file.history.FileSchemaHistory` (the default): in the file `schemaHistoryFileName`. `io.debezium.storage.kafka.history.KafkaSchemaHistory`: in the Kafka topic `schemaHistoryTopic`, on the Kafka of `offsetStorageBootstrapServers`, for an integration that has no lasting disk."
+        type: string
+        enum: ["io.debezium.storage.file.history.FileSchemaHistory", "io.debezium.storage.kafka.history.KafkaSchemaHistory"]
+        default: io.debezium.storage.file.history.FileSchemaHistory
+      schemaHistoryTopic:
+        title: Schema History Topic
+        description: The Kafka topic where the Kafka store keeps the structure of the tables. It is created with one partition when it does not exist. Use a topic of its own, not `offsetStorageTopic`. Needed with the Kafka store.
+        type: string
+        example: shop-schema-history
+  dataTypes:
+    out:
+      default: json
+      types:
+        json:
+          format: "application-json"
+          description: "The row after the change, or before it for a delete, as JSON text in bytes."
+          mediaType: application/json
+      headers:
+        debezium-operation:
+          title: Operation
+          description: "What happened to the row: `c` (insert), `u` (update), `d` (delete) or `r` (read by the snapshot)."
+          type: string
+        debezium-table:
+          title: Table
+          description: The table of the row, as `database.table`, such as `shop.orders`.
+          type: string
+        debezium-key:
+          title: Key
+          description: The primary key of the row, as JSON text such as `{"id":1}`.
+          type: string
+        Content-Type:
+          title: Content Type
+          description: Always `application/json`, as the body is JSON text.
+          type: string
+  dependencies:
+    - "camel:jackson3"
+    - "camel:kamelet"
+    - "camel:debezium-mysql"
+  template:
+    from:
+      uri: debezium-mysql
+      parameters:
+        name: "{{topicPrefix}}"
+        databaseHostname: "{{serverName}}"
+        databasePort: "{{serverPort}}"
+        databaseUser: "{{username}}"
+        databasePassword: "RAW({{password}})"
+        databaseServerId: "{{serverId}}"
+        databaseSslMode: "{{sslMode}}"
+        topicPrefix: "{{topicPrefix}}"
+        tableIncludeList: "{{?tableIncludeList}}"
+        snapshotMode: "{{snapshotMode}}"
+        offsetStorage: "{{offsetStorage}}"
+        offsetStorageFileName: "{{offsetStorageFileName}}"
+        offsetStorageTopic: "{{?offsetStorageTopic}}"
+        offsetStoragePartitions: "{{?offsetStoragePartitions}}"
+        offsetStorageReplicationFactor: "{{?offsetStorageReplicationFactor}}"
+        schemaHistoryInternal: "{{schemaHistory}}"
+        schemaHistoryInternalFileFilename: "{{schemaHistoryFileName}}"
+        additionalProperties.bootstrap.servers: "{{?offsetStorageBootstrapServers}}"
+        additionalProperties.schema.history.internal.kafka.bootstrap.servers: "{{?offsetStorageBootstrapServers}}"
+        additionalProperties.schema.history.internal.kafka.topic: "{{?schemaHistoryTopic}}"
+      steps:
+        # only the changes of rows: not the tombstones, heartbeats or schema changes, which have no row
+        - filter:
+            expression:
+              simple:
+                expression: "${header.CamelDebeziumOperation} in 'c,u,d,r'"
+            steps:
+              - setHeader:
+                  name: debezium-operation
+                  expression:
+                    simple:
+                      expression: "${header.CamelDebeziumOperation}"
+              - setHeader:
+                  name: debezium-table
+                  expression:
+                    simple:
+                      expression: "${header.CamelDebeziumSourceMetadata[db]}.${header.CamelDebeziumSourceMetadata[table]}"
+              # the key as JSON text
+              - choice:
+                  when:
+                    - expression:
+                        simple:
+                          expression: "${header.CamelDebeziumKey} != null"
+                      steps:
+                        - setProperty:
+                            name: debezium-row
+                            expression:
+                              simple:
+                                expression: "${body}"
+                        - setBody:
+                            expression:
+                              simple:
+                                expression: "${header.CamelDebeziumKey}"
+                        - convertBodyTo:
+                            type: java.util.Map
+                        - marshal:
+                            json: {}
+                        - setHeader:
+                            name: debezium-key
+                            expression:
+                              simple:
+                                expression: "${bodyAs(String)}"
+                        - setBody:
+                            expression:
+                              simple:
+                                expression: "${exchangeProperty.debezium-row}"
+                        - removeProperty:
+                            name: debezium-row
+              # a delete has no row after it: send the row before it
+              - choice:
+                  when:
+                    - expression:
+                        simple:
+                          expression: "${header.CamelDebeziumOperation} == 'd'"
+                      steps:
+                        - setBody:
+                            expression:
+                              simple:
+                                expression: "${header.CamelDebeziumBefore}"
+              - convertBodyTo:
+                  type: java.util.Map
+              - marshal:
+                  json: {}
+              # the Kafka Connect objects of the component, which other systems cannot read
+              - removeHeaders:
+                  pattern: CamelDebezium*
+              - to:
+                  uri: kamelet:sink

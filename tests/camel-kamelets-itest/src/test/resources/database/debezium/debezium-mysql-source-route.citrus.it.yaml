@@ -1,0 +1,306 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: debezium-mysql-source-route-test
+variables:
+  # new files for each run, so that no saved position of an earlier run is used: the position file in a folder that
+  # exists, the schema history file in a folder that does not exist yet, which the Kamelet creates
+  - name: "storageId"
+    value: "citrus:randomUUID()"
+  - name: "offsetFile"
+    value: "citrus:concat(citrus:systemProperty('java.io.tmpdir'), '/debezium-mysql-offsets-', ${storageId}, '.dat')"
+  - name: "historyFile"
+    value: "citrus:concat(citrus:systemProperty('java.io.tmpdir'), '/debezium-mysql-history-', ${storageId}, '/history.dat')"
+actions:
+  # Start MySQL with the binlog in the ROW format with the whole row, and a table of one row; the init script gives
+  # the user the privileges the Kamelet needs
+  - testcontainers:
+      start:
+        container:
+          name: "mysql"
+          image: "mysql:8.4.7"
+          command: "mysqld --binlog-format=ROW --binlog-row-image=FULL"
+          autoRemove: true
+          startUpTimeout: 120
+          exposedPorts:
+            - 3306
+          env:
+            - name: "MYSQL_DATABASE"
+              value: "testdb"
+            - name: "MYSQL_USER"
+              value: "test"
+            - name: "MYSQL_PASSWORD"
+              value: "test"
+            - name: "MYSQL_ROOT_PASSWORD"
+              value: "root"
+          volumeMounts:
+            - file: "database/debezium/debezium-mysql-init.sql"
+              mountPath: "/docker-entrypoint-initdb.d/init.sql"
+          # only the server started after the init scripts listens on port 3306
+          waitFor:
+            logMessage: '.*ready for connections.*port: 3306 .*'
+
+  # The first run sends the row already in the table (the snapshot), then the changes
+  # the test stops each run itself, so Citrus must not stop it at the end, after the container is removed
+  - camel:
+      cli:
+        run:
+          autoRemove: false
+          waitForRunningState: false
+          # the JDBC driver of MySQL is not in the Kamelet
+          args:
+            - "--dep=mvn:com.mysql:mysql-connector-j:26.10.0"
+          integration:
+            name: "debezium-mysql-first"
+            file: "database/debezium/debezium-mysql-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "db.serverName"
+                  value: "${CITRUS_TESTCONTAINERS_MYSQL_HOST}"
+                - name: "db.serverPort"
+                  value: "${CITRUS_TESTCONTAINERS_MYSQL_PORT}"
+                - name: "db.offsetFile"
+                  value: "${offsetFile}"
+                - name: "db.historyFile"
+                  value: "${historyFile}"
+                - name: "run.name"
+                  value: "first"
+                - name: "http.sink.url"
+                  value: "http://localhost:${http.server.port}"
+                # any other option of the connector, for all its Kamelets
+                - name: "camel.component.debezium-mysql.columnExcludeList"
+                  value: "testdb.products.note"
+
+  # The snapshot: the row as it is, as JSON text in bytes, with the columns in the order of the table; the note column
+  # is left out by columnExcludeList
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Run"
+              value: 'first'
+            - name: "X-Body-Type"
+              value: '[B'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+            - name: "X-Operation"
+              value: 'r'
+            - name: "X-Table"
+              value: 'testdb.products'
+            - name: "X-Key"
+              value: '{"id":1}'
+            - name: "X-Component-Headers"
+              value: 'op= key='
+          body:
+            data: '{"id":1,"name":"Tea","price":4.50,"added":20454}'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # An insert, an update and a delete
+  - createVariables:
+      variables:
+        - name: "db.container"
+          value: "mysql"
+        - name: "db.sql"
+          value: |-
+            INSERT INTO products VALUES (2, 'Coffee', 3.20, '2026-03-01', 'not sent');
+            UPDATE products SET price = 5.00 WHERE id = 1;
+            DELETE FROM products WHERE id = 2;
+  - groovy:
+      script:
+        file: "database/sql.groovy"
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Run"
+              value: 'first'
+            - name: "X-Body-Type"
+              value: '[B'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+            - name: "X-Operation"
+              value: 'c'
+            - name: "X-Table"
+              value: 'testdb.products'
+            - name: "X-Key"
+              value: '{"id":2}'
+            - name: "X-Component-Headers"
+              value: 'op= key='
+          body:
+            data: '{"id":2,"name":"Coffee","price":3.20,"added":20513}'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Run"
+              value: 'first'
+            - name: "X-Body-Type"
+              value: '[B'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+            - name: "X-Operation"
+              value: 'u'
+            - name: "X-Table"
+              value: 'testdb.products'
+            - name: "X-Key"
+              value: '{"id":1}'
+            - name: "X-Component-Headers"
+              value: 'op= key='
+          body:
+            data: '{"id":1,"name":"Tea","price":5.00,"added":20454}'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # A delete sends the row before it, with all its columns
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Run"
+              value: 'first'
+            - name: "X-Body-Type"
+              value: '[B'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+            - name: "X-Operation"
+              value: 'd'
+            - name: "X-Table"
+              value: 'testdb.products'
+            - name: "X-Key"
+              value: '{"id":2}'
+            - name: "X-Component-Headers"
+              value: 'op= key='
+          body:
+            data: '{"id":2,"name":"Coffee","price":3.20,"added":20513}'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # Stop, change rows while no integration runs, and start again with the same position and schema history files
+  - camel:
+      cli:
+        stop:
+          integration: "debezium-mysql-first"
+  - createVariables:
+      variables:
+        - name: "db.container"
+          value: "mysql"
+        - name: "db.sql"
+          value: |-
+            INSERT INTO notes VALUES (1, 'not in tableIncludeList, so not sent');
+            INSERT INTO products VALUES (3, 'Juice', 2.10, '2026-01-01', 'not sent');
+  - groovy:
+      script:
+        file: "database/sql.groovy"
+  - camel:
+      cli:
+        run:
+          autoRemove: false
+          waitForRunningState: false
+          # the JDBC driver of MySQL is not in the Kamelet
+          args:
+            - "--dep=mvn:com.mysql:mysql-connector-j:26.10.0"
+          integration:
+            name: "debezium-mysql-second"
+            file: "database/debezium/debezium-mysql-source-route.yaml"
+            systemProperties:
+              properties:
+                - name: "db.serverName"
+                  value: "${CITRUS_TESTCONTAINERS_MYSQL_HOST}"
+                - name: "db.serverPort"
+                  value: "${CITRUS_TESTCONTAINERS_MYSQL_PORT}"
+                - name: "db.offsetFile"
+                  value: "${offsetFile}"
+                - name: "db.historyFile"
+                  value: "${historyFile}"
+                - name: "run.name"
+                  value: "second"
+                - name: "http.sink.url"
+                  value: "http://localhost:${http.server.port}"
+                # any other option of the connector, for all its Kamelets
+                - name: "camel.component.debezium-mysql.columnExcludeList"
+                  value: "testdb.products.note"
+
+  # The second run sends only the change of products made while it was stopped, not the snapshot or the changes sent before
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Run"
+              value: 'second'
+            - name: "X-Body-Type"
+              value: '[B'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+            - name: "X-Operation"
+              value: 'c'
+            - name: "X-Table"
+              value: 'testdb.products'
+            - name: "X-Key"
+              value: '{"id":3}'
+            - name: "X-Component-Headers"
+              value: 'op= key='
+          body:
+            data: '{"id":3,"name":"Juice","price":2.10,"added":20454}'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+  - camel:
+      cli:
+        stop:
+          integration: "debezium-mysql-second"
