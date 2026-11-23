@@ -97,7 +97,7 @@ actions:
         verify:
           integration: "pgp-action-route"
           logMessage: 'Rejected-tampered org.bouncycastle.openpgp.PGPException: Message failed integrity check'
-  # A message without integrity protection fails, and so does (for now) a message in the OCB format of gpg 2.4 and later
+  # A message without integrity protection fails, while a message in the OCB format of gpg 2.4 and later decrypts
   - camel:
       cli:
         verify:
@@ -107,4 +107,4 @@ actions:
       cli:
         verify:
           integration: "pgp-action-route"
-          logMessage: 'Rejected-ocb org.bouncycastle.openpgp.PGPException: PGP message is not integrity protected.'
+          logMessage: 'Accepted-ocb Invoice 2026-119 from Bob, OCB|'

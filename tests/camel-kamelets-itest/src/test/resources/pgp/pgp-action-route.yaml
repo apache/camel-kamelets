@@ -272,8 +272,7 @@
                 steps:
                   - log: "Rejected-legacy ${exception.getClass().getName()}: ${exception.message}"
 
-# A message that gpg 2.4 or later wrote in the OCB format fails for now, as the pgp-decrypt-action
-# description says: when Camel accepts it, this test fails, and the description must change
+# A message that gpg 2.5 wrote in the OCB (AEAD) format decrypts, as it is integrity protected (CAMEL-27449)
 - route:
     from:
       uri: "timer:ocb"
@@ -289,7 +288,7 @@
                   parameters:
                     secretKeyRing: "classpath:alice-secret.asc"
                     passphrase: "alice-test-passphrase"
-              - log: "Accepted-ocb ${bodyAs(String)}"
+              - log: "Accepted-ocb ${bodyAs(String)}|"
             doCatch:
               - exception:
                   - "java.lang.Exception"
