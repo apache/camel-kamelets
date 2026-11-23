@@ -1,0 +1,178 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: opensearch-search-action-route-test
+actions:
+  # OpenSearch with one node and the security plugin off, so it is reached with plain HTTP
+  - testcontainers:
+      start:
+        container:
+          name: "opensearch"
+          image: "opensearchproject/opensearch:3.9.0"
+          startUpTimeout: 180
+          exposedPorts:
+            - 9200
+          env:
+            - name: "discovery.type"
+              value: "single-node"
+            - name: "DISABLE_SECURITY_PLUGIN"
+              value: "true"
+            - name: "DISABLE_INSTALL_DEMO_CONFIG"
+              value: "true"
+            - name: "cluster.routing.allocation.disk.threshold_enabled"
+              value: "false"
+            - name: "OPENSEARCH_JAVA_OPTS"
+              value: "-Xms512m -Xmx512m"
+          waitFor:
+            url: "http://localhost:9200/"
+
+  # two customers to search, and a third one in another index, that the Kamelet must not find
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      sendRequest:
+        PUT:
+          path: "/customers/_doc/1"
+          contentType: "application/json"
+          parameters:
+            - name: "refresh"
+              value: 'true'
+          body:
+            data: '{"name": "Alice Smith", "city": "Oslo"}'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      receiveResponse:
+        response:
+          status: 201
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      sendRequest:
+        PUT:
+          path: "/customers/_doc/2"
+          contentType: "application/json"
+          parameters:
+            - name: "refresh"
+              value: 'true'
+          body:
+            data: '{"name": "Bob Jones", "city": "Rome"}'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      receiveResponse:
+        response:
+          status: 201
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      sendRequest:
+        PUT:
+          path: "/other/_doc/3"
+          contentType: "application/json"
+          parameters:
+            - name: "refresh"
+              value: 'true'
+          body:
+            data: '{"name": "Carol White", "city": "Oslo"}'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      receiveResponse:
+        response:
+          status: 201
+
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "opensearch/opensearch-search-action-route.yaml"
+            systemProperties:
+              properties:
+                - name: "opensearch.host"
+                  value: "${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}"
+                - name: "opensearch.port"
+                  value: "${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${search.server.port}"
+
+  # a query in the Query DSL: the body is the JSON array of the documents found, only in the index of the option
+  - http:
+      server: "searchServer"
+      receiveRequest:
+        POST:
+          path: "/json"
+          type: "json"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Total-Hits"
+              value: '1'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+          body:
+            data: '[{"name": "Alice Smith", "city": "Oslo"}]'
+  - http:
+      server: "searchServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # plain text
+  - http:
+      server: "searchServer"
+      receiveRequest:
+        POST:
+          path: "/text"
+          type: "json"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Total-Hits"
+              value: '1'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+          body:
+            data: '[{"name": "Bob Jones", "city": "Rome"}]'
+  - http:
+      server: "searchServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  # no match: an empty array
+  - http:
+      server: "searchServer"
+      receiveRequest:
+        POST:
+          path: "/none"
+          type: "json"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Total-Hits"
+              value: '0'
+            - name: "X-Content-Type"
+              value: 'ct=application/json'
+          body:
+            data: '[]'
+  - http:
+      server: "searchServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
