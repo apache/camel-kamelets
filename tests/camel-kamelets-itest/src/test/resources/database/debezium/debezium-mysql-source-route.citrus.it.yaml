@@ -61,9 +61,6 @@ actions:
         run:
           autoRemove: false
           waitForRunningState: false
-          # the JDBC driver of MySQL is not in the Kamelet
-          args:
-            - "--dep=mvn:com.mysql:mysql-connector-j:26.10.0"
           integration:
             name: "debezium-mysql-first"
             file: "database/debezium/debezium-mysql-source-route.yaml"
@@ -245,9 +242,6 @@ actions:
         run:
           autoRemove: false
           waitForRunningState: false
-          # the JDBC driver of MySQL is not in the Kamelet
-          args:
-            - "--dep=mvn:com.mysql:mysql-connector-j:26.10.0"
           integration:
             name: "debezium-mysql-second"
             file: "database/debezium/debezium-mysql-source-route.yaml"
