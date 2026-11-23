@@ -167,7 +167,7 @@ The `Content-Type: text/plain` matters: without it, `curl -d` sends the question
 
 == How it works
 
-* *The vector of a text.* The `embeddings` operation of the `openai` component sends the body to the embedding model, and gives back its vector as a `List` of numbers. Written in a Simple expression, such as `${body}`, the list is a JSON array.
+* *The vector of a text.* The `embeddings` operation of the `openai` component sends the body to the embedding model, and gives back its vector as a `List` of numbers. Written in a Simple expression, such as `$\{body}`, the list is a JSON array.
 * *Storing.* The route builds the document as JSON, with the text, its title and its vector, and `elasticsearch-index-sink` stores it. `escape(json,...)` makes any text, with quotes or line breaks, safe inside the JSON.
 * *Searching.* The body of `elasticsearch-search-action` is a search in the Query DSL of Elasticsearch, here a `knn` search with the vector of the question. `"_source": ["title", "text"]` leaves the vectors out of the documents found, so that they do not fill the prompt. The action gives back the documents found as a JSON array, best match first, each with its id in `_id`.
 * *Answering.* The route puts the documents and the question in one text, and `openai-chat-action` sends it to the chat model, with instructions in `systemMessage` to answer only from the documents. Its body afterwards is the answer, which goes back to the caller of `/ask`.
