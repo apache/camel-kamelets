@@ -1,0 +1,47 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+- route:
+    from:
+      uri: "timer:send"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: "Hello WebSocket"
+        - doTry:
+            steps:
+              # the Citrus HTTP server stands in for the WebSocket server, and refuses the connection
+              - to:
+                  uri: "kamelet:websocket-sink"
+                  parameters:
+                    url: "ws://localhost:{{handshake.server.port}}/ws?room=blue"
+                    # a token with & and %, as it is
+                    authorization: "RAW({{ws.authorization}})"
+                    subProtocols: "chat.v2,chat.v1"
+              - setBody:
+                  constant: "sent"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - setBody:
+                      simple: "${exception.message}"
+        - setHeader:
+            name: Content-Type
+            constant: "text/plain"
+        - to: "http://localhost:{{handshake.server.port}}/error"
