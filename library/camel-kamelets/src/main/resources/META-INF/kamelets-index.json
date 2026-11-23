@@ -1,5 +1,15 @@
 {
   "kamelets" : [ {
+    "name" : "ai-tool-source",
+    "type" : "source",
+    "supportLevel" : "Preview",
+    "title" : "AI Tool Source",
+    "summary" : "Offers the steps that follow it as a tool that an AI agent can call, such as an MCP client like Claude Desktop or Cursor, with the arguments of each call as JSON.",
+    "description" : "Offers the steps that follow it as a tool that an AI agent can call, such as an MCP client like Claude Desktop or Cursor, with the arguments of each call as JSON.\n\nUse it to let an AI assistant look up or change data through a flow you control, such as returning the status of an order. In a route (YAML), the steps after `from: kamelet:ai-tool-source` run for each call; they can also hand the call on with `to: kamelet:<name>`. To offer the tool over MCP, set `camel.server.mcp-enabled=true` and `camel.server.mcp-tags` to its tag, in `application.properties` or with `--prop` or `-D`: Camel JBang then adds `camel-mcp-server` by itself, other applications need it and `camel-platform-http-main` as dependencies. MCP clients connect with streamable HTTP to `http://<host>:<port>/mcp`, on the HTTP port of the application (`camel.server.port`, 8080 by default with Camel JBang). The `openai` component can call the tools of a tag as well, with its `tags` option.\n\nOutput: the body is the arguments of the call, as JSON text, such as `{\"orderId\":\"42\"}`, with only the arguments that `argSchema` declares (`{}` for a tool without arguments). Each of them is also a header of its own name, such as `orderId`. The body at the end of the flow, as text, is the result the caller gets back; the headers are not sent back. A flow that does not change the body gives the caller its own arguments back.\n\nGood to know: an MCP client is an untrusted sender. Anyone who can reach the MCP endpoint can call every tool it offers, with any arguments, so check them before you use them. The MCP server offers only the tools whose tag is in `camel.server.mcp-tags`, never one with another tag. It listens on all network interfaces by default (`camel.server.host`) and has no login: protect it with OAuth (`camel.server.mcp-oauth-profile`) or network rules. A call from a web page of another host is refused, unless `camel.server.mcp-allowed-origins` allows it. A call that misses a required argument, has one of the wrong type, or has one that `argSchema` does not declare, is refused before the flow runs. An error in the flow reaches the caller only as `Tool execution failed`, and a call that takes longer than `camel.server.mcp-tool-timeout` (20 seconds by default) as `Tool execution timed out`, while the flow goes on. The hints are advice for the client, which Camel does not enforce. `allowedRoles` checks the roles of a caller logged in with OAuth, so without OAuth a tool with `allowedRoles` refuses every call.",
+    "group" : "AI Tool",
+    "namespace" : "AI",
+    "provider" : "Apache Software Foundation"
+  }, {
     "name" : "avro-deserialize-action",
     "type" : "action",
     "supportLevel" : "Stable",
