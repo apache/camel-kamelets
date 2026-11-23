@@ -1,0 +1,276 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: debezium-sqlserver-source
+  annotations:
+    camel.apache.org/kamelet.support.level: "Preview"
+    camel.apache.org/catalog.version: "4.24.0-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gU3ZnIFZlY3RvciBJY29ucyA6IGh0dHA6Ly93d3cub25saW5ld2ViZm9udHMuY29tL2ljb24gLS0+DQo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPg0KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTAwMCAxMDAwIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCAxMDAwIDEwMDAiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPG1ldGFkYXRhPiBTdmcgVmVjdG9yIEljb25zIDogaHR0cDovL3d3dy5vbmxpbmV3ZWJmb250cy5jb20vaWNvbiA8L21ldGFkYXRhPg0KPGc+PHBhdGggZD0iTTQyNi45LDkwYzEwLjMsMC0yMS43LTgwLTIxLjctODBTMjkxLjksNjAuMywyODUuMSw2NkMyNzguMiw3MS44LDQxNi42LDkwLDQyNi45LDkweiIvPjxwYXRoIGQ9Ik0zNTYuOSwxNDkuNWw3Mi00NC42Yy0xNy40LDIuMy0xNTguNy0yOS43LTE1OC43LTI5LjdjMi4zLDYuOSw2OC42LDc0LjMsNjguNiw3NC4zTDM1Ni45LDE0OS41TDM1Ni45LDE0OS41eiIvPjxwYXRoIGQ9Ik00NjEuMiwxNjYuN2wtMjAuNi00OS4ybC01OS41LDM2LjZMNDYxLjIsMTY2LjdMNDYxLjIsMTY2Ljd6Ii8+PHBhdGggZD0iTTMwNi44LDE0Mi4xbC01MC4zLTU4LjljMCwwLTQwLDI3LjQtMzQuMywzNC4zQzIyNy45LDEyNC40LDMwNi44LDE0Mi4xLDMwNi44LDE0Mi4xTDMwNi44LDE0Mi4xeiIvPjxwYXRoIGQ9Ik0yNDguNSwxNDkuNWMyMC42LDE0LjksNjguNiw3Ny44LDY4LjYsNzcuOGwtMTguMy02MC42TDI0OC41LDE0OS41TDI0OC41LDE0OS41eiIvPjxwYXRoIGQ9Ik0zMzguOCwyNDQuNGw4Mi4zLTYxLjhsLTEwOS44LTE2QzMxMS40LDE2Ni43LDMzOC44LDIzMC43LDMzOC44LDI0NC40TDMzOC44LDI0NC40eiIvPjxwYXRoIGQ9Ik00MzMuNywxODguNGwtNzYuOSw2Ni4zYzIxLjUsNC42LDkxLjcsMzAuOSw5MS43LDMwLjlDNDUzLjIsMjEwLjEsNDMzLjcsMTg4LjQsNDMzLjcsMTg4LjRMNDMzLjcsMTg4LjR6Ii8+PHBhdGggZD0iTTQ2MS4yLDI4Mi4yYzAsMCwxMTIuMS02Mi45LDEyMC4xLTY2LjNsLTEzMi0yNy40QzQ0OS4zLDE4OC40LDQ3OC4zLDIyOS42LDQ2MS4yLDI4Mi4yTDQ2MS4yLDI4Mi4yeiIvPjxwYXRoIGQ9Ik01NjEuOCwzMzdjNDMuNS03NC4zLDQzLjUtMTE2LjYsNDMuNS0xMTYuNmwtMTIwLjQsNzcuOEM1MDUuMiwzMDMuOSw1NjEuOCwzMzcsNTYxLjgsMzM3TDU2MS44LDMzN3oiLz48cGF0aCBkPSJNNTg5LjMsMzM3YzU3LjItMjkuNywxODAuNy02NCwxODAuNy02NGMtMjYuMy0xOC4zLTE0OS44LTUyLjYtMTQ5LjgtNTIuNkM2MjEuMywyMzcuNiw1ODkuMywzMzcsNTg5LjMsMzM3TDU4OS4zLDMzN3oiLz48cGF0aCBkPSJNNTg5LjMsMzUzLjFjMzcuNCwyMS43LDc2LjYsODQuNiw3Ni42LDg0LjZjNzItNzAuOSwxMTUuNS0xNTIuMSwxMTUuNS0xNTIuMUM3NjQuMiwyODYuNyw1ODkuMywzNTMuMSw1ODkuMywzNTMuMUw1ODkuMywzNTMuMXoiLz48cGF0aCBkPSJNODAwLjgsMjg1LjZDNzgzLjcsMzMxLjMsNjk2LjgsNDMyLDY5Ni44LDQzMmM0NC42LTE4LjMsMjM2LjctMzQuMywyMzYuNy0zNC4zQzkxNi4zLDM2Mi4yLDgwMC44LDI4NS42LDgwMC44LDI4NS42TDgwMC44LDI4NS42eiIvPjxwYXRoIGQ9Ik00MjguOSwzMTEuOWMtMjQuMy0xNi03OS40LTI5LjctNzkuNC0yOS43YzYuMiwzLjQsNy4zLDk4LjMsNy4zLDk4LjNDMzg0LjEsMzU1LjMsNDI4LjksMzExLjksNDI4LjksMzExLjlMNDI4LjksMzExLjl6Ii8+PHBhdGggZD0iTTQzOS41LDMzMS4zYy04LDYuOS04Mi42LDY4LjYtODIuNiw2OC42YzEyLjMsOCw0MC4zLDMyLDQwLjMsMzJDNDI2LjksMzk0LjIsNDM5LjUsMzMxLjMsNDM5LjUsMzMxLjNMNDM5LjUsMzMxLjN6Ii8+PHBhdGggZD0iTTQ2MS4yLDMxOS45YzEuMSwxNy4yLTI2LjMsOTIuNi0yNi4zLDkyLjZsOTguMy01My43TDQ2MS4yLDMxOS45TDQ2MS4yLDMxOS45eiIvPjxwYXRoIGQ9Ik00MDguNiw0NDkuMWMxMS40LDkuMSwyMC4zLDY3LjUsMjAuMyw2Ny41YzEwLTE0LjksMTA0LjMtMTM0LjksMTA0LjMtMTM0LjlDNDU4LjksNDI1LjEsNDA4LjYsNDQ5LjEsNDA4LjYsNDQ5LjF6Ii8+PHBhdGggZD0iTTU2MS44LDM4MC41Yy01LjcsMTMuNy0xMDYuMywxMjUuOC0xMDYuMywxMjUuOGMyNi41LTEwLjMsMTkxLTYxLjgsMTkxLTYxLjhDNjI0LjcsNDExLjQsNTYxLjgsMzgwLjUsNTYxLjgsMzgwLjVMNTYxLjgsMzgwLjV6Ii8+PHBhdGggZD0iTTM4OS4yLDQ3NC4zYy03LjksMTMuNy0xNDYuNSwxMjguMS0xNDYuNSwxMjguMWMyMS43LTE0LjksMTY1LjgtODAsMTY1LjgtODBDNDEwLjksNDg4LDM4OS4yLDQ3NC4zLDM4OS4yLDQ3NC4zTDM4OS4yLDQ3NC4zeiIvPjxwYXRoIGQ9Ik0zMTEuNCw0OTUuOGMyNy40LTE3LjMsNjAuNi00Ni43LDYwLjYtNDYuN2MtOS4xLTExLjQtMjguNi0xNy4yLTI4LjYtMTcuMkMzNDIuMyw0NDIuMywzMTEuNCw0OTUuOCwzMTEuNCw0OTUuOHoiLz48cGF0aCBkPSJNMzY2LjMsNDgyLjNjLTQ5LjQsMjEuMS05MS41LDYwLTkxLjUsNjBsLTQ1LjcsNjBMMzY2LjMsNDgyLjNMMzY2LjMsNDgyLjN6Ii8+PHBhdGggZD0iTTU2NC4xLDQ5NS44bC04OC4xLDI5LjljMCwwLDY4LjYsNDEuMiw5My44LDUxLjVDNTY5LjgsNTc3LjIsNTcyLjEsNTI2LjUsNTY0LjEsNDk1LjhMNTY0LjEsNDk1Ljh6Ii8+PHBhdGggZD0iTTU2MS44LDU5MC45TDQ2MCw1MzAuM2MwLDAsMy43LDg2LjktMTAuNywxMjEuMkM0NDkuMyw2NTEuNSw1NDcsNjA1LjgsNTYxLjgsNTkwLjlMNTYxLjgsNTkwLjl6Ii8+PHBhdGggZD0iTTQ0OS4zLDY3MWMwLDAsNTUuMyw0Mi4zLDEwNi44LDU0LjljMCwwLDIxLjItNTcuMiwxNC0xMTguOUM1NzAuMSw2MDYuOSw0NzQsNjY0LjEsNDQ5LjMsNjcxTDQ0OS4zLDY3MXoiLz48cGF0aCBkPSJNNDM0LjksNTM4LjNsLTc4LDMyYzI0LjcsNTguMiw2NC4zLDgxLjIsNjQuMyw4MS4yQzQ0Ni4zLDU5Mi4xLDQzNC45LDUzOC4zLDQzNC45LDUzOC4zTDQzNC45LDUzOC4zeiIvPjxwYXRoIGQ9Ik0zNDEuNyw1NzcuMmMyLjksMTQuOS03NiwxNDguNy03NiwxNDguN2MxMDAuNi0zMC45LDE0My4xLTU5LjUsMTQzLjEtNTkuNUMzNTAuNiw2MTMuOCwzNDEuNyw1NzcuMiwzNDEuNyw1NzcuMkwzNDEuNyw1NzcuMnoiLz48cGF0aCBkPSJNMzA0LjUsNTkwLjljLTEzLjcsNC42LTgzLjUsNDEuMi04My41LDQxLjJjMi4zLDY3LjUsMTcuMiw4NS44LDE3LjIsODUuOEMyNzEuNCw2ODQuNywzMDQuNSw1OTAuOSwzMDQuNSw1OTAuOUwzMDQuNSw1OTAuOXoiLz48cGF0aCBkPSJNMTkyLjUsNjQ0LjdDODAuNCw2OTguNCw2Ni43LDc3OS42LDY2LjcsNzc5LjZjMjAuNiwwLDE0OC43LTQwLDE0OC43LTQwQzE5MC4yLDY4MS4yLDE5Mi41LDY0NC43LDE5Mi41LDY0NC43TDE5Mi41LDY0NC43eiIvPjxwYXRoIGQ9Ik02Ni43LDc4OS45YzAsMC01LjcsNTEuNSw1Ny4yLDk0LjljMCwwLDgwLTEwNC4xLDg1LjgtMTI0LjZDMjA5LjYsNzYwLjIsMTA0LjQsNzg5LjksNjYuNyw3ODkuOUw2Ni43LDc4OS45eiIvPjxwYXRoIGQ9Ik0yMjkuMSw3NjdMMTMzLDg5MC41bDUuMSw2LjlsMTc5LTY1LjJDMjcxLjQsODA3LDIyOS4xLDc2NywyMjkuMSw3NjdMMjI5LjEsNzY3eiIvPjxwYXRoIGQ9Ik0xNDksODk5LjdjNDIuMywzOC45LDExNi42LDQ5LjIsMTE2LjYsNDkuMmw2NS4yLTk4LjNMMTQ5LDg5OS43TDE0OSw4OTkuN3oiLz48cGF0aCBkPSJNMzU2LjksODUwLjVjMC45LDYuOS04Mi4xLDEwNy4zLTgyLjEsMTA3LjNjNTIuNi0yLjUsMjM1LjctNzMsMjM1LjctNzNDNDMyLjgsODgzLjYsMzU2LjksODUwLjUsMzU2LjksODUwLjV6Ii8+PHBhdGggZD0iTTQ3Ni4xLDk5MGMxMS40LTEzLjcsMzkuMi05Mi42LDM5LjItOTIuNmMtOTIuMywzOC45LTIwMy45LDYwLjQtMjAzLjksNjAuNEMzNDguNyw5NzkuNCw0NzYuMSw5OTAsNDc2LjEsOTkwTDQ3Ni4xLDk5MHoiLz48cGF0aCBkPSJNMzQ5LjYsODIyLjVjMzcuOC01Ni44LDUzLjUtMTI5LjgsNTMuNS0xMjkuOGMtMTQuNiwxMC4zLTE0OC45LDU0LjktMTQ4LjksNTQuOUMyOTQuMiw4MDAuMiwzNDkuNiw4MjIuNSwzNDkuNiw4MjIuNUwzNDkuNiw4MjIuNXoiLz48cGF0aCBkPSJNMzc3LjcsODA4LjJjMjguNiwxLjEsMTczLjItNjkuOCwxNzMuMi02OS44Yy0zMS40LTYuOS0xMTYuMS01MS41LTExNi4xLTUxLjVMMzc3LjcsODA4LjJMMzc3LjcsODA4LjJ6Ii8+PHBhdGggZD0iTTM2Ni4zLDgzMi4yYzIwLjYsMjQsMTQ5LDQ2LjksMTQ5LDQ2LjljMjEuNC0yNi45LDM1LjctMTMxLjUsMzUuNy0xMzEuNUM1NDQuNyw3NjAuMiwzNjYuMyw4MzIuMiwzNjYuMyw4MzIuMkwzNjYuMyw4MzIuMnoiLz48L2c+DQo8L3N2Zz4="
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "Debezium"
+    camel.apache.org/kamelet.namespace: "Database"
+  labels:
+    camel.apache.org/kamelet.type: "source"
+    camel.apache.org/kamelet.verified: "true"
+spec:
+  definition:
+    title: "Debezium SQL Server Source"
+    description: |-
+      Sends a message for each row inserted, updated or deleted in the tables of a SQL Server database, as it happens (change data capture with Debezium).
+
+      Use it to pass the changes of a database on to another system as they happen, for example to keep a search index or a cache up to date, or to copy new orders to a queue, without polling the tables. To read rows with a query again and again, use `sqlserver-source`.
+
+      Output: the body is JSON text in bytes, an object with the column names as keys, such as `{"id":1,"name":"Tea","price":4.50}`: the row after the change, and for a delete the row before it. The columns are in the order of the table. A `DECIMAL` column is a JSON number with its decimals, such as `4.50`, and a `DATE` column the number of days since 1970-01-01, such as `20454` for 2026-01-01. The `debezium-operation` header says what happened: `c` (insert), `u` (update), `d` (delete) or `r` (a row read by the snapshot, see `snapshotMode`). `debezium-table` is the table, as `schema.table` such as `dbo.orders`, and `debezium-key` the primary key of the row as JSON text, such as `{"id":1}`. `Content-Type` is `application/json`.
+
+      Good to know: the Kamelet reads the changes that the change data capture (CDC) of SQL Server records, so CDC must be enabled on the database, with `EXEC sys.sp_cdc_enable_db`, and on each table, such as with `EXEC sys.sp_cdc_enable_table @source_schema = 'dbo', @source_name = 'orders', @role_name = NULL`, which needs a member of `sysadmin`. SQL Server Agent must run, as its jobs copy the changes into the change tables of CDC. The changes of a table without CDC are not sent. The user needs to read the tables and the change tables, as a member of the `db_owner` role of the database does. On the first start, the Kamelet by default sends every row of the tables first (`snapshotMode`). It saves how far it got in the file `offsetStorageFileName`, or in a Kafka topic, when it stops and once a minute while it runs, and after a restart it goes on from there, so after a crash the changes of the last minute can be sent again. It also keeps the structure of the tables in a schema history: the file `schemaHistoryFileName`, or a Kafka topic. Keep both files on a disk that outlives the integration, such as a volume in Kubernetes: when the position is lost, everything is sent again as on the first start, and when only the schema history is lost, the Kamelet fails to start with `The db history topic is missing`, until it is started once with `snapshotMode` set to `recovery`. The cleanup job of CDC deletes the changes after 3 days by default, so start a stopped Kamelet again before that. Any other option of the Debezium SQL Server connector can be set for all the Kamelets of the integration as the `camel.component.debezium-sqlserver.` property of that option, such as `camel.component.debezium-sqlserver.columnExcludeList=dbo.customers.ssn`.
+    required:
+      - serverName
+      - username
+      - password
+      - databaseName
+      - topicPrefix
+    type: object
+    properties:
+      serverName:
+        title: Server Name
+        description: The host name or IP address of the SQL Server server, without the port.
+        type: string
+        example: db.example.com
+      serverPort:
+        title: Server Port
+        description: The port the SQL Server server listens on. SQL Server uses 1433 unless it was set up otherwise.
+        type: integer
+        default: 1433
+      username:
+        title: Username
+        description: The database user to log in as. It needs to read the tables and the change tables of CDC, as a member of the `db_owner` role of the database does.
+        type: string
+        x-descriptors:
+        - urn:camel:group:credentials
+      password:
+        title: Password
+        description: The password of the database user `username`.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      databaseName:
+        title: Database Name
+        description: The name of the database whose changes to send. CDC must be enabled on it.
+        type: string
+        example: shop
+      topicPrefix:
+        title: Logical Name
+        description: A name for this source of changes, made of letters, digits, `.`, `_` and `-`. The saved position is stored under this name, so keep it the same across restarts, and give each Kamelet that reads another database its own name.
+        type: string
+        pattern: "^[a-zA-Z0-9._-]+$"
+        example: shop
+      tableIncludeList:
+        title: Tables
+        description: The tables whose changes to send, as regular expressions that match `schema.table`, separated by commas, such as `dbo.orders,dbo.customers`. When it is not set, the changes of all tables with CDC are sent.
+        type: string
+        example: dbo.orders,dbo.customers
+      snapshotMode:
+        title: Snapshot Mode
+        description: "Whether to send the rows that are already in the tables before the changes. `initial` (the default): on the first start, every row of the tables is sent with the operation `r`, then the changes; after a restart with a saved position, only the changes since. `no_data`: only the changes made from the first start on. `always`: every row on each start, then the changes. `initial_only`: every row on the first start, and no changes. `when_needed`: as `initial`, and every row again when the saved position can no longer be found in the change tables. `recovery`: for one start after the schema history is lost, to write it again from the tables as they are now, then go on from the saved position; only when the structure of the tables has not changed since the Kamelet stopped."
+        type: string
+        enum: ["initial", "no_data", "always", "initial_only", "when_needed", "recovery"]
+        default: initial
+      encrypt:
+        title: Encrypt Connection
+        description: Whether the connection to SQL Server is encrypted with TLS. When true, the certificate of the server must be trusted by Java, or `trustServerCertificate` must be true.
+        type: boolean
+        default: true
+      trustServerCertificate:
+        title: Trust Server Certificate
+        description: 'Whether to accept the certificate of the server without checking it, as needed for a server with a self-signed certificate. Only for development and tests: the connection can then be intercepted.'
+        type: boolean
+        default: false
+      offsetStorageFileName:
+        title: Position File
+        description: The file where the Kamelet saves how far it got, such as `/data/offsets.dat`, read again after a restart. It is created when it does not exist, but its folder must exist and be writable, or the Kamelet fails to start. A relative name is in the folder the integration runs in. When it is lost, the changes are sent again as on the first start. Not used when `offsetStorage` is the Kafka store.
+        type: string
+        default: debezium-sqlserver-offsets.dat
+        example: /data/offsets.dat
+      offsetStorage:
+        title: Position Store
+        description: "Where the Kamelet saves how far it got. `org.apache.kafka.connect.storage.FileOffsetBackingStore` (the default): in the file `offsetStorageFileName`. `org.apache.kafka.connect.storage.KafkaOffsetBackingStore`: in the Kafka topic `offsetStorageTopic`, on the Kafka of `offsetStorageBootstrapServers`, for an integration that has no lasting disk. Use the same kind of store for `schemaHistory`."
+        type: string
+        enum: ["org.apache.kafka.connect.storage.FileOffsetBackingStore", "org.apache.kafka.connect.storage.KafkaOffsetBackingStore"]
+        default: org.apache.kafka.connect.storage.FileOffsetBackingStore
+      offsetStorageBootstrapServers:
+        title: Kafka Brokers
+        description: The Kafka brokers of the Kafka stores of `offsetStorage` and `schemaHistory`, as `host:port` separated by commas. Needed with a Kafka store. The connection is made without TLS and without a login.
+        type: string
+        example: my-cluster-kafka-bootstrap:9092
+      offsetStorageTopic:
+        title: Position Topic
+        description: The Kafka topic where the Kafka store saves how far the Kamelet got. It is created when it does not exist. Needed with the Kafka store.
+        type: string
+        example: shop-offsets
+      offsetStoragePartitions:
+        title: Position Topic Partitions
+        description: The number of partitions of the topic `offsetStorageTopic` when the Kamelet creates it. Needed with the Kafka store.
+        type: integer
+        example: 1
+      offsetStorageReplicationFactor:
+        title: Position Topic Replicas
+        description: The number of copies of the topic `offsetStorageTopic` on the Kafka brokers when the Kamelet creates it. Needed with the Kafka store.
+        type: integer
+        example: 3
+      schemaHistoryFileName:
+        title: Schema History File
+        description: The file where the Kamelet keeps the structure of the tables, such as `/data/schema-history.dat`, read again after a restart. It is created when it does not exist, with its folders. A relative name is in the folder the integration runs in. Not used when `schemaHistory` is the Kafka store.
+        type: string
+        default: debezium-sqlserver-schema-history.dat
+        example: /data/schema-history.dat
+      schemaHistory:
+        title: Schema History Store
+        description: "Where the Kamelet keeps the structure of the tables. `io.debezium.storage.file.history.FileSchemaHistory` (the default): in the file `schemaHistoryFileName`. `io.debezium.storage.kafka.history.KafkaSchemaHistory`: in the Kafka topic `schemaHistoryTopic`, on the Kafka of `offsetStorageBootstrapServers`, for an integration that has no lasting disk."
+        type: string
+        enum: ["io.debezium.storage.file.history.FileSchemaHistory", "io.debezium.storage.kafka.history.KafkaSchemaHistory"]
+        default: io.debezium.storage.file.history.FileSchemaHistory
+      schemaHistoryTopic:
+        title: Schema History Topic
+        description: The Kafka topic where the Kafka store keeps the structure of the tables. It is created with one partition when it does not exist. Use a topic of its own, not `offsetStorageTopic`. Needed with the Kafka store.
+        type: string
+        example: shop-schema-history
+  dataTypes:
+    out:
+      default: json
+      types:
+        json:
+          format: "application-json"
+          description: "The row after the change, or before it for a delete, as JSON text in bytes."
+          mediaType: application/json
+      headers:
+        debezium-operation:
+          title: Operation
+          description: "What happened to the row: `c` (insert), `u` (update), `d` (delete) or `r` (read by the snapshot)."
+          type: string
+        debezium-table:
+          title: Table
+          description: The table of the row, as `schema.table`, such as `dbo.orders`.
+          type: string
+        debezium-key:
+          title: Key
+          description: The primary key of the row, as JSON text such as `{"id":1}`.
+          type: string
+        Content-Type:
+          title: Content Type
+          description: Always `application/json`, as the body is JSON text.
+          type: string
+  dependencies:
+    - "camel:jackson3"
+    - "camel:kamelet"
+    - "camel:debezium-sqlserver"
+  template:
+    from:
+      uri: debezium-sqlserver
+      parameters:
+        name: "{{topicPrefix}}"
+        databaseHostname: "{{serverName}}"
+        databasePort: "{{serverPort}}"
+        databaseUser: "{{username}}"
+        databasePassword: "RAW({{password}})"
+        databaseNames: "{{databaseName}}"
+        topicPrefix: "{{topicPrefix}}"
+        tableIncludeList: "{{?tableIncludeList}}"
+        snapshotMode: "{{snapshotMode}}"
+        offsetStorage: "{{offsetStorage}}"
+        offsetStorageFileName: "{{offsetStorageFileName}}"
+        offsetStorageTopic: "{{?offsetStorageTopic}}"
+        offsetStoragePartitions: "{{?offsetStoragePartitions}}"
+        offsetStorageReplicationFactor: "{{?offsetStorageReplicationFactor}}"
+        schemaHistoryInternal: "{{schemaHistory}}"
+        schemaHistoryInternalFileFilename: "{{schemaHistoryFileName}}"
+        # the settings of the JDBC driver of SQL Server
+        additionalProperties.database.encrypt: "{{encrypt}}"
+        additionalProperties.database.trustServerCertificate: "{{trustServerCertificate}}"
+        additionalProperties.bootstrap.servers: "{{?offsetStorageBootstrapServers}}"
+        additionalProperties.schema.history.internal.kafka.bootstrap.servers: "{{?offsetStorageBootstrapServers}}"
+        additionalProperties.schema.history.internal.kafka.topic: "{{?schemaHistoryTopic}}"
+      steps:
+        # only the changes of rows: not the tombstones, heartbeats or schema changes, which have no row
+        - filter:
+            expression:
+              simple:
+                expression: "${header.CamelDebeziumOperation} in 'c,u,d,r'"
+            steps:
+              - setHeader:
+                  name: debezium-operation
+                  expression:
+                    simple:
+                      expression: "${header.CamelDebeziumOperation}"
+              - setHeader:
+                  name: debezium-table
+                  expression:
+                    simple:
+                      expression: "${header.CamelDebeziumSourceMetadata[schema]}.${header.CamelDebeziumSourceMetadata[table]}"
+              # the key as JSON text
+              - choice:
+                  when:
+                    - expression:
+                        simple:
+                          expression: "${header.CamelDebeziumKey} != null"
+                      steps:
+                        - setProperty:
+                            name: debezium-row
+                            expression:
+                              simple:
+                                expression: "${body}"
+                        - setBody:
+                            expression:
+                              simple:
+                                expression: "${header.CamelDebeziumKey}"
+                        - convertBodyTo:
+                            type: java.util.Map
+                        - marshal:
+                            json: {}
+                        - setHeader:
+                            name: debezium-key
+                            expression:
+                              simple:
+                                expression: "${bodyAs(String)}"
+                        - setBody:
+                            expression:
+                              simple:
+                                expression: "${exchangeProperty.debezium-row}"
+                        - removeProperty:
+                            name: debezium-row
+              # a delete has no row after it: send the row before it
+              - choice:
+                  when:
+                    - expression:
+                        simple:
+                          expression: "${header.CamelDebeziumOperation} == 'd'"
+                      steps:
+                        - setBody:
+                            expression:
+                              simple:
+                                expression: "${header.CamelDebeziumBefore}"
+              - convertBodyTo:
+                  type: java.util.Map
+              - marshal:
+                  json: {}
+              # the Kafka Connect objects of the component, which other systems cannot read
+              - removeHeaders:
+                  pattern: CamelDebezium*
+              - to:
+                  uri: kamelet:sink
