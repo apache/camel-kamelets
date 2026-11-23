@@ -18,12 +18,10 @@
 name: soap-wssec-test
 description: 'soap-source requires a WS-Security UsernameToken of its user, and soap-action sends one: the right password as text and as a digest passes; a wrong password, the other password type and a request without a token get a SOAP fault'
 actions:
-  # The options need the jar cxf-rt-ws-security of the CXF version of Camel
+  # Camel JBang downloads the jar cxf-rt-ws-security that the WS-Security options need
   - camel:
       cli:
         run:
-          args:
-            - "--dep=mvn:org.apache.cxf:cxf-rt-ws-security:4.2.4"
           resources:
             - "orders.wsdl"
           integration:
