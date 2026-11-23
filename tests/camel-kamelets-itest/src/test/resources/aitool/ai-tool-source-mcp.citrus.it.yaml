@@ -16,7 +16,7 @@
 # ---------------------------------------------------------------------------
 
 name: ai-tool-source-mcp-test
-description: 'ai-tool-source offers its flow as a tool over MCP: the tools of the tag orders are listed with their schema and hints, a call gets the declared arguments as JSON and the reply of the flow back, a tool with allowedRoles refuses a caller without login, and a tool of another tag is neither listed nor callable'
+description: 'ai-tool-source offers its flow as a tool over MCP: the tools of the tag orders are listed with their schema and hints, a call gets the declared arguments as JSON and the reply of the flow back, a call with an undeclared argument is refused, a tool with allowedRoles refuses a caller without login, and a tool of another tag is neither listed nor callable'
 variables:
   - name: "mcp.accept"
     value: "application/json, text/event-stream"
@@ -28,9 +28,6 @@ actions:
             file: "aitool/ai-tool-route.yaml"
             systemProperties:
               properties:
-                # given as system properties, the HTTP server must be enabled too
-                - name: "camel.server.enabled"
-                  value: "true"
                 - name: "camel.server.port"
                   value: "${ai.tool.port}"
                 - name: "camel.server.mcp-enabled"
@@ -102,10 +99,9 @@ actions:
           status: 200
           type: "plaintext"
           body:
-            data: '@matches(''(?s)(?!.*delete_order).*\Q{"name":"get_order_status","title":"Order status","description":"Returns the status of an order by its id","inputSchema":{"type":"object","properties":{"orderId":{"type":"string","description":"The order id (digits)"},"note":{"type":"string"}},"required":["orderId"]},"annotations":{"readOnlyHint":true}}\E.*\Q{"name":"pay_invoice","description":"Pays an invoice","inputSchema":{"additionalProperties":false,"type":"object","properties":{}}}\E.*'')@'
+            data: '@matches(''(?s)(?!.*delete_order).*\Q{"name":"get_order_status","title":"Order status","description":"Returns the status of an order by its id","inputSchema":{"additionalProperties":false,"type":"object","properties":{"orderId":{"type":"string","description":"The order id (digits)"},"note":{"type":"string"}},"required":["orderId"]},"annotations":{"readOnlyHint":true}}\E.*\Q{"name":"pay_invoice","description":"Pays an invoice","inputSchema":{"additionalProperties":false,"type":"object","properties":{}}}\E.*'')@'
 
-  # tools/call: the flow gets the declared arguments as JSON, and its body is the result; the undeclared
-  # arguments are dropped, a Camel header among them
+  # tools/call: the flow gets the arguments as JSON, and its body is the result
   - http:
       client: "http://localhost:${ai.tool.port}"
       sendRequest:
@@ -118,7 +114,7 @@ actions:
             - name: "Mcp-Session-Id"
               value: "${mcp.session}"
           body:
-            data: '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"get_order_status","arguments":{"orderId":"42","note":"urgent","extra":"x","CamelHttpUri":"http://example.com"}}}'
+            data: '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"get_order_status","arguments":{"orderId":"42","note":"urgent"}}}'
   - http:
       client: "http://localhost:${ai.tool.port}"
       receiveResponse:
@@ -131,7 +127,30 @@ actions:
       cli:
         verify:
           integration: "ai-tool-route"
-          logMessage: 'Order tool got {"note":"urgent","orderId":"42"} with orderId=42 note=urgent extra= CamelHttpUri='
+          logMessage: 'Order tool got {"orderId":"42","note":"urgent"} with orderId=42 note=urgent extra= CamelHttpUri='
+
+  # A call with an argument that argSchema does not declare is refused before the flow runs, a Camel header among them
+  - http:
+      client: "http://localhost:${ai.tool.port}"
+      sendRequest:
+        POST:
+          path: "/mcp"
+          contentType: "application/json"
+          headers:
+            - name: "Accept"
+              value: "${mcp.accept}"
+            - name: "Mcp-Session-Id"
+              value: "${mcp.session}"
+          body:
+            data: '{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"get_order_status","arguments":{"orderId":"42","extra":"x","CamelHttpUri":"http://example.com"}}}'
+  - http:
+      client: "http://localhost:${ai.tool.port}"
+      receiveResponse:
+        response:
+          status: 200
+          type: "plaintext"
+          body:
+            data: '@matches(''(?s).*\Q"id":4,"result":{"content":[{"type":"text","text":"Tool (get_order_status) input validation failed\E.*extra.*CamelHttpUri.*\Q"isError":true}}\E.*'')@'
 
   # A call that misses a required argument is refused before the flow runs
   - http:
@@ -146,7 +165,7 @@ actions:
             - name: "Mcp-Session-Id"
               value: "${mcp.session}"
           body:
-            data: '{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"get_order_status","arguments":{"note":"no id"}}}'
+            data: '{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"get_order_status","arguments":{"note":"no id"}}}'
   - http:
       client: "http://localhost:${ai.tool.port}"
       receiveResponse:
@@ -154,7 +173,7 @@ actions:
           status: 200
           type: "plaintext"
           body:
-            data: '@matches(''(?s).*\Q"id":4,"result":{"content":[{"type":"text","text":"Tool (get_order_status) input validation failed\E.*orderId.*\Q"isError":true}}\E.*'')@'
+            data: '@matches(''(?s).*\Q"id":5,"result":{"content":[{"type":"text","text":"Tool (get_order_status) input validation failed\E.*orderId.*\Q"isError":true}}\E.*'')@'
 
   # allowedRoles: a caller without login is refused
   - http:
@@ -169,7 +188,7 @@ actions:
             - name: "Mcp-Session-Id"
               value: "${mcp.session}"
           body:
-            data: '{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"pay_invoice","arguments":{}}}'
+            data: '{"jsonrpc":"2.0","id":6,"method":"tools/call","params":{"name":"pay_invoice","arguments":{}}}'
   - http:
       client: "http://localhost:${ai.tool.port}"
       receiveResponse:
@@ -177,7 +196,7 @@ actions:
           status: 200
           type: "plaintext"
           body:
-            data: '@matches(''(?s).*\Q"id":5,"result":{"content":[{"type":"text","text":"Access denied: not authorized to call tool\E.*pay_invoice.*\Q"isError":true}}\E.*'')@'
+            data: '@matches(''(?s).*\Q"id":6,"result":{"content":[{"type":"text","text":"Access denied: not authorized to call tool\E.*pay_invoice.*\Q"isError":true}}\E.*'')@'
 
   # The tool of the tag admin is not offered
   - http:
@@ -192,7 +211,7 @@ actions:
             - name: "Mcp-Session-Id"
               value: "${mcp.session}"
           body:
-            data: '{"jsonrpc":"2.0","id":6,"method":"tools/call","params":{"name":"delete_order","arguments":{}}}'
+            data: '{"jsonrpc":"2.0","id":7,"method":"tools/call","params":{"name":"delete_order","arguments":{}}}'
   - http:
       client: "http://localhost:${ai.tool.port}"
       receiveResponse:
@@ -200,4 +219,4 @@ actions:
           status: 200
           type: "plaintext"
           body:
-            data: '@contains(''{"jsonrpc":"2.0","id":6,"error":{"code":-32602,"message":"Unknown tool: invalid_tool_name","data":"Tool not found: delete_order"}}'')@'
+            data: '@contains(''{"jsonrpc":"2.0","id":7,"error":{"code":-32602,"message":"Unknown tool: invalid_tool_name","data":"Tool not found: delete_order"}}'')@'
