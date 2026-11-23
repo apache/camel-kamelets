@@ -1,0 +1,110 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: pgp-action-test
+actions:
+  - camel:
+      cli:
+        run:
+          resources:
+            - "keys/alice-public.asc"
+            - "keys/alice-secret.asc"
+            - "keys/bob-public.asc"
+            - "keys/bob-secret.asc"
+            - "invoice-from-gpg.asc"
+            - "invoice-tampered.asc"
+            - "invoice-ocb-from-gpg.asc"
+          integration:
+            file: "pgp/pgp-action-route.yaml"
+  # Round trip, armored: the message is encrypted for alice although its headers name bob, and the CamelPGPDataFormat* headers are gone
+  - camel:
+      cli:
+        verify:
+          integration: "pgp-action-route"
+          logMessage: 'Encrypted-armored org.apache.camel.converter.stream.InputStreamCache ct=application/pgp-encrypted keys= userid='
+  - camel:
+      cli:
+        verify:
+          integration: "pgp-action-route"
+          logMessage: 'Armored-text -----BEGIN PGP MESSAGE----- plaintext-visible=false'
+  - camel:
+      cli:
+        verify:
+          integration: "pgp-action-route"
+          logMessage: 'Decrypted-armored org.apache.camel.converter.stream.InputStreamCache ct=application/octet-stream keep=kept: Order 42: 3 boxes of apples|'
+  # Signed by bob, binary, with the public key ring as base64: text, and bob's signature checked
+  - camel:
+      cli:
+        verify:
+          integration: "pgp-action-route"
+          logMessage: 'Encrypted-signed org.apache.camel.converter.stream.InputStreamCache ct=application/pgp-encrypted signers='
+  - camel:
+      cli:
+        verify:
+          integration: "pgp-action-route"
+          logMessage: 'Verified-signed org.apache.camel.converter.stream.InputStreamCache ct=application/octet-stream: Invoice 7: 120.50 EUR|'
+  # A message made by gpg: decrypted, with its signature checked, and without
+  - camel:
+      cli:
+        verify:
+          integration: "pgp-action-route"
+          logMessage: 'Verified-gpg Invoice 2026-118 from Bob|'
+  - camel:
+      cli:
+        verify:
+          integration: "pgp-action-route"
+          logMessage: 'Unverified-gpg Invoice 2026-118 from Bob|'
+  # The wrong key fails
+  - camel:
+      cli:
+        verify:
+          integration: "pgp-action-route"
+          logMessage: 'Rejected-wrongkey org.bouncycastle.openpgp.PGPException: PGP message is encrypted with a key which could not be found in the Secret Keyring.'
+  # A signature of a sender that is not trusted fails
+  - camel:
+      cli:
+        verify:
+          integration: "pgp-action-route"
+          logMessage: 'Rejected-wrongsigner java.lang.IllegalArgumentException: Cannot verify the PGP signature: No public key found for the key ID(s) contained in the PGP signature(s).'
+  # An unsigned message fails when a signature is required, and passes when it is optional
+  - camel:
+      cli:
+        verify:
+          integration: "pgp-action-route"
+          logMessage: 'Rejected-unsigned org.bouncycastle.openpgp.PGPException: PGP message does not contain any signatures although a signature is expected.'
+  - camel:
+      cli:
+        verify:
+          integration: "pgp-action-route"
+          logMessage: 'Accepted-optional not signed|'
+  # A changed message fails
+  - camel:
+      cli:
+        verify:
+          integration: "pgp-action-route"
+          logMessage: 'Rejected-tampered org.bouncycastle.openpgp.PGPException: Message failed integrity check'
+  # A message without integrity protection fails, while a message in the OCB format of gpg 2.4 and later decrypts
+  - camel:
+      cli:
+        verify:
+          integration: "pgp-action-route"
+          logMessage: 'Rejected-legacy org.bouncycastle.openpgp.PGPException: PGP message is not integrity protected.'
+  - camel:
+      cli:
+        verify:
+          integration: "pgp-action-route"
+          logMessage: 'Accepted-ocb Invoice 2026-119 from Bob, OCB|'
