@@ -21,7 +21,7 @@
     from:
       uri: "kamelet:soap-source"
       parameters:
-        address: "http://0.0.0.0:{{soap.json.backend.port}}/orders"
+        path: "/orders"
         wsdlURL: "classpath:orders.wsdl"
         bodyFormat: "json"
       steps:
