@@ -17,7 +17,7 @@
 
 name: opensearch-index-sink-route-test
 actions:
-  # OpenSearch with one node and the security plugin off, so it is reached with plain HTTP
+  # OpenSearch with one node and the security plugin on: a login is needed (user admin), over plain HTTP
   - testcontainers:
       start:
         container:
@@ -29,16 +29,17 @@ actions:
           env:
             - name: "discovery.type"
               value: "single-node"
-            - name: "DISABLE_SECURITY_PLUGIN"
-              value: "true"
-            - name: "DISABLE_INSTALL_DEMO_CONFIG"
-              value: "true"
+            - name: "OPENSEARCH_INITIAL_ADMIN_PASSWORD"
+              value: "Kamelets-Test-2026!"
+            - name: "plugins.security.ssl.http.enabled"
+              value: "false"
             - name: "cluster.routing.allocation.disk.threshold_enabled"
               value: "false"
             - name: "OPENSEARCH_JAVA_OPTS"
               value: "-Xms512m -Xmx512m"
           waitFor:
-            url: "http://localhost:9200/"
+            # logged once the security plugin has its configuration, so that the login works
+            logMessage: ".*Node '.*' initialized.*"
 
   - camel:
       cli:
@@ -83,6 +84,9 @@ actions:
       sendRequest:
         GET:
           path: "/orders/_doc/order-1"
+          headers:
+            - name: "Authorization"
+              value: "Basic citrus:encodeBase64('admin:Kamelets-Test-2026!')"
   - http:
       client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
       receiveResponse:

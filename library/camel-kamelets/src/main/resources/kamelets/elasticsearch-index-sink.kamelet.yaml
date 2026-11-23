@@ -79,6 +79,11 @@ spec:
         description: The name of the index to store the documents in. Elasticsearch creates it when it does not exist. The `indexName` header of a message takes precedence.
         type: string
         example: orders
+      sslContextParameters:
+        title: SSL Context Parameters
+        description: For TLS settings that `certificate` cannot give, such as a client certificate (mutual TLS), a trust store, or a TLS version, an `SSLContextParameters` object defined in the application, as `#bean:` followed by its name. It takes precedence over `certificate`; set one or the other.
+        type: string
+        example: "#bean:mySslContext"
       certificate:
         title: Certificate
         description: The certificate of the certificate authority (CA) that signed the certificate of the cluster, such as the `http_ca.crt` file that Elasticsearch generates, as a PEM or DER file encoded in base64 on one line, such as the output of `base64 -w0 http_ca.crt` (`base64 -i http_ca.crt` on macOS). Needed when the cluster uses a self-signed certificate, or one signed by a private CA. When it is set, only this CA is trusted; when it is not set, the certificates that Java trusts are used.
@@ -127,7 +132,6 @@ spec:
     - "camel:jackson3"
     - "camel:kamelet"
     - "camel:elasticsearch"
-    - "camel:gson"
     - "camel:bean"
   template:
     beans:
@@ -184,4 +188,4 @@ spec:
         - unmarshal:
             json: {}
         - to:
-            uri: "{{local-es}}:{{clusterName}}?operation=INDEX&hostAddresses={{hostAddresses}}&enableSSL={{enableSSL}}&indexName={{?indexName}}&certificatePath=RAW(base64:{{?certificate}})&connectionTimeout={{?connectionTimeout}}&socketTimeout={{?socketTimeout}}"
+            uri: "{{local-es}}:{{clusterName}}?operation=INDEX&hostAddresses={{hostAddresses}}&enableSSL={{enableSSL}}&indexName={{?indexName}}&certificatePath=RAW(base64:{{?certificate}})&sslContextParameters={{?sslContextParameters}}&connectionTimeout={{?connectionTimeout}}&socketTimeout={{?socketTimeout}}"

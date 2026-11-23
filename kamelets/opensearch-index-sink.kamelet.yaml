@@ -68,7 +68,7 @@ spec:
         title: Host Addresses
         description: The address of the OpenSearch HTTP API, as `host:port`, or several nodes separated by commas. The port is 9200 by default.
         type: string
-        example: quickstart-es-http:9200
+        example: opensearch-cluster-master:9200
       clusterName:
         title: OpenSearch Cluster Name
         description: The name of the OpenSearch cluster. Required, but not checked against the cluster.
@@ -132,7 +132,6 @@ spec:
     - "camel:jackson3"
     - "camel:kamelet"
     - "camel:opensearch"
-    - "camel:gson"
     - "camel:bean"
   template:
     beans:

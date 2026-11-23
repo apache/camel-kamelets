@@ -92,3 +92,49 @@
             simple: "ct=${header.Content-Type}"
         - to:
             uri: "{{http.sink.url}}/none"
+        # queryDsl=false: the body is words to search for, also when it is Query DSL
+        - setBody:
+            constant: '{"match_all": {}}'
+        - to:
+            uri: "kamelet:opensearch-search-action"
+            parameters:
+              hostAddresses: '{{opensearch.host}}:{{opensearch.port}}'
+              clusterName: 'docker-cluster'
+              indexName: 'customers'
+              enableSSL: false
+              queryDsl: false
+        # what the Kamelet gives: the Java type of the body, the total and the Content-Type
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Total-Hits
+            simple: "${header.CamelOpensearchTotalHits}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
+        - to:
+            uri: "{{http.sink.url}}/words"
+        # a vector search in the Query DSL
+        - setBody:
+            constant: '{"query": {"knn": {"embedding": {"vector": [0.9, 0.1, 0.0], "k": 1}}}, "_source": ["name"]}'
+        - to:
+            uri: "kamelet:opensearch-search-action"
+            parameters:
+              hostAddresses: '{{opensearch.host}}:{{opensearch.port}}'
+              clusterName: 'docker-cluster'
+              indexName: 'places'
+              enableSSL: false
+              size: 1
+        # what the Kamelet gives: the Java type of the body, the total and the Content-Type
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Total-Hits
+            simple: "${header.CamelOpensearchTotalHits}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
+        - to:
+            uri: "{{http.sink.url}}/knn"
