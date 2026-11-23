@@ -22,7 +22,7 @@
     from:
       uri: "kamelet:soap-source"
       parameters:
-        address: "http://0.0.0.0:{{soap.wssec.port}}/orders"
+        path: "/orders"
         wsdlURL: "classpath:orders.wsdl"
         wsSecurityUsername: "alice"
         wsSecurityPassword: "s3cr&t+pw"
@@ -36,7 +36,7 @@
     from:
       uri: "kamelet:soap-source"
       parameters:
-        address: "http://0.0.0.0:{{soap.wssec.port}}/orders-digest"
+        path: "/orders-digest"
         wsdlURL: "classpath:orders.wsdl"
         wsSecurityUsername: "alice"
         wsSecurityPassword: "s3cr&t+pw"
@@ -57,7 +57,7 @@
         - to:
             uri: "kamelet:soap-action"
             parameters:
-              address: "http://localhost:{{soap.wssec.port}}/orders"
+              address: "http://localhost:{{soap.wssec.port}}/services/orders"
               wsdlURL: "classpath:orders.wsdl"
               operation: "getOrder"
               wsSecurityUsername: "alice"
@@ -68,7 +68,7 @@
         - to:
             uri: "kamelet:soap-action"
             parameters:
-              address: "http://localhost:{{soap.wssec.port}}/orders-digest"
+              address: "http://localhost:{{soap.wssec.port}}/services/orders-digest"
               wsdlURL: "classpath:orders.wsdl"
               operation: "getOrder"
               wsSecurityUsername: "alice"
@@ -80,7 +80,7 @@
         - to:
             uri: "kamelet:soap-action"
             parameters:
-              address: "http://localhost:{{soap.wssec.port}}/orders-digest"
+              address: "http://localhost:{{soap.wssec.port}}/services/orders-digest"
               wsdlURL: "classpath:orders.wsdl"
               operation: "getOrder"
               wsSecurityUsername: "alice"
@@ -92,7 +92,7 @@
         - to:
             uri: "kamelet:soap-action"
             parameters:
-              address: "http://localhost:{{soap.wssec.port}}/orders"
+              address: "http://localhost:{{soap.wssec.port}}/services/orders"
               wsdlURL: "classpath:orders.wsdl"
               operation: "getOrder"
               wsSecurityUsername: "alice"
