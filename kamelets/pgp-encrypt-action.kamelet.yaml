@@ -119,7 +119,7 @@ spec:
                         keyUserid: "{{keyUserId}}"
                         armored: "{{armored}}"
                         integrity: "true"
-                        # AES-256 and SHA-256, not the defaults of the data format (CAST5 and SHA-1)
+                        # AES-256 and SHA-256, the defaults of the data format since Camel 4.24 (CAMEL-27450), set here so they do not depend on the Camel version
                         algorithm: "9"
                         signatureKeyFileName: "{{signingKeyRing}}"
                         signatureKeyUserid: "{{signingKeyUserId}}"
