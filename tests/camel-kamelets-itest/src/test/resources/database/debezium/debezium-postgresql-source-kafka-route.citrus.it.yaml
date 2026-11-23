@@ -108,9 +108,12 @@ actions:
         file: "database/sql.groovy"
 
   # The second run reads the position from Kafka: it sends only the new row, not the snapshot again
+  # the test stops this run itself too: Citrus removes the containers before the integrations it stops at the end,
+  # and without Kafka the stop waits to save the position until `camel stop` times out
   - camel:
       cli:
         run:
+          autoRemove: false
           waitForRunningState: false
           integration:
             name: "debezium-kafka-second"
@@ -146,3 +149,7 @@ actions:
           status: 200
           reasonPhrase: "OK"
           version: "HTTP/1.1"
+  - camel:
+      cli:
+        stop:
+          integration: "debezium-kafka-second"
