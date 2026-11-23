@@ -20,10 +20,12 @@
       uri: "timer:chat"
       parameters:
         repeatCount: 2
+        # the counter of the timer that the choice reads
+        includeMetadata: true
       steps:
         - setBody:
             constant: "I was charged twice for my order, please fix it today."
-        # the server of the test checks no API key, but one must be set: any text will do
+        # the server of the test checks no API key, so none is set
         - choice:
             when:
               - simple: "${exchangeProperty.CamelTimerCounter} == 1"
@@ -34,9 +36,9 @@
                       uri: "kamelet:openai-chat-action"
                       parameters:
                         baseUrl: '{{chat.server.url}}/v1'
-                        apiKey: 'none'
                         model: '{{chat.model}}'
-                        jsonSchema: '{"type":"object","properties":{"topic":{"type":"string","enum":["billing","technical","other"]},"urgent":{"type":"boolean"} },"required":["topic","urgent"]}'
+                        jsonSchema: '{"type":"object","properties":{"topic":{"type":"string","enum":["billing","technical","other"]},"urgent":{"type":"boolean"} },"required":["topic","urgent"],"additionalProperties":false}'
+                        jsonSchemaStrict: true
             otherwise:
               steps:
                 # the schema from a file
@@ -44,7 +46,6 @@
                     uri: "kamelet:openai-chat-action"
                     parameters:
                       baseUrl: '{{chat.server.url}}/v1'
-                      apiKey: 'none'
                       model: '{{chat.model}}'
                       jsonSchema: 'resource:file:ticket-schema.json'
         - setHeader:
