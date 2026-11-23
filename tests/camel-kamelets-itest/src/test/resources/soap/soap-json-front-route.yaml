@@ -21,7 +21,7 @@
     from:
       uri: "kamelet:soap-source"
       parameters:
-        address: "http://0.0.0.0:{{soap.json.front.port}}/orders"
+        path: "/orders"
         wsdlURL: "classpath:orders.wsdl"
         bodyFormat: "json"
       steps:
@@ -29,7 +29,7 @@
         - to:
             uri: "kamelet:soap-action"
             parameters:
-              address: "http://localhost:{{soap.json.backend.port}}/orders"
+              address: "http://localhost:{{soap.json.backend.port}}/services/orders"
               wsdlURL: "classpath:orders.wsdl"
               operation: "getOrder"
               bodyFormat: "json"
@@ -50,7 +50,7 @@
               - to:
                   uri: "kamelet:soap-action"
                   parameters:
-                    address: "http://localhost:{{soap.json.backend.port}}/orders"
+                    address: "http://localhost:{{soap.json.backend.port}}/services/orders"
                     wsdlURL: "classpath:orders.wsdl"
                     operation: "getOrder"
                     bodyFormat: "json"
@@ -65,7 +65,7 @@
         - to:
             uri: "kamelet:soap-action"
             parameters:
-              address: "http://localhost:{{soap.json.backend.port}}/orders"
+              address: "http://localhost:{{soap.json.backend.port}}/services/orders"
               wsdlURL: "classpath:orders.wsdl"
               operation: "getOrder"
               bodyFormat: "json"
