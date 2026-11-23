@@ -1,0 +1,176 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+# Each timer sends its messages one after the other. A message that the Kamelet keeps is logged and its number added to
+# a list; the last message logs the list, so it shows the messages that were dropped too.
+- route:
+    from:
+      uri: "timer:plain"
+      parameters:
+        repeatCount: 9
+        period: 10
+        includeMetadata: true
+      steps:
+        - setHeader:
+            name: X-Order
+            constant: "kept"
+        - choice:
+            when:
+              - simple: "${header.CamelTimerCounter} == 1"
+                steps:
+                  - setBody:
+                      constant: '<order><customer>Ann</customer><amount>150</amount></order>'
+              - simple: "${header.CamelTimerCounter} == 2"
+                steps:
+                  - setBody:
+                      constant: '<order><customer>Bob</customer><amount>20</amount></order>'
+              - simple: "${header.CamelTimerCounter} == 3"
+                steps:
+                  - setBody:
+                      constant: '<order><customer>Cid</customer><amount>300</amount></order>'
+                  - convertBodyTo:
+                      type: "byte[]"
+              - simple: "${header.CamelTimerCounter} == 4"
+                steps:
+                  - setBody:
+                      constant: '<order><customer>Dan</customer><amount>400</amount></order>'
+                  - convertBodyTo:
+                      type: "java.io.InputStream"
+              - simple: "${header.CamelTimerCounter} == 5"
+                steps:
+                  - setBody:
+                      constant: '<order><customer>Eve</customer></order>'
+              - simple: "${header.CamelTimerCounter} == 7"
+                steps:
+                  - setBody:
+                      constant: '<order><customer>Ann</customer><amount>1</amount></order>'
+              - simple: "${header.CamelTimerCounter} == 8"
+                steps:
+                  - setBody:
+                      constant: '<order><customer>Bob</customer><amount>500</amount></order>'
+              - simple: "${header.CamelTimerCounter} == 9"
+                steps:
+                  - log: "Plain kept: ${variable.global:plain}|"
+                  - stop: {}
+        - choice:
+            when:
+              - simple: "${header.CamelTimerCounter} >= 7"
+                steps:
+                  - to:
+                      uri: "kamelet:xpath-filter-action"
+                      parameters:
+                        expression: "/order/customer = 'Ann'"
+            otherwise:
+              steps:
+                - to:
+                    uri: "kamelet:xpath-filter-action"
+                    parameters:
+                      expression: "/order[amount > 100]"
+        - log: "Kept ${header.CamelTimerCounter} ${body.getClass().getName()} ct=${header.Content-Type} order=${header.X-Order}: ${bodyAs(String)}|"
+        - setVariable:
+            name: "global:plain"
+            simple: "${variable.global:plain}${header.CamelTimerCounter},"
+- route:
+    from:
+      uri: "timer:ns"
+      parameters:
+        repeatCount: 6
+        period: 10
+        includeMetadata: true
+      steps:
+        - setBody:
+            constant: '<order xmlns="urn:example:orders"><status>paid</status></order>'
+        - choice:
+            when:
+              - simple: "${header.CamelTimerCounter} == 2"
+                steps:
+                  - setBody:
+                      constant: '<order xmlns="urn:example:orders"><status>open</status></order>'
+              - simple: "${header.CamelTimerCounter} == 3"
+                steps:
+                  - setBody:
+                      constant: '<order><status>paid</status></order>'
+              - simple: "${header.CamelTimerCounter} == 6"
+                steps:
+                  - log: "Namespace kept: ${variable.global:ns}|"
+                  - stop: {}
+        - choice:
+            when:
+              # Without a prefix, the name does not match the element in the namespace
+              - simple: "${header.CamelTimerCounter} == 4"
+                steps:
+                  - to:
+                      uri: "kamelet:xpath-filter-action"
+                      parameters:
+                        expression: "/order[status = 'paid']"
+              - simple: "${header.CamelTimerCounter} == 5"
+                steps:
+                  - to:
+                      uri: "kamelet:xpath-filter-action"
+                      parameters:
+                        expression: "/*[local-name() = 'order' and namespace-uri() = 'urn:example:orders']"
+            otherwise:
+              steps:
+                - to:
+                    uri: "kamelet:xpath-filter-action"
+                    parameters:
+                      expression: "/o:order[o:status = 'paid']"
+                      namespacePrefix: "o"
+                      namespaceUri: "urn:example:orders"
+        - log: "NsKept ${header.CamelTimerCounter}: ${body}|"
+        - setVariable:
+            name: "global:ns"
+            simple: "${variable.global:ns}${header.CamelTimerCounter},"
+- route:
+    from:
+      uri: "timer:xxe"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: '<?xml version="1.0"?><!DOCTYPE order [<!ENTITY hosts SYSTEM "file:///etc/hosts">]><order><customer>&hosts;</customer><amount>500</amount></order>'
+        - doTry:
+            steps:
+              - to:
+                  uri: "kamelet:xpath-filter-action"
+                  parameters:
+                    expression: "/order[amount > 100]"
+              - log: "Accepted-xxe ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - log: "Rejected-xxe ${exception.getClass().getName()}: ${exception.message}"
+- route:
+    from:
+      uri: "timer:text"
+      parameters:
+        repeatCount: 1
+      steps:
+        - setBody:
+            constant: 'not xml'
+        - doTry:
+            steps:
+              - to:
+                  uri: "kamelet:xpath-filter-action"
+                  parameters:
+                    expression: "/order[amount > 100]"
+              - log: "Accepted-text ${body}"
+            doCatch:
+              - exception:
+                  - "java.lang.Exception"
+                steps:
+                  - log: "Rejected-text ${exception.getClass().getName()}: ${exception.message}"

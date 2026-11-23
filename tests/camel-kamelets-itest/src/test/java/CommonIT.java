@@ -79,6 +79,11 @@ public class CommonIT {
     }
 
     @CitrusTestFactory
+    public Stream<DynamicTest> pgp() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("pgp");
+    }
+
+    @CitrusTestFactory
     public Stream<DynamicTest> header() {
         return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("header");
     }

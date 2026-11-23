@@ -1,0 +1,130 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: pgp-decrypt-action
+  annotations:
+    camel.apache.org/kamelet.support.level: "Preview"
+    camel.apache.org/catalog.version: "4.24.0-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MjAiCmhlaWdodD0iNDIwIiBzdHJva2U9IiMwMDAiIGZpbGw9Im5vbmUiPgo8cGF0aCBzdHJva2Utd2lkdGg9IjI2IgpkPSJNMjA5LDE1YTE5NSwxOTUgMCAxLDAgMiwweiIvPgo8cGF0aCBzdHJva2Utd2lkdGg9IjE4IgpkPSJtMjEwLDE1djM5MG0xOTUtMTk1SDE1TTU5LDkwYTI2MCwyNjAgMCAwLDAgMzAyLDAgbTAsMjQwIGEyNjAsMjYwIDAgMCwwLTMwMiwwTTE5NSwyMGEyNTAsMjUwIDAgMCwwIDAsMzgyIG0zMCwwIGEyNTAsMjUwIDAgMCwwIDAtMzgyIi8+Cjwvc3ZnPg=="
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "Actions"
+    camel.apache.org/kamelet.namespace: "Transformation"
+  labels:
+    camel.apache.org/kamelet.type: "action"
+    camel.apache.org/kamelet.verified: "true"
+spec:
+  definition:
+    title: "PGP Decrypt Action"
+    description: |-
+      Decrypts the OpenPGP message in the body of each message with your secret key, and can check its signature against the public key of the sender.
+
+      Use it to decrypt a file that a partner encrypted for you with gpg or `pgp-encrypt-action`, for example after reading it with `sftp-source`, `ftp-source` or `aws-s3-source`, and to make sure that it comes from that partner.
+
+      Input: an OpenPGP message, binary or ASCII armored (it starts with `-----BEGIN PGP MESSAGE-----`), as bytes, text, a stream or a file.
+
+      Output: the body is the decrypted data, as a stream, and the `Content-Type` header is set to `application/octet-stream`. The other headers are kept.
+
+      Good to know: a message that was not encrypted for a key in `secretKeyRing`, a wrong passphrase (the error says "checksum mismatch"), or a message that was changed on the way fails. A message without integrity protection fails too (the error says "not integrity protected"). Messages in the newer OCB format, which GnuPG 2.4 and later write for a key made with GnuPG 2.4 or later, are integrity protected and decrypt. When `verificationKeyRing` is set, a message must be signed by a key in that key ring, or it fails; set `signatureVerification` to `optional` to accept unsigned messages too. When `verificationKeyRing` is not set, a signature is not checked. The keys and the passphrase come only from the options: the headers of the message, such as `CamelPGPDataFormatKeyFileName`, are removed first, so a message cannot choose another key.
+    required:
+      - secretKeyRing
+      - passphrase
+    type: object
+    properties:
+      secretKeyRing:
+        title: Secret Key Ring
+        description: "Where to load your secret key ring from: `file:` followed by the path of a file, `classpath:` followed by a resource in the application, or `base64:` followed by the key ring itself, in Base64. A key ring exported with `gpg --export-secret-keys`, binary or armored, fits. The key to decrypt with is the one the message was encrypted for."
+        type: string
+        example: "file:/etc/keys/my-secret.gpg"
+        pattern: "^(file|classpath|base64):.+"
+      passphrase:
+        title: Passphrase
+        description: "The passphrase of your secret key."
+        type: string
+        format: password
+        x-descriptors:
+          - urn:camel:group:credentials
+      verificationKeyRing:
+        title: Verification Key Ring
+        description: "Where to load the public key ring of the senders you trust from, to check the signature of each message: `file:`, `classpath:` or `base64:`, as for `secretKeyRing`. A key ring exported with `gpg --export` fits. A message signed by a key that is not in it fails. When it is not set, a signature is not checked."
+        type: string
+        example: "file:/etc/keys/partner-public.gpg"
+        pattern: "^(file|classpath|base64):.+"
+      signatureVerification:
+        title: Signature Verification
+        description: "Only used when `verificationKeyRing` is set. `required`: a message must be signed by a key of `verificationKeyRing`. `optional`: an unsigned message is accepted too, but a signed message must still be signed by a key of `verificationKeyRing`."
+        type: string
+        enum:
+          - required
+          - optional
+        default: required
+  dataTypes:
+    # No 'default:' here on purpose: a default would read the whole body into memory first, while the
+    # PGP data format reads a file or a stream as it decrypts it.
+    in:
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The OpenPGP message, binary or ASCII armored: bytes, text, a stream or a file."
+          mediaType: application/octet-stream
+    out:
+      types:
+        binary:
+          format: "application-octet-stream"
+          description: "The decrypted data, as a stream."
+          mediaType: application/octet-stream
+  dependencies:
+    - "camel:kamelet"
+    - "camel:crypto-pgp"
+  template:
+    from:
+      uri: kamelet:source
+      steps:
+        # the PGP data format reads the key ring, the user id and the passphrase from these headers before
+        # its options: the message must not choose them
+        - removeHeaders:
+            pattern: "CamelPGPDataFormat*"
+        - choice:
+            precondition: true
+            when:
+              - expression:
+                  simple:
+                    expression: "${propertiesExist:verificationKeyRing}"
+                steps:
+                  - unmarshal:
+                      pgp:
+                        keyFileName: "{{secretKeyRing}}"
+                        password: "{{passphrase}}"
+                        signatureKeyFileName: "{{verificationKeyRing}}"
+                        signatureVerificationOption: "{{signatureVerification}}"
+                        requireIntegrityProtection: "true"
+            otherwise:
+              steps:
+                - unmarshal:
+                    pgp:
+                      keyFileName: "{{secretKeyRing}}"
+                      password: "{{passphrase}}"
+                      signatureVerificationOption: "ignore"
+                      requireIntegrityProtection: "true"
+        - removeHeaders:
+            pattern: "CamelPGPDataFormat*"
+        - setHeader:
+            name: Content-Type
+            expression:
+              constant:
+                expression: application/octet-stream
