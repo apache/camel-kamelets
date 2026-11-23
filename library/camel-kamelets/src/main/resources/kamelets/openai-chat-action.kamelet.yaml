@@ -54,7 +54,7 @@ spec:
         pattern: "^https?://.+"
       apiKey:
         title: API Key
-        description: The API key to send to the server, as a Bearer token. Create it in the OpenAI platform under API keys. When it is not set, the `OPENAI_API_KEY` environment variable is used, and with neither the Kamelet fails to start. A server that checks no key, such as a local one, still needs a value here, any text such as `none`.
+        description: The API key to send to the server, as a Bearer token. Create it in the OpenAI platform under API keys. When it is not set, the `OPENAI_API_KEY` environment variable is used. With neither, requests are sent without a key, which suits a local server that checks none, such as Ollama, while OpenAI answers them with the status 401.
         type: string
         format: password
         x-descriptors:
@@ -84,6 +84,11 @@ spec:
         description: "The JSON schema of the answer: JSON text, or `resource:file:` followed by the path of a file that holds it. The model is asked to answer with JSON that follows it (the `response_format` of the request), and the body afterwards is that JSON as text. The answer is not checked against the schema. The model and the server must support structured outputs. In a route, two closing braces next to each other are read as the end of a placeholder: write them with a space in between, as `} }`, or use a file."
         type: string
         example: "resource:file:/etc/camel/ticket-schema.json"
+      jsonSchemaStrict:
+        title: JSON Schema Strict
+        description: "Whether the model must follow `jsonSchema` exactly (`strict` structured outputs), so the answer has all the fields of the schema and no others. OpenAI then only accepts a schema where each object lists all its properties in `required` and sets `additionalProperties` to false, and answers another with the status 400. Not all servers support it."
+        type: boolean
+        default: false
       maxRetries:
         title: Max Retries
         description: How many more times a request is sent when the server answers with the status 408, 409, 429 or 5xx, before the message fails. A `Retry-After` of the server is honoured. `0` sends each request once.
@@ -153,5 +158,6 @@ spec:
               temperature: "{{?temperature}}"
               maxTokens: "{{?maxTokens}}"
               jsonSchema: "RAW({{?jsonSchema}})"
+              jsonSchemaStrict: "{{jsonSchemaStrict}}"
               maxRetries: "{{maxRetries}}"
               stripThinking: "{{stripThinking}}"
