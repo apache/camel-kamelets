@@ -1,0 +1,137 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: openai-chat-action-test
+variables:
+  - name: "chat.api.token"
+    value: "sk-test-citrus:randomString(20)"
+  - name: "chat.model"
+    value: "gpt-4.1-mini"
+  - name: "chat.system.message"
+    value: "You explain software in one sentence & 100% plain words + no jargon (really)."
+actions:
+  - createVariables:
+      variables:
+        - name: "chat.server.url"
+          value: "http://localhost:${openai.server.port}"
+
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "openai/openai-chat-action-route.yaml"
+            systemProperties:
+              properties:
+                - name: "chat.server.url"
+                  value: "${chat.server.url}"
+                - name: "chat.api.token"
+                  value: "${chat.api.token}"
+                - name: "chat.model"
+                  value: "${chat.model}"
+
+  # the request: the model, the system message and the question of the options and the body, not of the headers
+  - http:
+      server: "openAiServer"
+      receiveRequest:
+        POST:
+          path: "/v1/chat/completions"
+          headers:
+            - name: "Authorization"
+              value: "Bearer ${chat.api.token}"
+          body:
+            data: |
+              {
+                "messages": [
+                  { "role": "system", "content": "${chat.system.message}" },
+                  { "role": "user", "content": "What is Apache Camel?" }
+                ],
+                "model": "${chat.model}",
+                "temperature": 0.2,
+                "max_completion_tokens": 100
+              }
+
+  # the answer, as the API gives it, with a thinking block
+  - http:
+      server: "openAiServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+          contentType: "application/json"
+          body:
+            data: |
+              {
+                "id": "chatcmpl-citrus-1",
+                "object": "chat.completion",
+                "created": 1763800000,
+                "model": "gpt-4.1-mini-2025-04-14",
+                "choices": [
+                  {
+                    "index": 0,
+                    "message": {
+                      "role": "assistant",
+                      "content": "<think>The user asks what Camel is.</think>\n\nApache Camel is an open source framework that connects systems.",
+                      "refusal": null,
+                      "annotations": []
+                    },
+                    "logprobs": null,
+                    "finish_reason": "stop"
+                  }
+                ],
+                "usage": {
+                  "prompt_tokens": 31,
+                  "completion_tokens": 12,
+                  "total_tokens": 43,
+                  "prompt_tokens_details": { "cached_tokens": 0, "audio_tokens": 0 },
+                  "completion_tokens_details": { "reasoning_tokens": 0, "audio_tokens": 0, "accepted_prediction_tokens": 0, "rejected_prediction_tokens": 0 }
+                },
+                "service_tier": "default",
+                "system_fingerprint": null
+              }
+
+  # the body is the answer as text, without the thinking block, which is in a header
+  - http:
+      server: "openAiServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: "java.lang.String"
+            - name: "X-Finish-Reason"
+              value: "stop"
+            - name: "X-Response-Model"
+              value: "gpt-4.1-mini-2025-04-14"
+            - name: "X-Response-Id"
+              value: "chatcmpl-citrus-1"
+            - name: "X-Tokens"
+              value: "31/12/43"
+            - name: "X-Thinking"
+              value: "The user asks what Camel is."
+          body:
+            data: "Apache Camel is an open source framework that connects systems."
+
+  - http:
+      server: "openAiServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"

@@ -20,9 +20,17 @@
 
 **Closed issues:**
 
+- New openai-chat-action Kamelet: ask a chat model \(OpenAI or any OpenAI-compatible server\) [\#3361](https://github.com/apache/camel-kamelets/issues/3361)
+- New debezium-postgresql-source Kamelet: the changes of PostgreSQL tables as they happen \(change data capture\) [\#3360](https://github.com/apache/camel-kamelets/issues/3360)
+- JMS source Kamelets: answer only to the JMSReplyTo of the incoming message [\#3344](https://github.com/apache/camel-kamelets/issues/3344)
+- New soap-source and soap-action Kamelets: expose a WSDL as a SOAP facade, and call a SOAP service, without generated classes [\#3335](https://github.com/apache/camel-kamelets/issues/3335)
 - New aws-eventbridge-source Kamelet, the pair of aws-eventbridge-sink [\#3334](https://github.com/apache/camel-kamelets/issues/3334)
 - New mllp-source and mllp-sink Kamelets \(HL7 v2 over MLLP\) [\#3333](https://github.com/apache/camel-kamelets/issues/3333)
+- New smb-source and smb-sink Kamelets \(Windows / Samba file shares\) [\#3332](https://github.com/apache/camel-kamelets/issues/3332)
+- New kafka-share-source Kamelet \(Kafka share groups, KIP-932\) [\#3331](https://github.com/apache/camel-kamelets/issues/3331)
 - New xslt-action and xml-schema-validator-action Kamelets [\#3330](https://github.com/apache/camel-kamelets/issues/3330)
+- New jms-apache-activemq-source and jms-apache-activemq-sink Kamelets \(ActiveMQ Classic\) [\#3329](https://github.com/apache/camel-kamelets/issues/3329)
+- New csv-deserialize-action and csv-serialize-action Kamelets [\#3328](https://github.com/apache/camel-kamelets/issues/3328)
 - New protobuf-message-action Kamelet: JSON to a Protobuf message from a .proto schema, for kafka-sink with schemaFormat protobuf [\#3326](https://github.com/apache/camel-kamelets/issues/3326)
 - Kamelets on services or components that are being retired: MinIO, IBM Watson NLU, Timestream, Bedrock Agents Classic, Jira OAuth 1.0a [\#3311](https://github.com/apache/camel-kamelets/issues/3311)
 - GitHub pull request, comment and tag sources make GitHub API requests for each message when they write the JSON [\#3291](https://github.com/apache/camel-kamelets/issues/3291)

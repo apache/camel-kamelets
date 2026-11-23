@@ -1,0 +1,60 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import java.util.stream.Stream;
+
+import org.citrusframework.api.common.TestLoader;
+import org.citrusframework.container.SequenceBeforeTest;
+import org.citrusframework.http.server.HttpServer;
+import org.citrusframework.junit.jupiter.CitrusSupport;
+import org.citrusframework.junit.jupiter.CitrusTestFactory;
+import org.citrusframework.junit.jupiter.CitrusTestFactorySupport;
+import org.citrusframework.spi.BindToRegistry;
+import org.junit.jupiter.api.DynamicTest;
+
+import static org.citrusframework.actions.CreateVariablesAction.Builder.createVariables;
+import static org.citrusframework.http.endpoint.builder.HttpEndpoints.http;
+
+/**
+ * Tests the openai-chat-action Kamelet against a Citrus HTTP server that stands in for the chat completions API of
+ * OpenAI, so no model and no API key are needed.
+ */
+@CitrusSupport
+public class OpenAiIT {
+
+    private final int openAiServerPort = ServerPorts.next();
+
+    @BindToRegistry
+    HttpServer openAiServer = http()
+                .server()
+                .port(openAiServerPort)
+                .timeout(120000L)
+                .autoStart(true)
+                .build();
+
+    @BindToRegistry
+    public SequenceBeforeTest beforeOpenAi() {
+        return new SequenceBeforeTest.Builder().onTests("openai-*").actions(
+                createVariables().variable("openai.server.port", String.valueOf(openAiServerPort))
+        ).build();
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> openai() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("openai");
+    }
+}

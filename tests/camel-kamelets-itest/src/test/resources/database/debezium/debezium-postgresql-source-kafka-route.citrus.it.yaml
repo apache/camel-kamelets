@@ -1,0 +1,155 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+name: debezium-postgresql-source-kafka-route-test
+actions:
+  # Start PostgreSQL with logical decoding, and a table of one row
+  - testcontainers:
+      start:
+        container:
+          name: "postgres"
+          image: "postgres:17.12-alpine"
+          command: "postgres -c wal_level=logical"
+          autoRemove: true
+          startUpTimeout: 120
+          exposedPorts:
+            - 5432
+          env:
+            - name: "POSTGRES_DB"
+              value: "testdb"
+            - name: "POSTGRES_USER"
+              value: "test"
+            - name: "POSTGRES_PASSWORD"
+              value: "test"
+          volumeMounts:
+            - file: "database/debezium/init.sql"
+              mountPath: "/docker-entrypoint-initdb.d/init.sql"
+          # only the server started after the init scripts listens on TCP
+          waitFor:
+            logMessage: '.*listening on IPv4 address.*'
+
+  # A Kafka to save the position in
+  - testcontainers:
+      start:
+        kafka:
+          implementation: "apache"
+          version: "4.4.0"
+
+  # The first run sends the row already in the table (the snapshot), and saves its position in Kafka when it stops
+  # the test stops this run itself, so Citrus must not stop it at the end
+  - camel:
+      cli:
+        run:
+          autoRemove: false
+          waitForRunningState: false
+          integration:
+            name: "debezium-kafka-first"
+            file: "database/debezium/debezium-postgresql-source-kafka-route.yaml"
+            systemProperties:
+              properties:
+                - name: "db.serverName"
+                  value: "${CITRUS_TESTCONTAINERS_POSTGRES_HOST}"
+                - name: "db.serverPort"
+                  value: "${CITRUS_TESTCONTAINERS_POSTGRES_PORT}"
+                - name: "kafka.bootstrapServers"
+                  value: "${CITRUS_TESTCONTAINERS_KAFKA_BOOTSTRAP_SERVERS}"
+                - name: "run.name"
+                  value: "first"
+                - name: "http.sink.url"
+                  value: "http://localhost:${http.server.port}"
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Run"
+              value: 'first'
+            - name: "X-Operation"
+              value: 'r'
+          body:
+            data: '{"id":1,"name":"Tea","price":4.50,"added":20454,"note":"not sent"}'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+  - camel:
+      cli:
+        stop:
+          integration: "debezium-kafka-first"
+
+  # A row inserted while no integration runs
+  - createVariables:
+      variables:
+        - name: "db.container"
+          value: "postgres"
+        - name: "db.sql"
+          value: |-
+            INSERT INTO products VALUES (2, 'Coffee', 3.20, '2026-03-01', 'x');
+  - groovy:
+      script:
+        file: "database/sql.groovy"
+
+  # The second run reads the position from Kafka: it sends only the new row, not the snapshot again
+  # the test stops this run itself too: Citrus removes the containers before the integrations it stops at the end,
+  # and without Kafka the stop waits to save the position until `camel stop` times out
+  - camel:
+      cli:
+        run:
+          autoRemove: false
+          waitForRunningState: false
+          integration:
+            name: "debezium-kafka-second"
+            file: "database/debezium/debezium-postgresql-source-kafka-route.yaml"
+            systemProperties:
+              properties:
+                - name: "db.serverName"
+                  value: "${CITRUS_TESTCONTAINERS_POSTGRES_HOST}"
+                - name: "db.serverPort"
+                  value: "${CITRUS_TESTCONTAINERS_POSTGRES_PORT}"
+                - name: "kafka.bootstrapServers"
+                  value: "${CITRUS_TESTCONTAINERS_KAFKA_BOOTSTRAP_SERVERS}"
+                - name: "run.name"
+                  value: "second"
+                - name: "http.sink.url"
+                  value: "http://localhost:${http.server.port}"
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: "X-Run"
+              value: 'second'
+            - name: "X-Operation"
+              value: 'c'
+          body:
+            data: '{"id":2,"name":"Coffee","price":3.20,"added":20513,"note":"x"}'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+  - camel:
+      cli:
+        stop:
+          integration: "debezium-kafka-second"

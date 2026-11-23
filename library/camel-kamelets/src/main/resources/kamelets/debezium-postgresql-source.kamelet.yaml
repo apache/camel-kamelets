@@ -1,0 +1,270 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+apiVersion: camel.apache.org/v1
+kind: Kamelet
+metadata:
+  name: debezium-postgresql-source
+  annotations:
+    camel.apache.org/kamelet.support.level: "Preview"
+    camel.apache.org/catalog.version: "4.24.0-SNAPSHOT"
+    camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,PHN2ZyByb2xlPSJpbWciIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGl0bGU+UG9zdGdyZVNRTCBpY29uPC90aXRsZT48cGF0aCBkPSJNMTcuMTI4IDBhMTAuMTM0IDEwLjEzNCAwIDAgMC0yLjc1NS40MDNsLS4wNjMuMDJBMTAuOTIyIDEwLjkyMiAwIDAgMCAxMi42LjI1OEMxMS40MjIuMjM4IDEwLjQxLjUyNCA5LjU5NCAxIDguNzkuNzIxIDcuMTIyLjI0IDUuMzY0LjMzNiA0LjE0LjQwMyAyLjgwNC43NzUgMS44MTQgMS44Mi44MjcgMi44NjUuMzA1IDQuNDgyLjQxNSA2LjY4MmMuMDMuNjA3LjIwMyAxLjU5Ny40OSAyLjg3OXMuNjkgMi43ODMgMS4xOTMgNC4xNTJjLjUwMyAxLjM3IDEuMDU0IDIuNiAxLjkxNSAzLjQzNi40My40MTkgMS4wMjIuNzcxIDEuNzIuNzQyLjQ5LS4wMi45MzMtLjIzNSAxLjMxNS0uNTUyLjE4Ni4yNDUuMzg1LjM1Mi41NjYuNDUxLjIyOC4xMjUuNDUuMjEuNjguMjY2LjQxMy4xMDMgMS4xMi4yNDEgMS45NDguMS4yODItLjA0Ny41NzktLjEzOS44NzUtLjI3LjAxMS4zMy4wMjQuNjUzLjAzNy45OC4wNDEgMS4wMzYuMDY3IDEuOTkzLjM3OCAyLjgzMi4wNS4xMzcuMTg3Ljg0My43MjcgMS40NjYuNTQuNjI0IDEuNTk4IDEuMDEzIDIuODAzLjc1NS44NS0uMTgyIDEuOTMxLS41MSAyLjY0OS0xLjUzMi43MS0xLjAxIDEuMDMtMi40NTkgMS4wOTMtNC44MDkuMDE2LS4xMjcuMDM1LS4yMzUuMDU1LS4zMzZsLjE2OS4wMTVoLjAyYy45MDcuMDQxIDEuODkxLS4wODggMi43MTMtLjQ3LjcyOC0uMzM3IDEuMjc5LS42NzggMS42OC0xLjI4My4xLS4xNS4yMS0uMzMxLjI0LS42NDNzLS4xNDktLjgtLjQ0Ni0xLjAyNWMtLjU5NS0uNDUyLS45NjktLjI4LTEuMzctLjE5N2E2LjI3IDYuMjcgMCAwIDEtMS4yMDIuMTQ2YzEuMTU2LTEuOTQ3IDEuOTg1LTQuMDE1IDIuNDU4LTUuODQ1LjI4LTEuMDguNDM3LTIuMDc2LjQ1LTIuOTQ3LjAxMy0uODcxLS4wNTgtMS42NDItLjU4LTIuMzA5QzIxLjM2LjYgMTkuMDY3LjAyNCAxNy4yOTMuMDA0Yy0uMDU1LS4wMDEtLjExLS4wMDItLjE2NS0uMDAxem0tLjA0Ny42NGMxLjY3OC0uMDE2IDMuODIyLjQ1NSA1LjM2MSAyLjQyMi4zNDYuNDQyLjQ0OSAxLjA4OC40MzcgMS44ODQtLjAxMy43OTUtLjE2IDEuNzQ3LS40MjkgMi43OS0uNTIyIDIuMDItMS41MDggNC4zNzUtMi44OTcgNi40ODhhLjc1Ni43NTYgMCAwIDAgLjE1OC4wODZjLjI5LjEyLjk1MS4yMjMgMi4yNy0uMDQ4LjMzMi0uMDcuNTc1LS4xMTcuODI3LjA3NWEuNTIuNTIgMCAwIDEgLjE4My40MjUuNzA0LjcwNCAwIDAgMS0uMTMuMzM2Yy0uMjU1LjM4My0uNzU4Ljc0Ni0xLjQwMyAxLjA0NS0uNTcxLjI2Ni0xLjM5LjQwNS0yLjExNi40MTMtLjM2NC4wMDQtLjctLjAyNC0uOTg1LS4xMTNsLS4wMTgtLjAwN2MtLjExIDEuMDYtLjM2MyAzLjE1My0uNTI4IDQuMTA4LS4xMzIuNzctLjM2MyAxLjM4Mi0uODA0IDEuODQtLjQ0LjQ1OC0xLjA2My43MzQtMS45MDEuOTE0LTEuMDM4LjIyMy0xLjc5NS0uMDE3LTIuMjgzLS40MjgtLjQ4Ny0uNDEtLjcxLS45NTQtLjg0NC0xLjI4Ny0uMDkyLS4yMy0uMTQtLjUyOC0uMTg2LS45MjYtLjA0Ni0uMzk4LS4wOC0uODg1LS4xMDMtMS40MzRhNTEuNDI2IDUxLjQyNiAwIDAgMS0uMDMtMi41MjMgMy4wNjEgMy4wNjEgMCAwIDEtMS41NTIuNzZjLS42ODkuMTE3LTEuMzA0LjAwMi0xLjY3MS0uMDlhMi4yNzYgMi4yNzYgMCAwIDEtLjUyLS4yMDFjLS4xNy0uMDkxLS4zMzItLjE5NC0uNDQtLjM5N2EuNTYuNTYgMCAwIDEtLjA1Ny0uMzgxLjYxLjYxIDAgMCAxIC4yMTgtLjMzMWMuMTk4LS4xNjEuNDYtLjI1MS44NTUtLjMzMy43MTktLjE0OC45Ny0uMjQ5IDEuMTIzLS4zNy4xMy0uMTA0LjI3Ny0uMzE0LjUzNy0uNjIyYTEuMTYgMS4xNiAwIDAgMS0uMDAzLS4wNDEgMi45NiAyLjk2IDAgMCAxLTEuMzMtLjM1OGMtLjE1LjE1OC0uOTE2Ljk2OC0xLjg1IDIuMDkyLS4zOTMuNDctLjgyNy43NC0xLjI4NS43NTktLjQ1OC4wMi0uODcyLS4yMTEtMS4yMjQtLjU1Mi0uNzAzLS42ODMtMS4yNjQtMS44NTgtMS43NTMtMy4xODYtLjQ4OC0xLjMyOC0uODg1LTIuODA3LTEuMTY3LTQuMDY3LS4yODMtMS4yNi0uNDUtMi4yNzYtLjQ3NC0yLjc2Ni0uMTA1LTIuMDgyLjM4Mi0zLjQ4NSAxLjIxNy00LjM3LjgzNi0uODg1IDEuOTgyLTEuMjIgMy4wOTktMS4yODQgMi4wMDUtLjExNSAzLjkwOS41ODQgNC4yOTQuNzM0Ljc0Mi0uNTA0IDEuNjk4LS44MTggMi44OTItLjc5OGE3LjM5IDcuMzkgMCAwIDEgMS42ODEuMjE4bC4wMi0uMDA5YTYuODU0IDYuODU0IDAgMCAxIC43MzktLjIxNEE5LjYyNiA5LjYyNiAwIDAgMSAxNy4wOC42NDJ6bS4xNTIuNjdoLS4xNDZhOC43NCA4Ljc0IDAgMCAwLTEuNzA0LjE5MmMxLjI0Ni41NTIgMi4xODcgMS40MDIgMi44NSAyLjI1YTguNDQgOC40NCAwIDAgMSAxLjEzMiAxLjkyYy4xMS4yNjQuMTg0LjQ4Ny4yMjYuNjYuMDIxLjA4Ny4wMzUuMTYuMDQuMjM2LjAwMi4wMzguMDA0LjA3Ny0uMDEyLjE0NCAwIC4wMDMtLjAwNS4wMS0uMDA2LjAxMy4wMy44NzYtLjE4NyAxLjQ3LS4yMTMgMi4zMDYtLjAyLjYwNi4xMzUgMS4zMTguMTczIDIuMDk1LjAzNi43My0uMDUyIDEuNTMyLS41MjYgMi4zMTkuMDQuMDQ4LjA3Ni4wOTYuMTE0LjE0NCAxLjI1NC0xLjk3NSAyLjE1OC00LjE2IDIuNjQtNi4wMjMuMjU4LTEuMDAzLjM5NS0xLjkxMi40MDctMi42MzIuMDEtLjcyLS4xMjQtMS4yNDItLjI5NS0xLjQ2LTEuMzQyLTEuNzE2LTMuMTU4LTIuMTUzLTQuNjgtMi4xNjV6bS00Ljc5LjI1NmMtMS4xODIuMDAzLTIuMDMuMzYtMi42NzMuODk1LS42NjMuNTUzLTEuMTA4IDEuMzEtMS40IDIuMDg1LS4zNDcuOTItLjQ2NiAxLjgxLS41MTMgMi40MTRsLjAxMy0uMDA4Yy4zNTctLjIuODI2LS40IDEuMzI4LS41MTYuNTAyLS4xMTUgMS4wNDMtLjE1MSAxLjUzMy4wMzlzLjg5NS42MzcgMS4wNDIgMS4zMTVjLjcwNCAzLjI1Ny0uMjE5IDQuNDY4LS41NTkgNS4zODJhOS42MSA5LjYxIDAgMCAwLS4zMzEgMS4wMTNjLjA0My0uMDEuMDg2LS4wMjIuMTI5LS4wMjYuMjQtLjAyLjQyOC4wNi41NC4xMDguMzQyLjE0Mi41NzcuNDQuNzA0Ljc4LjAzMy4wODkuMDU3LjE4NS4wNzEuMjg0YS4zMzYuMzM2IDAgMCAxIC4wMi4xMjcgNTUuMTQgNTUuMTQgMCAwIDAgLjAxMyAzLjczOGMuMDIzLjUzOC4wNTcgMS4wMTIuMSAxLjM4Ni4wNDMuMzczLjEwNC42NTcuMTQzLjc1My4xMjguMzIuMzE1LjczOS42NTMgMS4wMjQuMzM4LjI4NC44MjMuNDc0IDEuNzA5LjI4NC43NjgtLjE2NSAxLjI0Mi0uMzk0IDEuNTU5LS43MjMuMzE2LS4zMjkuNTA1LS43ODcuNjI2LTEuNDg4LjE4MS0xLjA1LjU0NS00LjA5NS41ODktNC42NjgtLjAyLS40MzIuMDQ0LS43NjQuMTgyLTEuMDE3LjE0Mi0uMjYuMzYyLS40MTkuNTUyLS41MDUuMDk1LS4wNDMuMTg0LS4wNzIuMjU3LS4wOTNhNS45NTYgNS45NTYgMCAwIDAtLjI0My0uMzI1IDQuNDU2IDQuNDU2IDAgMCAxLS42NjYtMS4wOTkgOC4yOTYgOC4yOTYgMCAwIDAtLjI1Ny0uNDgzYy0uMTMzLS4yNC0uMzAxLS41NC0uNDc3LS44NzctLjM1Mi0uNjc1LS43MzUtMS40OTMtLjkzNC0yLjI5LS4xOTgtLjc5Ni0uMjI3LTEuNjIuMjgxLTIuMjAxLjQ1LS41MTYgMS4yNC0uNzMgMi40MjYtLjYxLS4wMzUtLjEwNS0uMDU2LS4xOTItLjExNS0uMzMyYTcuODE3IDcuODE3IDAgMCAwLTEuMDQxLTEuNzY0Yy0xLjAwNS0xLjI4NS0yLjYzMi0yLjU1OS01LjE0Ni0yLjZoLS4xMTV6bS02LjY0Mi4wNTJjLS4xMjcgMC0uMjU0LjAwNC0uMzguMDExLTEuMDEuMDU4LTEuOTY1LjM1MS0yLjY0OCAxLjA3NS0uNjg0LjcyNC0xLjEzNCAxLjkxMS0xLjAzNiAzLjg3Ni4wMTkuMzcyLjE4MSAxLjQxNC40NTkgMi42NTIuMjc3IDEuMjM4LjY3IDIuNjk1IDEuMTQyIDMuOTgyLjQ3MyAxLjI4NyAxLjA0NiAyLjQwNyAxLjU5IDIuOTM3LjI3NC4yNjUuNTEyLjM3Mi43MjguMzYzLjIxNy0uMDEuNDc4LS4xMzUuNzk3LS41MThhNDMuMjQ0IDQzLjI0NCAwIDAgMSAxLjgxLTIuMDQ4IDMuNDk3IDMuNDk3IDAgMCAxLTEuMTY3LTMuMTVjLjEwMy0uNzM5LjExNy0xLjQzLjEwNS0xLjk3Ni0uMDEyLS41MzItLjA1LS44ODYtLjA1LTEuMTA3YS4zMzYuMzM2IDAgMCAxIDAtLjAxOXYtLjAwNWwtLjAwMS0uMDA2di0uMDAxYTkuODkzIDkuODkzIDAgMCAxIC41OTItMy4zNzZjLjI4LS43NDQuNjk3LTEuNSAxLjMyMi0yLjExMi0uNjE0LS4yMDItMS43MDQtLjUxLTIuODg0LS41NjhhNy42MDMgNy42MDMgMCAwIDAtLjM4LS4wMXpNMTguMTk5IDYuOWMtLjY3OS4wMDktMS4wNi4xODQtMS4yNi40MTMtLjI4My4zMjUtLjMxLjg5NS0uMTM0IDEuNTk3LjE3NS43MDMuNTM3IDEuNDg5Ljg3NyAyLjE0Mi4xNy4zMjcuMzM1LjYyMS40NjguODYuMTM0LjI0LjIzMi40MS4yOTIuNTU1LjA1NS4xMzQuMTE2LjI1Mi4xNzguMzYyLjI2My0uNTU1LjMxLTEuMS4yODMtMS42NjgtLjAzNS0uNzAzLS4xOTgtMS40MjItLjE3NC0yLjE1LjAyNy0uODUxLjE5NS0xLjQwNS4yMS0yLjA2M2E1Ljc5MyA1Ljc5MyAwIDAgMC0uNzQtLjA0OHptLTguMjM0LjExNWEyLjgyIDIuODIgMCAwIDAtLjYxNi4wNzQgNC42NjUgNC42NjUgMCAwIDAtMS4xNTMuNDQ5IDIuNDE3IDIuNDE3IDAgMCAwLS4zNDkuMjI4bC0uMDIyLjAyYy4wMDYuMTQ2LjAzNS41LjA0NyAxLjAyMS4wMTIuNTctLjAwMiAxLjI5Ny0uMTEyIDIuMDg0LS4yMzkgMS43MSAxLjAwMiAzLjEyNiAyLjQ2IDMuMTI4LjA4NS0uMzUxLjIyNS0uNzA3LjM2NS0xLjA4Mi40MDYtMS4wOTQgMS4yMDUtMS44OTIuNTMyLTUuMDA2LS4xMS0uNTEtLjMyOC0uNzE2LS42MjgtLjgzMmExLjQ3NCAxLjQ3NCAwIDAgMC0uNTI0LS4wODR6bTcuOTE3LjIwNGguMDVjLjA2Ni4wMDIuMTI3LjAwOS4xOC4wMjIuMDU0LjAxMi4xLjAzLjEzOC4wNTVhLjE2NC4xNjQgMCAwIDEgLjA3NS4xMWwtLjAwMS4wMDhoLjAwMS0uMDAxYS4yNC4yNCAwIDAgMS0uMDM1LjEzNS42NjguNjY4IDAgMCAxLS4xMS4xNS42NzcuNjc3IDAgMCAxLS4zODYuMjEyLjU5LjU5IDAgMCAxLS40MS0uMTAzLjYwOC42MDggMCAwIDEtLjEzLS4xMTguMjYuMjYgMCAwIDEtLjA2My0uMTI3LjE3LjE3IDAgMCAxIC4wNDItLjEyOC4zODQuMzg0IDAgMCAxIC4xMTctLjA5Yy4wOTYtLjA1NC4yMjYtLjA5NC4zNzMtLjExNi4wNTUtLjAwOC4xMDktLjAxMi4xNi0uMDEzem0tNy44Mi4xNjhjLjA1MyAwIC4xMDkuMDA1LjE2Ni4wMTMuMTUzLjAyMS4yODkuMDYyLjM5My4xMjJhLjQ0Ni40NDYgMCAwIDEgLjEzMy4xMDYuMjIzLjIyMyAwIDAgMSAuMDU0LjE3LjMwMi4zMDIgMCAwIDEtLjA3NS4xNTQuNjQ5LjY0OSAwIDAgMS0uMTQzLjEzLjY0LjY0IDAgMCAxLS40NDguMTEzLjcyOC43MjggMCAwIDEtLjQyLS4yMjguNzEuNzEgMCAwIDEtLjExOC0uMTY0LjI4LjI4IDAgMCAxLS4wNDEtLjE3N2MuMDE1LS4xMDguMTA0LS4xNjQuMTkxLS4xOTVhLjg2Ni44NjYgMCAwIDEgLjMwNy0uMDR6bTkuMDYgNy4zNDNsLS4wMDMuMDAxYy0uMTQ3LjA1My0uMjY4LjA3NS0uMzcuMTJhLjQ1Mi40NTIgMCAwIDAtLjIzOS4yMTRjLS4wNjMuMTE1LS4xMTcuMzE5LS4xMDEuNjY2YS41MS41MSAwIDAgMCAuMTQ4LjA3Yy4xNzEuMDUyLjQ1OC4wODYuNzc4LjA4MS42MzgtLjAwNyAxLjQyMy0uMTU2IDEuODQtLjM1YTMuOTUgMy45NSAwIDAgMCAuOTQzLS42MTVoLS4wMDFjLTEuMzkzLjI4OC0yLjE4LjIxMS0yLjY2My4wMTJhMS4zMTUgMS4zMTUgMCAwIDEtLjMzMi0uMnptLTguMDMxLjA5NGgtLjAyMWMtLjA1My4wMDUtLjEzLjAyMy0uMjc5LjE4OC0uMzQ4LjM5LS40Ny42MzUtLjc1Ny44NjQtLjI4Ny4yMjgtLjY2LjM1LTEuNDA1LjUwMy0uMjM2LjA0OC0uMzcxLjEwMS0uNDYxLjE0NC4wMjkuMDI0LjAyNi4wMy4wNy4wNTMuMTA5LjA2LjI0OS4xMTMuMzYyLjE0Mi4zMi4wOC44NDYuMTczIDEuMzk1LjA4LjU0OS0uMDk0IDEuMTItLjM1NyAxLjYwNy0xLjA0LjA4NC0uMTE4LjA5My0uMjkyLjAyNC0uNDc5LS4wNy0uMTg3LS4yMjMtLjM0OC0uMzMxLS4zOTNhLjY1My42NTMgMCAwIDAtLjIwNC0uMDZ6Ii8+PC9zdmc+"
+    camel.apache.org/provider: "Apache Software Foundation"
+    camel.apache.org/kamelet.group: "Debezium"
+    camel.apache.org/kamelet.namespace: "Database"
+  labels:
+    camel.apache.org/kamelet.type: "source"
+    camel.apache.org/kamelet.verified: "true"
+spec:
+  definition:
+    title: "Debezium PostgreSQL Source"
+    description: |-
+      Sends a message for each row inserted, updated or deleted in the tables of a PostgreSQL database, as it happens (change data capture with Debezium).
+
+      Use it to pass the changes of a database on to another system as they happen, for example to keep a search index or a cache up to date, or to copy new orders to a queue, without polling the tables. To read rows with a query again and again, use `postgresql-source`.
+
+      Output: the body is JSON text in bytes, an object with the column names as keys, such as `{"id":1,"name":"Tea","price":4.50}`: the row after the change, and for a delete the row before it. The columns can come in any order. A `NUMERIC` column is a JSON number with its decimals, such as `4.50`, and a `DATE` column the number of days since 1970-01-01, such as `20454` for 2026-01-01. The `debezium-operation` header says what happened: `c` (insert), `u` (update), `d` (delete) or `r` (a row read by the snapshot, see `snapshotMode`). `debezium-table` is the table, as `schema.table` such as `public.orders`, and `debezium-key` the primary key of the row as JSON text, such as `{"id":1}`. `Content-Type` is `application/json`.
+
+      Good to know: the server must run with `wal_level=logical`, and the user needs the `REPLICATION` attribute and the right to read the tables. On the first start, the Kamelet creates a replication slot named `slotName` and a publication named `publicationName` in the database, and by default sends every row of the tables first (`snapshotMode`). It saves how far it got in the file `offsetStorageFileName`, or in a Kafka topic, when it stops and once a minute while it runs, and after a restart it goes on from there, so after a crash the changes of the last minute can be sent again. Keep the file on a disk that outlives the integration, such as a volume in Kubernetes, and make sure its folder exists: otherwise nothing is saved, and after a restart everything is sent again as on the first start. The slot keeps the changes in the database until the Kamelet has read them, so a slot that is no longer read lets the disk of the server fill up: drop it with `SELECT pg_drop_replication_slot('debezium')`. For a delete, PostgreSQL logs only the primary key of the row unless the table has `REPLICA IDENTITY FULL`, so by default a deleted row has only its key columns set, and the others are `null`. Any other option of the Debezium PostgreSQL connector can be set for all the Kamelets of the integration as the `camel.component.debezium-postgres.` property of that option, such as `camel.component.debezium-postgres.columnExcludeList=public.customers.ssn`.
+    required:
+      - serverName
+      - username
+      - password
+      - databaseName
+      - topicPrefix
+    type: object
+    properties:
+      serverName:
+        title: Server Name
+        description: The host name or IP address of the PostgreSQL server, without the port. It must be the primary server, not a read replica.
+        type: string
+        example: db.example.com
+      serverPort:
+        title: Server Port
+        description: The port the PostgreSQL server listens on. PostgreSQL uses 5432 unless it was set up otherwise.
+        type: integer
+        default: 5432
+      username:
+        title: Username
+        description: The database user to log in as. It needs the `REPLICATION` attribute, the right to read the tables and, unless the publication already exists, the right to create it (to create a publication for all tables, the user must be a superuser).
+        type: string
+        x-descriptors:
+        - urn:camel:group:credentials
+      password:
+        title: Password
+        description: The password of the database user `username`.
+        type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      databaseName:
+        title: Database Name
+        description: The name of the database whose changes to send.
+        type: string
+        example: shop
+      topicPrefix:
+        title: Logical Name
+        description: A name for this source of changes, made of letters, digits, `.`, `_` and `-`. The saved position is stored under this name, so keep it the same across restarts, and give each Kamelet that reads another database its own name.
+        type: string
+        pattern: "^[a-zA-Z0-9._-]+$"
+        example: shop
+      tableIncludeList:
+        title: Tables
+        description: The tables whose changes to send, as regular expressions that match `schema.table`, separated by commas, such as `public.orders,public.customers`. When it is not set, the changes of all tables are sent.
+        type: string
+        example: public.orders,public.customers
+      snapshotMode:
+        title: Snapshot Mode
+        description: "Whether to send the rows that are already in the tables before the changes. `initial` (the default): on the first start, every row of the tables is sent with the operation `r`, then the changes; after a restart with a saved position, only the changes since. `no_data`: only the changes made from the first start on. `always`: every row on each start, then the changes. `initial_only`: every row on the first start, and no changes. `when_needed`: as `initial`, and every row again when the saved position can no longer be found in the database."
+        type: string
+        enum: ["initial", "no_data", "always", "initial_only", "when_needed"]
+        default: initial
+      slotName:
+        title: Replication Slot
+        description: The name of the PostgreSQL replication slot that keeps the changes until the Kamelet has read them, made of lowercase letters, digits and `_`. It is created when it does not exist. Each Kamelet that reads the same database needs its own slot.
+        type: string
+        pattern: "^[a-z0-9_]+$"
+        default: debezium
+      publicationName:
+        title: Publication
+        description: The name of the PostgreSQL publication that says which tables are logged for the Kamelet, made of letters, digits and `_`. See `publicationAutocreateMode` for whether it is created.
+        type: string
+        pattern: "^[a-zA-Z0-9_]+$"
+        default: dbz_publication
+      publicationAutocreateMode:
+        title: Create Publication
+        description: "Whether the Kamelet creates the publication when it does not exist. `all_tables` (the default): for all tables, which needs a superuser. `filtered`: for the tables of `tableIncludeList` only, which needs only to own them. `disabled`: never; the Kamelet fails to start when the publication does not exist. `no_tables`: for no table, so that the tables can be added to it later. An existing publication is used as it is."
+        type: string
+        enum: ["all_tables", "filtered", "disabled", "no_tables"]
+        default: all_tables
+      pluginName:
+        title: Decoding Plugin
+        description: "The PostgreSQL plugin that decodes the changes. `pgoutput` is built into PostgreSQL 10 and newer. `decoderbufs` must be installed on the server."
+        type: string
+        enum: ["pgoutput", "decoderbufs"]
+        default: pgoutput
+      offsetStorageFileName:
+        title: Position File
+        description: The file where the Kamelet saves how far it got, such as `/data/offsets.dat`, read again after a restart. It is created when it does not exist, but its folder must exist, or nothing is saved. A relative name is in the folder the integration runs in. When it is lost, the changes are sent again as on the first start. Not used when `offsetStorage` is the Kafka store.
+        type: string
+        default: debezium-postgresql-offsets.dat
+        example: /data/offsets.dat
+      offsetStorage:
+        title: Position Store
+        description: "Where the Kamelet saves how far it got. `org.apache.kafka.connect.storage.FileOffsetBackingStore` (the default): in the file `offsetStorageFileName`. `org.apache.kafka.connect.storage.KafkaOffsetBackingStore`: in the Kafka topic `offsetStorageTopic`, on the Kafka of `offsetStorageBootstrapServers`, for an integration that has no lasting disk."
+        type: string
+        enum: ["org.apache.kafka.connect.storage.FileOffsetBackingStore", "org.apache.kafka.connect.storage.KafkaOffsetBackingStore"]
+        default: org.apache.kafka.connect.storage.FileOffsetBackingStore
+      offsetStorageBootstrapServers:
+        title: Position Kafka Brokers
+        description: The Kafka brokers of the Kafka store, as `host:port` separated by commas. Needed with the Kafka store. The connection is made without TLS and without a login.
+        type: string
+        example: my-cluster-kafka-bootstrap:9092
+      offsetStorageTopic:
+        title: Position Topic
+        description: The Kafka topic where the Kafka store saves how far the Kamelet got. It is created when it does not exist. Needed with the Kafka store.
+        type: string
+        example: shop-offsets
+      offsetStoragePartitions:
+        title: Position Topic Partitions
+        description: The number of partitions of the topic `offsetStorageTopic` when the Kamelet creates it. Needed with the Kafka store.
+        type: integer
+        example: 1
+      offsetStorageReplicationFactor:
+        title: Position Topic Replicas
+        description: The number of copies of the topic `offsetStorageTopic` on the Kafka brokers when the Kamelet creates it. Needed with the Kafka store.
+        type: integer
+        example: 3
+  dataTypes:
+    out:
+      default: json
+      types:
+        json:
+          format: "application-json"
+          description: "The row after the change, or before it for a delete, as JSON text in bytes."
+          mediaType: application/json
+      headers:
+        debezium-operation:
+          title: Operation
+          description: "What happened to the row: `c` (insert), `u` (update), `d` (delete) or `r` (read by the snapshot)."
+          type: string
+        debezium-table:
+          title: Table
+          description: The table of the row, as `schema.table`, such as `public.orders`.
+          type: string
+        debezium-key:
+          title: Key
+          description: The primary key of the row, as JSON text such as `{"id":1}`.
+          type: string
+        Content-Type:
+          title: Content Type
+          description: Always `application/json`, as the body is JSON text.
+          type: string
+  dependencies:
+    - "camel:jackson3"
+    - "camel:kamelet"
+    - "camel:debezium-postgres"
+  template:
+    from:
+      uri: debezium-postgres
+      parameters:
+        name: "{{topicPrefix}}"
+        databaseHostname: "{{serverName}}"
+        databasePort: "{{serverPort}}"
+        databaseUser: "{{username}}"
+        databasePassword: "RAW({{password}})"
+        databaseDbname: "{{databaseName}}"
+        topicPrefix: "{{topicPrefix}}"
+        tableIncludeList: "{{?tableIncludeList}}"
+        snapshotMode: "{{snapshotMode}}"
+        slotName: "{{slotName}}"
+        publicationName: "{{publicationName}}"
+        publicationAutocreateMode: "{{publicationAutocreateMode}}"
+        pluginName: "{{pluginName}}"
+        offsetStorage: "{{offsetStorage}}"
+        offsetStorageFileName: "{{offsetStorageFileName}}"
+        offsetStorageTopic: "{{?offsetStorageTopic}}"
+        offsetStoragePartitions: "{{?offsetStoragePartitions}}"
+        offsetStorageReplicationFactor: "{{?offsetStorageReplicationFactor}}"
+        additionalProperties.bootstrap.servers: "{{?offsetStorageBootstrapServers}}"
+      steps:
+        # only the changes of rows: not the tombstones, heartbeats or logical decoding messages, which have no row
+        - filter:
+            expression:
+              simple:
+                expression: "${header.CamelDebeziumOperation} in 'c,u,d,r'"
+            steps:
+              - setHeader:
+                  name: debezium-operation
+                  expression:
+                    simple:
+                      expression: "${header.CamelDebeziumOperation}"
+              - setHeader:
+                  name: debezium-table
+                  expression:
+                    simple:
+                      expression: "${header.CamelDebeziumSourceMetadata[schema]}.${header.CamelDebeziumSourceMetadata[table]}"
+              # the key as JSON text
+              - choice:
+                  when:
+                    - expression:
+                        simple:
+                          expression: "${header.CamelDebeziumKey} != null"
+                      steps:
+                        - setProperty:
+                            name: debezium-row
+                            expression:
+                              simple:
+                                expression: "${body}"
+                        - setBody:
+                            expression:
+                              simple:
+                                expression: "${header.CamelDebeziumKey}"
+                        - convertBodyTo:
+                            type: java.util.Map
+                        - marshal:
+                            json: {}
+                        - setHeader:
+                            name: debezium-key
+                            expression:
+                              simple:
+                                expression: "${bodyAs(String)}"
+                        - setBody:
+                            expression:
+                              simple:
+                                expression: "${exchangeProperty.debezium-row}"
+                        - removeProperty:
+                            name: debezium-row
+              # a delete has no row after it: send the row before it
+              - choice:
+                  when:
+                    - expression:
+                        simple:
+                          expression: "${header.CamelDebeziumOperation} == 'd'"
+                      steps:
+                        - setBody:
+                            expression:
+                              simple:
+                                expression: "${header.CamelDebeziumBefore}"
+              - convertBodyTo:
+                  type: java.util.Map
+              - marshal:
+                  json: {}
+              # the Kafka Connect objects of the component, which other systems cannot read
+              - removeHeaders:
+                  pattern: CamelDebezium*
+              - to:
+                  uri: kamelet:sink
