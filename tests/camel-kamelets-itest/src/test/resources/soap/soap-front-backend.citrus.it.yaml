@@ -28,6 +28,8 @@ actions:
             file: "soap/soap-backend-route.yaml"
             systemProperties:
               properties:
+                - name: "camel.server.port"
+                  value: "${soap.backend.port}"
                 - name: "soap.backend.port"
                   value: "${soap.backend.port}"
   - camel:
@@ -39,6 +41,8 @@ actions:
             file: "soap/soap-front-route.yaml"
             systemProperties:
               properties:
+                - name: "camel.server.port"
+                  value: "${soap.front.port}"
                 - name: "soap.backend.port"
                   value: "${soap.backend.port}"
                 - name: "soap.front.port"
@@ -49,7 +53,7 @@ actions:
       client: "http://localhost:${soap.front.port}"
       sendRequest:
         POST:
-          path: "/orders"
+          path: "/services/orders"
           contentType: "text/xml"
           body:
             data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>7</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
@@ -80,7 +84,7 @@ actions:
       client: "http://localhost:${soap.front.port}"
       sendRequest:
         POST:
-          path: "/orders"
+          path: "/services/orders"
           contentType: "text/xml"
           body:
             data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>8</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
@@ -103,7 +107,7 @@ actions:
       client: "http://localhost:${soap.front.port}"
       sendRequest:
         POST:
-          path: "/orders"
+          path: "/services/orders"
           contentType: "text/xml"
           body:
             data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>404</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
@@ -126,7 +130,7 @@ actions:
       client: "http://localhost:${soap.front.port}"
       sendRequest:
         POST:
-          path: "/orders"
+          path: "/services/orders"
           contentType: "text/xml"
           body:
             data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>500</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
@@ -144,7 +148,7 @@ actions:
       client: "http://localhost:${soap.backend.port}"
       sendRequest:
         POST:
-          path: "/orders"
+          path: "/services/orders"
           contentType: "text/xml"
           body:
             data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>409</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
@@ -162,7 +166,7 @@ actions:
       client: "http://localhost:${soap.backend.port}"
       sendRequest:
         POST:
-          path: "/orders"
+          path: "/services/orders"
           contentType: "text/xml"
           body:
             data: '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>500</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
@@ -180,7 +184,7 @@ actions:
       client: "http://localhost:${soap.backend.port}"
       sendRequest:
         POST:
-          path: "/orders"
+          path: "/services/orders"
           contentType: "text/xml"
           body:
             data: '<?xml version="1.0"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/hosts">]><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><o:getOrder xmlns:o="http://example.com/orders"><o:orderId>&xxe;</o:orderId></o:getOrder></soap:Body></soap:Envelope>'
@@ -198,7 +202,7 @@ actions:
       client: "http://localhost:${soap.front.port}"
       sendRequest:
         GET:
-          path: "/orders"
+          path: "/services/orders"
           parameters:
             - name: "wsdl"
               value: ""
