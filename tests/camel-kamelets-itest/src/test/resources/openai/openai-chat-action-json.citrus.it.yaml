@@ -38,15 +38,12 @@ actions:
                 - name: "chat.model"
                   value: "${chat.model}"
 
-  # message 1: the request asks for an answer that follows the JSON schema
+  # message 1: the request, without an API key, asks for an answer that follows the JSON schema strictly
   - http:
       server: "openAiServer"
       receiveRequest:
         POST:
           path: "/v1/chat/completions"
-          headers:
-            - name: "Authorization"
-              value: "Bearer none"
           body:
             data: |
               {
@@ -58,13 +55,15 @@ actions:
                   "type": "json_schema",
                   "json_schema": {
                     "name": "camel_schema",
+                    "strict": true,
                     "schema": {
                       "type": "object",
                       "properties": {
                         "topic": { "type": "string", "enum": ["billing", "technical", "other"] },
                         "urgent": { "type": "boolean" }
                       },
-                      "required": ["topic", "urgent"]
+                      "required": ["topic", "urgent"],
+                      "additionalProperties": false
                     }
                   }
                 }
@@ -122,15 +121,12 @@ actions:
           reasonPhrase: "OK"
           version: "HTTP/1.1"
 
-  # message 2: the request asks for an answer that follows the JSON schema
+  # message 2: the request asks for an answer that follows the JSON schema, not strictly (the default)
   - http:
       server: "openAiServer"
       receiveRequest:
         POST:
           path: "/v1/chat/completions"
-          headers:
-            - name: "Authorization"
-              value: "Bearer none"
           body:
             data: |
               {
