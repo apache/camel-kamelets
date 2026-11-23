@@ -1,0 +1,86 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+name: xpath-filter-action-test
+actions:
+  - camel:
+      cli:
+        run:
+          integration:
+            file: "xml/xpath-filter-action-route.yaml"
+  # A matching message is kept unchanged: text stays text, bytes stay bytes, a stream can be read; the headers are kept
+  - camel:
+      cli:
+        verify:
+          integration: "xpath-filter-action-route"
+          logMessage: 'Kept 1 java.lang.String ct= order=kept: <order><customer>Ann</customer><amount>150</amount></order>|'
+  - camel:
+      cli:
+        verify:
+          integration: "xpath-filter-action-route"
+          logMessage: 'Kept 3 [B ct= order=kept: <order><customer>Cid</customer><amount>300</amount></order>|'
+  - camel:
+      cli:
+        verify:
+          integration: "xpath-filter-action-route"
+          logMessage: 'Kept 4 org.apache.camel.converter.stream.ByteArrayInputStreamCache ct= order=kept: <order><customer>Dan</customer><amount>400</amount></order>|'
+  # A condition that is true keeps the message
+  - camel:
+      cli:
+        verify:
+          integration: "xpath-filter-action-route"
+          logMessage: 'Kept 7 java.lang.String ct= order=kept: <order><customer>Ann</customer><amount>1</amount></order>|'
+  # Only 1, 3, 4 and 7 are kept: 2 (amount 20), 5 (no amount), 6 (no body) and 8 (customer Bob) are dropped
+  - camel:
+      cli:
+        verify:
+          integration: "xpath-filter-action-route"
+          logMessage: 'Plain kept: 1,3,4,7,|'
+  # The namespace prefix matches the paid order in the namespace (1), not the open one (2), nor the one without a
+  # namespace (3); a name without a prefix does not match an element in a namespace (4); local-name() and
+  # namespace-uri() match it (5)
+  - camel:
+      cli:
+        verify:
+          integration: "xpath-filter-action-route"
+          logMessage: 'NsKept 1: <order xmlns="urn:example:orders"><status>paid</status></order>|'
+  - camel:
+      cli:
+        verify:
+          integration: "xpath-filter-action-route"
+          logMessage: 'Namespace kept: 1,5,|'
+  # A message with a DOCTYPE fails: the external entity is never read
+  - camel:
+      cli:
+        verify:
+          integration: "xpath-filter-action-route"
+          logMessage: 'Rejected-xxe org.apache.camel.TypeConversionException'
+  - camel:
+      cli:
+        verify:
+          integration: "xpath-filter-action-route"
+          logMessage: 'DOCTYPE is disallowed when the feature "http://apache.org/xml/features/disallow-doctype-decl" set to true.'
+  # A body that is not XML fails, it is not dropped silently
+  - camel:
+      cli:
+        verify:
+          integration: "xpath-filter-action-route"
+          logMessage: 'Rejected-text org.apache.camel.TypeConversionException'
+  - camel:
+      cli:
+        verify:
+          integration: "xpath-filter-action-route"
+          logMessage: 'Content is not allowed in prolog.'

@@ -2350,6 +2350,16 @@
     "namespace" : "XML",
     "provider" : "Apache Software Foundation"
   }, {
+    "name" : "xpath-filter-action",
+    "type" : "action",
+    "supportLevel" : "Preview",
+    "title" : "XPath Filter Action",
+    "summary" : "Keeps only the XML messages that match an XPath expression, and drops all others.",
+    "description" : "Keeps only the XML messages that match an XPath expression, and drops all others.\n\nUse it to pass on only the XML documents you care about, for example only the orders above a certain amount with `/order[amount > 100]`, or only the paid invoices of an XML feed. For JSON, use `predicate-filter-action`; to keep or drop messages by a header, use `header-matches-filter-action`; to check XML against an XML Schema, use `xml-schema-validator-action`.\n\nInput: XML as text, bytes or a stream.\n\nOutput: the same message, unchanged, when the expression matches: text stays text, bytes stay bytes, a stream can still be read, and the headers are kept. When it does not match, the message is dropped and nothing is sent on.\n\nGood to know: the expression matches when it selects at least one element, such as `/order[amount > 100]`, or when it is a condition that is true, such as `/order/customer = 'Ann'`. A message without a body is dropped. A body that is not XML fails with an error such as `Content is not allowed in prolog.`; it is not dropped silently, so the error handling of the integration decides what happens to it. A message with a DOCTYPE fails too, so its entities are never expanded and an entity that points to a file or URL is never read. An element in a namespace is matched with a prefix declared by `namespacePrefix` and `namespaceUri`; for more than one namespace, match with `local-name()` and `namespace-uri()`, such as `//*[local-name()='order' and namespace-uri()='urn:example:orders']`. The expression is set by you; it cannot come from the message.",
+    "group" : "Actions",
+    "namespace" : "EIP",
+    "provider" : "Apache Software Foundation"
+  }, {
     "name" : "xslt-action",
     "type" : "action",
     "supportLevel" : "Stable",
