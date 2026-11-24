@@ -1,0 +1,68 @@
+# ---------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------------
+
+# Joins the messages the source passes on with commas, in the order the source passes them on
+- beans:
+    - name: joinStrategy
+      type: org.apache.camel.processor.aggregate.StringAggregationStrategy
+      properties:
+        delimiter: ","
+
+# A WebSocket server that sends nothing until the client asks: it hands the request to the test, and then pushes
+# the numbers 0 to 9, one message each, as fast as it can
+- route:
+    id: websocket-subscribe-server
+    from:
+      uri: "vertx-websocket:localhost:{{ws.server.port}}/feed"
+      steps:
+        - setHeader:
+            name: Content-Type
+            constant: "text/plain"
+        - to: "{{result.server.url}}/subscribed"
+        - loop:
+            constant: 10
+            steps:
+              - setBody:
+                  simple: "${exchangeProperty.CamelLoopIndex}"
+              # to the client that asked, by the connection key the server set
+              - to: "vertx-websocket:localhost:{{ws.server.port}}/feed"
+
+- route:
+    from:
+      uri: "kamelet:websocket-source"
+      parameters:
+        url: "ws://localhost:{{ws.server.port}}/feed"
+        reconnectInterval: 200
+        connectMessage: '{"op": "subscribe", "args": ["a+b", "c&d", "100%"]}'
+      steps:
+        - convertBodyTo:
+            type: "String"
+        - aggregate:
+            correlationExpression:
+              constant: "all"
+            aggregationStrategy: "joinStrategy"
+            completionSize: 10
+            steps:
+              - setHeader:
+                  name: Content-Type
+                  constant: "text/plain"
+              - to: "{{result.server.url}}/result"
+              # the test answers the first 10 with X-Restart: the server stops, which closes the connection, and starts again
+              - filter:
+                  simple: "${header.X-Restart} == 'true'"
+                  steps:
+                    - to: "controlbus:route?routeId=websocket-subscribe-server&action=restart&async=true"

@@ -30,7 +30,8 @@ actions:
                 - name: "result.server.url"
                   value: "http://localhost:${websocket.result.port}"
 
-  # the greeting of the server when the source connects, a text message, with the query parameter of the URL
+  # the greeting of the server when the source connects, a text message, with the query parameters of the URL: the
+  # token is written in RAW(), so its + & and % reach the server as they are
   - http:
       server: "websocketResultServer"
       receiveRequest:
@@ -43,7 +44,7 @@ actions:
             - name: "X-Header-Count"
               value: "0"
           body:
-            data: "Welcome Ann"
+            data: "Welcome Ann (a+b&c%)"
   - http:
       server: "websocketResultServer"
       sendResponse:
@@ -68,7 +69,7 @@ actions:
             - name: "X-Header-Count"
               value: "0"
           body:
-            data: "Welcome back Ann"
+            data: "Welcome back Ann (a+b&c%)"
   - http:
       server: "websocketResultServer"
       sendResponse:

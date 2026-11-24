@@ -32,7 +32,8 @@ actions:
                 - name: "control.server.url"
                   value: "http://localhost:${websocket.control.port}"
 
-  # a text body reaches the server as a text message, although its headers asked to send it to all the clients
+  # a text body reaches the server as a text message, although its headers asked to send it to all the clients. The
+  # token of the URL is written in RAW(), so its + & and % reach the server as they are
   - http:
       server: "websocketResultServer"
       receiveRequest:
@@ -42,6 +43,8 @@ actions:
           headers:
             - name: "X-Body-Type"
               value: "java.lang.String"
+            - name: "X-Token"
+              value: "a+b&c%"
           body:
             data: "Hello WebSocket"
   - http:
