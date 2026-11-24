@@ -92,7 +92,7 @@ XML::
 ----
 ====
 
-Run it with the xref:{camel-docs-version}@manual::camel-jbang.adoc[Camel CLI], which downloads the catalog and the components the
+Run it with the xref:manual::camel-jbang.adoc[Camel CLI], which downloads the catalog and the components the
 Kamelets need:
 
 [source]
@@ -164,7 +164,7 @@ endpoint parameters still apply.
 The options that hold a secret, such as a password, a token or a key, are marked as such in the Kamelet, so tools
 hide their value. Keep the value itself out of the route. Read it from the environment with `+{{env:NAME}}+`, as in
 the example above, or from a vault, such as `+{{aws:orders-db#password}}+` for the `password` field of the secret
-`orders-db` in AWS Secrets Manager. See xref:{camel-docs-version}@manual::security.adoc#_configuration_security_using_vaults[vaults] for the
+`orders-db` in AWS Secrets Manager. See xref:manual::security.adoc#_configuration_security_using_vaults[vaults] for the
 vaults Camel supports and how to configure them.
 
 == Dependencies
