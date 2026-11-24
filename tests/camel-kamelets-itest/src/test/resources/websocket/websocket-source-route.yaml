@@ -34,11 +34,11 @@
                             name: "global:connected"
                             constant: "true"
                         - setBody:
-                            simple: "Welcome ${header.user}"
+                            simple: "Welcome ${header.user} (${header.token})"
                   otherwise:
                     steps:
                       - setBody:
-                          simple: "Welcome back ${header.user}"
+                          simple: "Welcome back ${header.user} (${header.token})"
                       - convertBodyTo:
                           type: "byte[]"
               # to the client that connected, by the connection key the server set
@@ -48,7 +48,7 @@
     from:
       uri: "kamelet:websocket-source"
       parameters:
-        url: "ws://localhost:{{ws.server.port}}/feed?user=Ann"
+        url: "ws://localhost:{{ws.server.port}}/feed?user=Ann&token=RAW(a+b&c%)"
         reconnectInterval: 200
       steps:
         - setHeader:

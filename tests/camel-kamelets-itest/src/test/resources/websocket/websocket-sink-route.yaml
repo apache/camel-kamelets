@@ -23,6 +23,10 @@
         - setHeader:
             name: X-Body-Type
             simple: "${body.getClass().getName()}"
+        # the query parameter of the URL that the sink connected with
+        - setHeader:
+            name: X-Token
+            simple: "${header.token}"
         - removeHeaders:
             pattern: "CamelVertxWebsocket*"
         - convertBodyTo:
@@ -51,7 +55,7 @@
         - to:
             uri: "kamelet:websocket-sink"
             parameters:
-              url: "ws://localhost:{{ws.server.port}}/in"
+              url: "ws://localhost:{{ws.server.port}}/in?token=RAW(a+b&c%)"
         # the message after the Kamelet, and the go-ahead for the next one once the server got this one
         - setHeader:
             name: X-After
@@ -61,7 +65,8 @@
             constant: "Hello bytes"
         - convertBodyTo:
             type: "byte[]"
+        # the same URL, so the connection of the first message is used again
         - to:
             uri: "kamelet:websocket-sink"
             parameters:
-              url: "ws://localhost:{{ws.server.port}}/in"
+              url: "ws://localhost:{{ws.server.port}}/in?token=RAW(a+b&c%)"
