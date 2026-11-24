@@ -134,6 +134,62 @@
         - setVariable:
             name: "global:ns"
             simple: "${variable.global:ns}${header.CamelTimerCounter},"
+# Two namespaces through the namespaces option: the order and its customer are in different namespaces
+- route:
+    from:
+      uri: "timer:multi"
+      parameters:
+        repeatCount: 6
+        period: 10
+        includeMetadata: true
+      steps:
+        - setBody:
+            constant: '<o:order xmlns:o="urn:example:orders" xmlns:c="urn:example:customers"><c:customer><c:name>Ann</c:name></c:customer></o:order>'
+        - choice:
+            when:
+              - simple: "${header.CamelTimerCounter} == 2"
+                steps:
+                  - setBody:
+                      constant: '<o:order xmlns:o="urn:example:orders" xmlns:c="urn:example:customers"><c:customer><c:name>Bob</c:name></c:customer></o:order>'
+              - simple: "${header.CamelTimerCounter} == 3"
+                steps:
+                  - setBody:
+                      constant: '<order xmlns="urn:example:orders"><customer><name>Ann</name></customer></order>'
+              - simple: "${header.CamelTimerCounter} == 6"
+                steps:
+                  - log: "Multi kept: ${variable.global:multi}|"
+                  - stop: {}
+        - choice:
+            when:
+              # Spaces around the mappings are ignored
+              - simple: "${header.CamelTimerCounter} == 4"
+                steps:
+                  - to:
+                      uri: "kamelet:xpath-filter-action"
+                      parameters:
+                        expression: "/o:order[c:customer/c:name = 'Ann']"
+                        namespaces: "o=urn:example:orders, c=urn:example:customers"
+              # namespacePrefix wins over a mapping of the same prefix
+              - simple: "${header.CamelTimerCounter} == 5"
+                steps:
+                  - to:
+                      uri: "kamelet:xpath-filter-action"
+                      parameters:
+                        expression: "/o:order[c:customer/c:name = 'Ann']"
+                        namespaces: "o=urn:example:wrong,c=urn:example:customers"
+                        namespacePrefix: "o"
+                        namespaceUri: "urn:example:orders"
+            otherwise:
+              steps:
+                - to:
+                    uri: "kamelet:xpath-filter-action"
+                    parameters:
+                      expression: "/o:order[c:customer/c:name = 'Ann']"
+                      namespaces: "o=urn:example:orders,c=urn:example:customers"
+        - log: "MultiKept ${header.CamelTimerCounter}: ${body}|"
+        - setVariable:
+            name: "global:multi"
+            simple: "${variable.global:multi}${header.CamelTimerCounter},"
 - route:
     from:
       uri: "timer:xxe"

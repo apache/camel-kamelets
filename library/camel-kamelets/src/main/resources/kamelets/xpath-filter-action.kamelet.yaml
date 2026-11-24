@@ -40,7 +40,7 @@ spec:
 
       Output: the same message, unchanged, when the expression matches: text stays text, bytes stay bytes, a stream can still be read, and the headers are kept. When it does not match, the message is dropped and nothing is sent on.
 
-      Good to know: the expression matches when it selects at least one element, such as `/order[amount > 100]`, or when it is a condition that is true, such as `/order/customer = 'Ann'`. A message without a body is dropped. A body that is not XML fails with an error such as `Content is not allowed in prolog.`; it is not dropped silently, so the error handling of the integration decides what happens to it. A message with a DOCTYPE fails too, so its entities are never expanded and an entity that points to a file or URL is never read. An element in a namespace is matched with a prefix declared by `namespacePrefix` and `namespaceUri`; for more than one namespace, match with `local-name()` and `namespace-uri()`, such as `//*[local-name()='order' and namespace-uri()='urn:example:orders']`. The expression is set by you; it cannot come from the message.
+      Good to know: the expression matches when it selects at least one element, such as `/order[amount > 100]`, or when it is a condition that is true, such as `/order/customer = 'Ann'`. A message without a body is dropped. A body that is not XML fails with an error such as `Content is not allowed in prolog.`; it is not dropped silently, so the error handling of the integration decides what happens to it. A message with a DOCTYPE fails too, so its entities are never expanded and an entity that points to a file or URL is never read. An element in a namespace is matched with a prefix: declare one with `namespacePrefix` and `namespaceUri`, or several at once with `namespaces`, such as `o=urn:example:orders,c=urn:example:customers` for `/o:order[c:customer/c:name = 'Ann']`. The expression is set by you; it cannot come from the message.
     required:
       - expression
     type: object
@@ -62,6 +62,12 @@ spec:
         type: string
         default: ""
         example: "urn:example:orders"
+      namespaces:
+        title: Namespaces
+        description: "Several namespaces to use in the expression, each as `prefix=uri`, separated by commas. For example, `o=urn:example:orders,c=urn:example:customers` lets `/o:order[c:customer/c:name = 'Ann']` match an order whose customer is in another namespace. A prefix that is also set by `namespacePrefix` takes the URI of `namespaceUri`. A value without `=` fails the integration when it starts."
+        type: string
+        default: ""
+        example: "o=urn:example:orders,c=urn:example:customers"
   dataTypes:
     in:
       default: unchanged
@@ -87,6 +93,7 @@ spec:
               - expression:
                   xpath:
                     expression: "{{expression}}"
+                    namespaceMappings: "{{namespaces}}"
                     namespace:
                       - key: "{{namespacePrefix}}"
                         value: "{{namespaceUri}}"

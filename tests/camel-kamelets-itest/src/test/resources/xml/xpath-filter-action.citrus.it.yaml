@@ -62,6 +62,19 @@ actions:
         verify:
           integration: "xpath-filter-action-route"
           logMessage: 'Namespace kept: 1,5,|'
+  # namespaces declares both prefixes: the order of Ann is kept (1), not the one of Bob (2), nor the one whose customer
+  # is in the namespace of the order (3); spaces after a comma are ignored (4); namespacePrefix wins over a mapping
+  # of the same prefix (5)
+  - camel:
+      cli:
+        verify:
+          integration: "xpath-filter-action-route"
+          logMessage: 'MultiKept 1: <o:order xmlns:o="urn:example:orders" xmlns:c="urn:example:customers"><c:customer><c:name>Ann</c:name></c:customer></o:order>|'
+  - camel:
+      cli:
+        verify:
+          integration: "xpath-filter-action-route"
+          logMessage: 'Multi kept: 1,4,5,|'
   # A message with a DOCTYPE fails: the external entity is never read
   - camel:
       cli:
