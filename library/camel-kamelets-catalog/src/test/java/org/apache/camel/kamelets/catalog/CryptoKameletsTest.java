@@ -16,8 +16,10 @@
  */
 package org.apache.camel.kamelets.catalog;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Map;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
@@ -73,6 +75,20 @@ public class CryptoKameletsTest {
     }
 
     @ParameterizedTest
+    @CsvSource({ "AES,0123456789abcdef,fedcba9876543210", "DESede,0123456789abcdef01234567,76543210" })
+    void cbcGivesDifferentBytesForTheSameTextWithCryptoHeadersOnTheMessage(String algorithm, String key, String initVector) {
+        String options = "?algorithm=" + algorithm + "&key=RAW(" + key + ")&mode=CBC";
+        Map<String, Object> headers = Map.of("CamelCryptoInitVector", initVector.getBytes(StandardCharsets.US_ASCII));
+
+        byte[] first = encrypt(options, headers);
+        byte[] second = encrypt(options, headers);
+
+        assertFalse(Arrays.equals(first, second), "the options decide, not the CamelCrypto headers of the message");
+        assertEquals(TEXT, decrypt(options, first, headers));
+        assertEquals(TEXT, decrypt(options, second, headers));
+    }
+
+    @ParameterizedTest
     @CsvSource({ "AES,0123456789abcdef" })
     void withoutModeTheDataOfEarlierVersionsIsStillDecrypted(String algorithm, String key) {
         String options = "?algorithm=" + algorithm + "&key=RAW(" + key + ")";
@@ -85,12 +101,20 @@ public class CryptoKameletsTest {
     }
 
     private byte[] encrypt(String options) {
+        return encrypt(options, Map.of());
+    }
+
+    private byte[] encrypt(String options, Map<String, Object> headers) {
         ProducerTemplate template = context.createProducerTemplate();
-        return template.requestBody("kamelet:crypto-encrypt-action" + options, TEXT, byte[].class);
+        return template.requestBodyAndHeaders("kamelet:crypto-encrypt-action" + options, TEXT, headers, byte[].class);
     }
 
     private String decrypt(String options, byte[] data) {
+        return decrypt(options, data, Map.of());
+    }
+
+    private String decrypt(String options, byte[] data, Map<String, Object> headers) {
         ProducerTemplate template = context.createProducerTemplate();
-        return template.requestBody("kamelet:crypto-decrypt-action" + options, data, String.class);
+        return template.requestBodyAndHeaders("kamelet:crypto-decrypt-action" + options, data, headers, String.class);
     }
 }

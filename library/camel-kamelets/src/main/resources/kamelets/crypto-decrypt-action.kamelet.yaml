@@ -40,7 +40,7 @@ spec:
 
       Output: the body is the original data, as bytes (a stream), and the `Content-Type` header is `application/octet-stream`. The other headers are kept.
 
-      Good to know: set the `Content-Type` header again to the type of the original data when the next step needs it, for example with `insert-header-action`. Data that was changed, or a different `algorithm`, `mode` or `key` than when encrypting, fails the message with "Message authentication failed". The key is a secret; keep it in a vault or a secret, not in plain configuration.
+      Good to know: set the `Content-Type` header again to the type of the original data when the next step needs it, for example with `insert-header-action`. Data that was changed, or a different `algorithm`, `mode` or `key` than when encrypting, fails the message with "Message authentication failed". The key is a secret; keep it in a vault or a secret, not in plain configuration. The algorithm, the mode and the key come only from the options: the `CamelCrypto*` headers of the incoming message, such as `CamelCryptoInitVector`, are removed first.
     required:
       - algorithm
       - key
@@ -53,8 +53,9 @@ spec:
         example: "AES"
       mode:
         title: Mode
-        description: "The block cipher mode, `CBC`: each message is then encrypted with a new random initialization vector, which is put in front of the encrypted data, so the same text gives different bytes each time. When it is not set, `AES` and `DESede` use ECB mode, in which the same text with the same key always gives the same bytes, so repeats in the data can be seen. Use the same value in `crypto-encrypt-action`."
+        description: "The block cipher mode, only `CBC`: each message is then encrypted with a new random initialization vector, which is put in front of the encrypted data, so the same text gives different bytes each time. When it is not set, `AES` and `DESede` use ECB mode, in which the same text with the same key always gives the same bytes, so repeats in the data can be seen. Use the same value in `crypto-encrypt-action`."
         type: string
+        enum: ["CBC"]
         example: "CBC"
       key:
         title: Secret Key
@@ -91,6 +92,8 @@ spec:
     from:
       uri: kamelet:source
       steps:
+        - removeHeaders:
+            pattern: "CamelCrypto*"
         - choice:
             precondition: true
             when:
