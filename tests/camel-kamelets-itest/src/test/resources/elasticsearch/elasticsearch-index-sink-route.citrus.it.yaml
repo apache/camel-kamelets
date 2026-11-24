@@ -95,3 +95,74 @@ actions:
           status: 200
           body:
             data: '{"_index":"orders","_id":"order-1","_version":1,"_seq_no":"@ignore@","_primary_term":"@ignore@","found":true,"_source":{"order":"ORD-1","status":"shipped"}}'
+
+  # an API key, created by the user elastic, and the Kamelet logs in with it instead of the user
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_ELASTICSEARCH_HOST}:${CITRUS_TESTCONTAINERS_ELASTICSEARCH_PORT}"
+      sendRequest:
+        POST:
+          path: "/_security/api_key"
+          contentType: "application/json"
+          headers:
+            - name: "Authorization"
+              value: "Basic citrus:encodeBase64('elastic:kamelets-Test-1')"
+          body:
+            data: '{"name": "kamelets"}'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_ELASTICSEARCH_HOST}:${CITRUS_TESTCONTAINERS_ELASTICSEARCH_PORT}"
+      receiveResponse:
+        response:
+          status: 200
+        extract:
+          body:
+            - path: "$.encoded"
+              variable: "es.api.key"
+
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "elasticsearch/elasticsearch-index-sink-apikey-route.yaml"
+            systemProperties:
+              properties:
+                - name: "elasticsearch.host"
+                  value: "${CITRUS_TESTCONTAINERS_ELASTICSEARCH_HOST}"
+                - name: "elasticsearch.port"
+                  value: "${CITRUS_TESTCONTAINERS_ELASTICSEARCH_PORT}"
+                - name: "es.api.key"
+                  value: "${es.api.key}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${search.server.port}"
+
+  - http:
+      server: "searchServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          body:
+            data: 'order-2'
+  - http:
+      server: "searchServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_ELASTICSEARCH_HOST}:${CITRUS_TESTCONTAINERS_ELASTICSEARCH_PORT}"
+      sendRequest:
+        GET:
+          path: "/orders/_doc/order-2"
+          headers:
+            - name: "Authorization"
+              value: "Basic citrus:encodeBase64('elastic:kamelets-Test-1')"
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_ELASTICSEARCH_HOST}:${CITRUS_TESTCONTAINERS_ELASTICSEARCH_PORT}"
+      receiveResponse:
+        response:
+          status: 200
+          body:
+            data: '{"_index":"orders","_id":"order-2","_version":1,"_seq_no":"@ignore@","_primary_term":"@ignore@","found":true,"_source":{"order":"ORD-2","status":"shipped"}}'

@@ -40,7 +40,7 @@ spec:
 
       Output: the body is a JSON array, as text, with the documents found (their `_source`, with the id of the document added as `_id`), best match first unless the search has a `sort`, such as `[{"name": "Alice Smith", "city": "Oslo", "_id": "1"}]`; an empty array `[]` when nothing matches. The `CamelOpensearchTotalHits` header is the number of documents that match, which can be more than the documents in the body. The `Content-Type` header is `application/json`.
 
-      Good to know: the body holds at most `size` documents; a `size` in the search is ignored. OpenSearch stops counting the matches at 10000, so a larger number is given as 10000. A search with `"_source": false` gives an empty array. A search that is not valid JSON, an index that does not exist, or a query that OpenSearch rejects, fails the message. Headers that start with `CamelOpensearch` are removed from the message first, so they cannot change the index, the operation or the size. Whoever writes the body can read every document of the index, and the Query DSL can also look up values in other indices, such as a `terms` query that reads its terms from a document of another index: log in as a user that can read only the index to search. When the body comes from untrusted input or from an AI agent, such as through `ai-tool-source`, set `queryDsl` to false, so that the body can only be words to search for. It connects with TLS by default (`enableSSL`); for a self-signed certificate, give the certificate of its certificate authority (CA) in `certificate`, and for a client certificate (mutual TLS), a trust store or a TLS version, an `SSLContextParameters` object in `sslContextParameters`.
+      Good to know: the body holds at most `size` documents; a `size` in the search is ignored. OpenSearch stops counting the matches at 10000, so a larger number is given as 10000. A search with `"_source": false` gives an empty array. A search that is not valid JSON, an index that does not exist, or a query that OpenSearch rejects, fails the message. Headers that start with `CamelOpensearch` are removed from the message first, so they cannot change the index, the operation or the size. Whoever writes the body can read every document of the index, and the Query DSL can also look up values in other indices, such as a `terms` query that reads its terms from a document of another index: log in as a user, or with an API key, that can read only the index to search. When the body comes from untrusted input or from an AI agent, such as through `ai-tool-source`, set `queryDsl` to false, so that the body can only be words to search for. It connects with TLS by default (`enableSSL`); for a self-signed certificate, give the certificate of its certificate authority (CA) in `certificate`, and for a client certificate (mutual TLS), a trust store or a TLS version, an `SSLContextParameters` object in `sslContextParameters`.
     required:
       - clusterName
       - hostAddresses
@@ -57,6 +57,14 @@ spec:
         title: Password
         description: The password of the OpenSearch user in `user`.
         type: string
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
+      apiKey:
+        title: API Key
+        description: An API key to log in with, instead of `user` and `password`. It is the token, which starts with `os_`, that OpenSearch gives when the API token is created (OpenSearch 3.7 or later). It is sent in the `Authorization` header, only to the nodes of the cluster. Set either `apiKey` or `user`, not both.
+        type: string
+        example: "os_my-token"
         format: password
         x-descriptors:
         - urn:camel:group:credentials
@@ -130,6 +138,7 @@ spec:
         properties:
           user: "{{?user}}"
           password: "{{?password}}"
+          apiKey: "{{?apiKey}}"
     from:
       uri: kamelet:source
       steps:
