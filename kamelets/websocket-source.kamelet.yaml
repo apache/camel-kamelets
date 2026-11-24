@@ -38,7 +38,7 @@ spec:
 
       Output: the body is the message as the server sent it: text for a text message, bytes for a binary message. No headers are set.
 
-      Good to know: it connects when the integration starts, and the integration fails to start when the server cannot be reached, refuses the connection or fails the TLS checks. When the connection is lost, for example because the server restarts, it connects again every `reconnectInterval` milliseconds, without end unless `maxReconnectAttempts` is set. Messages the server sends while it is not connected are lost. The messages are passed on in parallel, so they do not always go on in the order the server sent them. It only receives: it cannot send a subscribe request or any other message to the server, so it fits servers that push on their own, or that take what to send from `url` or from the login. The login comes only from `authorization`, sent as the `Authorization` header when it connects. Query parameters in `url` are sent with it, but a value with an encoded `&` or `+` (`%26` or `%2B`) arrives changed. A `wss://` URL connects with TLS, and the certificate and the host name of the server are checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.vertx-websocket.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every WebSocket connection of the application. A `ws://` URL connects without TLS.
+      Good to know: it connects when the integration starts, and the integration fails to start when the server cannot be reached, refuses the connection or fails the TLS checks. When the connection is lost, for example because the server restarts, it connects again every `reconnectInterval` milliseconds, without end unless `maxReconnectAttempts` is set. Messages the server sends while it is not connected are lost. The messages are passed on one after the other, in the order the server sent them. For a server that sends nothing until the client asks, such as a feed that needs a subscribe request, set `connectMessage`: it is sent as a text message each time the source connects, when the integration starts and after each reconnect, so the subscription is made again after the connection was lost. Apart from that one message, it only receives. The login comes only from `authorization`, sent as the `Authorization` header when it connects. Query parameters in `url` are sent with it, but a value with an encoded `&` or `+` (`%26` or `%2B`) arrives changed. A `wss://` URL connects with TLS, and the certificate and the host name of the server are checked against the certificate authorities that Java trusts. To trust a private one with Camel JBang or Camel Main, set the application properties `camel.ssl.enabled=true`, `camel.ssl.trustStore`, `camel.ssl.trustStorePassword` and `camel.component.vertx-websocket.useGlobalSslContextParameters=true`: that trust store then replaces the one of Java for every WebSocket connection of the application. A `ws://` URL connects without TLS.
     required:
     - url
     type: object
@@ -62,6 +62,11 @@ spec:
         description: The subprotocols to ask the server for, separated by commas, sent in the `Sec-WebSocket-Protocol` header when connecting. Set it only for a server that needs one, such as a GraphQL server.
         type: string
         example: "graphql-transport-ws"
+      connectMessage:
+        title: Connect Message
+        description: A text message to send to the server each time the source connects, when the integration starts and after each reconnect, such as a subscribe request. It is sent as it is written. Leave it empty for a server that pushes without being asked.
+        type: string
+        example: '{"op": "subscribe", "args": ["prices"]}'
       reconnectInterval:
         title: Reconnect Interval
         description: How long to wait between two attempts to connect again after the connection was lost, in milliseconds. The first attempt is made at once.
@@ -88,6 +93,7 @@ spec:
         reconnectInterval: "{{reconnectInterval}}"
         maxReconnectAttempts: "{{maxReconnectAttempts}}"
         clientSubProtocols: "{{?subProtocols}}"
+        connectMessage: "RAW({{?connectMessage}})"
         "handshake.Authorization": "RAW({{?authorization}})"
       steps:
         - to:

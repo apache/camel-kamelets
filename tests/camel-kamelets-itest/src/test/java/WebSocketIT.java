@@ -43,6 +43,7 @@ public class WebSocketIT {
     private final int resultServerPort = ServerPorts.next();
     private final int controlServerPort = ServerPorts.next();
     private final int sourceServerPort = ServerPorts.next();
+    private final int subscribeServerPort = ServerPorts.next();
     private final int sinkServerPort = ServerPorts.next();
 
     /** Receives what the routes of the test got, and the opening handshake of the sink. */
@@ -70,6 +71,7 @@ public class WebSocketIT {
                         .variable("websocket.result.port", String.valueOf(resultServerPort))
                         .variable("websocket.control.port", String.valueOf(controlServerPort))
                         .variable("websocket.source.port", String.valueOf(sourceServerPort))
+                        .variable("websocket.subscribe.port", String.valueOf(subscribeServerPort))
                         .variable("websocket.sink.port", String.valueOf(sinkServerPort))
         ).build();
     }
