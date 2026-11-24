@@ -33,6 +33,9 @@ actions:
               value: "Kamelets-Test-2026!"
             - name: "plugins.security.ssl.http.enabled"
               value: "false"
+            # so that the admin can turn on API tokens
+            - name: "plugins.security.unsupported.restapi.allow_securityconfig_modification"
+              value: "true"
             - name: "cluster.routing.allocation.disk.threshold_enabled"
               value: "false"
             - name: "OPENSEARCH_JAVA_OPTS"
@@ -94,3 +97,91 @@ actions:
           status: 200
           body:
             data: '{"_index":"orders","_id":"order-1","_version":1,"_seq_no":"@ignore@","_primary_term":"@ignore@","found":true,"_source":{"order":"ORD-1","status":"shipped"}}'
+
+  # an API token, created by the user admin once API tokens are turned on, and the Kamelet logs in with it instead of
+  # the user. Indexing needs the cluster permission indices:data/write/bulk too.
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      sendRequest:
+        PATCH:
+          path: "/_plugins/_security/api/securityconfig"
+          contentType: "application/json"
+          headers:
+            - name: "Authorization"
+              value: "Basic citrus:encodeBase64('admin:Kamelets-Test-2026!')"
+          body:
+            data: '[{"op": "add", "path": "/config/dynamic/api_tokens", "value": {"enabled": true}}]'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      receiveResponse:
+        response:
+          status: 200
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      sendRequest:
+        POST:
+          path: "/_plugins/_security/api/apitokens"
+          contentType: "application/json"
+          headers:
+            - name: "Authorization"
+              value: "Basic citrus:encodeBase64('admin:Kamelets-Test-2026!')"
+          body:
+            data: '{"name": "kamelets", "duration_seconds": 3600, "cluster_permissions": ["cluster_monitor", "indices:data/write/bulk"], "index_permissions": [{"index_pattern": ["orders*"], "allowed_actions": ["indices_all"]}]}'
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      receiveResponse:
+        response:
+          status: 200
+        extract:
+          body:
+            - path: "$.token"
+              variable: "os.api.key"
+
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "opensearch/opensearch-index-sink-apikey-route.yaml"
+            systemProperties:
+              properties:
+                - name: "opensearch.host"
+                  value: "${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}"
+                - name: "opensearch.port"
+                  value: "${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+                - name: "os.api.key"
+                  value: "${os.api.key}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${search.server.port}"
+
+  - http:
+      server: "searchServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          body:
+            data: 'order-2'
+  - http:
+      server: "searchServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      sendRequest:
+        GET:
+          path: "/orders/_doc/order-2"
+          headers:
+            - name: "Authorization"
+              value: "Basic citrus:encodeBase64('admin:Kamelets-Test-2026!')"
+  - http:
+      client: "http://${CITRUS_TESTCONTAINERS_OPENSEARCH_HOST}:${CITRUS_TESTCONTAINERS_OPENSEARCH_PORT}"
+      receiveResponse:
+        response:
+          status: 200
+          body:
+            data: '{"_index":"orders","_id":"order-2","_version":1,"_seq_no":"@ignore@","_primary_term":"@ignore@","found":true,"_source":{"order":"ORD-2","status":"shipped"}}'

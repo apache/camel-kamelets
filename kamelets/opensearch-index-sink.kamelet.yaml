@@ -59,6 +59,14 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      apiKey:
+        title: API Key
+        description: An API key to log in with, instead of `user` and `password`. It is the token, which starts with `os_`, that OpenSearch gives when the API token is created (OpenSearch 3.7 or later). It is sent in the `Authorization` header, only to the nodes of the cluster. Set either `apiKey` or `user`, not both.
+        type: string
+        example: "os_my-token"
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
       enableSSL:
         title: Enable SSL
         description: If true, it connects with HTTPS. Set it to false for a cluster that is reached with plain HTTP.
@@ -140,6 +148,7 @@ spec:
         properties:
           user: "{{?user}}"
           password: "{{?password}}"
+          apiKey: "{{?apiKey}}"
     from:
       uri: kamelet:source
       steps:

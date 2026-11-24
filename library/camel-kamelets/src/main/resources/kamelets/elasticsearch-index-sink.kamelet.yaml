@@ -59,6 +59,14 @@ spec:
         format: password
         x-descriptors:
         - urn:camel:group:credentials
+      apiKey:
+        title: API Key
+        description: An API key to log in with, instead of `user` and `password`. It is the `encoded` value that Elasticsearch gives when the key is created, or its `id` and `api_key` joined with a colon (`id:api_key`). It is sent in the `Authorization` header, only to the nodes of the cluster. Set either `apiKey` or `user`, not both.
+        type: string
+        example: "bXktaWQ6bXkta2V5"
+        format: password
+        x-descriptors:
+        - urn:camel:group:credentials
       enableSSL:
         title: Enable SSL
         description: If true, it connects with HTTPS. Set it to false for a cluster that is reached with plain HTTP.
@@ -140,6 +148,7 @@ spec:
         properties:
           user: "{{?user}}"
           password: "{{?password}}"
+          apiKey: "{{?apiKey}}"
     from:
       uri: kamelet:source
       steps:
