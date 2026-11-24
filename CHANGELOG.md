@@ -20,6 +20,13 @@
 
 **Closed issues:**
 
+- Elasticsearch and OpenSearch Kamelets: TLS options, login and vector search tests, \_id in the search output, words-only search [\#3384](https://github.com/apache/camel-kamelets/issues/3384)
+- New websocket-source and websocket-sink Kamelets: receive from and send to a WebSocket server [\#3377](https://github.com/apache/camel-kamelets/issues/3377)
+- New elasticsearch-search-action and opensearch-search-action Kamelets: search an index as a step of a route [\#3376](https://github.com/apache/camel-kamelets/issues/3376)
+- New xpath-filter-action Kamelet: keep the XML messages that match an XPath expression [\#3375](https://github.com/apache/camel-kamelets/issues/3375)
+- New pgp-encrypt-action and pgp-decrypt-action Kamelets: OpenPGP encryption and signing of files exchanged with partners [\#3374](https://github.com/apache/camel-kamelets/issues/3374)
+- New debezium-mysql-source and debezium-sqlserver-source Kamelets: the changes of MySQL and SQL Server tables as they happen [\#3373](https://github.com/apache/camel-kamelets/issues/3373)
+- New ai-tool-source Kamelet: offer a flow as a tool for AI agents and MCP clients [\#3362](https://github.com/apache/camel-kamelets/issues/3362)
 - New openai-chat-action Kamelet: ask a chat model \(OpenAI or any OpenAI-compatible server\) [\#3361](https://github.com/apache/camel-kamelets/issues/3361)
 - New debezium-postgresql-source Kamelet: the changes of PostgreSQL tables as they happen \(change data capture\) [\#3360](https://github.com/apache/camel-kamelets/issues/3360)
 - JMS source Kamelets: answer only to the JMSReplyTo of the incoming message [\#3344](https://github.com/apache/camel-kamelets/issues/3344)
