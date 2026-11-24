@@ -19,27 +19,21 @@ The Kamelet requires Kafka connection parameters:
 
 - `topic`: The Kafka topic to consume from
 - `bootstrapServers`: Comma separated list of Kafka Broker URLs
+- `saslAuthType`: How to log in to Kafka, such as `NONE` for a local Kafka
 - Security-specific parameters based on the authentication method
 
 === Usage example
 
-```yaml
-apiVersion: camel.apache.org/v1alpha1
-kind: KameletBinding
-metadata:
-  name: kafka-batch-source-binding
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
-      name: kafka-batch-source
-    properties:
-      topic: "my-topic"
-      bootstrapServers: "kafka-broker1:9092,kafka-broker2:9092"
-  sink:
-    ref:
-      kind: Service
-      apiVersion: v1
-      name: my-service
-```
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:kafka-batch-source"
+      parameters:
+        topic: "my-topic"
+        bootstrapServers: "kafka-broker1:9092,kafka-broker2:9092"
+        saslAuthType: "NONE"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----

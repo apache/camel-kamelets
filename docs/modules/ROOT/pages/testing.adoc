@@ -1,0 +1,318 @@
+= Testing a Kamelet
+
+Every Kamelet in the catalog should come with a test that runs it and checks what it does: the message a source gives,
+the effect a sink has, and the body and headers an action leaves. A Kamelet whose test passes carries the label
+`camel.apache.org/kamelet.verified: "true"`.
+
+The tests are written with https://citrusframework.org/[Citrus]. A test starts a route that uses the Kamelet with
+the xref:manual::camel-jbang.adoc[Camel CLI], as a separate process, and then checks what reaches the systems
+around it.
+
+== Where the tests are
+
+The tests are in `tests/camel-kamelets-itest/src/test/resources/<folder>/`, with one folder per Kamelet or family
+of Kamelets. A test is made of three files:
+
+`<name>-route.yaml`:: a YAML route that uses the Kamelet under test.
+`<name>-route.citrus.it.yaml`:: the Citrus test, which runs the route and checks what it does.
+`<Family>IT.java`:: a JUnit class in `tests/camel-kamelets-itest/src/test/java`, which finds the tests of a folder and
+starts the servers they share. A new folder is added to an existing class, or gets a class of its own.
+
+The tests run the Kamelets of this working tree (the `kamelets/` directory), not a released catalog, so a change to a
+Kamelet is tested before it is installed.
+
+== A sink: log-sink
+
+The test of `log-sink` feeds it a message from `timer-source`. The route then sends what the Kamelet left on the
+message to the Citrus HTTP server, so the test can check it:
+
+.log/log-sink-route.yaml
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 10000
+        repeatCount: 1
+        message: '{{message}}'
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+            parameters:
+              loggerName: test-log-sink
+              showHeaders: false
+        # What the Kamelet leaves on the message
+        - setHeader:
+            name: X-Body-Type
+            simple: "${body.getClass().getName()}"
+        - setHeader:
+            name: X-Content-Type
+            simple: "ct=${header.Content-Type}"
+        - to:
+            uri: "{{http.sink.url}}/result"
+----
+
+The values the test chooses, such as the message and the URL of its HTTP server, are property placeholders in the
+route. The test sets them as system properties when it runs the route:
+
+.log/log-sink-route.citrus.it.yaml
+[source,yaml]
+----
+name: log-sink-route-test
+variables:
+  - name: "log.message"
+    value: "Hello from log-sink test!"
+actions:
+  # Run the route with the Camel CLI
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "log/log-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "message"
+                  value: "${log.message}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${http.server.port}"
+
+  # The sink logged the message
+  - camel:
+      cli:
+        verify:
+          integration: "log-sink-route"
+          logMessage: "${log.message}"
+
+  # The message after the sink is unchanged
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          type: "plaintext"
+          headers:
+            - name: "X-Body-Type"
+              value: 'java.lang.String'
+            - name: "X-Content-Type"
+              value: 'ct=text/plain'
+          body:
+            data: '${log.message}'
+  - http:
+      server: "httpServer"
+      sendResponse:
+        response:
+          status: 200
+          reasonPhrase: "OK"
+          version: "HTTP/1.1"
+----
+
+`camel: cli: verify` with `logMessage` waits until the route logs the text. `http: receiveRequest` waits until the
+HTTP server gets a request, and checks its path, headers and body; `sendResponse` answers it. The integration is named
+after the route file, without `.yaml`.
+
+The `ct=` in front of the content type keeps the header there when the Kamelet removed `Content-Type`: the test then
+checks for `ct=`, which says that the header is gone.
+
+The JUnit class starts the HTTP server, gives the tests its port as the variable `http.server.port`, and finds the
+tests of the `log` folder:
+
+.CommonIT.java
+[source,java]
+----
+@CitrusSupport
+public class CommonIT {
+
+    private final int httpServerPort = ServerPorts.next();
+
+    @BindToRegistry
+    HttpServer httpServer = http()
+                .server()
+                .port(httpServerPort)
+                .timeout(60000L)
+                .autoStart(true)
+                .build();
+
+    @BindToRegistry
+    public SequenceBeforeTest beforeCommon() {
+        return new SequenceBeforeTest.Builder().actions(
+                createVariables().variable("http.server.port", String.valueOf(httpServerPort))
+        ).build();
+    }
+
+    @BindToRegistry
+    public SequenceAfterTest afterCommon() {
+        return new SequenceAfterTest.Builder().actions(
+                purgeEndpoints().endpoint(httpServer)
+        ).build();
+    }
+
+    @CitrusTestFactory
+    public Stream<DynamicTest> log() {
+        return CitrusTestFactorySupport.factory(TestLoader.YAML).packageScan("log");
+    }
+}
+----
+
+`ServerPorts.next()` picks a free port outside the range Docker and outgoing connections use, and never the same port
+twice in a run. A JUnit class that has an HTTP server of its own gives it a name of its own too, such as `redisServer`,
+different from the servers of the other classes.
+
+== A source
+
+A source is tested by sending what it gives straight to the HTTP server:
+
+.timer/timer-to-http-route.yaml
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        period: 10000
+        message: '{{timer.message}}'
+      steps:
+        - to:
+            uri: "{{http.sink.url}}/events"
+----
+
+The test then checks the body with `http: receiveRequest` on the path `/events`, as above. When the source reads from
+another system, such as a broker, a database or a cloud service, the test starts that system first and sends it the
+data the source should read. See <<_systems_the_kamelet_talks_to>>.
+
+== An action
+
+An action is tested with the message it gets and the message it gives. The route sends a known message through the
+action, and the test checks the body and headers that come out:
+
+.transformation/extract-field-action-route.yaml
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:timer-source"
+      parameters:
+        repeatCount: 1
+        contentType: "application/json"
+        message: "{{input}}"
+      steps:
+        - to:
+            uri: "kamelet:extract-field-action"
+            parameters:
+              field: "{{field.name}}"
+        - to:
+            uri: "{{http.sink.url}}/result"
+----
+
+The test sets `input` to a JSON object, and checks that the body is the value of the field and that the
+`Content-Type` header starts with `text/plain`:
+
+[source,yaml]
+----
+  - http:
+      server: "httpServer"
+      receiveRequest:
+        POST:
+          path: "/result"
+          headers:
+            - name: Content-Type
+              value: "@startsWith('text/plain')@"
+          body:
+            data: "${field.value}"
+----
+
+A body that is not text, such as a Map or a Jackson `JsonNode`, can only reach the HTTP server as JSON: put
+`json-serialize-action` before the HTTP endpoint, and set the `X-Body-Type` header before it, so the test still sees
+the type the action gave. A test of binary data checks it through a header too, because Citrus reads an
+`application/octet-stream` body as bytes.
+
+== Systems the Kamelet talks to
+
+A Kamelet that connects to another system is tested against a real one, started in a container with
+https://java.testcontainers.org/[Testcontainers]. Citrus has modules for many systems (`kafka`, `localstack`,
+`postgresql`, `mongodb`, ...), and a generic `container` for the others:
+
+.redis/redis-sink-route.citrus.it.yaml
+[source,yaml]
+----
+actions:
+  - testcontainers:
+      start:
+        container:
+          name: "redis"
+          image: "redis:7.4.12-alpine"
+          exposedPorts:
+            - 6379
+
+  - camel:
+      cli:
+        run:
+          waitForRunningState: false
+          integration:
+            file: "redis/redis-sink-route.yaml"
+            systemProperties:
+              properties:
+                - name: "redis.host"
+                  value: "${CITRUS_TESTCONTAINERS_REDIS_HOST}"
+                - name: "redis.port"
+                  value: "${CITRUS_TESTCONTAINERS_REDIS_PORT}"
+                - name: "http.sink.url"
+                  value: "http://localhost:${redis.server.port}"
+----
+
+A container started with `container` gives its address as the variables `CITRUS_TESTCONTAINERS_<NAME>_HOST` and
+`CITRUS_TESTCONTAINERS_<NAME>_PORT`, where `<NAME>` is its `name` in capitals. The modules give their own variables,
+such as `CITRUS_TESTCONTAINERS_LOCALSTACK_SERVICE_URL`.
+
+CI pulls the images from `mirror.gcr.io`, so use an image that is there, with a fixed version.
+
+A Kamelet for a hosted service that has no container, such as a SaaS API, is tested against a stub of its API: an
+HTTP server in the JUnit class that answers as the service does, with the Kamelet's URL option pointed at it.
+
+== What makes a good test
+
+* Check what the Kamelet does, not only that the route ran. A test that only checks that a message was logged also
+  passes when the Kamelet did nothing to it. Check the body, its type and the headers the Kamelet sets or removes.
+* Check what the Kamelet's description says. When the description says the body is bytes, or that a header is
+  removed, the test checks exactly that, so the description and the Kamelet cannot drift apart.
+* Send one message (`repeatCount: 1`) when one is enough, so a second message cannot hide a failure of the first.
+* Set every value the test depends on as a variable, and give it to the route as a property, so the test and the route
+  cannot disagree.
+* Do not wait with `sleep`. Every Citrus check above waits by itself, with a timeout, until what it checks happens.
+
+== Running the tests
+
+Run the whole integration suite from the repository root:
+
+[source]
+----
+mvn verify -pl :camel-kamelets-itest -Denable.integration.tests
+----
+
+or the tests of one folder while working on one Kamelet, by naming the JUnit class and its method for that folder:
+
+[source]
+----
+mvn verify -pl :camel-kamelets-itest -Denable.integration.tests -Dit.test=CommonIT#log
+----
+
+The tests that start containers need Docker.
+
+== When a test fails
+
+* The output of the route is kept in `tests/camel-kamelets-itest/.citrus-jbang/i-<name>-output.txt`, also when the
+  test timed out. Delete that directory before you commit.
+* A test file that was deleted or renamed is still run from `target/test-classes` by a build without `clean`. Build
+  with `clean`, or remove `target/test-classes`, after you delete a test.
+* A route that does not start is usually a property the test did not set: every `+{{placeholder}}+` in the route needs
+  a value from the test, or a default in the route.
+* Run the route by hand to see it work, with the values the test would give, and the Kamelets of this working tree.
+  From `tests/camel-kamelets-itest/src/test/resources`:
++
+[source]
+----
+camel run log/log-sink-route.yaml --local-kamelet-dir=../../../../../kamelets --prop message=Hello --prop http.sink.url=http://localhost:8080
+----
++
+The route logs the message, and then fails to send it on, as no HTTP server listens.

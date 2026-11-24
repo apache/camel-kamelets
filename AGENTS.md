@@ -299,7 +299,7 @@ camel-kamelets/
 │   └── kamelets-maven-plugin/   # build-time validation plugin
 ├── crds/                        # Go CRD client generator (build/CI)
 ├── script/                      # version-bump helper + catalog dependency scan
-├── templates/                   # init .vm template + Pipe examples
+├── templates/                   # init .vm template
 ├── tests/camel-kamelets-itest/  # Citrus integration tests
 └── docs/modules/ROOT/           # Antora AsciiDoc (security-model.adoc lives here)
 ```

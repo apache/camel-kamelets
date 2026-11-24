@@ -59,7 +59,7 @@ A Kamelet is a single YAML file containing a *Camel route template* (in
 `spec.template`, YAML DSL) plus a JSON-schema declaration of the *configuration
 properties* the route author binds (in `spec.definition.properties`). The
 catalog ships about 250 of these (94 sources, 95 sinks, 61 actions). A Kamelet
-is referenced by name from a route or `Pipe`; the runtime substitutes
+is referenced by name from a route; the runtime substitutes
 `{\{property}}` placeholders with the bound values and runs the template like any
 other Camel route.
 
@@ -88,8 +88,8 @@ inspect or rewrite the template.
   underlying Camel component. The catalog relies on PMC review to ship templates
   that are safe by default.
 
-| Route authors (who reference a Kamelet and bind its properties in Java, XML,
-  YAML DSL or a `Pipe`)
+| Route authors (who reference a Kamelet and bind its properties in Java, XML
+  or YAML DSL)
 | Fully trusted
 | Choose which Kamelet to use and where to place it in a route, and bind every
   property - URLs, queries, file paths, OS commands, template/expression
@@ -164,8 +164,8 @@ first is the security-relevant product.
 | Only as the delivery vehicle for family 1
 
 | `script/` helper scripts, `crds/` Go client generator,
-  `tests/camel-kamelets-itest` (Citrus), `templates/` (init `.vm` and Pipe
-  examples)
+  `tests/camel-kamelets-itest` (Citrus), `templates/` (the init `.vm`
+  template)
 | CI, documentation generation, test and scaffolding code. Not shipped to a
   runtime.
 | No - unsupported / build / examples

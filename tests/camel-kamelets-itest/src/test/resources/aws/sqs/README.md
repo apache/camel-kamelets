@@ -60,16 +60,10 @@ To run tests with property based configuration:
 $ citrus run src/test/resources/aws/sqs/aws-sqs-source-property-conf.it.yaml
 ```
 
-To run tests with URI binding:
+To run the source test:
 
 ```shell script
-$ citrus run src/test/resources/aws/sqs/aws-sqs-uri-pipe.it.yaml
-```
-
-To run tests with binding to Knative channel:
-
-```shell script
-$ citrus run src/test/resources/aws/sqs/aws-sqs-knative-channel.it.yaml
+$ citrus run src/test/resources/aws/sqs/aws-sqs-source-route.citrus.it.yaml
 ```
 
 You will be provided with the test log output and the test results.
