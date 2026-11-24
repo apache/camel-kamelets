@@ -92,7 +92,7 @@ XML::
 ----
 ====
 
-Run it with the xref:manual::camel-jbang.adoc[Camel CLI], which downloads the catalog and the components the
+Run it with the xref:{camel-docs-version}@manual::camel-jbang.adoc[Camel CLI], which downloads the catalog and the components the
 Kamelets need:
 
 [source]
@@ -164,7 +164,7 @@ endpoint parameters still apply.
 The options that hold a secret, such as a password, a token or a key, are marked as such in the Kamelet, so tools
 hide their value. Keep the value itself out of the route. Read it from the environment with `+{{env:NAME}}+`, as in
 the example above, or from a vault, such as `+{{aws:orders-db#password}}+` for the `password` field of the secret
-`orders-db` in AWS Secrets Manager. See xref:manual::security.adoc#_configuration_security_using_vaults[vaults] for the
+`orders-db` in AWS Secrets Manager. See xref:{camel-docs-version}@manual::security.adoc#_configuration_security_using_vaults[vaults] for the
 vaults Camel supports and how to configure them.
 
 == Dependencies
@@ -246,7 +246,7 @@ See xref:development.adoc#kamelet-data-types[Kamelet data types] for how they wo
 
 A Kamelet uses the error handler of the route that uses it: an error in a source goes to the error handler of the
 route that reads from it, and a sink that fails is retried as the error handler of its route says. See
-xref:components::kamelet-component.adoc#_error_handling[error handling] in the Kamelet component.
+xref:{camel-docs-version}@components::kamelet-component.adoc#_error_handling[error handling] in the Kamelet component.
 
 == Good to know
 
@@ -256,7 +256,7 @@ xref:components::kamelet-component.adoc#_error_handling[error handling] in the K
   configures the endpoint, and never reaches the Kamelet. No Kamelet of this catalog has an option with one of these
   names, and a Kamelet you write should not have one either.
 * An option of the Camel component that the Kamelet does not offer can be passed on with `advancedOptions`; see
-  xref:components::kamelet-component.adoc#_advanced_component_endpoint_options[advanced component endpoint options].
+  xref:{camel-docs-version}@components::kamelet-component.adoc#_advanced_component_endpoint_options[advanced component endpoint options].
 * An optional option that you leave unset can still be read from an environment variable of the same name in
   capitals: an unset `user` option takes the value of `USER`, which on most machines is the name of the user logged in.
   Set such an option to the value you mean, or check the environment, when a Kamelet behaves as if you set it.
