@@ -73,7 +73,7 @@ actions:
           reasonPhrase: "OK"
           version: "HTTP/1.1"
 
-  # a bytes body reaches the server as a binary message
+  # a bytes body reaches the server as a binary message, sent by a second sink on another URL
   - http:
       server: "websocketResultServer"
       receiveRequest:
@@ -83,6 +83,8 @@ actions:
           headers:
             - name: "X-Body-Type"
               value: "[B"
+            - name: "X-Token"
+              value: "second"
           body:
             data: "Hello bytes"
   - http:

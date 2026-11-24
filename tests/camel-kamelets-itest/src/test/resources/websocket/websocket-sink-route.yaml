@@ -65,8 +65,8 @@
             constant: "Hello bytes"
         - convertBodyTo:
             type: "byte[]"
-        # the same URL, so the connection of the first message is used again
+        # another URL, so a second sink with its own connection, after the first one has sent (CAMEL-27507)
         - to:
             uri: "kamelet:websocket-sink"
             parameters:
-              url: "ws://localhost:{{ws.server.port}}/in?token=RAW(a+b&c%)"
+              url: "ws://localhost:{{ws.server.port}}/in?token=second"
