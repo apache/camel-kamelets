@@ -60,10 +60,10 @@ To run tests with property based configuration:
 $ citrus run src/test/resources/aws/s3/aws-s3-source-property-conf.it.yaml
 ```
 
-To run tests with URI binding:
+To run the source test:
 
 ```shell script
-$ citrus run src/test/resources/aws/s3/aws-s3-uri-pipe.it.yaml
+$ citrus run src/test/resources/aws/s3/aws-s3-source-route.citrus.it.yaml
 ```
 
 You will be provided with the test log output and the test results.

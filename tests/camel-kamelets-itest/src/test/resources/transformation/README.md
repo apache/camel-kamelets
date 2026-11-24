@@ -1,38 +1,22 @@
 # Transformations
 
-The tests verify different transformations performed as part of a Pipe.
+The tests verify the transformations done by the action Kamelets and the data types: `data-type-action`, the field
+actions (`drop-field-action`, `extract-field-action`, `hoist-field-action`, `insert-field-action`,
+`mask-field-action`, `replace-field-action`), the template actions (FreeMarker, Mustache, MVEL, String Template,
+Velocity), `jolt-transformation-action`, `jslt-action` and `pdf-action`.
 
 ## Objectives
 
-The test verifies the proper data transformations provided by action Kamelets and data types.
+Each test runs a route, `<kamelet>-route.yaml`, that sends a message from a timer through the Kamelet under test to
+the Citrus HTTP server. The test checks the body the Kamelet gives, its Java type (the `X-Body-Type` header) and its
+`Content-Type` (the `X-Content-Type` header).
 
-The test starts both Pipes and is able to verify the proper log output as an expected outcome.
+## Run the tests
 
-### Citrus Test
-
-The test performs the following high level steps:
-
-*Avro data type feature*
-- Create test data based on the User.avsc Avro schema
-- Load and run the `avro-to-log` Pipe
-- Load and run the `json-to-avro` Pipe
-- Verify that the bindings do interact with each other and the proper test data is logged in the binding output
-
-## Installation
-
-The test assumes that you have [JBang](https://www.jbang.dev/) installed and the Citrus CLI setup locally.
-
-You can review the installation steps for the tooling in the documentation:
-
-- [JBang](https://www.jbang.dev/documentation/guide/latest/installation.html)
-- [Install Citrus JBang App](https://citrusframework.org/citrus/reference/html/index.html#runtime-jbang-install)
-
-## Run the tests with JBang
-
-To run tests with URI based configuration: 
+Run all the transformation tests from the repository root:
 
 ```shell script
-$ citrus run src/test/resources/transformation/data-type-action.it.yaml
+$ mvn verify -pl :camel-kamelets-itest -Denable.integration.tests -Dit.test=CommonIT#transformation
 ```
 
-You will be provided with the test log output and the test results.
+See [testing a Kamelet](../../../../../../docs/modules/ROOT/pages/testing.adoc) for how the tests are written.

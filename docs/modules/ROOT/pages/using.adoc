@@ -1,0 +1,266 @@
+= Using Kamelets
+
+A Kamelet is a ready-made piece of a route: it reads from a system, writes to one, or changes the message, and it is
+configured with a few options instead of the endpoint options of the Camel component it uses. This catalog has more
+than 240 of them. A route uses a Kamelet by name, like any other endpoint, with the URI `kamelet:<name>`.
+
+This page is for the people who use Kamelets in their routes. To write one, read the
+xref:development.adoc[developer guide].
+
+== The three kinds of Kamelet
+
+Every Kamelet is one of three kinds, and the kind decides where it goes in a route:
+
+[cols="1,3,2",options="header"]
+|===
+| Kind | What it does | Where it goes
+
+| source
+| Reads from a system, such as a queue, a bucket or an API, and gives each message to the route.
+| `from: kamelet:<name>`
+
+| sink
+| Takes the message of the route and sends it to a system.
+| `to: kamelet:<name>`, usually the last step
+
+| action
+| Changes the message, such as filtering, converting or enriching it, and gives it back to the route.
+| `to: kamelet:<name>`, as a step in the middle
+|===
+
+The name tells the kind: `aws-s3-source`, `kafka-sink`, `extract-field-action`. The page of each Kamelet in this
+catalog lists its options and describes the message it takes and gives.
+
+== Using a Kamelet in a route
+
+This route reads a JSON order from `timer-source` every 5 seconds, keeps only the customer with
+`extract-field-action`, and logs it with `log-sink`. The options of each Kamelet are its endpoint parameters:
+
+[tabs]
+====
+YAML::
++
+.orders.camel.yaml
+[source,yaml]
+----
+- route:
+    id: orders
+    from:
+      uri: kamelet:timer-source
+      parameters:
+        period: 5000
+        contentType: application/json
+        message: '{"customer": "Ann", "amount": 42}'
+      steps:
+        - to:
+            uri: kamelet:extract-field-action
+            parameters:
+              field: customer
+        - to:
+            uri: kamelet:log-sink
+            parameters:
+              showHeaders: false
+----
+
+Java::
++
+.Orders.java
+[source,java]
+----
+public class Orders extends RouteBuilder {
+    @Override
+    public void configure() {
+        from("kamelet:timer-source?period=5000&contentType=application/json"
+                + "&message={\"customer\": \"Ann\", \"amount\": 42}")
+            .to("kamelet:extract-field-action?field=customer")
+            .to("kamelet:log-sink?showHeaders=false");
+    }
+}
+----
+
+XML::
++
+.orders.camel.xml
+[source,xml]
+----
+<routes xmlns="http://camel.apache.org/schema/xml-io">
+  <route id="orders">
+    <from uri="kamelet:timer-source?period=5000&amp;contentType=application/json&amp;message=Hello"/>
+    <to uri="kamelet:log-sink?showHeaders=false"/>
+  </route>
+</routes>
+----
+====
+
+Run it with the xref:manual::camel-jbang.adoc[Camel CLI], which downloads the catalog and the components the
+Kamelets need:
+
+[source]
+----
+camel run orders.camel.yaml
+----
+
+The log then shows `Body: Ann` every 5 seconds.
+
+The options with a default can be left out. A required option that is not set fails the route when it starts, with
+the error `Route template timer-source the following mandatory parameters must be provided: message`.
+
+== Setting the options
+
+The options can be set in four places. When an option is set in more than one, the one higher in this list wins:
+
+. The endpoint parameters of the Kamelet in the route, as above.
+. An environment variable `CAMEL_KAMELET_<NAME>_<OPTION>`, such as `CAMEL_KAMELET_TIMER_SOURCE_MESSAGE`. The name of
+  the Kamelet and of the option are written in capitals, with `_` between the words: the option `bucketNameOrArn` of
+  `aws-s3-source` is `CAMEL_KAMELET_AWS_S3_SOURCE_BUCKET_NAME_OR_ARN`.
+. A property `camel.kamelet.<name>.<option>` in `application.properties`, such as
+  `camel.kamelet.timer-source.message=Hello`. It applies to every use of the Kamelet.
+. The default of the option, in the Kamelet.
+
+Properties are the usual place for the options that are the same in every route, such as the address and the login
+of a system, so the routes only set what differs:
+
+.application.properties
+[source,properties]
+----
+camel.kamelet.postgresql-sink.serverName=db.example.com
+camel.kamelet.postgresql-sink.databaseName=orders
+camel.kamelet.postgresql-sink.username=orders
+camel.kamelet.postgresql-sink.password={{env:ORDERS_DB_PASSWORD}}
+----
+
+=== One use of a Kamelet
+
+When a route uses a Kamelet more than once with different settings, give each use an id after the name:
+`kamelet:<name>/<id>`. The properties `camel.kamelet.<name>.<id>.<option>` and the environment variables
+`CAMEL_KAMELET_<NAME>_<ID>_<OPTION>` then apply to that use only, and win over the ones for every use:
+
+[source,yaml]
+----
+- route:
+    from:
+      uri: kamelet:timer-source/fast
+      steps:
+        - to:
+            uri: kamelet:log-sink
+----
+
+[source,properties]
+----
+camel.kamelet.timer-source.message=Hello
+camel.kamelet.timer-source.fast.period=1000
+----
+
+=== The options of the Kamelet component
+
+The Kamelet component can also hold the options, as `camel.component.kamelet.template-properties[<name>].<option>`
+for every use and `camel.component.kamelet.route-properties[<id>].<option>` for one use. Use one style or the other:
+once any `template-properties` or `route-properties` value applies to a Kamelet, Camel reads no
+`camel.kamelet.*` property for it, and those options fall back to their defaults. The environment variables and the
+endpoint parameters still apply.
+
+== Secrets
+
+The options that hold a secret, such as a password, a token or a key, are marked as such in the Kamelet, so tools
+hide their value. Keep the value itself out of the route. Read it from the environment with `+{{env:NAME}}+`, as in
+the example above, or from a vault, such as `+{{aws:orders-db#password}}+` for the `password` field of the secret
+`orders-db` in AWS Secrets Manager. See xref:manual::security.adoc#_configuration_security_using_vaults[vaults] for the
+vaults Camel supports and how to configure them.
+
+== Dependencies
+
+A Kamelet lists the Camel components and libraries it needs, and the page of each Kamelet shows them under
+Dependencies.
+
+The Camel CLI adds them by itself when it runs a route. To see them, or to put them in a project:
+
+[source]
+----
+camel dependency list orders.camel.yaml
+camel export orders.camel.yaml --runtime=quarkus --gav=com.example:orders:1.0
+----
+
+In a Maven project you write yourself, add the catalog and the Kamelet component, and then the components that the
+Kamelets list:
+
+[cols="1,3",options="header"]
+|===
+| Runtime | Dependencies
+
+| Camel Main
+| `org.apache.camel.kamelets:camel-kamelets` and `org.apache.camel:camel-kamelet`, and `org.apache.camel:camel-<component>` for each `camel:<component>`
+
+| Spring Boot
+| `org.apache.camel.kamelets:camel-kamelets` and `org.apache.camel.springboot:camel-kamelet-starter`, and `camel-<component>-starter` for each component
+
+| Quarkus
+| `org.apache.camel.kamelets:camel-kamelets` and `org.apache.camel.quarkus:camel-quarkus-kamelet`, and `camel-quarkus-<component>` for each component
+|===
+
+Use the version of the catalog that goes with your version of Camel: catalog 4.24 for Camel 4.24, as the
+xref:index.adoc[compatibility matrix] shows. The Camel CLI uses the catalog version it was built with; set another one
+with `camel run --kamelets-version=<version>`.
+
+== Where Camel finds a Kamelet
+
+Camel loads `kamelet:<name>` from the file `<name>.kamelet.yaml` in `classpath:kamelets`, where the
+`camel-kamelets` JAR has the catalog. Set `camel.component.kamelet.location` to look elsewhere; several locations can
+be given, separated by comma, such as `file:/etc/kamelets,classpath:kamelets` to keep the catalog too.
+
+With the Camel CLI, a Kamelet file given on the command line is used instead of the catalog one of the same name, and
+`--local-kamelet-dir` adds a directory of Kamelets:
+
+[source]
+----
+camel run orders.camel.yaml my-orders-source.kamelet.yaml
+camel run orders.camel.yaml --local-kamelet-dir=./kamelets
+----
+
+== Data types
+
+Some Kamelets can give their messages in more than one form, such as `aws-s3-source`, which gives the content of the
+object as bytes, or as a CloudEvent. The page of a Kamelet lists its data types, and its default one is applied to
+every message. To get another one, convert the body with the `data-type-action` Kamelet right after the source:
+
+[source,yaml]
+----
+- route:
+    from:
+      uri: kamelet:aws-s3-source
+      parameters:
+        bucketNameOrArn: orders
+        region: eu-west-1
+      steps:
+        - to:
+            uri: kamelet:data-type-action
+            parameters:
+              scheme: aws2-s3
+              format: application-cloudevents
+        - to:
+            uri: log:info
+----
+
+See xref:development.adoc#kamelet-data-types[Kamelet data types] for how they work.
+
+== Errors
+
+A Kamelet uses the error handler of the route that uses it: an error in a source goes to the error handler of the
+route that reads from it, and a sink that fails is retried as the error handler of its route says. See
+xref:components::kamelet-component.adoc#_error_handling[error handling] in the Kamelet component.
+
+== Good to know
+
+* Some option names belong to the `kamelet:` endpoint, not to the Kamelet: `templateId`, `routeId`, `location`,
+  `uuid`, `block`, `timeout`, `failIfNoConsumers`, `noErrorHandler`, `advancedOptions`, `bridgeErrorHandler`,
+  `exceptionHandler`, `exchangePattern` and `lazyStartProducer`. Set as an endpoint parameter, such an option
+  configures the endpoint, and never reaches the Kamelet. No Kamelet of this catalog has an option with one of these
+  names, and a Kamelet you write should not have one either.
+* An option of the Camel component that the Kamelet does not offer can be passed on with `advancedOptions`; see
+  xref:components::kamelet-component.adoc#_advanced_component_endpoint_options[advanced component endpoint options].
+* An optional option that you leave unset can still be read from an environment variable of the same name in
+  capitals: an unset `user` option takes the value of `USER`, which on most machines is the name of the user logged in.
+  Set such an option to the value you mean, or check the environment, when a Kamelet behaves as if you set it.
+* The headers of a message travel through Kamelets. A sink can act on a `Camel*` header that came from the system a
+  source read, so remove those headers before the sink when the data comes from outside; see the
+  xref:security-model.adoc[security model].
+* A Kamelet is route code: it runs with the same rights as your routes, so load Kamelets only from a catalog you trust.

@@ -1,9 +1,0 @@
-- route:
-    from:
-      uri: "kamelet:jms-apache-artemis-source"
-      parameters:
-        brokerURL: "tcp://my-host:61616"
-        destinationName: "The Destination Name"
-      steps:
-        - to:
-            uri: "log:info"

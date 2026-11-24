@@ -1,5 +1,10 @@
 = Kamelet Catalog
 
+== User guide
+
+A Kamelet is a ready-made piece of a route that reads from a system, writes to one, or changes the message. Read
+xref:using.adoc[Using Kamelets] for how to use one in a route, set its options, and add what it needs to your project.
+
 == Kamelet specification
 
 Kamelets were originally born for Kubernetes and they have eventually moved to be used as Camel core resources. Its specification is a xref:apis/spec.adoc[Kubernetes CRD specification]. You can use it in your project by using Maven dependency `org.apache.camel.kamelets:camel-kamelets-crds`.
@@ -7,7 +12,8 @@ Kamelets were originally born for Kubernetes and they have eventually moved to b
 == Development guide
 
 Kamelets are extensible components. Look at the guide and learn xref:development.adoc[how to develop a new Kamelet],
-and xref:documenting.adoc[how to document it] for people and AI assistants that do not know Camel.
+xref:documenting.adoc[how to document it] for people and AI assistants that do not know Camel, and
+xref:testing.adoc[how to test it].
 
 To see several Kamelets work together, read how to xref:ask-your-documents.adoc[ask questions about your own documents] with Elasticsearch and an AI model.
 
@@ -28,7 +34,7 @@ indexTable::[version="*",relative="avro-deserialize-action.adoc",cellformats="ut
 
 This page contains the default Apache Camel Kamelets catalog.
 
-Consult the Kamelets User Guide for information about how to use these.
+Consult the xref:using.adoc[user guide] for information about how to use these.
 
 **We love contributions for this catalog**: you can follow the Kamelets Developer Guide for information on how to create new Kamelets and contribute them to the official https://github.com/apache/camel-kamelets/[github.com/apache/camel-kamelets] repository.
 

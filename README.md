@@ -2,12 +2,15 @@
 
 This repository contains the default Kamelet catalog used by Apache Camel and its sub-projects.
 
-Kamelets in this repository can be used natively in Camel K, Camel, Camel-Quarkus and Camel-spring-boot integrations, without additional configuration steps. Users just need to reference the Kamelets by name in the URI (e.g. `kamelet:timer-source?message=Hello`), or use them in a `Pipe`, for Camel K, in particular.
+Kamelets in this repository can be used natively in Camel K, Camel, Camel-Quarkus and Camel-spring-boot integrations, without additional configuration steps. Users just need to reference the Kamelets by name in the URI of a route (e.g. `kamelet:timer-source?message=Hello`).
 
 > [!NOTE]
 > Camel K (and other sub-projects) will only use a specific version of this Kamelet catalog. Refer to the release notes of the sub-project for more information.
 
-Documents and guides about Kamelets can be found in the [Kamelets User and Developer Guides](https://camel.apache.org/camel-k/latest/kamelets/kamelets.html).
+How to use a Kamelet in a route, and how to configure it, is in the [user guide](docs/modules/ROOT/pages/using.adoc).
+How to write one is in the [developer guide](docs/modules/ROOT/pages/development.adoc), how to document it in
+[documenting a Kamelet](docs/modules/ROOT/pages/documenting.adoc), and how to test it in
+[testing a Kamelet](docs/modules/ROOT/pages/testing.adoc).
 
 ## Guidelines for contributions
 
@@ -150,18 +153,19 @@ Kamelets **SHOULD** be accompanied by tests that verify their correct behavior.
 
 [Citrus](https://github.com/citrusframework/citrus) is the testing framework of choice for Kamelets and the one implemented in the CI.
 
-Test code must be submitted in the `tests/camel-kamelets-itests/src/test/resources/<kamelet-name>/` directory in the root of this repository.
+Test code must be submitted in the `tests/camel-kamelets-itest/src/test/resources/<kamelet-name>/` directory in the root of this repository.
 
 Kamelets submitted with tests that verify their correctness **MUST** be labeled with `camel.apache.org/kamelet.verified=true`.
 
 > [!NOTE]
 > There's no way at the moment to inject credentials for external systems into the CI in order to write more advanced tests, but we can expect we'll find a usable strategy in the long run.
 
-### Kamelet Pipe Examples
+### Kamelet usage examples
 
-Pipe examples are highly encouraged to be added under `templates/pipes/camel-k` directory for Kamelet Pipe and `templates/pipes/core` for the YAML routes.
-
-When the Kamelet Catalog documentation is generated, the examples in each Kamelet documentation page are automatically generated, but the generator code is not wise enough and it may generate a Kamelet Pipe that doesn't work, requiring additional steps. In this case, the pipe example should be added to the above mentioned directories, and add the comment marker at the first line `"# example_for_kamelet_doc"` only in the Camel K Kamelet Pipe example (in `templates/pipes/camel-k`). When the documentation mechanism runs, it will source this pipe example into the kamelet documentation page as example.
+The documentation page of each Kamelet is generated, and shows a short route that uses the Kamelet with its options
+left out. To show a complete example, such as a route with the options set or a second way to log in, add it to
+`docs/modules/ROOT/partials/<kamelet-name>-description.adoc`, which the generated page includes. Write the examples as
+YAML routes, run them first, and follow [documenting a Kamelet](docs/modules/ROOT/pages/documenting.adoc).
 
 ## Releasing
 

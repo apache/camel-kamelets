@@ -1,9 +1,0 @@
-- route:
-    from:
-      uri: "kamelet:rabbitmq-source"
-      parameters:
-        addresses: "localhost:5672"
-        exchangeName: "The Exchange name"
-      steps:
-        - to:
-            uri: "log:info"

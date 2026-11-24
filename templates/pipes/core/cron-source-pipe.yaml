@@ -1,9 +1,0 @@
-- route:
-    from:
-      uri: "kamelet:cron-source"
-      parameters:
-        message: "hello world"
-        schedule: "0/3 10 * * * ?"
-      steps:
-        - to:
-            uri: "log:info"

@@ -66,34 +66,26 @@ Optional parameters:
 
 === Usage example
 
-```yaml
-apiVersion: camel.apache.org/v1alpha1
-kind: KameletBinding
-metadata:
-  name: google-mail-source-binding
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
-      name: google-mail-source
-    properties:
-      index: "messages"
-      clientId: "{{client-id}}"
-      clientSecret: "{{client-secret}}"
-      accessToken: "{{access-token}}"
-      refreshToken: "{{refresh-token}}"
-      applicationName: "My Mail App"
-      delay: 1000
-      markAsRead: true
-      labels: "inbox"
-      query: "is:unread -category:(promotions OR social)"
-  sink:
-    ref:
-      kind: Service
-      apiVersion: v1
-      name: my-service
-```
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:google-mail-source"
+      parameters:
+        index: "messages"
+        clientId: "{{client-id}}"
+        clientSecret: "{{client-secret}}"
+        accessToken: "{{access-token}}"
+        refreshToken: "{{refresh-token}}"
+        applicationName: "My Mail App"
+        delay: 1000
+        markAsRead: true
+        labels: "inbox"
+        query: "is:unread -category:(promotions OR social)"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
 
 === Example with a Service Account and Attachments
 

@@ -30,29 +30,21 @@ Optional parameters:
 
 === Usage example
 
-```yaml
-apiVersion: camel.apache.org/v1alpha1
-kind: KameletBinding
-metadata:
-  name: google-storage-source-binding
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
-      name: google-storage-source
-    properties:
-      bucketNameOrArn: "my-storage-bucket"
-      serviceAccountKey: "{{service-account-key-base64}}"
-      deleteAfterRead: false
-      autoCreateBucket: false
-      prefix: "data/"
-  sink:
-    ref:
-      kind: Service
-      apiVersion: v1
-      name: my-service
-```
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:google-storage-source"
+      parameters:
+        bucketNameOrArn: "my-storage-bucket"
+        serviceAccountKey: "{{service-account-key-base64}}"
+        deleteAfterRead: false
+        autoCreateBucket: false
+        prefix: "data/"
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
 
 === Moving Files to Another Bucket
 

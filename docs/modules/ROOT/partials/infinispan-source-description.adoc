@@ -50,26 +50,18 @@ The Infinispan client checks the certificate of the server against the file in `
 
 === Usage example
 
-```yaml
-apiVersion: camel.apache.org/v1alpha1
-kind: KameletBinding
-metadata:
-  name: infinispan-source-binding
-spec:
-  source:
-    ref:
-      kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
-      name: infinispan-source
-    properties:
-      cacheName: "my-cache"
-      hosts: "infinispan-server:11222"
-      username: "{{username}}"
-      password: "{{password}}"
-      secure: true
-  sink:
-    ref:
-      kind: Service
-      apiVersion: v1
-      name: my-service
-```
+[source,yaml]
+----
+- route:
+    from:
+      uri: "kamelet:infinispan-source"
+      parameters:
+        cacheName: "my-cache"
+        hosts: "infinispan-server:11222"
+        username: "{{username}}"
+        password: "{{password}}"
+        secure: true
+      steps:
+        - to:
+            uri: "kamelet:log-sink"
+----
