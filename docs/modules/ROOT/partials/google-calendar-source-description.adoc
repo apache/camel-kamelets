@@ -21,11 +21,12 @@ The Kamelet produces calendar event data in JSON format. It supports two output 
 When processing calendar events, the following headers are set:
 
 - `CamelGoogleCalendarEventId`: The calendar event id
+- `CamelGoogleCalendarCalendarId`: The ID of the calendar the event is from
 
 For CloudEvents output format, additional headers are set:
 - `CamelCloudEventID`: The Camel exchange id set as event id
 - `CamelCloudEventType`: The event type (default: "org.apache.camel.event.google.calendar.stream.consume")
-- `CamelCloudEventSource`: The event source (Calendar Event Id with prefix "google.calendar.stream.")
+- `CamelCloudEventSource`: The event source (the calendar ID set in `calendarId` with prefix "google.calendar.stream.")
 - `CamelCloudEventSubject`: The event subject (Calendar event type)
 - `CamelCloudEventTime`: The exchange creation timestamp as event time
 

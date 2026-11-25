@@ -39,6 +39,9 @@
         # the body as text, for the HTTP call: Citrus reads an application/octet-stream body as a byte array
         - removeHeader:
             name: Content-Type
+        - setHeader:
+            name: X-Subscription-Name
+            simple: "${header.CamelGooglePubsubSubscriptionName}"
         - convertBodyTo:
             type: "java.lang.String"
         - to:

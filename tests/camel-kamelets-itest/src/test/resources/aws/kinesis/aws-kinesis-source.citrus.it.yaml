@@ -66,4 +66,4 @@ actions:
       cli:
         verify:
           integration: "aws-kinesis-source-route"
-          logMessage: "Kamelet result: X-Body-Type=[B, X-Content-Type=ct=application/octet-stream;"
+          logMessage: "Kamelet result: X-Body-Type=[B, X-Content-Type=ct=application/octet-stream, X-Stream-Name=${aws.kinesis.streamName};"

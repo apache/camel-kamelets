@@ -96,6 +96,10 @@ actions:
               value: 'java.lang.String'
             - name: "X-Content-Type"
               value: 'ct=text/plain'
+            - name: "X-Queue-Name"
+              value: 'orders'
+            - name: "X-CloudEvent-Source"
+              value: 'azure.storage.queue.orders'
             - name: "X-Message-Id"
               value: '@matches([0-9a-f-]{36})@'
             - name: "X-Dequeue-Count"
