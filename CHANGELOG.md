@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- crypto-encrypt-action, crypto-decrypt-action - remove CamelCrypto\* headers, mode only CBC [\#3388](https://github.com/apache/camel-kamelets/issues/3388)
 - crypto-encrypt-action and crypto-decrypt-action: allow the CBC mode with a random initialization vector [\#3246](https://github.com/apache/camel-kamelets/issues/3246)
 - extract-field-action: by default a string field comes out as a quoted JSON value, and trimField: true keeps Content-Type application/json [\#3088](https://github.com/apache/camel-kamelets/issues/3088)
 - Audit follow-up: mqtt-source and mqtt-sink use the deprecated camel-paho \(MQTT v3\) [\#2890](https://github.com/apache/camel-kamelets/issues/2890)
@@ -20,6 +21,8 @@
 
 **Closed issues:**
 
+- Docs: a Kamelet user guide and testing guide, and remove the Pipe examples [\#3393](https://github.com/apache/camel-kamelets/issues/3393)
+- xpath-filter-action: a namespaces option for XML with more than one namespace [\#3390](https://github.com/apache/camel-kamelets/issues/3390)
 - Elasticsearch and OpenSearch Kamelets: TLS options, login and vector search tests, \_id in the search output, words-only search [\#3384](https://github.com/apache/camel-kamelets/issues/3384)
 - New websocket-source and websocket-sink Kamelets: receive from and send to a WebSocket server [\#3377](https://github.com/apache/camel-kamelets/issues/3377)
 - New elasticsearch-search-action and opensearch-search-action Kamelets: search an index as a step of a route [\#3376](https://github.com/apache/camel-kamelets/issues/3376)
@@ -49,6 +52,7 @@
 - Remove the deprecated Apicurio Registry Kafka Kamelets [\#3254](https://github.com/apache/camel-kamelets/issues/3254)
 - Validator: every Kamelet declares spec.dataTypes for its own side [\#3250](https://github.com/apache/camel-kamelets/issues/3250)
 - azure-functions-sink: always send the function key in the x-functions-key header [\#3248](https://github.com/apache/camel-kamelets/issues/3248)
+- Upgrade notes for the Kamelets in Camel 4.24, for the Camel upgrade guide [\#3190](https://github.com/apache/camel-kamelets/issues/3190)
 - Kafka Kamelets: a schema registry vendor option that configures the registry for the user [\#3183](https://github.com/apache/camel-kamelets/issues/3183)
 - Schema registry Kamelets: deprecate the Apicurio ones, and support the Confluent Schema Registry? [\#3182](https://github.com/apache/camel-kamelets/issues/3182)
 - Remove the deprecated http-secured-\* and jms-pooled-apache-artemis-\* Kamelets [\#3180](https://github.com/apache/camel-kamelets/issues/3180)
