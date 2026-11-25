@@ -265,7 +265,7 @@ public class KameletsCatalogTest {
         verifyHeaders("mongodb-changes-stream-source", 3);
         verifyHeaders("mongodb-sink", 3);
         verifyHeaders("mongodb-source", 3);
-        verifyHeaders("mqtt5-sink", 3);
+        verifyHeaders("mqtt5-sink", 4);
         verifyHeaders("mqtt5-source", 3);
         verifyHeaders("mysql-sink", 2);
         verifyHeaders("mysql-source", 1);
