@@ -40,9 +40,6 @@
         - setHeader:
             name: X-Blob-Type
             simple: "${header.CamelAzureStorageBlobBlobType}"
-        # the body as text, for the HTTP call: Citrus reads an application/octet-stream body as a byte array
-        - removeHeader:
-            name: Content-Type
         - setHeader:
             name: X-Container-Name
             simple: "${header.CamelAzureStorageBlobConsumedContainerName}"
@@ -55,6 +52,9 @@
         - setHeader:
             name: X-CloudEvent-Source
             simple: "${header.CamelCloudEventSource}"
+        # the body as text, for the HTTP call: Citrus reads an application/octet-stream body as a byte array
+        - removeHeader:
+            name: Content-Type
         - convertBodyTo:
             type: "java.lang.String"
         - to:

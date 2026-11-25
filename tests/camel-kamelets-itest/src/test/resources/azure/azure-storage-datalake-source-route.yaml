@@ -34,9 +34,6 @@
         - setHeader:
             name: X-File-Name
             simple: "${header.CamelAzureStorageDataLakeFileName}"
-        # the body as text, for the HTTP call: Citrus reads an application/octet-stream body as a byte array
-        - removeHeader:
-            name: Content-Type
         - setHeader:
             name: X-File-System-Name
             simple: "${header.CamelAzureStorageDataLakeConsumedFileSystemName}"
@@ -49,6 +46,9 @@
         - setHeader:
             name: X-CloudEvent-Source
             simple: "${header.CamelCloudEventSource}"
+        # the body as text, for the HTTP call: Citrus reads an application/octet-stream body as a byte array
+        - removeHeader:
+            name: Content-Type
         - convertBodyTo:
             type: "java.lang.String"
         - to:
