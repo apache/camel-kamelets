@@ -147,6 +147,10 @@ spec:
           title: Event ID
           description: The ID of the calendar event.
           type: string
+        CamelGoogleCalendarCalendarId:
+          title: Calendar ID
+          description: The ID of the calendar the event is from, as set in `calendarId`.
+          type: string
       types:
         json:
           format: "application-json"
@@ -167,7 +171,7 @@ spec:
               type: string
             CamelCloudEventSource:
               title: CloudEvent Source
-              description: The event source. By default, the Calendar Event Id with prefix "google.calendar.stream.".
+              description: The event source, which is the calendar ID set in `calendarId` with the prefix "google.calendar.stream.", such as `google.calendar.stream.primary`.
               type: string
             CamelCloudEventSubject:
               title: CloudEvent Subject

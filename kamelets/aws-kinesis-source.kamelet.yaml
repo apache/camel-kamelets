@@ -199,6 +199,10 @@ spec:
           title: Partition Key
           description: The partition key of the record.
           type: string
+        CamelAwsKinesisStreamName:
+          title: Stream Name
+          description: The name of the stream the record was read from, as set in `stream`.
+          type: string
         CamelAwsKinesisSequenceNumber:
           title: Sequence Number
           description: The sequence number of the record in its shard.

@@ -138,6 +138,10 @@ spec:
           title: Azure Storage Datalake File Name
           description: The name of the file retrieved
           type: string
+        CamelAzureStorageDataLakeConsumedFileSystemName:
+          title: File System Name
+          description: The name of the file system the file was read from, as set in `fileSystemName`.
+          type: string
         CamelAzureStorageDataLakeRawHttpHeaders:
           title: Azure Storage Data Lake Raw Http Headers
           description: Non parsed http headers that can be used by the user.
@@ -258,7 +262,7 @@ spec:
               type: string
             CamelCloudEventSource:
               title: CloudEvent Source
-              description: The event source. By default, the Archive Status of the file with prefix "azure.storage.datalake.".
+              description: The event source, which is the name of the file system with the prefix "azure.storage.datalake.", such as `azure.storage.datalake.reports`.
               type: string
             CamelCloudEventSubject:
               title: CloudEvent Subject

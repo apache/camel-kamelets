@@ -27,7 +27,7 @@
         region: "{{aws.kinesis.region}}"
       steps:
       # What the Kamelet gives
-      - log: "Kamelet result: X-Body-Type=${body.getClass().getName()}, X-Content-Type=ct=${header.Content-Type};"
+      - log: "Kamelet result: X-Body-Type=${body.getClass().getName()}, X-Content-Type=ct=${header.Content-Type}, X-Stream-Name=${header.CamelAwsKinesisStreamName};"
       - to:
           uri: "kamelet:log-sink"
           parameters:

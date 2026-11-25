@@ -127,6 +127,10 @@ spec:
           title: Azure Storage Files File Length
           description: A long value containing the file size
           type: long
+        CamelAzureFilesShareName:
+          title: Azure Storage Files Share Name
+          description: The name of the share the file was read from, as set in `shareName`.
+          type: string
         CamelFileLastModified:
           title: Azure Storage Files File Last Modified Date
           description: A Long value containing the last modified timestamp of the file.
@@ -192,7 +196,7 @@ spec:
               type: string
             CamelCloudEventSource:
               title: CloudEvent Source
-              description: The event source. By default, the Host name of the share with prefix "azure.storage.files.".
+              description: The event source, which is the name of the share with the prefix "azure.storage.files.", such as `azure.storage.files.scans`.
               type: string
             CamelCloudEventSubject:
               title: CloudEvent Subject

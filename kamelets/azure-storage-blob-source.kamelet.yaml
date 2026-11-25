@@ -142,6 +142,10 @@ spec:
           title: Blob Name
           description: The name of the blob, with its virtual folder path, such as `in/report.csv`.
           type: string
+        CamelAzureStorageBlobConsumedContainerName:
+          title: Container Name
+          description: The name of the container the blob was read from, as set in `containerName`.
+          type: string
         CamelAzureStorageBlobBlobType:
           title: Blob Type
           description: The type of the blob, such as `BlockBlob` or `AppendBlob`.
@@ -191,7 +195,7 @@ spec:
               type: string
             CamelCloudEventSource:
               title: CloudEvent Source
-              description: The event source. By default, the E Tag name of the blob with prefix "azure.storage.blob.".
+              description: The event source, which is the name of the container with the prefix "azure.storage.blob.", such as `azure.storage.blob.invoices`.
               type: string
             CamelCloudEventSubject:
               title: CloudEvent Subject

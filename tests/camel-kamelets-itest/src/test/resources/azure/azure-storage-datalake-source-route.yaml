@@ -34,6 +34,18 @@
         - setHeader:
             name: X-File-Name
             simple: "${header.CamelAzureStorageDataLakeFileName}"
+        - setHeader:
+            name: X-File-System-Name
+            simple: "${header.CamelAzureStorageDataLakeConsumedFileSystemName}"
+        # the CloudEvent source, with the cloudevents output data type of the Kamelet
+        - to:
+            uri: "kamelet:data-type-action"
+            parameters:
+              scheme: "azure-storage-datalake"
+              format: "application-cloudevents"
+        - setHeader:
+            name: X-CloudEvent-Source
+            simple: "${header.CamelCloudEventSource}"
         # the body as text, for the HTTP call: Citrus reads an application/octet-stream body as a byte array
         - removeHeader:
             name: Content-Type

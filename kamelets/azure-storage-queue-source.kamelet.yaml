@@ -95,6 +95,10 @@ spec:
           title: Azure Storage Queue Message Id
           description: The id of the message.
           type: string
+        CamelAzureStorageQueueConsumedQueueName:
+          title: Queue Name
+          description: The name of the queue the message was read from, as set in `queueName`.
+          type: string
         CamelAzureStorageQueueInsertionTime:
           title: Azure Storage Queue Message Insertion Time
           description: The time the Message was inserted into the Queue.
@@ -135,7 +139,7 @@ spec:
               type: string
             CamelCloudEventSource:
               title: CloudEvent Source
-              description: The event source. By default, the Message Id of the message received with prefix "azure.storage.queue.".
+              description: The event source, which is the name of the queue with the prefix "azure.storage.queue.", such as `azure.storage.queue.orders`.
               type: string
             CamelCloudEventSubject:
               title: CloudEvent Subject
